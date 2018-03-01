@@ -67,28 +67,30 @@ namespace Microsoft.DocAsCode.YamlSerialization
         private void EmitDocument(IEmitter emitter, IObjectDescriptor graph)
         {
             var traversalStrategy = CreateTraversalStrategy();
-            var eventEmitter = CreateEventEmitter(emitter);
+            var eventEmitter = CreateEventEmitter();
             var emittingVisitor = CreateEmittingVisitor(emitter, traversalStrategy, eventEmitter, graph);
 
             emitter.Emit(new StreamStart());
             emitter.Emit(new DocumentStart());
 
-            traversalStrategy.Traverse(graph, emittingVisitor);
+            traversalStrategy.Traverse(graph, emittingVisitor, emitter);
 
             emitter.Emit(new DocumentEnd(true));
             emitter.Emit(new StreamEnd());
         }
 
-        private IObjectGraphVisitor CreateEmittingVisitor(IEmitter emitter, IObjectGraphTraversalStrategy traversalStrategy, IEventEmitter eventEmitter, IObjectDescriptor graph)
+        private IObjectGraphVisitor<IEmitter> CreateEmittingVisitor(IEmitter emitter, IObjectGraphTraversalStrategy traversalStrategy, IEventEmitter eventEmitter, IObjectDescriptor graph)
         {
-            IObjectGraphVisitor emittingVisitor = new EmittingObjectGraphVisitor(eventEmitter);
+            IObjectGraphVisitor<IEmitter> emittingVisitor = new EmittingObjectGraphVisitor(eventEmitter);
 
-            emittingVisitor = new CustomSerializationObjectGraphVisitor(emitter, emittingVisitor, Converters);
+            ObjectSerializer nestedObjectSerializer = (v, t) => SerializeValue(emitter, v, t);
+
+            emittingVisitor = new CustomSerializationObjectGraphVisitor(emittingVisitor, Converters, nestedObjectSerializer);
 
             if (!IsOptionSet(SerializationOptions.DisableAliases))
             {
-                var anchorAssigner = new AnchorAssigner();
-                traversalStrategy.Traverse(graph, anchorAssigner);
+                var anchorAssigner = new AnchorAssigner(Converters);
+                traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, null);
 
                 emittingVisitor = new AnchorAssigningObjectGraphVisitor(emittingVisitor, eventEmitter, anchorAssigner);
             }
@@ -101,9 +103,26 @@ namespace Microsoft.DocAsCode.YamlSerialization
             return emittingVisitor;
         }
 
-        private IEventEmitter CreateEventEmitter(IEmitter emitter)
+        public void SerializeValue(IEmitter emitter, object value, Type type)
         {
-            var writer = new WriterEventEmitter(emitter);
+            var graph = type != null
+                ? new BetterObjectDescriptor(value, type, type)
+                : new BetterObjectDescriptor(value, value != null ? value.GetType() : typeof(object), typeof(object));
+
+            var traversalStrategy = CreateTraversalStrategy();
+            var emittingVisitor = CreateEmittingVisitor(
+                emitter,
+                traversalStrategy,
+                CreateEventEmitter(),
+                graph
+            );
+
+            traversalStrategy.Traverse(graph, emittingVisitor, emitter);
+        }
+
+        private IEventEmitter CreateEventEmitter()
+        {
+            var writer = new WriterEventEmitter();
 
             if (IsOptionSet(SerializationOptions.JsonCompatible))
             {

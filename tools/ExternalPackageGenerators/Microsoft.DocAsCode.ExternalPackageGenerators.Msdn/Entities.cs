@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     internal sealed class ClassEntry
     {
@@ -35,7 +36,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
     internal sealed class EntryNameAndViewModel
     {
-        public EntryNameAndViewModel(string entryName, List<ReferenceViewModel> viewModel)
+        public EntryNameAndViewModel(string entryName, List<XRefSpec> viewModel)
         {
             EntryName = entryName;
             ViewModel = viewModel;
@@ -43,6 +44,6 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         public string EntryName { get; private set; }
 
-        public List<ReferenceViewModel> ViewModel { get; private set; }
+        public List<XRefSpec> ViewModel { get; private set; }
     }
 }

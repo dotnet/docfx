@@ -5,26 +5,35 @@ namespace Microsoft.DocAsCode
 {
     using System;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     internal static class ConsoleExtension
     {
         public static void WriteToConsole(this string text, ConsoleColor color)
         {
-            if (string.IsNullOrEmpty(text)) return;
-            ConsoleUtility.WriteToConsoleWithColor(() => Console.Write(text), color);
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+            ConsoleUtility.Write(text, color);
         }
 
         public static void WriteLineToConsole(this string text, ConsoleColor color)
         {
-            if (string.IsNullOrEmpty(text)) return;
-            ConsoleUtility.WriteToConsoleWithColor(() => Console.WriteLine(text), color);
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+            ConsoleUtility.WriteLine(text, color);
         }
 
         public static void WriteLinesToConsole(this string[] text, ConsoleColor color)
         {
-            if (text == null || text.Length == 0) return;
-            foreach(var line in text)
+            if (text == null || text.Length == 0)
+            {
+                return;
+            }
+            foreach (var line in text)
             {
                 line.WriteLineToConsole(color);
             }

@@ -28,12 +28,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (Options.Gfm)
             {
                 builder.Add(new GfmFencesBlockRule());
-                builder.Add(new GfmHeadingBlockRule());
             }
-            else
-            {
-                builder.Add(new MarkdownHeadingBlockRule());
-            }
+            builder.Add(new MarkdownHeadingBlockRule());
             if (Options.Tables)
             {
                 builder.Add(new MarkdownNpTableBlockRule());
@@ -46,19 +42,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new GfmHtmlCommentBlockRule());
             }
+            builder.Add(new MarkdownPreElementBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             if (Options.Tables)
             {
                 builder.Add(new MarkdownTableBlockRule());
-            }
-            if (Options.Gfm)
-            {
-                builder.Add(new GfmParagraphBlockRule());
-            }
-            else
-            {
-                builder.Add(new MarkdownParagraphBlockRule());
             }
             builder.Add(new MarkdownTextBlockRule());
             BlockRules = builder.ToImmutable();
@@ -80,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new GfmUrlInlineRule());
             }
-            builder.Add(new MarkdownCodeElementInlineRule());
+            builder.Add(new MarkdownPreElementInlineRule());
             builder.Add(new MarkdownTagInlineRule());
             builder.Add(new MarkdownLinkInlineRule());
             builder.Add(new MarkdownRefLinkInlineRule());
@@ -102,6 +91,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new GfmDelInlineRule());
                 builder.Add(new MarkdownEscapedTextInlineRule());
+                builder.Add(new GfmEmojiInlineRule());
                 builder.Add(new GfmTextInlineRule());
             }
             else

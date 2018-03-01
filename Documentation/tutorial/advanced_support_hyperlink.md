@@ -1,46 +1,46 @@
 ﻿🔧 Advanced: Support Hyperlink
 ===============================
 
-In this topic, we will support hyperlink in rtf files.
+In this topic, we will support hyperlinking in rtf files.
 
-Create hyperlink in rtf file:
+Create a hyperlink in the rtf file:
 1.  Open `foo.rtf` by `Word`.
 2.  Add a hyperlink in content
-3.  Set the link target to an existed `bar.rtf`
+3.  Set the link target to an existing `bar.rtf`
 4.  Save the document.
 
 About link
 ----------
-For document, writer can write any valid hyperlink, and `DocFX build` need to update file links.
+An author can write any valid hyperlink in the document, and then needs to run `DocFX build` to update file links.
 
 ### What is file link:
-1.  The hyperlink must be relative path and not rooted.
+1.  The hyperlink must be a relative path and not rooted.
     * valid: `foo\bar.rtf`, `../foobar.rtf`
     * invalid: `/foo.rtf`, `c:\foo\bar.rtf`, `http://foo.bar/`, `mailto:foo@bar.foobar`
-2.  File must exist.
+2.  The file must exist.
 
 ### Why update file link:
 
 The story is:
-1.  In `foo.rtf`, has a file link to `bar.rtf`.
-2.  In document build, `bar.rtf` generate a file with name `bar.html`.
-3.  But in `foo.rtf`, the link target is still `bar.rtf`, and in output folder we cannot find this file, we will get a broken link.
+1.  In `foo.rtf`, it has a file link to `bar.rtf`.
+2.  In document build, `bar.rtf` generates a file with the name `bar.html`.
+3.  But in `foo.rtf`, the link target is still `bar.rtf`, thus in the output folder we cannot find this file and we will get a broken link.
 4.  To resolve the broken link, we need to update the link target from `bar.rtf` to `bar.html`.
 
-File link is relative path, but we cannot track relative path easily.
-So we track *normalized file path* instead.
+File link is a relative path, but we cannot track the relative path easily.
+So we track the *normalized file path* instead.
 
-### What is *normalized file path*:
-1.  Always from working folder (the folder contains `docfx.json`), and we write it as `~/`.
+### What is a *normalized file path*:
+1.  It always starts from the working folder (the folder that contains `docfx.json`), and we write it as `~/`.
 2.  No `../` or `./` or `//`
-3.  Replace `\` to `/`.
-4.  No url encoding, must be same as it in file system.
+3.  Replace `\` with `/`.
+4.  No url encoding. The path must be same as it in the file system.
 5.  No anchor.
 
 Finally, a valid *normalized file path* looks like: `~/foo/bar.rtf`.
 
 * Pros
-  * Same form in different documents when target is same file.
+  * Same form in different documents when the target is the same file.
 
     When file structure is:
     ```
@@ -49,14 +49,14 @@ Finally, a valid *normalized file path* looks like: `~/foo/bar.rtf`.
     z:\a\b\c\foobar.rtf
     ```
     Link target `c/foobar.rtf` in `foo.rtf` and link target `foobar.rtf` in `bar.rtf` is the same file.
-    When working folder is `z:\a\`, link target is always `~/b/c/foobar.rtf`.
+    When the working folder is `z:\a\`, the link target is always `~/b/c/foobar.rtf`.
 
-  * Avoid difference writing for same file.
+  * Avoids differences in style when referring to the same file.
 
-    For example, following hyperlinks target a same file: `a/foo.rtf`, `./a/foo.rtf`, `a/b/../foo.rtf`, `a//foo.rtf`, `a\foo.rtf`
+    For example, the following hyperlinks target the same file: `a/foo.rtf`, `./a/foo.rtf`, `a/b/../foo.rtf`, `a//foo.rtf`, `a\foo.rtf`
 
 * Cons
-  * folder with name `~` is not supported.
+  * A folder with the name `~` is not supported.
 
 Prepare
 -------
@@ -70,16 +70,16 @@ Prepare
 
 Update rtf document processor
 -----------------------------
-1.  Following rules for hyperlink, add `FixLink` help method:
-    [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+1.  Following the rules for hyperlink, add a `FixLink` help method:
+    [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=FixLink)]
 
-    `RelativePath` help us generate links correctly.
+    `RelativePath` helps us generate the links correctly.
 
 2.  Then add `CollectLinksAndFixDocument` method:
-    [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+    [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=CollectLinksAndFixDocument)]
 
 3.  Modify `Save` method with report links:
-    [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+    [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=Save)]
 
 <!-- todo : `Update Reference` is preserved for next version of plugin. -->
 

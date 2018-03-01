@@ -43,6 +43,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string Path { get; set; }
 
         /// <summary>
+        /// Current file's key from ~ ROOT
+        /// </summary>
+        [JsonProperty("_key")]
+        public string Key { get; set; }
+
+        /// <summary>
         /// Current file's relative path to ROOT TOC file
         /// </summary>
         [JsonProperty("_navRel")]
@@ -53,5 +59,29 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         [JsonProperty("_tocRel")]
         public string RelativePathToToc { get; set; }
+
+        /// <summary>
+        /// The file key for Root TOC file, starting with `~`
+        /// </summary>
+        [JsonProperty("_navKey")]
+        public string RootTocKey { get; set; }
+
+        /// <summary>
+        /// The file key for current file's TOC file, starting with `~`
+        /// </summary>
+        [JsonProperty("_tocKey")]
+        public string TocKey { get; set; }
+
+        /// <summary>
+        /// Current file's version name
+        /// </summary>
+        [JsonProperty("_version")]
+        public string VersionName { get; set; }
+
+        /// <summary>
+        /// Current file's version root path from ~ ROOT
+        /// </summary>
+        [JsonProperty("_versionPath")]
+        public string VersionFolder { get; set; }
     }
 }

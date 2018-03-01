@@ -9,12 +9,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
+
+    using CommonConstants = DataContracts.Common.Constants;
 
     internal sealed class SystemMetadataGenerator
     {
         private readonly IDocumentBuildContext _context;
-        private readonly IEnumerable<RelativePath> _toc;
+        private readonly IEnumerable<FileInfo> _toc;
+
         public SystemMetadataGenerator(IDocumentBuildContext context)
         {
             if (context == null)
@@ -25,10 +27,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             _context = context;
 
             // Order toc files by the output folder depth
-            _toc = context.GetTocInfo().Select(s => (RelativePath)context.GetFilePath(s.TocFileKey)).OrderBy(s => s.SubdirectoryCount);
+            _toc = context.GetTocInfo()
+                .Select(s => new FileInfo(s.TocFileKey, (RelativePath)context.GetFilePath(s.TocFileKey)))
+                .Where(s => s.File != null)
+                .OrderBy(s => s.File.SubdirectoryCount);
         }
 
-        public SystemMetadata Generate(ManifestItem item)
+        public SystemMetadata Generate(InternalManifestItem item)
         {
             var attrs = new SystemMetadata
             {
@@ -36,77 +41,117 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
 
             string key = GetFileKey(item.Key);
+            attrs.Key = ((RelativePath)key).RemoveWorkingFolder();
             var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 
             attrs.RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo(file);
             var fileWithoutWorkingFolder = file.RemoveWorkingFolder();
             attrs.Path = fileWithoutWorkingFolder;
 
-            // 1. Root Toc is always in the top directory of output folder
-            var rootToc = _toc.FirstOrDefault();
-            if (rootToc != null)
+            if (!string.IsNullOrEmpty(_context.VersionName))
             {
-                var rootTocPath = rootToc.RemoveWorkingFolder();
-                if (rootTocPath.SubdirectoryCount == 0)
-                {
-                    attrs.RootTocPath = rootTocPath;
-                    var rootTocRelativePath = rootTocPath.MakeRelativeTo(file);
-                    attrs.RelativePathToRootToc = rootTocRelativePath;
-                    Logger.LogVerbose($"Root TOC file {rootTocPath} is found.");
-                }
-                else
-                {
-                    Logger.LogVerbose($"Root TOC file from output folder is not found, the toppest TOC file is {rootTocPath}");
-                }
+                attrs.VersionName = _context.VersionName;
+                attrs.VersionFolder = _context.VersionFolder;
+            }
+
+            // 1. Root Toc is specified by RootTocKey, or by default in the top directory of output folder
+            if (!string.IsNullOrEmpty(_context.RootTocPath))
+            {
+                attrs.RootTocKey = _context.RootTocPath;
+                var rootTocPath = ((RelativePath)_context.RootTocPath).RemoveWorkingFolder();
+                attrs.RootTocPath = rootTocPath;
+                attrs.RelativePathToRootToc = rootTocPath.MakeRelativeTo(file);
+            }
+            else
+            {
+                GetRootTocFromOutputRoot(attrs, file);
+            }
+
+            if (item.DocumentType == CommonConstants.DocumentType.Toc)
+            {
+                // when item is toc, its toc is always itself
+                attrs.TocPath = item.FileWithoutExtension + item.Extension;
+                attrs.RelativePathToToc = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
+                attrs.TocKey = item.Key;
+                return attrs;
             }
 
             // 2. The algorithm of toc current article belongs to:
             //    a. If toc can be found in TocMap, return that toc
             //    b. Elsewise, get the nearest toc, **nearest** means nearest toc in **OUTPUT** folder
-            var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => _context.GetFilePath(s));
-            var parentToc = GetNearestToc(parentTocFiles);
-            if (parentToc == null)
-            {
-                parentToc = GetDefaultToc(key);
-            }
+            var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => new FileInfo(s, (RelativePath)_context.GetFilePath(s)));
+            var parentToc = GetNearestToc(parentTocFiles, file) ?? GetDefaultToc(key);
 
             if (parentToc != null)
             {
-                var parentTocPath = parentToc.RemoveWorkingFolder();
+                var parentTocPath = parentToc.File.RemoveWorkingFolder();
                 attrs.TocPath = parentTocPath;
                 var tocRelativePath = parentTocPath.MakeRelativeTo(file);
                 attrs.RelativePathToToc = tocRelativePath;
-                Logger.LogVerbose($"TOC file {parentTocPath} is found for {item.LocalPathFromRepoRoot}.");
+                attrs.TocKey = parentToc.Key;
+                Logger.LogDiagnostic($"TOC file {parentTocPath} is found for {item.LocalPathFromRoot}.");
             }
             else
             {
-                Logger.LogVerbose($"TOC file for {item.LocalPathFromRepoRoot} is not found.");
+                Logger.LogDiagnostic($"TOC file for {item.LocalPathFromRoot} is not found.");
             }
 
             return attrs;
         }
 
-        private RelativePath GetDefaultToc(string fileKey)
+        private void GetRootTocFromOutputRoot(SystemMetadata attrs, RelativePath file)
+        {
+            var rootToc = _toc.FirstOrDefault();
+            if (rootToc != null)
+            {
+                var rootTocPath = rootToc.File.RemoveWorkingFolder();
+                if (rootTocPath.SubdirectoryCount == 0)
+                {
+                    attrs.RootTocPath = rootTocPath;
+                    var rootTocRelativePath = rootTocPath.MakeRelativeTo(file);
+                    attrs.RelativePathToRootToc = rootTocRelativePath;
+                    attrs.RootTocKey = rootToc.Key;
+                    Logger.LogDiagnostic($"Root TOC file {rootTocPath} is found.");
+                }
+                else
+                {
+                    Logger.LogDiagnostic(
+                        $"Root TOC file from output folder is not found, the toppest TOC file is {rootTocPath}");
+                }
+            }
+        }
+
+        private FileInfo GetDefaultToc(string fileKey)
         {
             var outputPath = (RelativePath)_context.GetFilePath(fileKey);
 
             // MakeRelativeTo calculates how to get file "s" from "outputPath"
             // The standard for being the toc of current file is: Relative directory is empty or ".."s only
             var parentTocs = _toc
-                .Select(s => new { rel = s.MakeRelativeTo(outputPath), path = s })
+                .Select(s => new { rel = s.File.MakeRelativeTo(outputPath), info = s })
                 .Where(s => s.rel.SubdirectoryCount == 0)
                 .OrderBy(s => s.rel.ParentDirectoryCount)
-                .Select(s => s.path);
+                .Select(s => s.info);
             return parentTocs.FirstOrDefault();
         }
 
-        private static RelativePath GetNearestToc(IEnumerable<string> tocFiles)
+        /// <summary>
+        /// return the nearest toc relative to the current file
+        /// "near" means less subdirectory count
+        /// when subdirectory counts are same, "near" means less parent directory count
+        /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
+        /// </summary>
+        private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles, RelativePath file)
         {
-            // Get the deepest toc as default parent toc
-            return tocFiles?
-                .Where(s => s != null)
-                .Select(s => (RelativePath)s)
-                .OrderByDescending(s => s.SubdirectoryCount)
+            if (tocFiles == null)
+            {
+                return null;
+            }
+            return (from toc in tocFiles
+                    where toc.File != null
+                    let relativePath = toc.File.RemoveWorkingFolder() - file
+                    orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount
+                    select toc)
                 .FirstOrDefault();
         }
 
@@ -114,6 +159,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (key.StartsWith(RelativePath.NormalizedWorkingFolder)) return key;
             return RelativePath.NormalizedWorkingFolder + key;
+        }
+
+        private sealed class FileInfo
+        {
+            public string Key { get; set; }
+            public RelativePath File { get; set; }
+            public FileInfo(string key, RelativePath file)
+            {
+                Key = key;
+                File = file;
+            }
         }
     }
 }

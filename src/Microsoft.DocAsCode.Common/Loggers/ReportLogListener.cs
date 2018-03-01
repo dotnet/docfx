@@ -10,12 +10,13 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class ReportLogListener : ILoggerListener
     {
+        private readonly string _repoRoot;
+        private readonly string _root;
         private readonly StreamWriter _writer;
 
-        public LogLevel LogLevelThreshold { get; set; }
+        private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
-#if !NetCore
-        public ReportLogListener(string reportPath)
+        public ReportLogListener(string reportPath, string repoRoot, string root)
         {
             var dir = Path.GetDirectoryName(reportPath);
             if (!string.IsNullOrEmpty(dir))
@@ -23,16 +24,15 @@ namespace Microsoft.DocAsCode.Common
                 Directory.CreateDirectory(dir);
             }
             _writer = new StreamWriter(reportPath, true);
+            _repoRoot = repoRoot;
+            _root = root;
         }
-#endif
 
-        public ReportLogListener(StreamWriter writer)
+        public ReportLogListener(StreamWriter writer, string repoRoot, string root)
         {
-            if (writer == null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-            _writer = writer;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
+            _repoRoot = repoRoot;
+            _root = root;
         }
 
         public void WriteLine(ILogItem item)
@@ -53,9 +53,11 @@ namespace Microsoft.DocAsCode.Common
                 Severity = GetSeverity(level),
                 Message = message,
                 Source = phase,
-                File = file,
+                File = TransformFile(file),
                 Line = line,
-                DateTime = DateTime.UtcNow
+                DateTime = DateTime.UtcNow,
+                Code = item.Code,
+                CorrelationId = item.CorrelationId
             };
 
             _writer.WriteLine(JsonUtility.Serialize(reportItem));
@@ -70,6 +72,8 @@ namespace Microsoft.DocAsCode.Common
         {
             switch (level)
             {
+                case LogLevel.Diagnostic:
+                    return MessageSeverity.Diagnostic;
                 case LogLevel.Verbose:
                     return MessageSeverity.Verbose;
                 case LogLevel.Info:
@@ -81,6 +85,23 @@ namespace Microsoft.DocAsCode.Common
                 default:
                     throw new NotSupportedException(level.ToString());
             }
+        }
+
+        private string TransformFile(string fileFromRoot)
+        {
+            if (fileFromRoot == null)
+            {
+                return null;
+            }
+            if (string.IsNullOrEmpty(_repoRoot))
+            {
+                return fileFromRoot;
+            }
+
+            string file = ((RelativePath)fileFromRoot).RemoveWorkingFolder();
+            string basePath = Path.GetFullPath(_repoRoot);
+            string fullPath = Path.GetFullPath(Path.Combine(_root, file));
+            return PathUtility.MakeRelativePath(basePath, fullPath);
         }
 
         public void Flush()
@@ -102,6 +123,10 @@ namespace Microsoft.DocAsCode.Common
             public DateTime DateTime { get; set; }
             [JsonProperty("message_severity")]
             public MessageSeverity Severity { get; set; }
+            [JsonProperty("code")]
+            public string Code{ get; set; }
+            [JsonProperty("correlation_id")]
+            public string CorrelationId { get; set; }
         }
 
         public enum MessageSeverity
@@ -109,7 +134,8 @@ namespace Microsoft.DocAsCode.Common
             Error,
             Warning,
             Info,
-            Verbose
+            Verbose,
+            Diagnostic
         }
     }
 }

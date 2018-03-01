@@ -4,7 +4,7 @@ Getting Started with *DocFX*
 1. What is *DocFX*
 ---------------
 
-*DocFX* is an API documentation generator for .NET, and currently it supports C# and VB.
+*DocFX* is an API documentation generator for .NET, which currently supports C# and VB.
 It generates API reference documentation from triple-slash comments in your source code.
 It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
 *DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).
@@ -14,16 +14,21 @@ If you are interested in creating your own website with your own styles, you can
 *DocFX* also has the following cool features:
 
 * Integration with your source code. You can click "View Source" on an API to navigate to the source code in GitHub (your source code must be pushed to GitHub).
-* Cross-platform support. We have both exe version that runs under Windows and a DNX version that runs cross platform.
+* Cross-platform support. We have an exe version that runs natively on Windows and with Mono it can also run on Linux and macOS.
 * Integration with Visual Studio. You can seamlessly use *DocFX* within Visual Studio.
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
 For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
+> [!Warning]
+> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
 2. Use *DocFX* as a command-line tool
 -----------------------
 
-*Step1.* Download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
+Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `choco install docfx -y`.
+
+Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
 ```
@@ -39,66 +44,58 @@ docfx docfx_project\docfx.json --serve
 
 Now you can view the generated website on http://localhost:8080.
 
-3. Use *DocFX* in Visual Studio
+3. Use *DocFX* integrated with Visual Studio
 ---------------
 
-As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
+*Step1.* Create a **Class Library (.NET Framework)** project
 
-*Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
+*Step2.* Right click on the project and select **Manage NuGet Package**
 
-*Step2.* Right click on the website project, and choose *Manage NuGet Packages...* to open the NuGet Package Manager. Search and install *docfx.msbuild* package.
+*Step3.* Search and install the [`docfx.console`](https://www.nuget.org/packages/docfx.console/) NuGet package. It adds itself to the build targets and adds the `docfx.json` configuration file along with other files.
 
-*Step3.* Create a `.cs` class in the website project, make sure the class is `public`, for example:
+*Step4.* **Build** the project, and a `_site` folder will be generated with the documentation.
 
-```csharp
-namespace WebApplication1
-{
-    public class Class1
-    {
-    }
-}
-```
+> [!NOTE]
+> *Possible warning*:
+> - *Cache is corrupted*: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the [`TargetFramework` property](https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535) in `docfx.json`:
+>
+>      "metadata": [
+>        {
+>          "src": "...",
+>          "dest": "...",
+>          "properties": {
+>            "TargetFramework": <one_of_your_framework>
+>          }
+>        },
+>      ]
 
-*Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
 
-4. Use *DocFX* under DNX
-----------------
-As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
+4. Use *DocFX* with a Build Server
+---------------
 
-*Step1.* `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depend upon the release version of ASP.NET 1.0.0-rc1.
+*DocFX* can be used in a Continuous Integration environment.
 
-*Step2.* `dnvm upgrade` to get the latest dnvm.
+Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
 
-*Step3.* Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to NuGet.config.
-> For Windows, the NuGet config file is *%AppData%\NuGet\NuGet.config*.
+Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
 
-> For Linux/OSX, the NuGet config file is *~/.config/NuGet/NuGet.config*.
+Many build systems set an environment variable with the branch name.  DocFX uses the following:
 
-Sample NuGet.config
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="myget.release" value="https://www.myget.org/F/aspnetrelease/api/v2/" />
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </packageSources>
-  <disabledPackageSources />
-  <activePackageSource>
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </activePackageSource>
-</configuration>
-```
+- `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
+- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Team Services](https://www.visualstudio.com/team-services/)
+- `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
+- `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
+- `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
+- `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
 
-*Step4.* `dnu commands install docfx` to install *DocFX* as a command.
-
-*Step5.* `docfx init -q` to generate a sample project.
-
-*Step6.* `docfx docfx_project\docfx.json --serve` to build your project and preview your site at http://localhost:8080.
-
-Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed description of `docfx.json`.
+> [!NOTE]
+> *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
 5. Build from source code
 ----------------
+As a prerequisite, you need:
+- [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
+- [Node.js](https://nodejs.org)
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
 
@@ -107,11 +104,11 @@ Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed des
 *Step3.* Add `artifacts` folder to nuget source by in IDE:
   > Tools > NuGet Package Manager > Package Manager Settings > Package Sources
 
-*Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or DNX.
+*Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
 
 6. A seed project to play with *DocFX*
 -------------------------
-Here is a seed project https://github.com/docascode/docfx-seed. It contains
+Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 
 1. A basic C# project under `src`.
 2. Several conceptual files under `articles`.
@@ -119,8 +116,8 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 4. `toc.yml` under root folder. It renders as the navbar of the website.
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends upon.
 
-> Tip:
-  It is a good practice to seperate files with different type into different folders.
+> [!Tip]
+> It's good practice to separate files with different types into different folders.
 
 7. Q&A
 -------------------------

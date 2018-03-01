@@ -3,67 +3,84 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public static class TokenHelper
     {
-        public static ImmutableArray<IMarkdownToken> ParseInlineToken(
+        public static ImmutableArray<IMarkdownToken> CreateParagraghs(
             IMarkdownParser parser,
             IMarkdownRule rule,
             ImmutableArray<IMarkdownToken> blockTokens,
-            bool wrapParagraph)
+            bool wrapParagraph,
+            SourceInfo sourceInfo)
         {
             var result = new List<IMarkdownToken>(blockTokens.Length);
             var textContent = StringBuffer.Empty;
+            var si = sourceInfo;
             foreach (var token in blockTokens)
             {
-                var text = token as MarkdownTextToken;
-                if (text != null)
+                if (token is MarkdownTextToken text)
                 {
-                    if (textContent != StringBuffer.Empty)
+                    if (textContent == StringBuffer.Empty)
                     {
-                        textContent += "\n";
+                        si = text.SourceInfo;
                     }
                     textContent += text.Content;
                     continue;
                 }
-                var newLine = token as MarkdownNewLineBlockToken;
-                if (newLine?.RawMarkdown.Length == 1)
-                {
-                    continue;
-                }
                 if (textContent != StringBuffer.Empty)
                 {
-                    var rawMarkdown = textContent.ToString();
-                    result.Add(CreateToken(parser, rule, wrapParagraph, rawMarkdown));
+                    result.Add(GroupTextTokens(parser, rule, wrapParagraph, textContent, si));
                     textContent = StringBuffer.Empty;
                 }
-                if (newLine != null)
-                {
-                    continue;
-                }
+
                 result.Add(token);
             }
             if (textContent != StringBuffer.Empty)
             {
-                var rawMarkdown = textContent.ToString();
-                result.Add(CreateToken(parser, rule, wrapParagraph, rawMarkdown));
+                result.Add(GroupTextTokens(parser, rule, wrapParagraph, textContent, si));
             }
             return result.ToImmutableArray();
         }
 
-        private static IMarkdownToken CreateToken(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, string rawMarkdown)
+        private static IMarkdownToken GroupTextTokens(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, StringBuffer textContent, SourceInfo si)
         {
-            var inlineContent = parser.TokenizeInline(rawMarkdown);
-            if (wrapParagraph)
+            var rawMarkdown = textContent.ToString();
+            string markdown;
+            if (textContent.EndsWith('\n'))
             {
-                return new MarkdownParagraphBlockToken(rule, parser.Context, inlineContent, rawMarkdown);
+                markdown = textContent.Substring(0, textContent.GetLength() - 1).ToString();
             }
             else
             {
-                return new MarkdownNonParagraphBlockToken(rule, parser.Context, inlineContent, rawMarkdown);
+                markdown = rawMarkdown;
+            }
+            return CreateTwoPhaseToken(parser, rule, markdown, wrapParagraph, si.Copy(rawMarkdown));
+        }
+
+        private static TwoPhaseBlockToken CreateTwoPhaseToken(
+            IMarkdownParser parser,
+            IMarkdownRule rule,
+            string markdown,
+            bool wrapParagraph,
+            SourceInfo sourceInfo)
+        {
+            if (wrapParagraph)
+            {
+                return new TwoPhaseBlockToken(
+                    rule,
+                    parser.Context,
+                    sourceInfo,
+                    (p, t) => new MarkdownParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(sourceInfo.Copy(markdown)), t.SourceInfo));
+            }
+            else
+            {
+                return new TwoPhaseBlockToken(
+                    rule,
+                    parser.Context,
+                    sourceInfo,
+                    (p, t) => new MarkdownNonParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(sourceInfo.Copy(markdown)), t.SourceInfo));
             }
         }
     }

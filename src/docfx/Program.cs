@@ -4,12 +4,13 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.Threading;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.SubCommands;
+
+    using Newtonsoft.Json;
 
     internal class Program
     {
@@ -17,7 +18,8 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                return ExecSubCommand(args);
+                var result = ExecSubCommand(args);
+                return Logger.HasError ? 1 : result;
             }
             finally
             {
@@ -26,12 +28,14 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static int ExecSubCommand(string[] args)
+        internal static int ExecSubCommand(string[] args)
         {
+            EnvironmentContext.SetVersion(typeof(Program).Assembly.GetName().Version.ToString());
+
             var consoleLogListener = new ConsoleLogListener();
-            var replayListener = new ReplayLogListener();
-            replayListener.AddListener(consoleLogListener);
-            Logger.RegisterListener(replayListener);
+            var aggregatedLogListener = new AggregatedLogListener();
+            Logger.RegisterListener(consoleLogListener);
+            Logger.RegisterListener(aggregatedLogListener);
 
             CommandController controller = null;
             ISubCommand command;
@@ -40,12 +44,12 @@ namespace Microsoft.DocAsCode
                 controller = ArgsParser.Instance.Parse(args);
                 command = controller.Create();
             }
-            catch (System.IO.FileNotFoundException fe)
+            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException || e is JsonSerializationException)
             {
-                Logger.LogError(fe.Message);
+                Logger.LogError(e.Message);
                 return 1;
             }
-            catch (OptionParserException e)
+            catch (Exception e) when (e is OptionParserException || e is InvalidOptionException)
             {
                 Logger.LogError(e.Message);
                 if (controller != null)
@@ -64,33 +68,39 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
-            replayListener.Replay = command.AllowReplay;
+            if (command.AllowReplay)
+            {
+                Logger.RegisterAsyncListener(new AggregatedLogListener(aggregatedLogListener));
+            }
+
+            Logger.UnregisterListener(aggregatedLogListener);
 
             var context = new SubCommandRunningContext();
+            PerformanceScope scope = null;
             try
             {
-                ThreadPool.SetMinThreads(4, 4);
-                using (new PerformanceScope("executing", LogLevel.Info))
+                // TODO: For now reuse AllowReplay for overall elapsed time statistics
+                if (command.AllowReplay)
                 {
-                    command.Exec(context);
+                    scope = new PerformanceScope(string.Empty, LogLevel.Info);
                 }
 
+                command.Exec(context);
                 return 0;
             }
-            catch (DocumentException de)
+            catch (Exception e) when (e is DocumentException || e is DocfxException)
             {
-                Logger.LogError(de.Message);
-                return 1;
-            }
-            catch (DocfxException de)
-            {
-                Logger.LogError(de.Message);
+                Logger.LogError(e.Message);
                 return 1;
             }
             catch (Exception e)
             {
                 Logger.LogError(e.ToString());
                 return 1;
+            }
+            finally
+            {
+                scope?.Dispose();
             }
         }
     }

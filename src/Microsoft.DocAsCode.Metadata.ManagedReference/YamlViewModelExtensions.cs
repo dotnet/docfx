@@ -30,12 +30,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem();
-            shrinkedItem.Name = item.Name;
-            shrinkedItem.DisplayNames = item.DisplayNames;
-
-            shrinkedItem.Items = null;
-
+            MetadataItem shrinkedItem = new MetadataItem()
+            {
+                Name = item.Name,
+                DisplayNames = item.DisplayNames,
+                Items = null
+            };
             if (item.Items == null)
             {
                 return shrinkedItem;
@@ -50,7 +50,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         shrinkedItem.Items = new List<MetadataItem>();
                     }
 
-                    if (i.IsInvalid) continue;
+                    if (i.IsInvalid)
+                    {
+                        continue;
+                    }
                     var shrinkedI = i.ShrinkToSimpleToc();
                     shrinkedItem.Items.Add(shrinkedI);
                 }
@@ -67,12 +70,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem();
-            shrinkedItem.Name = item.Name;
-            shrinkedItem.DisplayNames = item.DisplayNames;
-            shrinkedItem.Type = item.Type;
-            shrinkedItem.Items = null;
-
+            MetadataItem shrinkedItem = new MetadataItem()
+            {
+                Name = item.Name,
+                DisplayNames = item.DisplayNames,
+                Type = item.Type,
+                Items = null
+            };
             if (item.Type == MemberType.Toc || item.Type == MemberType.Namespace)
             {
                 if (item.Items != null)
@@ -84,16 +88,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             shrinkedItem.Items = new List<MetadataItem>();
                         }
 
-                        if (i.IsInvalid) continue;
+                        if (i.IsInvalid)
+                        {
+                            continue;
+                        }
                         var shrinkedI = i.ShrinkToSimpleTocWithNamespaceNotEmpty();
-                        if (shrinkedI != null) shrinkedItem.Items.Add(shrinkedI);
+                        if (shrinkedI != null)
+                        {
+                            shrinkedItem.Items.Add(shrinkedI);
+                        }
                     }
                 }
             }
 
             if (item.Type == MemberType.Namespace)
             {
-                if (shrinkedItem.Items == null || shrinkedItem.Items.Count == 0) return null;
+                if (shrinkedItem.Items == null || shrinkedItem.Items.Count == 0)
+                {
+                    return null;
+                }
             }
 
             return shrinkedItem;
@@ -170,6 +183,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var result = new ReferenceViewModel
             {
                 Uid = model.Key,
+                CommentId = model.Value.CommentId,
                 Parent = model.Value.Parent,
                 Definition = model.Value.Definition,
             };
@@ -185,6 +199,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (result.Name != nameForVB)
                 {
                     result.NameInDevLangs[Constants.DevLang.VB] = nameForVB;
+                }
+
+                result.NameWithType = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayNamesWithType);
+                var nameWithTypeForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayNamesWithType);
+                if (result.NameWithType != nameWithTypeForCSharp)
+                {
+                    result.NameWithTypeInDevLangs[Constants.DevLang.CSharp] = nameWithTypeForCSharp;
+                }
+                var nameWithTypeForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayNamesWithType);
+                if (result.NameWithType != nameWithTypeForVB)
+                {
+                    result.NameWithTypeInDevLangs[Constants.DevLang.VB] = nameWithTypeForVB;
                 }
 
                 result.FullName = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayQualifiedNames);
@@ -217,6 +243,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Uid = model.Name,
                 CommentId = model.CommentId,
+                IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
+                IsExtensionMethod = model.IsExtensionMethod,
                 Parent = model.Parent?.Name,
                 Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
                 Type = model.Type,
@@ -229,13 +257,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Examples = model.Examples,
                 Syntax = model.Syntax.ToSyntaxDetailViewModel(),
                 Overridden = model.Overridden,
+                Overload = model.Overload,
                 Exceptions = model.Exceptions,
                 Sees = model.Sees,
                 SeeAlsos = model.SeeAlsos,
-                
+                DerivedClasses = model.DerivedClasses,
                 Inheritance = model.Inheritance,
                 Implements = model.Implements,
                 InheritedMembers = model.InheritedMembers,
+                ExtensionMethods = model.ExtensionMethods,
                 Attributes = model.Attributes,
             };
 
@@ -251,6 +281,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (result.Name != nameForVB)
             {
                 result.NameForVB = nameForVB;
+            }
+
+            result.NameWithType = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.Default);
+            var nameWithTypeForCSharp = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (result.NameWithType != nameWithTypeForCSharp)
+            {
+                result.NameWithTypeForCSharp = nameWithTypeForCSharp;
+            }
+            var nameWithTypeForVB = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.VB);
+            if (result.NameWithType != nameWithTypeForVB)
+            {
+                result.NameWithTypeForVB = nameWithTypeForVB;
             }
 
             result.FullName = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
@@ -318,6 +360,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Uid = model.Name,
                 Name = model.DisplayName,
+                NameWithType = model.DisplayNamesWithType,
                 FullName = model.DisplayQualifiedNames,
                 IsExternal = model.IsExternalPath,
                 Href = model.Href,
@@ -328,8 +371,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public static TValue GetLanguageProperty<TValue>(this SortedList<SyntaxLanguage, TValue> dict, SyntaxLanguage language, TValue defaultValue = null)
             where TValue : class
         {
-            TValue result;
-            if (dict.TryGetValue(language, out result))
+            if (dict.TryGetValue(language, out TValue result))
             {
                 return result;
             }

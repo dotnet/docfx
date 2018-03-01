@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public ApiReferenceBuildOutput Type { get; set; }
+        public ApiNames Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
@@ -28,27 +28,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         private bool _needExpand = true;
 
-        public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        public static ApiParameterBuildOutput FromModel(ApiParameter model)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
-                Type = ApiBuildOutputUtility.GetReferenceViewModel(model.Type, references, supportedLanguages),
+                Type = ApiNames.FromUid(model.Type),
                 Description = model.Description,
             };
         }
 
-        public static ApiParameterBuildOutput FromModel(ApiParameter model)
+        public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
-                Type = ApiReferenceBuildOutput.FromUid(model.Type),
+                Type = ApiBuildOutputUtility.GetApiNames(model.Type, references, supportedLanguages),
                 Description = model.Description,
+                _needExpand = false,
             };
         }
 
@@ -57,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (_needExpand)
             {
                 _needExpand = false;
-                Type = ApiBuildOutputUtility.GetReferenceViewModel(Type?.Uid, references, supportedLanguages);
+                Type = ApiBuildOutputUtility.GetApiNames(Type?.Uid, references, supportedLanguages);
             }
         }
     }

@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Dynamic;
-    using System.IO;
     using System.Runtime.Serialization;
 
     public sealed class FileModel : IDisposable
@@ -14,16 +14,24 @@ namespace Microsoft.DocAsCode.Plugins
         private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
 
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
+            : this(ft, content, original, serializer, null)
+        {
+        }
+
+        public FileModel(FileAndType ft, object content, FileAndType original, IFormatter serializer, string key)
         {
             OriginalFileAndType = original ?? ft;
-
-            if (OriginalFileAndType.File.StartsWith("~/"))
+            Key = key;
+            if (Key == null)
             {
-                Key = OriginalFileAndType.File;
-            }
-            else
-            {
-                Key = "~/" + OriginalFileAndType.File;
+                if (OriginalFileAndType.File.StartsWith("~/"))
+                {
+                    Key = OriginalFileAndType.File;
+                }
+                else
+                {
+                    Key = "~/" + OriginalFileAndType.File;
+                }
             }
 
             FileAndType = ft;
@@ -33,6 +41,12 @@ namespace Microsoft.DocAsCode.Plugins
         public FileAndType FileAndType { get; private set; }
 
         public FileAndType OriginalFileAndType { get; private set; }
+
+        public IFormatter Serializer
+        {
+            get { return ModelWithCache.Serializer; }
+            set { ModelWithCache.Serializer = value; }
+        }
 
         public ModelWithCache ModelWithCache { get; }
 
@@ -52,7 +66,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != BaseDir)
                 {
-                    FileAndType = new FileAndType(value, File, Type, PathRewriter);
+                    FileAndType = FileAndType.ChangeBaseDir(value);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -68,7 +82,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != File)
                 {
-                    FileAndType = new FileAndType(BaseDir, value, Type, PathRewriter);
+                    FileAndType = FileAndType.ChangeFile(value);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -78,13 +92,21 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string Key { get; }
 
-        public Func<string, string> PathRewriter => FileAndType.PathRewriter;
+        public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
+
+        public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
+
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
 
         public dynamic Properties { get; } = new ExpandoObject();
 
         public dynamic ManifestProperties { get; } = new ExpandoObject();
 
-        public string LocalPathFromRepoRoot
+        public object MarkdownFragmentsModel { get; set; }
+
+        public string LocalPathFromRoot
         {
             get
             {

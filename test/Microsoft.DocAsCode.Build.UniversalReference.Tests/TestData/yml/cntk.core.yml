@@ -1,0 +1,51 @@
+﻿#YamlMime:UniversalReference
+api_name: []
+items:
+- _type: module
+  children:
+  - cntk.core.NDArrayView
+  - cntk.core.Value
+  - cntk.core.asarray
+  - cntk.core.asvalue
+  - cntk.core.user_function
+  fullName: cntk.core
+  langs:
+  - python
+  module: cntk.core
+  name: core
+  source:
+    id: core
+    path: \cntk\core.py
+    remote:
+      branch: master
+      path: \cntk\core.py
+      repo: https://github.com/Microsoft/CNTK.git
+    startLine: 0
+  type: Namespace
+  uid: cntk.core
+references:
+- fullName: cntk.core.NDArrayView
+  isExternal: false
+  name: NDArrayView
+  parent: cntk.core
+  uid: cntk.core.NDArrayView
+- fullName: cntk.core.Value
+  isExternal: false
+  name: Value
+  parent: cntk.core
+  uid: cntk.core.Value
+- fullName: cntk.core.asarray
+  isExternal: false
+  name: asarray
+  parent: cntk.core
+  uid: cntk.core.asarray
+- fullName: cntk.core.asvalue
+  isExternal: false
+  name: asvalue
+  parent: cntk.core
+  uid: cntk.core.asvalue
+- fullName: cntk.core.user_function
+  isExternal: false
+  name: user_function
+  parent: cntk.core
+  uid: cntk.core.user_function

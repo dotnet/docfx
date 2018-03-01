@@ -1,0 +1,2087 @@
+### YamlMime:ManagedReference
+items:
+- uid: CatLibrary.Cat`2
+  commentId: T:CatLibrary.Cat`2
+  id: Cat`2
+  parent: CatLibrary
+  children:
+  - CatLibrary.Cat`2.#ctor
+  - CatLibrary.Cat`2.#ctor(`0)
+  - CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  - CatLibrary.Cat`2.Age
+  - CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  - CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  - CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
+  - CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
+  - CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
+  - CatLibrary.Cat`2.CatLibrary#ICat#eat
+  - CatLibrary.Cat`2.Equals(System.Object)
+  - CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  - CatLibrary.Cat`2.isHealthy
+  - CatLibrary.Cat`2.Item(System.String)
+  - CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  - CatLibrary.Cat`2.Name
+  - CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  - CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  - CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  - CatLibrary.Cat`2.ownEat
+  langs:
+  - csharp
+  - vb
+  name: Cat<T, K>
+  nameWithType: Cat<T, K>
+  fullName: CatLibrary.Cat<T, K>
+  type: Class
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: Cat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 112
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\n<p>Here's main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <span class=\"typeparamref\">T</span> and <span class=\"typeparamref\">K</span>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n"
+  remarks: "\n<p>Here's all the content you can see in this class.</p>\n\n"
+  example:
+  - "\n<p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=\"languagekeyword\">unsafe</span> keyword.</p>\n"
+  syntax:
+    content: >-
+      [Serializable]
+
+      public class Cat<T, K> : ICat, IAnimal where T : class, new ()where K : struct
+    content.vb: >-
+      <Serializable>
+
+      Public Class Cat(Of T As {Class, New}, K As Structure)
+          Implements ICat, IAnimal
+    typeParameters:
+    - id: T
+      description: This type should be class and can new instance.
+    - id: K
+      description: This type is a struct type, class type can't be used for this parameter.
+  inheritance:
+  - System.Object
+  implements:
+  - CatLibrary.ICat
+  - CatLibrary.IAnimal
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  extensionMethods:
+  - CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)
+  - CatLibrary.ICat.CatLibrary.ICatExtension.Play(System.String)
+  attributes:
+  - type: System.SerializableAttribute
+    ctor: System.SerializableAttribute.#ctor
+    arguments: []
+  nameWithType.vb: Cat(Of T, K)
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+  fullName.vb: CatLibrary.Cat(Of T, K)
+  name.vb: Cat(Of T, K)
+- uid: CatLibrary.Cat`2.#ctor
+  commentId: M:CatLibrary.Cat`2.#ctor
+  id: '#ctor'
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  platform:
+  - net46
+  version:
+  - net46
+  name: Cat()
+  nameWithType: Cat<T, K>.Cat()
+  fullName: CatLibrary.Cat<T, K>.Cat()
+  type: Constructor
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: .ctor
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 121
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nDefault constructor.\n"
+  example: []
+  syntax:
+    content: public Cat()
+    content.vb: Public Sub New
+  overload: CatLibrary.Cat`2.#ctor*
+  nameWithType.vb: Cat(Of T, K).Cat()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat()
+- uid: CatLibrary.Cat`2.#ctor(`0)
+  commentId: M:CatLibrary.Cat`2.#ctor(`0)
+  id: '#ctor(`0)'
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  platform:
+  - net2
+  version:
+  - net2
+  name: Cat(T)
+  nameWithType: Cat<T, K>.Cat(T)
+  fullName: CatLibrary.Cat<T, K>.Cat(T)
+  type: Constructor
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: .ctor
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 127
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nConstructor with one generic parameter.\n"
+  example: []
+  syntax:
+    content: public Cat(T ownType)
+    content.vb: Public Sub New(ownType As T)
+    parameters:
+    - id: ownType
+      type: '{T}'
+      description: This parameter type defined by class.
+  overload: CatLibrary.Cat`2.#ctor*
+  nameWithType.vb: Cat(Of T, K).Cat(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat(T)
+- uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  id: '#ctor(System.String,System.Int32@,System.String,System.Boolean)'
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Cat(String, out Int32, String, Boolean)
+  nameWithType: Cat<T, K>.Cat(String, out Int32, String, Boolean)
+  fullName: CatLibrary.Cat<T, K>.Cat(System.String, out System.Int32, System.String, System.Boolean)
+  type: Constructor
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: .ctor
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 136
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nIt's a complex constructor. The parameter will have some attributes.\n"
+  example: []
+  syntax:
+    content: public Cat(string nickName, out int age, string realName, bool isHealthy)
+    content.vb: Public Sub New(nickName As String, ByRef age As Integer, realName As String, isHealthy As Boolean)
+    parameters:
+    - id: nickName
+      type: System.String
+      description: it's string type.
+    - id: age
+      type: System.Int32
+      description: It's an out and ref parameter.
+    - id: realName
+      type: System.String
+      description: It's an out paramter.
+    - id: isHealthy
+      type: System.Boolean
+      description: It's an in parameter.
+  overload: CatLibrary.Cat`2.#ctor*
+  nameWithType.vb: Cat(Of T, K).Cat(String, ByRef Int32, String, Boolean)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat(System.String, ByRef System.Int32, System.String, System.Boolean)
+  name.vb: Cat(String, ByRef Int32, String, Boolean)
+- uid: CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  commentId: M:CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  id: CalculateFood(System.DateTime)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: CalculateFood(DateTime)
+  nameWithType: Cat<T, K>.CalculateFood(DateTime)
+  fullName: CatLibrary.Cat<T, K>.CalculateFood(System.DateTime)
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CalculateFood
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 144
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nIt's a method with complex return type.\n"
+  example: []
+  syntax:
+    content: public Dictionary<string, List<int>> CalculateFood(DateTime date)
+    content.vb: Public Function CalculateFood(date As Date) As Dictionary(Of String, List(Of Integer))
+    parameters:
+    - id: date
+      type: System.DateTime
+      description: Date time to now.
+    return:
+      type: System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Int32}}
+      description: It's a relationship map of different kind food.
+  overload: CatLibrary.Cat`2.CalculateFood*
+  nameWithType.vb: Cat(Of T, K).CalculateFood(DateTime)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(System.DateTime)
+- uid: CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  id: Jump(`0,`1,System.Boolean@)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Jump(T, K, ref Boolean)
+  nameWithType: Cat<T, K>.Jump(T, K, ref Boolean)
+  fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref System.Boolean)
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: Jump
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 153
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nThis method have attribute above it.\n"
+  example: []
+  syntax:
+    content: >-
+      [Conditional("Debug")]
+
+      public void Jump(T ownType, K anotherOwnType, ref bool cheat)
+    content.vb: >-
+      <Conditional("Debug")>
+
+      Public Sub Jump(ownType As T, anotherOwnType As K, ByRef cheat As Boolean)
+    parameters:
+    - id: ownType
+      type: '{T}'
+      description: Type come from class define.
+    - id: anotherOwnType
+      type: '{K}'
+      description: Type come from class define.
+    - id: cheat
+      type: System.Boolean
+      description: Hint whether this cat has cheat mode.
+  overload: CatLibrary.Cat`2.Jump*
+  exceptions:
+  - type: System.ArgumentException
+    commentId: T:System.ArgumentException
+    description: This is an argument exception
+  attributes:
+  - type: System.Diagnostics.ConditionalAttribute
+    ctor: System.Diagnostics.ConditionalAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: Debug
+  nameWithType.vb: Cat(Of T, K).Jump(T, K, ByRef Boolean)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, ByRef System.Boolean)
+  name.vb: Jump(T, K, ByRef Boolean)
+- uid: CatLibrary.Cat`2.Equals(System.Object)
+  commentId: M:CatLibrary.Cat`2.Equals(System.Object)
+  id: Equals(System.Object)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Equals(Object)
+  nameWithType: Cat<T, K>.Equals(Object)
+  fullName: CatLibrary.Cat<T, K>.Equals(System.Object)
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: Equals
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 164
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nOverride the method of <code>Object.Equals(object obj).</code>\n"
+  example: []
+  syntax:
+    content: public override bool Equals(object obj)
+    content.vb: Public Overrides Function Equals(obj As Object) As Boolean
+    parameters:
+    - id: obj
+      type: System.Object
+      description: Can pass any class type.
+    return:
+      type: System.Boolean
+      description: The return value tell you whehter the compare operation is successful.
+  overridden: System.Object.Equals(System.Object)
+  overload: CatLibrary.Cat`2.Equals*
+  nameWithType.vb: Cat(Of T, K).Equals(Object)
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals(System.Object)
+- uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  id: GetTailLength(System.Int32*,System.Object[])
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: GetTailLength(Int32*, Object[])
+  nameWithType: Cat<T, K>.GetTailLength(Int32*, Object[])
+  fullName: CatLibrary.Cat<T, K>.GetTailLength(System.Int32*, System.Object[])
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: GetTailLength
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 172
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nIt's an <code>unsafe</code> method.\n"
+  example: []
+  syntax:
+    content: public long GetTailLength(int *catName, params object[] parameters)
+    content.vb: Public Function GetTailLength(catName As Integer *, ParamArray parameters As Object()) As Long
+    parameters:
+    - id: catName
+      type: System.Int32*
+      description: Thie represent for cat name length.
+    - id: parameters
+      type: System.Object[]
+      description: Optional parameters.
+    return:
+      type: System.Int64
+      description: Return cat tail's length.
+  overload: CatLibrary.Cat`2.GetTailLength*
+  nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, Object())
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, System.Object())
+  name.vb: GetTailLength(Int32*, Object())
+- uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  commentId: M:CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  id: op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Addition(Cat<T, K>, Int32)
+  nameWithType: Cat<T, K>.Addition(Cat<T, K>, Int32)
+  fullName: CatLibrary.Cat<T, K>.Addition(CatLibrary.Cat<T, K>, System.Int32)
+  type: Operator
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: op_Addition
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 181
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nAddition operator of this class.\n"
+  example: []
+  syntax:
+    content: public static int operator +(Cat<T, K> lsr, int rsr)
+    content.vb: Public Shared Operator +(lsr As Cat(Of T, K), rsr As Integer) As Integer
+    parameters:
+    - id: lsr
+      type: CatLibrary.Cat`2
+      description: '...'
+    - id: rsr
+      type: System.Int32
+      description: ~~~
+    return:
+      type: System.Int32
+      description: Result with <em>int</em> type.
+  overload: CatLibrary.Cat`2.op_Addition*
+  nameWithType.vb: Cat(Of T, K).Addition(Cat(Of T, K), Int32)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: CatLibrary.Cat(Of T, K).Addition(CatLibrary.Cat(Of T, K), System.Int32)
+  name.vb: Addition(Cat(Of T, K), Int32)
+- uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  commentId: M:CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  id: op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Subtraction(Cat<T, K>, Int32)
+  nameWithType: Cat<T, K>.Subtraction(Cat<T, K>, Int32)
+  fullName: CatLibrary.Cat<T, K>.Subtraction(CatLibrary.Cat<T, K>, System.Int32)
+  type: Operator
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: op_Subtraction
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 186
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nSimilar with operaotr +, refer to that topic.\n"
+  example: []
+  syntax:
+    content: public static int operator -(Cat<T, K> lsr, int rsr)
+    content.vb: Public Shared Operator -(lsr As Cat(Of T, K), rsr As Integer) As Integer
+    parameters:
+    - id: lsr
+      type: CatLibrary.Cat`2
+    - id: rsr
+      type: System.Int32
+    return:
+      type: System.Int32
+  overload: CatLibrary.Cat`2.op_Subtraction*
+  nameWithType.vb: Cat(Of T, K).Subtraction(Cat(Of T, K), Int32)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: CatLibrary.Cat(Of T, K).Subtraction(CatLibrary.Cat(Of T, K), System.Int32)
+  name.vb: Subtraction(Cat(Of T, K), Int32)
+- uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  commentId: M:CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  id: op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Explicit(Cat<T, K> to Tom)
+  nameWithType: Cat<T, K>.Explicit(Cat<T, K> to Tom)
+  fullName: CatLibrary.Cat<T, K>.Explicit(CatLibrary.Cat<T, K> to CatLibrary.Tom)
+  type: Operator
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: op_Explicit
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 194
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nExpilicit operator of this class.\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n"
+  example: []
+  syntax:
+    content: public static explicit operator Tom(Cat<T, K> src)
+    content.vb: Public Shared Narrowing Operator CType(src As Cat(Of T, K)) As Tom
+    parameters:
+    - id: src
+      type: CatLibrary.Cat`2
+      description: Instance of this class.
+    return:
+      type: CatLibrary.Tom
+      description: Advanced class type of cat.
+  overload: CatLibrary.Cat`2.op_Explicit*
+  nameWithType.vb: Cat(Of T, K).Narrowing(Cat(Of T, K) to Tom)
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: CatLibrary.Cat(Of T, K).Narrowing(CatLibrary.Cat(Of T, K) to CatLibrary.Tom)
+  name.vb: Narrowing(Cat(Of T, K) to Tom)
+- uid: CatLibrary.Cat`2.Item(System.String)
+  commentId: P:CatLibrary.Cat`2.Item(System.String)
+  id: Item(System.String)
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Item[String]
+  nameWithType: Cat<T, K>.Item[String]
+  fullName: CatLibrary.Cat<T, K>.Item[System.String]
+  type: Property
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: this[]
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 202
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nThis is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.\n"
+  example: []
+  syntax:
+    content: public int this[string a] { protected get; set; }
+    content.vb: Public Property Item(a As String) As Integer
+    parameters:
+    - id: a
+      type: System.String
+      description: Cat's name.
+    return:
+      type: System.Int32
+      description: Cat's number.
+  overload: CatLibrary.Cat`2.Item*
+  nameWithType.vb: Cat(Of T, K).Item(String)
+  modifiers.csharp:
+  - public
+  - protected get
+  - set
+  modifiers.vb:
+  - Public
+  - Protected Get
+  - Set
+  fullName.vb: CatLibrary.Cat(Of T, K).Item(System.String)
+  name.vb: Item(String)
+- uid: CatLibrary.Cat`2.Age
+  commentId: P:CatLibrary.Cat`2.Age
+  id: Age
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Age
+  nameWithType: Cat<T, K>.Age
+  fullName: CatLibrary.Cat<T, K>.Age
+  type: Property
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: Age
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 211
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nHint cat's age.\n"
+  example: []
+  syntax:
+    content: protected int Age { get; set; }
+    content.vb: Protected Property Age As Integer
+    parameters: []
+    return:
+      type: System.Int32
+  overload: CatLibrary.Cat`2.Age*
+  nameWithType.vb: Cat(Of T, K).Age
+  modifiers.csharp:
+  - protected
+  - get
+  - set
+  modifiers.vb:
+  - Protected
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+- uid: CatLibrary.Cat`2.ownEat
+  commentId: E:CatLibrary.Cat`2.ownEat
+  id: ownEat
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: ownEat
+  nameWithType: Cat<T, K>.ownEat
+  fullName: CatLibrary.Cat<T, K>.ownEat
+  type: Event
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: ownEat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 221
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEat event of this cat\n"
+  example: []
+  syntax:
+    content: public event EventHandler ownEat
+    content.vb: Public Event ownEat As EventHandler
+    return:
+      type: System.EventHandler
+  nameWithType.vb: Cat(Of T, K).ownEat
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).ownEat
+- uid: CatLibrary.Cat`2.isHealthy
+  commentId: F:CatLibrary.Cat`2.isHealthy
+  id: isHealthy
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: isHealthy
+  nameWithType: Cat<T, K>.isHealthy
+  fullName: CatLibrary.Cat<T, K>.isHealthy
+  type: Field
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: isHealthy
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 229
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nField with attribute.\n"
+  example: []
+  syntax:
+    content: >-
+      [ContextStatic]
+
+      [NonSerialized]
+
+      public bool isHealthy
+    content.vb: >-
+      <ContextStatic>
+
+      <NonSerialized>
+
+      Public isHealthy As Boolean
+    return:
+      type: System.Boolean
+  attributes:
+  - type: System.ContextStaticAttribute
+    ctor: System.ContextStaticAttribute.#ctor
+    arguments: []
+  - type: System.NonSerializedAttribute
+    ctor: System.NonSerializedAttribute.#ctor
+    arguments: []
+  nameWithType.vb: Cat(Of T, K).isHealthy
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  id: CatLibrary#IAnimal#Eat
+  isEii: true
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: IAnimal.Eat()
+  nameWithType: Cat<T, K>.IAnimal.Eat()
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat()
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CatLibrary.IAnimal.Eat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 235
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEII method.\n"
+  example: []
+  syntax:
+    content: void IAnimal.Eat()
+    content.vb: Sub CatLibrary.IAnimal.Eat Implements IAnimal.Eat
+  overload: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
+  implements:
+  - CatLibrary.IAnimal.Eat
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat()
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat()
+  name.vb: CatLibrary.IAnimal.Eat()
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
+  id: CatLibrary#IAnimal#Eat``1(``0)
+  isEii: true
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: IAnimal.Eat<Tool>(Tool)
+  nameWithType: Cat<T, K>.IAnimal.Eat<Tool>(Tool)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat<Tool>(Tool)
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CatLibrary.IAnimal.Eat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 241
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEII template method.\n"
+  example: []
+  syntax:
+    content: 'void IAnimal.Eat<Tool>(Tool a)where Tool : class'
+    content.vb: Sub CatLibrary.IAnimal.Eat(Of Tool As Class)(a As Tool) Implements IAnimal.Eat
+    parameters:
+    - id: a
+      type: '{Tool}'
+      description: Tool name.
+    typeParameters:
+    - id: Tool
+      description: Tool for eat.
+  overload: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
+  implements:
+  - CatLibrary.IAnimal.Eat``1({Tool})
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
+  id: CatLibrary#IAnimal#Eat(System.String)
+  isEii: true
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: IAnimal.Eat(String)
+  nameWithType: Cat<T, K>.IAnimal.Eat(String)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat(System.String)
+  type: Method
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CatLibrary.IAnimal.Eat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 247
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nImplementation of Eat(food)\n"
+  example: []
+  syntax:
+    content: void IAnimal.Eat(string food)
+    content.vb: Sub CatLibrary.IAnimal.Eat(food As String) Implements IAnimal.Eat
+    parameters:
+    - id: food
+      type: System.String
+      description: Food to eat
+  overload: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
+  implements:
+  - CatLibrary.IAnimal.Eat(System.String)
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(String)
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(System.String)
+  name.vb: CatLibrary.IAnimal.Eat(String)
+- uid: CatLibrary.Cat`2.Name
+  commentId: P:CatLibrary.Cat`2.Name
+  id: Name
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: Name
+  nameWithType: Cat<T, K>.Name
+  fullName: CatLibrary.Cat<T, K>.Name
+  type: Property
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: Name
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 253
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEII property.\n"
+  example: []
+  syntax:
+    content: public string Name { get; }
+    content.vb: Public ReadOnly Property Name As String
+    parameters: []
+    return:
+      type: System.String
+  overload: CatLibrary.Cat`2.Name*
+  implements:
+  - CatLibrary.IAnimal.Name
+  nameWithType.vb: Cat(Of T, K).Name
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
+  commentId: P:CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
+  id: CatLibrary#IAnimal#Item(System.Int32)
+  isEii: true
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: IAnimal.Item[Int32]
+  nameWithType: Cat<T, K>.IAnimal.Item[Int32]
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Item[System.Int32]
+  type: Property
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CatLibrary.IAnimal.this[]
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 260
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEII index.\n"
+  example: []
+  syntax:
+    content: string IAnimal.this[int a] { get; }
+    content.vb: ReadOnly WriteOnly Property CatLibrary.IAnimal.Item(a As Integer) As String Implements IAnimal.this
+    parameters:
+    - id: a
+      type: System.Int32
+      description: Cat's number.
+    return:
+      type: System.String
+      description: Cat's name.
+  overload: CatLibrary.Cat`2.CatLibrary#IAnimal#Item*
+  implements:
+  - CatLibrary.IAnimal.Item(System.Int32)
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item(Int32)
+  modifiers.csharp:
+  - get
+  modifiers.vb:
+  - ReadOnly
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item(System.Int32)
+  name.vb: CatLibrary.IAnimal.Item(Int32)
+- uid: CatLibrary.Cat`2.CatLibrary#ICat#eat
+  commentId: E:CatLibrary.Cat`2.CatLibrary#ICat#eat
+  id: CatLibrary#ICat#eat
+  isEii: true
+  parent: CatLibrary.Cat`2
+  langs:
+  - csharp
+  - vb
+  name: ICat.eat
+  nameWithType: Cat<T, K>.ICat.eat
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.ICat.eat
+  type: Event
+  source:
+    remote:
+      path: src/SampleClass1/CatLibrary/Class1.cs
+      branch: master
+      repo: https://github.com/docascode/docfx-seed.git
+    id: CatLibrary.ICat.eat
+    path: src/SampleClass1/CatLibrary/Class1.cs
+    startLine: 266
+  assemblies:
+  - CatLibrary
+  namespace: CatLibrary
+  summary: "\nEII event.\n"
+  example: []
+  syntax:
+    content: event EventHandler ICat.eat
+    content.vb: Event CatLibrary.ICat.eat As EventHandler Implements ICat.eat
+    return:
+      type: System.EventHandler
+  implements:
+  - CatLibrary.ICat.eat
+  nameWithType.vb: Cat(Of T, K).CatLibrary.ICat.eat
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.ICat.eat
+  name.vb: CatLibrary.ICat.eat
+references:
+- uid: CatLibrary.ICatExtension
+  commentId: T:CatLibrary.ICatExtension
+  parent: CatLibrary
+  isExternal: false
+  name: ICatExtension
+  nameWithType: ICatExtension
+  fullName: CatLibrary.ICatExtension
+- uid: CatLibrary
+  commentId: N:CatLibrary
+  isExternal: false
+  name: CatLibrary
+  nameWithType: CatLibrary
+  fullName: CatLibrary
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: CatLibrary.ICat
+  commentId: T:CatLibrary.ICat
+  parent: CatLibrary
+  isExternal: false
+  name: ICat
+  nameWithType: ICat
+  fullName: CatLibrary.ICat
+- uid: CatLibrary.IAnimal
+  commentId: T:CatLibrary.IAnimal
+  parent: CatLibrary
+  isExternal: false
+  name: IAnimal
+  nameWithType: IAnimal
+  fullName: CatLibrary.IAnimal
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  parent: CatLibrary.ICatExtension
+  definition: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  name: Sleep(Int64)
+  nameWithType: ICatExtension.Sleep(Int64)
+  fullName: CatLibrary.ICatExtension.Sleep(System.Int64)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Sleep(System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Sleep(System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICat.CatLibrary.ICatExtension.Play(System.String)
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  parent: CatLibrary.ICatExtension
+  definition: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  name: Play(String)
+  nameWithType: ICatExtension.Play(String)
+  fullName: CatLibrary.ICatExtension.Play(System.String)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Play(System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Play(System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: false
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  isExternal: true
+  name: Sleep(ICat, Int64)
+  nameWithType: ICatExtension.Sleep(ICat, Int64)
+  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+    name: Sleep
+    nameWithType: ICatExtension.Sleep
+    fullName: CatLibrary.ICatExtension.Sleep
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Int64
+    name: Int64
+    nameWithType: Int64
+    fullName: System.Int64
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  isExternal: true
+  name: Play(ICat, String)
+  nameWithType: ICatExtension.Play(ICat, String)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)
+  spec.csharp:
+  - uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+    name: Play
+    nameWithType: ICatExtension.Play
+    fullName: CatLibrary.ICatExtension.Play
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: CatLibrary.ICat
+    name: ICat
+    nameWithType: ICat
+    fullName: CatLibrary.ICat
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.Cat`2.#ctor*
+  commentId: Overload:CatLibrary.Cat`2.#ctor
+  isExternal: false
+  name: Cat
+  nameWithType: Cat<T, K>.Cat
+  fullName: CatLibrary.Cat<T, K>.Cat
+  nameWithType.vb: Cat(Of T, K).Cat
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat
+  summary: Overload summary
+  remarks: Overload *remarks*
+  example:
+    - Overload example 1
+    - Overload **example 2**
+  not-defined: Not defined Property
+  namespace: Namespace cannot be defined
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  isExternal: false
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: CatLibrary.Cat`2.CalculateFood*
+  commentId: Overload:CatLibrary.Cat`2.CalculateFood
+  isExternal: false
+  name: CalculateFood
+  nameWithType: Cat<T, K>.CalculateFood
+  fullName: CatLibrary.Cat<T, K>.CalculateFood
+  nameWithType.vb: Cat(Of T, K).CalculateFood
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood
+- uid: System.DateTime
+  commentId: T:System.DateTime
+  parent: System
+  isExternal: true
+  name: DateTime
+  nameWithType: DateTime
+  fullName: System.DateTime
+- uid: System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Int32}}
+  commentId: T:System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Int32}}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  name: Dictionary<String, List<Int32>>
+  nameWithType: Dictionary<String, List<Int32>>
+  fullName: System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.List<System.Int32>>
+  nameWithType.vb: Dictionary(Of String, List(Of Int32))
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, System.Collections.Generic.List(Of System.Int32))
+  name.vb: Dictionary(Of String, List(Of Int32))
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.Dictionary`2
+  commentId: T:System.Collections.Generic.Dictionary`2
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  nameWithType: Dictionary<TKey, TValue>
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  nameWithType.vb: Dictionary(Of TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  name.vb: Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    nameWithType: Dictionary
+    fullName: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TKey
+    nameWithType: TKey
+    fullName: TKey
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: TValue
+    nameWithType: TValue
+    fullName: TValue
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: CatLibrary.Cat`2.Jump*
+  commentId: Overload:CatLibrary.Cat`2.Jump
+  isExternal: false
+  name: Jump
+  nameWithType: Cat<T, K>.Jump
+  fullName: CatLibrary.Cat<T, K>.Jump
+  nameWithType.vb: Cat(Of T, K).Jump
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump
+- uid: System.ArgumentException
+  commentId: T:System.ArgumentException
+- uid: '{K}'
+  commentId: '!:K'
+  definition: K
+  name: K
+  nameWithType: K
+  fullName: K
+- uid: K
+  isExternal: false
+  name: K
+  nameWithType: K
+  fullName: K
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.Cat`2.Equals*
+  commentId: Overload:CatLibrary.Cat`2.Equals
+  isExternal: false
+  name: Equals
+  nameWithType: Cat<T, K>.Equals
+  fullName: CatLibrary.Cat<T, K>.Equals
+  nameWithType.vb: Cat(Of T, K).Equals
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals
+- uid: CatLibrary.Cat`2.GetTailLength*
+  commentId: Overload:CatLibrary.Cat`2.GetTailLength
+  isExternal: false
+  name: GetTailLength
+  nameWithType: Cat<T, K>.GetTailLength
+  fullName: CatLibrary.Cat<T, K>.GetTailLength
+  nameWithType.vb: Cat(Of T, K).GetTailLength
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength
+- uid: System.Int32*
+  name: Int32*
+  nameWithType: Int32*
+  fullName: System.Int32*
+  spec.csharp:
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '*'
+    nameWithType: '*'
+    fullName: '*'
+  spec.vb:
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: '*'
+    nameWithType: '*'
+    fullName: '*'
+- uid: System.Object[]
+  name: Object[]
+  nameWithType: Object[]
+  fullName: System.Object[]
+  nameWithType.vb: Object()
+  fullName.vb: System.Object()
+  name.vb: Object()
+  spec.csharp:
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64
+- uid: CatLibrary.Cat`2.op_Addition*
+  commentId: Overload:CatLibrary.Cat`2.op_Addition
+  isExternal: false
+  name: Addition
+  nameWithType: Cat<T, K>.Addition
+  fullName: CatLibrary.Cat<T, K>.Addition
+  nameWithType.vb: Cat(Of T, K).Addition
+  fullName.vb: CatLibrary.Cat(Of T, K).Addition
+- uid: CatLibrary.Cat`2
+  commentId: T:CatLibrary.Cat`2
+  parent: CatLibrary
+  isExternal: false
+  name: Cat<T, K>
+  nameWithType: Cat<T, K>
+  fullName: CatLibrary.Cat<T, K>
+  nameWithType.vb: Cat(Of T, K)
+  fullName.vb: CatLibrary.Cat(Of T, K)
+  name.vb: Cat(Of T, K)
+  spec.csharp:
+  - uid: CatLibrary.Cat`2
+    name: Cat
+    nameWithType: Cat
+    fullName: CatLibrary.Cat
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: K
+    nameWithType: K
+    fullName: K
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: CatLibrary.Cat`2
+    name: Cat
+    nameWithType: Cat
+    fullName: CatLibrary.Cat
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - name: K
+    nameWithType: K
+    fullName: K
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.Cat`2.op_Subtraction*
+  commentId: Overload:CatLibrary.Cat`2.op_Subtraction
+  isExternal: false
+  name: Subtraction
+  nameWithType: Cat<T, K>.Subtraction
+  fullName: CatLibrary.Cat<T, K>.Subtraction
+  nameWithType.vb: Cat(Of T, K).Subtraction
+  fullName.vb: CatLibrary.Cat(Of T, K).Subtraction
+- uid: CatLibrary.Cat`2.op_Explicit*
+  commentId: Overload:CatLibrary.Cat`2.op_Explicit
+  isExternal: false
+  name: Explicit
+  nameWithType: Cat<T, K>.Explicit
+  fullName: CatLibrary.Cat<T, K>.Explicit
+  nameWithType.vb: Cat(Of T, K).Narrowing
+  fullName.vb: CatLibrary.Cat(Of T, K).Narrowing
+  name.vb: Narrowing
+- uid: CatLibrary.Tom
+  commentId: T:CatLibrary.Tom
+  parent: CatLibrary
+  isExternal: false
+  name: Tom
+  nameWithType: Tom
+  fullName: CatLibrary.Tom
+- uid: CatLibrary.Cat`2.Item*
+  commentId: Overload:CatLibrary.Cat`2.Item
+  isExternal: false
+  name: Item
+  nameWithType: Cat<T, K>.Item
+  fullName: CatLibrary.Cat<T, K>.Item
+  nameWithType.vb: Cat(Of T, K).Item
+  fullName.vb: CatLibrary.Cat(Of T, K).Item
+- uid: CatLibrary.Cat`2.Age*
+  commentId: Overload:CatLibrary.Cat`2.Age
+  isExternal: false
+  name: Age
+  nameWithType: Cat<T, K>.Age
+  fullName: CatLibrary.Cat<T, K>.Age
+  nameWithType.vb: Cat(Of T, K).Age
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+- uid: System.EventHandler
+  commentId: T:System.EventHandler
+  parent: System
+  isExternal: true
+  name: EventHandler
+  nameWithType: EventHandler
+  fullName: System.EventHandler
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
+  commentId: Overload:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  isExternal: false
+  name: IAnimal.Eat
+  nameWithType: Cat<T, K>.IAnimal.Eat
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat
+  name.vb: CatLibrary.IAnimal.Eat
+- uid: CatLibrary.IAnimal.Eat
+  commentId: M:CatLibrary.IAnimal.Eat
+  parent: CatLibrary.IAnimal
+  isExternal: false
+  name: Eat()
+  nameWithType: IAnimal.Eat()
+  fullName: CatLibrary.IAnimal.Eat()
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.IAnimal.Eat``1({Tool})
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  parent: CatLibrary.IAnimal
+  definition: CatLibrary.IAnimal.Eat``1(``0)
+  name: Eat<Tool>(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: Eat(Of Tool)(Tool)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat<Tool>
+    nameWithType: IAnimal.Eat<Tool>
+    fullName: CatLibrary.IAnimal.Eat<Tool>
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat(Of Tool)
+    nameWithType: IAnimal.Eat(Of Tool)
+    fullName: CatLibrary.IAnimal.Eat(Of Tool)
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: '{Tool}'
+  commentId: '!:Tool'
+  definition: Tool
+  name: Tool
+  nameWithType: Tool
+  fullName: Tool
+- uid: CatLibrary.IAnimal.Eat``1(``0)
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  isExternal: false
+  name: Eat<Tool>(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: Eat(Of Tool)(Tool)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat<Tool>
+    nameWithType: IAnimal.Eat<Tool>
+    fullName: CatLibrary.IAnimal.Eat<Tool>
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat``1(``0)
+    name: Eat(Of Tool)
+    nameWithType: IAnimal.Eat(Of Tool)
+    fullName: CatLibrary.IAnimal.Eat(Of Tool)
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: Tool
+    nameWithType: Tool
+    fullName: Tool
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tool
+  isExternal: false
+  name: Tool
+  nameWithType: Tool
+  fullName: Tool
+- uid: CatLibrary.IAnimal.Eat(System.String)
+  commentId: M:CatLibrary.IAnimal.Eat(System.String)
+  parent: CatLibrary.IAnimal
+  isExternal: true
+  name: Eat(String)
+  nameWithType: IAnimal.Eat(String)
+  fullName: CatLibrary.IAnimal.Eat(System.String)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Eat(System.String)
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Eat(System.String)
+    name: Eat
+    nameWithType: IAnimal.Eat
+    fullName: CatLibrary.IAnimal.Eat
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.Cat`2.Name*
+  commentId: Overload:CatLibrary.Cat`2.Name
+  isExternal: false
+  name: Name
+  nameWithType: Cat<T, K>.Name
+  fullName: CatLibrary.Cat<T, K>.Name
+  nameWithType.vb: Cat(Of T, K).Name
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+- uid: CatLibrary.IAnimal.Name
+  commentId: P:CatLibrary.IAnimal.Name
+  parent: CatLibrary.IAnimal
+  isExternal: false
+  name: Name
+  nameWithType: IAnimal.Name
+  fullName: CatLibrary.IAnimal.Name
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item*
+  commentId: Overload:CatLibrary.Cat`2.CatLibrary#IAnimal#Item
+  isExternal: false
+  name: IAnimal.Item
+  nameWithType: Cat<T, K>.IAnimal.Item
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Item
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item
+  name.vb: CatLibrary.IAnimal.Item
+- uid: CatLibrary.IAnimal.Item(System.Int32)
+  commentId: P:CatLibrary.IAnimal.Item(System.Int32)
+  parent: CatLibrary.IAnimal
+  isExternal: true
+  name: Item[Int32]
+  nameWithType: IAnimal.Item[Int32]
+  fullName: CatLibrary.IAnimal.Item[System.Int32]
+  nameWithType.vb: IAnimal.Item(Int32)
+  fullName.vb: CatLibrary.IAnimal.Item(System.Int32)
+  name.vb: Item(Int32)
+  spec.csharp:
+  - uid: CatLibrary.IAnimal.Item(System.Int32)
+    name: Item
+    nameWithType: IAnimal.Item
+    fullName: CatLibrary.IAnimal.Item
+  - name: '['
+    nameWithType: '['
+    fullName: '['
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ']'
+    nameWithType: ']'
+    fullName: ']'
+  spec.vb:
+  - uid: CatLibrary.IAnimal.Item(System.Int32)
+    name: Item
+    nameWithType: IAnimal.Item
+    fullName: CatLibrary.IAnimal.Item
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: CatLibrary.ICat.eat
+  commentId: E:CatLibrary.ICat.eat
+  parent: CatLibrary.ICat
+  isExternal: false
+  name: eat
+  nameWithType: ICat.eat
+  fullName: CatLibrary.ICat.eat

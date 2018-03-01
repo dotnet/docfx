@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     public class FileCollection
     {
@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (string.IsNullOrEmpty(defaultBaseDir))
             {
-                DefaultBaseDir = Environment.CurrentDirectory;
+                DefaultBaseDir = Directory.GetCurrentDirectory();
             }
             else
             {
-                DefaultBaseDir = Path.Combine(Environment.CurrentDirectory, defaultBaseDir);
+                DefaultBaseDir = Path.Combine(Directory.GetCurrentDirectory(), defaultBaseDir);
             }
         }
 
@@ -36,17 +36,46 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string DefaultBaseDir { get; set; }
 
-        public void Add(DocumentType type, IEnumerable<string> files, Func<string, string> pathRewriter = null)
+        public void Add(DocumentType type, IEnumerable<string> files, string sourceDir = null, string destinationDir = null)
         {
-            _files.AddRange(from f in files
-                            select new FileAndType(DefaultBaseDir, ToRelative(f, DefaultBaseDir), type, pathRewriter));
+            Add(type, null, files, sourceDir, destinationDir);
         }
 
-        public void Add(DocumentType type, string baseDir, IEnumerable<string> files, Func<string, string> pathRewriter = null)
+        public void Add(DocumentType type, string baseDir, IEnumerable<string> files, string sourceDir = null, string destinationDir = null)
         {
-            var rootedBaseDir = Path.Combine(Environment.CurrentDirectory, baseDir ?? string.Empty);
+            var rootedBaseDir = Path.Combine(DefaultBaseDir, baseDir ?? string.Empty);
+            if (sourceDir != null && Path.IsPathRooted(sourceDir))
+            {
+                if (sourceDir.StartsWith(rootedBaseDir))
+                {
+                    sourceDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
+                }
+                else
+                {
+                    throw new ArgumentException("SourceDir must start with BaseDir, or relative path.", nameof(sourceDir));
+                }
+            }
+            if (destinationDir != null && Path.IsPathRooted(destinationDir))
+            {
+                if (destinationDir.StartsWith(rootedBaseDir))
+                {
+                    destinationDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
+                }
+                else
+                {
+                    throw new ArgumentException("DestinationDir must start with BaseDir, or relative path.", nameof(destinationDir));
+                }
+            }
+            if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/"))
+            {
+                sourceDir += "/";
+            }
+            if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith("/"))
+            {
+                destinationDir += "/";
+            }
             _files.AddRange(from f in files
-                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, pathRewriter));
+                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, sourceDir, destinationDir));
         }
 
         public void RemoveAll(Predicate<FileAndType> match)

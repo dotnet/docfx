@@ -39,5 +39,22 @@ log.txt
 debugSettings.json
 launchSettings.json
 project.lock.json
+package-lock.json
 *.sublime-workspace
 *.nuget.targets
+
+###############
+#  template   #
+###############
+src/docfx/Template/*.zip
+src/docfx.website.themes/default/styles/docfx.vendor.css
+src/docfx.website.themes/default/styles/docfx.vendor.js
+src/docfx.website.themes/default/styles/lunr.js
+src/docfx.website.themes/default/styles/lunr.min.js
+src/docfx.website.themes/default/fonts/
+
+###############
+#    deploy   #
+###############
+tools/Deployment/.vscode/
+tools/Deployment/out/

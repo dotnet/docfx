@@ -118,8 +118,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 {
                     if (set.Add(type))
                     {
-                        ReferenceViewModel reference;
-                        if (!references.TryGetValue(type, out reference))
+                        if (!references.TryGetValue(type, out ReferenceViewModel reference))
                         {
                             reference = references[type] = new ReferenceViewModel() { Uid = type };
                         }
@@ -132,7 +131,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 if (dirty)
                 {
                     Console.WriteLine($"Rebuilding references: {model.Item1}");
-                    YamlUtility.Serialize(model.Item1, model.Item2);
+                    YamlUtility.Serialize(model.Item1, model.Item2, YamlMime.ManagedReference);
                 }
             }
         }
@@ -215,16 +214,14 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                                          from uidAndReader in EnumerateDeveloperComments(f)
                                          select uidAndReader)
             {
-                string yamlFile;
-                if (!map.TryGetValue(uidAndReader.Uid, out yamlFile))
+                if (!map.TryGetValue(uidAndReader.Uid, out string yamlFile))
                 {
                     continue;
                 }
                 var uidAndElement = uidAndReader.ToUidAndElement();
                 lock (_syncRoot)
                 {
-                    List<UidAndComment> list;
-                    if (_aggregator.TryGetValue(yamlFile, out list))
+                    if (_aggregator.TryGetValue(yamlFile, out List<UidAndComment> list))
                     {
                         list.Add(uidAndElement);
                     }
@@ -380,7 +377,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 PatchViewModel(item, uidAndComment.Comment);
             }
             Console.WriteLine($"Patching yaml: {yamlFile}");
-            YamlUtility.Serialize(path, pageVM);
+            YamlUtility.Serialize(path, pageVM, YamlMime.ManagedReference);
         }
 
         private void PatchViewModel(ItemViewModel item, string comment)
@@ -483,12 +480,10 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
         {
             public static readonly TripleSlashCommentParserContext Instance = new TripleSlashCommentParserContext
             {
-                AddReferenceDelegate = s => { },
-                Normalize = true,
+                AddReferenceDelegate = (s, e) => { }
             };
 
-            public Action<string> AddReferenceDelegate { get; set; }
-            public bool Normalize { get; set; }
+            public Action<string, string> AddReferenceDelegate { get; set; }
             public bool PreserveRawInlineComments { get; set; }
             public SourceDetail Source { get; set; }
         }

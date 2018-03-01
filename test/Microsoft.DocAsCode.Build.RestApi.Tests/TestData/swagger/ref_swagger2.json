@@ -20,6 +20,15 @@
                 "jobTitle": "Sales Rep"
               }
             }
+          },
+          {
+            "in": "query",
+            "description": "The batch error",
+            "name": "batchError",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BatchError"
+            }
           }
         ],
         "responses": {
@@ -63,6 +72,28 @@
           "readOnly": "true"
         }
       }
+    },
+    "BatchError": {
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/ErrorMessage",
+          "description": "A message describing the error, intended to be suitable for display in a user interface."
+        },
+      },
+      "description": "An error response received from the Azure Batch service."
+    },
+    "ErrorMessage": {
+      "properties": {
+        "lang": {
+          "type": "string",
+          "description": "The language code of the error message"
+        },
+        "value": {
+          "type": "string",
+          "description": "The text of the message."
+        }
+      },
+      "description": "An error message received in an Azure Batch error response."
     }
   },
   "/array": [

@@ -18,7 +18,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string OutputFolder { get; set; }
 
-        public IEnumerable<string> RelatvieOutputFiles { get; set; }
+        public ExtractMetadataOptions Options { get; set; }
+
+        public IEnumerable<string> RelativeOutputFiles { get; set; }
 
         /// <summary>
         /// Save the files involved in the build

@@ -32,22 +32,19 @@ For a *TOC Item*, it can be either plain text, or a [Markdown inline link](http:
 Three kinds of links are supported:
 
 1. Absolute path, for example, `http://example.net`.
-2. Relative path, for example, `../example.md`. This kind of link has several advanced usages and is described in detail [below](#relative-path-in-detail).
+2. Relative path, for example, `../example.md`. This kind of link has several advanced usages and is described in detail [below](#href-in-detail).
 3. URI with `xref` scheme, for example, `xref:System.String`, the value is the `uid` of the file to be [cross-referenced](../spec/docfx_flavored_markdown.md#cross-reference).
 
 ### YAML format TOC `toc.yml`
 
 ```yml
-- name:
-  href:
-  homepage:
-- name:
-  href:
-  homepage:
+- name: Topic1
+  href: Topic1.md
+- name: Topic2
+  href: Topic2.md
   items:
-    - name:
-      href:
-      homepage:
+    - name: Topic2_1
+      href: Topic2_1.md
 ```
 
 Comparing to `toc.md`, `toc.yml` represents a structured data model and conforms to the [YAML standard](http://www.yaml.org/spec/1.2/spec.html). It supports advanced functionalities.
@@ -58,18 +55,26 @@ The data model for `toc.yml` is an **array** of *TOC Item Object*s.
 ##### *TOC Item Object*
 *TOC Item Object* represents the data model for each *TOC Item*.
 
-Note that all the property names are **case sensitive**.
+> [!Note]
+> All the property names are **case sensitive**.
 
 Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
 *name*        | string            | Specifies the title of the *TOC Item*.
-*href*        | string            | Specifies the hyperlink of the *TOC Item*.
-*homepage*    | string            | Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.
-*uid*         | string            | Specifies the `uid` of the referenced file. If the value is set, it overwrites the value of *href*.
-*homepageUid* | string            | Specifies the `uid` of the homepage. If the value is set, it overwrites the value of *homepage*.
-*items*       | *TOC Item Object* | Specifies the children *TOC Items*s of current *TOC Item*.
+*href*        | string            | Specifies the hyperlink of the *TOC Item*. When its value is another TOC file, it is a TOC include, and all the items inside the included toc are considered as the child of current *TOC Item*
+*items*       | *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
 
-Relative path in detail
+**Advanced**: These properties are useful when a TOC links another TOC, or links to a uid.
+
+Property Name                     | Type              | Description
+--------------------------------- | ----------------- | ---------------------------
+*topicHref*                       | string            | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or *tocHref* is used.
+*topicUid*                        | string            | Specifies the `uid` of the *topicHref* file. If the value is set, it overwrites the value of *topicHref*.
+~~*homepage*~~ **Deprecated**     | string            | ~~Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.~~ Use *topicHref* instead.
+~~*uid*~~ **Deprecated**          | string            | ~~Specifies the `uid` of the referenced file. If the value is set, it overwrites the value of *href*.~~ Use *topicUid* instead.
+~~*homepageUid*~~ **Deprecated**  | string            | ~~Specifies the `uid` of the homepage. If the value is set, it overwrites the value of *homepage*.~~ Use *topicUid* instead.
+
+Href in detail
 ---------------
 If a *TOC Item* is linking to some relative path, there are three cases:
 
@@ -84,14 +89,14 @@ If the *TOC Item* is linking to some other *TOC File*, it is considered as a pla
 
 This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
 
-If `homepage` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
+If `homepage` **or** `topicHref` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
 
 For example, one `toc.yml` file is like below:
 
 ```yml
 - name: How-to tutorials
   href: howto/toc.yml
-  homepage: howto/overview.md
+  topicHref: howto/overview.md
 ```
 
 It references to the `toc.yml` file under folder `howto`, with the following content:
@@ -106,23 +111,26 @@ It references to the `toc.yml` file under folder `howto`, with the following con
 DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into:
 
 ```yaml
-
 - name: How-to tutorials
   href: howto/overview.md
+  topicHref: howto/overview.md
   items:
     - name: "How-to1"
       href: howto/howto1.md
+      topichref: howto/howto1.md
     - name: "How-to2"
       href: howto/howto2.md
+      topichref: howto/howto2.md
 ```
 
-*NOTE* that the referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
+> [!NOTE]
+> The referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
 
 ### Link to a folder
 If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link value for the *Toc Item* is determined in the following steps:
 
-1. If `homepage` or `homepageUid` is set, the link value is resolved to the relative path to `homepage`
-2. If `homepage` or `homepageUid` is not set, DocFX searches for *Toc File* under the folder, and get the first [relative link to local file](#link-to-local-file) as the link value for current *Toc Item*. For example, if the *Toc Item* is `href: article/`, and the content of `article/toc.yml` is as follows:
+1. If ~~`homepage`~~ `topicHref` or ~~`homepageUid`~~ `topicUid` is set, the link value is resolved to the relative path to ~~`homepage`~~ `topicHref`
+2. If ~~`homepage`~~ `topicHref` or ~~`homepageUid`~~ `topicUid` is not set, DocFX searches for *Toc File* under the folder, and get the first [relative link to local file](#link-to-local-file) as the link value for current *Toc Item*. For example, if the *Toc Item* is `href: article/`, and the content of `article/toc.yml` is as follows:
 
     ```yaml
     - name: Topic1
@@ -137,4 +145,4 @@ If the *Toc Item* is linking to a local file, we call this local file *In-Toc Fi
 
 Not-In-Toc Files
 ----------------
-When a local file is not references by any *Toc Item*, we call this local file *Not-In-Toc File*. Its *TOC File* is the nearest *TOC File* in output folder from the same folder as the local file to the root output folder.
+When a local file is not referenced by any *Toc Item*, we call this local file *Not-In-Toc File*. Its *TOC File* is the nearest *TOC File* in output folder from the same folder as the local file to the root output folder.

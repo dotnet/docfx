@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Shared\test.base.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigMarkdownRewriters\Microsoft.DocAsCode.MarkdigMarkdownRewriters.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>

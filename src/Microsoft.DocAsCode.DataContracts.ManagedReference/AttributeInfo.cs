@@ -3,22 +3,30 @@
 
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
+
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class AttributeInfo
     {
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
+        [UniqueIdentityReference]
         public string Type { get; set; }
+
         [YamlMember(Alias = "ctor")]
         [JsonProperty("ctor")]
         public string Constructor { get; set; }
+
         [YamlMember(Alias = "arguments")]
         [JsonProperty("arguments")]
         public List<ArgumentInfo> Arguments { get; set; }
+
         [YamlMember(Alias = "namedArguments")]
         [JsonProperty("namedArguments")]
         public List<NamedArgumentInfo> NamedArguments { get; set; }

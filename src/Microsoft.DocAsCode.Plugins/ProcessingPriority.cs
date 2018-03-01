@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Plugins
     public enum ProcessingPriority
     {
         NotSupported = -1,
-        [Obsolete("NotSupported")]
-        NotSupportted = -1,
         [EditorBrowsable(EditorBrowsableState.Never)]
         Lowest = 0,
         Low = 64,

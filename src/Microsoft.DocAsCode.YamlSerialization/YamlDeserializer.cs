@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.YamlSerialization
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;
     using YamlDotNet.Serialization.NodeTypeResolvers;
-    using YamlDotNet.Serialization.TypeInspectors;
     using YamlDotNet.Serialization.TypeResolvers;
     using YamlDotNet.Serialization.Utilities;
     using YamlDotNet.Serialization.ValueDeserializers;
@@ -91,25 +90,27 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 _converters.Add(yamlTypeConverter);
             }
 
-            NodeDeserializers = new List<INodeDeserializer>();
-            NodeDeserializers.Add(new TypeConverterNodeDeserializer(_converters));
-            NodeDeserializers.Add(new NullNodeDeserializer());
-            NodeDeserializers.Add(new ScalarNodeDeserializer());
-            NodeDeserializers.Add(new EmitArrayNodeDeserializer());
-            NodeDeserializers.Add(new GenericDictionaryNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new NonGenericDictionaryNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new EmitGenericCollectionNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new NonGenericListNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new EnumerableNodeDeserializer());
-            NodeDeserializers.Add(new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched));
-
+            NodeDeserializers = new List<INodeDeserializer>
+            {
+                new TypeConverterNodeDeserializer(_converters),
+                new NullNodeDeserializer(),
+                new ScalarNodeDeserializer(),
+                new EmitArrayNodeDeserializer(),
+                new EmitGenericDictionaryNodeDeserializer(objectFactory),
+                new DictionaryNodeDeserializer(objectFactory),
+                new EmitGenericCollectionNodeDeserializer(objectFactory),
+                new CollectionNodeDeserializer(objectFactory),
+                new EnumerableNodeDeserializer(),
+                new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
+            };
             _tagMappings = new Dictionary<string, Type>(PredefinedTagMappings);
-            TypeResolvers = new List<INodeTypeResolver>();
-            TypeResolvers.Add(new TagNodeTypeResolver(_tagMappings));
-            TypeResolvers.Add(new TypeNameInTagNodeTypeResolver());
-            TypeResolvers.Add(new DefaultContainersNodeTypeResolver());
-            TypeResolvers.Add(new ScalarYamlNodeTypeResolver());
-
+            TypeResolvers = new List<INodeTypeResolver>
+            {
+                new TagNodeTypeResolver(_tagMappings),
+                new TypeNameInTagNodeTypeResolver(),
+                new DefaultContainersNodeTypeResolver(),
+                new ScalarYamlNodeTypeResolver()
+            };
             if (ignoreNotFoundAnchor)
             {
                 _valueDeserializer =
@@ -154,15 +155,15 @@ namespace Microsoft.DocAsCode.YamlSerialization
 
         public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
         {
-            return Deserialize(new EventReader(new Parser(input)), type, deserializer);
+            return Deserialize(new Parser(input), type, deserializer);
         }
 
-        public T Deserialize<T>(EventReader reader, IValueDeserializer deserializer = null)
+        public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
         {
             return (T)Deserialize(reader, typeof(T), deserializer);
         }
 
-        public object Deserialize(EventReader reader, IValueDeserializer deserializer = null)
+        public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
         {
             return Deserialize(reader, typeof(object), deserializer);
         }
@@ -170,12 +171,12 @@ namespace Microsoft.DocAsCode.YamlSerialization
         /// <summary>
         /// Deserializes an object of the specified type.
         /// </summary>
-        /// <param name="reader">The <see cref="EventReader" /> where to deserialize the object.</param>
+        /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
         /// <param name="type">The static type of the object to deserialize.</param>
         /// <returns>Returns the deserialized object.</returns>
-        public object Deserialize(EventReader reader, Type type, IValueDeserializer deserializer = null)
+        public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
         {
-            if (reader == null)
+            if (parser == null)
             {
                 throw new ArgumentNullException("reader");
             }
@@ -185,28 +186,28 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 throw new ArgumentNullException("type");
             }
 
-            var hasStreamStart = reader.Allow<StreamStart>() != null;
+            var hasStreamStart = parser.Allow<StreamStart>() != null;
 
-            var hasDocumentStart = reader.Allow<DocumentStart>() != null;
+            var hasDocumentStart = parser.Allow<DocumentStart>() != null;
             deserializer = deserializer ?? _valueDeserializer;
             object result = null;
-            if (!reader.Accept<DocumentEnd>() && !reader.Accept<StreamEnd>())
+            if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
             {
                 using (var state = new SerializerState())
                 {
-                    result = deserializer.DeserializeValue(reader, type, state, deserializer);
+                    result = deserializer.DeserializeValue(parser, type, state, deserializer);
                     state.OnDeserialization();
                 }
             }
 
             if (hasDocumentStart)
             {
-                reader.Expect<DocumentEnd>();
+                parser.Expect<DocumentEnd>();
             }
 
             if (hasStreamStart)
             {
-                reader.Expect<StreamEnd>();
+                parser.Expect<StreamEnd>();
             }
 
             return result;
@@ -218,12 +219,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
 
             public LooseAliasValueDeserializer(IValueDeserializer innerDeserializer)
             {
-                if (innerDeserializer == null)
-                {
-                    throw new ArgumentNullException("innerDeserializer");
-                }
-
-                _innerDeserializer = innerDeserializer;
+                _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
             }
 
             private sealed class AliasState : Dictionary<string, ValuePromise>, IPostDeserializationCallback
@@ -281,23 +277,19 @@ namespace Microsoft.DocAsCode.YamlSerialization
                         HasValue = true;
                         this.value = value;
 
-                        if (ValueAvailable != null)
-                        {
-                            ValueAvailable(value);
-                        }
+                        ValueAvailable?.Invoke(value);
                     }
                 }
             }
 
-            public object DeserializeValue(EventReader reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+            public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
             {
                 object value;
                 var alias = reader.Allow<AnchorAlias>();
                 if (alias != null)
                 {
                     var aliasState = state.Get<AliasState>();
-                    ValuePromise valuePromise;
-                    if (!aliasState.TryGetValue(alias.Value, out valuePromise))
+                    if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
                     {
                         valuePromise = new ValuePromise(alias);
                         aliasState.Add(alias.Value, valuePromise);
@@ -320,8 +312,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 {
                     var aliasState = state.Get<AliasState>();
 
-                    ValuePromise valuePromise;
-                    if (!aliasState.TryGetValue(anchor, out valuePromise))
+                    if (!aliasState.TryGetValue(anchor, out ValuePromise valuePromise))
                     {
                         aliasState.Add(anchor, new ValuePromise(value));
                     }
@@ -331,10 +322,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                     }
                     else
                     {
-                        throw new DuplicateAnchorException(nodeEvent.Start, nodeEvent.End, string.Format(
-                            "Anchor '{0}' already defined",
-                            anchor
-                        ));
+                        aliasState[anchor] = new ValuePromise(value);
                     }
                 }
 

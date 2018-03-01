@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Shared\test.base.props" />
+  
+  <ItemGroup>
+    <None Update="TestData\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>

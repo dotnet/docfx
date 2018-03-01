@@ -11,26 +11,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex RefLink => Regexes.Inline.RefLink;
 
-        public override IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = RefLink.Match(source);
+            var match = RefLink.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            if (MarkdownInlineContext.GetIsInLink(parser.Context) && match.Value[0] != '!')
+            {
+                return null;
+            }
 
             var linkStr = match.NotEmpty(2, 1).ReplaceRegex(Regexes.Lexers.WhiteSpaces, " ");
 
-            LinkObj link;
-            parser.Links.TryGetValue(linkStr.ToLower(), out link);
+            parser.Links.TryGetValue(linkStr.ToLower(), out LinkObj link);
 
             if (string.IsNullOrEmpty(link?.Href))
             {
-                source = match.Groups[0].Value.Substring(1) + source;
-                return new MarkdownTextToken(this, parser.Context, match.Groups[0].Value[0].ToString(), match.Value);
+                var sourceInfo = context.Consume(1);
+                var text = match.Value.Remove(1);
+                return new MarkdownTextToken(this, parser.Context, text, sourceInfo);
             }
-            return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', match.Value);
+            else
+            {
+                var sourceInfo = context.Consume(match.Length);
+                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', sourceInfo, MarkdownLinkType.RefLink, linkStr);
+            }
         }
     }
 }

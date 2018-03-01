@@ -1,25 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.props" />
   <PropertyGroup>
-    <ProjectGuid>{629EC13D-8939-4F23-B7DC-7A98964BB9A4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.Glob</RootNamespace>
+      <Description>Implements glob utility</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="FileGlob.cs" />
-    <Compile Include="GlobMatcher.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System.Runtime" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

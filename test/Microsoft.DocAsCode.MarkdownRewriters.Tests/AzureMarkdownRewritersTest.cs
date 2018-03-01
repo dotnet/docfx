@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
 
     public class AzureMarkdownRewritersTest
     {
+        #region Azure marked
+
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_Simple()
@@ -36,8 +38,6 @@ this is new line originally
             var expected = @"> Hello world
 > this is new line originally  
 > This is a new line
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -65,12 +65,6 @@ This is no-nested line
 > > > This is a third nested first line
 > > > This is a second nested second line
 > > > This is no-nested line
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -90,8 +84,56 @@ This is azure warning";
 > 
 > [!WARNING]
 > This is azure warning
-> 
-> 
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteShouldParseFollowedText()
+        {
+            var source = @"> [AZURE.NOTE]
+> This is a link [hello text]      (hello.md)
+> This is a style text _yes_";
+            var expected = @"> [!NOTE]
+> This is a link [hello text](hello.md)
+> This is a style text *yes*
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteWithExtraWhiteSpaces()
+        {
+            var source = @"> [AZURE.NOTE]
+>       This is azure note text
+>       Not code text
+>       We should ignore the extra white spaces at the beginning";
+            var expected = @"> [!NOTE]
+> This is azure note text
+> Not code text
+> We should ignore the extra white spaces at the beginning
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteWithExtraWhiteSpacesNoLt()
+        {
+            var source = @"> [AZURE.NOTE]
+      This information applies to the Azure AD B2C consumer identity service preview.  For information on Azure AD for employees and organizations, 
+         please refer to the [Azure Active Directory Developer Guide](active-directory-developers-guide.md).";
+            var expected = @"> [!NOTE]
+> This information applies to the Azure AD B2C consumer identity service preview.  For information on Azure AD for employees and organizations, 
+> please refer to the [Azure Active Directory Developer Guide](active-directory-developers-guide.md).
 
 ";
             var result = AzureMarked.Markup(source);
@@ -119,8 +161,6 @@ This is azure TIP";
 > 
 > [!TIP]
 > This is azure TIP
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -155,12 +195,6 @@ This is TIP
 > > > 
 > > > [!CAUTION]
 > > > This is CAUTION
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -244,8 +278,6 @@ This is azure include block.
 > 
 > [!WARNING]
 > This is azure warning
-> 
-> 
 
 ";
 
@@ -497,11 +529,34 @@ _Em Text_
 - Simple text";
             var expected = @"# Test Complex String Em Del
 **Strong Text**
-
 <div>
 *Em Text*
-
 <div>
+
+* ~~Del Text~~
+* Simple text
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_ComplexStrongEmDel2()
+        {
+            var source = @"# Test Complex String Em Del
+__Strong Text__
+<div>
+_Em Text_
+</div>
+- ~~Del Text~~
+- Simple text";
+            var expected = @"# Test Complex String Em Del
+**Strong Text**
+<div>
+*Em Text*
+</div>
 
 * ~~Del Text~~
 * Simple text
@@ -567,7 +622,7 @@ this is a missing extension link with / and bookmark at the end [text](missing_e
 this is a normal link with / and extension at the end [text](normal.md) file ref
 this is a normal link with /, extension and bookmark at the end [text](normal.md#bookmark) file ref
 this is http link [text](http://www.google.com ""Google"") ref
-this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
+this is http escape link [text](http://www.google.com\'dd#bookmark ""Google's homepage"") ref
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
@@ -611,7 +666,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 [Ref a non md resource in another docset](ex_resource/docset2Resource.html)
 ![Ref a image content in another docset](ex_resource/docset2Image.png)
 ![Ref a image content not in another docset](../docset2/docset2FakeImage.png)
-![Ref a abs path image content in another docset](c:\\docset2\fullNameImage.img)
+![Ref a abs path image content in another docset](c:\\docset2\\fullNameImage.img)
 ![Ref a abs http image content in another docset](https://google/images/fullNameImage.img)
 
 ";
@@ -657,7 +712,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         public void TestAzureMarkdownRewriters_AutoLink()
         {
             var source = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)";
-            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging)
 
 ";
             var result = AzureMarked.Markup(source);
@@ -680,8 +735,8 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_LinkRefWithBackslash()
         {
-            var source = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)";
-            var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)
+            var source = @"[User-Defined Date/Time Formats (Format Function)](https://github\.com/Azure-Samples/active-directory-java-webapp\-openidconnect\\/archive/complete\.zip)";
+            var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\\/archive/complete.zip)
 
 ";
             var result = AzureMarked.Markup(source);
@@ -710,8 +765,6 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [Baidu](../articles/notification-hubs-baidu-get-started.md)
 > * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started.md)
 > * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started.md)
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -744,8 +797,6 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [(Android | Javascript)](./mobile-services-javascript-backend-android-get-started-push.md)
 > * [(Xamarin iOS | Javascript)](./partner-xamarin-mobile-services-ios-get-started-push.md)
 > * [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)
-> 
-> 
 
 ";
             var result = AzureMarked.Markup(source);
@@ -820,10 +871,10 @@ emptyString: """"
 title: Azure Container Service Introduction | Microsoft Azure
 description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
 services: virtual-machines
-documentationcenter: 
+documentationcenter: ''
 author: rgardler
 manager: nepeters
-editor: 
+editor: ''
 tags: acs, azure-container-service
 keywords: Docker, Containers, Micro-services, Mesos, Azure
 ms.assetid: https://azure.microsoft.com/en-us/documentation/articles/azure_file
@@ -867,6 +918,20 @@ ms.author: rogardle
 ";
 
             var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        [Trait("Bug 617364", "link with query condition")]
+        public void TestAzureMarkdownRewriters_AbsoluteLinkWithQueryCondition()
+        {
+            var source = @"[Microsoft Azure Active Directory Samples and Documentation](https://github.com/Azure-Samples?page=3&query=active-directory)";
+            var expected = @"[Microsoft Azure Active Directory Samples and Documentation](https://github.com/Azure-Samples?page=3&query=active-directory)
+
+";
+
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -1036,8 +1101,6 @@ ms.author: rogardle
         {
             var source = @"> [Just a test for blockquote]";
             var expected = @"> [Just a test for blockquote]
-> 
-> 
 
 ";
 
@@ -1067,8 +1130,8 @@ This command must be run in the context of each domain user that has signed into
      This process must be repeated for each domain user that has signed into the machine and has been automatically workplace joined.
 * Option 2: Unregister a Windows 8.1 domain joined device using a script
   
-      1. Open a command prompt on the Windows 8.1 machine and execute the following command:
-   ` %SystemRoot%\System32\AutoWorkplace.exe leave`
+  1. Open a command prompt on the Windows 8.1 machine and execute the following command:
+     ` %SystemRoot%\System32\AutoWorkplace.exe leave`
 
 This command must be run in the context of each domain user that has signed into the machine.
 
@@ -1096,5 +1159,218 @@ This command must be run in the context of each domain user that has signed into
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        #endregion
+
+        #region Azure migration marked
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownMigrationRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureVideoLink()
+        {
+            var azureVideoInfoMapping =
+                new Dictionary<string, AzureVideoInfo>{
+                    {
+                        "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        new AzureVideoInfo
+                        {
+                            Id = "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                            Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"
+                        }
+                    }
+                };
+
+            var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [!VIDEO https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/]
+
+";
+
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", azureVideoInfoMapping: azureVideoInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownMigrationRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureVideoLinkNoMapping()
+        {
+            var azureVideoInfoMapping =
+                new Dictionary<string, AzureVideoInfo>{
+                    {
+                        "fake-azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        new AzureVideoInfo
+                        {
+                            Id = "fake-azure-ad--introduction-to-dynamic-memberships-for-groups",
+                            Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"
+                        }
+                    }
+                };
+
+            var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [!VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]
+
+";
+
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", azureVideoInfoMapping: azureVideoInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureProperties_SiteIdentifierAtTheEnd()
+        {
+            var source = @"<properties
+   pageTitle=""Azure Container Service Introduction | Microsoft  Azure ""
+   description=""Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.""
+   services=""virtual-machines""
+   documentationCenter=""""
+   authors=""rgardler; fenxu""
+   manager=""nepeters""
+   editor=""""
+   tags=""acs, azure-container-service""
+   keywords=""Docker, Containers, Micro-services, Mesos, Azure""/>
+
+<tags
+   ms.service=""virtual-machines""
+   ms.devlang=""na""
+   ms.topic=""home-page""
+   ms.tgt_pltfrm=""na""
+   ms.workload=""na""
+   ms.date=""12/02/2015""
+   ms.author=""rogardle""/>
+
+# Azure Container Service Introduction
+";
+            var expected = @"---
+title: Azure Container Service Introduction | Microsoft Docs
+description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
+services: virtual-machines
+documentationcenter: ''
+author: rgardler
+manager: nepeters
+editor: ''
+tags: acs, azure-container-service
+keywords: Docker, Containers, Micro-services, Mesos, Azure
+
+ms.service: virtual-machines
+ms.devlang: na
+ms.topic: home-page
+ms.tgt_pltfrm: na
+ms.workload: na
+ms.date: 12/02/2015
+ms.author: rogardle
+
+---
+# Azure Container Service Introduction
+";
+            var result = AzureMigrationMarked.Markup(source, "azure_file.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureProperties_SiteIdentifierInTheMiddle()
+        {
+            var source = @"<properties
+   pageTitle=""Azure Container Service Introduction |   Microsoft Azure  | Microsoft Azure Storage ""
+   description=""Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.""
+   services=""virtual-machines""
+   documentationCenter=""""
+   authors=""rgardler; fenxu""
+   manager=""nepeters""
+   editor=""""
+   tags=""acs, azure-container-service""
+   keywords=""Docker, Containers, Micro-services, Mesos, Azure""/>
+
+<tags
+   ms.service=""virtual-machines""
+   ms.devlang=""na""
+   ms.topic=""home-page""
+   ms.tgt_pltfrm=""na""
+   ms.workload=""na""
+   ms.date=""12/02/2015""
+   ms.author=""rogardle""/>
+
+# Azure Container Service Introduction
+";
+            var expected = @"---
+title: Azure Container Service Introduction | Microsoft Docs
+description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
+services: virtual-machines
+documentationcenter: ''
+author: rgardler
+manager: nepeters
+editor: ''
+tags: acs, azure-container-service
+keywords: Docker, Containers, Micro-services, Mesos, Azure
+
+ms.service: virtual-machines
+ms.devlang: na
+ms.topic: home-page
+ms.tgt_pltfrm: na
+ms.workload: na
+ms.date: 12/02/2015
+ms.author: rogardle
+
+---
+# Azure Container Service Introduction
+";
+            var result = AzureMigrationMarked.Markup(source, "azure_file.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureProperties_NoSiteIdentifier()
+        {
+            var source = @"<properties
+   pageTitle=""Azure Container Service Introduction | Microsoft Azure Storage ""
+   description=""Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.""
+   services=""virtual-machines""
+   documentationCenter=""""
+   authors=""rgardler; fenxu""
+   manager=""nepeters""
+   editor=""""
+   tags=""acs, azure-container-service""
+   keywords=""Docker, Containers, Micro-services, Mesos, Azure""/>
+
+<tags
+   ms.service=""virtual-machines""
+   ms.devlang=""na""
+   ms.topic=""home-page""
+   ms.tgt_pltfrm=""na""
+   ms.workload=""na""
+   ms.date=""12/02/2015""
+   ms.author=""rogardle""/>
+
+# Azure Container Service Introduction
+";
+            var expected = @"---
+title: Azure Container Service Introduction | Microsoft Docs
+description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
+services: virtual-machines
+documentationcenter: ''
+author: rgardler
+manager: nepeters
+editor: ''
+tags: acs, azure-container-service
+keywords: Docker, Containers, Micro-services, Mesos, Azure
+
+ms.service: virtual-machines
+ms.devlang: na
+ms.topic: home-page
+ms.tgt_pltfrm: na
+ms.workload: na
+ms.date: 12/02/2015
+ms.author: rogardle
+
+---
+# Azure Container Service Introduction
+";
+            var result = AzureMigrationMarked.Markup(source, "azure_file.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        #endregion
     }
 }

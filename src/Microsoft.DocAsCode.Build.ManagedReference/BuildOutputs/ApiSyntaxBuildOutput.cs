@@ -35,11 +35,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiSyntaxBuildOutput FromModel(SyntaxDetailViewModel model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiSyntaxBuildOutput
             {
-                Content = GetContents(model.Content, model.ContentForCSharp, model.ContentForVB, supportedLanguages),
+                Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),
                 Parameters = model.Parameters?.Select(s => ApiParameterBuildOutput.FromModel(s, references, supportedLanguages)).ToList(),
                 TypeParameters = model.TypeParameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
                 Return = ApiParameterBuildOutput.FromModel(model.Return, references, supportedLanguages),
@@ -50,11 +52,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiSyntaxBuildOutput FromModel(SyntaxDetailViewModel model, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiSyntaxBuildOutput
             {
-                Content = GetContents(model.Content, model.ContentForCSharp, model.ContentForVB, supportedLanguages),
+                Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),
                 Parameters = model.Parameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
                 TypeParameters = model.TypeParameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
                 Return = ApiParameterBuildOutput.FromModel(model.Return),
@@ -70,16 +74,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 TypeParameters?.ForEach(t => t.Expand(references, supportedLanguages));
                 Return?.Expand(references, supportedLanguages);
             }
-        }
-
-        private static List<ApiLanguageValuePair> GetContents(string content, string contentForCSharp, string contentForVB, string[] supportedLanguages)
-        {
-            if (string.IsNullOrEmpty(content) || supportedLanguages == null || supportedLanguages.Length == 0) return null;
-
-            var result = new List<ApiLanguageValuePair>() { new ApiLanguageValuePair() { Language = supportedLanguages[0], Value = content } };
-            if (!string.IsNullOrEmpty(contentForCSharp)) result.Add(new ApiLanguageValuePair() { Language = "csharp", Value = contentForCSharp });
-            if (!string.IsNullOrEmpty(contentForVB)) result.Add(new ApiLanguageValuePair() { Language = "vb", Value = contentForVB });
-            return result;
         }
     }
 }

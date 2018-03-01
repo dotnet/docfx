@@ -6,14 +6,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
 
     public class MarkdownParser : IMarkdownParser
     {
-        private const string IndentLevelOne = "  ";
-        private const string IndentLevelTwo = "    ";
-        private const string ThreeDot = "...";
-
         public MarkdownParser(IMarkdownContext context, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
@@ -48,109 +43,58 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
         }
 
-        public ImmutableArray<IMarkdownToken> Tokenize(string markdown)
+        public ImmutableArray<IMarkdownToken> Tokenize(SourceInfo sourceInfo)
         {
-            return TokenizeCore(Preprocess(markdown)).ToImmutableArray();
+            var markdown = Preprocess(sourceInfo.Markdown);
+            if (sourceInfo.Markdown != markdown)
+            {
+                sourceInfo = sourceInfo.Copy(markdown);
+            }
+            return TokenizeCore(sourceInfo).ToImmutableArray();
         }
 
-        private List<IMarkdownToken> TokenizeCore(string markdown)
+        private List<IMarkdownToken> TokenizeCore(SourceInfo sourceInfo)
         {
-            var current = markdown;
+            var pc = new MarkdownParsingContext(sourceInfo);
             var tokens = new List<IMarkdownToken>();
-            while (current.Length > 0)
+            while (pc.CurrentMarkdown.Length > 0)
             {
-                var token = (from r in Context.Rules
-                             select r.TryMatch(this, ref current)).FirstOrDefault(t => t != null);
+                var token = ApplyRules(pc);
                 if (token == null)
                 {
-                    var nextLine = current.Split('\n')[0];
-                    var lineNumber = CountNewLine(markdown, markdown.Length - current.Length);
-                    throw new InvalidOperationException($"Cannot parse: {nextLine}{Environment.NewLine}{GetMarkdownContext(markdown, lineNumber)}{GetRuleContextMessage()}.");
+                    throw new MarkdownParsingException("Cannot parse markdown: No rule match.", pc.ToSourceInfo());
+                }
+                else if (token.Rule is MarkdownTextBlockRule)
+                {
+                    pc.IsInParagraph = true;
+                }
+                else
+                {
+                    pc.IsInParagraph = false;
                 }
                 tokens.Add(token);
             }
             return tokens;
         }
 
-        private static string GetMarkdownContext(string markdown, int lineNumber)
+        private IMarkdownToken ApplyRules(MarkdownParsingContext pc)
         {
-            var lines = markdown.Split('\n');
-            StringBuffer sb = IndentLevelOne;
-            sb += "markdown context:";
-            if (lineNumber > 0)
+            foreach (var r in Context.Rules)
             {
-                if (lineNumber > 1)
+                try
                 {
-                    sb += IndentLevelTwo;
-                    sb += ThreeDot;
-                    sb += Environment.NewLine;
-                }
-                sb += IndentLevelTwo;
-                sb += lines[lineNumber - 1];
-                sb += Environment.NewLine;
-            }
-            sb += IndentLevelTwo;
-            sb += lines[lineNumber];
-            sb += Environment.NewLine;
-            if (lineNumber + 1 < lines.Length)
-            {
-                sb += IndentLevelTwo;
-                sb += lines[lineNumber + 1];
-                sb += Environment.NewLine;
-                if (lineNumber + 2 < lines.Length)
-                {
-                    sb += IndentLevelTwo;
-                    sb += ThreeDot;
-                    sb += Environment.NewLine;
-                }
-            }
-            return sb.ToString();
-        }
-
-        private string GetRuleContextMessage()
-        {
-            StringBuffer sb = IndentLevelOne;
-            sb += "rule context: ";
-            sb += Context.GetType().Name;
-            if (Context.Variables?.Count > 0)
-            {
-                sb += Environment.NewLine;
-                sb += IndentLevelOne;
-                sb += "{";
-                foreach (var item in Context.Variables)
-                {
-                    sb += Environment.NewLine;
-                    sb += IndentLevelTwo;
-                    sb += item.Key;
-                    sb += " = ";
-                    if (item.Value == null)
+                    var token = r.TryMatch(this, pc);
+                    if (token != null)
                     {
-                        sb += "(null)";
+                        return token;
                     }
-                    else
-                    {
-                        sb += item.Value.ToString();
-                    }
-                    sb += ";";
                 }
-                sb += Environment.NewLine;
-                sb += IndentLevelOne;
-                sb += "}";
-            }
-            return sb.ToString();
-        }
-
-        private static int CountNewLine(string text, int charCount)
-        {
-            int count = 0;
-            for (int i = 0; i < charCount; i++)
-            {
-                if (text[i] == '\n')
+                catch (Exception ex)
                 {
-                    count++;
+                    throw new MarkdownParsingException($"Cannot parse markdown: Rule {r.Name} is fault.", pc.ToSourceInfo(), ex);
                 }
             }
-            return count;
+            return null;
         }
     }
 }

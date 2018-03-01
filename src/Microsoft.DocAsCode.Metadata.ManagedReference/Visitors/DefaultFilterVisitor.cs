@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new ArgumentNullException("symbol");
             }
-            return CanVisitCore(symbol, wantProtectedMember, outer ?? this);
+            return CanVisitCore(symbol, (outer ?? this).CanVisitApi, wantProtectedMember, outer ?? this);
         }
 
         public bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
@@ -24,17 +24,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new ArgumentNullException("symbol");
             }
-            return CanVisitCore(symbol, wantProtectedMember, outer ?? this);
+            return CanVisitCore(symbol, (outer ?? this).CanVisitAttribute, wantProtectedMember, outer ?? this);
         }
 
-        private static bool CanVisitCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(ISymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
+            // check parent visibility
+            var current = symbol;
+            var parent = symbol.ContainingSymbol;
+            while (!(current is INamespaceSymbol) && parent != null)
+            {
+                if (!visitFunc(parent, wantProtectedMember, outer))
+                {
+                    return false;
+                }
+
+                current = parent;
+                parent = parent.ContainingSymbol;
+            }
+
             if (symbol.DeclaredAccessibility == Accessibility.NotApplicable)
             {
                 return true;
             }
 
-            if (symbol.IsImplicitlyDeclared)
+            if (!(symbol is INamespaceSymbol) && symbol.IsImplicitlyDeclared)
             {
                 return false;
             }
@@ -42,31 +56,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var methodSymbol = symbol as IMethodSymbol;
             if (methodSymbol != null)
             {
-                return CanVisitCore(methodSymbol, wantProtectedMember, outer);
+                return CanVisitCore(methodSymbol, visitFunc, wantProtectedMember, outer);
             }
 
             var propertySymbol = symbol as IPropertySymbol;
             if (propertySymbol != null)
             {
-                return CanVisitCore(propertySymbol, wantProtectedMember, outer);
+                return CanVisitCore(propertySymbol, visitFunc, wantProtectedMember, outer);
             }
 
             var eventSymbol = symbol as IEventSymbol;
             if (eventSymbol != null)
             {
-                return CanVisitCore(eventSymbol, wantProtectedMember, outer);
+                return CanVisitCore(eventSymbol, visitFunc, wantProtectedMember, outer);
             }
 
             var fieldSymbol = symbol as IFieldSymbol;
             if (fieldSymbol != null)
             {
-                return CanVisitCore(fieldSymbol, wantProtectedMember, outer);
+                return CanVisitCore(fieldSymbol, visitFunc, wantProtectedMember, outer);
             }
 
             var namedTypeSymbol = symbol as INamedTypeSymbol;
             if (namedTypeSymbol != null)
             {
-                return CanVisitCore(namedTypeSymbol, wantProtectedMember, outer);
+                return CanVisitCore(namedTypeSymbol, visitFunc, wantProtectedMember, outer);
             }
 
             var ts = symbol as ITypeSymbol;
@@ -81,9 +95,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     case TypeKind.Error:
                         return false;
                     case TypeKind.Array:
-                        return outer.CanVisitApi(((IArrayTypeSymbol)ts).ElementType, wantProtectedMember, outer);
+                        return visitFunc(((IArrayTypeSymbol)ts).ElementType, wantProtectedMember, outer);
                     case TypeKind.Pointer:
-                        return outer.CanVisitApi(((IPointerTypeSymbol)ts).PointedAtType, wantProtectedMember, outer);
+                        return visitFunc(((IPointerTypeSymbol)ts).PointedAtType, wantProtectedMember, outer);
                     default:
                         break;
                 }
@@ -97,17 +111,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return true;
         }
 
-        private static bool CanVisitCore(INamedTypeSymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(INamedTypeSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
             if (symbol.ContainingType != null)
             {
                 switch (symbol.DeclaredAccessibility)
                 {
                     case Accessibility.Public:
-                        return outer.CanVisitApi(symbol.ContainingType, wantProtectedMember, outer);
+                        return visitFunc(symbol.ContainingType, wantProtectedMember, outer);
                     case Accessibility.Protected:
                     case Accessibility.ProtectedOrInternal:
-                        return wantProtectedMember && outer.CanVisitApi(symbol.ContainingType, wantProtectedMember, outer);
+                        return wantProtectedMember && visitFunc(symbol.ContainingType, wantProtectedMember, outer);
                     default:
                         return false;
                 }
@@ -115,7 +129,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return symbol.DeclaredAccessibility == Accessibility.Public;
         }
 
-        private static bool CanVisitCore(IMethodSymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IMethodSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
             switch (symbol.DeclaredAccessibility)
             {
@@ -131,7 +145,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (outer.CanVisitApi(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
@@ -140,7 +154,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return false;
         }
 
-        private static bool CanVisitCore(IPropertySymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IPropertySymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
             switch (symbol.DeclaredAccessibility)
             {
@@ -156,7 +170,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (outer.CanVisitApi(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
@@ -165,7 +179,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return false;
         }
 
-        private static bool CanVisitCore(IEventSymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IEventSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
             switch (symbol.DeclaredAccessibility)
             {
@@ -181,7 +195,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (outer.CanVisitApi(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
@@ -190,7 +204,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return false;
         }
 
-        private static bool CanVisitCore(IFieldSymbol symbol, bool wantProtected, IFilterVisitor outer)
+        private static bool CanVisitCore(IFieldSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtected, IFilterVisitor outer)
         {
             switch (symbol.DeclaredAccessibility)
             {

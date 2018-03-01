@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureMarked
     {
-        private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false });
+        private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false, LegacyMode = true });
         private static readonly AzureMarkdownRenderer _renderer = new AzureMarkdownRenderer();
 
         public static string Markup(
@@ -26,22 +26,22 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 context = engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path));
             }
 
-            if (azureMarkdownFileInfoMapping != null)
+            if (azureMarkdownFileInfoMapping != null && azureMarkdownFileInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureMarkdownFileInfoMapping", azureMarkdownFileInfoMapping));
             }
 
-            if (azureVideoInfoMapping != null)
+            if (azureVideoInfoMapping != null && azureVideoInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureVideoInfoMapping", azureVideoInfoMapping));
             }
 
-            if (azureResourceFileInfoMapping != null)
+            if (azureResourceFileInfoMapping != null && azureResourceFileInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureResourceFileInfoMapping", azureResourceFileInfoMapping));
             }
 
-            return engine.Mark(MarkdownEngine.Normalize(src), context);
+            return engine.Mark(SourceInfo.Create(MarkdownEngine.Normalize(src), path), context);
         }
     }
 }

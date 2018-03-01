@@ -1,147 +1,47 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{60F22EDB-35F9-490D-B1B6-2EC482F76B50}</ProjectGuid>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.props" />
+
   <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.1.1.1\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.VisualBasic.1.1.1\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Caching" />
+    <EmbeddedResource Include="Transform\**;Filters\defaultfilterconfig.yml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="2.6.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
+    <PackageReference Include="NuGet.Packaging.Core.Types" Version="3.5.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="Microsoft.Build" Version="15.5.180" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.5.180" />
+    <PackageReference Include="NuGet.ProjectModel" Version="4.5.0" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="4.5.0" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.5.24" />
+    <PackageReference Include="Microsoft.VisualStudio.RemoteControl" Version="14.0.262-masterA5CACE98" />
+    <PackageReference Include="Microsoft.Build.MSBuildLocator" Version="1.0.1-preview-g6cd9a57801" />
+    <PackageReference Include="Microsoft.DotNet.ProjectModel.Workspaces" Version="1.0.0-preview2-003121" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Runtime" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Exceptions\ExtractMetadataException.cs" />
-    <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
-    <Compile Include="ExtractMetadata\CompilationUtility.cs" />
-    <Compile Include="ExtractMetadata\ProjectDocumentCache.cs" />
-    <Compile Include="Filters\AttributeFilterInfo.cs" />
-    <Compile Include="Filters\ConfigFilterRuleExcludeItem.cs" />
-    <Compile Include="Filters\ConfigFilterRuleIncludeItem.cs" />
-    <Compile Include="Incremental\BuildInfo.cs" />
-    <Compile Include="Incremental\CacheBase.cs" />
-    <Compile Include="Incremental\ProjectLevelCache.cs" />
-    <Compile Include="Models\SyntaxDetail.cs" />
-    <Compile Include="Parsers\ITripleSlashCommentParserContext.cs" />
-    <Compile Include="Parsers\TripleSlashCommentParserContext.cs" />
-    <Compile Include="ExtractMetadataWorker.cs" />
-    <Compile Include="Incremental\ApplicationLevelCache.cs" />
-    <Compile Include="Incremental\IncrementalCheck.cs" />
-    <Compile Include="ExtractMetadataInputModel.cs" />
-    <Compile Include="Models\ReferenceItem.cs" />
-    <Compile Include="Parsers\TripleSlashCommentModel.cs" />
-    <Compile Include="Parsers\TripleSlashCommentTransformer.cs" />
-    <Compile Include="Resolvers\ResolveReference.cs" />
-    <Compile Include="Resolvers\SetParent.cs" />
-    <Compile Include="Models\LayoutItem.cs" />
-    <Compile Include="Models\MetadataItem.cs" />
-    <Compile Include="Resolvers\NormalizeSyntax.cs" />
-    <Compile Include="Resolvers\LayoutCheckAndCleanup.cs" />
-    <Compile Include="Resolvers\BuildMembers.cs" />
-    <Compile Include="Resolvers\ResolverContext.cs" />
-    <Compile Include="Resolvers\IResolverPipeline.cs" />
-    <Compile Include="Resolvers\BuildToc.cs" />
-    <Compile Include="Visitors\CachedFilterVisitor.cs" />
-    <Compile Include="Visitors\CompositeYamlModelGenerator.cs" />
-    <Compile Include="Filters\ConfigFilterRule.cs" />
-    <Compile Include="Filters\ConfigFilterRuleItem.cs" />
-    <Compile Include="Filters\ConfigFilterRuleItemUnion.cs" />
-    <Compile Include="Visitors\DelegatingFilterVisitor.cs" />
-    <Compile Include="Filters\ExtendedSymbolKind.cs" />
-    <Compile Include="Visitors\FilterVisitorExtensions.cs" />
-    <Compile Include="Visitors\SpecIdCoreVisitor.cs" />
-    <Compile Include="Visitors\SpecIdHelper.cs" />
-    <Compile Include="Visitors\ReferenceItemVisitor.cs" />
-    <Compile Include="Visitors\TypeGenericParameterNameVisitor.cs" />
-    <Compile Include="Visitors\SimpleYamlModelGenerator.cs" />
-    <Compile Include="Visitors\SymbolVisitorAdapter.cs" />
-    <Compile Include="Visitors\NameVisitor.cs" />
-    <Compile Include="Visitors\VisitorHelper.cs" />
-    <Compile Include="Visitors\CSYamlModelGenerator.cs" />
-    <Compile Include="Visitors\VBYamlModelGenerator.cs" />
-    <Compile Include="Visitors\YamlModelGenerator.cs" />
-    <Compile Include="Visitors\IFilterVisitor.cs" />
-    <Compile Include="Visitors\DefaultFilterVisitor.cs" />
-    <Compile Include="Visitors\ConfigFilterVisitor.cs" />
-    <Compile Include="Resolvers\YamlMetadataResolver.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="YamlViewModelExtensions.cs" />
-    <Compile Include="Models\MetadataModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
-      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj">
-      <Project>{60f21edb-35f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.ManagedReference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
-      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
-      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Transform\TripleSlashCommentTransform.xsl">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Transform.TripleSlashCommentTransform.xsl</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

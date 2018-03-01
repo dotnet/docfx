@@ -1,0 +1,102 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "2.0"
+  },
+  "paths": {
+    "/contacts": {
+      "get": {
+        "tags": [ "contacts" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "default": "1.6"
+          }
+        ],
+        "operationId": "get contacts"
+      }
+    },
+    "/contacts/{object_id}/$links/manager": {
+      "get": {
+        "tags": [ "store" ],
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "Get a link to the contact's manager.",
+        "operationId": "get contact manager link"
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Delete the contact's manager.",
+        "operationId": "delete contact manager by id"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "contact",
+      "description": "Everything about the **contacts**",
+      "x-bookmark-id": "contact-bookmark",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "store",
+      "description": "Access to Petstore orders"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user"
+    }
+  ],
+  "host": "graph.windows.net",
+  "basePath": "/myorganization"
+}

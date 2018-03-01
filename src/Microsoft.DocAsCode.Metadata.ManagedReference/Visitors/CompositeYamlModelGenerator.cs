@@ -81,11 +81,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        internal override void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        internal override void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
             foreach (var generator in _generators)
             {
-                generator.GenerateReferenceInternal(symbol, reference, adapter);
+                generator.GenerateReferenceInternal(symbol, reference, adapter, asOverload);
             }
         }
 

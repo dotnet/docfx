@@ -1,66 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\src\Shared\base.props" />
+
   <PropertyGroup>
-    <ProjectGuid>{233933A5-5B94-472B-A1B6-D98870267FA4}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool</AssemblyName>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AzureTransformArguments.cs" />
-    <Compile Include="Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
-      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
-      <Name>Microsoft.DocAsCode.Dfm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
-      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj">
-      <Project>{99f0bb91-2ce9-4460-87e0-b99b87f7b193}</Project>
-      <Name>Microsoft.DocAsCode.AzureMarkdownRewriters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

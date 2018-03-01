@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.14.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+  </ItemGroup>
+
+</Project>

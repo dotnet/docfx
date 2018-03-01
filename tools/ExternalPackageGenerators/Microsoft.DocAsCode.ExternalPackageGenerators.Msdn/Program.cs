@@ -19,13 +19,16 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using System.Threading.Tasks;
     using System.Xml;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Plugins;
 
     internal sealed class Program
     {
 
         #region Fields
+        private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
+
         private static string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private static string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
         private static int HttpMaxConcurrency = 64;
@@ -35,14 +38,14 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private static readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
-        private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
+        private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9_\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
 
         private readonly Cache<string> _shortIdCache;
         private readonly Cache<Dictionary<string, string>> _commentIdToShortIdMapCache;
-        private readonly Cache<StrongBox<bool>> _checkUrlCache;
+        private readonly Cache<StrongBox<bool?>> _checkUrlCache;
 
-        private readonly string _packageDirectory;
+        private readonly string _packageFile;
         private readonly string _baseDirectory;
         private readonly string _globPattern;
         private readonly string _msdnVersion;
@@ -89,8 +92,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             MtpsApiUrlTemplate = ConfigurationManager.AppSettings["MtpsApiUrlTemplate"] ?? MtpsApiUrlTemplate;
             if (ConfigurationManager.AppSettings["HttpMaxConcurrency"] != null)
             {
-                int value;
-                if (int.TryParse(ConfigurationManager.AppSettings["HttpMaxConcurrency"], out value) && value > 0)
+                if (int.TryParse(ConfigurationManager.AppSettings["HttpMaxConcurrency"], out int value) && value > 0)
                 {
                     HttpMaxConcurrency = value;
                 }
@@ -122,8 +124,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             }
             if (ConfigurationManager.AppSettings["StatisticsFreshPerSecond"] != null)
             {
-                int value;
-                if (int.TryParse(ConfigurationManager.AppSettings["StatisticsFreshPerSecond"], out value) && value > 0)
+                if (int.TryParse(ConfigurationManager.AppSettings["StatisticsFreshPerSecond"], out int value) && value > 0)
                 {
                     StatisticsFreshPerSecond = value;
                 }
@@ -140,14 +141,14 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         public Program(string packageDirectory, string baseDirectory, string globPattern, string msdnVersion)
         {
-            _packageDirectory = packageDirectory;
+            _packageFile = packageDirectory;
             _baseDirectory = baseDirectory;
             _globPattern = globPattern;
             _msdnVersion = msdnVersion;
 
             _shortIdCache = new Cache<string>(nameof(_shortIdCache), LoadShortIdAsync);
             _commentIdToShortIdMapCache = new Cache<Dictionary<string, string>>(nameof(_commentIdToShortIdMapCache), LoadCommentIdToShortIdMapAsync);
-            _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
+            _checkUrlCache = new Cache<StrongBox<bool?>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
             _maxHttp = HttpMaxConcurrency;
             _maxEntry = (int)(HttpMaxConcurrency * 1.1) + 1;
@@ -163,21 +164,20 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private static void PrintUsage()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("{0} <packageFile> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
-            Console.WriteLine("    packageFile    The output package file.");
-            Console.WriteLine("                   e.g. \"msdn.rpk\"");
-            Console.WriteLine("    baseDirectory  The base directory contains develop comment xml file.");
-            Console.WriteLine("                   e.g. \"c:\\\"");
-            Console.WriteLine("    globPattern    The glob pattern for develop comment xml file.");
-            Console.WriteLine("                   '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/'");
-            Console.WriteLine("                   e.g. \"**/*.xml\"");
-            Console.WriteLine("    msdnVersion    The version in msdn.");
-            Console.WriteLine("                   e.g. \"vs.110\"");
+            Console.WriteLine("{0} <outputFile> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
+            Console.WriteLine("    outputFile      The output xref archive file.");
+            Console.WriteLine("                    e.g. \"msdn\"");
+            Console.WriteLine("    baseDirectory   The base directory contains develop comment xml file.");
+            Console.WriteLine("                    e.g. \"c:\\\"");
+            Console.WriteLine("    globPattern     The glob pattern for develop comment xml file.");
+            Console.WriteLine("                    '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/'");
+            Console.WriteLine("                    e.g. \"**/*.xml\"");
+            Console.WriteLine("    msdnVersion     The version in msdn.");
+            Console.WriteLine("                    e.g. \"vs.110\"");
         }
 
         private void PackReference()
         {
-            Directory.CreateDirectory(_packageDirectory);
             var task = PackReferenceAsync();
             PrintStatistics(task).Wait();
         }
@@ -189,65 +189,97 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 return;
             }
-            if (files.Count == 1)
+            var dir = Path.GetDirectoryName(_packageFile);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
             {
-                await PackOneReferenceAsync(files[0]);
-                return;
+                Directory.CreateDirectory(dir);
             }
-            // left is smaller files, right is bigger files.
-            var left = 0;
-            var right = files.Count - 1;
-            var leftTask = PackOneReferenceAsync(files[left]);
-            var rightTask = PackOneReferenceAsync(files[right]);
-            while (left <= right)
+            bool updateMode = File.Exists(_packageFile);
+            using (var writer = XRefArchive.Open(_packageFile, updateMode ? XRefArchiveMode.Update : XRefArchiveMode.Create))
             {
-                var completed = await Task.WhenAny(new[] { leftTask, rightTask }.Where(t => t != null));
-                await completed; // throw if any error.
-                if (completed == leftTask)
+                if (!updateMode)
                 {
-                    left++;
-                    if (left < right)
-                    {
-                        leftTask = PackOneReferenceAsync(files[left]);
-                    }
-                    else
-                    {
-                        leftTask = null;
-                    }
+                    writer.CreateMajor(new XRefMap { HrefUpdated = true, Redirections = new List<XRefMapRedirection>() });
                 }
-                else
+
+                if (files.Count == 1)
                 {
-                    right--;
-                    if (left < right)
+                    await PackOneReferenceAsync(files[0], writer);
+                    return;
+                }
+                // left is smaller files, right is bigger files.
+                var left = 0;
+                var right = files.Count - 1;
+                var leftTask = PackOneReferenceAsync(files[left], writer);
+                var rightTask = PackOneReferenceAsync(files[right], writer);
+                while (left <= right)
+                {
+                    var completed = await Task.WhenAny(new[] { leftTask, rightTask }.Where(t => t != null));
+                    await completed; // throw if any error.
+                    if (completed == leftTask)
                     {
-                        rightTask = PackOneReferenceAsync(files[right]);
+                        left++;
+                        if (left < right)
+                        {
+                            leftTask = PackOneReferenceAsync(files[left], writer);
+                        }
+                        else
+                        {
+                            leftTask = null;
+                        }
                     }
                     else
                     {
-                        rightTask = null;
+                        right--;
+                        if (left < right)
+                        {
+                            rightTask = PackOneReferenceAsync(files[right], writer);
+                        }
+                        else
+                        {
+                            rightTask = null;
+                        }
                     }
                 }
             }
         }
 
-        private async Task PackOneReferenceAsync(string file)
+        private async Task PackOneReferenceAsync(string file, XRefArchive writer)
         {
-            var currentPackage = Path.ChangeExtension(Path.GetFileName(file), "rpk");
+            var currentPackage = Path.GetFileName(file);
             lock (_currentPackages)
             {
                 _currentPackages[Array.IndexOf(_currentPackages, null)] = currentPackage;
             }
-            using (var writer = ExternalReferencePackageWriter.Append(Path.Combine(_packageDirectory, currentPackage), new Uri("https://msdn.microsoft.com/")))
+            var entries = new List<XRefMapRedirection>();
+            await GetItems(file).ForEachAsync(pair =>
             {
-                await GetItems(file).ForEachAsync(pair =>
+                lock (writer)
                 {
-                    lock (writer)
-                    {
-                        writer.AddOrUpdateEntry(pair.EntryName + ".yml", pair.ViewModel);
-                        _entryCount++;
-                        _apiCount += pair.ViewModel.Count;
-                    }
-                });
+                    entries.Add(
+                        new XRefMapRedirection
+                        {
+                            UidPrefix = pair.EntryName,
+                            Href = writer.CreateMinor(
+                                new XRefMap
+                                {
+                                    Sorted = true,
+                                    HrefUpdated = true,
+                                    References = pair.ViewModel,
+                                },
+                                new[] { pair.EntryName })
+                        });
+                    _entryCount++;
+                    _apiCount += pair.ViewModel.Count;
+                }
+            });
+            lock (writer)
+            {
+                var map = writer.GetMajor();
+                map.Redirections = (from r in map.Redirections.Concat(entries)
+                                    orderby r.UidPrefix.Length descending
+                                    select r).ToList();
+                writer.UpdateMajor(map);
             }
             lock (_currentPackages)
             {
@@ -280,7 +312,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 {
                     for (int i = 0; i < _currentPackages.Length; i++)
                     {
-                        Console.WriteLine("Package: " + (_currentPackages[i] ?? string.Empty).PadRight(Console.WindowWidth - "Package: ".Length - 1));
+                        Console.WriteLine("Packing: " + (_currentPackages[i] ?? string.Empty).PadRight(Console.WindowWidth - "Packing: ".Length - 1));
                     }
                 }
                 Console.WriteLine(
@@ -312,40 +344,43 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             return from entry in
                        (from entry in GetAllCommentId(file)
                         select entry).AcquireSemaphore(_semaphoreForEntry).ToObservable(Scheduler.Default)
-                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry)).Do(_ => _semaphoreForEntry.Release())
+                   from vm in Observable.FromAsync(() => GetXRefSpecAsync(entry)).Do(_ => _semaphoreForEntry.Release())
                    where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
-        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
+        private async Task<List<XRefSpec>> GetXRefSpecAsync(ClassEntry entry)
         {
-            List<ReferenceViewModel> result = new List<ReferenceViewModel>(entry.Items.Count);
+            var result = new List<XRefSpec>(entry.Items.Count);
             var type = entry.Items.Find(item => item.Uid == entry.EntryName);
-            ReferenceViewModel typeVM = null;
+            XRefSpec typeSpec = null;
             if (type != null)
             {
-                typeVM = await GetViewModelItemAsync(type);
-                result.Add(typeVM);
+                typeSpec = await GetXRefSpecAsync(type);
+                if (typeSpec != null)
+                {
+                    result.Add(typeSpec);
+                }
             }
             int size = 0;
-
-            foreach (var vmsTask in
+            foreach (var specsTask in
                 from block in
                     (from item in entry.Items
                      where item != type
                      select item).BlockBuffer(() => size = size * 2 + 1)
-                select Task.WhenAll(from item in block select GetViewModelItemAsync(item)))
+                select Task.WhenAll(from item in block select GetXRefSpecAsync(item)))
             {
-                result.AddRange(await vmsTask);
+                result.AddRange(from s in await specsTask where s != null select s);
             }
-            if (typeVM != null && typeVM.Href != null)
+            result.AddRange(await GetOverloadXRefSpecAsync(result));
+            if (typeSpec != null && typeSpec.Href != null)
             {
                 // handle enum field, or other one-page-member
                 foreach (var item in result)
                 {
                     if (item.Href == null)
                     {
-                        item.Href = typeVM.Href;
+                        item.Href = typeSpec.Href;
                     }
                 }
             }
@@ -353,21 +388,24 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 result.RemoveAll(item => item.Href == null);
             }
+            result.Sort(XRefSpecUidComparer.Instance);
             return result;
         }
 
-        private async Task<ReferenceViewModel> GetViewModelItemAsync(CommentIdAndUid pair)
+        private async Task<XRefSpec> GetXRefSpecAsync(CommentIdAndUid pair)
         {
-            var alias = GetAlias(pair.CommentId);
+            var alias = GetAliasWithMember(pair.CommentId);
             if (alias != null)
             {
                 var url = string.Format(MsdnUrlTemplate, alias, _msdnVersion);
                 // verify alias exists
-                if ((await _checkUrlCache.GetAsync(url)).Value)
+                var vr = (await _checkUrlCache.GetAsync(pair.CommentId + "||||" + url)).Value;
+                if (vr == true)
                 {
-                    return new ReferenceViewModel
+                    return new XRefSpec
                     {
                         Uid = pair.Uid,
+                        CommentId = pair.CommentId,
                         Href = url,
                     };
                 }
@@ -375,16 +413,77 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
             if (string.IsNullOrEmpty(shortId))
             {
-                return new ReferenceViewModel
+                if (pair.CommentId.StartsWith("F:"))
                 {
-                    Uid = pair.Uid,
-                };
+                    // work around for enum field.
+                    shortId = await _shortIdCache.GetAsync(
+                        "T:" + pair.CommentId.Remove(pair.CommentId.LastIndexOf('.')).Substring(2));
+                    if (string.IsNullOrEmpty(shortId))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
             }
-            return new ReferenceViewModel
+            return new XRefSpec
             {
                 Uid = pair.Uid,
+                CommentId = pair.CommentId,
                 Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
             };
+        }
+
+        private async Task<XRefSpec[]> GetOverloadXRefSpecAsync(List<XRefSpec> specs)
+        {
+            var pairs = (from spec in specs
+                         let overload = GetOverloadIdBody(spec)
+                         where overload != null
+                         group Tuple.Create(spec, overload) by overload.Uid into g
+                         select g.First());
+            return await Task.WhenAll(from pair in pairs select GetOverloadXRefSpecCoreAsync(pair));
+        }
+
+        private async Task<XRefSpec> GetOverloadXRefSpecCoreAsync(Tuple<XRefSpec, CommentIdAndUid> pair)
+        {
+            var dict = await _commentIdToShortIdMapCache.GetAsync(pair.Item1.CommentId);
+            if (dict.TryGetValue(pair.Item2.CommentId, out string shortId))
+            {
+                return new XRefSpec
+                {
+                    Uid = pair.Item2.Uid,
+                    CommentId = pair.Item2.CommentId,
+                    Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
+                };
+            }
+            else
+            {
+                return new XRefSpec(pair.Item1)
+                {
+                    Uid = pair.Item2.Uid
+                };
+            }
+        }
+
+        private static CommentIdAndUid GetOverloadIdBody(XRefSpec pair)
+        {
+            switch (pair.CommentId[0])
+            {
+                case 'M':
+                case 'P':
+                    var body = pair.Uid;
+                    var index = body.IndexOf('(');
+                    if (index != -1)
+                    {
+                        body = body.Remove(index);
+                    }
+                    body = GenericMethodPostFix.Replace(body, string.Empty);
+                    return new CommentIdAndUid("Overload:" + body, body + "*");
+                default:
+                    return null;
+            }
         }
 
         private string GetContainingCommentId(string commentId)
@@ -406,6 +505,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     case 'M':
                     case 'P':
                         return "T" + result.Substring(1);
+                    case 'O':
+                        return "T" + result.Substring("Overload".Length);
                     default:
                         return "N" + result.Substring(1);
                 }
@@ -427,38 +528,27 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             return null;
         }
 
+        private string GetAliasWithMember(string commentId)
+        {
+            var uid = commentId.Substring(2);
+            var parameterIndex = uid.IndexOf('(');
+            if (parameterIndex != -1)
+            {
+                uid = uid.Remove(parameterIndex);
+            }
+            uid = GenericMethodPostFix.Replace(uid, string.Empty);
+            if (NormalUid.IsMatch(uid))
+            {
+                return uid.ToLower();
+            }
+            return null;
+        }
+
         private async Task<string> LoadShortIdAsync(string commentId)
         {
             string alias = GetAlias(commentId);
             string currentCommentId = commentId;
-            if (alias == null)
-            {
-                do
-                {
-                    var containingCommentId = GetContainingCommentId(currentCommentId);
-                    if (containingCommentId == null)
-                    {
-                        return string.Empty;
-                    }
-                    var dict = await _commentIdToShortIdMapCache.GetAsync(containingCommentId);
-                    string shortId;
-                    if (dict.TryGetValue(commentId, out shortId))
-                    {
-                        return shortId;
-                    }
-                    else
-                    {
-                        // maybe case not match.
-                        shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
-                        if (shortId != null)
-                        {
-                            return shortId;
-                        }
-                    }
-                    currentCommentId = containingCommentId;
-                } while (commentId[0] == 'T'); // handle nested type
-            }
-            else
+            if (alias != null)
             {
                 using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
@@ -479,6 +569,29 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     }
                 }
             }
+            do
+            {
+                var containingCommentId = GetContainingCommentId(currentCommentId);
+                if (containingCommentId == null)
+                {
+                    return string.Empty;
+                }
+                var dict = await _commentIdToShortIdMapCache.GetAsync(containingCommentId);
+                if (dict.TryGetValue(commentId, out string shortId))
+                {
+                    return shortId;
+                }
+                else
+                {
+                    // maybe case not match.
+                    shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
+                    if (shortId != null)
+                    {
+                        return shortId;
+                    }
+                }
+                currentCommentId = containingCommentId;
+            } while (commentId[0] == 'T'); // handle nested type
             return string.Empty;
         }
 
@@ -540,9 +653,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private IEnumerable<ClassEntry> GetAllCommentId(string file)
         {
             return from commentId in GetAllCommentIdCore(file)
-                   where commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
+                   where commentId.StartsWith("N:") || commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
                    let uid = commentId.Substring(2)
-                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
+                   let lastDot = uid.Split('(')[0].LastIndexOf('.')
+                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("N:") || commentId.StartsWith("T:") || lastDot == -1 ? uid : uid.Remove(lastDot) into g
                    select new ClassEntry(g.Key, g.ToList());
         }
 
@@ -570,6 +684,19 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private IEnumerable<string> GetAllCommentIdCore(string file)
         {
+            if (".xml".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))
+            {
+                return GetAllCommentIdFromXml(file);
+            }
+            if (".txt".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))
+            {
+                return GetAllCommentIdFromText(file);
+            }
+            throw new NotSupportedException($"Unable to read comment id from file: {file}.");
+        }
+
+        private IEnumerable<string> GetAllCommentIdFromXml(string file)
+        {
             return from reader in
                        new Func<XmlReader>(() => XmlReader.Create(file))
                        .EmptyIfThrow()
@@ -581,11 +708,35 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                    select commentId;
         }
 
-        private async Task<StrongBox<bool>> IsUrlOkAsync(string url)
+        private IEnumerable<string> GetAllCommentIdFromText(string file)
         {
+            return File.ReadLines(file);
+        }
+
+        private async Task<StrongBox<bool?>> IsUrlOkAsync(string pair)
+        {
+            var index = pair.IndexOf("||||");
+            var commentId = pair.Remove(index);
+            var url = pair.Substring(index + "||||".Length);
+
             using (var response = await _client.GetWithRetryAsync(url, _semaphoreForHttp, RetryDelay))
             {
-                return new StrongBox<bool>(response.StatusCode == HttpStatusCode.OK);
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    return new StrongBox<bool?>(null);
+                }
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var xr = XmlReader.Create(stream, new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore }))
+                {
+                    while (xr.ReadToFollowing("meta"))
+                    {
+                        if (xr.GetAttribute("name") == "ms.assetid")
+                        {
+                            return new StrongBox<bool?>(commentId.Equals(xr.GetAttribute("content"), StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                }
+                return new StrongBox<bool?>(false);
             }
         }
 

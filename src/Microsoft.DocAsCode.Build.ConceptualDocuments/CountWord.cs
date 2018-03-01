@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class CountWord : BaseDocumentBuildStep
+    public class CountWord : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(CountWord);
 
@@ -33,6 +33,12 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 }
             }
         }
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
     }
 
     internal static class WordCounter
@@ -48,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             HtmlDocument document = new HtmlDocument();
 
-            // Append a space before each end bracket so that InnerText inside different child nodes can seperate itself from each other.
+            // Append a space before each end bracket so that InnerText inside different child nodes can separate itself from each other.
             document.LoadHtml(html.Replace("</", " </"));
 
             long wordCount = 0;

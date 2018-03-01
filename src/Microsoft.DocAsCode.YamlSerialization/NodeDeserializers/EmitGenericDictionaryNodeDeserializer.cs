@@ -26,18 +26,17 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             private readonly IObjectFactory _objectFactory;
         private readonly Dictionary<Type, Type[]> _gpCache =
             new Dictionary<Type, Type[]>();
-        private readonly Dictionary<Tuple<Type, Type>, Action<EventReader, Type, Func<EventReader, Type, object>, object>> _actionCache =
-            new Dictionary<Tuple<Type, Type>, Action<EventReader, Type, Func<EventReader, Type, object>, object>>();
+        private readonly Dictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object>, object>> _actionCache =
+            new Dictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object>, object>>();
 
         public EmitGenericDictionaryNodeDeserializer(IObjectFactory objectFactory)
         {
             _objectFactory = objectFactory;
         }
 
-        bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            Type[] gp;
-            if (!_gpCache.TryGetValue(expectedType, out gp))
+            if (!_gpCache.TryGetValue(expectedType, out Type[] gp))
             {
                 var dictionaryType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(IDictionary<,>));
                 if (dictionaryType != null)
@@ -60,11 +59,10 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             reader.Expect<MappingStart>();
 
             value = _objectFactory.Create(expectedType);
-            Action<EventReader, Type, Func<EventReader, Type, object>, object> action;
             var cacheKey = Tuple.Create(gp[0], gp[1]);
-            if (!_actionCache.TryGetValue(cacheKey, out action))
+            if (!_actionCache.TryGetValue(cacheKey, out var action))
             {
-                var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(EventReader), typeof(Type), typeof(Func<EventReader, Type, object>), typeof(object) });
+                var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object) });
                 var il = dm.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldarg_1);
@@ -73,7 +71,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 il.Emit(OpCodes.Castclass, typeof(IDictionary<,>).MakeGenericType(gp));
                 il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(gp));
                 il.Emit(OpCodes.Ret);
-                action = (Action<EventReader, Type, Func<EventReader, Type, object>, object>)dm.CreateDelegate(typeof(Action<EventReader, Type, Func<EventReader, Type, object>, object>));
+                action = (Action<IParser, Type, Func<IParser, Type, object>, object>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object>, object>));
                 _actionCache[cacheKey] = action;
             }
             action(reader, expectedType, nestedObjectDeserializer, value);
@@ -84,7 +82,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void DeserializeHelper<TKey, TValue>(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, IDictionary<TKey, TValue> result)
+        public static void DeserializeHelper<TKey, TValue>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, IDictionary<TKey, TValue> result)
         {
             while (!reader.Accept<MappingEnd>())
             {

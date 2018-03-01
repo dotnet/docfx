@@ -1,12 +1,25 @@
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project>
   <PropertyGroup>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectLockFile>donotuse_project.lock.json</ProjectLockFile>
-    <VersionCSPath>TEMP\</VersionCSPath>
-    <CurrentVersion>1.0.0.0</CurrentVersion>
+    <TargetFramework>net461</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
+    <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
+    <Product Condition=" '$(Product)' == '' ">$(MSBuildProjectName)</Product>
+    <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+    <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
+    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © Microsoft docfx 2015-2017</Copyright>
+
+    <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+
+    <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
+    <VersionFileExists Condition="Exists($(VersionCSFile))" >true</VersionFileExists>
+
+    <GenerateAssemblyVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
+
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace Condition=" '$(RootNamespace)' == '' ">$(AssemblyName)</RootNamespace>
@@ -16,16 +29,12 @@
     <!-- Note: unless explicitly specified, we will generate DLL -->
     <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
     <Prefer32Bit>false</Prefer32Bit>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <RestorePackages Condition=" '$(RestorePackages)' == '' ">true</RestorePackages>
 
     <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <WarningLevel>4</WarningLevel>
-    <OutputPath Condition="'$(OutputPath)'==''">$(MSBuildThisFileDirectory)..\..\target\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-    <TaskToolPath>$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll</TaskToolPath>
-    <TaskToolPath Condition="'$(MSBuildToolsVersion)' == '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskToolPath>
-    <VersionFilePath Condition="'$(VersionFilePath)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.txt</VersionFilePath>
+
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -39,95 +48,11 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
-  <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(TaskToolPath)">
-    <ParameterGroup>
-      <CurrentVersion ParameterType="System.String" Required="true" />
-      <VersionCSPath ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Using Namespace="System.IO" />
-      <Using Namespace="System.Linq" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
-            // Version format similar to 0.4.8-alpha-g0a0259d
-            var parts = CurrentVersion.Split('-');
-            var version = parts[0];
-            var fileVersion = parts[0];
-            var versionParts = version.Split('.');
-            var revision = DateTime.Now.ToString("yyMMdd").Substring(1);
-            if (versionParts.Length < 4 ) {
-              version += string.Concat(Enumerable.Repeat(".0", 4 - versionParts.Length));
-              fileVersion += string.Concat(Enumerable.Repeat(".0", 3 - versionParts.Length));
-              fileVersion += "." + revision;
-            }
-            
-            string versionFilePath = Path.Combine(VersionCSPath, "version.cs");
-            string content = string.Format(@"
-using System.Reflection;
-
-[assembly: AssemblyVersion(""{0}"")]
-[assembly: AssemblyFileVersion(""{1}"")]
-
-[assembly: AssemblyCompanyAttribute(""Microsoft"")]
-[assembly: AssemblyDescriptionAttribute(""A tool created by Microsoft Visual Studio China team to generate documentation from source code and markdown files."")]", version, fileVersion);
-            if (File.Exists(versionFilePath))
-            {
-                if (File.ReadAllText(versionFilePath) == content)
-                {
-                    return true;
-                }
-            }
-
-            try
-            {
-                File.WriteAllText(versionFilePath, content);
-            }
-            catch
-            {
-                // Race conditions may take place when multiple projects are built at the same time
-                // Ignore exceptions
-            }
-]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
-  <UsingTask TaskName="GetSourceVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(TaskToolPath)">
-    <ParameterGroup>
-      <VersionFilePath ParameterType="System.String" Required="true" />
-      <CurrentVersion ParameterType="System.String" Output="true" />
-    </ParameterGroup>
-    <Task>
-      <Using Namespace="System.IO" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
-            CurrentVersion = "1.0.0";
-            if (File.Exists(VersionFilePath))
-            {
-              try
-              {
-                var firstLine = File.ReadLines(VersionFilePath).FirstOrDefault();
-                if (!string.IsNullOrEmpty(firstLine))
-                {
-                  CurrentVersion =  firstLine.Trim('v', ' ');
-                }
-              } catch (FileNotFoundException) { }
-            }
-]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
-  <!-- Version information is mandatory -->
-  <Target Name="GenerateVersionInfo" BeforeTargets="PrepareForBuild">
-    <Exec Command='md "$(VersionCSPath)"' Condition="!Exists($(VersionCSPath))" />
-    <GetSourceVersion VersionFilePath="$(VersionFilePath)">
-      <Output PropertyName="CurrentVersion" TaskParameter="CurrentVersion"/>
-    </GetSourceVersion>
-    <GenerateVersionCSFile CurrentVersion="$(CurrentVersion)" VersionCSPath="$(VersionCSPath)"/>
-    <Message Text="Read current version $(CurrentVersion) from '$(VersionFilePath)'" />
-  </Target>
   <ItemGroup>
-    <Compile Include="$(VersionCSPath)version.cs" />
+    <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>

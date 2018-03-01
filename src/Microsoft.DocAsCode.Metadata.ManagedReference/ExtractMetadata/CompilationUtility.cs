@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
+    using System.Linq;
+    using System.Collections.Generic;
 
     using Microsoft.CodeAnalysis;
 
@@ -51,6 +53,50 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Logger.Log(LogLevel.Warning, $"Error generating compilation for VB code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
                 return null;
+            }
+        }
+
+        //TODO: Only process CSharp assembly currently
+        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths)
+        {
+            try
+            {
+                var paths = assemblyPaths.ToList();
+                //TODO: "mscorlib" should be ignored while extracting metadata from .NET Core/.NET Framework
+                paths.Add(typeof(object).Assembly.Location);
+                var assemblies = (from path in paths
+                                  select MetadataReference.CreateFromFile(path)).ToList();
+                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies);
+                return complilation;
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Warning, $"Error generating compilation from assemblies {string.Join(Environment.NewLine, assemblyPaths)}: {e.Message}. Ignored.");
+                return null;
+            }
+        }
+
+        public static IEnumerable<Tuple<MetadataReference, IAssemblySymbol>> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
+        {
+            foreach(var reference in assemblyCompilation.References)
+            {
+                Logger.LogVerbose($"Loading assembly {reference.Display}...");
+                var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
+                if (assembly == null)
+                {
+                    Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
+                }
+                else
+                {
+                    //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
+                    if (assembly.Identity?.Name == "mscorlib")
+                    {
+                        Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
+                        yield break;
+                    }
+
+                    yield return Tuple.Create(reference, assembly);
+                }
             }
         }
 

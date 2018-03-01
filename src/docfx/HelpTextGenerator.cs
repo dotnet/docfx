@@ -3,11 +3,8 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
     using CommandLine.Text;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
 
     static class HelpTextGenerator
@@ -40,13 +37,18 @@ namespace Microsoft.DocAsCode
 
         public static string GetHeader()
         {
-            var helpText = new HelpText(HelpText)
+            var helpText = GetVersion();
+            AddLinesToHelpText(helpText, GeneralUsage);
+            return helpText;
+        }
+
+        public static HelpText GetVersion()
+        {
+            return new HelpText(HelpText)
             {
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };
-            AddLinesToHelpText(helpText, GeneralUsage);
-            return helpText;
         }
 
         public static string GetSubCommandHelpMessage(object option, string[] usages)

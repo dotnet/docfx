@@ -1,62 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{72225351-32FD-103F-1818-25E3C7DF74A2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <NuGetPackageImportStamp>4dff0804</NuGetPackageImportStamp>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
+  
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ConsoleUtility.cs" />
-    <Compile Include="Exceptions\DocfxException.cs" />
-    <Compile Include="JsonUtility.cs" />
-    <Compile Include="Loggers\ConsoleLogListener.cs" />
-    <Compile Include="Loggers\CrossAppDomainListener.cs" />
-    <Compile Include="Loggers\ILoggerListener.cs" />
-    <Compile Include="Loggers\ILogItem.cs" />
-    <Compile Include="Loggers\Logger.cs" />
-    <Compile Include="Loggers\LoggerFileScope.cs" />
-    <Compile Include="Loggers\LoggerPhaseScope.cs" />
-    <Compile Include="Loggers\LogLevel.cs" />
-    <Compile Include="Loggers\PerformanceScope.cs" />
-    <Compile Include="Loggers\ReplayLogListener.cs" />
-    <Compile Include="Loggers\ReportLogListener.cs" />
-    <Compile Include="XHtmlWriter.cs" />
-    <Compile Include="YamlUtility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
-      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
-      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

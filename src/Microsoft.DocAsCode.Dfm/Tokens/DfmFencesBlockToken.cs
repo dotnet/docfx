@@ -3,36 +3,21 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmFencesBlockToken : IMarkdownToken
+    public class DfmFencesBlockToken : DfmFencesToken
     {
-        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, string rawMarkdown, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
-        {
-            Rule = rule;
-            Context = context;
-            Path = path;
-            Lang = lang;
-            Name = name;
-            Title = title;
-            PathQueryOption = pathQueryOption;
-            RawMarkdown = rawMarkdown;
-        }
+        [Obsolete]
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
+            : base(rule, context, name, path, sourceInfo, lang, title, pathQueryOption) { }
 
-        public IMarkdownRule Rule { get; }
+        [Obsolete]
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null, string queryStringAndFragment = null)
+            : base(rule, context, name, path, sourceInfo, lang, title, pathQueryOption, queryStringAndFragment) { }
 
-        public IMarkdownContext Context { get; }
-
-        public string Path { get; }
-
-        public string Lang { get; }
-
-        public string Name { get; }
-
-        public string Title { get; }
-
-        public IDfmFencesBlockPathQueryOption PathQueryOption { get; }
-
-        public string RawMarkdown { get; set; }
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, string queryStringAndFragment = null)
+            : base(rule, context, name, path, sourceInfo, lang, title, queryStringAndFragment) { }
     }
 }

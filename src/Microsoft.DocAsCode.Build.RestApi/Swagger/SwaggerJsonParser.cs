@@ -3,35 +3,38 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger
 {
-    using System.IO;
     using System.Threading;
+
+    using Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    using Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
-
-    internal class SwaggerJsonParser
+    public class SwaggerJsonParser
     {
-        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
+        private static readonly ThreadLocal<JsonSerializer> Serializer = new ThreadLocal<JsonSerializer>(
             () =>
             {
-                var jsonSerializer = new JsonSerializer();
-                jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                jsonSerializer.MetadataPropertyHandling = MetadataPropertyHandling.Ignore;
+                var jsonSerializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MetadataPropertyHandling = MetadataPropertyHandling.Ignore
+                };
                 jsonSerializer.Converters.Add(new SwaggerObjectConverter());
                 return jsonSerializer;
             });
 
-        public static SwaggerModel Parse(string json)
+        public static SwaggerModel Parse(string swaggerFilePath)
         {
-            using (JsonReader reader = new JsonTextReader(new StringReader(json)))
-            {
-                var builder = new SwaggerJsonBuilder();
-                var swagger = builder.Read(reader);
-                var token = JToken.FromObject(swagger, _serializer.Value);
-                return token.ToObject<SwaggerModel>(_serializer.Value);
-            }
+            // Deserialize to internal swagger model
+            var builder = new SwaggerJsonBuilder();
+            var swagger = builder.Read(swaggerFilePath);
+
+            // Serialize to JToken
+            var token = JToken.FromObject(swagger, Serializer.Value);
+
+            // Convert to swagger model
+            return token.ToObject<SwaggerModel>(Serializer.Value);
         }
     }
 }

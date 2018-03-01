@@ -7,21 +7,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownTagInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Tag";
+        public virtual string Name => "Inline.Tag";
 
         public virtual Regex Tag => Regexes.Inline.Tag;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Tag.Match(source);
+            var match = Tag.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
-            var context = parser.Context;
-            var inLink = (bool)context.Variables[MarkdownInlineContext.IsInLink];
+            var c = parser.Context;
+            var inLink = (bool)c.Variables[MarkdownInlineContext.IsInLink];
             if (!inLink && Regexes.Lexers.StartHtmlLink.IsMatch(match.Value))
             {
                 parser.SwitchContext(MarkdownInlineContext.IsInLink, true);
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 parser.SwitchContext(MarkdownInlineContext.IsInLink, false);
             }
-            return new MarkdownTagInlineToken(this, parser.Context, match.Value);
+            return new MarkdownTagInlineToken(this, parser.Context, sourceInfo);
         }
     }
 }

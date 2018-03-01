@@ -3,20 +3,36 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
+    using System;
     using System.Linq;
     using System.Collections.Generic;
-    using System.Text.RegularExpressions;
+    using System.IO;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
 
+    [Collection("docfx STA")]
     public class PerfTest
     {
         [Fact]
         [Trait("Related", "Markdown")]
         [Trait("Related", "Perf")]
         public void TestPerf()
+        {
+            const int RepeatCount = 800;
+            string source = GetSource(RepeatCount);
+            var builder = new GfmEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            for (int i = 0; i < 2; i++)
+            {
+                var result = engine.Markup(source);
+                Assert.True(Enumerable.SequenceEqual(GetExpectedLines(RepeatCount), GetLines(result)));
+            }
+            GC.Collect();
+        }
+
+        private static string GetSource(int RepeatCount)
         {
             const string source = @"
 Heading
@@ -50,45 +66,53 @@ Numbered list:
 2. oranges
 3. pears
 ";
-            const string expectedTemplate = @"<h1 id=""heading{0}"">Heading</h1>
-<h2 id=""sub-heading{0}"">Sub-heading</h2>
-<h3 id=""another-deeper-heading{0}"">Another deeper heading</h3>
-<p>Paragraphs are separated
-by a blank line.</p>
-<p>Leave 2 spaces at the end of a line to do a<br>line break</p>
-<p>Text attributes <em>italic</em>, <strong>bold</strong>, 
-<code>monospace</code>, <del>strikethrough</del> .</p>
-<p>A <a href=""http://example.com"">link</a>.</p>
-<p>Shopping list:</p>
-<ul>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ul>
-<p>Numbered list:</p>
-<ol>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ol>
-";
+            return string.Concat(Enumerable.Repeat(source, RepeatCount));
+        }
 
-            var builder = new GfmEngineBuilder(new Options());
-            var source1000 = string.Concat(Enumerable.Repeat(source, 1000));
-            var template = Regex.Replace(expectedTemplate, "\r?\n", "\n");
-            var first = string.Format(template, "");
-            var expectedList = new List<string> { first };
-            for (var i = 1; i < 1000; i++)
+        private static IEnumerable<string> GetLines(string text)
+        {
+            var sr = new StringReader(text);
+            string line;
+            while ((line = sr.ReadLine()) != null)
             {
-                var content = string.Concat("-", i - 1);
-                expectedList.Add(string.Format(template, content));
+                yield return line;
             }
-            var expected1000 = string.Concat(expectedList);
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            for (int i = 0; i < 2; i++)
+        }
+
+        private static IEnumerable<string> GetExpectedLines(int count)
+        {
+            for (int i = 0; i < count; i++)
             {
-                var result = engine.Markup(source1000);
-                Assert.Equal(expected1000, result);
+                string idPostFix;
+                if (i == 0)
+                {
+                    idPostFix = string.Empty;
+                }
+                else
+                {
+                    idPostFix = "-" + i.ToString();
+                }
+                yield return $@"<h1 id=""heading{idPostFix}"">Heading</h1>";
+                yield return $@"<h2 id=""sub-heading{idPostFix}"">Sub-heading</h2>";
+                yield return $@"<h3 id=""another-deeper-heading{idPostFix}"">Another deeper heading</h3>";
+                yield return @"<p>Paragraphs are separated";
+                yield return @"by a blank line.</p>";
+                yield return @"<p>Leave 2 spaces at the end of a line to do a<br>line break</p>";
+                yield return @"<p>Text attributes <em>italic</em>, <strong>bold</strong>, ";
+                yield return @"<code>monospace</code>, <del>strikethrough</del> .</p>";
+                yield return @"<p>A <a href=""http://example.com"" data-raw-source=""[link](http://example.com)"">link</a>.</p>";
+                yield return @"<p>Shopping list:</p>";
+                yield return @"<ul>";
+                yield return @"<li>apples</li>";
+                yield return @"<li>oranges</li>";
+                yield return @"<li>pears</li>";
+                yield return @"</ul>";
+                yield return @"<p>Numbered list:</p>";
+                yield return @"<ol>";
+                yield return @"<li>apples</li>";
+                yield return @"<li>oranges</li>";
+                yield return @"<li>pears</li>";
+                yield return @"</ol>";
             }
         }
     }

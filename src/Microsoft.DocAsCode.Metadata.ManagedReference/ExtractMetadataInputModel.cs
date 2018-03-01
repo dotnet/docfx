@@ -10,21 +10,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public class ExtractMetadataInputModel
     {
-        public Dictionary<string, List<string>> Items { get; set; }
+        public List<string> Files { get; set; }
 
-        public string ApiFolderName { get; set; } = "api";
-
-        public string TocFileName { get; set; } = "toc.yml";
-
-        public string IndexFileName { get; set; } = ".manifest";
+        public string OutputFolder { get; set; }
 
         public bool PreserveRawInlineComments { get; set; }
 
-        public List<string> ExternalReferences { get; set; }
-
         public bool ForceRebuild { get; set; }
 
+        public bool ShouldSkipMarkup { get; set; }
+
         public string FilterConfigFile { get; set; }
+
+        public bool UseCompatibilityFileName { get; set; }
+
+        public string GlobalNamespaceId { get; set; }
+
+        public Dictionary<string, string> MSBuildProperties { get; set; }
 
         public override string ToString()
         {
@@ -33,13 +35,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 JsonUtility.Serialize(writer, this);
                 return writer.ToString();
             }
-        }
-
-        public ExtractMetadataInputModel Clone()
-        {
-            var cloned = (ExtractMetadataInputModel)this.MemberwiseClone();
-            cloned.Items = new Dictionary<string, List<string>>(Items);
-            return cloned;
         }
     }
 }

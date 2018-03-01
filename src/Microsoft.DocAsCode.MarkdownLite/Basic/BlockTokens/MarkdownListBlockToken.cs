@@ -3,17 +3,22 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public class MarkdownListBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownListBlockToken>
+    public class MarkdownListBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownListBlockToken>
     {
-        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, string rawMarkdown)
+        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, SourceInfo sourceInfo)
+            : this(rule, context, tokens, ordered, 1, sourceInfo) { }
+
+        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, int start, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Tokens = tokens;
             Ordered = ordered;
-            RawMarkdown = rawMarkdown;
+            Start = start;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -24,7 +29,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool Ordered { get; }
 
-        public string RawMarkdown { get; set; }
+        public int Start { get; }
+
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownListBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -33,7 +40,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownListBlockToken(Rule, Context, tokens, Ordered, RawMarkdown);
+            return new MarkdownListBlockToken(Rule, Context, tokens, Ordered, Start, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Tokens;
     }
 }

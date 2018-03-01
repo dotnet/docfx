@@ -10,18 +10,15 @@ namespace Microsoft.DocAsCode.Plugins
     public class SaveResult
     {
         public string DocumentType { get; set; }
-
-        /// <summary>
-        /// Model file should not be in-use, will remove in v1.9
-        /// </summary>
-        [Obsolete]
-        public string ModelFile { get; set; }
         public string FileWithoutExtension { get; set; }
         public string ResourceFile { get; set; }
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+        [Obsolete("use DocumentBuildContext.TocMap")]
         public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
         public ImmutableArray<XRefSpec> XRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
         public ImmutableArray<XRefSpec> ExternalXRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
     }
 }

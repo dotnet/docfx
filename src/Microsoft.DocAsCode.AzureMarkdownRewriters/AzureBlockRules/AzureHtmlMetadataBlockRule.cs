@@ -23,18 +23,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public virtual Regex AzureHtmlMetadataRegex => _azureHtmlMetadataRegex;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {
-            var match = AzureHtmlMetadataRegex.Match(source);
+            var match = AzureHtmlMetadataRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
 
-            source = source.Substring(match.Length);
-
-            object currentFilePath;
-            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            var sourceInfo = context.Consume(match.Length);
+            if (!engine.Context.Variables.TryGetValue("path", out object currentFilePath))
             {
                 Logger.LogWarning($"Can't get path for setting azure ms.assetid. Won't set it.");
                 currentFilePath = string.Empty;
@@ -44,9 +42,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             metadata.Properties["ms.assetid"] = $"{AzureDocumentPrefix}/{Path.GetFileNameWithoutExtension(currentFilePath.ToString())}";
             if (metadata == null)
             {
-                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+                return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
             }
-            return new AzureHtmlMetadataBlockToken(this, engine.Context, metadata.Properties, metadata.Tags, match.Value);
+            return new AzureHtmlMetadataBlockToken(this, engine.Context, metadata.Properties, metadata.Tags, sourceInfo);
         }
 
         private class AzureHtmlMetadata

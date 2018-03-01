@@ -1,132 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{C212545A-62F4-40A3-A814-2EE4C7DF7D41}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <NuGetPackageImportStamp>4dff0804</NuGetPackageImportStamp>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.props" />
+
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.AttributedModel">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Convention">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Hosting">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Runtime">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Caching" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CodeSnippetExtractor\CodeSnippet.cs" />
-    <Compile Include="CodeSnippetExtractor\CodeSnippetRegexExtractor.cs" />
-    <Compile Include="CodeSnippetExtractor\DfmTagNameResolveResult.cs" />
-    <Compile Include="CodeSnippetExtractor\FlatNameCodeSnippetExtractor.cs" />
-    <Compile Include="CodeSnippetExtractor\RecursiveNameCodeSnippetExtractor.cs" />
-    <Compile Include="DfmCodeExtractorHelper.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\DfmFencesBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\FullFileBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\MultipleLineRangeBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\TagNameBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\LineRangeBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockPathQueryOptions\IDfmFencesBlockPathQueryOption.cs" />
-    <Compile Include="DfmMarkdownRenderer.cs" />
-    <Compile Include="CodeSnippetExtractor\ICodeSnippetExtractor.cs" />
-    <Compile Include="MarkdownValidators\MarkdownSytleConfig.cs" />
-    <Compile Include="MarkdownValidators\MarkdownValidationRule.cs" />
-    <Compile Include="MarkdownValidators\MarkdownValidatorBuilder.cs" />
-    <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
-    <Compile Include="MarkdownValidators\TagValidationBehavior.cs" />
-    <Compile Include="Rules\DfmBlockquoteBlockRule.cs" />
-    <Compile Include="Rules\DfmEmailInlineRule.cs" />
-    <Compile Include="Rules\DfmFencesBlockRule.cs" />
-    <Compile Include="Rules\DfmIncludeBlockRule.cs" />
-    <Compile Include="Rules\DfmIncludeInlineRule.cs" />
-    <Compile Include="Rules\DfmNoteBlockRule.cs" />
-    <Compile Include="Rules\DfmParagraphBlockRule.cs" />
-    <Compile Include="Rules\DfmSectionBlockRule.cs" />
-    <Compile Include="Rules\DfmTextInlineRule.cs" />
-    <Compile Include="Rules\DfmXrefAutoLinkInlineRule.cs" />
-    <Compile Include="Rules\DfmXrefShortcutInlineRule.cs" />
-    <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
-    <Compile Include="Tokens\DfmFencesBlockToken.cs" />
-    <Compile Include="Tokens\DfmIncludeBlockToken.cs" />
-    <Compile Include="Tokens\DfmIncludeInlineToken.cs" />
-    <Compile Include="Tokens\DfmNoteBlockToken.cs" />
-    <Compile Include="Tokens\DfmSectionBlockToken.cs" />
-    <Compile Include="Tokens\DfmXrefInlineToken.cs" />
-    <Compile Include="Tokens\DfmYamlHeaderBlockToken.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="DfmCodeExtractor.cs" />
-    <Compile Include="DfmContextExtensions.cs" />
-    <Compile Include="DfmEngine.cs" />
-    <Compile Include="DfmEngineBuilder.cs" />
-    <Compile Include="DfmExtractCodeResult.cs" />
-    <Compile Include="DfmRenderer.cs" />
-    <Compile Include="DfmRendererHelper.cs" />
-    <Compile Include="DocfxFlavoredIncHelper.cs" />
-    <Compile Include="DocfxFlavoredMarked.cs" />
-    <Compile Include="FileCacheLite.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
-      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
-      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
-      <Name>Microsoft.DocAsCode.Plugins</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
-      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
-      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

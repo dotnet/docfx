@@ -6,13 +6,16 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.EntityMergers;
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using YamlDotNet.Serialization;
-
-    using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
-    using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
     public class ItemViewModel : IOverwriteDocumentViewModel
@@ -30,13 +33,23 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty(Constants.PropertyName.Id)]
         public string Id { get; set; }
 
-        [YamlMember(Alias = "parent")]
-        [JsonProperty("parent")]
+        [YamlMember(Alias = "isEii")]
+        [JsonProperty("isEii")]
+        public bool IsExplicitInterfaceImplementation { get; set; }
+
+        [YamlMember(Alias = "isExtensionMethod")]
+        [JsonProperty("isExtensionMethod")]
+        public bool IsExtensionMethod { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.Parent)]
+        [JsonProperty(Constants.PropertyName.Parent)]
+        [UniqueIdentityReference]
         public string Parent { get; set; }
 
-        [YamlMember(Alias = "children")]
+        [YamlMember(Alias = Constants.PropertyName.Children)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("children")]
+        [JsonProperty(Constants.PropertyName.Children)]
+        [UniqueIdentityReference]
         public List<string> Children { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Href)]
@@ -47,11 +60,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("langs")]
         public string[] SupportedLanguages { get; set; } = new string[] { "csharp", "vb" };
 
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
+        [YamlMember(Alias = Constants.PropertyName.Name)]
+        [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember("name.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
         public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
 
@@ -61,8 +74,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("csharp", out result);
+                Names.TryGetValue("csharp", out string result);
                 return result;
             }
             set
@@ -84,8 +96,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("vb", out result);
+                Names.TryGetValue("vb", out string result);
                 return result;
             }
             set
@@ -101,11 +112,63 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
             }
         }
 
-        [YamlMember(Alias = "fullName")]
-        [JsonProperty("fullName")]
+        [YamlMember(Alias = Constants.PropertyName.NameWithType)]
+        [JsonProperty(Constants.PropertyName.NameWithType)]
+        public string NameWithType { get; set; }
+
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
+        [JsonIgnore]
+        public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameWithTypeForCSharp
+        {
+            get
+            {
+                Names.TryGetValue("csharp", out string result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    NamesWithType.Remove("csharp");
+                }
+                else
+                {
+                    NamesWithType["csharp"] = value;
+                }
+            }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameWithTypeForVB
+        {
+            get
+            {
+                Names.TryGetValue("vb", out string result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    NamesWithType.Remove("vb");
+                }
+                else
+                {
+                    NamesWithType["vb"] = value;
+                }
+            }
+        }
+
+        [YamlMember(Alias = Constants.PropertyName.FullName)]
+        [JsonProperty(Constants.PropertyName.FullName)]
         public string FullName { get; set; }
 
-        [ExtensibleMember("fullName.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
         [JsonIgnore]
         public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
 
@@ -115,8 +178,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                FullNames.TryGetValue("csharp", out result);
+                FullNames.TryGetValue("csharp", out string result);
                 return result;
             }
             set
@@ -138,8 +200,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                FullNames.TryGetValue("vb", out result);
+                FullNames.TryGetValue("vb", out string result);
                 return result;
             }
             set
@@ -167,73 +228,115 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
-        [YamlMember(Alias = "assemblies")]
+        [YamlMember(Alias = Constants.PropertyName.Assemblies)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("assemblies")]
+        [JsonProperty(Constants.PropertyName.Assemblies)]
         public List<string> AssemblyNameList { get; set; }
 
-        [YamlMember(Alias = "namespace")]
-        [JsonProperty("namespace")]
+        [YamlMember(Alias = Constants.PropertyName.Namespace)]
+        [JsonProperty(Constants.PropertyName.Namespace)]
+        [UniqueIdentityReference]
         public string NamespaceName { get; set; }
 
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]
+        [MarkdownContent]
         public string Summary { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
+        [JsonProperty(Constants.PropertyName.AdditionalNotes)]
+        public AdditionalNotes AdditionalNotes { get; set; }
 
         [YamlMember(Alias = "remarks")]
         [JsonProperty("remarks")]
+        [MarkdownContent]
         public string Remarks { get; set; }
 
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
+        [MergeOption(MergeOption.Replace)]
+        [MarkdownContent]
         public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
         [JsonProperty("syntax")]
         public SyntaxDetailViewModel Syntax { get; set; }
 
-        [YamlMember(Alias = "overridden")]
-        [JsonProperty("overridden")]
+        [YamlMember(Alias = Constants.PropertyName.Overridden)]
+        [JsonProperty(Constants.PropertyName.Overridden)]
+        [UniqueIdentityReference]
         public string Overridden { get; set; }
 
-        [YamlMember(Alias = "exceptions")]
-        [JsonProperty("exceptions")]
-        public List<CrefInfo> Exceptions { get; set; }
+        [YamlMember(Alias = Constants.PropertyName.Overload)]
+        [JsonProperty(Constants.PropertyName.Overload)]
+        [UniqueIdentityReference]
+        public string Overload { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.Exceptions)]
+        [JsonProperty(Constants.PropertyName.Exceptions)]
+        public List<ExceptionInfo> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
         [JsonProperty("seealso")]
-        public List<CrefInfo> SeeAlsos { get; set; }
+        public List<LinkInfo> SeeAlsos { get; set; }
 
         [YamlMember(Alias = "see")]
         [JsonProperty("see")]
-        public List<CrefInfo> Sees { get; set; }
+        public List<LinkInfo> Sees { get; set; }
 
-        [YamlMember(Alias = "inheritance")]
+        [JsonIgnore]
+        [YamlIgnore]
+        [UniqueIdentityReference]
+        public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
+
+        [JsonIgnore]
+        [YamlIgnore]
+        [UniqueIdentityReference]
+        public List<string> SeesUidReference => Sees?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
+
+        [YamlMember(Alias = Constants.PropertyName.Inheritance)]
         [MergeOption(MergeOption.Ignore)]
-        [JsonProperty("inheritance")]
+        [JsonProperty(Constants.PropertyName.Inheritance)]
+        [UniqueIdentityReference]
         public List<string> Inheritance { get; set; }
 
-        [YamlMember(Alias = "implements")]
+        [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
+        [MergeOption(MergeOption.Ignore)]
+        [JsonProperty(Constants.PropertyName.DerivedClasses)]
+        [UniqueIdentityReference]
+        public List<string> DerivedClasses { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.Implements)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("implements")]
+        [JsonProperty(Constants.PropertyName.Implements)]
+        [UniqueIdentityReference]
         public List<string> Implements { get; set; }
 
-        [YamlMember(Alias = "inheritedMembers")]
+        [YamlMember(Alias = Constants.PropertyName.InheritedMembers)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("inheritedMembers")]
+        [JsonProperty(Constants.PropertyName.InheritedMembers)]
+        [UniqueIdentityReference]
         public List<string> InheritedMembers { get; set; }
 
-        [ExtensibleMember("modifiers.")]
+        [YamlMember(Alias = Constants.PropertyName.ExtensionMethods)]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
+        [JsonProperty(Constants.PropertyName.ExtensionMethods)]
+        [UniqueIdentityReference]
+        public List<string> ExtensionMethods { get; set; }
+
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
 
         [YamlMember(Alias = Constants.PropertyName.Conceptual)]
         [JsonProperty(Constants.PropertyName.Conceptual)]
+        [MarkdownContent]
         public string Conceptual { get; set; }
 
-        [YamlMember(Alias = "platform")]
-        [JsonProperty("platform")]
+        [YamlMember(Alias = Constants.PropertyName.Platform)]
+        [JsonProperty(Constants.PropertyName.Platform)]
+        [MergeOption(MergeOption.Replace)]
         public List<string> Platform { get; set; }
 
         [YamlMember(Alias = "attributes")]
@@ -247,30 +350,17 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(WriteData = true, ReadData = false)]
-        public Dictionary<string, object> ExtensionData
-        {
-            get
-            {
-                var result = new Dictionary<string, object>();
-                foreach (var item in Names)
-                {
-                    result["name." + item.Key] = item.Value;
-                }
-                foreach (var item in FullNames)
-                {
-                    result["fullName." + item.Key] = item.Value;
-                }
-                foreach (var item in Modifiers)
-                {
-                    result["modifier." + item.Key] = item.Value;
-                }
-                foreach (var item in Metadata)
-                {
-                    result[item.Key] = item.Value;
-                }
-                return result;
-            }
-        }
+        [JsonExtensionData]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
+        public CompositeDictionary ExtensionData =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, Names, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.NameWithType, NamesWithType, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
+                .Add(string.Empty, Metadata)
+                .Create();
     }
 }

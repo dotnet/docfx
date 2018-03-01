@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
 
@@ -30,6 +29,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             };
 
+        public string Name { get; } = nameof(MergeCommand);
         public MergeJsonConfig Config { get; }
         public bool AllowReplay => true;
 
@@ -41,10 +41,15 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var config = Config;
-            var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
-            var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
-
-            MergeDocument(baseDirectory, intermediateOutputFolder);
+            foreach (var round in config)
+            {
+                var baseDirectory = round.BaseDirectory ?? Directory.GetCurrentDirectory();
+                var intermediateOutputFolder = round.Destination ?? Path.Combine(baseDirectory, "obj");
+                EnvironmentContext.SetBaseDirectory(baseDirectory);
+                EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);
+                MergeDocument(baseDirectory, intermediateOutputFolder);
+                EnvironmentContext.Clean();
+            }
         }
 
         #region MergeCommand ctor related
@@ -64,7 +69,9 @@ namespace Microsoft.DocAsCode.SubCommands
                     else
                     {
                         config = new MergeJsonConfig();
-                        MergeOptionsToConfig(options, ref config);
+                        var item = new MergeJsonItemConfig();
+                        MergeOptionsToConfig(options, ref item);
+                        config.Add(item);
                         return config;
                     }
                 }
@@ -77,19 +84,23 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config = CommandUtility.GetConfig<MergeConfig>(configFile).Item;
             if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
-            config.BaseDirectory = Path.GetDirectoryName(configFile);
+            for (int i = 0; i < config.Count; i++)
+            {
+                var round = config[i];
+                round.BaseDirectory = Path.GetDirectoryName(configFile);
 
-            MergeOptionsToConfig(options, ref config);
+                MergeOptionsToConfig(options, ref round);
+            }
 
             return config;
         }
 
-        private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonConfig config)
+        private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonItemConfig config)
         {
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
             // for `--content "*.cs*`, base directory should be `C:\folder1`
-            string optionsBaseDirectory = Environment.CurrentDirectory;
+            string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
             config.OutputFolder = options.OutputFolder;
 
@@ -107,75 +118,12 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory
                     });
             }
-            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
-            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
-        }
-
-        private static Dictionary<string, object> GetGlobalMetadataFromOption(MergeCommandOptions options)
-        {
-            Dictionary<string, object> globalMetadata = null;
-            if (options.GlobalMetadata != null)
+            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, null);
+            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, null, options.GlobalMetadata);
+            if (options.TocMetadata != null)
             {
-                using (var sr = new StringReader(options.GlobalMetadata))
-                {
-                    try
-                    {
-                        globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, GetSerializer());
-                        if (globalMetadata != null && globalMetadata.Count > 0)
-                        {
-                            Logger.LogInfo($"Global metadata from \"--globalMetadata\" overrides the one defined in config file");
-                        }
-                    }
-                    catch (JsonException e)
-                    {
-                        Logger.LogWarning($"Metadata from \"--globalMetadata {options.GlobalMetadata}\" is not a valid JSON format global metadata, ignored: {e.Message}");
-                    }
-                }
+                config.TocMetadata = new ListWithStringFallback(options.TocMetadata);
             }
-
-            if (options.GlobalMetadataFilePath != null)
-            {
-                try
-                {
-                    var globalMetadataFromFile = JsonUtility.Deserialize<MergeJsonConfig>(options.GlobalMetadataFilePath).GlobalMetadata;
-                    if (globalMetadataFromFile == null)
-                    {
-                        Logger.LogWarning($" File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
-                    }
-                    else
-                    {
-                        if (globalMetadata == null) globalMetadata = globalMetadataFromFile;
-                        else
-                        {
-                            foreach (var pair in globalMetadataFromFile)
-                            {
-                                if (globalMetadata.ContainsKey(pair.Key))
-                                {
-                                    Logger.LogWarning($"Both --globalMetadata and --globalMetadataFile contain definition for \"{pair.Key}\", the one from \"--globalMetadata\" overrides the one from \"--globalMetadataFile {options.GlobalMetadataFilePath}\".");
-                                }
-                                else
-                                {
-                                    globalMetadata[pair.Key] = pair.Value;
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    Logger.LogWarning($"Invalid option \"--globalMetadataFile {options.GlobalMetadataFilePath}\": file does not exist, ignored.");
-                }
-                catch (JsonException e)
-                {
-                    Logger.LogWarning($"File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
-                }
-            }
-
-            if (globalMetadata?.Count > 0)
-            {
-                return globalMetadata;
-            }
-            return null;
         }
 
         private sealed class MergeConfig
@@ -188,28 +136,32 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void MergeDocument(string baseDirectory, string outputDirectory)
         {
-            var parameters = ConfigToParameter(Config, baseDirectory, outputDirectory);
-            if (parameters.Files.Count == 0)
+            foreach (var round in Config)
             {
-                Logger.LogWarning("No files found, nothing is to be generated");
-                return;
-            }
-            try
-            {
-                new MetadataMerger().Merge(parameters);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
+                var parameters = ConfigToParameter(round, baseDirectory, outputDirectory);
+                if (parameters.Files.Count == 0)
+                {
+                    Logger.LogWarning("No files found, nothing is to be generated");
+                    continue;
+                }
+                try
+                {
+                    new MetadataMerger().Merge(parameters);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.ToString());
+                }
             }
         }
 
-        private static MetadataMergeParameters ConfigToParameter(MergeJsonConfig config, string baseDirectory, string outputDirectory) =>
+        private static MetadataMergeParameters ConfigToParameter(MergeJsonItemConfig config, string baseDirectory, string outputDirectory) =>
             new MetadataMergeParameters
             {
                 OutputBaseDir = outputDirectory,
                 Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
                 FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
+                TocMetadata = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
                 Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
                     DocumentType.Article,
@@ -244,7 +196,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             return from file in mapping.Items
                    from item in file.Files
-                   select Path.Combine(file.SourceFolder ?? Environment.CurrentDirectory, item);
+                   select Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
         }
 
         private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, DocumentType type, FileMapping files)
@@ -252,15 +204,9 @@ namespace Microsoft.DocAsCode.SubCommands
             var result = new FileCollection(baseDirectory);
             foreach (var mapping in files.Items)
             {
-                result.Add(type, mapping.Files, s => ConvertToDestinationPath(Path.Combine(baseDirectory, s), mapping.SourceFolder, mapping.DestinationFolder));
+                result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder);
             }
             return result;
-        }
-
-        private static string ConvertToDestinationPath(string path, string src, string dest)
-        {
-            var relativePath = PathUtility.MakeRelativePath(src, path);
-            return Path.Combine(dest ?? string.Empty, relativePath);
         }
     }
 }

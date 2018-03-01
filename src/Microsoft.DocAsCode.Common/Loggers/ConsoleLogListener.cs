@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class ConsoleLogListener : ILoggerListener
     {
-        public LogLevel LogLevelThreshold { get; set; }
+        private const LogLevel LogLevelThreshold = LogLevel.Verbose;
 
         public void WriteLine(ILogItem item)
         {
@@ -23,7 +23,9 @@ namespace Microsoft.DocAsCode.Common
             var file = item.File;
             var line = item.Line;
             if (level < LogLevelThreshold) return;
-            var formatter = level + ": ";
+            var now = DateTime.UtcNow.ToString("yy-MM-dd hh:mm:ss.fff");
+
+            var formatter = $"[{now}]{level}:";
             if (!string.IsNullOrEmpty(phase))
             {
                 formatter += $"[{phase}]";

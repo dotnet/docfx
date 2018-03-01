@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Utility;
-    using Microsoft.DocAsCode.Plugins;
 
     internal static class Utility
     {
@@ -26,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static bool IsSupportedRelativeHref(string href)
         {
-            var hrefType = Utility.GetHrefType(href);
+            var hrefType = GetHrefType(href);
             return IsSupportedRelativeHref(hrefType);
         }
 
@@ -38,43 +36,20 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 || hrefType == HrefType.MarkdownTocFile;
         }
 
-        public static TocViewModel LoadSingleToc(string file)
-        {
-            var fileType = GetTocFileType(file);
-            try
-            {
-                if (fileType == TocFileType.Markdown)
-                {
-                    return MarkdownTocReader.LoadToc(File.ReadAllText(file), file);
-                }
-                else if (fileType == TocFileType.Yaml)
-                {
-                    return YamlUtility.Deserialize<TocViewModel>(file);
-                }
-            }
-            catch (Exception e)
-            {
-                var message = $"{file} is not a valid TOC File: {e.Message}";
-                Logger.LogError(message);
-                throw new DocumentException(message, e);
-            }
-
-            throw new NotSupportedException($"{file} is not a valid TOC file, supported toc files could be \"{Constants.MarkdownTocFileName}\" or \"{Constants.YamlTocFileName}\".");
-        }
-
         public static HrefType GetHrefType(string href)
         {
-            if (!PathUtility.IsRelativePath(href))
+            var hrefWithoutAnchor = href != null ? UriUtility.GetPath(href) : href;
+            if (!PathUtility.IsRelativePath(hrefWithoutAnchor))
             {
                 return HrefType.AbsolutePath;
             }
-            var fileName = Path.GetFileName(href);
+            var fileName = Path.GetFileName(hrefWithoutAnchor);
             if (string.IsNullOrEmpty(fileName))
             {
                 return HrefType.RelativeFolder;
             }
 
-            var tocFileType = GetTocFileType(href);
+            var tocFileType = GetTocFileType(hrefWithoutAnchor);
 
             if (tocFileType == TocFileType.Markdown)
             {
@@ -98,11 +73,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var fileName = Path.GetFileName(filePath);
 
-            if (Constants.MarkdownTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if (Constants.TableOfContents.MarkdownTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return TocFileType.Markdown;
             }
-            if (Constants.YamlTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if (Constants.TableOfContents.YamlTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return TocFileType.Yaml;
             }

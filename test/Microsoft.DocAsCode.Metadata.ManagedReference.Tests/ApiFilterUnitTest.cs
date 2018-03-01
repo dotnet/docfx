@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -107,7 +107,7 @@ namespace Test1
 
 ";
             string configFile = "TestData/filterconfig.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             Assert.Equal(2, output.Items.Count);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
@@ -147,6 +147,67 @@ namespace Test1
                 var class5 = nestedNamespace.Items[0];
                 Assert.Equal("Test1.Test2.Test3.Class5", class5.Name);
             }
+        }
+
+        [Fact]
+        public void TestAttributeFilter()
+        {
+            string code = @"
+using System;
+using System.Runtime.InteropServices;
+
+namespace Test1
+{
+    [Serializable]
+    [ComVisibleAttribute(true)]
+    public class Class1
+    {
+        public void Func1(int i)
+        {
+            return;
+        }
+    }
+}";
+            string configFile = "TestData/filterconfig_attribute.yml";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
+            var @namespace = output.Items[0];
+            var class1 = @namespace.Items[0];
+            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        }
+
+        [Fact]
+        public void TestDefaultFilter()
+        {
+            string code = @"
+using System;
+using System.ComponentModel;
+using System.CodeDom.Compiler;
+
+namespace Test1
+{
+    [Serializable]
+    [GeneratedCode(""xsd"", ""1.0.0.0"")]
+    public class Class1
+    {
+        public void Func1(int i)
+        {
+            return;
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface Interface1
+    {
+        void Bar();
+    }
+}";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @namespace = output.Items[0];
+            Assert.Equal(1, @namespace.Items.Count);
+            var class1 = @namespace.Items[0];
+            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)

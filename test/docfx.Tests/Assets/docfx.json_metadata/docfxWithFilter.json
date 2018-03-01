@@ -1,0 +1,15 @@
+﻿{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
+          "src": "../src"
+        }
+      ],
+      "dest": ".",
+      "filter": "filter.yaml"
+    }
+  ]
+}

@@ -1,67 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\Shared\base.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\src\Shared\base.props" />
+
   <PropertyGroup>
-    <ProjectGuid>{1090FD24-DC6F-4DDA-913B-F69817B31A9B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.ExternalPackageGenerators.Msdn</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.ExternalPackageGenerators.Msdn</AssemblyName>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="Rx-Core" Version="2.2.5" />
+    <PackageReference Include="Rx-Interfaces" Version="2.2.5" />
+    <PackageReference Include="Rx-Linq" Version="2.2.5" />
+    <PackageReference Include="Rx-Main" Version="2.2.5" />
+    <PackageReference Include="Rx-PlatformServices" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Cache.cs" />
-    <Compile Include="Entities.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="HttpClientExtensions.cs" />
-    <Compile Include="Program.cs" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
-      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
-      <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Glob</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

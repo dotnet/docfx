@@ -108,6 +108,107 @@ Running the command `docfx`. `docfx` reads `docfx.json` and execute subcommands 
 Run `docfx serve _site`, and the website is now:
 ![Step3](images/walkthrough2_step3.png).
 
+Step4. Add another API documentation
+----------------------------------------------------
+Create another subfolder `src2` under `D:\docfx_walkthrough\docfx_project`. Besides generating API documentation from project files, `docfx` can generate documentation directly from source code. Let's create a `Class2.cs` as similar to:
+
+```csharp
+namespace HelloDocfx
+{
+    /// <summary>
+    /// Hello this is **Class2** from *HelloDocfx*
+    /// </summary>
+    public class Class2
+    {
+        private InnerClass _class;
+        public int Value { get; }
+
+        /// <summary>
+        /// This is a ctor
+        /// </summary>
+        /// <param name="value">The value of the class</param>
+        public Class2(int value)
+        {
+            Value = value;
+        }
+
+        public double ConvertToDouble()
+        {
+            return Value;
+        }
+
+        /// <summary>
+        /// A method referencing a inner class
+        /// </summary>
+        /// <param name="name">The name</param>
+        /// <param name="inner">A inner class with type <seealso cref="InnerClass"/></param>
+        public void SetInnerClass(string name, InnerClass inner)
+        {
+            inner.Name = name;
+            _class = inner;
+        }
+
+        public class InnerClass
+        {
+            public string Name { get; set; }
+        }
+    }
+}
+```
+
+Add it to the `metadata` section of our `docfx.json` as follows.
+
+```json
+"metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/**.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "_site/**"
+          ]
+        }
+      ],
+      "dest": "api"
+    },
+    {
+      "src": "src2/**.cs",
+      "dest": "api-vb"
+    }
+  ]
+```
+
+What it means is that the YAML metadata files for "src2/**.cs" are generated into "api-vb" folder. Let's also include the generated YAML files in `build` section:
+```json
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api-vb/**.yml"
+        ]
+      }
+      ...
+```
+
+For it to be organized and shown to website, we also need to modify our `D:\docfx_walkthrough\docfx_project\toc.yml` file. Don't forget to append slash `/` for the value of `href`.
+
+```
+- name: Articles
+  href: articles/
+- name: Api Documentation
+  href: api/
+  homepage: api/index.md
+- name: Another Api Documentation
+  href: api-vb/
+```
+
+Now, let's run `docfx --serve` again, and the website is now:
+![Step4](images/walkthrough2_step4.png).
+
 Conclusion
 ---------
 In this walkthrough, we build a website containing both **Conceptual Documentation** and **API Documentation**. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.

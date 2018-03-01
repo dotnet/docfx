@@ -1,0 +1,11 @@
+.vscode/**
+typings/**
+out/test/**
+test/**
+src/**
+**/*.map
+.gitignore
+tsconfig.json
+images/*.gif
+build.cmd
+build.ps1

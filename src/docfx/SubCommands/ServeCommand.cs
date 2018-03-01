@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly ServeCommandOptions _options;
         public bool AllowReplay => false;
 
+        public string Name { get; } = nameof(ServeCommand);
+
         public ServeCommand(ServeCommandOptions options)
         {
             _options = options;
@@ -26,15 +28,18 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            Serve(_options.Folder, _options.Port.HasValue ? _options.Port.Value.ToString() : null);
+            Serve(_options.Folder,
+                _options.Host,
+                _options.Port.HasValue ? _options.Port.Value.ToString() : null);
         }
 
-        public static void Serve(string folder, string port)
+        public static void Serve(string folder, string host, string port)
         {
-            if (string.IsNullOrEmpty(folder)) folder = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(folder)) folder = Directory.GetCurrentDirectory();
             folder = Path.GetFullPath(folder);
+            host = string.IsNullOrWhiteSpace(host) ? "localhost" : host;
             port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
-            var url = $"http://localhost:{port}";
+            var url = $"http://{host}:{port}";
             if (!Directory.Exists(folder))
             {
                 throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));

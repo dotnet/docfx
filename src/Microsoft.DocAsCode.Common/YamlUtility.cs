@@ -7,9 +7,12 @@ namespace Microsoft.DocAsCode.Common
     using System.Text;
     using System.Threading;
 
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.YamlSerialization;
+
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.YamlSerialization;
+    using YamlDeserializer = Microsoft.DocAsCode.YamlSerialization.YamlDeserializer;
 
     public static class YamlUtility
     {
@@ -18,37 +21,47 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Serialize(TextWriter writer, object graph)
         {
+            Serialize(writer, graph, null);
+        }
+
+        public static void Serialize(TextWriter writer, object graph, string comments)
+        {
+            if (!string.IsNullOrEmpty(comments))
+            {
+                foreach (var comment in comments.Split('\n'))
+                {
+                    writer.Write("### ");
+                    writer.WriteLine(comment.TrimEnd('\r'));
+                }
+            }
             serializer.Value.Serialize(writer, graph);
         }
 
-#if !NetCore
         public static void Serialize(string path, object graph)
         {
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
+            Serialize(path, graph, null);
+        }
 
-            using (StreamWriter writer = new StreamWriter(path))
+        public static void Serialize(string path, object graph, string comments)
+        {
+            using (var writer = EnvironmentContext.FileAbstractLayer.CreateText(path))
             {
-                Serialize(writer, graph);
+                Serialize(writer, graph, comments);
             }
         }
-#endif
 
         public static T Deserialize<T>(TextReader reader)
         {
             return deserializer.Value.Deserialize<T>(reader);
         }
 
-#if !NetCore
         public static T Deserialize<T>(string path)
         {
-            using (StreamReader reader = new StreamReader(path))
+            using (var reader = EnvironmentContext.FileAbstractLayer.OpenReadText(path))
+            {
                 return Deserialize<T>(reader);
+            }
         }
-#endif
 
         public static T ConvertTo<T>(object obj)
         {

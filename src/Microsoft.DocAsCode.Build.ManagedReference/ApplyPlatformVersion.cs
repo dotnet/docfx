@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    public class ApplyPlatformVersion : BaseDocumentBuildStep
+    public class ApplyPlatformVersion : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override int BuildOrder => 0x10;
 
@@ -32,9 +32,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     return;
                 }
                 var page = m.Content as PageViewModel;
-                object value;
                 if (page?.Metadata != null &&
-                    page.Metadata.TryGetValue("platform", out value))
+                    page.Metadata.TryGetValue("platform", out object value))
                 {
                     page.Metadata.Remove("platform");
                     var list = GetPlatformVersionFromMetadata(value);
@@ -64,22 +63,29 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return models;
         }
 
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
+
         private static List<string> GetPlatformVersionFromMetadata(object value)
         {
-            var text = value as string;
-            if (text != null)
+            if (value is string text)
             {
                 return new List<string> { text };
             }
 
-            var collection = value as IEnumerable<object>;
-            if (collection != null)
+            if (value is IEnumerable<object> collection)
             {
                 return collection.OfType<string>().ToList();
             }
 
-            var jarray = value as JArray;
-            if (jarray != null)
+            if (value is JArray jarray)
             {
                 try
                 {

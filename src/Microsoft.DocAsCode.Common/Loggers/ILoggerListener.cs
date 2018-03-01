@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Common
 
     public interface ILoggerListener : IDisposable
     {
-        LogLevel LogLevelThreshold { get; set; }
         void WriteLine(ILogItem item);
         void Flush();
     }

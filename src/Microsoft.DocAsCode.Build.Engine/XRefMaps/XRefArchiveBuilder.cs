@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -17,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string PhaseName = "Archive";
 
         private readonly object _syncRoot = new object();
+        private readonly XRefMapDownloader _downloader = new XRefMapDownloader();
 
         public async Task<bool> DownloadAsync(Uri uri, string outputFile)
         {
@@ -51,8 +50,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private async Task<string> DownloadCoreAsync(Uri uri, XRefArchive xa, bool isMajor)
         {
-            XRefMap map;
-            map = await DownloadBySchemeAsync(uri);
+            IXRefContainer container;
+            container = await _downloader.DownloadAsync(uri);
+            var map = container as XRefMap;
+            if (map == null)
+            {
+                // not support download an xref archive, or reference to an xref archive
+                return null;
+            }
             if (map.Redirections?.Count > 0)
             {
                 await RewriteRedirections(uri, xa, map);
@@ -61,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (string.IsNullOrEmpty(map.BaseUrl))
                 {
-                    UpdateHref(map, uri);
+                    XRefMapDownloader.UpdateHref(map, uri);
                 }
             }
             lock (_syncRoot)
@@ -93,26 +98,29 @@ namespace Microsoft.DocAsCode.Build.Engine
             (from list in
                 await Task.WhenAll(
                     from r in map.Redirections
-                    where !string.IsNullOrEmpty(r.Href) || !string.IsNullOrEmpty(r.UidPrefix)
+                    where !string.IsNullOrEmpty(r.Href)
                     group r by r.Href into g
                     let href = GetHrefUri(uri, g.Key)
                     where href != null
                     select RewriteRedirectionsCore(g.ToList(), href, xa))
              from r in list
-             orderby r.UidPrefix.Length descending, r.UidPrefix
+             orderby (r.UidPrefix ?? string.Empty).Length descending, (r.UidPrefix ?? string.Empty)
              select r).ToList();
 
         private async Task<List<XRefMapRedirection>> RewriteRedirectionsCore(List<XRefMapRedirection> redirections, Uri uri, XRefArchive xa)
         {
             var fileRef = await DownloadCoreAsync(uri, xa, false);
+            if (fileRef == null)
+            {
+                return new List<XRefMapRedirection>();
+            }
             return (from r in redirections
                     select new XRefMapRedirection { UidPrefix = r.UidPrefix, Href = fileRef }).ToList();
         }
 
         private static Uri GetHrefUri(Uri uri, string href)
         {
-            Uri hrefUri;
-            if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out hrefUri))
+            if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri hrefUri))
             {
                 Logger.LogWarning($"Invalid redirection href: {href}.");
                 return null;
@@ -125,65 +133,5 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
-
-        private static async Task<XRefMap> DownloadBySchemeAsync(Uri uri)
-        {
-            XRefMap result = null;
-            if (uri.IsFile)
-            {
-                result = DownloadFromLocal(uri);
-            }
-            else if (uri.Scheme == "http" || uri.Scheme == "https" || uri.Scheme == "ftp")
-            {
-                result = await DownloadFromWebAsync(uri);
-            }
-            else
-            {
-                throw new ArgumentException($"Unsupported scheme {uri.Scheme}, expected: http, https, ftp, file.", nameof(uri));
-            }
-            if (result == null)
-            {
-                throw new InvalidDataException($"Invalid yaml file from {uri}.");
-            }
-            return result;
-        }
-
-        private static XRefMap DownloadFromLocal(Uri uri)
-        {
-            using (var sr = File.OpenText(uri.LocalPath))
-            {
-                return YamlUtility.Deserialize<XRefMap>(sr);
-            }
-        }
-
-        private static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
-        {
-            using (var wc = new WebClient())
-            using (var stream = await wc.OpenReadTaskAsync(uri))
-            using (var sr = new StreamReader(stream))
-            {
-                return YamlUtility.Deserialize<XRefMap>(sr);
-            }
-        }
-
-        private static void UpdateHref(XRefMap map, Uri uri)
-        {
-            if (!string.IsNullOrEmpty(map.BaseUrl))
-            {
-                Uri baseUri;
-                if (!Uri.TryCreate(map.BaseUrl, UriKind.Absolute, out baseUri))
-                {
-                    throw new InvalidDataException($"Xref map file (from {uri.AbsoluteUri}) has an invalid base url: {map.BaseUrl}.");
-                }
-                map.UpdateHref(baseUri);
-                return;
-            }
-            if (uri.Scheme == "http" || uri.Scheme == "https")
-            {
-                map.UpdateHref(uri);
-                return;
-            }
-            throw new InvalidDataException($"Xref map file (from {uri.AbsoluteUri}) missing base url.");
-        }
     }
 }

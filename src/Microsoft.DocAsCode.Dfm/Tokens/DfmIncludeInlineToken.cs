@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmIncludeInlineToken : IMarkdownToken
@@ -12,18 +14,24 @@ namespace Microsoft.DocAsCode.Dfm
         public string Src { get; }
         public string Name { get; }
         public string Title { get; }
-        public string Raw { get; }
-        public string RawMarkdown { get; set; }
+        [Obsolete]
+        public string Raw => SourceInfo.Markdown;
+        public SourceInfo SourceInfo { get; }
 
-        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
+        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Src = src;
             Name = name;
             Title = title;
-            Raw = raw;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
+        }
+
+        [Obsolete]
+        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, SourceInfo sourceInfo)
+            : this(rule, context, src, name, title, sourceInfo)
+        {
         }
     }
 }

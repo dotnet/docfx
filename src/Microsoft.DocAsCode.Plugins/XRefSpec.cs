@@ -4,12 +4,14 @@
     using System.Collections;
     using System.Collections.Generic;
 
+    [Serializable]
     public sealed class XRefSpec : IDictionary<string, string>
     {
         public const string UidKey = "uid";
         public const string NameKey = "name";
         public const string HrefKey = "href";
         public const string CommentIdKey = "commentId";
+        public const string IsSpecKey = "isSpec";
 
         private Dictionary<string, string> _dict;
         private bool _isReadOnly;
@@ -41,8 +43,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(UidKey, out value);
+                _dict.TryGetValue(UidKey, out string value);
                 return value;
             }
             set { _dict[UidKey] = value; }
@@ -52,8 +53,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(NameKey, out value);
+                _dict.TryGetValue(NameKey, out string value);
                 return value;
             }
             set { _dict[NameKey] = value; }
@@ -63,8 +63,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(HrefKey, out value);
+                _dict.TryGetValue(HrefKey, out string value);
                 return value;
             }
             set { _dict[HrefKey] = value; }
@@ -74,8 +73,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(CommentIdKey, out value);
+                _dict.TryGetValue(CommentIdKey, out string value);
                 return value;
             }
             set
@@ -87,6 +85,25 @@
                 else
                 {
                     _dict.Remove(CommentIdKey);
+                }
+            }
+        }
+
+        public bool IsSpec
+        {
+            get
+            {
+                return _dict.TryGetValue(IsSpecKey, out _);
+            }
+            set
+            {
+                if (value)
+                {
+                    _dict[IsSpecKey] = bool.TrueString;
+                }
+                else
+                {
+                    _dict.Remove(IsSpecKey);
                 }
             }
         }

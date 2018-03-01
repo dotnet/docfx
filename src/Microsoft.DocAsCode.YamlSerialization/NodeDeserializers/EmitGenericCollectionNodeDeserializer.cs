@@ -15,6 +15,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 
     using Microsoft.DocAsCode.YamlSerialization.Helpers;
 
+    using EditorBrowsable = System.ComponentModel.EditorBrowsableAttribute;
+    using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
+
     public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     {
         private static readonly MethodInfo DeserializeHelperMethod =
@@ -26,18 +29,17 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             private readonly IObjectFactory _objectFactory;
         private readonly Dictionary<Type, Type> _gpCache =
             new Dictionary<Type, Type>();
-        private readonly Dictionary<Type, Action<EventReader, Type, Func<EventReader, Type, object>, object>> _actionCache =
-            new Dictionary<Type, Action<EventReader, Type, Func<EventReader, Type, object>, object>>();
+        private readonly Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object>, object>> _actionCache =
+            new Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object>, object>>();
 
         public EmitGenericCollectionNodeDeserializer(IObjectFactory objectFactory)
         {
             _objectFactory = objectFactory;
         }
 
-        bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            Type gp;
-            if (!_gpCache.TryGetValue(expectedType, out gp))
+            if (!_gpCache.TryGetValue(expectedType, out Type gp))
             {
                 var collectionType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(ICollection<>));
                 if (collectionType != null)
@@ -57,10 +59,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             }
 
             value = _objectFactory.Create(expectedType);
-            Action<EventReader, Type, Func<EventReader, Type, object>, object> action;
-            if (!_actionCache.TryGetValue(gp, out action))
+            if (!_actionCache.TryGetValue(gp, out var action))
             {
-                var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(EventReader), typeof(Type), typeof(Func<EventReader, Type, object>), typeof(object) });
+                var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object) });
                 var il = dm.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldarg_1);
@@ -69,7 +70,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 il.Emit(OpCodes.Castclass, typeof(ICollection<>).MakeGenericType(gp));
                 il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(gp));
                 il.Emit(OpCodes.Ret);
-                action = (Action<EventReader, Type, Func<EventReader, Type, object>, object>)dm.CreateDelegate(typeof(Action<EventReader, Type, Func<EventReader, Type, object>, object>));
+                action = (Action<IParser, Type, Func<IParser, Type, object>, object>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object>, object>));
                 _actionCache[gp] = action;
             }
 
@@ -77,15 +78,15 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             return true;
         }
 
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public static void DeserializeHelper<TItem>(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
         {
             var list = result as IList<TItem>;
 
             reader.Expect<SequenceStart>();
             while (!reader.Accept<SequenceEnd>())
             {
-                var current = reader.Parser.Current;
+                var current = reader.Current;
 
                 var value = nestedObjectDeserializer(reader, typeof(TItem));
                 var promise = value as IValuePromise;

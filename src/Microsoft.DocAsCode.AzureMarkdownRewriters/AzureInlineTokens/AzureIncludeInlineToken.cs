@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureIncludeInlineToken : AzureIncludeBasicToken, IMarkdownRewritable<AzureIncludeInlineToken>
     {
-        public AzureIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, string rawMarkdown)
-            : base(rule, context, src, name, title, tokens, raw, rawMarkdown)
+        public AzureIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, SourceInfo sourceInfo)
+            : base(rule, context, src, name, title, tokens, raw, sourceInfo)
         {
         }
 
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 return this;
             }
-            return new AzureIncludeInlineToken(Rule, Context, Src, Name, Title, tokens, Raw, RawMarkdown);
+            return new AzureIncludeInlineToken(Rule, Context, Src, Name, Title, tokens, Raw, SourceInfo);
         }
     }
 }

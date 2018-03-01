@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
 
     public class VBYamlModelGenerator : SimpleYamlModelGenerator
     {
@@ -31,6 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public override void DefaultVisit(ISymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
         {
             item.DisplayNames[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
+            item.DisplayNamesWithType[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
             item.DisplayQualifiedNames[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
         }
 
@@ -61,7 +61,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     modifiers.Add("Module");
                     break;
                 case TypeKind.Class:
-                    modifiers.Add("Class");
+                    if (symbol.IsStatic)
+                    {
+                        modifiers.Add("Module");
+                    }
+                    else
+                    {
+                        modifiers.Add("Class");
+                    }
                     break;
                 case TypeKind.Delegate:
                     modifiers.Add("Delegate");
@@ -305,9 +312,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
-            symbol.Accept(new VBReferenceItemVisitor(reference));
+            symbol.Accept(new VBReferenceItemVisitor(reference, asOverload));
         }
 
         #endregion
@@ -319,7 +326,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private string GetClassSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr;
-            if (symbol.TypeKind == TypeKind.Module)
+            if (symbol.TypeKind == TypeKind.Module || symbol.IsStatic)
             {
                 syntaxStr = SyntaxFactory.ModuleBlock(
                     SyntaxFactory.ModuleStatement(
@@ -439,7 +446,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 symbol.ReturnsVoid ?
                     SyntaxKind.SubStatement :
                     SyntaxKind.FunctionStatement,
-                GetAttributes(symbol, filterVisitor),
+                GetAttributes(symbol, filterVisitor, isExtensionMethod: symbol.IsExtensionMethod),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -554,29 +561,37 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #endregion
 
-        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false)
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false, bool isExtensionMethod = false)
         {
             var attrs = symbol.GetAttributes();
+            List<AttributeSyntax> attrList = null;
             if (attrs.Length > 0)
             {
-                var attrList = (from attr in attrs
-                                where !(attr.AttributeClass is IErrorTypeSymbol)
-                                where attr?.AttributeConstructor != null
-                                where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
-                                select GetAttributeSyntax(attr)).ToList();
-                if (attrList.Count > 0)
+                attrList = (from attr in attrs
+                            where !(attr.AttributeClass is IErrorTypeSymbol)
+                            where attr?.AttributeConstructor != null
+                            where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
+                            select GetAttributeSyntax(attr)).ToList();
+            }
+            if (isExtensionMethod)
+            {
+                attrList = attrList ?? new List<AttributeSyntax>();
+                attrList.Add(
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.ParseName(nameof(System.Runtime.CompilerServices.ExtensionAttribute))));
+            }
+            if (attrList?.Count > 0)
+            {
+                if (inOneLine)
                 {
-                    if (inOneLine)
-                    {
-                        return SyntaxFactory.SingletonList(
-                            SyntaxFactory.AttributeList(
-                                SyntaxFactory.SeparatedList(attrList)));
-                    }
-                    return SyntaxFactory.List(
-                        from attr in attrList
-                        select SyntaxFactory.AttributeList(
-                            SyntaxFactory.SingletonSeparatedList(attr)));
+                    return SyntaxFactory.SingletonList(
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(attrList)));
                 }
+                return SyntaxFactory.List(
+                    from attr in attrList
+                    select SyntaxFactory.AttributeList(
+                        SyntaxFactory.SingletonSeparatedList(attr)));
             }
             return new SyntaxList<AttributeListSyntax>();
         }
@@ -1015,7 +1030,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
@@ -1031,7 +1046,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
@@ -1047,7 +1062,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
@@ -1444,9 +1459,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         return SyntaxFactory.FalseLiteralExpression(SyntaxFactory.Token(SyntaxKind.FalseKeyword));
                     }
                 case SpecialType.System_Char:
-                    return SyntaxFactory.LiteralExpression(
-                        SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal((char)value));
+                    var ch = (char)value;
+                    var category = char.GetUnicodeCategory(ch);
+                    switch (category)
+                    {
+                        case System.Globalization.UnicodeCategory.Surrogate:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal("\"\\u" + ((int)ch).ToString("X4") + "\"c", ch));
+                        default:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal((char)value));
+                    }
                 case SpecialType.System_SByte:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,

@@ -20,19 +20,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// Get the rewriter (it can read markdown tokens, then rewrite them and return).
         /// </summary>
         IMarkdownRewriteEngine RewriteEngine { get; }
+        /// <summary>
+        /// Get the token tree validator.
+        /// </summary>
+        IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
 
         /// <summary>
         /// Mark markdown text.
         /// </summary>
-        /// <param name="markdown">The markdown text.</param>
         /// <param name="context">The markdown context contains rules.</param>
+        /// <param name="sourceInfo">The line info for markdown text.</param>
         /// <returns>Rendered text.</returns>
-        StringBuffer Mark(string markdown, IMarkdownContext context = null);
+        StringBuffer Mark(SourceInfo sourceInfo, IMarkdownContext context = null);
         /// <summary>
         /// Mark markdown text.
         /// </summary>
         /// <param name="markdown">The markdown text.</param>
+        /// <param name="file">The file of markdown.</param>
         /// <returns>Rendered text.</returns>
-        string Markup(string markdown);
+        string Markup(string markdown, string file = null);
     }
 }

@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public interface ITripleSlashCommentParserContext
     {
         bool PreserveRawInlineComments { get; set; }
-        Action<string> AddReferenceDelegate { get; set; }
+        Action<string, string> AddReferenceDelegate { get; set; }
         SourceDetail Source { get; set; }
     }
 }

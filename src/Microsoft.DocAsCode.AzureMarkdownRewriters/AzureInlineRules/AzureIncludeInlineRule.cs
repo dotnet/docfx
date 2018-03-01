@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     public class AzureIncludeInlineRule : IMarkdownRule
     {
@@ -18,14 +17,14 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public virtual Regex AzureIncludeRegex => _azureIncludeRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {
-            var match = AzureIncludeRegex.Match(source);
+            var match = AzureIncludeRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // [!azure.include[title](path "optionalTitle")]
             // 1. Get include file path 
@@ -38,28 +37,27 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             if (!PathUtility.IsRelativePath(path))
             {
                 Logger.LogWarning($"Azure inline include path {path} is not a relative path, can't expand it");
-                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+                return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
             }
 
             // 3. Apply inline rules to the included content
-            object currentFilePath;
-            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            if (!engine.Context.Variables.TryGetValue("path", out object currentFilePath))
             {
                 Logger.LogWarning($"Can't get path for the file that ref azure inline include file, return MarkdownTextToken. Raw: {match.Value}");
-                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+                return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
             }
 
             var includeFilePath = PathUtility.NormalizePath(Path.Combine(Path.GetDirectoryName(currentFilePath.ToString()), path));
             if (!File.Exists(includeFilePath))
             {
                 Logger.LogWarning($"Can't get include file path {includeFilePath} in the file {currentFilePath}, return MarkdownTextToken. Raw: {match.Value}");
-                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+                return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
             }
 
-            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            return new TwoPhaseBlockToken(this, engine.Context, sourceInfo, (p, t) =>
             {
-                var inlineTokens = p.Tokenize(MarkdownEngine.Normalize(File.ReadAllText(includeFilePath)));
-                return new AzureIncludeInlineToken(t.Rule, t.Context, path, value, title, inlineTokens, match.Groups[0].Value, match.Value);
+                var inlineTokens = p.Tokenize(SourceInfo.Create(MarkdownEngine.Normalize(File.ReadAllText(includeFilePath)), includeFilePath));
+                return new AzureIncludeInlineToken(t.Rule, t.Context, path, value, title, inlineTokens, match.Groups[0].Value, t.SourceInfo);
             });
         }
     }

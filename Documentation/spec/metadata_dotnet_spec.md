@@ -1,4 +1,4 @@
-Doc-as-Code: Metadata Format for .NET Languages
+DocFx: Metadata Format for .NET Languages
 ===============================================
 
 0. Introduction
@@ -323,8 +323,8 @@ The syntax part for methods contains a special language declaration, description
 > ```
 > YAML:
 > ```yaml
-> - uid: System.Decimal.op_Implicit(System.Char to System.Decimal)
->   id: op_Implicit(System.Char to System.Decimal)
+> - uid: System.Decimal.op_Implicit(System.Char)~System.Decimal
+>   id: op_Implicit(System.Char)~System.Decimal
 >   name.csharp: Implicit(Char to Decimal)
 >   fullName.csharp: System.Decimal.Implicit(System.Char to System.Decimal)
 > - uid: System.String.op_Equality(System.String,System.String)
@@ -441,7 +441,7 @@ The *UID* in reference can be a *Spec Id*, then it contains one more member: spe
 The *spec* in reference is very like a list of lightweight references, it describes how to compose the generic type in some special language.
 
 > Example 7 *spec* for references
-
+>
 > YAML:
 > ```yaml
 > references:

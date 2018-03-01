@@ -30,6 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public override void DefaultVisit(ISymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
         {
             item.DisplayNames[SyntaxLanguage.CSharp] = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
+            item.DisplayNamesWithType[SyntaxLanguage.CSharp] = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
             item.DisplayQualifiedNames[SyntaxLanguage.CSharp] = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
         }
 
@@ -45,7 +46,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.TypeKind == TypeKind.Class)
             {
-                if (symbol.IsAbstract && symbol.IsSealed)
+                if (symbol.IsStatic)
                 {
                     modifiers.Add("static");
                 }
@@ -289,9 +290,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
-            symbol.Accept(new CSReferenceItemVisitor(reference));
+            symbol.Accept(new CSReferenceItemVisitor(reference, asOverload));
         }
 
         #endregion
@@ -400,8 +401,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
                     SyntaxFactory.SeparatedList(
-                        from p in symbol.Parameters
-                        select GetParameter(p, filterVisitor)
+                        symbol.Parameters.Select((p, i) => GetParameter(p, filterVisitor, i == 0 && symbol.IsExtensionMethod))
                     )
                 ),
                 SyntaxFactory.List(
@@ -473,7 +473,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     )
                 ),
                 null,
-                null
+                (BlockSyntax)null
             ).NormalizeWhitespace().ToString();
 
         private string GetFieldSyntax(IFieldSymbol symbol, IFilterVisitor filterVisitor)
@@ -529,6 +529,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private string GetPropertySyntax(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
+            string result;
             ExplicitInterfaceSpecifierSyntax eii = null;
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
@@ -536,7 +537,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.IsIndexer)
             {
-                return SyntaxFactory.IndexerDeclaration(
+                result = SyntaxFactory.IndexerDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
@@ -551,7 +552,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                return SyntaxFactory.PropertyDeclaration(
+                result = SyntaxFactory.PropertyDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
@@ -561,6 +562,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .NormalizeWhitespace()
                     .ToString();
             }
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*set;\s*}\s*$", " { get; set; }");
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*}\s*$", " { get; }");
+            result = Regex.Replace(result, @"\s*\{\s*set;\s*}\s*$", " { set; }");
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*protected set;\s*}\s*$", " { get; protected set; }");
+            result = Regex.Replace(result, @"\s*\{\s*protected get;\s*set;\s*}\s*$", " { protected get; set; }");
+            return result;
         }
 
         #endregion
@@ -733,18 +740,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor)
+        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor, bool isThisParameter = false)
         {
             return SyntaxFactory.Parameter(
                 GetAttributes(p, filterVisitor, true),
-                SyntaxFactory.TokenList(GetParameterModifiers(p)),
+                SyntaxFactory.TokenList(GetParameterModifiers(p, isThisParameter)),
                 GetTypeSyntax(p.Type),
                 SyntaxFactory.Identifier(p.Name),
                 GetDefaultValueClause(p));
         }
 
-        private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter)
+        private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter, bool isThisParameter)
         {
+            if (isThisParameter)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.ThisKeyword);
+            }
             switch (parameter.RefKind)
             {
                 case RefKind.None:
@@ -754,6 +765,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     break;
                 case RefKind.Out:
                     yield return SyntaxFactory.Token(SyntaxKind.OutKeyword);
+                    break;
+                case RefKind.In:
+                    yield return SyntaxFactory.Token(SyntaxKind.InKeyword);
                     break;
                 default:
                     break;
@@ -857,6 +871,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (value == null)
             {
+                if (type.IsValueType)
+                {
+                    return SyntaxFactory.DefaultExpression(GetTypeSyntax(type));
+                }
                 return SyntaxFactory.LiteralExpression(
                     SyntaxKind.NullLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NullKeyword));
@@ -1014,9 +1032,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return SyntaxFactory.LiteralExpression(
                         (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
                 case SpecialType.System_Char:
-                    return SyntaxFactory.LiteralExpression(
-                        SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal((char)value));
+                    var ch = (char)value;
+                    var category = char.GetUnicodeCategory(ch);
+                    switch (category)
+                    {
+                        case System.Globalization.UnicodeCategory.Surrogate:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal("'\\u" + ((int)ch).ToString("X4") + "'", ch));
+                        default:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal((char)value));
+                    }
                 case SpecialType.System_SByte:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
@@ -1212,7 +1240,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.TypeKind == TypeKind.Class)
             {
-                if (symbol.IsAbstract && symbol.IsSealed)
+                if (symbol.IsStatic)
                 {
                     yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
                 }
@@ -1464,7 +1492,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                     else
@@ -1474,7 +1502,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                 case Accessibility.Public:
@@ -1482,7 +1510,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetAttributes(methodSymbol, filterVisitor),
                         new SyntaxTokenList(),
                         SyntaxFactory.Token(keyword),
-                        null,
+                        (BlockSyntax)null,
                         SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                 default:
                     if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
@@ -1491,7 +1519,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                     return null;

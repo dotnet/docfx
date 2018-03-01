@@ -9,29 +9,25 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     /// <summary>
-    /// FileMapping supports three forms:
-    /// 1. Object form
-    ///     This form supports multiple name-files file mappings, with the property name as the name, and the value as the files.
-    ///     e.g. 
-    ///     ```
-    ///     projects: {
-    ///      "name1": ["file1", "file2"],
-    ///      "name2": "file3"
-    ///     }
-    ///     ```
-    /// 2. Array form
-    ///     This form supports multiple name-files file mappings, and also allows additional properties per mapping.
-    ///     e.g. 
-    ///     ```
-    ///     projects: [
-    ///      {name: "name1", files: ["file1", "file2"]},
-    ///      {name: "name2", files: "file3"},
-    ///      {files:  ["file4", "file5"], exclude: ["file5"]}
+    /// FileMapping supports 3 forms:
+    /// 1. Array form
+    ///     This form supports multiple file mappings, and also allows additional properties per mapping.
+    ///     e.g.
+    ///     <code>
+    ///     "key": [
+    ///       {"files": ["file1", "file2"], "dest": "dest1"},
+    ///       {"files": "file3", "dest": "dest2"},
+    ///       {"files": ["file4", "file5"], "exclude": ["file5"], "src": "folder1"},
+    ///       {"files": "Example.yml", "src": "v1.0", "dest":"v1.0/api", "group": "v1.0"},
+    ///       {"files": "Example.yml", "src": "v2.0", "dest":"v2.0/api", "group": "v2.0"}
     ///     ]
-    ///     ```
-    /// 3. Compact form
+    ///     </code>
+    /// 2. Compact form
     ///     This form supports multiple file patterns in an array
-    ///     e.g. `projects: ["file1", "file2"]`
+    ///     e.g. <code>projects: ["file1", "file2"]</code>
+    /// 3. Object form
+    ///     If the Array form contains only one item, it can be shortened to an object
+    ///     e.g. <code>projects: ["file1", "file2"]</code>
     /// </summary>
     [JsonConverter(typeof(FileMappingConverter))]
     [Serializable]
@@ -58,7 +54,7 @@ namespace Microsoft.DocAsCode
         }
 
         /// <summary>
-        /// Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.
+        /// Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. src, exclude.
         /// </summary>
         /// <param name="item"></param>
         public void Add(FileMappingItem item)
@@ -66,6 +62,19 @@ namespace Microsoft.DocAsCode
             if (item == null || item.Files == null || item.Files.Count == 0) return;
 
             _items.Add(item);
+        }
+
+        /// <summary>
+        /// The RootTocPath of the current version, specified in FileMappingItems.
+        /// If different FileMappingItems in same version have different RootTocPath, the behavior is undetermined.
+        /// </summary>
+        public string RootTocPath
+        {
+            get
+            {
+                var fileMappingItem = _items.Find(i => !string.IsNullOrEmpty(i.RootTocPath));
+                return fileMappingItem?.RootTocPath;
+            }
         }
     }
 }

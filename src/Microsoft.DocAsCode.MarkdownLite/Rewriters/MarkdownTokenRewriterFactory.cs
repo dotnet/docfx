@@ -23,6 +23,23 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new MarkdownLambdaTokenRewriter<TEngine, TToken>(rewriteFunc);
         }
 
+        public static IMarkdownTokenRewriter FromLambda<TEngine, TToken>(
+            Func<TEngine, TToken, IMarkdownToken> rewriteFunc,
+            Action<TEngine> initializer)
+            where TEngine : class, IMarkdownRewriteEngine
+            where TToken : class, IMarkdownToken
+        {
+            if (rewriteFunc == null)
+            {
+                throw new ArgumentNullException(nameof(rewriteFunc));
+            }
+            if (initializer == null)
+            {
+                return new MarkdownLambdaTokenRewriter<TEngine, TToken>(rewriteFunc);
+            }
+            return new MarkdownInitializableLambdaTokenRewriter<TEngine, TToken>(rewriteFunc, initializer);
+        }
+
         public static IMarkdownTokenRewriter FromValidators(IEnumerable<IMarkdownTokenValidator> validators)
         {
             if (validators == null)
@@ -33,6 +50,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         }
 
         public static IMarkdownTokenRewriter FromValidators(params IMarkdownTokenValidator[] validators)
+        {
+            if (validators == null)
+            {
+                throw new ArgumentNullException(nameof(validators));
+            }
+            return new MarkdownTokenValidatorAdapter(validators);
+        }
+
+        public static IMarkdownTokenRewriter FromValidators(string scopeName, IEnumerable<IMarkdownTokenValidator> validators)
         {
             if (validators == null)
             {

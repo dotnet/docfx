@@ -3,9 +3,9 @@
     {
       "src": [
         {
-          "files": [ "**/*.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**", "**/Microsoft.DocAsCode.EntityModel.csproj" ],
-          "cwd": "../src"
+          "files": [ "**.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "src": "../src"
         }
       ],
       "dest": "obj/temp/docfxapi"
@@ -23,26 +23,29 @@
         "src": ".."
       },
       {
-        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}" ]
+        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}", "templates-and-plugins/**/*.{md,yml}" ]
       }
     ],
     "resource": [
       {
         "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**", "langwordmapping/**" ],
         "exclude": [ "_site/**", "**/obj/**", "**.meta" ]
+      },
+      {
+        "files": "schemas/**schema.json",
+        "src": ".."
       }
     ],
     "overwrite": "apispec/*.md",
-    "externalReference": [
-      {
-        "files": "content/*.rpk",
-        "cwd": "../src/nuspec/msdn.4.5.2/"
-      }
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
     ],
+    "postProcessors": [ "ExtractSearchIndex" ],
     "globalMetadata": {
       "_appTitle": "DocFX website",
-      // Disable full-text-search by comment the following line
-      "_enableSearch": true
+      "_gitContribute": {
+        "branch": "dev"
+      }
     },
     "fileMetadata": {
       "priority": {
@@ -52,12 +55,13 @@
         "tutorial/**.md": 1.2
       },
       "keywords": {
-        "obj/docfx/**": ["API", "Reference"],
-        "spec/**.md": ["Spec", "Conceptual"],
-        "**/*markdown.md": ["DFM", "Spec"]
+        "obj/docfx/**": [ "API", "Reference" ],
+        "spec/**.md": [ "Spec", "Conceptual" ],
+        "**/*markdown.md": [ "DFM", "Spec" ]
       }
     },
     "dest": "_site",
+    "markdownEngineName": "dfm-latest",
     "template": [
       "default",
       "template"

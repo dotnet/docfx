@@ -6,10 +6,81 @@ $(function () {
   var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+  var util = new utility();
 
-  // Line highlight for code snippet
+  highlight();
+  enableSearch();
+
+  renderTables();
+  renderAlerts();
+  renderLinks();
+  renderNavbar();
+  renderSidebar();
+  renderAffix();
+  renderFooter();
+  renderLogo();
+
+  breakText();
+  renderTabs();
+
+  window.refresh = function (article) {
+    // Update markup result
+    if (typeof article == 'undefined' || typeof article.content == 'undefined')
+      console.error("Null Argument");
+    $("article.content").html(article.content);
+
+    highlight();
+    renderTables();
+    renderAlerts();
+    renderAffix();
+    renderTabs();
+  }
+
+  function breakText() {
+    $(".xref").addClass("text-break");
+    var texts = $(".text-break");
+    texts.each(function () {
+      $(this).breakWord();
+    });
+  }
+
+  // Styling for tables in conceptual documents using Bootstrap.
+  // See http://getbootstrap.com/css/#tables
+  function renderTables() {
+    $('table').addClass('table table-bordered table-striped table-condensed').wrap('<div class=\"table-responsive\"></div>');
+  }
+
+  // Styling for alerts.
+  function renderAlerts() {
+    $('.NOTE, .TIP').addClass('alert alert-info');
+    $('.WARNING').addClass('alert alert-warning');
+    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
+  }
+
+  // Enable anchors for headings.
   (function () {
-    $('pre code[highlight-lines]').each(function(i, block) {
+    anchors.options = {
+      placement: 'left',
+      visible: 'touch'
+    };
+    anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)');
+  })();
+
+  // Open links to different host in a new window.
+  function renderLinks() {
+    if ($("meta[property='docfx:newtab']").attr("content") === "true") {
+      $(document.links).filter(function () {
+        return this.hostname !== window.location.hostname;
+      }).attr('target', '_blank');
+    }
+  }
+
+  // Enable highlight.js
+  function highlight() {
+    $('pre code').each(function (i, block) {
+      hljs.highlightBlock(block);
+    });
+    $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
       var lines = block.innerHTML.split('\n');
 
@@ -42,104 +113,114 @@ $(function () {
 
       block.innerHTML = lines.join('\n');
     });
-  })();
-
-  //Adjust the position of search box in navbar
-  (function () {
-    autoCollapse();
-    $(window).on('resize', autoCollapse);
-    $(document).on('click', '.navbar-collapse.in', function (e) {
-      if ($(e.target).is('a')) {
-        $(this).collapse('hide');
-      }
-    });
-
-    function autoCollapse() {
-      var navbar = $('#autocollapse');
-      if (navbar.height() === null) {
-        setTimeout(autoCollapse, 300);
-      }
-      navbar.removeClass(collapsed);
-      if (navbar.height() > 60) {
-        navbar.addClass(collapsed);
-      }
-    }
-  })();
+  }
 
   // Support full-text-search
-  (function () {
+  function enableSearch() {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
-    if (relHref) {
-      var search = searchFactory();
-      search();
+    if (typeof relHref === 'undefined') {
+      return;
+    }
+    try {
+      var worker = new Worker(relHref + 'styles/search-worker.js');
+      if (!worker && !window.worker) {
+        localSearch();
+      } else {
+        webWorkerSearch();
+      }
+
+      renderSearchBox();
       highlightKeywords();
       addSearchEvent();
+    } catch (e) {
+      console.error(e);
+    }
+
+    //Adjust the position of search box in navbar
+    function renderSearchBox() {
+      autoCollapse();
+      $(window).on('resize', autoCollapse);
+      $(document).on('click', '.navbar-collapse.in', function (e) {
+        if ($(e.target).is('a')) {
+          $(this).collapse('hide');
+        }
+      });
+
+      function autoCollapse() {
+        var navbar = $('#autocollapse');
+        if (navbar.height() === null) {
+          setTimeout(autoCollapse, 300);
+        }
+        navbar.removeClass(collapsed);
+        if (navbar.height() > 60) {
+          navbar.addClass(collapsed);
+        }
+      }
     }
 
     // Search factory
-    function searchFactory() {
-      var worker = new Worker(relHref + 'styles/search-worker.js');
-      if (!worker) return localSearch;
-      return window.Worker ? webWorkerSearch : localSearch;
+    function localSearch() {
+      console.log("using local search");
+      var lunrIndex = lunr(function () {
+        this.ref('href');
+        this.field('title', { boost: 50 });
+        this.field('keywords', { boost: 20 });
+      });
+      lunr.tokenizer.seperator = /[\s\-\.]+/;
+      var searchData = {};
+      var searchDataRequest = new XMLHttpRequest();
 
-      function localSearch() {
-        console.log("using local search");
-        var lunrIndex = lunr(function () {
-          this.ref('href');
-          this.field('title', { boost: 50 });
-          this.field('keywords', { boost: 20 });
-        });
-        lunr.tokenizer.seperator = /[\s\-\.]+/;
-        var searchData = {};
-        var searchDataRequest = new XMLHttpRequest();
-
-        var indexPath = relHref + "index.json";
-        if (indexPath) {
-          searchDataRequest.open('GET', indexPath);
-          searchDataRequest.onload = function () {
-            searchData = JSON.parse(this.responseText);
-            for (var prop in searchData) {
+      var indexPath = relHref + "index.json";
+      if (indexPath) {
+        searchDataRequest.open('GET', indexPath);
+        searchDataRequest.onload = function () {
+          if (this.status != 200) {
+            return;
+          }
+          searchData = JSON.parse(this.responseText);
+          for (var prop in searchData) {
+            if (searchData.hasOwnProperty(prop)){
               lunrIndex.add(searchData[prop]);
             }
           }
-          searchDataRequest.send();
         }
+        searchDataRequest.send();
+      }
 
+      $("body").bind("queryReady", function () {
+        var hits = lunrIndex.search(query);
+        var results = [];
+        hits.forEach(function (hit) {
+          var item = searchData[hit.ref];
+          results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
+        });
+        handleSearchResults(results);
+      });
+    }
+
+    function webWorkerSearch() {
+      console.log("using Web Worker");
+      var indexReady = $.Deferred();
+
+      worker.onmessage = function (oEvent) {
+        switch (oEvent.data.e) {
+          case 'index-ready':
+            indexReady.resolve();
+            break;
+          case 'query-ready':
+            var hits = oEvent.data.d;
+            handleSearchResults(hits);
+            break;
+        }
+      }
+
+      indexReady.promise().done(function () {
         $("body").bind("queryReady", function () {
-          var hits = lunrIndex.search(query);
-          var results = [];
-          hits.forEach(function (hit) {
-            var item = searchData[hit.ref];
-            results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
-          });
-          handleSearchResults(results);
+          worker.postMessage({ q: query });
         });
-      }
-
-      function webWorkerSearch() {
-        console.log("using Web Worker");
-        var indexReady = $.Deferred();
-
-        worker.onmessage = function (oEvent) {
-          switch (oEvent.data.e) {
-            case 'index-ready':
-              indexReady.resolve();
-              break;
-            case 'query-ready':
-              var hits = oEvent.data.d;
-              handleSearchResults(hits);
-              break;
-          }
-        }
-
-        indexReady.promise().done(function () {
-          $("body").bind("queryReady", function () {
-            worker.postMessage({ q: query });
-          });
-        });
-      }
-    };
+      });
+    }
 
     // Highlight the searching keywords
     function highlightKeywords() {
@@ -148,8 +229,8 @@ $(function () {
         var keywords = q.split("%20");
         keywords.forEach(function (keyword) {
           if (keyword !== "") {
-            highlight($('.data-searchable *'), keyword, "<mark>");
-            highlight($('article *'), keyword, "<mark>");
+            $('.data-searchable *').mark(keyword);
+            $('article *').mark(keyword);
           }
         });
       }
@@ -182,19 +263,6 @@ $(function () {
         $('.hide-when-search').hide();
         $('#search-results').show();
       }
-    }
-
-    function highlight(nodes, rgxStr, tag) {
-      var rgx = new RegExp(rgxStr, "gi");
-      nodes.each(function () {
-        $(this).contents().filter(function () {
-          return this.nodeType == 3 && rgx.test(this.nodeValue);
-        }).replaceWith(function () {
-          return (this.nodeValue || "").replace(rgx, function (match) {
-            return $(tag).text(match)[0].outerHTML;
-          });
-        });
-      });
     }
 
     function relativeUrlToAbsoluteUrl(currentUrl, relativeUrl) {
@@ -252,29 +320,36 @@ $(function () {
                 itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
                 return itemNode;
               })
-              );
+            );
             query.split(/\s+/).forEach(function (word) {
               if (word !== '') {
-                highlight($('#search-results>.sr-items *'), word, "<strong>");
+                $('#search-results>.sr-items *').mark(word);
               }
             });
           }
         });
       }
     }
-  })();
+  };
 
   // Update href in navbar
-  (function () {
-    var toc = $('#sidetoc');
-    var breadcrumb = new Breadcrumb();
-    loadNavbar();
-    loadToc();
+  function renderNavbar() {
+    var navbar = $('#navbar ul')[0];
+    if (typeof (navbar) === 'undefined') {
+      loadNavbar();
+    } else {
+      $('#navbar ul a.active').parents('li').addClass(active);
+      renderBreadcrumb();
+    }
+
     function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      if (!navbarPath) {
+        return;
+      }
+      navbarPath = navbarPath.replace(/\\/g, '/');
+      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
         if ($('#search-results').length !== 0) {
@@ -287,11 +362,11 @@ $(function () {
           navrel = navbarPath.substr(0, index + 1);
         }
         $('#navbar>ul').addClass('navbar-nav');
-        var currentAbsPath = getAbsolutePath(window.location.pathname);
+        var currentAbsPath = util.getAbsolutePath(window.location.pathname);
         // set active item
         $('#navbar').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
-          if (isRelativePath(href)) {
+          if (util.isRelativePath(href)) {
             href = navrel + href;
             $(e).attr("href", href);
 
@@ -300,81 +375,55 @@ $(function () {
             var originalHref = e.name;
             if (originalHref) {
               originalHref = navrel + originalHref;
-              if (getDirectory(getAbsolutePath(originalHref)) === getDirectory(getAbsolutePath(tocPath))) {
+              if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
                 isActive = true;
               }
             } else {
-              if (getAbsolutePath(href) === currentAbsPath) {
+              if (util.getAbsolutePath(href) === currentAbsPath) {
                 isActive = true;
               }
             }
             if (isActive) {
-              $(e).parent().addClass(active);
-              breadcrumb.insert({
-                href: e.href,
-                name: e.innerHTML
-              }, 0);
-            } else {
-              $(e).parent().removeClass(active)
+              $(e).addClass(active);
             }
           }
         });
+        renderNavbar();
       });
     }
+  }
 
-    function loadToc() {
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
-        registerTocEvents();
+  function renderSidebar() {
+    var sidetoc = $('#sidetoggle .sidetoc')[0];
+    if (typeof (sidetoc) === 'undefined') {
+      loadToc();
+    } else {
+      registerTocEvents();
+      if ($('footer').is(':visible')) {
+        $('.sidetoc').addClass('shiftup');
+      }
 
-        var index = tocPath.lastIndexOf('/');
-        var tocrel = '';
-        if (index > -1) {
-          tocrel = tocPath.substr(0, index + 1);
-        }
-        var currentHref = getAbsolutePath(window.location.pathname);
-        $('#sidetoc').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
-          if (isRelativePath(href)) {
-            href = tocrel + href;
-            $(e).attr("href", href);
-          }
+      // Scroll to active item
+      var top = 0;
+      $('#toc a.active').parents('li').each(function (i, e) {
+        $(e).addClass(active).addClass(expanded);
+        $(e).children('a').addClass(active);
+        top += $(e).position().top;
+      })
+      $('.sidetoc').scrollTop(top - 50);
 
-          if (getAbsolutePath(e.href) === currentHref) {
-            $(e).parent().addClass(active);
-            var parent = $(e).parent().parents('li').children('a');
-            if (parent.length > 0) {
-              parent.addClass(active);
-              breadcrumb.push({
-                href: parent[0].href,
-                name: parent[0].innerHTML
-              });
-            }
-            // for active li, expand it
-            $(e).parents('ul.nav>li').addClass(expanded);
+      if ($('footer').is(':visible')) {
+        $('.sidetoc').addClass('shiftup');
+      }
 
-            breadcrumb.push({
-              href: e.href,
-              name: e.innerHTML
-            });
-            // Scroll to active item
-            var top = 0;
-            $(e).parents('li').each(function (i, e) {
-              top += $(e).position().top;
-            });
-            // 50 is the size of the filter box
-            $('.sidetoc').scrollTop(top - 50);
-          } else {
-            $(e).parent().removeClass(active);
-            $(e).parents('li').children('a').removeClass(active);
-          }
-        });
-      });
+      renderBreadcrumb();
     }
 
     function registerTocEvents() {
       $('.toc .nav > li > .expand-stub').click(function (e) {
+        $(e.target).parent().toggleClass(expanded);
+      });
+      $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
       $('#toc_filter_input').on('input', function (e) {
@@ -389,11 +438,11 @@ $(function () {
         $('#toc li>a').filter(function (i, e) {
           return $(e).siblings().length === 0
         }).each(function (i, anchor) {
-          var text = $(anchor).text();
+          var text = $(anchor).attr('title');
           var parent = $(anchor).parent();
           var parentNodes = parent.parents('ul>li');
           for (var i = 0; i < parentNodes.length; i++) {
-            var parentText = $(parentNodes[i]).children('a').text();
+            var parentText = $(parentNodes[i]).children('a').attr('title');
             if (parentText) text = parentText + '.' + text;
           };
           if (filterNavItem(text, val)) {
@@ -421,77 +470,85 @@ $(function () {
 
         function filterNavItem(name, text) {
           if (!text) return true;
-          if (name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
+          if (name && name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
           return false;
         }
       });
     }
 
-    function Breadcrumb() {
-      var breadcrumb = [];
-      this.push = pushBreadcrumb;
-      this.insert = insertBreadcrumb;
-
-      function pushBreadcrumb(obj) {
-        breadcrumb.push(obj);
-        setupBreadCrumb(breadcrumb);
+    function loadToc() {
+      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      if (!tocPath) {
+        return;
       }
+      tocPath = tocPath.replace(/\\/g, '/');
+      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
+        var index = tocPath.lastIndexOf('/');
+        var tocrel = '';
+        if (index > -1) {
+          tocrel = tocPath.substr(0, index + 1);
+        }
+        var currentHref = util.getAbsolutePath(window.location.pathname);
+        $('#sidetoc').find('a[href]').each(function (i, e) {
+          var href = $(e).attr("href");
+          if (util.isRelativePath(href)) {
+            href = tocrel + href;
+            $(e).attr("href", href);
+          }
 
-      function insertBreadcrumb(obj, index) {
-        breadcrumb.splice(index, 0, obj);
-        setupBreadCrumb(breadcrumb);
-      }
+          if (util.getAbsolutePath(e.href) === currentHref) {
+            $(e).addClass(active);
+          }
 
-      function setupBreadCrumb() {
-        var html = formList(breadcrumb, 'breadcrumb');
-        $('#breadcrumb').html(html);
-      }
+          $(e).breakWord();
+        });
+
+        renderSidebar();
+      });
     }
+  }
 
-    function getAbsolutePath(href) {
-      // Use anchor to normalize href
-      var anchor = $('<a href="' + href + '"></a>')[0];
-      // Ignore protocal, remove search and query
-      return anchor.host + anchor.pathname;
-    }
+  function renderBreadcrumb() {
+    var breadcrumb = [];
+    $('#navbar a.active').each(function (i, e) {
+      breadcrumb.push({
+        href: e.href,
+        name: e.innerHTML
+      });
+    })
+    $('#toc a.active').each(function (i, e) {
+      breadcrumb.push({
+        href: e.href,
+        name: e.innerHTML
+      });
+    })
 
-    function isRelativePath(href) {
-      return !isAbsolutePath(href);
-    }
-
-    function isAbsolutePath(href) {
-      return (/^(?:[a-z]+:)?\/\//i).test(href);
-    }
-
-    function getDirectory(href) {
-      if (!href) return '';
-      var index = href.lastIndexOf('/');
-      if (index == -1) return '';
-      if (index > -1) {
-        return href.substr(0, index);
-      }
-    }
-  })();
+    var html = util.formList(breadcrumb, 'breadcrumb');
+    $('#breadcrumb').html(html);
+  }
 
   //Setup Affix
-  (function () {
+  function renderAffix() {
     var hierarchy = getHierarchy();
     if (hierarchy.length > 0) {
       var html = '<h5 class="title">In This Article</h5>'
-      html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
-      $("#affix").append(html);
+      html += util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
+      $("#affix").empty().append(html);
+      if ($('footer').is(':visible')) {
+        $(".sideaffix").css("bottom", "70px");
+      }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
-            if ($(e.target).find('li.active').length > 0)
-            {
-              return;
-            }
-            var top = $(e.target).position().top;
-            $(e.target).parents('li').each(function (i, e) {
-              top += $(e).position().top;
-            });
-            var container = $('#affix > ul');
-            container.scrollTop(container.scrollTop() + top - 100);
+          if ($(e.target).find('li.active').length > 0) {
+            return;
+          }
+          var top = $(e.target).position().top;
+          $(e.target).parents('li').each(function (i, e) {
+            top += $(e).position().top;
+          });
+          var container = $('#affix > ul');
+          var height = container.height();
+          container.scrollTop(container.scrollTop() + top - height / 2);
         }
       })
     }
@@ -532,7 +589,7 @@ $(function () {
             items: []
           };
           if (nextLevelSelector) {
-            var selector = '#' + id + "~" + nextLevelSelector;
+            var selector = '#' + cssEscape(id) + "~" + nextLevelSelector;
             var currentSelector = selector;
             if (prevSelector) currentSelector += ":not(" + prevSelector + ")";
             $(header[j]).siblings(currentSelector).each(function (index, e) {
@@ -540,7 +597,6 @@ $(function () {
                 item.items.push({
                   name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
                   href: "#" + e.id
-
                 })
               }
             })
@@ -555,7 +611,8 @@ $(function () {
     }
 
     function htmlEncode(str) {
-      return String(str)
+      if (!str) return str;
+      return str
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
@@ -564,71 +621,401 @@ $(function () {
     }
 
     function htmlDecode(value) {
-      return String(value)
+      if (!str) return str;
+      return value
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
     }
-  })();
 
-  function formList(item, classes) {
-    var level = 1;
-    var model = {
-      items: item
-    };
-    var cls = [].concat(classes).join(" ");
-    return getList(model, cls);
-
-    function getList(model, cls) {
-      if (!model || !model.items) return null;
-      var l = model.items.length;
-      if (l === 0) return null;
-      var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
-      level++;
-      for (var i = 0; i < l; i++) {
-        var item = model.items[i];
-        var href = item.href;
-        var name = item.name;
-        if (!name) continue;
-        html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
-        html += getList(item, cls) || '';
-        html += '</li>';
-      }
-      html += '</ul>';
-      return html;
+    function cssEscape(str) {
+      // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
+      if (!str) return str;
+      return str
+        .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
   }
 
-  // For LOGO SVG
-  // Replace SVG with inline SVG
-  // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-  jQuery('img.svg').each(function () {
-    var $img = jQuery(this);
-    var imgID = $img.attr('id');
-    var imgClass = $img.attr('class');
-    var imgURL = $img.attr('src');
+  // Show footer
+  function renderFooter() {
+    initFooter();
+    $(window).on("scroll", showFooterCore);
 
-    jQuery.get(imgURL, function (data) {
-      // Get the SVG tag, ignore the rest
-      var $svg = jQuery(data).find('svg');
-
-      // Add replaced image's ID to the new SVG
-      if (typeof imgID !== 'undefined') {
-        $svg = $svg.attr('id', imgID);
+    function initFooter() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").show();
+      } else {
+        resetBottomCss();
+        $("footer").hide();
       }
-      // Add replaced image's classes to the new SVG
-      if (typeof imgClass !== 'undefined') {
-        $svg = $svg.attr('class', imgClass + ' replaced-svg');
+    }
+
+    function showFooterCore() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").fadeIn();
+      } else {
+        resetBottomCss();
+        $("footer").fadeOut();
       }
+    }
 
-      // Remove any invalid XML tags as per http://validator.w3.org
-      $svg = $svg.removeAttr('xmlns:a');
+    function needFooter() {
+      var scrollHeight = $(document).height();
+      var scrollPosition = $(window).height() + $(window).scrollTop();
+      return (scrollHeight - scrollPosition) < 1;
+    }
 
-      // Replace image with new SVG
-      $img.replaceWith($svg);
+    function resetBottomCss() {
+      $(".sidetoc").removeClass("shiftup");
+      $(".sideaffix").removeClass("shiftup");
+    }
 
-    }, 'xml');
-  });
+    function shiftUpBottomCss() {
+      $(".sidetoc").addClass("shiftup");
+      $(".sideaffix").addClass("shiftup");
+    }
+  }
+
+  function renderLogo() {
+    // For LOGO SVG
+    // Replace SVG with inline SVG
+    // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
+    jQuery('img.svg').each(function () {
+      var $img = jQuery(this);
+      var imgID = $img.attr('id');
+      var imgClass = $img.attr('class');
+      var imgURL = $img.attr('src');
+
+      jQuery.get(imgURL, function (data) {
+        // Get the SVG tag, ignore the rest
+        var $svg = jQuery(data).find('svg');
+
+        // Add replaced image's ID to the new SVG
+        if (typeof imgID !== 'undefined') {
+          $svg = $svg.attr('id', imgID);
+        }
+        // Add replaced image's classes to the new SVG
+        if (typeof imgClass !== 'undefined') {
+          $svg = $svg.attr('class', imgClass + ' replaced-svg');
+        }
+
+        // Remove any invalid XML tags as per http://validator.w3.org
+        $svg = $svg.removeAttr('xmlns:a');
+
+        // Replace image with new SVG
+        $img.replaceWith($svg);
+
+      }, 'xml');
+    });
+  }
+  
+
+function renderTabs(){
+  var contentAttrs = {
+      id: 'data-bi-id',
+      name: 'data-bi-name',
+      type: 'data-bi-type'
+  };
+
+  var Tab = (function () {
+      function Tab(li, a, section) {
+          this.li = li;
+          this.a = a;
+          this.section = section;
+      }
+      Object.defineProperty(Tab.prototype, "tabId", {
+          get: function () { return this.a.getAttribute('data-tab'); },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(Tab.prototype, "condition", {
+          get: function () { return this.a.getAttribute('data-condition'); },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(Tab.prototype, "visible", {
+          get: function () { return !this.li.hasAttribute('hidden'); },
+          set: function (value) {
+              if (value) {
+                  this.li.removeAttribute('hidden');
+                  this.li.removeAttribute('aria-hidden');
+              }
+              else {
+                  this.li.setAttribute('hidden', 'hidden');
+                  this.li.setAttribute('aria-hidden', 'true');
+              }
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(Tab.prototype, "selected", {
+          get: function () { return !this.section.hasAttribute('hidden'); },
+          set: function (value) {
+              if (value) {
+                  this.a.setAttribute('aria-selected', 'true');
+                  this.a.tabIndex = 0;
+                  this.section.removeAttribute('hidden');
+                  this.section.removeAttribute('aria-hidden');
+              }
+              else {
+                  this.a.setAttribute('aria-selected', 'false');
+                  this.a.tabIndex = -1;
+                  this.section.setAttribute('hidden', 'hidden');
+                  this.section.setAttribute('aria-hidden', 'true');
+              }
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Tab.prototype.focus = function () {
+          this.a.focus();
+      };
+      return Tab;
+  }());
+
+  initTabs();
+
+  function initTabs() {
+      var queryStringTabs = readTabsQueryStringParam();
+      var elements = $('.tabGroup');
+      var state = { groups: [], selectedTabs: [] };
+      for (var i = 0; i < elements.length; i++) {
+          initTabGroup(elements[i], state);
+      }
+      if (state.groups.length === 0) {
+          return state;
+      }
+      document.body.addEventListener('click', function (event) { return handleClick(event, state); });
+      selectTabs(queryStringTabs);
+      updateTabsQueryStringParam(state);
+      return state;
+  }
+
+  function initTabGroup(element, state) {
+      var group = { tabs: [] };
+      var li = element.firstElementChild.firstElementChild;
+      while (li) {
+          var a = li.firstElementChild;
+          a.setAttribute(contentAttrs.name, 'tab');
+          var section = document.getElementById(a.getAttribute('aria-controls'));
+          var tab = new Tab(li, a, section);
+          group.tabs.push(tab);
+          li = li.nextElementSibling;
+      }
+      updateVisibilityAndSelection(group, state);
+      element.setAttribute(contentAttrs.name, 'tab-group');
+      element.tabGroup = group;
+      state.groups.push(group);
+  }
+
+  function updateVisibilityAndSelection(group, state) {
+      var anySelected = false;
+      var firstVisibleTab;
+      for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+          var tab = _a[_i];
+          tab.visible = tab.condition === null || state.selectedTabs.indexOf(tab.condition) !== -1;
+          if (tab.visible) {
+              if (!firstVisibleTab) {
+                  firstVisibleTab = tab;
+              }
+          }
+          tab.selected = tab.visible && state.selectedTabs.indexOf(tab.tabId) !== -1;
+          anySelected = anySelected || tab.selected;
+      }
+      if (!anySelected) {
+          for (var _b = 0, _c = group.tabs; _b < _c.length; _b++) {
+              var tab_1 = _c[_b];
+              var index = state.selectedTabs.indexOf(tab_1.tabId);
+              if (index === -1) {
+                  continue;
+              }
+              state.selectedTabs.splice(index, 1);
+          }
+          var tab = firstVisibleTab;
+          tab.selected = true;
+          state.selectedTabs.push(tab.tabId);
+      }
+  }
+
+  function getTabInfoFromEvent(event) {
+      if (!(event.target instanceof HTMLAnchorElement)) {
+          return null;
+      }
+      var tabId = event.target.getAttribute('data-tab');
+      if (tabId === null) {
+          return null;
+      }
+      var group = event.target.parentElement.parentElement.parentElement.tabGroup;
+      return { tabId: tabId, group: group, anchor: event.target };
+  }
+
+  function handleClick(event, state) {
+      var info = getTabInfoFromEvent(event);
+      if (info === null) {
+          return;
+      }
+      event.preventDefault();
+      var tabId = info.tabId, group = info.group;
+      if (state.selectedTabs.indexOf(tabId) !== -1) {
+          return;
+      }
+      var originalTop = info.anchor.getBoundingClientRect().top;
+      var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabId;
+      state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabId);
+      updateTabsQueryStringParam(state);
+      for (var _i = 0, _a = state.groups; _i < _a.length; _i++) {
+          var group_1 = _a[_i];
+          updateVisibilityAndSelection(group_1, state);
+      }
+      var top = info.anchor.getBoundingClientRect().top;
+      if (top !== originalTop && event instanceof MouseEvent) {
+          window.scrollTo(0, window.pageYOffset + top - originalTop);
+      }
+  }
+
+  function selectTabs(tabIds) {
+      for (var _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
+          var tabId = tabIds_1[_i];
+          var a = document$1.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
+          if (a === null) {
+              return;
+          }
+          a.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+      }
+  }
+
+  function readTabsQueryStringParam() {
+      var qs = parseQueryString();
+      var t = qs.tabs;
+      if (t === undefined || t === '') {
+          return [];
+      }
+      return t.split(',');
+  }
+
+  function updateTabsQueryStringParam(state) {
+      var qs = parseQueryString();
+      qs.tabs = state.selectedTabs.join();
+      var url = location.protocol + "//" + location.host + location.pathname + "?" + toQueryString(qs) + location.hash;
+      if (location.href === url) {
+          return;
+      }
+      history.replaceState({}, document.title, url);
+  }
+
+  function toQueryString(args) {
+      var parts = [];
+      for (var name_1 in args) {
+          if (args.hasOwnProperty(name_1) && args[name_1] !== '' && args[name_1] !== null && args[name_1] !== undefined) {
+              parts.push(encodeURIComponent(name_1) + '=' + encodeURIComponent(args[name_1]));
+          }
+      }
+      return parts.join('&');
+  }
+
+  function parseQueryString(queryString) {
+      var match;
+      var pl = /\+/g;
+      var search = /([^&=]+)=?([^&]*)/g;
+      var decode = function (s) { return decodeURIComponent(s.replace(pl, ' ')); };
+      if (queryString === undefined) {
+          queryString = '';
+      }
+      queryString = queryString.substring(1);
+      var urlParams = {};
+      while (match = search.exec(queryString)) {
+          urlParams[decode(match[1])] = decode(match[2]);
+      }
+      return urlParams;
+  }
+}
+
+  function utility() {
+    this.getAbsolutePath = getAbsolutePath;
+    this.isRelativePath = isRelativePath;
+    this.isAbsolutePath = isAbsolutePath;
+    this.getDirectory = getDirectory;
+    this.formList = formList;
+
+    function getAbsolutePath(href) {
+      // Use anchor to normalize href
+      var anchor = $('<a href="' + href + '"></a>')[0];
+      // Ignore protocal, remove search and query
+      return anchor.host + anchor.pathname;
+    }
+
+    function isRelativePath(href) {
+      if (href === undefined || href === '' || href[0] === '/') {
+        return false;
+      }
+      return !isAbsolutePath(href);
+    }
+
+    function isAbsolutePath(href) {
+      return (/^(?:[a-z]+:)?\/\//i).test(href);
+    }
+
+    function getDirectory(href) {
+      if (!href) return '';
+      var index = href.lastIndexOf('/');
+      if (index == -1) return '';
+      if (index > -1) {
+        return href.substr(0, index);
+      }
+    }
+
+    function formList(item, classes) {
+      var level = 1;
+      var model = {
+        items: item
+      };
+      var cls = [].concat(classes).join(" ");
+      return getList(model, cls);
+
+      function getList(model, cls) {
+        if (!model || !model.items) return null;
+        var l = model.items.length;
+        if (l === 0) return null;
+        var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
+        level++;
+        for (var i = 0; i < l; i++) {
+          var item = model.items[i];
+          var href = item.href;
+          var name = item.name;
+          if (!name) continue;
+          html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
+          html += getList(item, cls) || '';
+          html += '</li>';
+        }
+        html += '</ul>';
+        return html;
+      }
+    }
+
+    /**
+     * Add <wbr> into long word.
+     * @param {String} text - The word to break. It should be in plain text without HTML tags.
+     */
+    function breakPlainText(text) {
+      if (!text) return text;
+      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4')
+    }
+
+    /**
+     * Add <wbr> into long word. The jQuery element should contain no html tags.
+     * If the jQuery element contains tags, this function will not change the element.
+     */
+    $.fn.breakWord = function() {
+      if (this.html() == this.text()) {
+        this.html(function (index, text) {
+          return breakPlainText(text);
+        })
+      }
+      return this;
+    }
+  }
 })

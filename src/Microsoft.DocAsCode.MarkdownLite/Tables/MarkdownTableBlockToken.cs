@@ -1,40 +1,41 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
-    public class MarkdownTableBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownTableBlockToken>
+    public class MarkdownTableBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownTableBlockToken>
     {
         public MarkdownTableBlockToken(
             IMarkdownRule rule,
             IMarkdownContext context,
-            ImmutableArray<InlineContent> header,
+            ImmutableArray<MarkdownTableItemBlockToken> header,
             ImmutableArray<Align> align,
-            ImmutableArray<ImmutableArray<InlineContent>> cells)
+            ImmutableArray<ImmutableArray<MarkdownTableItemBlockToken>> cells,
+            SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Header = header;
             Align = align;
             Cells = cells;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
 
         public IMarkdownContext Context { get; }
 
-        public ImmutableArray<InlineContent> Header { get; }
+        public ImmutableArray<MarkdownTableItemBlockToken> Header { get; }
 
         public ImmutableArray<Align> Align { get; }
 
-        public ImmutableArray<ImmutableArray<InlineContent>> Cells { get; }
+        public ImmutableArray<ImmutableArray<MarkdownTableItemBlockToken>> Cells { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownTableBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -71,7 +72,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownTableBlockToken(Rule, Context, header, Align, cells);
+            return new MarkdownTableBlockToken(Rule, Context, header, Align, cells, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() =>
+            (from token in Header select (IMarkdownToken)token)
+            .Concat(from row in Cells from cell in row select cell);
     }
 }

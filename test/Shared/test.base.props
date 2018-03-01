@@ -1,130 +1,17 @@
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.msbuild.2.1.0-beta3-build3029\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.props" Condition="Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.msbuild.2.1.0-beta3-build3029\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.props')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.visualstudio.2.1.0-beta2-build1055\build\net20\xunit.runner.visualstudio.props" Condition="Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.visualstudio.2.1.0-beta2-build1055\build\net20\xunit.runner.visualstudio.props')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\Xamarin.iOS\xunit.core.props" Condition="Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\Xamarin.iOS\xunit.core.props')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props" Condition="Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project>
+
   <PropertyGroup>
-    <SchemaVersion>2.0</SchemaVersion>
-
-    <VersionCSPath>TEMP\</VersionCSPath>
-    <CurrentVersion>1.0.0.0</CurrentVersion>
-    <!-- Note: by convention assembly should be named after the root namespace -->
-    <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <RootNamespace Condition=" '$(RootNamespace)' == '' ">$(AssemblyName)</RootNamespace>
-    <DebugSymbols>true</DebugSymbols>
-    <ErrorReport>prompt</ErrorReport>
-
-    <!-- Note: unless explicitly specified, we will generate DLL -->
-    <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
-    <Prefer32Bit>false</Prefer32Bit>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-
-    <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath Condition="'$(OutputPath)'==''">bin\$(Configuration)\</OutputPath>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="../../src/Shared/base.props" />
 
-  <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <GitVersion ParameterType="System.String" Required="true" />
-      <VersionCSPath ParameterType="System.String" Required="true" />
-      <CurrentVersion ParameterType="System.String" Output="true" />
-    </ParameterGroup>
-    <Task>
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
-var gitVersion = GitVersion.Trim().Split('-');
-string[] version = new string[4];
-version[3] = "0";
-version[2] = gitVersion.Length > 1 ? gitVersion[1] : "0";
-version[1] = gitVersion[0].Split('.')[1];
-version[0] = gitVersion[0].Split('.')[0].Substring(1);
-string updatedVersion = string.Join(".", version);
-CurrentVersion = updatedVersion;
-string strOutputFilePath = System.IO.Path.Combine(VersionCSPath, "version.cs");
-string strOutputFileContent = string.Format(
-"using System.Reflection;\n\n" +
-"[assembly: AssemblyVersion(\"{0}\")]\n" +
-"[assembly: AssemblyFileVersion(\"{1}\")]\n\n" +
-"[assembly: AssemblyCompanyAttribute(\"Microsoft DocAsCode\")]\n" +
-"[assembly: AssemblyDescriptionAttribute(\"Microsoft DocAsCode Package\")]",
-updatedVersion, updatedVersion);
-if(System.IO.File.Exists(strOutputFilePath))
-{
-    if(System.IO.File.ReadAllText(strOutputFilePath) == strOutputFileContent)
-    {
-        return true;
-    }
-}
-
-try {
-  System.IO.File.WriteAllText(strOutputFilePath, strOutputFileContent);
-} catch {
-  // Race conditions may take place when multiple projects are built at the same time
-  // Ignore exceptions
-}
-]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
-  <!-- Version information is mandatory -->
-  <Target Name="GenerateVersionInfo" BeforeTargets="PrepareForBuild">
-    <Exec Command='md "$(VersionCSPath)"' Condition="!Exists($(VersionCSPath))" />
-    <Exec Command="git.exe describe" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <GenerateVersionCSFile Condition="$(ExecExitCode) == '0'" GitVersion="$(OutputConsoleValue)" VersionCSPath="$(VersionCSPath)">
-      <Output PropertyName="CurrentVersion" TaskParameter="CurrentVersion"/>
-    </GenerateVersionCSFile>
-    <GenerateVersionCSFile Condition="$(ExecExitCode) != '0'" GitVersion="'$(CurrentVersion)'" VersionCSPath="$(VersionCSPath)"/>
-  </Target>
   <ItemGroup>
-    <Compile Include="$(VersionCSPath)version.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="xunit.abstractions">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.assert">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\packages\xunit.assert.2.1.0-beta2-build2981\lib\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.assert.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.core">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\packages\xunit.extensibility.core.2.1.0-beta2-build2981\lib\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="xunit" Version="2.3.1" />
   </ItemGroup>
 
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
-    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\..\packages\xunit.core.2.1.0-beta2-build2981\build\Xamarin.iOS\xunit.core.props'))" />
-    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.visualstudio.2.1.0-beta2-build1055\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.visualstudio.2.1.0-beta2-build1055\build\net20\xunit.runner.visualstudio.props'))" />
-    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.msbuild.2.1.0-beta3-build3029\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.props')" Text="$([System.String]::Format('$(ErrorText)', '$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.msbuild.2.1.0-beta3-build3029\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  -->
 </Project>

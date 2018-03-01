@@ -1,38 +1,63 @@
 # Generate your API documentation with *DocFX*
 
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
+[![Twitter Follow](https://img.shields.io/twitter/follow/docfxmsft.svg?style=social&label=Follow)](https://twitter.com/docfxmsft)
 
-|            | Windows  |
-| ---------- | --------- | ------
-| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForMasterBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch)
-| **dev**    | [![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForDevBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch)
+* Build Status
+
+|            | Build Status  |  Package   |  Chocolatey |
+| ---------- | ------------- | ---------- | ----------- |
+| **master** |[![masterstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForMasterBranch.svg?label=master)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
+|  **dev**   |[![devstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForDevBranch.svg?label=dev)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+
+* Running Status
+
+| Running Status| Windows with .NET Core v2.0.3| Windows with VS2017 | [Ubuntu Linux with Mono](https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile) | [Mac with Mono]() 
+| ---------- | ------------- |---------- | ------------- |---------- 
+| [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)|[![Mac](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)
+
+## Collecting feedbacks and proposals for DocFX
+
+Let's make DocFX better together!
+
+**Vote** for the proposals you like, and **add** yours:
+
+[![Feature Requests](https://docfx-issue.azurewebsites.net/api/get/issues?tag=feature-request&repo=dotnet/docfx&format=svg)](https://docascode.github.io)
 
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
-There are currently two versions of the tool:
-
-1. Exe version which can be used as a command-line tool or inside VS IDE.
-2. DNX version which can be run cross platform.
 
 We currently support C# and VB projects.
 
 ## How to build?
-### Prerequisites
-1. [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
-2. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
+#### Prerequisites
+1. [Visual Studio 2017](https://www.visualstudio.com/downloads/), minimum installation is enough.
+2. [Node.js](https://nodejs.org), for building templates.
 
-### Steps
-1. `dnvm install 1.0.0-rc1-final`
-2. Run `build.cmd` under *DocFX* code repo
-
-> Possible build issues
-  1. *DNX.PackageManager not found*
-   Install http://www.microsoft.com/en-us/download/details.aspx?id=49442. Note that there are 2 msi to be installed.
-  2. *Test failure with message `\r\n` not equal to `\n` for Windows*
-  Set `git config --global core.autocrlf true`
+#### Steps
+1. Option 1: Run `build.cmd` under *DocFX* code repo.
+2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
 
 ## How do I play with *DocFX*?
-Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+1. Option 1: install docfx through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
+2. Option 2: install docfx through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
+3. Option 3: play docfx inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
+
+For more information, please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+
+## Integrate with Continuous Integration environment
+
+1. Install docfx through [chocolatey package](https://chocolatey.org/packages/docfx)
+`choco install docfx -y`
+
+2. Call docfx
+`docfx docfx.json`
+
+[docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
+
+> **NOTE:**
+> *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
 ## What's included?
 File/Folder     | Description
@@ -49,6 +74,10 @@ tools           | Source code for tools used in code build and deployment
 Check out the [contributing](CONTRIBUTING.md) page to see the best places to log issues and start discussions.
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
+
+## Contributors & Thank You
+Thanks go to our community of developers who have helped improve the quality of *DocFX* by helping with code contributions.
+Contributors: 
 
 ## License
 *DocFX* is licensed under the [MIT license](LICENSE).

@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.IO;
 
     using CommandLine;
 
@@ -17,28 +18,46 @@ namespace Microsoft.DocAsCode.SubCommands
         public static readonly Parser LooseParser = new Parser(s => s.IgnoreUnknownArguments = true);
         public static readonly Parser StrictParser = Parser.Default;
         private static readonly TOptions DefaultOption = Activator.CreateInstance<TOptions>();
-        
+
         private static readonly string HelpText = GetDefaultHelpText(DefaultOption);
+
         public virtual ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
         {
-            
             var parser = CommandUtility.GetParser(option);
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
-            if (!parsed && option == SubCommandParseOption.Strict) throw new OptionParserException();
+            if (!parsed && option == SubCommandParseOption.Strict)
+            {
+                throw new OptionParserException();
+            }
             var helpOption = options as ICanPrintHelpMessage;
-            if (helpOption != null && helpOption.PrintHelpMessage) return new HelpCommand(GetHelpText());
-            var logOption = options as ILoggable;
+            if (helpOption != null && helpOption.PrintHelpMessage)
+            {
+                return new HelpCommand(GetHelpText());
+            }
+
+            var buildOption = options as BuildCommandOptions;
+            string root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
+
+            var logOption = options as LogOptions;
             if (logOption != null)
             {
-                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindListener(l => l is ReportLogListener) == null)
+                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindAsyncListener(l => l is ReportLogListener) == null)
                 {
-                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath));
+                    Logger.RegisterAsyncListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
                 }
 
                 if (logOption.LogLevel.HasValue)
                 {
                     Logger.LogLevelThreshold = logOption.LogLevel.Value;
+                }
+
+                if (!string.IsNullOrEmpty(logOption.CorrelationId))
+                {
+                    if (AmbientContext.CurrentContext == null)
+                    {
+                        AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
+                    }
                 }
             }
 
@@ -62,8 +81,8 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             var attributes = typeof(TOptions).GetCustomAttributes(typeof(OptionUsageAttribute), false);
             if (attributes == null) yield break;
-            foreach(var item in attributes)
-               yield return ((OptionUsageAttribute)item).Name;
+            foreach (var item in attributes)
+                yield return ((OptionUsageAttribute)item).Name;
         }
     }
 }

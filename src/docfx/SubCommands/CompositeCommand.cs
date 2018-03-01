@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.SubCommands
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -12,7 +13,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal class CompositeCommand : ISubCommand
     {
-        public bool AllowReplay => true;
+        public string Name { get; } = nameof(CompositeCommand);
+
+        public bool AllowReplay { get; }
 
         public IList<ISubCommand> Commands { get; } = new List<ISubCommand>();
 
@@ -21,8 +24,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var result = ToOrderedKeyValuePair(options.ConfigFile);
             foreach (var pair in result)
             {
-                ISubCommandCreator command;
-                if (!controller.TryGetCommandCreator(pair.Key, out command))
+                if (!controller.TryGetCommandCreator(pair.Key, out ISubCommandCreator command))
                 {
                     Logger.LogWarning($"{pair.Key} is not a recognized command name, ignored.");
                 }
@@ -31,13 +33,18 @@ namespace Microsoft.DocAsCode.SubCommands
                     Commands.Add(command.Create(args, controller, SubCommandParseOption.Loose));
                 }
             }
+
+            AllowReplay = Commands.Any(c => c.AllowReplay);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
             foreach (var command in Commands)
             {
-                command.Exec(context);
+                using (new LoggerPhaseScope(command.Name, LogLevel.Info))
+                {
+                    command.Exec(context);
+                }
             }
         }
 

@@ -9,15 +9,17 @@ namespace Microsoft.DocAsCode.Exceptions
     [Serializable]
     public class DocfxException : Exception
     {
-        public DocfxException() : this("Error happens when running docfx")
+        private const string DefaultMessage = "Error happens when running docfx";
+
+        public DocfxException() : this(DefaultMessage)
         {
         }
 
-        public DocfxException(string message) : base(message)
+        public DocfxException(string message) : base(message ?? DefaultMessage)
         {
         }
 
-        public DocfxException(string message, Exception innerException) : base(message, innerException)
+        public DocfxException(string message, Exception innerException) : base(message ?? DefaultMessage, innerException)
         {
         }
 

@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -19,11 +20,15 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Uid)]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
+        [YamlMember(Alias = Constants.PropertyName.Name)]
+        [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember("name.")]
+        [YamlMember(Alias = Constants.PropertyName.DisplayName)]
+        [JsonProperty(Constants.PropertyName.DisplayName)]
+        public string DisplayName { get; set; }
+
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
         public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
 
@@ -33,11 +38,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue("csharp", out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out string result);
                 return result;
             }
-            set { NameInDevLangs["csharp"] = value; }
+            set { NameInDevLangs[Constants.DevLang.CSharp] = value; }
         }
 
         [YamlIgnore]
@@ -46,56 +50,111 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue("vb", out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.VB, out string result);
                 return result;
             }
-            set { NameInDevLangs["vb"] = value; }
+            set { NameInDevLangs[Constants.DevLang.VB] = value; }
         }
 
         [YamlMember(Alias = Constants.PropertyName.Href)]
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlMember(Alias = "tocHref")]
-        [JsonProperty("tocHref")]
+        [YamlMember(Alias = "originalHref")]
+        [JsonProperty("originalHref")]
+        public string OriginalHref { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.TocHref)]
+        [JsonProperty(Constants.PropertyName.TocHref)]
         public string TocHref { get; set; }
+
+        [YamlMember(Alias = "originalTocHref")]
+        [JsonProperty("originalTocHref")]
+        public string OriginalTocHref { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.TopicHref)]
+        [JsonProperty(Constants.PropertyName.TopicHref)]
+        public string TopicHref { get; set; }
+
+        [YamlMember(Alias = "originalTopicHref")]
+        [JsonProperty("originalTopicHref")]
+        public string OriginalTopicHref { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string AggregatedHref { get; set; }
 
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
 
+        [YamlMember(Alias = "originallHomepage")]
+        [JsonProperty("originallHomepage")]
+        public string OriginalHomepage { get; set; }
+
         [YamlMember(Alias = "homepageUid")]
         [JsonProperty("homepageUid")]
         public string HomepageUid { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.TopicUid)]
+        [JsonProperty(Constants.PropertyName.TopicUid)]
+        public string TopicUid { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string AggregatedUid { get; set; }
 
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
         public TocViewModel Items { get; set; }
 
+        [YamlIgnore]
+        [JsonIgnore]
+        public bool IsHrefUpdated { get; set; }
+
         [ExtensibleMember]
         [JsonIgnore]
-        public Dictionary<string, object> Additional { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(ReadData = false, WriteData = true)]
-        public Dictionary<string, object> AdditionalJson
+        [JsonExtensionData]
+        public CompositeDictionary MetadataJson =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(string.Empty, Metadata)
+                .Create();
+
+        public TocItemViewModel Clone()
         {
-            get
+            var cloned = (TocItemViewModel)this.MemberwiseClone();
+            if (cloned.Items != null)
             {
-                var dict = new Dictionary<string, object>();
-                foreach (var item in NameInDevLangs)
-                {
-                    dict["name." + item.Key] = item.Value;
-                }
-                foreach (var item in Additional)
-                {
-                    dict[item.Key] = item.Value;
-                }
-                return dict;
+                cloned.Items = Items.Clone();
             }
-            set { }
+            return cloned;
+        }
+
+        public override string ToString()
+        {
+            var result = string.Empty;
+            result += PropertyInfo(nameof(Name), Name);
+            result += PropertyInfo(nameof(Href), Href);
+            result += PropertyInfo(nameof(TopicHref), TopicHref);
+            result += PropertyInfo(nameof(TocHref), TocHref);
+            result += PropertyInfo(nameof(Uid), Uid);
+            result += PropertyInfo(nameof(TopicUid), TopicUid);
+            return result;
+
+            string PropertyInfo(string name, string value)
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return string.Empty;
+                }
+                return $"{name}:{value} ";
+            }
         }
     }
 }

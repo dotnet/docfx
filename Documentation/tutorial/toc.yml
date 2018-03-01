@@ -1,20 +1,46 @@
-﻿- name: Walkthrough Topics
-  href: walkthrough/toc.md
-  homepage: walkthrough/walkthrough_overview.md
-- name: User Manual
-  href: docfx.exe_user_manual.md
-- name: Build your own type of documentation with custom plug-in
-  href: "Build your own type of documentation with custom plug-in.md"
+﻿- name: Getting Started
   items:
-  - name: "🔧 Advanced: Support Hyperlink"
-    href: advanced_support_hyperlink.md
-- name: "HowTo: Create Custom Template"
-  href: howto_create_custom_template.md
-- name: "HowTo: Filter Out Unwanted APIs"
-  href: howto_filter_out_unwanted_apis.md
-- name: Introduction to TOC Files
-  href: intro_toc.md
-- name: Introduction to REST API
-  href: intro_rest_api_documentation.md
-- name: Introduction to Overwrite Files
-  href: intro_overwrite_files.md
+  - name: Quickstart
+    href: docfx_getting_started.md
+  - name: DocFX User Manual
+    href: docfx.exe_user_manual.md
+  - name: "HowTo: Filter Out Unwanted APIs"
+    href: howto_filter_out_unwanted_apis_attributes.md
+  - name: Walkthrough Topics
+    href: walkthrough/toc.md
+    homepage: walkthrough/walkthrough_overview.md
+- name: Content
+  items:
+  - name: TOC
+    href: intro_toc.md
+  - name: REST API
+    href: intro_rest_api_documentation.md
+  - name: Overwrite Files
+    href: intro_overwrite_files.md
+  - name: Links and Cross References
+    href: links_and_cross_references.md
+- name: Template
+  items:
+  - name: Template System
+    href: intro_template.md
+  - name: "HowTo: Create Custom Template"
+    href: howto_create_custom_template.md
+- name: Incremental Build
+  href: incrementalbuild/toc.yml
+- name: Extensibility
+  items:
+  - name: How to build your own type of documentation with custom plug-in
+    href: howto_build_your_own_type_of_documentation_with_custom_plug-in.md
+    items:
+    - name: "Advanced: Support Hyperlink"
+      href: advanced_support_hyperlink.md
+  - name: How to add a customized post processor
+    href: howto_add_a_customized_post_processor.md
+  - name: Validate your markdown files
+    href: validate_your_markdown_files.md
+  - name: Intro markdown lite
+    href: intro_markdown_lite.md
+  - name: How to customize DocFX Flavored Markdown
+    href: howto_customize_docfx_flavored_markdown.md
+- name: "Multiple Programming Languages Support"
+  href: universalreference/toc.yml

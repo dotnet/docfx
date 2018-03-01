@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected abstract string GetSyntaxContent(MemberType typeKind, ISymbol symbol, SymbolVisitorAdapter adapter);
 
-        protected abstract void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter);
+        protected abstract void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload);
 
         internal override sealed void GenerateSyntax(MemberType type, ISymbol symbol, SyntaxDetail syntax, SymbolVisitorAdapter adapter)
         {
@@ -49,9 +49,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             syntax.Content[Language] = syntaxStr;
         }
 
-        internal override sealed void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        internal override sealed void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
-            GenerateReference(symbol, reference, adapter);
+            GenerateReference(symbol, reference, adapter, asOverload);
         }
 
         public static CompositeYamlModelGenerator operator +(SimpleYamlModelGenerator left, SimpleYamlModelGenerator right)

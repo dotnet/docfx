@@ -3,25 +3,36 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.Text.RegularExpressions;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class AzureBlockquoteBlockRule : MarkdownBlockquoteBlockRule
     {
         public override string Name => "AzureBlockquote";
 
-        public override IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public static readonly Regex _azureLeadingBlankRegex = new Regex(@"^ *>? *", RegexOptions.Multiline | RegexOptions.Compiled);
+
+        public override Regex LeadingBlockquote => _azureLeadingBlankRegex;
+
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Blockquote.Match(source);
+            var match = Blockquote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
-            var c = engine.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
-            var tokens = engine.Tokenize(capStr);
-            engine.SwitchContext(c);
-            return new AzureBlockquoteBlockToken(this, engine.Context, tokens, match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            var c = parser.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
+            var capStr = LeadingBlockquote.Replace(sourceInfo.Markdown, string.Empty);
+            var blockTokens = parser.Tokenize(sourceInfo.Copy(capStr));
+            blockTokens = TokenHelper.CreateParagraghs(parser, this, blockTokens, true, sourceInfo);
+            parser.SwitchContext(c);
+            return new MarkdownBlockquoteBlockToken(
+                this,
+                parser.Context,
+                blockTokens,
+                sourceInfo);
         }
     }
 }

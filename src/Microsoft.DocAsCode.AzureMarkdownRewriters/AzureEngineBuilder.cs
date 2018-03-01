@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     public class AzureEngineBuilder : GfmEngineBuilder
     {
@@ -44,10 +43,15 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 throw new ArgumentException($"{nameof(MarkdownNewLineBlockRule)} should exist!");
             }
-            blockRules.Insert(index + 1, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 2, new AzureIncludeBlockRule());
-            blockRules.Insert(index + 3, new AzureNoteBlockRule());
-            blockRules.Insert(index + 4, new AzureSelectorBlockRule());
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule[]
+                {
+                    new DfmYamlHeaderBlockRule(),
+                    new AzureIncludeBlockRule(),
+                    new AzureNoteBlockRule(),
+                    new AzureSelectorBlockRule()
+                });
 
             index = blockRules.FindLastIndex(s => s is MarkdownHtmlBlockRule);
             if (index < 1)
@@ -55,9 +59,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 throw new ArgumentException($"{nameof(MarkdownHtmlBlockRule)} should exist and shouldn't be the first one rule!");
             }
             blockRules.Insert(index - 1, new AzureHtmlMetadataBlockRule());
-
-            var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
-            blockRules[gfmIndex] = new AzureParagraphBlockRule();
 
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             blockRules[markdownBlockQuoteIndex] = new AzureBlockquoteBlockRule();
@@ -94,30 +95,29 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         {
             Rewriter = MarkdownTokenRewriterFactory.Composite(
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, FixNonMdRelativeFileHref(t.Href, t.Context, t.RawMarkdown), t.Title, t.Text, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, FixNonMdRelativeFileHref(t.Href, t.Context, t.SourceInfo.Markdown), t.Title, t.Text, t.SourceInfo, t.LinkType, t.RefId)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.RawMarkdown), t.Title, t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown), t.Title, t.Content, t.SourceInfo, t.LinkType, t.RefId)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureHtmlMetadataBlockToken t) => new DfmYamlHeaderBlockToken(t.Rule, t.Context, GenerateYamlHeaderContent(t.Properties, t.Tags), t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureHtmlMetadataBlockToken t) => new DfmYamlHeaderBlockToken(t.Rule, t.Context, GenerateYamlHeaderContent(t.Properties, t.Tags), t.SourceInfo)
                         )
                     );
         }
 
         private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown)
         {
-            bool isHrefRelativeNonMdFile;
-            var link = AppendDefaultExtension(href, defaultExtension, out isHrefRelativeNonMdFile);
+            var link = AppendDefaultExtension(href, defaultExtension, out bool isHrefRelativeNonMdFile);
             if (isHrefRelativeNonMdFile)
             {
                 link = FixNonMdRelativeFileHref(link, context, rawMarkdown);
@@ -221,8 +221,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
                 var nonMdHrefFileName = Path.GetFileName(nonMdHref);
                 var azureResourceFileInfoMapping = (Dictionary<string, AzureFileInfo>)context.Variables["azureResourceFileInfoMapping"];
-                AzureFileInfo azureResourceFileInfo;
-                if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out azureResourceFileInfo))
+                if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out AzureFileInfo azureResourceFileInfo))
                 {
                     Logger.LogWarning($"Can't find info for file name {nonMdHrefFileName} in azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
                     return nonMdHref;
@@ -248,7 +247,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
                 return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
             }
-            catch(NotSupportedException nse)
+            catch (NotSupportedException nse)
             {
                 Logger.LogWarning($"Warning: FixNonMdRelativeFileHref can't be apply on reference: {nonMdHref}. Exception: {nse.Message}");
                 return nonMdHref;
@@ -269,7 +268,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 {
                     var conditions = selectorConditions.Split('|').Select(c => c.Trim());
                     int i = 0;
-                    foreach(var condition in conditions)
+                    foreach (var condition in conditions)
                     {
                         sb.Append($" title{++i}=\"{HttpUtility.HtmlEncode(condition)}\"");
                     }

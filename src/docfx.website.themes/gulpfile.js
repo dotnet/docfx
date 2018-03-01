@@ -12,18 +12,35 @@ var knownOptions = {
 };
 
 var options = minimist(process.argv.slice(2), knownOptions);
-var files = [
-    "fonts/*",
-    "partials/*",
-    "styles/*",
+var templateFiles = [
+    "layout/*",
+    "partials/**/*",
     "*.js",
     "*.tmpl",
+    "*.liquid",
+    "token.json",
+    "!gulpfile.js"
+];
+var webpageFiles = [
+    "fonts/*",
+    "styles/*",
     "favicon.ico",
     "logo.svg",
-    "global.json"];
+    "search-stopwords.json"];
+
+var files = templateFiles.concat(webpageFiles);
 
 var pack = {
+    "common": [
+        {
+            "files": files,
+        }
+    ],
     "default": [
+        {
+            "files": files,
+            "cwd": "common",
+        },
         {
             "files": files,
         }
@@ -33,107 +50,30 @@ var pack = {
             "files": files,
         }
     ],
-    "iframe.html": [
+    "statictoc": [
         {
             "files": files,
+            "cwd": "common",
+        },
+        {
+            "files": files.concat("!toc.html.*"),
             "cwd": "default",
         },
         {
             "files": files, // Overrides the former one if file name is the same
         }
     ],
-    "msdn.html": [
-        {
-            "files": [
-                "common.js",
-                "ManagedReference.html.primary.js",
-                "partials/classSubtitle.tmpl.partial",
-                "partials/namespaceSubtitle.tmpl.partial",
-            ],
-            "cwd": "default",
-        },
-        {
-            "files": [
-                "op.common.js",
-                "partials/title.tmpl.partial",
-                "partials/namespace.tmpl.partial",
-                "global.json",
-            ],
-            "cwd": "op.html",
-        },
-        {
-            "files": files
-        }
-    ],
-    "op.html": [
-        {
-            "files": [
-                "common.js",
-                "ManagedReference.html.primary.js",
-                "partials/classSubtitle.tmpl.partial",
-                "partials/namespaceSubtitle.tmpl.partial",
-            ],
-            "cwd": "default",
-        },
-        {
-            "files": [
-                "ManagedReference.mta.json.tmpl",
-                "conceptual.mta.json.tmpl",
-                "Resource.mta.json.aux.tmpl",
-            ],
-            "cwd": "docs.html",
-        },
-        {
-            "files": files
-        }
-    ],
-    "vs.html": [
-        {
-            "files": [
-                "common.js",
-                "ManagedReference.html.primary.js",
-                "partials/classSubtitle.tmpl.partial",
-                "partials/namespaceSubtitle.tmpl.partial",
-            ],
-            "cwd": "default",
-        },
-        {
-            "files": [
-                "op.common.js",
-                "partials/title.tmpl.partial",
-                "partials/namespace.tmpl.partial",
-                "global.json",
-            ],
-            "cwd": "op.html",
-        },
+    "pdf.default": [
         {
             "files": files,
-            "cwd": "msdn.html",
+            "cwd": "common",
         },
         {
-            "files": files
-        }
-    ],
-    "docs.html": [
-         {
-            "files": [
-                "common.js",
-                "ManagedReference.html.primary.js",
-                "partials/classSubtitle.tmpl.partial",
-                "partials/namespaceSubtitle.tmpl.partial",
-                "RestApi.html.primary.js",
-            ],
+            "files": templateFiles,
             "cwd": "default",
         },
         {
-            "files": [
-                "global.json",
-                "op.common.js",
-            ],
-            "cwd": "op.html",
-        },
-        {
-            "files": files
+            "files": files, // Overrides the former one if file name is the same
         }
     ]
 };
@@ -180,7 +120,7 @@ gulp.task('pack', function () {
             .pipe(uniqueFiles())
             .pipe(zip(filename))
             .pipe(gulp.dest(dirname))
-        ;
+            ;
     }
 
     function getStream(file, key) {

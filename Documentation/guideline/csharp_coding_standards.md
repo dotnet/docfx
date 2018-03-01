@@ -135,7 +135,7 @@ Our code can and should support multiple operating systems in addition to Window
 #### Assembly naming
 The unit tests for the `Microsoft.Foo` assembly live in the `Microsoft.Foo.Tests` assembly.
 
-The functional tests for the `Microsoft.Foo` assmebly live in the `Microsoft.Foo.FunctionalTests` assembly.
+The functional tests for the `Microsoft.Foo` assembly live in the `Microsoft.Foo.FunctionalTests` assembly.
 
 In general there should be exactly one unit tests assembly for each product runtime assembly. In general there should be one functional tests assembly per repo. Exceptions can be made for both.
 
@@ -217,7 +217,7 @@ Assert.True(list1.Length == list2.Length);
 
 for (int i = 0; i < list1.Length; i++) {
     Assert.True(
-        String.Equals
+        String.Equals(
             list1[i],
             list2[i],
             StringComparison.OrdinalIgnoreCase));

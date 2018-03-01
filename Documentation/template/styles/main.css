@@ -81,6 +81,26 @@ svg:hover path {
 .key-section{
   padding: 30px 0;
 }
+
+.key-section .glyphicon, .counter-key-section .glyphicon {
+  font-size: 4em;
+  display: table-cell;
+  vertical-align: middle;
+}
+.glyphicon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.key-section section, .counter-key-section section {
+  display: table-cell;
+  padding-left: 20px;
+}
+
+.key-section section p, .counter-key-section section p {
+  text-align: initial;
+}
+
 .counter-key-section{
   padding: 30px 0;
 }
@@ -92,6 +112,7 @@ svg:hover path {
 }
 .hero strong {
     font-weight: 400;
+    font-family: Rockwell;
 }
 .hero .text {
     font-size: 64px;
@@ -100,7 +121,7 @@ svg:hover path {
 .hero .minitext {
     font-size: 20px;
     text-align: center;
-    text-transform: uppercase;
+    font-family: Candara;
 }
 .buttons-unit {
     margin-top: 60px;

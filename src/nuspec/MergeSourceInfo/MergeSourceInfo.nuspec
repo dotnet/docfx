@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>MergeSourceInfo</id>
+    <version>1.0.0</version>
+    <title>MergeSourceInfo</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dotnet/docfx</projectUrl>
+    <description>This is a DocFX tool to merge source information.</description>
+    <copyright>Copyright 2015-2017</copyright>
+    <tags>Documentation API Metadata docascode docfx</tags>
+  </metadata>
+  <files>
+    <file src="**" target="tools/" exclude="**/*.pdb"/>
+  </files>
+</package>

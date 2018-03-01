@@ -5,7 +5,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
 
     public sealed class LoggerFileScope : IDisposable
     {
@@ -17,25 +16,43 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException("Phase name cannot be null or white space.", nameof(fileName));
             }
-            _originFileName = CallContext.LogicalGetData(nameof(LoggerFileScope)) as string;
-            if (_originFileName == null)
-            {
-                CallContext.LogicalSetData(nameof(LoggerFileScope), fileName);
-            }
-            else
-            {
-                CallContext.LogicalSetData(nameof(LoggerFileScope), fileName);
-            }
+            _originFileName = GetFileName();
+            SetFileName(fileName);
         }
 
         public void Dispose()
         {
-            CallContext.LogicalSetData(nameof(LoggerFileScope), _originFileName);
+            SetFileName(_originFileName);
         }
 
         internal static string GetFileName()
         {
-            return CallContext.LogicalGetData(nameof(LoggerFileScope)) as string;
+            return LogicalCallContext.GetData(nameof(LoggerFileScope)) as string;
+        }
+
+        private static void SetFileName(string fileName)
+        {
+            LogicalCallContext.SetData(nameof(LoggerFileScope), fileName);
+        }
+
+        public static object Capture()
+        {
+            return new CapturedLoggerFileScope();
+        }
+
+        public static LoggerFileScope Restore(object captured)
+        {
+            var capturedScope = captured as CapturedLoggerFileScope;
+            if (capturedScope == null)
+            {
+                return null;
+            }
+            return new LoggerFileScope(capturedScope.FileName);
+        }
+
+        private sealed class CapturedLoggerFileScope
+        {
+            public string FileName { get; } = GetFileName();
         }
     }
 }

@@ -1,56 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\src\Shared\base.props" />
+
   <PropertyGroup>
-    <ProjectGuid>{2190AD24-CC6A-0DD1-D17B-169012B32AAD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.MergeDeveloperComments</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.MergeDeveloperComments</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System.Runtime" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
-      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj">
-      <Project>{60f21edb-35f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.ManagedReference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj">
-      <Project>{60f22edb-35f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.Metadata.ManagedReference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

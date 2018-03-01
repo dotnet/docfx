@@ -7,12 +7,9 @@ namespace Microsoft.DocAsCode
 
     using CommandLine;
 
-    using Microsoft.DocAsCode.Common;
-
     [OptionUsage("merge [<config file path>]")]
-    internal class MergeCommandOptions : ICanPrintHelpMessage, ILoggable
+    internal class MergeCommandOptions : LogOptions, ICanPrintHelpMessage
     {
-        [Option('o', "output")]
         public string OutputFolder { get; set; }
 
         [ValueOption(0)]
@@ -20,12 +17,6 @@ namespace Microsoft.DocAsCode
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool PrintHelpMessage { get; set; }
-
-        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string LogFilePath { get; set; }
-
-        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
-        public LogLevel? LogLevel { get; set; }
 
         [OptionList("content", Separator = ',', HelpText = "Specifies content files for generating documentation.")]
         public List<string> Content { get; set; }
@@ -38,5 +29,8 @@ namespace Microsoft.DocAsCode
 
         [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
         public string FileMetadataFilePath { get; set; }
+
+        [OptionList("tocMetadata", Separator = ',', HelpText = "Specify metadata names that need to be merged into toc file")]
+        public List<string> TocMetadata { get; set; }
     }
 }

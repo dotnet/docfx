@@ -8,28 +8,40 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument<ItemViewModel>
+    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
         public override int BuildOrder => 0x10;
 
-        protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
+        public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
         {
-            return OverwriteDocumentReader.Transform<ItemViewModel>(
-                fileModel,
-                uid,
-                s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+            return Transform<ItemViewModel>(fileModel, uid, host);
         }
 
-        protected override IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel model, string uid, IHostService host)
+        public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
         {
-            return ((PageViewModel)model.Content).Items.Where(s => s.Uid == uid);
+            return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
         }
+
+        protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
+        {
+            ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
+        }
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
+
     }
 }

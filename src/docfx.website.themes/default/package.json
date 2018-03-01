@@ -9,10 +9,12 @@
   "author": "docfx",
   "license": "MIT",
   "devDependencies": {
+    "bower": "^1.8.0",
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-copy": "0.0.2",
+    "gulp-minify": "^1.0.0",
     "gulp-minify-css": "^1.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.7",

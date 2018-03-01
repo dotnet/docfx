@@ -10,11 +10,13 @@ namespace Microsoft.DocAsCode
     {
         public static Func<string, string> GetIndexFilePathFunc = new Func<string, string>(s => Path.Combine(s, "index.yml"));
         public const string ConfigFileName = "docfx.json";
+        public const string SupportedProjectName = "project.json";
+        public const string ConfigFileExtension = ".json";
         public const string WebsiteReferenceFolderName = "_ref_"; // Current OutputFolder
         public const string DefaultRootOutputFolderPath = "_site";
         public const string DefaultMetadataOutputFolderName = "_api";
         public const string DefaultConceputalOutputFolderName = ""; // Current OutputFolder
         public const string DefaultTemplateName = "default";
-        public const string DefaultOverwriteFolderName = "apispec";
+        public const string EmbeddedTemplateFolderName = "Template";
     }
 }

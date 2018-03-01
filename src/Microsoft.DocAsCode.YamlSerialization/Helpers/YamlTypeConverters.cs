@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
         private static readonly IEnumerable<IYamlTypeConverter> _builtInTypeConverters =
             new IYamlTypeConverter[]
             {
-                new GuidConverter(),
+                new GuidConverter(false),
             };
 
         public static IEnumerable<IYamlTypeConverter> BuiltInConverters => _builtInTypeConverters;

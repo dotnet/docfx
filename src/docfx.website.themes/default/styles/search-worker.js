@@ -1,45 +1,80 @@
-(function() {
+(function () {
   importScripts('lunr.min.js');
 
-  var lunrIndex = lunr(function() {
-      this.pipeline.remove(lunr.stopWordFilter);
-      this.ref('href');
-      this.field('title', {boost: 50});
-      this.field('keywords', {boost: 20});
-  });
+  var lunrIndex;
+
+  var stopWords = null;
+  var searchData = {};
+
   lunr.tokenizer.seperator = /[\s\-\.]+/;
 
   var stopWordsRequest = new XMLHttpRequest();
   stopWordsRequest.open('GET', '../search-stopwords.json');
-  stopWordsRequest.onload = function() {
-    var stopWords = JSON.parse(this.responseText);
-    var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
-    lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter');
-    lunrIndex.pipeline.add(docfxStopWordFilter);
+  stopWordsRequest.onload = function () {
+    if (this.status != 200) {
+      return;
+    }
+    stopWords = JSON.parse(this.responseText);
+    buildIndex();
   }
   stopWordsRequest.send();
 
-  var searchData = {};
   var searchDataRequest = new XMLHttpRequest();
 
   searchDataRequest.open('GET', '../index.json');
-  searchDataRequest.onload = function() {
-    searchData = JSON.parse(this.responseText);
-    for (var prop in searchData) {
-      lunrIndex.add(searchData[prop]);
+  searchDataRequest.onload = function () {
+    if (this.status != 200) {
+      return;
     }
-    postMessage({e: 'index-ready'});
+    searchData = JSON.parse(this.responseText);
+
+    buildIndex();
+
+    postMessage({ e: 'index-ready' });
   }
   searchDataRequest.send();
 
-  onmessage = function(oEvent) {
+  onmessage = function (oEvent) {
     var q = oEvent.data.q;
     var hits = lunrIndex.search(q);
     var results = [];
-    hits.forEach(function(hit) {
+    hits.forEach(function (hit) {
       var item = searchData[hit.ref];
-      results.push({'href': item.href, 'title': item.title, 'keywords': item.keywords});
+      results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
     });
-    postMessage({e: 'query-ready', q: q, d: results});
+    postMessage({ e: 'query-ready', q: q, d: results });
+  }
+
+  function buildIndex() {
+    if (stopWords !== null && !isEmpty(searchData)) {
+      lunrIndex = lunr(function () {
+        this.pipeline.remove(lunr.stopWordFilter);
+        this.ref('href');
+        this.field('title', { boost: 50 });
+        this.field('keywords', { boost: 20 });
+
+        for (var prop in searchData) {
+          if (searchData.hasOwnProperty(prop)) {
+            this.add(searchData[prop]);
+          }
+        }
+
+        var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
+        lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter');
+        this.pipeline.add(docfxStopWordFilter);
+        this.searchPipeline.add(docfxStopWordFilter);
+      });
+    }
+  }
+
+  function isEmpty(obj) {
+    if(!obj) return true;
+
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop))
+        return false;
+    }
+
+    return true;
   }
 })();

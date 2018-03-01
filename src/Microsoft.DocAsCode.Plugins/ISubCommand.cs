@@ -7,5 +7,6 @@ namespace Microsoft.DocAsCode.Plugins
     {
         bool AllowReplay { get; }
         void Exec(SubCommandRunningContext context);
+        string Name { get; }
     }
 }

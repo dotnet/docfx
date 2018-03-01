@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -12,7 +13,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
     public class TokenRewriterTest
     {
-
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestGfmWithValidator()
@@ -21,13 +21,16 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             const string expected = "<h1 id=\"hello-world\">Hello World</h1>\n";
             const string expectedMessage = "a space is expected after '#'";
             string message = null;
-            var builder = new GfmEngineBuilder(new Options());
+            var builder = new GfmEngineBuilder(new Options
+            {
+                LegacyMode = true,
+            });
             builder.Rewriter =
                 MarkdownTokenRewriterFactory.FromValidators(
                     MarkdownTokenValidatorFactory.FromLambda(
                         (MarkdownHeadingBlockToken token) =>
                         {
-                            if (!token.RawMarkdown.StartsWith("# "))
+                            if (!token.SourceInfo.Markdown.StartsWith("# "))
                             {
                                 message = expectedMessage;
                             }
@@ -36,6 +39,151 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
             Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithContext()
+        {
+            const string source = @"# Title-1
+# Title-2";
+            const string expected = @"<h1 id=""title-1"">Title-1</h1>
+<h1 id=""title-2"">Title-2</h1>
+";
+            const string expectedMessage = "expected one title in one document.";
+            string message = null;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownHeadingBlockToken token) =>
+                        {
+                            var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+                            if (token.Depth == 1)
+                            {
+                                re.SetVariable("count", (int)re.GetVariable("count") + 1);
+                            }
+                        },
+                        re =>
+                        {
+                            re.SetVariable("count", 0);
+                            re.SetPostProcess("h1 count", re1 =>
+                            {
+                                if ((int)re.GetVariable("count") != 1)
+                                {
+                                    message = expectedMessage;
+                                }
+                            });
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithQuery()
+        {
+            const string source = @"abc (not match)
+
+- abc (match)
+- a*b*c (match)
+- xyz
+- x
+
+> a**b**c (not match)";
+            const string expected = @"<p>abc (not match)</p>
+<ul>
+<li>abc (match)</li>
+<li>a<em>b</em>c (match)</li>
+<li>xyz</li>
+<li>x</li>
+</ul>
+<blockquote>
+<p>a<strong>b</strong>c (not match)</p>
+</blockquote>
+";
+            int matchCount = 0;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownListItemBlockToken token) =>
+                        {
+                            var text = string.Concat(from t in token.Descendants<MarkdownTextToken>() select t.Content);
+                            if (text.Contains("abc"))
+                            {
+                                matchCount++;
+                            }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(2, matchCount);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithParents()
+        {
+            const string source = @"# abc
+> *abc*
+
+- abc
+
+abc
+";
+            const string expected = @"<h1 id=""abc"">abc</h1>
+<blockquote>
+<p><em>abc</em></p>
+</blockquote>
+<ul>
+<li>abc</li>
+</ul>
+<p>abc</p>
+";
+            int headingTextCount = 0;
+            int blockquoteTextCount = 0;
+            int listTextCount = 0;
+            int paraTextCount = 0;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownTextToken token) =>
+                        {
+                            if (token.Content == "abc")
+                            {
+                                var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+                                foreach (var parent in re.GetParents())
+                                {
+                                    if (parent is MarkdownHeadingBlockToken)
+                                    {
+                                        headingTextCount++;
+                                    }
+                                    else if (parent is MarkdownBlockquoteBlockToken)
+                                    {
+                                        blockquoteTextCount++;
+                                    }
+                                    else if (parent is MarkdownListItemBlockToken)
+                                    {
+                                        listTextCount++;
+                                    }
+                                    else if (parent is MarkdownParagraphBlockToken)
+                                    {
+                                        paraTextCount++;
+                                    }
+                                }
+                            }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(1, headingTextCount);
+            Assert.Equal(1, blockquoteTextCount);
+            Assert.Equal(1, listTextCount);
+            Assert.Equal(2, paraTextCount);
         }
 
         [Fact]
@@ -79,7 +227,7 @@ by a blank line.</p>
 <p>Leave 2 spaces at the end of a line to do a<br>line break</p>
 <p>Text attributes <em>italic</em>, <strong>bold</strong>, 
 <code>monospace</code>, <del>strikethrough</del> .</p>
-<p>A <a href=""http://example.com"">link</a>.</p>
+<p>A <a href=""http://example.com"" data-raw-source=""[link](http://example.com)"">link</a>.</p>
 <p>Shopping list:</p>
 <ul>
 <li>apples</li>
@@ -97,7 +245,7 @@ by a blank line.</p>
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
                 MarkdownTokenRewriterFactory.FromLambda(
-                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.RawMarkdown) // ignore all heading
+                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.SourceInfo) // ignore all heading
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -122,10 +270,10 @@ by a blank line.</p>
                 MarkdownTokenRewriterFactory.Sequence(
                     MarkdownTokenRewriterFactory.FromLambda(
                         (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
-                            t.Depth <= 2 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown) : null),
+                            t.Depth <= 2 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.SourceInfo) : null),
                     MarkdownTokenRewriterFactory.FromLambda(
                         (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
-                            t.Depth == 3 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown) : null)
+                            t.Depth == 3 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.SourceInfo) : null)
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -145,10 +293,10 @@ by a blank line.</p>
                 MarkdownTokenRewriterFactory.Loop(
                     MarkdownTokenRewriterFactory.Composite(
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.SourceInfo.Markdown, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.SourceInfo)
                         )
                     ),
                 10);

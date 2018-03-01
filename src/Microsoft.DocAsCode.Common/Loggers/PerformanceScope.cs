@@ -22,12 +22,7 @@ namespace Microsoft.DocAsCode.Common
 
         public PerformanceScope(Action<TimeSpan> logger = null)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _stopwatch.Restart();
         }
 

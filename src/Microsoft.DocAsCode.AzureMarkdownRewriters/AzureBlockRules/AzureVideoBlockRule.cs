@@ -15,19 +15,19 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public virtual Regex AzureVideoRegex => _azureVideoRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {
-            var match = AzureVideoRegex.Match(source);
+            var match = AzureVideoRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // Sample: [AZURE.VIDEO video-id-string]. Get video id here
             var videoId = match.Groups[1].Value;
 
-            return new AzureVideoBlockToken(this, engine.Context, videoId, match.Value);
+            return new AzureVideoBlockToken(this, engine.Context, videoId, sourceInfo);
         }
     }
 }

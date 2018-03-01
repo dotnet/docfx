@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Glob
         {
             // If there is no pattern, nothing will be included
             if (patterns == null) return Enumerable.Empty<string>();
-            if (string.IsNullOrEmpty(cwd)) cwd = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(cwd)) cwd = Directory.GetCurrentDirectory();
 
             IEnumerable<GlobMatcher> globList = patterns.Select(s => new GlobMatcher(s, options));
             IEnumerable<GlobMatcher> excludeGlobList = Enumerable.Empty<GlobMatcher>();
@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Glob
         private static string GetRelativeFilePath(string directory, string file)
         {
             var subpath = file.Substring(directory.Length);
-            // directory could be 
+            // directory could be
             // 1. root folder, e.g. E:\ or /
             // 2. sub folder, e.g. a or a/ or a\
             return subpath.TrimStart('\\', '/');

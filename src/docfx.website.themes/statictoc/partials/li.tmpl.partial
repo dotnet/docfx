@@ -1,0 +1,20 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<ul class="nav level{{level}}">
+{{#items}}
+  <li class="{{#active}}active{{/active}}">
+    {{^leaf}}
+    <span class="expand-stub"></span>
+    {{/leaf}}
+    {{#href}}
+    <a href="{{href}}" title="{{name}}" class="{{#active}}active{{/active}}">{{name}}</a>
+    {{/href}}
+    {{^href}}
+    <a class="{{#active}}active{{/active}}">{{{name}}}</a>
+    {{/href}}
+    {{^leaf}}
+      {{>partials/li}}
+    {{/leaf}}
+  </li>
+{{/items}}
+</ul>

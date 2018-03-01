@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -18,6 +20,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [YamlMember(Alias = Constants.PropertyName.Uid)]
         [JsonProperty(Constants.PropertyName.Uid)]
         public string Uid { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
 
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
@@ -35,57 +41,62 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
+        [YamlMember(Alias = Constants.PropertyName.Name)]
+        [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember("name.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
-        public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
+        public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "fullName")]
-        [JsonProperty("fullName")]
+        [YamlMember(Alias = Constants.PropertyName.NameWithType)]
+        [JsonProperty(Constants.PropertyName.NameWithType)]
+        public string NameWithType { get; set; }
+
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
+        [JsonIgnore]
+        public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
+
+        [YamlMember(Alias = Constants.PropertyName.FullName)]
+        [JsonProperty(Constants.PropertyName.FullName)]
         public string FullName { get; set; }
 
-        [ExtensibleMember("fullname.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
         [JsonIgnore]
-        public SortedList<string, string> FullNameInDevLangs { get; } = new SortedList<string, string>();
+        public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
 
-        [ExtensibleMember("spec.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Spec)]
         [JsonIgnore]
-        public SortedList<string, List<SpecViewModel>> Specs { get; } = new SortedList<string, List<SpecViewModel>>();
+        public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
 
         [ExtensibleMember]
         [JsonIgnore]
-        public Dictionary<string, object> Additional { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Additional { get; private set; } = new Dictionary<string, object>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(ReadData = false, WriteData = true)]
-        public Dictionary<string, object> AdditionalJson
+        [JsonExtensionData]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
+        public CompositeDictionary AdditionalJson =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.NameWithType, NameWithTypeInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.FullName, FullNameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Spec, Specs, JTokenConverter.Convert<List<SpecViewModel>>)
+                .Add(string.Empty, Additional)
+                .Create();
+
+        public ReferenceViewModel Clone()
         {
-            get
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var item in NameInDevLangs)
-                {
-                    dict["name." + item.Key] = item.Value;
-                }
-                foreach (var item in FullNameInDevLangs)
-                {
-                    dict["fullname." + item.Key] = item.Value;
-                }
-                foreach (var item in Specs)
-                {
-                    dict["spec." + item.Key] = item.Value;
-                }
-                foreach (var item in Additional)
-                {
-                    dict[item.Key] = item.Value;
-                }
-                return dict;
-            }
-            set { }
+            var copied = (ReferenceViewModel)MemberwiseClone();
+            copied.Additional = new Dictionary<string, object>(Additional);
+            copied.FullNameInDevLangs = new SortedList<string, string>(FullNameInDevLangs);
+            copied.NameInDevLangs = new SortedList<string, string>(NameInDevLangs);
+            copied.NameWithTypeInDevLangs = new SortedList<string, string>(NameWithTypeInDevLangs);
+            copied.Specs = new SortedList<string, List<SpecViewModel>>(Specs.ToDictionary(s => s.Key, s => new List<SpecViewModel>(s.Value)));
+            return copied;
         }
     }
 }

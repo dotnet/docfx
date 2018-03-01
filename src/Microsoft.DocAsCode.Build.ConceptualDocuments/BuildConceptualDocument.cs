@@ -3,25 +3,23 @@
 
 namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
 
-    using HtmlAgilityPack;
-
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildConceptualDocument : BaseDocumentBuildStep
+    public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
-        private const int TitleThumbnailMaxLength = 30;
+
         public override string Name => nameof(BuildConceptualDocument);
 
         public override int BuildOrder => 0;
@@ -34,15 +32,15 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             var content = (Dictionary<string, object>)model.Content;
             var markdown = (string)content[ConceptualKey];
-            var result = host.Markup(markdown, model.FileAndType);
+            var result = host.Markup(markdown, model.OriginalFileAndType);
 
-            var htmlInfo = SeperateHtml(result.Html);
+            var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
             model.Properties.IsUserDefinedTitle = false;
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
             content[ConceptualKey] = htmlInfo.Content;
 
-            if (result.YamlHeader != null && result.YamlHeader.Count > 0)
+            if (result.YamlHeader?.Count > 0)
             {
                 foreach (var item in result.YamlHeader)
                 {
@@ -51,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         var uid = item.Value as string;
                         if (!string.IsNullOrWhiteSpace(uid))
                         {
-                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRepoRoot) }.ToImmutableArray();
+                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
                             content[Constants.PropertyName.Uid] = item.Value;
                         }
                     }
@@ -62,68 +60,63 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         {
                             model.DocumentType = item.Value as string;
                         }
-                        if (item.Key == Constants.PropertyName.Title)
+                        else if (item.Key == Constants.PropertyName.Title)
                         {
                             model.Properties.IsUserDefinedTitle = true;
+                        }
+                        else if (item.Key == Constants.PropertyName.OutputFileName)
+                        {
+                            var outputFileName = item.Value as string;
+                            if (!string.IsNullOrWhiteSpace(outputFileName))
+                            {
+                                string fn = null;
+                                try
+                                {
+                                    fn = Path.GetFileName(outputFileName);
+                                }
+                                catch (ArgumentException) { }
+                                if (fn == outputFileName)
+                                {
+                                    model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                                }
+                                else
+                                {
+                                    Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
+                                }
+                            }
                         }
                     }
                 }
             }
-            model.Properties.LinkToFiles = result.LinkToFiles;
-            model.Properties.LinkToUids = result.LinkToUids;
+            model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
+            model.LinkToUids = result.LinkToUids;
+            model.FileLinkSources = result.FileLinkSources;
+            model.UidLinkSources = result.UidLinkSources;
             model.Properties.XrefSpec = null;
             if (model.Uids.Length > 0)
             {
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = TitleThumbnail(content[Constants.PropertyName.Title] as string?? model.Uids[0].Name, TitleThumbnailMaxLength),
+                    Name = content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name,
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
-        }
 
-        private static string TitleThumbnail(string title, int maxLength)
-        {
-            if (string.IsNullOrEmpty(title)) return null;
-            if (title.Length <= maxLength) return title;
-            return title.Substring(0, maxLength) + "...";
-        }
-
-        private static HtmlInfo SeperateHtml(string contentHtml)
-        {
-            var content = new HtmlInfo();
-
-            var document = new HtmlDocument();
-            document.LoadHtml(contentHtml);
-
-            // TODO: how to get TITLE
-            // InnerText in HtmlAgilityPack is not decoded, should be a bug
-            var headerNode = document.DocumentNode.SelectSingleNode("//h1|//h2|//h3");
-            content.Title = StringHelper.HtmlDecode(headerNode?.InnerText);
-
-            if (headerNode != null && document.DocumentNode.FirstChild == headerNode)
+            foreach (var d in result.Dependency)
             {
-                content.RawTitle = headerNode.OuterHtml;
-                headerNode.Remove();
+                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
             }
-            else
-            {
-                content.RawTitle = "<h1></h1>";
-            }
-
-            content.Content = document.DocumentNode.OuterHtml;
-
-            return content;
         }
 
-        private class HtmlInfo
-        {
-            public string Title { get; set; }
+        #region ISupportIncrementalBuildStep Members
 
-            public string RawTitle { get; set; }
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
 
-            public string Content { get; set; }
-        }
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
     }
 }

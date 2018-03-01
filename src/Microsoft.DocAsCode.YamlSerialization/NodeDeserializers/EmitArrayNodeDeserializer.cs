@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
     using System.ComponentModel;
     using System.Reflection;
     using System.Reflection.Emit;
+    using System.Collections.Concurrent;
 
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
@@ -20,10 +21,10 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 #else
             typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
 #endif
-        private static readonly Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>> _funcCache =
-            new Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>>();
+        private static readonly ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>> _funcCache =
+            new ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>>();
 
-        bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
             if (!expectedType.IsArray)
             {
@@ -31,29 +32,29 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 return false;
             }
 
-            Func<EventReader, Type, Func<EventReader, Type, object>, object> func;
-            if (!_funcCache.TryGetValue(expectedType, out func))
-            {
-                var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(EventReader), typeof(Type), typeof(Func<EventReader, Type, object>) });
-                var il = dm.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(expectedType.GetElementType()));
-                il.Emit(OpCodes.Ret);
-                func = (Func<EventReader, Type, Func<EventReader, Type, object>, object>)dm.CreateDelegate(typeof(Func<EventReader, Type, Func<EventReader, Type, object>, object>));
-                _funcCache[expectedType] = func;
-            }
+            var func = _funcCache.GetOrAdd(expectedType, AddItem);
             value = func(reader, expectedType, nestedObjectDeserializer);
             return true;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TItem[] DeserializeHelper<TItem>(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer)
+        public static TItem[] DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer)
         {
             var items = new List<TItem>();
             EmitGenericCollectionNodeDeserializer.DeserializeHelper(reader, expectedType, nestedObjectDeserializer, items);
             return items.ToArray();
+        }
+
+        private static Func<IParser, Type, Func<IParser, Type, object>, object> AddItem(Type expectedType)
+        {
+            var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>) });
+            var il = dm.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(expectedType.GetElementType()));
+            il.Emit(OpCodes.Ret);
+            return (Func<IParser, Type, Func<IParser, Type, object>, object>)dm.CreateDelegate(typeof(Func<IParser, Type, Func<IParser, Type, object>, object>));
         }
     }
 }

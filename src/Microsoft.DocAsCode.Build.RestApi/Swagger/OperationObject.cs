@@ -15,13 +15,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     public class OperationObject
     {
         /// <summary>
-        /// Docfx Added: Operation name, e.g. get, put, post, delete, options, head, patch
-        /// </summary>
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
-        public string OperationName { get; set; }
-
-        /// <summary>
         /// Unique string used to identify the operation. The id MUST be unique among all operations described in the API. Tools and libraries MAY use the operationId to uniquely identify an operation, therefore, it is recommended to follow common programming naming conventions.
         /// </summary>
         [YamlMember(Alias = "operationId")]
@@ -35,6 +28,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]
         public string Summary { get; set; }
+
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<string> Tags { get; set; }
 
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters")]

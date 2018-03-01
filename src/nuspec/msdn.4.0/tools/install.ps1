@@ -4,7 +4,7 @@ Write-Host $toolsPath
 $configPath = ($project.FullName | split-path) + '/docfx.json';
 
 # Set content to be relative path of docfx.json
-$content = ($installPath -replace '\\','/')+ "/content/**";
+$content = ($installPath -replace '\\','/')+ "/content/msdn.4.0.zip";
 
 $root = $project.FullName | split-path
 $current = $content
@@ -13,7 +13,7 @@ Set-Location $root
 $content = (Resolve-Path -relative $current) -replace '\\','/'
 Pop-Location
 
-$refname = "externalReferences";
+$refname = "xref";
 try{
   $config = gc $configPath -raw | ConvertFrom-Json
   if ($config.PSObject.Properties[$refname]){

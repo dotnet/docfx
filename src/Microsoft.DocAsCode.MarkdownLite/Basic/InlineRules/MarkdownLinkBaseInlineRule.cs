@@ -5,22 +5,72 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public abstract class MarkdownLinkBaseInlineRule : IMarkdownRule
     {
+        private static readonly object BoxedTrue = true;
+
         public abstract string Name { get; }
 
-        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, ref string source);
+        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, string rawMarkdown)
+        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
-            var escapedHref = StringHelper.Escape(href);
-            var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;
+            var c = parser.SwitchContext(MarkdownInlineContext.IsInLink, BoxedTrue);
+            IMarkdownToken result;
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, escapedTitle, text, rawMarkdown);
+                if (parser.Options.LegacyMode)
+                {
+                    result = new MarkdownImageInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.LegacyUnescapeMarkdown(href),
+                        StringHelper.LegacyUnescapeMarkdown(title),
+                        StringHelper.LegacyUnescapeMarkdown(text),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
+                else
+                {
+                    result = new MarkdownImageInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.UnescapeMarkdown(href),
+                        StringHelper.UnescapeMarkdown(title),
+                        StringHelper.UnescapeMarkdown(text),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, escapedTitle, parser.Tokenize(text), rawMarkdown);
+                if (parser.Options.LegacyMode)
+                {
+                    result = new MarkdownLinkInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.LegacyUnescapeMarkdown(href),
+                        StringHelper.LegacyUnescapeMarkdown(title),
+                        parser.Tokenize(sourceInfo.Copy(text)),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
+                else
+                {
+                    result = new MarkdownLinkInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.UnescapeMarkdown(href),
+                        StringHelper.UnescapeMarkdown(title),
+                        parser.Tokenize(sourceInfo.Copy(text)),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
             }
+            parser.SwitchContext(c);
+            return result;
         }
     }
 }

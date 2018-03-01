@@ -15,6 +15,9 @@ namespace Microsoft.DocAsCode.SubCommands
         [Option("plugin")]
         public string PluginFolder { get; set; }
 
+        [Option('v', "version")]
+        public bool ShouldShowVersion { get; set; }
+
         [Option('h', "help")]
         public bool IsHelp { get; set; }
 

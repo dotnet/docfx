@@ -3,16 +3,17 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public class MarkdownEmInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownEmInlineToken>
+    public class MarkdownEmInlineToken : IMarkdownExpression, IMarkdownRewritable<MarkdownEmInlineToken>
     {
-        public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, string rawMarkdown)
+        public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -21,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableArray<IMarkdownToken> Content { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownEmInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -30,7 +31,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownEmInlineToken(Rule, Context, tokens, RawMarkdown);
+            return new MarkdownEmInlineToken(Rule, Context, tokens, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Content;
     }
 }

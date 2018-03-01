@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     internal abstract class CacheBase
     {
@@ -29,19 +28,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public CacheBase(string path)
         {
             _path = path;
-
             _configs = ReadCacheFile(path);
+        }
+
+        public BuildInfo GetValidConfig(string key)
+        {
+            return GetConfig(key);
         }
 
         public BuildInfo GetValidConfig(IEnumerable<string> inputProjects)
         {
-            var key = inputProjects.GetNormalizedFullPathKey();
+            var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
             return GetConfig(key);
         }
 
-        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths)
+        public void SaveToCache(string key, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
         {
-            var key = inputProjects.GetNormalizedFullPathKey();
             DateTime completeTime = DateTime.UtcNow;
             BuildInfo info = new BuildInfo
             {
@@ -49,11 +51,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ContainedFiles = containedFiles,
                 TriggeredUtcTime = triggeredTime,
                 CompleteUtcTime = completeTime,
-                OutputFolder = outputFolder.ToNormalizedFullPath(),
-                RelatvieOutputFiles = fileRelativePaths.GetNormalizedPathList(),
+                OutputFolder = StringExtension.ToNormalizedFullPath(outputFolder),
+                RelativeOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
+                Options = options,
             };
-            this.SaveConfig(key, info);
+            SaveConfig(key, info);
+        }
+
+        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
+        {
+            var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
+            SaveToCache(key, containedFiles, triggeredTime, outputFolder, fileRelativePaths, options);
+        }
+
+        public void SaveToCache(string key, IEnumerable<string> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
+        {
+            var dict = new Dictionary<string, List<string>> { { key, containedFiles.ToList() } };
+            SaveToCache(key, dict, triggeredTime, outputFolder, fileRelativePaths, options);
         }
 
         #region Virtual Methods
@@ -65,7 +80,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var checksum = buildInfo.CheckSum;
                 try
                 {
-                    var resultCorrupted = GetMd5(buildInfo.OutputFolder, buildInfo.RelatvieOutputFiles) != checksum;
+                    var resultCorrupted = GetMd5(buildInfo.OutputFolder, buildInfo.RelativeOutputFiles) != checksum;
 
                     if (!resultCorrupted && checksum != null)
                     {
@@ -73,12 +88,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is corrupted");
+                        Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is corrupted, rebuild...");
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is not valid: {e.Message}");
+                    Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is not valid: {e.Message}, rebuild...");
                 }
             }
 
@@ -87,14 +102,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected virtual BuildInfo ReadConfig(string key)
         {
-            BuildInfo info;
-            if (_configs.TryGetValue(key, out info)) return info;
-            return null;
+            _configs.TryGetValue(key, out BuildInfo info);
+            return info;
         }
 
         protected virtual void SaveConfig(string key, BuildInfo config)
         {
-            config.CheckSum = GetMd5(config.OutputFolder, config.RelatvieOutputFiles);
+            config.CheckSum = GetMd5(config.OutputFolder, config.RelativeOutputFiles);
             _configs[key] = config;
             CleanupConfig();
 
@@ -109,7 +123,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 _configs.Remove(key.Key);
             }
-
 
             if (_configs.Count > CleanupMaxCount)
             {
@@ -130,9 +143,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return JsonUtility.Deserialize<Dictionary<string, BuildInfo>>(path);
                 }
             }
-            catch
+            catch (Exception e)
             {
-            } 
+                Logger.LogWarning($"Cache file {path} is invalid, ignored: {e.Message}.");
+            }
 
             return new Dictionary<string, BuildInfo>();
         }
@@ -162,63 +176,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 else _fileEnumerator = files.GetEnumerator();
             }
 
-            public override bool CanRead
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public override bool CanRead => true;
 
-            public override bool CanSeek
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            public override bool CanSeek => false;
 
-            public override bool CanWrite
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            public override bool CanWrite => false;
 
-            public override long Length
-            {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-            }
+            public override long Length => throw new NotSupportedException();
 
             public override long Position
             {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-
-                set
-                {
-                    throw new NotSupportedException();
-                }
+                get { throw new NotSupportedException(); }
+                set { throw new NotSupportedException(); }
             }
 
-            public override void Flush()
-            {
-                throw new NotSupportedException();
-            }
+            public override void Flush() => throw new NotSupportedException();
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                if (_fileEnumerator == null) return 0;
-
-                if (_stream == null)
+                if (_fileEnumerator == null)
                 {
-                    if (!TryGetNextFileStream(out _stream)) return 0;
+                    return 0;
+                }
+
+                if (_stream == null && !TryGetNextFileStream(out _stream))
+                {
+                    return 0;
                 }
 
                 int readed;
@@ -229,7 +212,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         // Dispose current stream before fetching the next one
                         _stream.Dispose();
-                        if (!TryGetNextFileStream(out _stream)) return 0;
+                        if (!TryGetNextFileStream(out _stream))
+                        {
+                            return 0;
+                        }
                     }
                     else
                     {
@@ -238,27 +224,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            public override long Seek(long offset, SeekOrigin origin)
-            {
+            public override long Seek(long offset, SeekOrigin origin)=>
                 throw new NotSupportedException();
-            }
 
-            public override void SetLength(long value)
-            {
+            public override void SetLength(long value) =>
                 throw new NotSupportedException();
-            }
 
-            public override void Write(byte[] buffer, int offset, int count)
-            {
+            public override void Write(byte[] buffer, int offset, int count) =>
                 throw new NotSupportedException();
-            }
 
             protected override void Dispose(bool disposing)
             {
                 if (disposing)
                 {
-                    if (_fileEnumerator != null) _fileEnumerator.Dispose();
-                    if (_stream != null) _stream.Dispose();
+                    if (_fileEnumerator != null)
+                    {
+                        _fileEnumerator.Dispose();
+                    }
+                    if (_stream != null)
+                    {
+                        _stream.Dispose();
+                    }
                 }
 
                 base.Dispose(disposing);

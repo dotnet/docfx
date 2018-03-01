@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Immutable;
 
     public interface IDocumentBuildContext
@@ -34,9 +35,15 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Register internal xref spec
         /// </summary>
-        /// <param name="uid">The uid of current file</param>
-        /// <param name="fileKey">The file key of current file</param>
+        /// <param name="xrefSpec">The xref spec to be registered</param>
         void RegisterInternalXrefSpec(XRefSpec xrefSpec);
+
+        /// <summary>
+        /// Register internal xref spec bookmark
+        /// </summary>
+        /// <param name="uid">The uid of the xref spec to be registered the bookmark</param>
+        /// <param name="bookmark">The bookmark to be registered</param>
+        void RegisterInternalXrefSpecBookmark(string uid, string bookmark);
 
         /// <summary>
         /// Get a set of file key for the toc files that current file belongs to
@@ -63,5 +70,32 @@ namespace Microsoft.DocAsCode.Plugins
         /// </summary>
         /// <returns>All the registered toc information</returns>
         IImmutableList<TocInfo> GetTocInfo();
+
+        /// <summary>
+        /// The Root Toc Path of current version
+        /// </summary>
+        string RootTocPath { get; }
+
+        /// <summary>
+        /// Current context's version name
+        /// </summary>
+        [Obsolete("use GroupInfo")]
+        string VersionName { get; }
+
+        /// <summary>
+        /// Current context's version root output path from ~ ROOT
+        /// </summary>
+        [Obsolete("use GroupInfo")]
+        string VersionFolder { get; }
+
+        /// <summary>
+        /// Current context's group information
+        /// </summary>
+        GroupInfo GroupInfo { get; }
+
+        /// <summary>
+        /// Custom href generator
+        /// </summary>
+        ICustomHrefGenerator HrefGenerator { get; }
     }
 }

@@ -3,12 +3,15 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using Microsoft.DocAsCode.Glob;
+
     public sealed class FileMetadataItem
     {
-        public Glob.GlobMatcher Glob { get; set; }
-        public object Value { get; set; }
-        public string Key { get; set; }
-        public FileMetadataItem(Glob.GlobMatcher glob, string key, object value)
+        public GlobMatcher Glob { get; }
+        public object Value { get; }
+        public string Key { get; }
+
+        public FileMetadataItem(GlobMatcher glob, string key, object value)
         {
             Glob = glob;
             Key = key;

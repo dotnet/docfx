@@ -26,6 +26,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Variables = variables;
         }
 
+        public virtual IMarkdownContext SetRules(ImmutableList<IMarkdownRule> rules)
+        {
+            return new MarkdownBlockContext(rules, _inlineContext, Variables);
+        }
+
         public IMarkdownContext GetInlineContext()
         {
             return _inlineContext.CreateContext(_inlineContext.Variables.SetItems(Variables));

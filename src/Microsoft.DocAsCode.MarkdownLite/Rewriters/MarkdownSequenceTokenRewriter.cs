@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    internal sealed class MarkdownSequenceTokenRewriter : IMarkdownTokenRewriter
+    internal sealed class MarkdownSequenceTokenRewriter : IMarkdownTokenRewriter, IInitializable
     {
         public MarkdownSequenceTokenRewriter(ImmutableArray<IMarkdownTokenRewriter> inner)
         {
@@ -13,6 +13,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
         }
 
         public ImmutableArray<IMarkdownTokenRewriter> Inner { get; }
+
+        public void Initialize(IMarkdownRewriteEngine rewriteEngine)
+        {
+            foreach (var item in Inner)
+            {
+                (item as IInitializable)?.Initialize(rewriteEngine);
+            }
+        }
 
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {

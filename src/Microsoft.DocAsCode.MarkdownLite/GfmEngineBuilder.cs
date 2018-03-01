@@ -25,17 +25,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownNewLineBlockRule());
             builder.Add(new MarkdownCodeBlockRule());
             builder.Add(new GfmFencesBlockRule());
-            builder.Add(new GfmHeadingBlockRule());
+            builder.Add(new MarkdownHeadingBlockRule());
             builder.Add(new MarkdownNpTableBlockRule());
             builder.Add(new MarkdownLHeadingBlockRule());
             builder.Add(new MarkdownHrBlockRule());
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
             builder.Add(new GfmHtmlCommentBlockRule());
+            builder.Add(new MarkdownPreElementBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             builder.Add(new MarkdownTableBlockRule());
-            builder.Add(new GfmParagraphBlockRule());
             builder.Add(new MarkdownTextBlockRule());
             BlockRules = builder.ToImmutable();
         }
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownCommentInlineRule());
             builder.Add(new MarkdownAutoLinkInlineRule());
             builder.Add(new GfmUrlInlineRule());
-            builder.Add(new MarkdownCodeElementInlineRule());
+            builder.Add(new MarkdownPreElementInlineRule());
             builder.Add(new MarkdownTagInlineRule());
             builder.Add(new MarkdownLinkInlineRule());
             builder.Add(new MarkdownRefLinkInlineRule());
@@ -59,6 +59,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownBrInlineRule());
             builder.Add(new GfmDelInlineRule());
             builder.Add(new MarkdownEscapedTextInlineRule());
+            builder.Add(new GfmEmojiInlineRule());
             builder.Add(new GfmTextInlineRule());
             InlineRules = builder.ToImmutable();
         }

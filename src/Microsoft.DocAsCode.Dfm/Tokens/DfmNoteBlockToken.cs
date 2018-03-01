@@ -5,15 +5,15 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmNoteBlockToken : IMarkdownToken
+    public class DfmNoteBlockToken : IMarkdownToken, IDfmBlockSpecialSplitToken
     {
-        public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, string rawMarkdown)
+        public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
             NoteType = noteType;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -22,8 +22,8 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Content { get; }
 
-        public string RawMarkdown { get; set; }
-
         public string NoteType { get; }
+
+        public SourceInfo SourceInfo { get; }
     }
 }

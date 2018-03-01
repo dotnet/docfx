@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -34,13 +34,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         // Preserve value inside swagger.Token
                         foreach (var k in swagger.Token)
                         {
-                            JToken existing;
-                            if (jObject.TryGetValue(k.Key, out existing))
-                            {
-                                throw new JsonException($"{k.Key} is already defined in referenced object \"{swagger.DeferredReference}\".");
-                            }
-
-                            jObject.Add(k.Key, k.Value);
+                            // Overwrite the value if the key is already defined.
+                            jObject[k.Key] = k.Value;
                         }
 
                         jObject.WriteTo(writer);
@@ -68,6 +63,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     {
                         var swagger = (SwaggerValue)swaggerBase;
                         swagger.Token.WriteTo(writer);
+                    }
+                    break;
+                case SwaggerObjectType.LoopReference:
+                    {
+                        var swagger = (SwaggerLoopReferenceObject)swaggerBase;
+                        var jObject = new JObject();
+                        foreach (var i in swagger.Dictionary)
+                        {
+                            jObject.Add(i.Key, JToken.FromObject(i.Value, serializer));
+                        }
+                        jObject.WriteTo(writer);
                     }
                     break;
                 default:

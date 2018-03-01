@@ -1,86 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{99F0BB91-2CE9-4460-87E0-B99B87F7B193}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.AzureMarkdownRewriters</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.AzureMarkdownRewriters</AssemblyName>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.props" />
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AzureBlockRules\AzureBlockquoteBlockRule.cs" />
-    <Compile Include="AzureBlockRules\AzureHtmlMetadataBlockRule.cs" />
-    <Compile Include="AzureBlockRules\AzureSelectorBlockRule.cs" />
-    <Compile Include="AzureBlockRules\AzureNoteBlockRule.cs" />
-    <Compile Include="AzureBlockRules\AzureParagraphBlockRule.cs" />
-    <Compile Include="AzureBlockRules\AzureVideoBlockRule.cs" />
-    <Compile Include="AzureBlockTokens\AzureBlockquoteBlockToken.cs" />
-    <Compile Include="AzureBlockTokens\AzureHtmlMetadataBlockToken.cs" />
-    <Compile Include="AzureBlockTokens\AzureIncludeBlockToken.cs" />
-    <Compile Include="AzureBlockTokens\AzureSelectorBlockToken.cs" />
-    <Compile Include="AzureBlockTokens\AzureNoteBlockToken.cs" />
-    <Compile Include="AzureBlockTokens\AzureVideoBlockToken.cs" />
-    <Compile Include="AzureFileInfo.cs" />
-    <Compile Include="AzureInlineRules\AzureIncludeInlineRule.cs" />
-    <Compile Include="AzureBlockRules\AzureIncludeBlockRule.cs" />
-    <Compile Include="AzureEngineBuilder.cs" />
-    <Compile Include="AzureInlineTokens\AzureIncludeInlineToken.cs" />
-    <Compile Include="AzureMarkdownRenderer.cs" />
-    <Compile Include="AzureMarked.cs" />
-    <Compile Include="AzureVideoInfo.cs" />
-    <Compile Include="BasicTokens\AzureIncludeBasicToken.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
-      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
-      <Name>Microsoft.DocAsCode.Dfm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
-      <Project>{81AD853E-6176-44CA-A43E-A699EA05CC3E}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

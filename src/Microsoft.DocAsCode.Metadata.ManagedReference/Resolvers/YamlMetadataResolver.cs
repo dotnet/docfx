@@ -15,10 +15,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             new LayoutCheckAndCleanup(),
             new SetParent(),
+            new CopyInherited(),
             new ResolveReference(),
             new NormalizeSyntax(),
             new BuildMembers(),
-            new BuildToc(),
+            new SetDerivedClass(),
+            new BuildToc()
         };
 
         /// <summary>
@@ -30,9 +32,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public static MetadataModel ResolveMetadata(
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
-            string apiFolder,
-            bool preserveRawInlineComments,
-            IEnumerable<string> externalReferencePackages)
+            bool preserveRawInlineComments)
         {
             MetadataModel viewModel = new MetadataModel();
             viewModel.TocYamlViewModel = new MetadataItem()
@@ -43,8 +43,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             viewModel.Members = new List<MetadataItem>();
             ResolverContext context = new ResolverContext
             {
-                ApiFolder = apiFolder,
                 References = allReferences,
+                Members = allMembers,
                 PreserveRawInlineComments = preserveRawInlineComments,
             };
 

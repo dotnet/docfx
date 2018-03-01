@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     public class SwaggerModel
     {
         /// <summary>
-        /// The original swagger.json cpntent
+        /// The original swagger.json content
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         /// </summary>
         [YamlMember(Alias = "definitions")]
         [JsonProperty("definitions")]
-        public object Defintions { get; set; }
+        public object Definitions { get; set; }
 
         /// <summary>
         /// An object to hold parameters that can be used across operations. This property does not define global parameters for all operations
@@ -77,6 +77,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [YamlMember(Alias = "responses")]
         [JsonProperty("responses")]
         public object Responses { get; set; }
+
+        /// <summary>
+        /// A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools.
+        /// </summary>
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<TagItemObject> Tags { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]

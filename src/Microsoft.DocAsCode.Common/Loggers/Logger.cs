@@ -4,13 +4,18 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Immutable;
+    using System.Threading;
 
     public static class Logger
     {
-        private static readonly object _sync = new object();
-        private static ImmutableList<ILoggerListener> _listeners = ImmutableList<ILoggerListener>.Empty;
+        public const int WarningThrottling = 10000;
+        public static bool HasError { get; private set; }
+        public static int WarningCount => _warningCount;
 
+        private static readonly object _sync = new object();
+        private static CompositeLogListener _syncListener = new CompositeLogListener();
+        private static AsyncLogListener _asyncListener = new AsyncLogListener();
+        private static int _warningCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
         public static void RegisterListener(ILoggerListener listener)
@@ -20,7 +25,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            _listeners = _listeners.Add(listener);
+            _syncListener.AddListener(listener);
         }
 
         public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
@@ -30,7 +35,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            return _listeners.Find(predicate);
+            return _syncListener.FindListener(predicate);
         }
 
         public static void UnregisterListener(ILoggerListener listener)
@@ -40,37 +45,88 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            listener.Dispose();
-            _listeners = _listeners.Remove(listener);
+            _syncListener.RemoveListener(listener);
+        }
+
+        public static void RegisterAsyncListener(ILoggerListener listener)
+        {
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
+            _asyncListener.AddListener(listener);
+        }
+
+        public static ILoggerListener FindAsyncListener(Predicate<ILoggerListener> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            return _asyncListener.FindListener(predicate);
+        }
+
+        public static void UnregisterAsyncListener(ILoggerListener listener)
+        {
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
+            _asyncListener.RemoveListener(listener);
         }
 
         public static void UnregisterAllListeners()
         {
-            foreach(var i in _listeners)
-            {
-                i.Dispose();
-            }
-
-            _listeners = ImmutableList<ILoggerListener>.Empty;
+            _syncListener.RemoveAllListeners();
+            _asyncListener.RemoveAllListeners();
         }
 
-        public static void Log(ILogItem result)
+        public static void Log(ILogItem item)
         {
-            if (result.LogLevel < LogLevelThreshold)
+            if (item.LogLevel < LogLevelThreshold)
             {
                 return;
             }
 
-            lock (_sync)
+            if (item.LogLevel == LogLevel.Warning)
             {
-                foreach (var listener in _listeners)
+                var count = Interlocked.Increment(ref _warningCount);
+                if (count > WarningThrottling)
                 {
-                    listener.WriteLine(result);
+                    return;
+                }
+                else if (count == WarningThrottling)
+                {
+                    var msg = new LogItem
+                    {
+                        Code = WarningCodes.Build.TooManyWarnings,
+                        LogLevel = LogLevel.Warning,
+                        Message = "Too many warnings, no more warning will be logged."
+                    };
+                    _syncListener.WriteLine(msg);
+                    _asyncListener.WriteLine(msg);
                 }
             }
+
+            if (item.LogLevel == LogLevel.Error)
+            {
+                HasError = true;
+            }
+
+            _syncListener.WriteLine(item);
+            _asyncListener.WriteLine(item);
         }
 
-        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void Log(LogLevel level, string message, string phase, string file, string line)
+        {
+            Log(level, message, phase, file, line, null);
+        }
+
+        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(new LogItem
             {
@@ -82,6 +138,7 @@ namespace Microsoft.DocAsCode.Common
                 Line = line,
                 LogLevel = level,
                 Message = message,
+                Code = code,
 #if NetCore
                 Phase = phase,
 #else
@@ -90,24 +147,80 @@ namespace Microsoft.DocAsCode.Common
             });
         }
 
-        public static void LogVerbose(string message, string phase = null, string file = null, string line = null)
+        public static ILogItem GetLogItem(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
         {
-            Log(LogLevel.Verbose, message, phase, file, line);
+            return new LogItem
+            {
+#if NetCore
+                File = file,
+#else
+                File = file ?? LoggerFileScope.GetFileName(),
+#endif
+                Line = line,
+                LogLevel = level,
+                Message = message,
+                Code = code,
+#if NetCore
+                Phase = phase,
+#else
+                Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
+#endif
+            };
         }
 
-        public static void LogInfo(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogDiagnostic(string message, string phase, string file, string line)
         {
-            Log(LogLevel.Info, message, phase, file, line);
+            LogDiagnostic(message, phase, file, line, null);
         }
 
-        public static void LogWarning(string message, string phase = null, string file = null, string line = null)
+        public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null, string code = null)
         {
-            Log(LogLevel.Warning, message, phase, file, line);
+            Log(LogLevel.Diagnostic, message, phase, file, line, code);
         }
 
-        public static void LogError(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogVerbose(string message, string phase, string file, string line)
         {
-            Log(LogLevel.Error, message, phase, file, line);
+            LogVerbose(message, phase, file, line, null);
+        }
+
+        public static void LogVerbose(string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            Log(LogLevel.Verbose, message, phase, file, line, code);
+        }
+
+        [Obsolete]
+        public static void LogInfo(string message, string phase, string file, string line)
+        {
+            LogInfo(message, phase, file, line, null);
+        }
+
+        public static void LogInfo(string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            Log(LogLevel.Info, message, phase, file, line, code);
+        }
+
+        [Obsolete]
+        public static void LogWarning(string message, string phase, string file, string line)
+        {
+            LogWarning(message, phase, file, line, null);
+        }
+
+        public static void LogWarning(string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            Log(LogLevel.Warning, message, phase, file, line, code);
+        }
+
+        [Obsolete]
+        public static void LogError(string message, string phase, string file, string line)
+        {
+            LogError(message, phase, file, line, null);
+        }
+
+        public static void LogError(string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            Log(LogLevel.Error, message, phase, file, line, code);
         }
 
         public static void Log(object result)
@@ -121,13 +234,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Flush()
         {
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.Flush();
-                }
-            }
+            _syncListener.Flush();
+            _asyncListener.Flush();
         }
 
 #if !NetCore
@@ -144,6 +252,15 @@ namespace Microsoft.DocAsCode.Common
             public string Message { get; set; }
 
             public string Phase { get; set; }
+
+            public string Code { get; set; }
+
+            public string CorrelationId { get; }
+
+            public LogItem()
+            {
+                CorrelationId = AmbientContext.CurrentContext?.GenerateNextCorrelationId();
+            }
         }
     }
 }

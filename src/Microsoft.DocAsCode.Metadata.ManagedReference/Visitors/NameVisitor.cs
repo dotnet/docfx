@@ -77,10 +77,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         None = 0,
         UseAlias = 1,
-        Qualified = 2,
-        WithGenericParameter = 4,
+        WithNamespace = 2,
+        WithTypeGenericParameter = 4,
         WithParameter = 8,
-        All = UseAlias | Qualified | WithGenericParameter | WithParameter,
+        WithType = 16,
+        WithMethodGenericParameter = 32,
+        WithGenericParameter = WithTypeGenericParameter | WithMethodGenericParameter,
+        Qualified = WithNamespace | WithType,
+        All = UseAlias | WithNamespace | WithTypeGenericParameter | WithParameter | WithType | WithMethodGenericParameter,
     }
 
     public class CSharpNameVisitorCreator : NameVisitorCreator
@@ -119,7 +123,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 symbol.ContainingType.Accept(this);
                 Append(".");
             }
-            else if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            else if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
                 if (!symbol.ContainingNamespace.IsGlobalNamespace)
                 {
@@ -128,7 +132,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
             Append(symbol.Name);
-            if ((Options & NameOptions.WithGenericParameter) == NameOptions.WithGenericParameter &&
+            if ((Options & NameOptions.WithTypeGenericParameter) == NameOptions.WithTypeGenericParameter &&
                 symbol.TypeParameters.Length > 0)
             {
                 if (symbol.TypeArguments != null && symbol.TypeArguments.Length > 0)
@@ -153,8 +157,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (symbol.IsGlobalNamespace)
             {
+                Append(VisitorHelper.GlobalNamespaceId);
                 return;
             }
+
             if (!symbol.ContainingNamespace.IsGlobalNamespace)
             {
                 symbol.ContainingNamespace.Accept(this);
@@ -194,7 +200,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitMethod(IMethodSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -238,7 +244,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     else
                     {
                         var interfaceMethod = symbol.ExplicitInterfaceImplementations[0];
-                        if ((Options & NameOptions.Qualified) == NameOptions.None)
+                        if ((Options & NameOptions.WithType) == NameOptions.None)
                         {
                             interfaceMethod.ContainingType.Accept(this);
                             Append(".");
@@ -248,16 +254,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     break;
             }
-            if (symbol.IsGenericMethod)
+            if (symbol.IsGenericMethod &&
+                (Options & NameOptions.WithMethodGenericParameter) == NameOptions.WithMethodGenericParameter)
             {
                 Append("<");
-                for (int i = 0; i < symbol.TypeParameters.Length; i++)
+                var typeParams = symbol.TypeArguments.Length > 0 ? symbol.TypeArguments.CastArray<ISymbol>() : symbol.TypeParameters.CastArray<ISymbol>();
+                for (int i = 0; i < typeParams.Length; i++)
                 {
                     if (i > 0)
                     {
                         Append(", ");
                     }
-                    symbol.TypeParameters[i].Accept(this);
+                    typeParams[i].Accept(this);
                 }
                 Append(">");
             }
@@ -283,7 +291,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitProperty(IPropertySymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -291,7 +299,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
                 var interfaceProperty = symbol.ExplicitInterfaceImplementations[0];
-                if ((Options & NameOptions.Qualified) == NameOptions.None)
+                if ((Options & NameOptions.WithType) == NameOptions.None)
                 {
                     interfaceProperty.ContainingType.Accept(this);
                     Append(".");
@@ -331,7 +339,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitEvent(IEventSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -339,7 +347,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
                 var interfaceEvent = symbol.ExplicitInterfaceImplementations[0];
-                if ((Options & NameOptions.Qualified) == NameOptions.None)
+                if ((Options & NameOptions.WithType) == NameOptions.None)
                 {
                     interfaceEvent.ContainingType.Accept(this);
                     Append(".");
@@ -354,7 +362,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitField(IFieldSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -381,7 +389,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Append("dynamic");
             }
-            else if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            else if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
                 Append(typeof(object).FullName);
             }
@@ -515,7 +523,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 symbol.ContainingType.Accept(this);
                 Append(".");
             }
-            else if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            else if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
                 if (!symbol.ContainingNamespace.IsGlobalNamespace)
                 {
@@ -524,7 +532,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
             Append(symbol.Name);
-            if ((Options & NameOptions.WithGenericParameter) == NameOptions.WithGenericParameter &&
+            if ((Options & NameOptions.WithTypeGenericParameter) == NameOptions.WithTypeGenericParameter &&
                 symbol.TypeParameters.Length > 0)
             {
                 if (symbol.TypeArguments != null && symbol.TypeArguments.Length > 0)
@@ -590,7 +598,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitMethod(IMethodSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -630,16 +638,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Append(symbol.Name);
                     break;
             }
-            if (symbol.IsGenericMethod)
+            if (symbol.IsGenericMethod &&
+                (Options & NameOptions.WithMethodGenericParameter) == NameOptions.WithMethodGenericParameter)
             {
                 Append("(Of ");
-                for (int i = 0; i < symbol.TypeParameters.Length; i++)
+                var typeParams = symbol.TypeArguments.Length > 0 ? symbol.TypeArguments.CastArray<ISymbol>() : symbol.TypeParameters.CastArray<ISymbol>();
+                for (int i = 0; i < typeParams.Length; i++)
                 {
                     if (i > 0)
                     {
                         Append(", ");
                     }
-                    symbol.TypeParameters[i].Accept(this);
+                    typeParams[i].Accept(this);
                 }
                 Append(")");
             }
@@ -665,7 +675,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitProperty(IPropertySymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -691,7 +701,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitEvent(IEventSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -701,7 +711,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitField(IFieldSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -720,7 +730,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitDynamicType(IDynamicTypeSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.WithNamespace) == NameOptions.WithNamespace)
             {
                 Append(typeof(object).FullName);
             }

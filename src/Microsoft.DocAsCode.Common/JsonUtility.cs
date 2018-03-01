@@ -7,18 +7,22 @@ namespace Microsoft.DocAsCode.Common
     using System.Threading;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+
+    using Microsoft.DocAsCode.Plugins;
 
     public static class JsonUtility
     {
         public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
-            () =>
+            () => new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                Converters =
                 {
-                    var jsonSerializer = new JsonSerializer();
-                    jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                    jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                    jsonSerializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter { CamelCaseText = true });
-                    return jsonSerializer;
-                });
+                    new StringEnumConverter { CamelCaseText = true },
+                }
+            });
 
         public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
@@ -31,36 +35,28 @@ namespace Microsoft.DocAsCode.Common
         {
             using (StringWriter writer = new StringWriter())
             {
-                Serialize(writer, graph, formatting);
+                Serialize(writer, graph, formatting, serializer);
                 return writer.ToString();
             }
         }
 
-#if !NetCore
         public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory))
+            using (var stream = EnvironmentContext.FileAbstractLayer.Create(path))
+            using (StreamWriter writer = new StreamWriter(stream))
             {
-                Directory.CreateDirectory(directory);
-            }
-
-            using (StreamWriter writer = new StreamWriter(path))
-            {
-                Serialize(writer, graph, formatting);
+                Serialize(writer, graph, formatting, serializer);
             }
         }
-#endif
 
-#if !NetCore
         public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
-            using (StreamReader reader = new StreamReader(path))
+            using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path))
+            using (StreamReader reader = new StreamReader(stream))
             {
                 return Deserialize<T>(reader, serializer);
             }
         }
-#endif
 
         public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
         {

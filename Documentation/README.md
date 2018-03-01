@@ -1,1 +1,1 @@
-Documentation project uses *docfx.msbuild* nuget package to generate documentation for *docfx* project, along with conceputal files, with `docfx.json` to provide configuration for *docfx*.
+Documentation project uses *docfx.console* nuget package to generate documentation for *docfx* project, along with conceputal files, with `docfx.json` to provide configuration for *docfx*.

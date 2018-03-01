@@ -7,39 +7,53 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Web;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.XPath;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
+    using System.Globalization;
 
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
+        private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
+        private static Regex RegionRegex = new Regex(@"^\s*#region\s*(.*)$");
+        private static Regex EndRegionRegex = new Regex(@"^\s*#endregion\s*.*$");
 
         private readonly ITripleSlashCommentParserContext _context;
-        private readonly TripleSlashCommentTransformer _transformer = new TripleSlashCommentTransformer();
 
         public string Summary { get; private set; }
+
         public string Remarks { get; private set; }
+
         public string Returns { get; private set; }
-        public List<CrefInfo> Exceptions { get; private set; }
-        public List<CrefInfo> Sees { get; private set; }
-        public List<CrefInfo> SeeAlsos { get; private set; }
+
+        public List<ExceptionInfo> Exceptions { get; private set; }
+
+        public List<LinkInfo> Sees { get; private set; }
+
+        public List<LinkInfo> SeeAlsos { get; private set; }
+
         public List<string> Examples { get; private set; }
+
         public Dictionary<string, string> Parameters { get; private set; }
+
         public Dictionary<string, string> TypeParameters { get; private set; }
 
+        public bool IsInheritDoc { get; private set; }
+
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
-        { 
+        {
             // Transform triple slash comment
-            XDocument doc = _transformer.Transform(xml, language);
+            XDocument doc = TripleSlashCommentTransformer.Transform(xml, language);
 
             _context = context;
             if (!context.PreserveRawInlineComments)
@@ -47,6 +61,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ResolveSeeCref(doc, context.AddReferenceDelegate);
                 ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
             }
+            ResolveCodeSource(doc, context);
             var nav = doc.CreateNavigator();
             Summary = GetSummary(nav, context);
             Remarks = GetRemarks(nav, context);
@@ -58,12 +73,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Examples = GetExamples(nav, context);
             Parameters = GetParameters(nav, context);
             TypeParameters = GetTypeParameters(nav, context);
+            IsInheritDoc = GetIsInheritDoc(nav, context);
         }
 
         public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
             if (string.IsNullOrEmpty(xml)) return null;
+
             // Quick turnaround for badly formed XML comment
             if (xml.StartsWith("<!-- Badly formed XML comment ignored for member "))
             {
@@ -81,23 +101,67 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
+        public void CopyInheritedData(TripleSlashCommentModel src)
+        {
+            if (src == null)
+            {
+                throw new ArgumentNullException(nameof(src));
+            }
+
+            Summary = Summary ?? src.Summary;
+            Remarks = Remarks ?? src.Remarks;
+            Returns = Returns ?? src.Returns;
+            if (Exceptions == null && src.Exceptions != null)
+            {
+                Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
+            }
+            if (Sees == null && src.Sees != null)
+            {
+                Sees = src.Sees.Select(s => s.Clone()).ToList();
+            }
+            if (SeeAlsos == null && src.SeeAlsos != null)
+            {
+                SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
+            }
+            if (Examples == null && src.Examples != null)
+            {
+                Examples = new List<string>(src.Examples);
+            }
+            if (Parameters == null && src.Parameters != null)
+            {
+                Parameters = new Dictionary<string, string>(src.Parameters);
+            }
+            if (TypeParameters == null && src.TypeParameters != null)
+            {
+                TypeParameters = new Dictionary<string, string>(src.TypeParameters);
+            }
+        }
+
         public string GetParameter(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
             return GetValue(name, Parameters);
         }
 
         public string GetTypeParameter(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
             return GetValue(name, TypeParameters);
         }
 
         private static string GetValue(string name, Dictionary<string, string> dictionary)
         {
-            if (dictionary == null) return null;
-            string description;
-            if (dictionary.TryGetValue(name, out description))
+            if (dictionary == null)
+            {
+                return null;
+            }
+            if (dictionary.TryGetValue(name, out string description))
             {
                 return description;
             }
@@ -151,11 +215,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        private List<CrefInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<ExceptionInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
             var result = GetMulitpleCrefInfo(nav, selector).ToList();
-            if (result.Count == 0) return null;
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -167,10 +234,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         /// <see cref="SpecIdHelper"/>
         /// <see cref="SourceSwitch"/>
-        private List<CrefInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<LinkInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
-            var result = GetMulitpleCrefInfo(nav, "/member/see").ToList();
-            if (result.Count == 0) return null;
+            var result = GetMultipleLinkInfo(nav, "/member/see").ToList();
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -182,10 +252,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         /// <seealso cref="WaitForChangedResult"/>
         /// <seealso cref="http://google.com">ABCS</seealso>
-        private List<CrefInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
-            var result = GetMulitpleCrefInfo(nav, "/member/seealso").ToList();
-            if (result.Count == 0) return null;
+            var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -195,17 +268,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <param name="xml"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        /// <example> 
+        /// <example>
         /// This sample shows how to call the <see cref="GetExceptions(string, ITripleSlashCommentParserContext)"/> method.
         /// <code>
-        /// class TestClass  
-        /// { 
-        ///     static int Main()  
-        ///     { 
-        ///         return GetExceptions(null, null).Count(); 
-        ///     } 
-        /// } 
-        /// </code> 
+        /// class TestClass
+        /// {
+        ///     static int Main()
+        ///     {
+        ///         return GetExceptions(null, null).Count();
+        ///     }
+        /// }
+        /// </code>
         /// </example>
         private List<string> GetExamples(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
@@ -214,11 +287,106 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
         }
 
+        private bool GetIsInheritDoc(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        {
+            var node = nav.SelectSingleNode("/member/inheritdoc");
+            if (node == null)
+            {
+                return false;
+            }
+            if (node.HasAttributes)
+            {
+                //The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
+                //These attributes allow changing the source of the inherited doc and controlling what is inherited.
+                //Until these attributes are supported, ignoring inheritdoc elements with attributes, so as not to misinterpret them.
+                Logger.LogWarning("Attributes on <inheritdoc /> elements are not supported; inheritdoc element will be ignored.");
+                return false;
+            }
+            return true;
+        }
+
+        private void ResolveCodeSource(XDocument doc, ITripleSlashCommentParserContext context)
+        {
+            foreach (XElement node in doc.XPathSelectElements("//code"))
+            {
+                var source = node.Attribute("source");
+                if (source == null || string.IsNullOrEmpty(source.Value))
+                {
+                    continue;
+                }
+
+                if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
+                {
+                    Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
+                    return;
+                }
+
+                var region = node.Attribute("region");
+
+                var path = source.Value;
+                if (!Path.IsPathRooted(path))
+                {
+                    string currentFilePath = context.Source.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                    var directory = Path.GetDirectoryName(currentFilePath);
+                    path = Path.Combine(directory, path);
+                }
+
+                ResolveCodeSource(node, path, region.Value);
+            }
+        }
+
+        private void ResolveCodeSource(XElement element, string source, string region)
+        {
+            if (!File.Exists(source))
+            {
+                Logger.LogWarning($"Source file '{source}' not found.");
+                return;
+            }
+
+            var builder = new StringBuilder();
+            var regionCount = 0;
+            foreach (var line in File.ReadLines(source))
+            {
+                var match = RegionRegex.Match(line);
+                if (match.Success)
+                {
+                    var name = match.Groups[1].Value.Trim();
+                    if (name == region)
+                    {
+                        ++regionCount;
+                        continue;
+                    }
+                    else if (regionCount > 0)
+                    {
+                        ++regionCount;
+                    }
+                }
+                else if (regionCount > 0 && EndRegionRegex.IsMatch(line))
+                {
+                    --regionCount;
+                    if (regionCount == 0)
+                    {
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(region) || regionCount > 0)
+                {
+                    builder.AppendLine(line);
+                }
+            }
+
+            element.SetValue(builder.ToString());
+        }
+
         private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)
         {
             var iterator = navigator.Select(xpath);
             var result = new Dictionary<string, string>();
-            if (iterator == null) return result;
+            if (iterator == null)
+            {
+                return result;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string name = nav.GetAttribute("name", string.Empty);
@@ -227,8 +395,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     if (result.ContainsKey(name))
                     {
-                        string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
-                        Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
+                        string path = context.Source.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                        Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", file: StringExtension.ToDisplayPath(path), line: context.Source.StartLine.ToString());
                     }
                     else
                     {
@@ -250,45 +418,52 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
 
-        private void ResolveSeeAlsoCref(XNode node, Action<string> addReference)
+        private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
         {
             // Resolve <see cref> to <xref>
-            ResolveCrefLink(node, "//seealso", addReference);
+            ResolveCrefLink(node, "//seealso[@cref]", addReference);
         }
 
-        private void ResolveSeeCref(XNode node, Action<string> addReference)
+        private void ResolveSeeCref(XNode node, Action<string, string> addReference)
         {
             // Resolve <see cref> to <xref>
-            ResolveCrefLink(node, "//see", addReference);
+            ResolveCrefLink(node, "//see[@cref]", addReference);
         }
 
-        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string> addReference)
+        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference)
         {
-            if (node == null || string.IsNullOrEmpty(nodeSelector)) return;
+            if (node == null || string.IsNullOrEmpty(nodeSelector))
+            {
+                return;
+            }
 
             try
             {
                 var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
                 foreach (var item in nodes)
                 {
-                    var value = item.Attribute("cref").Value;
-                    // Strict check is needed as value could be an invalid href, 
+                    var cref = item.Attribute("cref").Value;
+                    // Strict check is needed as value could be an invalid href,
                     // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    if (CommentIdRegex.IsMatch(value))
+                    var match = CommentIdRegex.Match(cref);
+                    if (match.Success)
                     {
-                        value = value.Substring(2);
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+
+                        if (type == "Overload")
+                        {
+                            id += '*';
+                        }
 
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
                         {
-                            var replacement = XElement.Parse($"<xref href=\"{WebUtility.HtmlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                             item.ReplaceWith(replacement);
                         }
 
-                        if (addReference != null)
-                        {
-                            addReference(value);
-                        }
+                        addReference?.Invoke(id, cref);
                     }
                     else
                     {
@@ -309,7 +484,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             }
                         }
 
-                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{value}\" found in triple-slash-comments{detailedInfo}, ignored.");
+                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in triple-slash-comments{detailedInfo}, ignored.");
                     }
                 }
             }
@@ -321,7 +496,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private IEnumerable<string> GetMultipleExampleNodes(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Select(selector);
-            if (iterator == null) yield break;
+            if (iterator == null)
+            {
+                yield break;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string description = GetXmlValue(nav);
@@ -329,10 +507,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private IEnumerable<CrefInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
+        private IEnumerable<ExceptionInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Clone().Select(selector);
-            if (iterator == null) yield break;
+            if (iterator == null)
+            {
+                yield break;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string description = GetXmlValue(nav);
@@ -341,12 +522,76 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(commentId))
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
                     {
-                        string type = commentId.Substring(2);
-                        if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new CrefInfo { Description = description, Type = type, CommentId = commentId };
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (type == "T")
+                        {
+                            if (string.IsNullOrEmpty(description))
+                            {
+                                description = null;
+                            }
+                            yield return new ExceptionInfo
+                            {
+                                Description = description,
+                                Type = id,
+                                CommentId = commentId
+                            };
+                        }
                     }
+                }
+            }
+        }
+
+        private IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
+        {
+            var iterator = navigator.Clone().Select(selector);
+            if (iterator == null)
+            {
+                yield break;
+            }
+            foreach (XPathNavigator nav in iterator)
+            {
+                string altText = GetXmlValue(nav);
+                if (string.IsNullOrEmpty(altText))
+                {
+                    altText = null;
+                }
+
+                string commentId = nav.GetAttribute("cref", string.Empty);
+                string url = nav.GetAttribute("href", string.Empty);
+                if (!string.IsNullOrEmpty(commentId))
+                {
+                    // Check if cref type is valid and trim prefix
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
+                    {
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (type == "Overload")
+                        {
+                            id += '*';
+                        }
+
+                        yield return new LinkInfo
+                        {
+                            AltText = altText,
+                            LinkId = id,
+                            CommentId = commentId,
+                            LinkType = LinkType.CRef
+                        };
+                    }
+                }
+                else if (!string.IsNullOrEmpty(url))
+                {
+                    yield return new LinkInfo
+                    {
+                        AltText = altText ?? url,
+                        LinkId = url,
+                        LinkType = LinkType.HRef
+                    };
                 }
             }
         }
@@ -361,16 +606,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                var output = GetXmlValue(node);
-                return output;
+                return GetXmlValue(node);
             }
         }
 
-        /// <summary>
-        /// For multiple line comments, comment start position always aligns with its node tag's start position
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
         private string GetXmlValue(XPathNavigator node)
         {
             // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
@@ -383,38 +622,132 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            var content = WebUtility.HtmlDecode(node.InnerXml);
-            var lines = GetLines(content, column);
-
-            return string.Join("\n", lines);
+            return NormalizeXml(RemoveLeadingSpaces(GetInnerXml(node)), column);
         }
 
-        private static IEnumerable<string> GetLines(string content, int column)
+        /// <summary>
+        /// Remove least common whitespces in each line of xml
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns>xml after removing least common whitespaces</returns>
+        private static string RemoveLeadingSpaces(string xml)
         {
-            var lines = content.Split('\n');
-            yield return lines[0];
-            for (var i = 1; i < lines.Length; i++)
+            var lines = LineBreakRegex.Split(xml);
+            var normalized = new List<string>();
+
+            var preIndex = 0;
+            var leadingSpaces = from line in lines
+                                where !string.IsNullOrWhiteSpace(line)
+                                select line.TakeWhile(char.IsWhiteSpace).Count();
+
+            if (leadingSpaces.Any())
             {
-                yield return NormalizeLine(lines[i], column);
+                preIndex = leadingSpaces.Min();
+            }
+
+            if (preIndex == 0)
+            {
+                return xml;
+            }
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    normalized.Add(string.Empty);
+                }
+                else
+                {
+                    normalized.Add(line.Substring(preIndex));
+                }
+            }
+            return string.Join("\n", normalized);
+        }
+
+        /// <summary>
+        /// Split xml into lines. Trim meaningless whitespaces.
+        /// if a line starts with xml node, all leading whitespaces would be trimmed
+        /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
+        /// Trim newline character for code element.
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
+        /// <returns>normalized xml</returns>
+        private static string NormalizeXml(string xml, int parentIndex)
+        {
+            var lines = LineBreakRegex.Split(xml);
+            var normalized = new List<string>();
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    normalized.Add(string.Empty);
+                }
+                else
+                {
+                    // TO-DO: special logic for TAB case
+                    int index = line.TakeWhile(char.IsWhiteSpace).Count();
+                    if (line[index] == '<')
+                    {
+                        parentIndex = index;
+                    }
+
+                    normalized.Add(line.Substring(Math.Min(parentIndex, index)));
+                }
+            }
+
+            // trim newline character for code element
+            return CodeElementRegex.Replace(
+                string.Join("\n", normalized),
+                m =>
+                {
+                    var group = m.Groups[1];
+                    if (group.Length == 0)
+                    {
+                        return m.Value;
+                    }
+                    return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
+                });
+        }
+
+        /// <summary>
+        /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
+        /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static string GetInnerXml(XPathNavigator node)
+        {
+            using (var sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
+                using (var tw = new XmlWriterWithGtDecoded(sw))
+                {
+                    if (node.MoveToFirstChild())
+                    {
+                        do
+                        {
+                            tw.WriteNode(node, true);
+                        } while (node.MoveToNext());
+                        node.MoveToParent();
+                    }
+                }
+
+                return sw.ToString();
             }
         }
 
-        private static string NormalizeLine(string line, int column)
+        private sealed class XmlWriterWithGtDecoded : XmlTextWriter
         {
-            int trimIndex = Math.Min(column, GetNonWhitespaceIndex(line));
+            public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
 
-            return line.Substring(trimIndex);
-        }
+            public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
 
-        private static int GetNonWhitespaceIndex(string line)
-        {
-            int index = 0;
-            while (index < line.Length && char.IsWhiteSpace(line[index]) && line[index] != '\r')
+            public override void WriteString(string text)
             {
-                index++;
+                var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
+                WriteRaw(encoded);
             }
-
-            return index;
         }
     }
 }

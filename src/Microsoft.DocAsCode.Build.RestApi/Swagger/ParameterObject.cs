@@ -18,6 +18,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

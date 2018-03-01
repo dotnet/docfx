@@ -8,13 +8,13 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     public class AzureSelectorBlockToken : IMarkdownToken
     {
 
-        public AzureSelectorBlockToken(IMarkdownRule rule, IMarkdownContext context, string selectorType, string selectorConditions, string rawMarkdown)
+        public AzureSelectorBlockToken(IMarkdownRule rule, IMarkdownContext context, string selectorType, string selectorConditions, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             SelectorType = selectorType;
             SelectorConditions = selectorConditions;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -25,6 +25,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public string SelectorConditions { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
     }
 }

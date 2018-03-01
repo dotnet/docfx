@@ -41,7 +41,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new ArgumentNullException("symbol");
             }
-            return (_uidRegex == null || _uidRegex.IsMatch(VisitorHelper.GetId(symbol))) &&
+            var id = VisitorHelper.GetId(symbol);
+            
+            return (_uidRegex == null || (id != null && _uidRegex.IsMatch(id))) &&
                 (Kind == null || Kind.Value.Contains(symbol)) &&
                 (Attribute == null || Attribute.ContainedIn(symbol));
         }

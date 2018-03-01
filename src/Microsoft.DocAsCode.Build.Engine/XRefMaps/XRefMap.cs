@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using YamlDotNet.Serialization;
 
@@ -12,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
 
-    public class XRefMap
+    public class XRefMap : IXRefContainer
     {
         [YamlMember(Alias = "sorted")]
         public bool? Sorted { get; set; }
@@ -40,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (References != null)
             {
-                References.Sort(XRefSpecComparer.Instance);
+                References.Sort(XRefSpecUidComparer.Instance);
             }
             Sorted = true;
         }
@@ -58,8 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var list = new List<XRefSpec>(References.Count);
             foreach (var r in References)
             {
-                Uri uri;
-                if (!Uri.TryCreate(r.Href, UriKind.RelativeOrAbsolute, out uri))
+                if (!Uri.TryCreate(r.Href, UriKind.RelativeOrAbsolute, out Uri uri))
                 {
                     Logger.LogWarning($"Bad uri in xref map: {r.Href}");
                     continue;
@@ -77,35 +77,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
-        public virtual XRefSpec Find(string uid)
-        {
-            if (References == null)
-            {
-                return null;
-            }
-            if (Sorted == true)
-            {
-                var index = References.BinarySearch(new XRefSpec { Uid = uid }, XRefSpecComparer.Instance);
-                if (index >= 0)
-                {
-                    return References[index];
-                }
-                return null;
-            }
-            else
-            {
-                return References.Find(x => x.Uid == uid);
-            }
-        }
+        public bool IsEmbeddedRedirections => false;
 
-        private sealed class XRefSpecComparer : Comparer<XRefSpec>
-        {
-            public static readonly XRefSpecComparer Instance = new XRefSpecComparer();
+        public IEnumerable<XRefMapRedirection> GetRedirections() =>
+            Redirections ?? Enumerable.Empty<XRefMapRedirection>();
 
-            public override int Compare(XRefSpec x, XRefSpec y)
-            {
-                return string.Compare(x.Uid, y.Uid);
-            }
+        public IXRefContainerReader GetReader()
+        {
+            return new BasicXRefMapReader(this);
         }
     }
 }

@@ -1,0 +1,1890 @@
+### YamlMime:ManagedReference
+items:
+- uid: System.Activities.Presentation.Model.ModelItemDictionary
+  id: ModelItemDictionary
+  children:
+  - System.Activities.Presentation.Model.ModelItemDictionary.#ctor
+  - System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Object,System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Clear
+  - System.Activities.Presentation.Model.ModelItemDictionary.CollectionChanged
+  - System.Activities.Presentation.Model.ModelItemDictionary.Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  - System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Activities.Presentation.Model.ModelItem)
+  - System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Count
+  - System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator
+  - System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize
+  - System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly
+  - System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized
+  - System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Activities.Presentation.Model.ModelItem)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.KeyProperty
+  - System.Activities.Presentation.Model.ModelItemDictionary.Keys
+  - System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Activities.Presentation.Model.ModelItem)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Add(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Remove(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#Count
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#IsSynchronized
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#SyncRoot
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add(System.Object,System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Clear
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Contains(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#GetEnumerator
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsFixedSize
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsReadOnly
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Item(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Keys
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Remove(System.Object)
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Values
+  - System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IEnumerable#GetEnumerator
+  - System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem@)
+  - System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Object,System.Activities.Presentation.Model.ModelItem@)
+  - System.Activities.Presentation.Model.ModelItemDictionary.Values
+  langs:
+  - csharp
+  name: ModelItemDictionary
+  nameWithType: ModelItemDictionary
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary
+  type: Class
+  summary: Derives from <see cref="T:System.Activities.Presentation.Model.ModelItem"></see> and implements support for a dictionary of key/value pairs.
+  syntax:
+    content: 'public abstract class ModelItemDictionary : System.Activities.Presentation.Model.ModelItem, System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>, System.Collections.Generic.IDictionary<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>, System.Collections.IDictionary, System.Collections.Specialized.INotifyCollectionChanged'
+  inheritance:
+  - System.Object
+  - System.Activities.Presentation.Model.ModelItem
+  implements:
+  - System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>
+  - System.Collections.Generic.IDictionary<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>
+  - System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>
+  - System.Collections.IDictionary
+  - System.Collections.Specialized.INotifyCollectionChanged
+  inheritedMembers:
+  - System.Activities.Presentation.Model.ModelItem.Attributes
+  - System.Activities.Presentation.Model.ModelItem.BeginEdit
+  - System.Activities.Presentation.Model.ModelItem.BeginEdit(System.Boolean)
+  - System.Activities.Presentation.Model.ModelItem.BeginEdit(System.String)
+  - System.Activities.Presentation.Model.ModelItem.BeginEdit(System.String,System.Boolean)
+  - System.Activities.Presentation.Model.ModelItem.Content
+  - System.Activities.Presentation.Model.ModelItem.GetCurrentValue
+  - System.Activities.Presentation.Model.ModelItem.ItemType
+  - System.Activities.Presentation.Model.ModelItem.Name
+  - System.Activities.Presentation.Model.ModelItem.Parent
+  - System.Activities.Presentation.Model.ModelItem.Parents
+  - System.Activities.Presentation.Model.ModelItem.Properties
+  - System.Activities.Presentation.Model.ModelItem.PropertyChanged
+  - System.Activities.Presentation.Model.ModelItem.Root
+  - System.Activities.Presentation.Model.ModelItem.Source
+  - System.Activities.Presentation.Model.ModelItem.Sources
+  - System.Activities.Presentation.Model.ModelItem.ToString
+  - System.Activities.Presentation.Model.ModelItem.View
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.#ctor
+  id: '#ctor'
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: ModelItemDictionary()
+  nameWithType: ModelItemDictionary.ModelItemDictionary()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ModelItemDictionary()
+  type: Constructor
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Creates a new <see cref="T:System.Activities.Presentation.Model.ModelItemDictionary"></see>.
+  syntax:
+    content: protected ModelItemDictionary ();
+    parameters: []
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.#ctor*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem)
+  id: Add(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Add(ModelItem,ModelItem)
+  nameWithType: ModelItemDictionary.Add(ModelItem,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Add(ModelItem,ModelItem)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Adds the value to the dictionary under the given key.
+  syntax:
+    content: public abstract void Add (System.Activities.Presentation.Model.ModelItem key, System.Activities.Presentation.Model.ModelItem value);
+    parameters:
+    - id: key
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The  that represents the key in the key/value pair to be added.
+    - id: value
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The  that represents the value in the key/value pair to be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Add*
+  exceptions:
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the  is read-only.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Object,System.Object)
+  id: Add(System.Object,System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Add(Object,Object)
+  nameWithType: ModelItemDictionary.Add(Object,Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Add(Object,Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Adds the value to the dictionary under the given key. This method wraps the key and value in a set of <see cref="T:System.Activities.Presentation.Model.ModelItem"></see> objects.
+  syntax:
+    content: public abstract System.Activities.Presentation.Model.ModelItem Add (object key, object value);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key in the key/value pair to be added.
+    - id: value
+      type: System.Object
+      description: The value in the key/value pair to be added.
+    return:
+      type: System.Activities.Presentation.Model.ModelItem
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Add*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key or value is .
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the  is read-only.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Clear
+  id: Clear
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Clear()
+  nameWithType: ModelItemDictionary.Clear()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Clear()
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Clears the contents of the dictionary.
+  syntax:
+    content: public abstract void Clear ();
+    parameters: []
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Clear*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.CollectionChanged
+  id: CollectionChanged
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: CollectionChanged
+  nameWithType: ModelItemDictionary.CollectionChanged
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.CollectionChanged
+  type: Event
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Raised when the contents of this collection change.
+  syntax:
+    content: public abstract event System.Collections.Specialized.NotifyCollectionChangedEventHandler CollectionChanged;
+    return:
+      type: System.Collections.Specialized.NotifyCollectionChangedEventHandler
+      description: To be added.
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  id: Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Contains(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.Contains(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Contains(KeyValuePair<ModelItem,ModelItem>)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the dictionary contains the given key/value pair.
+  syntax:
+    content: protected virtual bool Contains (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem> item);
+    parameters:
+    - id: item
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}
+      description: The key/value pair to find.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Contains*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Activities.Presentation.Model.ModelItem)
+  id: ContainsKey(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: ContainsKey(ModelItem)
+  nameWithType: ModelItemDictionary.ContainsKey(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(ModelItem)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the dictionary contains the given key.
+  syntax:
+    content: public abstract bool ContainsKey (System.Activities.Presentation.Model.ModelItem key);
+    parameters:
+    - id: key
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The key to find.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key is .
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Object)
+  id: ContainsKey(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: ContainsKey(Object)
+  nameWithType: ModelItemDictionary.ContainsKey(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the dictionary contains the given key.
+  syntax:
+    content: public abstract bool ContainsKey (object key);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key to find.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key is .
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  id: CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+  nameWithType: ModelItemDictionary.CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Copies an array of key/value pairs into the given dictionary.
+  syntax:
+    content: protected virtual void CopyTo (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>[] array, int arrayIndex);
+    parameters:
+    - id: array
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[]
+      description: The array of key/value pairs to copy.
+    - id: arrayIndex
+      type: System.Int32
+      description: The zero-based index in the current dictionary at which copying begins.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Count
+  id: Count
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Count
+  nameWithType: ModelItemDictionary.Count
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Count
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Returns the count of items in the dictionary.
+  syntax:
+    content: public abstract int Count { get; }
+    return:
+      type: System.Int32
+      description: Returns &lt;xref:System.Int32&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Count*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator
+  id: GetEnumerator
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: GetEnumerator()
+  nameWithType: ModelItemDictionary.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator()
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Returns an enumerator for the items in the dictionary.
+  syntax:
+    content: public abstract System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>> GetEnumerator ();
+    parameters: []
+    return:
+      type: System.Collections.Generic.IEnumerator{System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}}
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize
+  id: IsFixedSize
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: IsFixedSize
+  nameWithType: ModelItemDictionary.IsFixedSize
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the dictionary is a fixed size.
+  syntax:
+    content: protected virtual bool IsFixedSize { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if the dictionary is a fixed size; otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>. The default implementation returns <xref uid="langword_csharp_true" name="true" href=""></xref> if the dictionary is read-only.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly
+  id: IsReadOnly
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: IsReadOnly
+  nameWithType: ModelItemDictionary.IsReadOnly
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the dictionary cannot be modified.
+  syntax:
+    content: public abstract bool IsReadOnly { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if the dictionary cannot be modified; otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized
+  id: IsSynchronized
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: IsSynchronized
+  nameWithType: ModelItemDictionary.IsSynchronized
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets a value that indicates whether access to the dictionary is synchronized (thread safe).
+  syntax:
+    content: protected virtual bool IsSynchronized { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if access to the dictionary is synchronized (thread safe); otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>. The default implementation returns <xref uid="langword_csharp_false" name="false" href=""></xref>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Activities.Presentation.Model.ModelItem)
+  id: Item(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Item(ModelItem)
+  nameWithType: ModelItemDictionary.Item(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Item(ModelItem)
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets or sets the item at the specified key.
+  remarks: If there is no item for the given key, this method returns `null`.
+  syntax:
+    content: public abstract System.Activities.Presentation.Model.ModelItem this[System.Activities.Presentation.Model.ModelItem key] { get; set; }
+    parameters:
+    - id: key
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The specified key of the item.
+    return:
+      type: System.Activities.Presentation.Model.ModelItem
+      description: Returns <see cref="T:System.Activities.Presentation.Model.ModelItem"></see>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Item*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key or the value is .
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the dictionary is read-only and you set a new value.
+  - type: System.Collections.Generic.KeyNotFoundException
+    commentId: T:System.Collections.Generic.KeyNotFoundException
+    description: If key is not in the dictionary.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Object)
+  id: Item(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Item(Object)
+  nameWithType: ModelItemDictionary.Item(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Item(Object)
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets or sets the item at the specified key.
+  remarks: If there is no item for the given key, this method returns `null`.
+  syntax:
+    content: public abstract System.Activities.Presentation.Model.ModelItem this[object key] { get; set; }
+    parameters:
+    - id: key
+      type: System.Object
+      description: The specified key of the item.
+    return:
+      type: System.Activities.Presentation.Model.ModelItem
+      description: Returns <see cref="T:System.Activities.Presentation.Model.ModelItem"></see>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Item*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key or the value is .
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the dictionary is read-only and you set a new value.
+  - type: System.Collections.Generic.KeyNotFoundException
+    commentId: T:System.Collections.Generic.KeyNotFoundException
+    description: If key is not in the dictionary.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.KeyProperty
+  id: KeyProperty
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: KeyProperty
+  nameWithType: ModelItemDictionary.KeyProperty
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.KeyProperty
+  type: Field
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: The <xref uid="langword_csharp_DependencyProperty" name="DependencyProperty" href=""></xref> that represents the key in the key/value pair that is added to all items in the dictionary. The data type of the <xref uid="langword_csharp_KeyProperty" name="KeyProperty" href=""></xref> is <see cref="T:System.Activities.Presentation.Model.ModelItem"></see>.
+  syntax:
+    content: public static readonly System.Windows.DependencyProperty KeyProperty;
+    return:
+      type: System.Windows.DependencyProperty
+      description: To be added.
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Keys
+  id: Keys
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Keys
+  nameWithType: ModelItemDictionary.Keys
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Keys
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets the keys of the collection. The keys are guaranteed to be in the same order as the values. The resulting collection is read-only.
+  syntax:
+    content: public abstract System.Collections.Generic.ICollection<System.Activities.Presentation.Model.ModelItem> Keys { get; }
+    return:
+      type: System.Collections.Generic.ICollection{System.Activities.Presentation.Model.ModelItem}
+      description: Returns &lt;xref:System.Collections.Generic.ICollection%601&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Keys*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Activities.Presentation.Model.ModelItem)
+  id: Remove(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Remove(ModelItem)
+  nameWithType: ModelItemDictionary.Remove(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Remove(ModelItem)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Removes the item with the specified key from the dictionary.
+  remarks: This method does nothing if the item does not exist in the collection.
+  syntax:
+    content: public abstract bool Remove (System.Activities.Presentation.Model.ModelItem key);
+    parameters:
+    - id: key
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The key of the element to remove.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Remove*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If the key is .
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the dictionary is read-only.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Object)
+  id: Remove(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Remove(Object)
+  nameWithType: ModelItemDictionary.Remove(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Remove(Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Removes the item from the dictionary.
+  remarks: This method does nothing if the item does not exist in the collection.
+  syntax:
+    content: public abstract bool Remove (object key);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The item to remove using the key as the search criterion.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Remove*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If the key is .
+  - type: System.InvalidOperationException
+    commentId: T:System.InvalidOperationException
+    description: If the dictionary is read-only.
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot
+  id: SyncRoot
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: SyncRoot
+  nameWithType: ModelItemDictionary.SyncRoot
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets an object that can be used to synchronize access to this collection.
+  remarks: The default implementation returns “this.”
+  syntax:
+    content: protected virtual object SyncRoot { get; }
+    return:
+      type: System.Object
+      description: Returns &lt;xref:System.Object&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Add(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  id: System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Add(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  syntax:
+    content: void ICollection<KeyValuePair<ModelItem,ModelItem>>.Add (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem> item);
+    parameters:
+    - id: item
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Add*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  id: System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  syntax:
+    content: bool ICollection<KeyValuePair<ModelItem,ModelItem>>.Contains (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem> item);
+    parameters:
+    - id: item
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}
+      description: To be added.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Contains*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  id: System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  syntax:
+    content: void ICollection<KeyValuePair<ModelItem,ModelItem>>.CopyTo (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>[] array, int arrayIndex);
+    parameters:
+    - id: array
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[]
+      description: To be added.
+    - id: arrayIndex
+      type: System.Int32
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#CopyTo*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Remove(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  id: System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Remove(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  syntax:
+    content: bool ICollection<KeyValuePair<ModelItem,ModelItem>>.Remove (System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem> item);
+    parameters:
+    - id: item
+      type: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}
+      description: To be added.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Remove*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
+  id: System#Collections#ICollection#CopyTo(System.Array,System.Int32)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.ICollection.CopyTo(Array,Int32)
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.CopyTo(Array,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.CopyTo(Array,Int32)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Copies the elements of the &lt;xref:System.Collections.ICollection&gt; to an array, starting at a particular array index.
+  syntax:
+    content: void ICollection.CopyTo (Array array, int index);
+    parameters:
+    - id: array
+      type: System.Array
+      description: The one-dimensional array that is the destination of the elements copied from <xref:System.Collections.ICollection>. The array must have zero-based indexing
+    - id: index
+      type: System.Int32
+      description: The zero-based index in `array` at which copying begins.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#CopyTo*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#Count
+  id: System#Collections#ICollection#Count
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.ICollection.Count
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.Count
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.Count
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets the number of elements contained in the &lt;xref:System.Collections.ICollection&gt;.
+  syntax:
+    content: int System.Collections.ICollection.Count { get; }
+    return:
+      type: System.Int32
+      description: The number of elements contained in the &lt;xref:System.Collections.ICollection&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#Count*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#IsSynchronized
+  id: System#Collections#ICollection#IsSynchronized
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.ICollection.IsSynchronized
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.IsSynchronized
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.IsSynchronized
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets a value that indicates whether access to the &lt;xref:System.Collections.ICollection&gt; is synchronized (thread safe).
+  syntax:
+    content: bool System.Collections.ICollection.IsSynchronized { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if access to the &lt;xref:System.Collections.ICollection&gt; is synchronized (thread safe); otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#IsSynchronized*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#SyncRoot
+  id: System#Collections#ICollection#SyncRoot
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.ICollection.SyncRoot
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.SyncRoot
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.SyncRoot
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets an object that can be used to synchronize access to the &lt;xref:System.Collections.ICollection&gt;.
+  syntax:
+    content: object System.Collections.ICollection.SyncRoot { get; }
+    return:
+      type: System.Object
+      description: An object that can be used to synchronize access to the &lt;xref:System.Collections.ICollection&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#SyncRoot*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add(System.Object,System.Object)
+  id: System#Collections#IDictionary#Add(System.Object,System.Object)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Add(Object,Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Add(Object,Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Add(Object,Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Adds an element with the provided key and value to the &lt;xref:System.Collections.IDictionary&gt; object.
+  syntax:
+    content: void IDictionary.Add (object key, object value);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The object to use as the key of the element to add.
+    - id: value
+      type: System.Object
+      description: The object to use as the value of the element to add.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Clear
+  id: System#Collections#IDictionary#Clear
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Clear()
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Clear()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Clear()
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Removes all elements from the &lt;xref:System.Collections.IDictionary&gt; object.
+  syntax:
+    content: void IDictionary.Clear ();
+    parameters: []
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Clear*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Contains(System.Object)
+  id: System#Collections#IDictionary#Contains(System.Object)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Contains(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Contains(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Contains(Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Determines whether the &lt;xref:System.Collections.IDictionary&gt; object contains an element with the specified key.
+  syntax:
+    content: bool IDictionary.Contains (object key);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key to locate in the <xref:System.Collections.IDictionary> object.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Contains*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#GetEnumerator
+  id: System#Collections#IDictionary#GetEnumerator
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.GetEnumerator()
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.GetEnumerator()
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Returns the &lt;xref:System.Collections.IDictionaryEnumerator&gt; object for the &lt;xref:System.Collections.IDictionary&gt; object.
+  syntax:
+    content: System.Collections.IDictionaryEnumerator IDictionary.GetEnumerator ();
+    parameters: []
+    return:
+      type: System.Collections.IDictionaryEnumerator
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#GetEnumerator*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsFixedSize
+  id: System#Collections#IDictionary#IsFixedSize
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.IsFixedSize
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsFixedSize
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.IsFixedSize
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets a value that indicates whether the &lt;xref:System.Collections.IDictionary&gt; object has a fixed size.
+  syntax:
+    content: bool System.Collections.IDictionary.IsFixedSize { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if the &lt;xref:System.Collections.IDictionary&gt; object has a fixed size; otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsFixedSize*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsReadOnly
+  id: System#Collections#IDictionary#IsReadOnly
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.IsReadOnly
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsReadOnly
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.IsReadOnly
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets a value that indicates whether the &lt;xref:System.Collections.IDictionary&gt; object is read-only.
+  syntax:
+    content: bool System.Collections.IDictionary.IsReadOnly { get; }
+    return:
+      type: System.Boolean
+      description: <xref uid="langword_csharp_true" name="true" href=""></xref> if the &lt;xref:System.Collections.IDictionary&gt; object is read-only; otherwise, <xref uid="langword_csharp_false" name="false" href=""></xref>.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsReadOnly*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Item(System.Object)
+  id: System#Collections#IDictionary#Item(System.Object)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Item(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Item(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Item(Object)
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets or sets the element with the specified key.
+  syntax:
+    content: object System.Collections.IDictionary.Item[object key] { get; set; }
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key of the element to get or set.
+    return:
+      type: System.Object
+      description: The element with the specified key.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Item*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Keys
+  id: System#Collections#IDictionary#Keys
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Keys
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Keys
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Keys
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets an &lt;xref:System.Collections.ICollection&gt; object that contains the keys of the &lt;xref:System.Collections.IDictionary&gt; object.
+  syntax:
+    content: System.Collections.ICollection System.Collections.IDictionary.Keys { get; }
+    return:
+      type: System.Collections.ICollection
+      description: An &lt;xref:System.Collections.ICollection&gt; object that contains the keys of the &lt;xref:System.Collections.IDictionary&gt; object.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Keys*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Remove(System.Object)
+  id: System#Collections#IDictionary#Remove(System.Object)
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Remove(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Remove(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Remove(Object)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Removes the element with the specified key from the &lt;xref:System.Collections.IDictionary&gt;.
+  remarks: If the <xref:System.Collections.IDictionary> object does not contain an element with the specified key, the <xref:System.Collections.IDictionary> remains unchanged. No exception is thrown.
+  syntax:
+    content: void IDictionary.Remove (object key);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key of the element to remove.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Remove*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Values
+  id: System#Collections#IDictionary#Values
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IDictionary.Values
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Values
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Values
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets an &lt;xref:System.Collections.ICollection&gt; object that contains the values in the &lt;xref:System.Collections.IDictionary&gt; object.
+  syntax:
+    content: System.Collections.ICollection System.Collections.IDictionary.Values { get; }
+    return:
+      type: System.Collections.ICollection
+      description: An &lt;xref:System.Collections.ICollection&gt; object that contains the values in the &lt;xref:System.Collections.IDictionary&gt; object.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Values*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IEnumerable#GetEnumerator
+  id: System#Collections#IEnumerable#GetEnumerator
+  isEii: true
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: System.Collections.IEnumerable.GetEnumerator()
+  nameWithType: ModelItemDictionary.System.Collections.IEnumerable.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IEnumerable.GetEnumerator()
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Returns an enumerator that iterates through a collection.
+  syntax:
+    content: System.Collections.IEnumerator IEnumerable.GetEnumerator ();
+    parameters: []
+    return:
+      type: System.Collections.IEnumerator
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IEnumerable#GetEnumerator*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem@)
+  id: TryGetValue(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem@)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: TryGetValue(ModelItem,ModelItem)
+  nameWithType: ModelItemDictionary.TryGetValue(ModelItem,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(ModelItem,ModelItem)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Retrieves the value for the given key, if possible.
+  syntax:
+    content: public abstract bool TryGetValue (System.Activities.Presentation.Model.ModelItem key, out System.Activities.Presentation.Model.ModelItem value);
+    parameters:
+    - id: key
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The key associated with the value to retrieve.
+    - id: value
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The value associated with the specified key.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key is .
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Object,System.Activities.Presentation.Model.ModelItem@)
+  id: TryGetValue(System.Object,System.Activities.Presentation.Model.ModelItem@)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: TryGetValue(Object,ModelItem)
+  nameWithType: ModelItemDictionary.TryGetValue(Object,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(Object,ModelItem)
+  type: Method
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Retrieves the value for the given key, if possible.
+  syntax:
+    content: public abstract bool TryGetValue (object key, out System.Activities.Presentation.Model.ModelItem value);
+    parameters:
+    - id: key
+      type: System.Object
+      description: The key associated with the value to retrieve.
+    - id: value
+      type: System.Activities.Presentation.Model.ModelItem
+      description: The value associated with the specified key.
+    return:
+      type: System.Boolean
+      description: To be added.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue*
+  exceptions:
+  - type: System.ArgumentNullException
+    commentId: T:System.ArgumentNullException
+    description: If key is .
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Values
+  id: Values
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  langs:
+  - csharp
+  name: Values
+  nameWithType: ModelItemDictionary.Values
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Values
+  type: Property
+  assemblies:
+  - System.Activities.Presentation
+  namespace: System.Activities.Presentation.Model
+  summary: Gets the values of the collection.
+  remarks: The values are guaranteed to be in the same order as the keys. The resulting collection is read-only.
+  syntax:
+    content: public abstract System.Collections.Generic.ICollection<System.Activities.Presentation.Model.ModelItem> Values { get; }
+    return:
+      type: System.Collections.Generic.ICollection{System.Activities.Presentation.Model.ModelItem}
+      description: Returns &lt;xref:System.Collections.Generic.ICollection%601&gt;.
+  overload: System.Activities.Presentation.Model.ModelItemDictionary.Values*
+  exceptions: []
+  platform:
+  - net-11
+  - net-20
+  - netcore-10
+references:
+- uid: System.Activities.Presentation.Model.ModelItem
+  isExternal: false
+  name: System.Activities.Presentation.Model.ModelItem
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.#ctor
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: ModelItemDictionary()
+  nameWithType: ModelItemDictionary.ModelItemDictionary()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ModelItemDictionary()
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Add(ModelItem,ModelItem)
+  nameWithType: ModelItemDictionary.Add(ModelItem,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Add(ModelItem,ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Add(System.Object,System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Add(Object,Object)
+  nameWithType: ModelItemDictionary.Add(Object,Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Add(Object,Object)
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Clear
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Clear()
+  nameWithType: ModelItemDictionary.Clear()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Clear()
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.CollectionChanged
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: CollectionChanged
+  nameWithType: ModelItemDictionary.CollectionChanged
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.CollectionChanged
+- uid: System.Collections.Specialized.NotifyCollectionChangedEventHandler
+  parent: System.Collections.Specialized
+  isExternal: true
+  name: NotifyCollectionChangedEventHandler
+  nameWithType: NotifyCollectionChangedEventHandler
+  fullName: System.Collections.Specialized.NotifyCollectionChangedEventHandler
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Contains(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.Contains(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Contains(KeyValuePair<ModelItem,ModelItem>)
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}
+  parent: System.Collections.Generic
+  isExternal: true
+  name: KeyValuePair<ModelItem,ModelItem>
+  nameWithType: KeyValuePair<ModelItem,ModelItem>
+  fullName: System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>
+  spec.csharp:
+  - uid: System.Collections.Generic.KeyValuePair`2
+    name: KeyValuePair
+    nameWithType: KeyValuePair
+    fullName: KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: ','
+    nameWithType: ','
+    fullName: ','
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: ContainsKey(ModelItem)
+  nameWithType: ModelItemDictionary.ContainsKey(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: ContainsKey(Object)
+  nameWithType: ModelItemDictionary.ContainsKey(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+  nameWithType: ModelItemDictionary.CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo(KeyValuePair<ModelItem,ModelItem>,Int32)
+- uid: System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[]
+  parent: System.Collections.Generic
+  isExternal: true
+  name: KeyValuePair<ModelItem,ModelItem>
+  nameWithType: KeyValuePair<ModelItem,ModelItem>
+  fullName: System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>[]
+  spec.csharp:
+  - uid: System.Collections.Generic.KeyValuePair`2
+    name: KeyValuePair
+    nameWithType: KeyValuePair
+    fullName: KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>[]
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: ','
+    nameWithType: ','
+    fullName: ','
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+- uid: System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Count
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Count
+  nameWithType: ModelItemDictionary.Count
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Count
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: GetEnumerator()
+  nameWithType: ModelItemDictionary.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator()
+- uid: System.Collections.Generic.IEnumerator{System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}}
+  parent: System.Collections.Generic
+  isExternal: true
+  name: IEnumerator<KeyValuePair<ModelItem,ModelItem>>
+  nameWithType: IEnumerator<KeyValuePair<ModelItem,ModelItem>>
+  fullName: System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerator`1
+    name: IEnumerator
+    nameWithType: IEnumerator
+    fullName: IEnumerator<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.KeyValuePair`2
+    name: KeyValuePair
+    nameWithType: KeyValuePair
+    fullName: KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: ','
+    nameWithType: ','
+    fullName: ','
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsFixedSize
+  nameWithType: ModelItemDictionary.IsFixedSize
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsReadOnly
+  nameWithType: ModelItemDictionary.IsReadOnly
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsSynchronized
+  nameWithType: ModelItemDictionary.IsSynchronized
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Item(ModelItem)
+  nameWithType: ModelItemDictionary.Item(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Item(ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Item(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Item(Object)
+  nameWithType: ModelItemDictionary.Item(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Item(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.KeyProperty
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: KeyProperty
+  nameWithType: ModelItemDictionary.KeyProperty
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.KeyProperty
+- uid: System.Windows.DependencyProperty
+  parent: System.Windows
+  isExternal: false
+  name: DependencyProperty
+  nameWithType: DependencyProperty
+  fullName: System.Windows.DependencyProperty
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Keys
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Keys
+  nameWithType: ModelItemDictionary.Keys
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Keys
+- uid: System.Collections.Generic.ICollection{System.Activities.Presentation.Model.ModelItem}
+  parent: System.Collections.Generic
+  isExternal: true
+  name: ICollection<ModelItem>
+  nameWithType: ICollection<ModelItem>
+  fullName: System.Collections.Generic.ICollection<System.Activities.Presentation.Model.ModelItem>
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: ICollection<System.Activities.Presentation.Model.ModelItem>
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Activities.Presentation.Model.ModelItem
+    name: ModelItem
+    nameWithType: ModelItem
+    fullName: ModelItem
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Activities.Presentation.Model.ModelItem)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Remove(ModelItem)
+  nameWithType: ModelItemDictionary.Remove(ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Remove(ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Remove(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Remove(Object)
+  nameWithType: ModelItemDictionary.Remove(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Remove(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: SyncRoot
+  nameWithType: ModelItemDictionary.SyncRoot
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Add(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Contains(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem}[],System.Int32)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>,Int32)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem}}#Remove(System.Collections.Generic.KeyValuePair{System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem})
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.Generic.ICollection(KeyValuePair<ModelItem,ModelItem>)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.CopyTo(Array,Int32)
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.CopyTo(Array,Int32)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.CopyTo(Array,Int32)
+- uid: System.Array
+  parent: System
+  isExternal: true
+  name: Array
+  nameWithType: Array
+  fullName: System.Array
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#Count
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.Count
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.Count
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.Count
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#IsSynchronized
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.IsSynchronized
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.IsSynchronized
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.IsSynchronized
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#SyncRoot
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.SyncRoot
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.SyncRoot
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.ICollection.SyncRoot
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add(System.Object,System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Add(Object,Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Add(Object,Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Add(Object,Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Clear
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Clear()
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Clear()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Clear()
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Contains(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Contains(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Contains(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Contains(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#GetEnumerator
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.GetEnumerator()
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.GetEnumerator()
+- uid: System.Collections.IDictionaryEnumerator
+  parent: System.Collections
+  isExternal: true
+  name: IDictionaryEnumerator
+  nameWithType: IDictionaryEnumerator
+  fullName: System.Collections.IDictionaryEnumerator
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsFixedSize
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.IsFixedSize
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsFixedSize
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.IsFixedSize
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsReadOnly
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.IsReadOnly
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsReadOnly
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.IsReadOnly
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Item(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Item(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Item(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Item(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Keys
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Keys
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Keys
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Keys
+- uid: System.Collections.ICollection
+  parent: System.Collections
+  isExternal: true
+  name: ICollection
+  nameWithType: ICollection
+  fullName: System.Collections.ICollection
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Remove(System.Object)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Remove(Object)
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Remove(Object)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Remove(Object)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Values
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Values
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Values
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IDictionary.Values
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IEnumerable#GetEnumerator
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IEnumerable.GetEnumerator()
+  nameWithType: ModelItemDictionary.System.Collections.IEnumerable.GetEnumerator()
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.System.Collections.IEnumerable.GetEnumerator()
+- uid: System.Collections.IEnumerator
+  parent: System.Collections
+  isExternal: true
+  name: IEnumerator
+  nameWithType: IEnumerator
+  fullName: System.Collections.IEnumerator
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem@)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: TryGetValue(ModelItem,ModelItem)
+  nameWithType: ModelItemDictionary.TryGetValue(ModelItem,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(ModelItem,ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(System.Object,System.Activities.Presentation.Model.ModelItem@)
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: TryGetValue(Object,ModelItem)
+  nameWithType: ModelItemDictionary.TryGetValue(Object,ModelItem)
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue(Object,ModelItem)
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Values
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Values
+  nameWithType: ModelItemDictionary.Values
+  fullName: System.Activities.Presentation.Model.ModelItemDictionary.Values
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.#ctor*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: ModelItemDictionary
+  nameWithType: ModelItemDictionary.ModelItemDictionary
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Add*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Add
+  nameWithType: ModelItemDictionary.Add
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Clear*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Clear
+  nameWithType: ModelItemDictionary.Clear
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Contains*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Contains
+  nameWithType: ModelItemDictionary.Contains
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.ContainsKey*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: ContainsKey
+  nameWithType: ModelItemDictionary.ContainsKey
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.CopyTo*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: CopyTo
+  nameWithType: ModelItemDictionary.CopyTo
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Count*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Count
+  nameWithType: ModelItemDictionary.Count
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.GetEnumerator*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: GetEnumerator
+  nameWithType: ModelItemDictionary.GetEnumerator
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsFixedSize*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsFixedSize
+  nameWithType: ModelItemDictionary.IsFixedSize
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsReadOnly*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsReadOnly
+  nameWithType: ModelItemDictionary.IsReadOnly
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.IsSynchronized*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: IsSynchronized
+  nameWithType: ModelItemDictionary.IsSynchronized
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Item*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Item
+  nameWithType: ModelItemDictionary.Item
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Keys*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Keys
+  nameWithType: ModelItemDictionary.Keys
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Remove*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Remove
+  nameWithType: ModelItemDictionary.Remove
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.SyncRoot*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: SyncRoot
+  nameWithType: ModelItemDictionary.SyncRoot
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Add*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Add
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Add
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Contains*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Contains
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Contains
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#CopyTo*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.CopyTo
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.CopyTo
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Remove*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Remove
+  nameWithType: ModelItemDictionary.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Remove
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#CopyTo*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.CopyTo
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.CopyTo
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#Count*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.Count
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.Count
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#IsSynchronized*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.IsSynchronized
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.IsSynchronized
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#ICollection#SyncRoot*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.ICollection.SyncRoot
+  nameWithType: ModelItemDictionary.System.Collections.ICollection.SyncRoot
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Add
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Add
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Clear*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Clear
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Clear
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Contains*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Contains
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Contains
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#GetEnumerator*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.GetEnumerator
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.GetEnumerator
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsFixedSize*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.IsFixedSize
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsFixedSize
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#IsReadOnly*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.IsReadOnly
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.IsReadOnly
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Item*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Item
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Item
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Keys*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Keys
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Keys
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Remove*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Remove
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Remove
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Values*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IDictionary.Values
+  nameWithType: ModelItemDictionary.System.Collections.IDictionary.Values
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IEnumerable#GetEnumerator*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: System.Collections.IEnumerable.GetEnumerator
+  nameWithType: ModelItemDictionary.System.Collections.IEnumerable.GetEnumerator
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.TryGetValue*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: TryGetValue
+  nameWithType: ModelItemDictionary.TryGetValue
+- uid: System.Activities.Presentation.Model.ModelItemDictionary.Values*
+  parent: System.Activities.Presentation.Model.ModelItemDictionary
+  isExternal: false
+  name: Values
+  nameWithType: ModelItemDictionary.Values

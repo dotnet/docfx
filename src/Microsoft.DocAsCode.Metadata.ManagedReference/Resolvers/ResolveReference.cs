@@ -5,9 +5,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
 
     public class ResolveReference : IResolverPipeline
     {
@@ -57,8 +58,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (!page.References.ContainsKey(key))
             {
-                ReferenceItem item;
-                if (context.References.TryGetValue(key, out item))
+                if (context.References.TryGetValue(key, out ReferenceItem item))
                 {
                     var reference = context.References[key].Clone();
                     page.References.Add(key, reference);
@@ -99,6 +99,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 yield return current.Overridden;
             }
 
+            if (current.Overload != null)
+            {
+                yield return current.Overload;
+            }
+
             if (current.Inheritance?.Count > 0)
             {
                 foreach (var item in current.Inheritance)
@@ -115,9 +120,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            if (current.DerivedClasses?.Count > 0)
+            {
+                foreach (var item in current.DerivedClasses)
+                {
+                    yield return item;
+                }
+            }
+
             if (current.InheritedMembers?.Count > 0)
             {
                 foreach (var item in current.InheritedMembers)
+                {
+                    yield return item;
+                }
+            }
+
+            if (current.ExtensionMethods?.Count > 0)
+            {
+                foreach (var item in current.ExtensionMethods)
                 {
                     yield return item;
                 }
@@ -133,17 +154,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (current.Sees?.Count > 0)
             {
-                foreach (var item in current.Sees)
+                foreach (var item in current.Sees.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    yield return item.Type;
+                    yield return item.LinkId;
                 }
             }
 
             if (current.SeeAlsos?.Count > 0)
             {
-                foreach (var item in current.SeeAlsos)
+                foreach (var item in current.SeeAlsos.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    yield return item.Type;
+                    yield return item.LinkId;
                 }
             }
 

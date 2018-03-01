@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
@@ -21,31 +22,39 @@ namespace Microsoft.DocAsCode.Dfm
     /// </summary>
     public class DfmXrefShortcutInlineRule : IMarkdownRule
     {
-        public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(\s*?\S+?[\s\S]*?)\1)";
-        public static readonly string XrefShortcutRegexString = @"@((?:([a-z]+?[\S]*?))(?=[.,;:!?~\s]{2,}|[.,;:!?~]*$|\s))";
-        private static readonly Regex XrefShortcutRegexWithQuote = new Regex("^" + XrefShortcutRegexWithQuoteString, RegexOptions.Compiled);
-        private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private const string ContinuableCharacters = ".,;:!?~";
+        private const string StopCharacters = @"\s\""\'<>";
 
-        public string Name => "XrefShortcut";
+        public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(?<uid>\s*?\S+?[\s\S]*?)\1)";
+        public static readonly string XrefShortcutRegexString = $@"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        private static readonly Regex XrefShortcutRegexWithQuote = new Regex("^" + XrefShortcutRegexWithQuoteString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+
+        public string Name => "DfmXrefShortcut";
+
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = XrefShortcutRegexWithQuote.Match(source);
+            if (MarkdownInlineContext.GetIsInLink(parser.Context))
+            {
+                return null;
+            }
+            var match = XrefShortcutRegexWithQuote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
-                match = XrefShortcutRegex.Match(source);
+                match = XrefShortcutRegex.Match(context.CurrentMarkdown);
                 if (match.Length == 0)
                 {
                     return null;
                 }
             }
 
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // @String=>cap[2]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
-            var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, match.Value);
+            var content = match.Groups["uid"].Value;
+            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, sourceInfo);
         }
     }
 }

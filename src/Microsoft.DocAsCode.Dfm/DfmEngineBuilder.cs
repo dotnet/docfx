@@ -4,24 +4,29 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition.Hosting;
     using System.Linq;
-    using System.IO;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public const string DefaultValidatorName = "default";
-
         private readonly string _baseDir;
+        private IReadOnlyList<string> _fallbackFolders;
 
-        public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null)
+            : this(options, baseDir, templateDir, fallbackFolders, null)
+        {
+        }
+
+        public DfmEngineBuilder(Options options, string baseDir, string templateDir, IReadOnlyList<string> fallbackFolders, ICompositionContainer container) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
+            _fallbackFolders = fallbackFolders ?? new List<string>();
             var inlineRules = InlineRules.ToList();
 
             // xref auto link must be before MarkdownAutoLinkInlineRule
@@ -39,70 +44,209 @@ namespace Microsoft.DocAsCode.Dfm
             }
             inlineRules.Insert(index + 1, new DfmXrefShortcutInlineRule());
             inlineRules.Insert(index + 1, new DfmEmailInlineRule());
+            inlineRules.Insert(index + 1, new DfmFencesInlineRule());
 
             // xref link inline rule must be before MarkdownLinkInlineRule
             inlineRules.Insert(index, new DfmIncludeInlineRule());
 
-            index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);
-            if (index < 0)
-            {
-                throw new ArgumentException("MarkdownTextInlineRule should exist!");
-            }
-            inlineRules[index] = new DfmTextInlineRule();
+            Replace<MarkdownTextInlineRule, DfmTextInlineRule>(inlineRules);
 
             var blockRules = BlockRules.ToList();
-            index = blockRules.FindLastIndex(s => s is MarkdownNewLineBlockRule);
+            index = blockRules.FindLastIndex(s => s is MarkdownCodeBlockRule);
             if (index < 0)
             {
                 throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
             }
-            blockRules.Insert(index + 1, new DfmIncludeBlockRule());
-            blockRules.Insert(index + 2, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 3, new DfmSectionBlockRule());
-            blockRules.Insert(index + 4, new DfmFencesBlockRule());
-            blockRules.Insert(index + 5, new DfmNoteBlockRule());
 
-            var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
-            if (gfmIndex < 0)
-            {
-                throw new ArgumentException("GfmParagraphBlockRule should exist!");
-            }
-            blockRules[gfmIndex] = new DfmParagraphBlockRule();
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule[]
+                {
+                    new DfmIncludeBlockRule(),
+                    new DfmVideoBlockRule(),
+                    new DfmYamlHeaderBlockRule(),
+                    new DfmSectionBlockRule(),
+                    new DfmFencesBlockRule(),
+                    new DfmNoteBlockRule()
+                });
 
-            var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
-            if (markdownBlockQuoteIndex < 0)
-            {
-                throw new ArgumentException("MarkdownBlockquoteBlockRule should exist!");
-            }
-            blockRules[markdownBlockQuoteIndex] = new DfmBlockquoteBlockRule();
+            Replace<MarkdownBlockquoteBlockRule, DfmBlockquoteBlockRule>(blockRules);
+            Replace<MarkdownTableBlockRule, DfmTableBlockRule>(blockRules);
+            Replace<MarkdownNpTableBlockRule, DfmNpTableBlockRule>(blockRules);
 
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyle(GetContainer(), baseDir);
+            Rewriter = InitMarkdownStyle(container, baseDir, templateDir);
+            TokenAggregators = ImmutableList.Create<IMarkdownTokenAggregator>(
+                new HeadingIdAggregator(),
+                new TabGroupAggregator());
         }
 
-        private CompositionHost GetContainer()
+        private static void Replace<TSource, TReplacement>(List<IMarkdownRule> blockRules)
+            where TSource : IMarkdownRule
+            where TReplacement : IMarkdownRule, new()
         {
-            return new ContainerConfiguration()
-                .WithAssemblies(
-                    from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                    where !assembly.IsDynamic && !assembly.ReflectionOnly
-                    where !assembly.GetName().Name.StartsWith("xunit")
-                    select assembly)
-                .CreateContainer();
+            var index = blockRules.FindIndex(item => item is TSource);
+            if (index < 0)
+            {
+                throw new ArgumentException($"{typeof(TSource).Name} should exist!");
+            }
+            blockRules[index] = new TReplacement();
         }
 
-        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host, string baseDir)
+        private static Func<IMarkdownRewriteEngine, DfmTabGroupBlockToken, IMarkdownToken> GetTabGroupIdRewriter()
+        {
+            var dict = new Dictionary<string, int>();
+            var tabSelectionInfo = new List<string[]>();
+            var selectedTabIds = new HashSet<string>();
+            return (IMarkdownRewriteEngine engine, DfmTabGroupBlockToken token) =>
+            {
+                var newToken = RewriteActiveAndVisible(
+                    RewriteGroupId(token, dict),
+                    tabSelectionInfo);
+                if (token == newToken)
+                {
+                    return null;
+                }
+                return newToken;
+            };
+        }
+
+        private static DfmTabGroupBlockToken RewriteGroupId(DfmTabGroupBlockToken token, Dictionary<string, int> dict)
+        {
+            var groupId = token.Id;
+            while (true)
+            {
+                if (!dict.TryGetValue(groupId, out int index))
+                {
+                    dict.Add(groupId, 1);
+                    break;
+                }
+                else
+                {
+                    dict[groupId]++;
+                    groupId = groupId + "-" + index.ToString();
+                }
+            }
+            if (token.Id == groupId)
+            {
+                return token;
+            }
+            return new DfmTabGroupBlockToken(token.Rule, token.Context, groupId, token.Items, token.ActiveTabIndex, token.SourceInfo);
+        }
+
+        private static DfmTabGroupBlockToken RewriteActiveAndVisible(DfmTabGroupBlockToken token, List<string[]> tabSelectionInfo)
+        {
+            var items = token.Items.ToList();
+            int firstVisibleTab = ApplyTabVisible(tabSelectionInfo, items);
+            var idAndCountList = GetTabIdAndCountList(items).ToList();
+            if (idAndCountList.Any(g => g.Item2 > 1))
+            {
+                Logger.LogWarning($"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.", line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.DuplicateTabId);
+            }
+            var active = GetTabActive(token, tabSelectionInfo, items, firstVisibleTab, idAndCountList);
+            return new DfmTabGroupBlockToken(token.Rule, token.Context, token.Id, items.ToImmutableArray(), active, token.SourceInfo);
+        }
+
+        private static int ApplyTabVisible(List<string[]> tabSelectionInfo, List<DfmTabItemBlockToken> items)
+        {
+            int firstVisibleTab = -1;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var tab = items[i];
+                var visible = string.IsNullOrEmpty(tab.Condition) || tabSelectionInfo.Any(t => t[0] == tab.Condition);
+                if (visible && firstVisibleTab == -1)
+                {
+                    firstVisibleTab = i;
+                }
+                if (tab.Visible != visible)
+                {
+                    items[i] = new DfmTabItemBlockToken(tab.Rule, tab.Context, tab.Id, tab.Condition, tab.Title, tab.Content, visible, tab.SourceInfo);
+                }
+            }
+
+            return firstVisibleTab;
+        }
+
+        private static IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<DfmTabItemBlockToken> items) =>
+            from tab in items
+            where tab.Visible
+            from id in tab.Id.Split('+')
+            group id by id into g
+            select Tuple.Create(g.Key, g.Count());
+
+        private static int GetTabActive(DfmTabGroupBlockToken token, List<string[]> tabSelectionInfo, List<DfmTabItemBlockToken> items, int firstVisibleTab, List<Tuple<string, int>> idAndCountList)
+        {
+            int active = -1;
+            bool hasDifferentSet = false;
+            foreach (var info in tabSelectionInfo)
+            {
+                var set = info.Intersect(from pair in idAndCountList select pair.Item1).ToList();
+                if (set.Count > 0)
+                {
+                    if (set.Count == info.Length && set.Count == idAndCountList.Count)
+                    {
+                        active = FindActiveIndex(items, info);
+                        break;
+                    }
+                    else
+                    {
+                        hasDifferentSet = true;
+                        active = FindActiveIndex(items, info);
+                        if (active != -1)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (hasDifferentSet)
+            {
+                Logger.LogWarning("Tab group with different tab id set.", line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.DifferentTabIdSet);
+            }
+
+            if (active == -1)
+            {
+                if (firstVisibleTab != -1)
+                {
+                    active = firstVisibleTab;
+                    tabSelectionInfo.Add((from pair in idAndCountList select pair.Item1).ToArray());
+                }
+                else
+                {
+                    active = 0;
+                    Logger.LogWarning("All tabs are hidden in the tab group.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
+                }
+            }
+
+            return active;
+        }
+
+        private static int FindActiveIndex(List<DfmTabItemBlockToken> items, string[] info)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (!item.Visible)
+                {
+                    continue;
+                }
+                if (Array.IndexOf(item.Id.Split('+'), info[0]) != -1)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)
         {
             try
             {
-                var builder = new MarkdownValidatorBuilder(host);
-                if (!TryLoadValidatorConfig(baseDir, builder))
-                {
-                    builder.AddValidators(DefaultValidatorName);
-                }
-                return builder.Create();
+                return MarkdownValidatorBuilder.Create(container, baseDir, templateDir).CreateRewriter();
             }
             catch (Exception ex)
             {
@@ -111,34 +255,19 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
-        private static bool TryLoadValidatorConfig(string baseDir, MarkdownValidatorBuilder builder)
-        {
-            if (string.IsNullOrEmpty(baseDir))
-            {
-                return false;
-            }
-            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-            if (!File.Exists(configFile))
-            {
-                return false;
-            }
-            var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
-            if (config.Rules != null &&
-                !config.Rules.Any(r => r.RuleName == DefaultValidatorName))
-            {
-                builder.AddValidators(DefaultValidatorName);
-            }
-            builder.AddValidators(
-                from r in config.Rules ?? new MarkdownValidationRule[0]
-                where !r.Disable
-                select r.RuleName);
-            builder.AddTagValidators(config.TagRules ?? new MarkdownTagValidationRule[0]);
-            return true;
-        }
-
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options);
+            return new DfmEngine(
+                CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty).SetFallbackFolders(_fallbackFolders),
+                MarkdownTokenRewriterFactory.Composite(
+                    MarkdownTokenRewriterFactory.FromLambda(GetTabGroupIdRewriter()),
+                    Rewriter),
+                renderer,
+                Options)
+            {
+                TokenTreeValidator = TokenTreeValidator,
+                TokenAggregators = TokenAggregators,
+            };
         }
 
         public override IMarkdownEngine CreateEngine(object renderer)

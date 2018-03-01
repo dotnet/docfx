@@ -9,10 +9,10 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public override string Name => "DfmBlockquote";
 
-        public override IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var c = parser.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
-            var result = base.TryMatch(parser, ref source);
+            var result = base.TryMatch(parser, context);
             parser.SwitchContext(c);
             return result;
         }

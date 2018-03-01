@@ -5,7 +5,7 @@
     using System.Collections.Immutable;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public class ExternalReferencePackageCollection : IDisposable
     {
@@ -28,8 +28,7 @@
         public bool TryGetReference(string uid, out ReferenceViewModel vm)
         {
             ReferenceViewModel result = null;
-            ReferenceViewModelCacheItem ci;
-            if (_cache.TryFind(x => x.Block.TryGetValue(uid, out result), out ci))
+            if (_cache.TryFind(x => x.Block.TryGetValue(uid, out result), out ReferenceViewModelCacheItem ci))
             {
                 vm = result;
                 return true;

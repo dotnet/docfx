@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     {
         /// <summary>
         /// {
-        ///     "$ref": "#/definitions/defintion"
+        ///     "$ref": "#/definitions/definition"
         ///     "otherProperty": "value"
         /// }
         /// </summary>
@@ -32,6 +32,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         /// <summary>
         /// Value type similar to JValue
         /// </summary>
-        ValueType
+        ValueType,
+
+        /// <summary>
+        /// Loop reference type, to indicate to ignore when serializing
+        /// </summary>
+        LoopReference
     }
 }

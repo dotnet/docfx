@@ -1,149 +1,25 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-var common = require('./common.js');
+
+var restApiCommon = require('./RestApi.common.js');
+var extension = require('./RestApi.extension.js')
 
 exports.transform = function (model) {
-    var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
-    model._jsonPath = _fileNameWithoutExt + ".swagger.json";
-    model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
-    model.title = model.title || model.name;
+  if (extension && extension.preTransform) {
+    model = extension.preTransform(model);
+  }
 
-    model.docurl = model.docurl || common.getImproveTheDocHref(model, model.newFileRepository);
-    model.sourceurl = model.sourceurl || common.getViewSourceHref(model);
-    if (model.children) {
-        var ordered = [];
-        for (var i = 0; i < model.children.length; i++) {
-            var child = model.children[i];
-            child.docurl = child.docurl || common.getImproveTheDocHref(child, model.newFileRepository);
-            if (child.operation) {
-                child.operation = child.operation.toUpperCase();
-            }
-            child.path = appendQueryParamsToPath(child.path, child.parameters);
-            child.sourceurl = child.sourceurl || common.getViewSourceHref(child);
-            child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
-            child.footer = child.footer || ''; // set to empty incase mustache looks up
-            if (model.sections && child.uid) {
-                var index = model.sections.indexOf(child.uid);
-                if (index > -1) {
-                    ordered[index] = child;
-                }
-            }
+  if (restApiCommon && restApiCommon.transform) {
+    model = restApiCommon.transform(model);
+  }
+  model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
 
-            formatExample(child.responses);
-            model.children[i] = transformReference(model.children[i]);
-        };
-        if (model.sections) {
-            // Remove empty values from ordered, in case item in sections is not in swagger json 
-            model.children = ordered.filter(function(o) { return o; });
-        }
-    }
+  if (extension && extension.postTransform) {
+    model = extension.postTransform(model);
+  }
 
-    return model;
+  return model;
+}
 
-    function formatExample(responses) {
-        if (!responses) return;
-        for (var i = responses.length - 1; i >= 0; i--) {
-            var examples = responses[i].examples;
-            if (!examples) continue;
-            for (var j = examples.length - 1; j >= 0; j--) {
-                var content = examples[j].content;
-                if (!content) continue;
-                var mimeType = examples[j].mimeType;
-                if (mimeType === 'application/json') {
-                    try {
-                        var json = JSON.parse(content)
-                        responses[i].examples[j].content = JSON.stringify(json, null, '  ');
-                    } catch (e) {
-                        console.warn("example is not a valid JSON object.");
-                    }
-                }
-            }
-        }
-    }
-
-    function transformReference(obj) {
-        if (Array.isArray(obj)) {
-            for (var i = 0; i < obj.length; i++) {
-                obj[i] = transformReference(obj[i]);
-            }
-        }
-        else if (typeof obj === "object") {
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    if (key === "schema") {
-                        // transform schema.properties from obj to key value pair
-                        obj[key] = transformProperties(obj[key]);
-                    }
-                    else {
-                        obj[key] = transformReference(obj[key]);
-                    }
-                }
-            }
-        }
-        return obj;
-    }
-
-    function transformProperties(obj) {
-        if (obj.properties) {
-            if (obj.required && Array.isArray(obj.required)) {
-                for (var i = 0; i < obj.required.length; i++) {
-                    var field = obj.required[i];
-                    if (obj.properties[field]) {
-                        // add required field as property
-                        obj.properties[field].required = true;
-                    }
-                }
-                delete obj.required;
-            }
-            var array = [];
-            for (var key in obj.properties) {
-                if (obj.properties.hasOwnProperty(key)) {
-                    var value = obj.properties[key];
-                    // set description to null incase mustache looks up
-                    value.description = value.description || null;
-
-                    value = transformPropertiesValue(value);
-                    array.push({ key: key, value: value });
-                }
-            }
-            obj.properties = array;
-        }
-        return obj;
-    }
-
-    function transformPropertiesValue(obj) {
-        if (obj.type === "array" && obj.items) {
-            obj.items.properties = obj.items.properties || null;
-            obj.items = transformProperties(obj.items);
-        }
-        return obj;
-    }
-
-    function appendQueryParamsToPath(path, parameters) {
-        if (!path || !parameters) return path;
-
-        var requiredQueryParams = parameters.filter(function(p) { return p.in === 'query' && p.required; });
-        if (requiredQueryParams.length > 0) {
-            path = formatParams(path, requiredQueryParams, true);
-        }
-
-        var optionalQueryParams = parameters.filter(function(p) { return p.in === 'query' && !p.required; });
-        if (optionalQueryParams.length > 0) {
-            path += "[";
-            path = formatParams(path, optionalQueryParams, requiredQueryParams.length == 0);
-            path += "]";
-        }
-        return path;
-    }
-
-    function formatParams(path, parameters, isFirst) {
-        for (var i = 0; i < parameters.length; i++) {
-            if (i == 0 && isFirst) {
-                path += "?";
-            } else {
-                path += "&";
-            }
-            path += parameters[i].name;
-        }
-        return path;
-    }
+exports.getOptions = function (model) {
+  return { "bookmarks": restApiCommon.getBookmarks(model) };
 }

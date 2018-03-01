@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmTextInlineRule : MarkdownTextInlineRule
     {
-        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=\S*@|[\\<!\[_*`]|https?:\/\/| {2,}\n|$)", RegexOptions.Compiled);
+        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=\S*@|\b_|[\\<!\[*`~\:]|\bhttps?:\/\/| {2,}\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         /// <summary>
         /// Override the one in MarkdownLite, difference is:

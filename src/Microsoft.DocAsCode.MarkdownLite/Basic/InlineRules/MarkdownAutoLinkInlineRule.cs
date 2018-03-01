@@ -9,19 +9,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownAutoLinkInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.AutoLink";
         private int _mangleCounter;
+
+        public virtual string Name => "Inline.AutoLink";
 
         public virtual Regex AutoLink => Regexes.Inline.AutoLink;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = AutoLink.Match(source);
+            if (MarkdownInlineContext.GetIsInLink(parser.Context))
+            {
+                return null;
+            }
+            var match = AutoLink.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             StringBuffer text;
             StringBuffer href;
@@ -35,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             else
             {
                 text = StringHelper.Escape(match.Groups[1].Value);
-                href = text;
+                href = match.Groups[1].Value;
             }
 
             return new MarkdownLinkInlineToken(
@@ -43,9 +48,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 parser.Context, 
                 href, 
                 null, 
-                ImmutableArray<IMarkdownToken>.Empty.Add(
-                    new MarkdownRawToken(this, parser.Context, text)),
-                match.Value);
+                ImmutableArray.Create<IMarkdownToken>(
+                    new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(text))),
+                sourceInfo,
+                MarkdownLinkType.AutoLink,
+                null);
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

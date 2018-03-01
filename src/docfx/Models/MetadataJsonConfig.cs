@@ -5,22 +5,8 @@ namespace Microsoft.DocAsCode
 {
     using System.Collections.Generic;
 
-    using Newtonsoft.Json;
-
     public class MetadataJsonConfig : List<MetadataJsonItemConfig>
     {
-        [JsonIgnore]
-        public string BaseDirectory { get; set; }
-
-        [JsonIgnore]
-        public string OutputFolder { get; set; }
-
-        [JsonIgnore]
-        public bool Force { get; set; }
-
-        [JsonIgnore]
-        public bool Raw { get; set; }
-
         public MetadataJsonConfig(IEnumerable<MetadataJsonItemConfig> configs) : base(configs) { }
 
         public MetadataJsonConfig(params MetadataJsonItemConfig[] configs) : base(configs)

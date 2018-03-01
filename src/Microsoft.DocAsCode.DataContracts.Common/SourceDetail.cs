@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common.Git;
 
     [Serializable]
     public class SourceDetail

@@ -5,729 +5,443 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+    using System.Collections.Immutable;
     using System.Composition;
     using System.Composition.Hosting;
-    using System.Collections.Immutable;
+    using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Text;
 
+    using Newtonsoft.Json;
+
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder : IDisposable
     {
-        public const string PhaseName = "Build Document";
-        public const string XRefMapFileName = "xrefmap.yml";
-
-        private readonly CompositionHost _container;
-
-        private static CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
-        {
-            var configuration = new ContainerConfiguration();
-
-            configuration.WithAssembly(typeof(DocumentBuilder).Assembly);
-
-            if (assemblies != null)
-            {
-                foreach (var assembly in assemblies)
-                {
-                    if (assembly != null)
-                    {
-                        configuration.WithAssembly(assembly);
-                    }
-                }
-            }
-
-            try
-            {
-                return configuration.CreateContainer();
-            }
-            catch (ReflectionTypeLoadException ex)
-            {
-                Logger.LogError(
-                    $"Error when get composition container: {ex.Message}, loader exceptions: {(ex.LoaderExceptions != null ? string.Join(", ", ex.LoaderExceptions.Select(e => e.Message)) : "none")}");
-                throw;
-            }
-        }
-
-        public DocumentBuilder(IEnumerable<Assembly> assemblies = null)
-        {
-            using (new LoggerPhaseScope(PhaseName))
-            {
-                Logger.LogVerbose("Loading plug-in...");
-                _container = GetContainer(assemblies);
-                _container.SatisfyImports(this);
-                Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
-                foreach (var processor in Processors)
-                {
-                    Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                }
-            }
-        }
-
         [ImportMany]
         internal IEnumerable<IDocumentProcessor> Processors { get; set; }
 
-        public void Build(DocumentBuildParameters parameters)
+        [ImportMany]
+        internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
+
+        private readonly string _intermediateFolder;
+        private readonly CompositionHost _container;
+        private readonly PostProcessorsManager _postProcessorsManager;
+        private readonly List<Assembly> _assemblyList;
+        private readonly string _commitFromSHA;
+        private readonly string _commitToSHA;
+        private readonly string _templateHash;
+        private readonly bool _cleanupCacheHistory;
+
+        public DocumentBuilder(
+            IEnumerable<Assembly> assemblies,
+            ImmutableArray<string> postProcessorNames,
+            string templateHash,
+            string intermediateFolder = null,
+            string commitFromSHA = null,
+            string commitToSHA = null,
+            bool cleanupCacheHistory = false)
+        {
+            Logger.LogVerbose("Loading plug-in...");
+            using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
+            {
+                var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
+                assemblyList.Add(typeof(DocumentBuilder).Assembly);
+                _container = CompositionContainer.GetContainer(assemblyList);
+                _container.SatisfyImports(this);
+                _assemblyList = assemblyList;
+            }
+            Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
+            foreach (var processor in Processors)
+            {
+                Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+            }
+
+            _commitFromSHA = commitFromSHA;
+            _commitToSHA = commitToSHA;
+            _templateHash = templateHash;
+            _intermediateFolder = intermediateFolder;
+            _cleanupCacheHistory = cleanupCacheHistory;
+            _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
+        }
+
+        public void Build(DocumentBuildParameters parameter)
+        {
+            Build(new DocumentBuildParameters[] { parameter }, parameter.OutputBaseDir);
+        }
+
+        public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
-            if (parameters.OutputBaseDir == null)
+            if (parameters.Count == 0)
             {
-                throw new ArgumentException("Output folder cannot be null.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));
-            }
-            if (parameters.Files == null)
-            {
-                throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
-            }
-            if (parameters.MaxParallelism <= 0)
-            {
-                parameters.MaxParallelism = Environment.ProcessorCount;
-            }
-            if (parameters.Metadata == null)
-            {
-                parameters.Metadata = ImmutableDictionary<string, object>.Empty;
+                throw new ArgumentException("Parameters are empty.", nameof(parameters));
             }
 
-            using (new LoggerPhaseScope(PhaseName))
+            var markdownServiceProvider = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
+            if (markdownServiceProvider == null)
             {
-                Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism.ToString()}.");
-                var markdownService = CreateMarkdownService(parameters);
-                Directory.CreateDirectory(parameters.OutputBaseDir);
-                var context = new DocumentBuildContext(
-                    Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
-                    parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages,
-                    parameters.XRefMaps,
-                    parameters.MaxParallelism);
-                Logger.LogVerbose("Start building document...");
-                List<InnerBuildContext> innerContexts = null;
-                try
+                Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+                throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+            }
+            Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
+
+            var logCodesLogListener = new LogCodesLogListener();
+            Logger.RegisterListener(logCodesLogListener);
+
+            // Load schema driven processor from template
+            var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
+
+            if (sdps.Count > 0)
+            {
+                Logger.LogInfo($"{sdps.Count()} schema driven document processor plug-in(s) loaded.");
+                Processors = Processors.Union(sdps);
+            }
+
+            BuildInfo lastBuildInfo = null;
+            var currentBuildInfo =
+                new BuildInfo
                 {
-                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
+                    BuildStartTime = DateTime.UtcNow,
+                    DocfxVersion = EnvironmentContext.Version,
+                };
+
+            try
+            {
+                lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
+
+                currentBuildInfo.CommitFromSHA = _commitFromSHA;
+                currentBuildInfo.CommitToSHA = _commitToSHA;
+                if (_intermediateFolder != null)
+                {
+                    currentBuildInfo.PluginHash = ComputePluginHash(_assemblyList);
+                    currentBuildInfo.TemplateHash = _templateHash;
+                    if (!_cleanupCacheHistory && lastBuildInfo != null)
                     {
-                        innerContexts = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
-                        var manifest = new List<ManifestItemWithContext>();
-                        foreach (var item in innerContexts)
-                        {
-                            manifest.AddRange(BuildCore(item, context));
-                        }
-
-                        // Use manifest from now on
-                        UpdateContext(context);
-
-                        // Run getOptions from Template
-                        FeedOptions(manifest, context);
-
-                        // Template can feed back xref map, actually, the anchor # location can only be determined in template
-                        FeedXRefMap(manifest, context);
-
-                        UpdateHref(manifest, context);
-
-                        // Afterwards, m.Item.Model.Content is always IDictionary
-                        ApplySystemMetadata(manifest, context);
-
-                        // Register global variables after href are all updated
-                        IDictionary<string, object> globalVariables = FeedGlobalVariables(processor.DefaultGlobalVariables, manifest, context);
-
-                        // processor to add global variable to the model
-                        var generatedManifest = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables);
-
-                        ExportXRefMap(parameters, context);
-
-                        // todo : move to plugin.
-                        object value;
-                        if (parameters.Metadata.TryGetValue("_enableSearch", out value))
-                        {
-                            var isSearchable = value as bool?;
-                            if (isSearchable.HasValue && isSearchable.Value)
-                            {
-                                ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
-                            }
-                        }
-                        Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
-                    }
-                }
-                finally
-                {
-                    if (innerContexts != null)
-                    {
-                        foreach (var item in innerContexts)
-                        {
-                            if (item.HostService != null)
-                            {
-                                Cleanup(item.HostService);
-                                item.HostService.Dispose();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
-        {
-            var hostService = new HostService(
-                 parameters.Files.DefaultBaseDir,
-                 from file in parameters.Files.EnumerateFiles()
-                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file)
-                 into model
-                 where model != null
-                 select model);
-            hostService.MarkdownService = markdownService;
-            BuildCore(processor, hostService, parameters.MaxParallelism);
-            return hostService.Models;
-        }
-
-        private void Cleanup(HostService hostService)
-        {
-            hostService.Models.RunAll(m => m.Dispose());
-        }
-
-        private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)
-        {
-            var processor = buildContext.Processor;
-            buildContext.HostService.SourceFiles = context.AllSourceFiles;
-            BuildCore(processor, buildContext.HostService, context.MaxParallelism);
-            return ExportManifest(buildContext, context);
-        }
-
-        private static void BuildCore(IDocumentProcessor processor, HostService hostService, int maxParallelism)
-        {
-            Logger.LogVerbose($"Processor {processor.Name}: Loading document...");
-            using (new LoggerPhaseScope(processor.Name))
-            {
-                foreach (var m in hostService.Models)
-                {
-                    if (m.LocalPathFromRepoRoot == null)
-                    {
-                        m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
-                    }
-                }
-                var steps = string.Join("=>", processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {processor.Name}: Preprocessing...");
-                Prebuild(processor, hostService);
-                Logger.LogVerbose($"Processor {processor.Name}: Building...");
-                BuildArticle(processor, hostService, maxParallelism);
-                Logger.LogVerbose($"Processor {processor.Name}: Postprocessing...");
-                Postbuild(processor, hostService);
-                Logger.LogVerbose($"Processor {processor.Name}: Generating manifest...");
-            }
-        }
-
-        private void FeedXRefMap(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
-        {
-            Logger.LogVerbose($"Feeding xref map...");
-            manifest.RunAll(m =>
-            {
-                if (m.TemplateBundle == null)
-                {
-                    return;
-                }
-
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
-                {
-                    Logger.LogVerbose($"Feed xref map from template for {m.Item.DocumentType}...");
-                    var bookmarks = m.Options.Bookmarks;
-                    // TODO: Add bookmarks to xref
-                }
-            });
-        }
-
-        private void FeedOptions(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
-        {
-            Logger.LogVerbose($"Feeding options from template...");
-            manifest.RunAll(m =>
-            {
-                if (m.TemplateBundle == null)
-                {
-                    return;
-                }
-
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
-                {
-                    Logger.LogVerbose($"Feed options from template for {m.Item.DocumentType}...");
-                    m.Options = m.TemplateBundle.GetOptions(m.Item, context);
-                }
-            });
-        }
-
-        private void ApplySystemMetadata(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
-        {
-            Logger.LogVerbose($"Applying system metadata to manifest...");
-
-            // Add system attributes
-            var systemMetadataGenerator = new SystemMetadataGenerator(context);
-
-            manifest.RunAll(m =>
-            {
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
-                {
-                    Logger.LogVerbose($"Generating system metadata...");
-
-                    // TODO: use weak type for system attributes from the beginning
-                    var systemAttrs = systemMetadataGenerator.Generate(m.Item);
-                    var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
-                    // Change file model to weak type
-                    var model = m.Item.Model.Content;
-                    var modelAsObject = ConvertToObjectHelper.ConvertStrongTypeToObject(model) as IDictionary<string, object>;
-                    if (modelAsObject != null)
-                    {
-                        foreach (var token in modelAsObject)
-                        {
-                            // Overwrites the existing system metadata if the same key is defined in document model
-                            metadata[token.Key] = token.Value;
-                        }
+                        // Reuse the directory for last incremental if cleanup is disabled
+                        currentBuildInfo.DirectoryName = lastBuildInfo.DirectoryName;
                     }
                     else
                     {
-                        Logger.LogWarning("Input model is not an Object model, it will be wrapped into an Object model. Please use --exportRawModel to view the wrapped model");
-                        metadata["model"] = model;
-                    }
-
-                    // Append system metadata to model
-                    m.Item.Model.Content = metadata;
-                }
-            });
-        }
-
-        private IDictionary<string, object> FeedGlobalVariables(IDictionary<string, object> initialGlobalVariables, List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
-        {
-            Logger.LogVerbose($"Feeding global variables from template...");
-
-            // E.g. we can set TOC model to be globally shared by every data model
-            // Make sure it is single thread
-            IDictionary<string, object> metadata = initialGlobalVariables == null ? new Dictionary<string, object>() : new Dictionary<string, object>(initialGlobalVariables);
-            var sharedObjects = new Dictionary<string, object>();
-            manifest.RunAll(m =>
-            {
-                if (m.TemplateBundle == null)
-                {
-                    return;
-                }
-
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
-                {
-                    Logger.LogVerbose($"Load shared model from template for {m.Item.DocumentType}...");
-                    if (m.Options.IsShared)
-                    {
-                        sharedObjects[m.Item.Key] = m.Item.Model.Content;
+                        currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(_intermediateFolder));
                     }
                 }
-            });
 
-            metadata["_shared"] = sharedObjects;
-            return metadata;
-        }
+                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, currentBuildInfo, lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
 
-        private void UpdateHref(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
-        {
-            Logger.LogVerbose($"Updating href...");
-            manifest.RunAll(m =>
-            {
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                var manifests = new List<Manifest>();
+                bool transformDocument = false;
+                if (parameters.All(p => p.Files.Count == 0))
                 {
-                    Logger.LogVerbose($"Plug-in {m.Processor.Name}: Updating href...");
-                    m.Processor.UpdateHref(m.FileModel, context);
-
-                    // reset model after updating href
-                    m.Item.Model = m.FileModel.ModelWithCache;
+                    Logger.LogWarning(
+                        $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputFiles);
                 }
-            });
-        }
-
-        private static FileModel Load(
-            IDocumentProcessor processor,
-            ImmutableDictionary<string, object> metadata,
-            FileMetadata fileMetadata,
-            FileAndType file)
-        {
-            using (new LoggerFileScope(file.File))
-            {
-                Logger.LogVerbose($"Processor {processor.Name}: Loading...");
-
-                var path = Path.Combine(file.BaseDir, file.File);
-                metadata = ApplyFileMetadata(path, metadata, fileMetadata);
-                return processor.Load(file, metadata);
-            }
-        }
-
-        private static ImmutableDictionary<string, object> ApplyFileMetadata(
-            string file,
-            ImmutableDictionary<string, object> metadata,
-            FileMetadata fileMetadata)
-        {
-            if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
-            var result = new Dictionary<string, object>(metadata);
-            var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Environment.CurrentDirectory : fileMetadata.BaseDir;
-            var relativePath = PathUtility.MakeRelativePath(baseDir, file);
-            foreach (var item in fileMetadata)
-            {
-                // As the latter one overrides the former one, match the pattern from latter to former
-                for (int i = item.Value.Length - 1; i >= 0; i--)
+                foreach (var parameter in parameters)
                 {
-                    if (item.Value[i].Glob.Match(relativePath))
+                    if (parameter.CustomLinkResolver != null)
                     {
-                        // override global metadata if metadata is defined in file metadata
-                        result[item.Value[i].Key] = item.Value[i].Value;
-                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
-                        break;
-                    }
-                }
-            }
-            return result.ToImmutableDictionary();
-        }
-
-        private static void Prebuild(IDocumentProcessor processor, HostService hostService)
-        {
-            RunBuildSteps(
-                processor.BuildSteps,
-                buildStep =>
-                {
-                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Preprocessing...");
-                    using (new LoggerPhaseScope(buildStep.Name))
-                    {
-                        var models = buildStep.Prebuild(hostService.Models, hostService);
-                        if (!object.ReferenceEquals(models, hostService.Models))
+                        if (_container.TryGetExport(parameter.CustomLinkResolver, out ICustomHrefGenerator chg))
                         {
-                            Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Reloading models...");
-                            hostService.Reload(models);
+                            parameter.ApplyTemplateSettings.HrefGenerator = chg;
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
-                });
-        }
-
-        private static void BuildArticle(IDocumentProcessor processor, HostService hostService, int maxParallelism)
-        {
-            hostService.Models.RunAll(
-                m =>
-                {
-                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                    FileAbstractLayerBuilder falBuilder;
+                    if (_intermediateFolder == null)
                     {
-                        Logger.LogVerbose($"Processor {processor.Name}: Building...");
-                        RunBuildSteps(
-                            processor.BuildSteps,
-                            buildStep =>
-                            {
-                                Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Building...");
-                                using (new LoggerPhaseScope(buildStep.Name))
-                                {
-                                    buildStep.Build(m, hostService);
-                                }
-                            });
+                        falBuilder = FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                            .WriteToRealFileSystem(parameter.OutputBaseDir);
                     }
-                },
-                maxParallelism);
-        }
-
-        private static void Postbuild(IDocumentProcessor processor, HostService hostService)
-        {
-            RunBuildSteps(
-                processor.BuildSteps,
-                buildStep =>
-                {
-                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Postprocessing...");
-                    using (new LoggerPhaseScope(buildStep.Name))
+                    else
                     {
-                        buildStep.Postbuild(hostService.Models, hostService);
+                        falBuilder = FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
                     }
-                });
-        }
-
-        private IEnumerable<ManifestItemWithContext> ExportManifest(InnerBuildContext buildContext, DocumentBuildContext context)
-        {
-            var hostService = buildContext.HostService;
-            var processor = buildContext.Processor;
-            var templateProcessor = buildContext.TemplateProcessor;
-            var manifestItems = new List<ManifestItemWithContext>();
-            hostService.Models.RunAll(m =>
-            {
-                if (m.Type != DocumentType.Overwrite)
-                {
-                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                    if (!string.IsNullOrEmpty(parameter.FALName))
                     {
-                        Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
-                        m.BaseDir = context.BuildOutputFolder;
-                        if (m.PathRewriter != null)
+                        if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
+                            parameter.FALName, out var provider))
                         {
-                            m.File = m.PathRewriter(m.File);
+                            falBuilder = provider.Create(falBuilder, parameter);
                         }
-                        var result = processor.Save(m);
-                        if (result != null)
+                        else
                         {
-                            string extension = string.Empty;
-                            if (templateProcessor != null)
-                            {
-                                if (templateProcessor.TryGetFileExtension(result.DocumentType, out extension))
-                                {
-                                    // For backward-compatibility, will remove ModelFile in v1.9
-                                    if (string.IsNullOrEmpty(result.FileWithoutExtension))
-                                    {
-                                        result.FileWithoutExtension = Path.ChangeExtension(result.ModelFile, null);
-                                    }
+                            Logger.LogWarning($"Input fal builder provider not found, name: {parameter.FALName}.");
+                        }
+                    }
+                    EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
+                    if (parameter.ApplyTemplateSettings.TransformDocument)
+                    {
+                        transformDocument = true;
+                    }
 
-                                    m.File = result.FileWithoutExtension + extension;
+                    var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
+                    if (parameter.Files.Count == 0)
+                    {
+                        manifests.Add(new Manifest());
+                    }
+                    else
+                    {
+                        if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
+                        {
+                            Logger.LogWarning($"No content file found{versionMessageSuffix}. Please make sure the content section of docfx.json is correctly configured.");
+                        }
+
+                        parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                        if (!string.IsNullOrEmpty(parameter.VersionName))
+                        {
+                            Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                        }
+
+                        using (new LoggerPhaseScope("BuildCore"))
+                        {
+                            manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+                        }
+                    }
+                }
+
+                using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
+                {
+                    var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                    generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
+                    ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+                    ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
+
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                        .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                        .Create();
+                    using (new PerformanceScope("Process"))
+                    {
+                        _postProcessorsManager.Process(generatedManifest, outputDirectory);
+                    }
+
+                    using (new PerformanceScope("Dereference"))
+                    {
+                        if (parameters[0].KeepFileLink)
+                        {
+                            var count = (from f in generatedManifest.Files
+                                         from o in f.OutputFiles
+                                         select o.Value into v
+                                         where v.LinkToPath != null
+                                         select v).Count();
+                            if (count > 0)
+                            {
+                                Logger.LogInfo($"Skip dereferencing {count} files.");
+                            }
+                        }
+                        else
+                        {
+                            generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                        }
+                    }
+
+                    using (new PerformanceScope("SaveManifest"))
+                    {
+                        // Save to manifest.json
+                        EnvironmentContext.FileAbstractLayerImpl =
+                            FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                            .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                            .Create();
+                        SaveManifest(generatedManifest);
+                    }
+
+                    using (new PerformanceScope("Cleanup"))
+                    {
+                        EnvironmentContext.FileAbstractLayerImpl = null;
+
+                        // overwrite intermediate cache files
+                        if (_intermediateFolder != null && transformDocument)
+                        {
+                            try
+                            {
+                                currentBuildInfo.IsValid = Logger.WarningCount < Logger.WarningThrottling;
+                                currentBuildInfo.Save(_intermediateFolder);
+                                if (_cleanupCacheHistory)
+                                {
+                                    ClearCacheExcept(currentBuildInfo.DirectoryName);
                                 }
                             }
-
-                            var item = HandleSaveResult(context, hostService, m, result);
-                            item.Extension = extension;
-
-                            manifestItems.Add(new ManifestItemWithContext(item, m, processor, templateProcessor?.GetTemplateBundle(result.DocumentType)));
+                            catch (Exception ex)
+                            {
+                                Logger.LogWarning($"Error happened while saving cache. Message: {ex.Message}.");
+                            }
                         }
                     }
                 }
-            });
-            return manifestItems;
-        }
-
-        private void UpdateContext(DocumentBuildContext context)
-        {
-            context.ResolveExternalXRefSpec();
-        }
-
-        private ManifestItem HandleSaveResult(
-            DocumentBuildContext context,
-            HostService hostService,
-            FileModel model,
-            SaveResult result)
-        {
-            context.FileMap[model.Key] = ((RelativePath)model.File).GetPathFromWorkingFolder();
-            DocumentException.RunAll(
-                () => CheckFileLink(hostService, result),
-                () => HandleUids(context, result),
-                () => HandleToc(context, result),
-                () => RegisterXRefSpec(context, result));
-
-            return GetManifestItem(context, model, result);
-        }
-
-        private static void CheckFileLink(HostService hostService, SaveResult result)
-        {
-            result.LinkToFiles.RunAll(fileLink =>
+            }
+            catch
             {
-                if (!hostService.SourceFiles.ContainsKey(fileLink))
+                // Leave cache folder there as it contains historical data
+                // exceptions happens in this build does not corrupt the cache theoretically
+                // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
+                if (_intermediateFolder != null && _cleanupCacheHistory)
                 {
-                    var message = $"Invalid file link({fileLink})";
-                    Logger.LogWarning(message);
+                    ClearCacheExcept(lastBuildInfo?.DirectoryName);
                 }
-            });
-        }
-
-        private static void HandleUids(DocumentBuildContext context, SaveResult result)
-        {
-            if (result.LinkToUids.Count > 0)
+                throw;
+            }
+            finally
             {
-                context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
+                Logger.UnregisterListener(logCodesLogListener);
             }
         }
 
-        private static void HandleToc(DocumentBuildContext context, SaveResult result)
+        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo)
         {
-            if (result.TocMap?.Count > 0)
+            using (var builder = new SingleDocumentBuilder
             {
-                foreach (var toc in result.TocMap)
+                CurrentBuildInfo = currentBuildInfo,
+                LastBuildInfo = lastBuildInfo,
+                IntermediateFolder = _intermediateFolder,
+                MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
+                Processors = Processors,
+                MarkdownServiceProvider = markdownServiceProvider,
+            })
+            {
+                return builder.Build(parameter);
+            }
+        }
+
+        private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
+        {
+            SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
+            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
+            {
+                if (resource == null || resource.IsEmpty)
                 {
-                    HashSet<string> list;
-                    if (context.TocMap.TryGetValue(toc.Key, out list))
+                    yield break;
+                }
+
+                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
+                foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                {
+                    var fileName = Path.GetFileName(pair.Key);
+                    using (new LoggerFileScope(fileName))
                     {
-                        foreach (var item in toc.Value)
+                        using (var stream = pair.Value)
                         {
-                            list.Add(item);
+                            using (var sr = new StreamReader(stream))
+                            {
+                                DocumentSchema schema;
+                                try
+                                {
+                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                }
+                                catch (Exception e)
+                                {
+                                    Logger.LogError(e.Message);
+                                    throw;
+                                }
+                                var sdp = new SchemaDrivenDocumentProcessor(
+                                    schema,
+                                    new CompositionContainer(CompositionContainer.DefaultContainer),
+                                    markdigMarkdownService);
+                                Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                                yield return sdp;
+                            }
                         }
                     }
-                    else
-                    {
-                        context.TocMap[toc.Key] = toc.Value;
-                    }
                 }
             }
         }
 
-        private void RegisterXRefSpec(DocumentBuildContext context, SaveResult result)
+        private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
         {
-            foreach (var spec in result.XRefSpecs)
-            {
-                if (!string.IsNullOrWhiteSpace(spec?.Uid))
-                {
-                    XRefSpec xref;
-                    if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
-                    {
-                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.");
-                    }
-                    else
-                    {
-                        context.XRefSpecMap[spec.Uid] = spec.ToReadOnly();
-                    }
-                }
-            }
-            foreach (var spec in result.ExternalXRefSpecs)
-            {
-                if (!string.IsNullOrWhiteSpace(spec?.Uid))
-                {
-                    context.ReportExternalXRefSpec(spec);
-                }
-            }
-        }
+            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
 
-        private static ManifestItem GetManifestItem(DocumentBuildContext context, FileModel model, SaveResult result)
-        {
-            return new ManifestItem
-            {
-                DocumentType = result.DocumentType,
-                FileWithoutExtension = result.FileWithoutExtension,
-                ResourceFile = result.ResourceFile,
-                Key = model.Key,
-                // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
-                LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
-                Model = model.ModelWithCache,
-                InputFolder = model.OriginalFileAndType.BaseDir,
-                Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
-            };
-        }
-
-        private static void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
-        {
-            if (buildSteps != null)
-            {
-                foreach (var buildStep in buildSteps.OrderBy(step => step.BuildOrder))
-                {
-                    action(buildStep);
-                }
-            }
-        }
-
-        private static IEnumerable<InnerBuildContext> GetInnerContexts(
-            DocumentBuildParameters parameters,
-            IEnumerable<IDocumentProcessor> processors,
-            TemplateProcessor templateProcessor,
-            IMarkdownService markdownService)
-        {
-            var k = from fileItem in (
-                from file in parameters.Files.EnumerateFiles()
-                from p in (from processor in processors
-                           let priority = processor.GetProcessingPriority(file)
-                           where priority != ProcessingPriority.NotSupported
-                           group processor by priority into ps
-                           orderby ps.Key descending
-                           select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
-                select new { file, p })
-                    group fileItem by fileItem.p;
-
-            var toHandleItems = k.Where(s => s.Key != null);
-            var notToHandleItems = k.Where(s => s.Key == null);
-            foreach (var item in notToHandleItems)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine("Cannot handle following file:");
-                foreach (var f in item)
-                {
-                    sb.Append("\t");
-                    sb.AppendLine(f.file.File);
-                }
-                Logger.LogWarning(sb.ToString());
-            }
-
-            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                   select new InnerBuildContext(
-                       new HostService(
-                           parameters.Files.DefaultBaseDir,
-                           from file in item
-                           select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file)
-                           into model
-                           where model != null
-                           select model)
-                       {
-                           MarkdownService = markdownService,
-                       },
-                       item.Key,
-                       templateProcessor);
-        }
-
-        /// <summary>
-        /// Export xref map file.
-        /// </summary>
-        private static void ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
-        {
-            Logger.LogVerbose("Exporting xref map...");
-            var xrefMap = new XRefMap();
-            xrefMap.References =
-                (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                 select new XRefSpec(xref)
-                 {
-                     Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XRefDetails.GetHtmlId(xref.Uid),
-                 }).ToList();
-            xrefMap.Sort();
-            YamlUtility.Serialize(
-                Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
-                xrefMap);
-            Logger.LogInfo("XRef map exported.");
-        }
-
-        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters)
-        {
-            var provider = (IMarkdownServiceProvider)_container.GetExport(
-                typeof(IMarkdownServiceProvider),
-                parameters.MarkdownEngineName);
-            if (provider == null)
-            {
-                Logger.LogError($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
-                throw new DocfxException($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
-            }
-            Logger.LogInfo($"Markdown engine is {parameters.MarkdownEngineName}");
-            return provider.CreateMarkdownService(
+            return new MarkdigMarkdownService(
                 new MarkdownServiceParameters
                 {
                     BasePath = parameters.Files.DefaultBaseDir,
+                    TemplateDir = parameters.TemplateDir,
                     Extensions = parameters.MarkdownEngineParameters,
-                });
+                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                },
+                new CompositionContainer(CompositionContainer.DefaultContainer));
         }
 
-        private sealed class InnerBuildContext
+        private void ClearCacheExcept(string subFolder)
         {
-            public HostService HostService { get; }
-            public IDocumentProcessor Processor { get; }
-            public TemplateProcessor TemplateProcessor { get; }
-
-            public InnerBuildContext(HostService hostService, IDocumentProcessor processor, TemplateProcessor templateProcessor)
+            string folder = Environment.ExpandEnvironmentVariables(_intermediateFolder);
+            string except = string.IsNullOrEmpty(subFolder) ? string.Empty : Path.Combine(folder, subFolder);
+            foreach (var f in Directory.EnumerateDirectories(folder))
             {
-                HostService = hostService;
-                Processor = processor;
-                TemplateProcessor = templateProcessor;
+                if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, except))
+                {
+                    continue;
+                }
+                try
+                {
+                    Directory.Delete(f, true);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+                }
             }
+        }
+
+        private IEnumerable<IInputMetadataValidator> GetMetadataRules(DocumentBuildParameters parameter)
+        {
+            try
+            {
+                var mvb = MarkdownValidatorBuilder.Create(new CompositionContainer(), parameter.Files.DefaultBaseDir, parameter.TemplateDir);
+                return mvb.GetEnabledMetadataRules().ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.Message}");
+                return Enumerable.Empty<IInputMetadataValidator>();
+            }
+        }
+
+        private static void SaveManifest(Manifest manifest)
+        {
+            JsonUtility.Serialize(Constants.ManifestFileName, manifest, Formatting.Indented);
+            Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
+        }
+
+        private static string ComputePluginHash(List<Assembly> assemblyList)
+        {
+            if (assemblyList?.Count > 0)
+            {
+                var builder = new StringBuilder();
+                foreach (var item in
+                    from assembly in assemblyList
+                    select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString() + "-" + assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version.ToString()
+                    into item
+                    orderby item
+                    select item)
+                {
+                    builder.AppendLine(item);
+                }
+                return builder.ToString().GetMd5String();
+            }
+            return string.Empty;
         }
 
         public void Dispose()
         {
-            foreach (var processor in Processors)
-            {
-                Logger.LogVerbose($"Disposing processor {processor.Name} ...");
-                (processor as IDisposable)?.Dispose();
-            }
-        }
-
-        private sealed class ManifestItemWithContext
-        {
-            public ManifestItem Item { get; }
-            public FileModel FileModel { get; }
-            public IDocumentProcessor Processor { get; }
-            public TemplateBundle TemplateBundle { get; }
-
-            public TransformModelOptions Options { get; set; }
-            public ManifestItemWithContext(ManifestItem item, FileModel model, IDocumentProcessor processor, TemplateBundle bundle)
-            {
-                Item = item;
-                FileModel = model;
-                Processor = processor;
-                TemplateBundle = bundle;
-            }
+            _postProcessorsManager.Dispose();
         }
     }
 }

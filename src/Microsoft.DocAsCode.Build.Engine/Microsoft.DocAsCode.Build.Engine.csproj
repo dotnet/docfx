@@ -1,154 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{60F21EDB-35F9-420D-B1B6-3ED482F76B51}</ProjectGuid>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.props" />
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="InvalidPreprocessorException.cs" />
-    <Compile Include="CrossReferenceNotResolvedException.cs" />
-    <Compile Include="DocumentBuildContext.cs" />
-    <Compile Include="DocumentBuilder.cs" />
-    <Compile Include="DocumentBuildParameters.cs" />
-    <Compile Include="ExtractSearchData\ExtractSearchIndexFromHtml.cs" />
-    <Compile Include="ExtractSearchData\SearchIndexItem.cs" />
-    <Compile Include="FileCollection.cs" />
-    <Compile Include="FileMetadata.cs" />
-    <Compile Include="FileMetadataItem.cs" />
-    <Compile Include="HostService.cs" />
-    <Compile Include="MarkdownProviders\GfmServiceProvider.cs" />
-    <Compile Include="MarkdownProviders\DfmServiceProvider.cs" />
-    <Compile Include="TransformModelOptions.cs" />
-    <Compile Include="TemplateRenderers\TemplateRendererResource.cs" />
-    <Compile Include="TemplateRenderers\TemplateRendererType.cs" />
-    <Compile Include="TemplatePreprocessors\TemplatePreprocessorResource.cs" />
-    <Compile Include="TemplatePreprocessors\JintProcessorHelper.cs" />
-    <Compile Include="HomepageInfo.cs" />
-    <Compile Include="ManifestItem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TemplateRenderers\ITemplateRenderer.cs" />
-    <Compile Include="TemplateRenderers\LiquidTemplateRenderer.cs" />
-    <Compile Include="TemplateRenderers\MustacheTemplateRenderer.cs" />
-    <Compile Include="TemplateRenderers\ResourceTemplateLocator.cs" />
-    <Compile Include="ResourceCollection.cs" />
-    <Compile Include="ResourceDirectoryExceedsMaxDepthException.cs" />
-    <Compile Include="ResourceFinder.cs" />
-    <Compile Include="Settings\ApplyTemplateOptions.cs" />
-    <Compile Include="Settings\ApplyTemplateSettings.cs" />
-    <Compile Include="Settings\ExportSettings.cs" />
-    <Compile Include="SystemMetadata.cs" />
-    <Compile Include="SystemMetadataGenerator.cs" />
-    <Compile Include="TemplatePreprocessors\ITemplatePreprocessor.cs" />
-    <Compile Include="TemplatePreprocessors\TemplateJintPreprocessor.cs" />
-    <Compile Include="TemplateType.cs" />
-    <Compile Include="TemplateBundle.cs" />
-    <Compile Include="Template.cs" />
-    <Compile Include="TemplateCollection.cs" />
-    <Compile Include="TemplateManager.cs" />
-    <Compile Include="Manifest.cs" />
-    <Compile Include="TemplateManifestItem.cs" />
-    <Compile Include="TemplateModelTransformer.cs" />
-    <Compile Include="TemplateProcessor.cs" />
-    <Compile Include="TemplateResourceInfo.cs" />
-    <Compile Include="XRefMaps\XRefArchive.cs" />
-    <Compile Include="XRefMaps\XRefArchiveBuilder.cs" />
-    <Compile Include="XRefDetails.cs" />
-    <Compile Include="XRefMaps\XRefArchiveMode.cs" />
-    <Compile Include="XRefMaps\XRefMap.cs" />
-    <Compile Include="XRefMaps\XRefMapRedirection.cs" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.SchemaDriven\Microsoft.DocAsCode.Build.SchemaDriven.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
-      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
-      <Name>Microsoft.DocAsCode.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
-      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
-      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
-      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
-      <Name>Microsoft.DocAsCode.Dfm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
-      <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Glob</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
-      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
-      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
-      <Name>Microsoft.DocAsCode.Plugins</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
-      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
-      <Name>Microsoft.DocAsCode.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
-      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
-      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
-    </ProjectReference>
+    <PackageReference Include="DotLiquid" Version="2.0.145" />
+    <PackageReference Include="Jint" Version="2.5.0" />
+    <PackageReference Include="Nustache" Version="1.15.3.5" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="DotLiquid">
-      <HintPath>..\..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="Jint">
-      <HintPath>..\..\packages\Jint.2.5.0\lib\portable-net40+sl50+win+wpa81+wp80\Jint.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Nustache.Core">
-      <HintPath>..\..\packages\Nustache.1.15.3.5\lib\net20\Nustache.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.AttributedModel">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Convention">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Hosting">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.Runtime">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Net.Http" />
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Web" />
-    <Reference Include="System.XML" />
-    <Reference Include="YamlDotNet">
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.IO.Compression" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

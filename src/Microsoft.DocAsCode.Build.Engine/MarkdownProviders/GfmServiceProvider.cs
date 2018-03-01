@@ -21,9 +21,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             private static GfmEngineBuilder Builder { get; } = new GfmEngineBuilder(new Options { XHtml = true, Mangle = false });
             private static HtmlRenderer Renderer { get; } = new HtmlRenderer();
 
-            public string Markup(string src, string path)
+            public MarkupResult Markup(string src, string path)
             {
-                return Builder.CreateEngine(Renderer).Markup(src);
+                var html = Builder.CreateEngine(Renderer).Markup(src, path);
+                return new MarkupResult
+                {
+                    Html = html,
+                };
             }
         }
     }

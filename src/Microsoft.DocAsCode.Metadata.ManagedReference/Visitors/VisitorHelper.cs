@@ -6,15 +6,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Diagnostics;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
 
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Plugins;
 
     public static class VisitorHelper
     {
+        public static string GlobalNamespaceId { get; set; }
+        private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
+
         public static void FeedComments(MetadataItem item, ITripleSlashCommentParserContext context)
         {
             if (!string.IsNullOrEmpty(item.RawComment))
@@ -27,6 +33,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 item.Sees = commentModel.Sees;
                 item.SeeAlsos = commentModel.SeeAlsos;
                 item.Examples = commentModel.Examples;
+                item.IsInheritDoc = commentModel.IsInheritDoc;
                 item.CommentModel = commentModel;
             }
         }
@@ -36,6 +43,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol == null)
             {
                 return null;
+            }
+
+            var namespaceSymbol = symbol as INamespaceSymbol;
+            if (namespaceSymbol != null && namespaceSymbol.IsGlobalNamespace)
+            {
+                return GlobalNamespaceId;
             }
 
             var assemblySymbol = symbol as IAssemblySymbol;
@@ -48,14 +61,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return typeof(object).FullName;
             }
+
+            return GetDocumentationCommentId(symbol)?.Substring(2);
+        }
+
+        private static string GetDocumentationCommentId(ISymbol symbol)
+        {
             string str = symbol.GetDocumentationCommentId();
             if (string.IsNullOrEmpty(str))
             {
-                Debug.Fail("Cannot get documentation comment id");
-                return symbol.MetadataName;
+                return null;
             }
 
-            return str.ToString().Substring(2);
+            bool inGlobalNamespace = 
+                symbol.ContainingNamespace == null || 
+                symbol.ContainingNamespace.IsGlobalNamespace;
+
+            if (inGlobalNamespace && !string.IsNullOrEmpty(GlobalNamespaceId))
+            {
+                bool isNamespace = (symbol is INamespaceSymbol);
+                bool isTypeParameter = (symbol is ITypeParameterSymbol);
+                if (!isNamespace && !isTypeParameter)
+                {
+                    str = str.Insert(2, GlobalNamespaceId + ".");
+                }
+            }
+            return str;
         }
 
         public static string GetCommentId(ISymbol symbol)
@@ -69,7 +100,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return "T:" + typeof(object).FullName;
             }
-            return symbol.GetDocumentationCommentId();
+
+            return GetDocumentationCommentId(symbol);
+        }
+
+        public static string GetOverloadId(ISymbol symbol)
+        {
+            return GetOverloadIdBody(symbol) + "*";
+        }
+
+        public static string GetOverloadIdBody(ISymbol symbol)
+        {
+            var id = GetId(symbol);
+            var uidBody = id;
+            {
+                var index = uidBody.IndexOf('(');
+                if (index != -1)
+                {
+                    uidBody = uidBody.Remove(index);
+                }
+            }
+            uidBody = GenericMethodPostFix.Replace(uidBody, string.Empty);
+            return uidBody;
         }
 
         public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
@@ -122,10 +174,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Name = symbol.Name
                 };
 
-                source.Remote = GitUtility.GetGitDetail(source.Path);
+                source.Remote = GitUtility.TryGetFileDetail(source.Path);
                 if (source.Remote != null)
                 {
-                    source.Path = source.Path.FormatPath(UriKind.Relative, source.Remote.LocalWorkingDirectory);
+                    source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, EnvironmentContext.BaseDirectory);
                 }
                 return source;
             }

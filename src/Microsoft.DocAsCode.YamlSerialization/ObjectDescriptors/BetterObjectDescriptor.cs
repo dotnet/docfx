@@ -24,10 +24,13 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
             StaticType = staticType;
             if (scalarStyle == ScalarStyle.Any)
             {
-                var s = value as string;
-                if (s != null)
+                if (value is string s)
                 {
                     if (Regexes.BooleanLike.IsMatch(s))
+                    {
+                        scalarStyle = ScalarStyle.DoubleQuoted;
+                    }
+                    else if (Regexes.NullLike.IsMatch(s))
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }

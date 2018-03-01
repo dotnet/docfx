@@ -1,0 +1,17 @@
+﻿{
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        },
+        ".mta.json": {
+          "relative_path": "index.mta.json"
+        }
+      },
+      "is_incremental": true
+    }
+  ]
+}

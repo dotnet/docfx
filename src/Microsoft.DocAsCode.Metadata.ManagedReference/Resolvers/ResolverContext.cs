@@ -7,10 +7,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public class ResolverContext
     {
-        public string ApiFolder { get; set; }
-
         public bool PreserveRawInlineComments { get; set; }
 
         public Dictionary<string, ReferenceItem> References { get; set; }
+
+        public Dictionary<string, MetadataItem> Members { get; set; }
     }
 }

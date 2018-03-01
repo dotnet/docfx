@@ -32,6 +32,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                         { SyntaxLanguage.CSharp, "N1" },
                         { SyntaxLanguage.VB, "N1" },
                     },
+                    DisplayNamesWithType = new SortedList<SyntaxLanguage, string>
+                    {
+                        { SyntaxLanguage.CSharp, "N1" },
+                        { SyntaxLanguage.VB, "N1" },
+                    },
                     DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>()
                     {
                         { SyntaxLanguage.CSharp, "N1" },
@@ -54,6 +59,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                             new LinkItem
                                             {
                                                 DisplayName = "C1",
+                                                DisplayNamesWithType = "C1",
                                                 DisplayQualifiedNames = "N1.C1",
                                                 Name = "N1.C1",
                                                 IsExternalPath = false,
@@ -68,6 +74,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                             new LinkItem
                                             {
                                                 DisplayName = "C1",
+                                                DisplayNamesWithType = "C1",
                                                 DisplayQualifiedNames = "N1.C1",
                                                 Name = "N1.C1",
                                                 IsExternalPath = false,
@@ -86,6 +93,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                             Name = "N1.C1",
                             Type = MemberType.Class,
                             DisplayNames = new SortedList<SyntaxLanguage, string>
+                            {
+                                { SyntaxLanguage.CSharp, "C1" },
+                                { SyntaxLanguage.VB, "C1" },
+                            },
+                            DisplayNamesWithType = new SortedList<SyntaxLanguage, string>
                             {
                                 { SyntaxLanguage.CSharp, "C1" },
                                 { SyntaxLanguage.VB, "C1" },
@@ -127,6 +139,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "System",
+                                                        DisplayNamesWithType = "System",
                                                         DisplayQualifiedNames= "System",
                                                         Name = "System",
                                                         IsExternalPath = true,
@@ -140,6 +153,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "System",
+                                                        DisplayNamesWithType = "System",
                                                         DisplayQualifiedNames= "System",
                                                         Name = "System",
                                                         IsExternalPath = true,
@@ -163,6 +177,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "System.Collections.Generic",
+                                                        DisplayNamesWithType = "System.Collections.Generic",
                                                         DisplayQualifiedNames= "System.Collections.Generic",
                                                         Name = "System.Collections.Generic",
                                                         IsExternalPath = true,
@@ -176,6 +191,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "System.Collections.Generic",
+                                                        DisplayNamesWithType = "System.Collections.Generic",
                                                         DisplayQualifiedNames= "System.Collections.Generic",
                                                         Name = "System.Collections.Generic",
                                                         IsExternalPath = true,
@@ -200,6 +216,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "Object",
+                                                        DisplayNamesWithType = "Object",
                                                         DisplayQualifiedNames= "System.Object",
                                                         Name = "System.Object",
                                                         IsExternalPath = true,
@@ -213,6 +230,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "Object",
+                                                        DisplayNamesWithType = "Object",
                                                         DisplayQualifiedNames= "System.Object",
                                                         Name = "System.Object",
                                                         IsExternalPath = true,
@@ -237,6 +255,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "GetHashCode()",
+                                                        DisplayNamesWithType = "Object.GetHashCode()",
                                                         DisplayQualifiedNames= "System.Object.GetHashCode()",
                                                         Name = "System.Object.GetHashCode",
                                                         IsExternalPath = true,
@@ -250,6 +269,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "GetHashCode()",
+                                                        DisplayNamesWithType = "Object.GetHashCode()",
                                                         DisplayQualifiedNames= "System.Object.GetHashCode()",
                                                         Name = "System.Object.GetHashCode",
                                                         IsExternalPath = true,
@@ -274,6 +294,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "List<T>",
+                                                        DisplayNamesWithType = "Generic.List<T>",
                                                         DisplayQualifiedNames = "System.Collections.Generic.List<T>",
                                                         Name = "System.Collections.Generic.List`1",
                                                         IsExternalPath = true,
@@ -287,6 +308,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                                     new LinkItem
                                                     {
                                                         DisplayName = "List(Of T)",
+                                                        DisplayNamesWithType = "Generic.List<T>",
                                                         DisplayQualifiedNames = "System.Collections.Generic.List(Of T)",
                                                         Name = "System.Collections.Generic.List`1",
                                                         IsExternalPath = true,

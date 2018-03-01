@@ -3,29 +3,66 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class DfmNoteBlockRule : IMarkdownRule
     {
-        public virtual string Name => "DfmNoteBlockRule";
+        private static readonly Matcher _NoteMatcher =
+            Matcher.WhiteSpacesOrEmpty +
+            "[!" +
+            (
+                Matcher.CaseInsensitiveString("note") |
+                Matcher.CaseInsensitiveString("warning") |
+                Matcher.CaseInsensitiveString("tip") |
+                Matcher.CaseInsensitiveString("important") |
+                Matcher.CaseInsensitiveString("caution") | 
+                Matcher.CaseInsensitiveString("next")
+            ).ToGroup("notetype") +
+            ']' +
+            Matcher.WhiteSpacesOrEmpty +
+            Matcher.NewLine.RepeatAtLeast(0);
 
-        public virtual Regex DfmNoteRegex => new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION|NEXT))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual string Name => "DfmNote";
+
+        [Obsolete]
+        public virtual Regex DfmNoteRegex => _dfmNoteRegex;
+
+        public virtual Matcher NoteMatcher => _NoteMatcher;
+
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (!parser.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)parser.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {
                 return null;
             }
-            var match = DfmNoteRegex.Match(source);
+            if (DfmNoteRegex != _dfmNoteRegex || parser.Options.LegacyMode)
+            {
+                return TryMatchOld(parser, context);
+            }
+            var match = context.Match(NoteMatcher);
+            if (match?.Length > 0)
+            {
+                var sourceInfo = context.Consume(match.Length);
+                return new DfmNoteBlockToken(this, parser.Context, match["notetype"].GetValue(), sourceInfo.Markdown, sourceInfo);
+            }
+            return null;
+        }
+
+        private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
+        {
+            var match = DfmNoteRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Groups["rawmarkdown"].Length);
-            return new DfmNoteBlockToken(this, parser.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value, match.Groups["rawmarkdown"].Value);
+            var sourceInfo = context.Consume(match.Groups["rawmarkdown"].Length);
+            return new DfmNoteBlockToken(this, parser.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value, sourceInfo);
         }
     }
 }

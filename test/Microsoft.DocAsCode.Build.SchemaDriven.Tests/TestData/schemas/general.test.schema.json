@@ -1,0 +1,43 @@
+{
+  "$schema": "http://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
+  "version": "1.0.0",
+  "id": "https://github.com/dotnet/docfx/test/schemas/contextobject.test.schema.json",
+  "title": "General",
+  "description": "A test schema for simple managed reference",
+  "type": "object",
+  "definition": {
+    "exceptionType": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "contentType": "markdown"
+        },
+        "inner": {
+          "$ref": "#/definition/exceptionType"
+        }
+      }
+    }
+  },
+  "properties": {
+    "items": {
+      "items": {
+        "properties": {
+          "aggregatedExceptions": {
+            "items": {
+              "$ref": "#/definition/exceptionType"
+            },
+            "type": "array"
+          },
+          "exception": {
+            "$ref": "#/definition/exceptionType"
+          },
+          "description": {
+            "contentType": "markdown"
+          }
+        }
+      },
+      "type": "array"
+    }
+  }
+}

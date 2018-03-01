@@ -10,11 +10,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Linq;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Utility;
+
+    using Microsoft.DocAsCode.Common;
 
     internal class ProjectLevelCache : CacheBase
     {
-        private static Func<string, string> GetProjectLevelConfig = projectPath => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "obj", ".inter").ToNormalizedFullPath();
+        public static Func<string, string> GetProjectLevelConfig = projectPath => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "obj", ".inter").ToNormalizedFullPath();
         private static ConcurrentDictionary<string, ProjectLevelCache> _cache = new ConcurrentDictionary<string, ProjectLevelCache>();
         public readonly string OutputFolder;
 
@@ -30,9 +31,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Use the folder for the first file as the cache folder
             var firstFile = normalizedFiles.First();
+            return Get(firstFile);
+        }
+
+        public static ProjectLevelCache Get(string firstFile)
+        {
+            if (firstFile == null)
+            {
+                return null;
+            }
 
             string path = GetProjectLevelConfig(firstFile);
-            return _cache.GetOrAdd(path, new ProjectLevelCache(path));
+
+            return _cache.GetOrAdd(path, p => new ProjectLevelCache(p));
         }
     }
 }

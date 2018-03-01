@@ -7,20 +7,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownCodeInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Code";
+        public virtual string Name => "Inline.Code";
 
         public virtual Regex Code => Regexes.Inline.Code;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Code.Match(source);
+            var match = Code.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
-            return new MarkdownCodeInlineToken(this, parser.Context, match.Groups[2].Value, match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownCodeInlineToken(this, parser.Context, match.Groups[2].Value, sourceInfo);
         }
     }
 }

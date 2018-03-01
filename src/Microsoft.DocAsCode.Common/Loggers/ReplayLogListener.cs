@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Common
     /// <summary>
     /// Replay log on flushing.
     /// </summary>
+    [Obsolete]
     public class ReplayLogListener : ILoggerListener
     {
         private readonly LogLevel _replayLevel;
@@ -33,8 +34,6 @@ namespace Microsoft.DocAsCode.Common
                 _replayList.Add(level, new List<ILogItem>());
             }
         }
-
-        public LogLevel LogLevelThreshold { get; set; }
 
         public void Dispose()
         {

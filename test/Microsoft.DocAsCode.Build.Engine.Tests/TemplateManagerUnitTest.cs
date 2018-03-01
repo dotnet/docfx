@@ -7,13 +7,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+
+    using Xunit;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateManager")]
+    [Collection("docfx STA")]
     public class TemplateManagerUnitTest : TestBase
     {
         private readonly string _inputFolder;
@@ -89,12 +92,19 @@ name2={{name2}};
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScript.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 name1=test1,
 name2=;
 name1=,
@@ -108,7 +118,7 @@ name2=test2;
         public void TestMustacheTemplateProcessSingleTemplateWithNoScriptWithPartialShouldWork()
         {
             // 1. Prepare template
-            var templateName = "NoScriptWithPartial";
+            var templateName = "Subfolder/NoScriptWithPartial";
             string template = @"
 {{#model}}
 {{name}}
@@ -131,7 +141,14 @@ name2=test2;
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(
                 templateName,
                 null,
@@ -144,7 +161,90 @@ name2=test2;
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
+test1
+test2
+partial 1:
+partial 2:
+test1
+test2
+", File.ReadAllText(outputFile));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
+        [Fact]
+        public void TestMustacheTemplateWithMasterPageShouldWork()
+        {
+            // 1. Prepare template
+            var templateName = "Subfolder/WithMasterPage";
+            string template = @"
+{{!master('_layout/master.html')}}
+{{!master(' _layout/invalid1.html ')}}
+{{#model}}
+{{name}}
+{{/model}}
+{{>partial1}}
+{{!master( _layout/invalid2.html )}}
+";
+            string partial1 = @"partial 1:
+{{>partial2}}";
+            string partial2 = @"partial 2:
+{{#model}}
+{{name}}
+{{/model}}
+";
+
+            string master = @"
+{{ !include('reference1.html') }}
+Hello Master
+{{!body}}
+Hello Body
+{{!body}}
+";
+            var model = new
+            {
+                model = new[]
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithMasterPage.yml");
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
+            ProcessTemplate(
+                templateName,
+                null,
+                new[] { item },
+                model,
+                _outputFolder,
+                Tuple.Create("default.tmpl", template),
+                Tuple.Create("_layout/master.html", master),
+                Tuple.Create("reference1.html", string.Empty),
+                Tuple.Create("partial1.tmpl.partial", partial1),
+                Tuple.Create("partial2.tmpl.partial", partial2));
+
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
+            Assert.True(File.Exists(outputFile));
+            AssertEqualIgnoreCrlf(@"
+Hello Master
+
+test1
+test2
+partial 1:
+partial 2:
+test1
+test2
+Hello Body
+
 test1
 test2
 partial 1:
@@ -162,7 +262,13 @@ test2
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_InvalidTemplate.yml");
-            var item = new ManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
                 Tuple.Create("default.invalidtmpl", string.Empty),
                 Tuple.Create("default.js", string.Empty),
@@ -201,7 +307,13 @@ exports.transform = function (model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new ManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", template),
                 Tuple.Create("default.html.js", script),
@@ -212,9 +324,68 @@ exports.transform = function (model){
             Assert.True(File.Exists(outputFilePath));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference2.html")));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 test1
 test2
+", File.ReadAllText(outputFilePath));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Fact]
+        public void TestMustacheTemplateProcessSingleTemplateWithRequireScriptShouldWork()
+        {
+            var templateName = "WithRequireScript.html";
+
+            string template = @"
+{{#model}}
+{{#result1}}result1 = true{{/result1}}
+{{#result2}}result2 = true{{/result2}}
+{{#result3}}result3 = true{{/result3}}
+{{/model}}
+";
+            string mainScript = @"
+var util = require('./util.js');
+
+exports.transform = function (model){
+    var url = 'https://www.microsoft.com';
+    model.model.result1 = util.isAbsolutePath(url);
+    model.model.result2 = util.isAbsolutePath(url);
+    model.model.result3 = util.isAbsolutePath(url);
+    return model;
+}";
+            string utilScript = @"
+exports.isAbsolutePath = isAbsolutePath;
+
+function isAbsolutePath(path) {
+    return /^(\w+:)?\/\//g.test(path);
+}
+";
+
+            var model = new
+            {
+                model = new Dictionary<string, object>()
+            };
+
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithRequireScript.yml");
+            string inputFolder = null;
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
+            ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", template),
+                Tuple.Create("default.html.js", mainScript),
+                Tuple.Create("util.js", utilScript)
+                );
+            var outputFilePath = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, "html"));
+            Assert.True(File.Exists(outputFilePath));
+            AssertEqualIgnoreCrlf(@"
+result1 = true
+result2 = true
+result3 = true
 ", File.ReadAllText(outputFilePath));
         }
 
@@ -251,28 +422,81 @@ exports.transform = function (model){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType1", Key = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new ManifestItem { DocumentType = string.Empty, FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType2", Key = "y.yml" };
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType1",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestTemplateProcessor_TemplateFolderWithDifferentType1.md",
+            };
+            var item2 = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType2",
+                Key = "y.yml",
+                LocalPathFromRoot = "TestTemplateProcessor_TemplateFolderWithDifferentType2.md",
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
+                Tuple.Create("conceptual.md.tmpl", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "TestTemplateProcessor_TemplateFolderWithDifferentType1.md");
             Assert.True(File.Exists(outputFilePath1));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 conceptual:
 test1
 test2
 ", File.ReadAllText(outputFilePath1));
             var outputFilePath2 = Path.Combine(_outputFolder, "TestTemplateProcessor_TemplateFolderWithDifferentType2.html");
             Assert.True(File.Exists(outputFilePath2));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 default:
 test1
 test2
 ", File.ReadAllText(outputFilePath2));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
+        [Fact(Skip = "Disable as downgrading jint to 2.5.0 to fix toc external link issue")]
+        public void TestMustacheTemplateWithScriptWithLongStringInModelShouldWork()
+        {
+            var templateName = "TemplateFolder.html";
+            string defaultTemplate = @"{{name}}";
+            var name = "this is a looooooooooooooooooooooooooooooooooooog name";
+            var longName = string.Concat(Enumerable.Repeat(name, 20000));
+            string script = @"
+exports.transform = function (model){
+    return {
+        name: JSON.stringify(model)
+    };
+}";
+
+            var model = new
+            {
+                model = new 
+               {
+                   name = longName,
+               }
+            };
+
+            string inputFolder = null;
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork.md",
+            };
+            ProcessTemplate(templateName, inputFolder, new[] { item1 }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", defaultTemplate),
+                Tuple.Create("default.html.js", script)
+                );
+            var outputFilePath1 = Path.Combine(_outputFolder, "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork.html");
+            Assert.True(File.Exists(outputFilePath1));
+            Assert.Equal($"{{&quot;model&quot;:{{&quot;name&quot;:&quot;{longName}&quot;}},&quot;__global&quot;:{{}}}}", File.ReadAllText(outputFilePath1));
         }
 
         #endregion
@@ -300,12 +524,19 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScript.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 test1
 test2
 ", File.ReadAllText(outputFile));
@@ -340,7 +571,14 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(
                 templateName,
                 null,
@@ -353,7 +591,7 @@ test2
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 test1
 test2
 partial 1:
@@ -393,7 +631,13 @@ exports.transform = function (model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new ManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", template),
                 Tuple.Create("default.html.js", script),
@@ -404,10 +648,87 @@ exports.transform = function (model){
             Assert.True(File.Exists(outputFilePath));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference2.html")));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 test1
 test2
 ", File.ReadAllText(outputFilePath));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateWithMasterPageShouldWork()
+        {
+            // 1. Prepare template
+            var templateName = "Subfolder/LiquidWithMasterPage";
+            string template = @"
+{% master _layout/master.html -%}
+{% master _layout/master.html -%}
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+{% include partial1 -%}
+";
+            string partial1 = @"partial 1:
+{% include partial2 -%}";
+            string partial2 = @"partial 2:
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+
+            string master = @"
+{% ref reference1.html -%}
+Hello Master
+{% include partial1 -%}
+{%- body %}
+";
+            var model = new
+            {
+                model = new[]
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_LiquidWithMasterPage.yml");
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
+            ProcessTemplate(
+                templateName,
+                null,
+                new[] { item },
+                model,
+                _outputFolder,
+                Tuple.Create("default.liquid", template),
+                Tuple.Create("_layout/master.html", master),
+                Tuple.Create("reference1.html", string.Empty),
+                Tuple.Create("_partial1.liquid", partial1),
+                Tuple.Create("_partial2.liquid", partial2));
+
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
+            Assert.True(File.Exists(outputFile));
+            AssertEqualIgnoreCrlf(@"
+Hello Master
+partial 1:
+partial 2:
+test1
+test2
+
+test1
+test2
+partial 1:
+partial 2:
+test1
+test2
+", File.ReadAllText(outputFile));
         }
 
         [Trait("Related", "TemplateProcessor")]
@@ -448,24 +769,36 @@ exports.transform = function (model){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1", Key = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new ManifestItem { DocumentType = string.Empty, FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2", Key = "y.yml" };
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.md",
+            };
+            var item2 = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2",
+                Key = "y.yml",
+                LocalPathFromRoot = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.md",
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),
+                Tuple.Create("conceptual.md.liquid", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.md");
             Assert.True(File.Exists(outputFilePath1));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 conceptual:
 test1
 test2
 ", File.ReadAllText(outputFilePath1));
             var outputFilePath2 = Path.Combine(_outputFolder, "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.html");
             Assert.True(File.Exists(outputFilePath2));
-            Assert.Equal(@"
+            AssertEqualIgnoreCrlf(@"
 default:
 test1
 test2
@@ -474,7 +807,7 @@ test2
 
         #endregion
 
-        private static void ProcessTemplate(string templateName, string inputFolder, IEnumerable<ManifestItem> items, object model, string outputFolder, params Tuple<string, string>[] templateFiles)
+        private static void ProcessTemplate(string templateName, string inputFolder, IEnumerable<InternalManifestItem> items, object model, string outputFolder, params Tuple<string, string>[] templateFiles)
         {
             var rootTemplateFolder = "tmpl";
             var templateFolder = Path.Combine(rootTemplateFolder, templateName);
@@ -483,8 +816,8 @@ test2
             WriteTemplate(templateFolder, templateFiles);
             using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
-                var processor = new TemplateProcessor(resource, 4);
                 var context = new DocumentBuildContext(inputFolder);
+                var processor = new TemplateProcessor(resource, context, 4);
                 foreach (var item in items)
                 {
                     if (item.ResourceFile != null)
@@ -493,11 +826,20 @@ test2
                         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                         File.Create(item.ResourceFile).Dispose();
                     }
-                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Environment.CurrentDirectory;
-                    item.Model = new DocAsCode.Plugins.ModelWithCache(model);
+                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
+                    item.Model = new ModelWithCache(model);
                 }
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                processor.Process(items.ToList(), context, settings);
+                EnvironmentContext.SetBaseDirectory(inputFolder);
+                EnvironmentContext.SetOutputDirectory(outputFolder);
+                try
+                {
+                    processor.Process(items.ToList(), settings);
+                }
+                finally
+                {
+                    EnvironmentContext.Clean();
+                }
             }
         }
 
@@ -520,6 +862,11 @@ test2
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
             JsonUtility.Serialize(path, model);
+        }
+
+        private static void AssertEqualIgnoreCrlf(string expected, string actual)
+        {
+            Assert.Equal(expected.Replace("\r\n", "\n"), actual.Replace("\r\n", "\n"));
         }
     }
 }

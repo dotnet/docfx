@@ -7,19 +7,19 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureVideoBlockToken : IMarkdownToken
     {
-        public AzureVideoBlockToken(IMarkdownRule rule, IMarkdownContext context, string videoId, string rawMarkdown)
+        public AzureVideoBlockToken(IMarkdownRule rule, IMarkdownContext context, string videoId, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             VideoId = videoId;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
 
         public IMarkdownContext Context { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public string VideoId { get; }
     }

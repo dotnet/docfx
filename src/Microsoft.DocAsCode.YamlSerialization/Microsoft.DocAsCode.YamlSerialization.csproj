@@ -1,56 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Shared\base.props" />
-  <PropertyGroup>
-    <ProjectGuid>{87EFC656-3081-442E-902B-822714514768}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <NuGetPackageImportStamp>f0bed867</NuGetPackageImportStamp>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="YamlDotNet.Signed" Version="4.2.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExtensibleMemberAttribute.cs" />
-    <Compile Include="Helpers\ArrayDictionary.cs" />
-    <Compile Include="NodeDeserializers\ExtensibleObjectNodeDeserializer.cs" />
-    <Compile Include="ObjectFactories\DefaultEmitObjectFactory.cs" />
-    <Compile Include="NodeDeserializers\EmitGenericDictionaryNodeDeserializer.cs" />
-    <Compile Include="NodeDeserializers\EmitArrayNodeDeserializer.cs" />
-    <Compile Include="NodeDeserializers\EmitGenericCollectionNodeDeserializer.cs" />
-    <Compile Include="Helpers\ReflectionExtensions.cs" />
-    <Compile Include="TypeInspectors\ExtensibleNamingConventionTypeInspector.cs" />
-    <Compile Include="TypeInspectors\ExtensibleReadableAndWritablePropertiesTypeInspector.cs" />
-    <Compile Include="TypeInspectors\ExtensibleTypeInspectorSkeleton.cs" />
-    <Compile Include="TypeInspectors\ExtensibleYamlAttributesTypeInspector.cs" />
-    <Compile Include="TypeInspectors\IExtensibleTypeInspector.cs" />
-    <Compile Include="YamlDeserializer.cs" />
-    <Compile Include="TypeInspectors\EmitTypeInspector.cs" />
-    <Compile Include="ObjectGraphTraversalStrategies\FullObjectGraphTraversalStrategy.cs" />
-    <Compile Include="Helpers\ReflectionUtility.cs" />
-    <Compile Include="Helpers\Regexes.cs" />
-    <Compile Include="ObjectGraphTraversalStrategies\RoundtripObjectGraphTraversalStrategy.cs" />
-    <Compile Include="NodeTypeResolvers\ScalarYamlNodeTypeResolver.cs" />
-    <Compile Include="ObjectDescriptors\BetterObjectDescriptor.cs" />
-    <Compile Include="YamlSerializer.cs" />
-    <Compile Include="Helpers\YamlTypeConverters.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
