@@ -324,7 +324,6 @@ With [!include[invalid](invalid.md)]",
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
                 listener.Items.Clear();
 
-
                 // rebuild
                 using (new LoggerPhaseScope("Rebuild"))
                 {
