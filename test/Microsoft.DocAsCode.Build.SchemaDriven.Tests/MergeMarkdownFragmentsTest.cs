@@ -270,37 +270,74 @@ markdown content
         [Fact]
         public void TestFragmentsWithIncremental()
         {
-            // first build
-            BuildDocument(_files);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Null(rawModel["summary"]);
+            using (var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental)))
+            {
+                // first build
+                using (new LoggerPhaseScope("FirstBuild"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.Null(rawModel["summary"]);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                listener.Items.Clear();
 
-            // add fragments
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+                // add fragments
+                var mdFile = CreateFile(
+                    "Suppressions.yml.md",
+                    @"# `management.azure.com.advisor.suppressions`
 ## ``summary``
-I add a summary.",
-                _inputFolder);
-            BuildDocument(_files);
-            Assert.True(File.Exists(_rawModelFilePath));
-            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.NotNull(rawModel["summary"]);
-            Assert.Contains("I add a summary", rawModel["summary"].ToString());
+I add a summary.
+With [!include[invalid](invalid.md)]",
+                    _inputFolder);
+                using (new LoggerPhaseScope("AddFragments"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I add a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                listener.Items.Clear();
 
-            // modify fragments
-            UpdateFile(
-                "Suppressions.yml.md",
-                new string[] { @"# `management.azure.com.advisor.suppressions`",
+                // modify fragments
+                UpdateFile(
+                    "Suppressions.yml.md",
+                    new string[] { @"# `management.azure.com.advisor.suppressions`",
                     "## ``summary``",
-                    "I update a summary." },
-                _inputFolder);
-            BuildDocument(_files);
-            Assert.True(File.Exists(_rawModelFilePath));
-            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.NotNull(rawModel["summary"]);
-            Assert.Contains("I update a summary", rawModel["summary"].ToString());
+                    "I update a summary.",
+                    "With [!include[invalid](invalid.md)]",
+                    },
+                    _inputFolder);
+                using (new LoggerPhaseScope("ModifyFragments"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I update a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                listener.Items.Clear();
+
+
+                // rebuild
+                using (new LoggerPhaseScope("Rebuild"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I update a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                listener.Items.Clear();
+            }
         }
 
         private void BuildDocument(FileCollection files)
