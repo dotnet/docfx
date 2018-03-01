@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var dotnetBasePath = GetDotnetBasePath();
                     if (dotnetBasePath != null)
                     {
-                        Logger.LogInfo($"Using dotnet {dotnetBasePath} as inner compiler.");
+                        Logger.LogInfo($"Using dotnet {dotnetBasePath + "MSBuild.dll"} as inner compiler.");
                         return new EnvironmentScope(new Dictionary<string, string>
                         {
                             [MSBuildExePathKey] = dotnetBasePath + "MSBuild.dll",
