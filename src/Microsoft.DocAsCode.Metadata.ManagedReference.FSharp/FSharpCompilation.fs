@@ -773,10 +773,16 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             if mem.IsConstructor then 
                 symMd.Type <- MemberType.Constructor
                 symMd.Syntax.Content <- sprintf "new: %s" syntaxType |> syn
-                if mem.IsImplicitConstructor && encMd.CommentModel <> null then
-                    for p in symMd.Syntax.Parameters do
-                        if encMd.CommentModel.Parameters.ContainsKey p.Name then
-                            p.Description <- encMd.CommentModel.Parameters.[p.Name]
+                if mem.IsImplicitConstructor then
+                    // Copy documentation for parameters and return value from enclosing type.
+                    // This is necessary, since F# has no way to explicitly provide XML
+                    // documentation for the implicit constructor.
+                    symMd.Summary <- "Implicit constructor."
+                    if encMd.CommentModel <> null then
+                        for p in symMd.Syntax.Parameters do
+                            if encMd.CommentModel.Parameters.ContainsKey p.Name then
+                                p.Description <- encMd.CommentModel.Parameters.[p.Name]
+                        symMd.Syntax.Return.Description <- encMd.CommentModel.Returns
                 filterData.Kind <- Nullable ExtendedSymbolKind.Member
             elif mem.IsExtensionMember then 
                 symMd.Type <- if mem.IsProperty then MemberType.Property else MemberType.Method
