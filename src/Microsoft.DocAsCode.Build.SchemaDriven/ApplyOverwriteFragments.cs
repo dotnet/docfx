@@ -95,6 +95,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             // 3. MarkdownFragmentModel => OverwriteDocument
             overwriteDocumentModels = fragments.Select(overwriteDocumentModelCreater.Create).ToList();
+            model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
 
             // 4. Apply schema to OverwriteDocument, and merge with skeyleton YAML object
             foreach (var overwriteDocumentModel in overwriteDocumentModels)
