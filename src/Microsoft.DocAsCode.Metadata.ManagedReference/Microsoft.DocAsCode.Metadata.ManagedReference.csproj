@@ -5,6 +5,7 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.fsproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />

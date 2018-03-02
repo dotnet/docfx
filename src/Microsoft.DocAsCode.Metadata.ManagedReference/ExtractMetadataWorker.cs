@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Metadata.ManagedReference.FSharp;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
@@ -81,7 +82,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             });
 
             var roslynLoader = new RoslynProjectLoader(_workspace);
-            _loader = new AbstractProjectLoader(new IProjectLoader[] {roslynLoader});
+            var fsharpLoader = new FSharpProjectLoader(msbuildProperties);
+            _loader = new AbstractProjectLoader(new IProjectLoader[] {roslynLoader, fsharpLoader});
         }
 
         public async Task ExtractMetadataAsync()
@@ -157,7 +159,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                 }
                                 else
                                 {
-                                    Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
+                                    Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj, fsproj and vbproj.");
                                 }
                             }
                         }
