@@ -2,6 +2,7 @@
 
 var common = require('./common.js');;
 var extension = require('./UniversalReference.extension.js');
+var util = require('./statictoc.util.js');
 var classCategory = 'class';
 var namespaceCategory = 'ns';
 
@@ -41,6 +42,7 @@ exports.transform = function (model) {
     }
   }
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  model = util.setToc(model);
 
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);
