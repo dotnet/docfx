@@ -22,17 +22,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlMember(Alias = "attributeRules")]
         public List<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
 
-        public bool CanVisitApi (SymbolFilterData symbol)
+        public bool CanVisitApi(SymbolFilterData symbol)
         {
             return this.CanVisitCore(this.ApiRules, symbol);
         }
 
-        public bool CanVisitAttribute (SymbolFilterData symbol)
+        public bool CanVisitAttribute(SymbolFilterData symbol)
         {
             return this.CanVisitCore(this.AttributeRules, symbol);
         }
 
-        private bool CanVisitCore (IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
+        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
         {
             foreach (var ruleUnion in ruleItems)
             {
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return true;
         }
 
-        public static ConfigFilterRule Load (string configFile)
+        public static ConfigFilterRule Load(string configFile)
         {
             if (string.IsNullOrEmpty(configFile))
             {
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return rule;
         }
 
-        public static ConfigFilterRule LoadWithDefaults (string filterConfigFile)
+        public static ConfigFilterRule LoadWithDefaults(string filterConfigFile)
         {
             ConfigFilterRule defaultRule, userRule;
 
@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static ConfigFilterRule Merge (ConfigFilterRule defaultRule, ConfigFilterRule userRule)
+        private static ConfigFilterRule Merge(ConfigFilterRule defaultRule, ConfigFilterRule userRule)
         {
             return new ConfigFilterRule
             {
