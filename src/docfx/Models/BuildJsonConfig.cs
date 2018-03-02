@@ -35,6 +35,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("overwrite")]
         public FileMapping Overwrite { get; set; }
 
+        [JsonProperty("pairing")]
+        public List<ContentPairingInfo> Pairing { get; set; }
+
         [JsonProperty("xref")]
         public ListWithStringFallback XRefMaps { get; set; }
 
