@@ -31,8 +31,7 @@ module internal FSharpProjectInfo =
 
     let private runCmd workingDir exePath args =
         // HACK: filter switches that cause the artefacts of projects this project references be deleted
-        //let argsToRemove = ["/p:SkipCompilerExecution=true"; "/p:CopyBuildOutputToOutputDirectory=false"]
-        let argsToRemove = ["/p:CopyBuildOutputToOutputDirectory=false"]
+        let argsToRemove = ["/p:SkipCompilerExecution=true"; "/p:CopyBuildOutputToOutputDirectory=false"]
         let args = args |> Seq.filter (fun args -> argsToRemove |> List.contains args |> not)
         
         let logOut = ConcurrentQueue<string>()
