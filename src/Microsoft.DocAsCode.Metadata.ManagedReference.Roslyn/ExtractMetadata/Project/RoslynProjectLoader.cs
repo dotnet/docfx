@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.IO;
-
+    using System.Linq;
     using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.Common;
@@ -26,7 +26,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (ext == ".csproj" || ext == ".vbproj")
             {
                 Logger.LogVerbose("Loading project...");
-                var result = _workspace.Value.OpenProjectAsync(path).Result;
+                var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
+                    p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
+                var result = project ?? _workspace.Value.OpenProjectAsync(path).Result;
                 Logger.LogVerbose($"Project {result.FilePath} loaded.");
                 return new RoslynProject(result);
             }
