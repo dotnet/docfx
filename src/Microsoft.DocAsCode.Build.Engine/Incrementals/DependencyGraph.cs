@@ -26,6 +26,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             },
             new DependencyType
             {
+                Name = DependencyTypeName.OverwriteFragments,
+                Phase = BuildPhase.Compile,
+                Transitivity = DependencyTransitivity.All,
+            },
+            new DependencyType
+            {
                 Name = DependencyTypeName.Overwrite,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.All,
