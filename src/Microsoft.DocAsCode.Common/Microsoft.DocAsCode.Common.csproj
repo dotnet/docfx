@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Shared/base.netstandard.props" />
-  
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <Reference Include="System.Web" />
   </ItemGroup>
 </Project>
