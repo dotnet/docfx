@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "column", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return BlockState.None;
             }
@@ -123,7 +123,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "column-end:::", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
                 return BlockState.Continue;
             }
