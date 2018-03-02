@@ -1,5 +1,6 @@
 ﻿namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -281,7 +282,7 @@ markdown content
                 var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
                 Assert.Null(rawModel["summary"]);
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                listener.Items.Clear();
+                ClearLog(listener.Items);
 
                 // add fragments
                 var mdFile = CreateFile(
@@ -301,7 +302,8 @@ With [!include[invalid](invalid.md)]",
                 Assert.Contains("I add a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
-                listener.Items.Clear();
+                List<string> lastMessages;
+                var messages = ClearLog(listener.Items);
 
                 // modify fragments
                 UpdateFile(
@@ -322,7 +324,8 @@ With [!include[invalid](invalid.md)]",
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
-                listener.Items.Clear();
+                (lastMessages, messages) = (messages, ClearLog(listener.Items));
+                Assert.True(messages.SequenceEqual(lastMessages));
 
                 // rebuild
                 using (new LoggerPhaseScope("Rebuild"))
@@ -335,8 +338,16 @@ With [!include[invalid](invalid.md)]",
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
-                listener.Items.Clear();
+                (lastMessages, messages) = (messages, ClearLog(listener.Items));
+                Assert.True(messages.SequenceEqual(lastMessages));
             }
+        }
+
+        private List<string> ClearLog(List<ILogItem> items)
+        {
+            var result = items.Select(i => i.Message).ToList();
+            items.Clear();
+            return result;
         }
 
         private void BuildDocument(FileCollection files)
