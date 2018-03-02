@@ -6,7 +6,6 @@
     using System.Composition;
     using System.IO;
     using System.Linq;
-
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -324,7 +323,8 @@ With [!include[invalid](invalid.md)]",
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
-                (lastMessages, messages) = (messages, ClearLog(listener.Items));
+                lastMessages = messages;
+                messages = ClearLog(listener.Items);
                 Assert.True(messages.SequenceEqual(lastMessages));
 
                 // rebuild
@@ -338,7 +338,8 @@ With [!include[invalid](invalid.md)]",
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
-                (lastMessages, messages) = (messages, ClearLog(listener.Items));
+                lastMessages = messages;
+                messages = ClearLog(listener.Items);
                 Assert.True(messages.SequenceEqual(lastMessages));
             }
         }
