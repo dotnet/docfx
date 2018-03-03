@@ -98,13 +98,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         
     /// LinkItems for an F# type reference.
     let rec typeRefParts (typ: FSharpType) : LinkItem list =
-        let postfixTypes = ["option"; "FSharp.Collections.list"]
+        let postfixTypes = ["option"; "list"]
         let literal s = LinkItem(DisplayName=s, DisplayNamesWithType=s, DisplayQualifiedNames=s)
 
         if typ.HasTypeDefinition then
             let td = typ.TypeDefinition
             let trimmedAp =
                 if td.AccessPath.StartsWith("Microsoft.FSharp.Core") then ""
+                elif td.AccessPath.StartsWith("Microsoft.FSharp.Collections") then ""
                 elif td.AccessPath.StartsWith("Microsoft.FSharp") then td.AccessPath.["Microsoft.".Length..] + "."
                 else td.AccessPath + "."
             let isPostfix = 
