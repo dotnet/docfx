@@ -198,8 +198,8 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// Return value as F# and default syntax language item.
     let syn value =
-        SortedList(Map[SyntaxLanguage.FSharp, substGenericParameters value
-                       SyntaxLanguage.Default, substGenericParameters value])
+        SortedList(Map[SyntaxLanguage.FSharp, value
+                       SyntaxLanguage.Default, value])
 
     /// Full name of an F# type.
     let typeFullName (t: FSharpType) =
