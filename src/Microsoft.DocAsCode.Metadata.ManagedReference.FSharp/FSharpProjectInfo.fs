@@ -23,8 +23,13 @@ type internal FSharpProjectInfo = {
 /// F# project information necessary for F# compiler invocation.
 module internal FSharpProjectInfo =
 
-    type private ShellCommandResult = 
-        ShellCommandResult of workingDir:string * exePath:string * args:string
+    type private ShellCommandResult = {
+        WorkingDir: string 
+        ExePath: string 
+        Args: string
+        StdOut: string
+        StdErr: string
+    }         
 
     let private dotnetPath = "dotnet"
     let private msbuildPath = "msbuild"
@@ -34,9 +39,10 @@ module internal FSharpProjectInfo =
         let argsToRemove = ["/p:SkipCompilerExecution=true"; "/p:CopyBuildOutputToOutputDirectory=false"]
         let args = args |> Seq.filter (fun args -> argsToRemove |> List.contains args |> not)
         
-        let logOut = ConcurrentQueue<string>()
-        let logErr = ConcurrentQueue<string>()
         let runProcess (workingDir: string) (exePath: string) (args: string) =
+            let logOut = ConcurrentQueue<string>()
+            let logErr = ConcurrentQueue<string>()
+
             let psi = System.Diagnostics.ProcessStartInfo()
             psi.FileName <- exePath
             psi.WorkingDirectory <- workingDir
@@ -65,16 +71,15 @@ module internal FSharpProjectInfo =
             p.BeginErrorReadLine()
             p.WaitForExit()
 
-            p.ExitCode, (workingDir, exePath, args)
+            let stdOut = logOut |> String.concat "\n"
+            let stdErr = logErr |> String.concat "\n"
+            p.ExitCode, {WorkingDir=workingDir; ExePath=exePath; Args=args; StdOut=stdOut; StdErr=stdErr}
 
         Log.verbose "Executing '%s %s'" exePath (args |> String.concat " ")
         let exitCode, result = runProcess workingDir exePath (args |> String.concat " ")
-        Log.debug "standard output:"
-        logOut.ToArray() |> Array.iter (Log.debug "%s")
-        Log.debug "standard error:"
-        logErr.ToArray() |> Array.iter (Log.debug "%s")
-
-        exitCode, (ShellCommandResult result)
+        Log.debug "Standard output:\n%s" result.StdOut
+        Log.debug "Standard error:\n%s" result.StdErr
+        exitCode, result
 
     /// Gets F# project information from a F# project file.
     let fromProjectFile projPath msbuildProps =
@@ -116,18 +121,24 @@ module internal FSharpProjectInfo =
             |> Seq.map (fun (KeyValue(prop,value)) -> MSBuild.MSbuildCli.Property(prop, value))
             |> List.ofSeq
 
+        let handleErr (err: GetProjectInfoErrors<_>) =
+            match err with
+            | UnexpectedMSBuildResult msg -> failwithf "MSBuild failed: %s" msg
+            | MSBuildSkippedTarget -> failwithf "MSBuild skipped target" 
+            | MSBuildFailed (_, scr) -> failwithf "Compilation failed:\n%s%s" scr.StdOut scr.StdErr           
+
         // all F# compiler arguments
         let allFscArgs = 
             match exec getFscArgsBySdk globalArgs with
             | Choice1Of2 (FscArgs args) -> args
-            | Choice2Of2 res -> failwithf "MSBuild execution failed: %A" res
+            | Choice2Of2 err -> handleErr err 
             | _ -> failwith "unexpected result"        
 
         // project references
         let projectRefs =
             match exec getP2PRefs globalArgs with
             | Choice1Of2 (P2PRefs refs) -> refs
-            | Choice2Of2 res -> failwithf "MSBuild execution failed: %A" res
+            | Choice2Of2 err -> handleErr err
             | _ -> failwith "unexpected result"        
 
         // split compiler arguments into sources and options
