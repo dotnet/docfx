@@ -10,21 +10,21 @@ namespace Microsoft.DocAsCode.Common
     public class FileReaderWithFolderRedirection : IFileReader
     {
         private IFileReader _inner;
-        private FolderRedirectionManager _folderRedirection;
+        private FolderRedirectionManager _folderRedirectionManager;
 
-        public FileReaderWithFolderRedirection(IFileReader reader, FolderRedirectionManager folderRedirection)
+        public FileReaderWithFolderRedirection(IFileReader reader, FolderRedirectionManager fdm)
         {
             _inner = reader ?? throw new ArgumentNullException(nameof(reader));
-            _folderRedirection = folderRedirection ?? throw new ArgumentException(nameof(folderRedirection));
+            _folderRedirectionManager = fdm ?? throw new ArgumentException(nameof(fdm));
         }
 
         public IEnumerable<RelativePath> EnumerateFiles() =>
-            _inner.EnumerateFiles().Select(_folderRedirection.GetRedirectedPath).Distinct();
+            _inner.EnumerateFiles().Select(_folderRedirectionManager.GetRedirectedPath).Distinct();
 
         public PathMapping? FindFile(RelativePath file) =>
-            _inner.FindFile(_folderRedirection.GetRedirectedPath(file));
+            _inner.FindFile(_folderRedirectionManager.GetRedirectedPath(file));
 
         public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
-            _inner.GetExpectedPhysicalPath(_folderRedirection.GetRedirectedPath(file));
+            _inner.GetExpectedPhysicalPath(_folderRedirectionManager.GetRedirectedPath(file));
     }
 }

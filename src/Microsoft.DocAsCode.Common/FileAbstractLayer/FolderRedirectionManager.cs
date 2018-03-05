@@ -8,9 +8,22 @@ namespace Microsoft.DocAsCode.Common
 
     public class FolderRedirectionManager
     {
-        private Dictionary<string, RelativePath> _redirections = new Dictionary<string, RelativePath>();
+        private List<Rule> _rules = new List<Rule>();
 
-        public void AddFolderRedirectionRule(string from, string to)
+        public FolderRedirectionManager(IEnumerable<FolderRedirectionRule> rules)
+        {
+            if (rules == null)
+            {
+                throw new ArgumentException(nameof(rules));
+            }
+
+            foreach (var rule in rules)
+            {
+                AddFolderRedirectionRule(rule.From, rule.To);
+            }
+        }
+
+        private void AddFolderRedirectionRule(string from, string to)
         {
             if (from == null)
             {
@@ -20,36 +33,55 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            var fromRel = (RelativePath)from;
-            var toRel = (RelativePath)(to.TrimEnd('/', '\\') + "/");
-            if (fromRel == null || toRel == null || fromRel == toRel)
+            var fromRel = (RelativePath)(from.TrimEnd('/', '\\') + "/");
+            if (fromRel == null)
             {
+                Logger.LogWarning($"invalid relative path for folder redirection rule source: {from}");
+            }
+            var toRel = (RelativePath)(to.TrimEnd('/', '\\') + "/");
+            if (toRel == null)
+            {
+                Logger.LogWarning($"invalid relative path for folder redirection rule destination: {to}");
+            }
+            if (fromRel == toRel)
+            {
+                Logger.LogWarning($"ignore folder redirection rule as source({from}) and dest({to}) are the same.");
                 return;
             }
 
-            var normalizedFrom = fromRel.ToString() + "/";
-            foreach (var redirection in _redirections)
+            foreach (var redirection in _rules)
             {
-                if (redirection.Key.StartsWith(normalizedFrom, StringComparison.OrdinalIgnoreCase)
-                    || normalizedFrom.StartsWith(normalizedFrom, StringComparison.OrdinalIgnoreCase))
+                if (redirection.From.StartsWith(fromRel) || fromRel.StartsWith(redirection.From))
                 {
-                    throw new ArgumentException($"Can't add redirection rule ({from})=>({to}): conflicts with the existing rule ({redirection.Key})=>({redirection.Value})", nameof(from));
+                    throw new ArgumentException($"Can't add redirection rule ({from})=>({to}): conflicts with the existing rule ({redirection.From})=>({redirection.To})", nameof(from));
                 }
             }
-            _redirections[normalizedFrom] = toRel;
+            _rules.Add(new Rule(fromRel, toRel));
         }
 
         public RelativePath GetRedirectedPath(RelativePath file)
         {
-            var fileRel = file.ToString();
-            foreach (var redirection in _redirections)
+            foreach (var redirection in _rules)
             {
-                if (fileRel.StartsWith(redirection.Key, StringComparison.OrdinalIgnoreCase))
+                if (file.StartsWith(redirection.From))
                 {
-                    return redirection.Value + (RelativePath)(fileRel.Substring(redirection.Key.Length));
+                    return redirection.To + (file - redirection.From);
                 }
             }
             return file;
+        }
+
+        private class Rule
+        {
+            public Rule(RelativePath from, RelativePath to)
+            {
+                From = from;
+                To = to;
+            }
+
+            public RelativePath From { get; set; }
+
+            public RelativePath To { get; set; }
         }
     }
 }

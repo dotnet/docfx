@@ -344,8 +344,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             File.WriteAllText(Path.Combine(input, "structured/temp2.yml"), "I pair with authored/temp2.yml.md");
             File.WriteAllText(Path.Combine(input, "structured/temp2.yml.md"), "I am not paired by authored/temp2.yml.md");
             File.WriteAllText(Path.Combine(input, "standalone/temp3"), "I am not affected by folder redirection rules");
-            var fdm = new FolderRedirectionManager();
-            fdm.AddFolderRedirectionRule("structured", "authored");
+            var fdm = new FolderRedirectionManager(new[] { new FolderRedirectionRule("structured", "authored") });
 
             // act
             var fal = FileAbstractLayerBuilder.Default
