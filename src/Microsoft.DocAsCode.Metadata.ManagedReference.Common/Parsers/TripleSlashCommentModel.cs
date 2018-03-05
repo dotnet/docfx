@@ -556,9 +556,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (XPathNavigator nav in iterator)
             {
                 string description = GetXmlValue(nav);
+                if (string.IsNullOrEmpty(description))
+                {
+                    description = null;
+                }
 
                 string commentId = nav.GetAttribute("cref", string.Empty);
-                if (!string.IsNullOrEmpty(commentId))
+                string refId = nav.GetAttribute("refId", string.Empty);
+                if (!string.IsNullOrEmpty(refId))
+                {
+                    yield return new ExceptionInfo
+                    {
+                        Description = description,
+                        Type = refId,
+                        CommentId = commentId
+                    };
+                }
+                else if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if exception type is valid and trim prefix
                     var match = CommentIdRegex.Match(commentId);
@@ -568,10 +582,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         var type = match.Groups["type"].Value;
                         if (type == "T")
                         {
-                            if (string.IsNullOrEmpty(description))
-                            {
-                                description = null;
-                            }
                             yield return new ExceptionInfo
                             {
                                 Description = description,
