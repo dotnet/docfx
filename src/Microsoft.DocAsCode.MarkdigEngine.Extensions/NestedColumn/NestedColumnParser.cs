@@ -8,24 +8,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
 
-    public class MonikerRangeParser : BlockParser
+    public class NestedColumnParser : BlockParser
     {
-        private const string StartString = "moniker";
-        private const string EndString = "moniker-end";
+        private const string StartString = "column";
+        private const string EndString = "column-end:::";
         private const char Colon = ':';
-        public MonikerRangeParser()
+        public NestedColumnParser()
         {
             OpeningCharacters = new[] { ':' };
         }
 
         public override BlockState TryOpen(BlockProcessor processor)
         {
-            if (processor.IsCodeIndent)
+            if (processor.IsBlankLine)
             {
-                return BlockState.None;
+                return BlockState.Continue;
             }
 
             var slice = processor.Line;
+
             if (ExtensionsHelper.IsEscaped(slice))
             {
                 return BlockState.None;
@@ -35,7 +36,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var sourcePosition = processor.Start;
             var colonCount = 0;
 
+            ExtensionsHelper.SkipSpaces(ref slice);
+
+            var columnWidth = StringBuilderCache.Local();
             var c = slice.CurrentChar;
+
             while (c == Colon)
             {
                 c = slice.NextChar();
@@ -46,46 +51,51 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "moniker", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return BlockState.None;
             }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "range=\"", false))
+            if (ExtensionsHelper.MatchStart(ref slice, "span=\"", false))
             {
-                return BlockState.None;
+                c = slice.CurrentChar;
+
+                while (c != '"')
+                {
+                    columnWidth.Append(c);
+                    c = slice.NextChar();
+                }
+
+                if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
+                {
+                    return BlockState.None;
+                }
+
+            } else
+            {
+                columnWidth.Append("1"); // default span is one
             }
 
-            var range = StringBuilderCache.Local();
-            c = slice.CurrentChar;
-
-            while (c != '"')
-            {
-                range.Append(c);
-                c = slice.NextChar();
-            }
-
-            if (c != '"')
-            {
-                return BlockState.None;
-            }
-
-            c = slice.NextChar();
             while (c.IsSpace())
             {
                 c = slice.NextChar();
             }
 
+            if (!ExtensionsHelper.MatchStart(ref slice, ":::", false)) //change
+            {
+                return BlockState.None;
+            }
+         
             if (!c.IsZero())
             {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the starting.");
+                Logger.LogWarning($"NestedColumn have some invalid chars in the starting.");
             }
 
-            processor.NewBlocks.Push(new MonikerRangeBlock(this)
+            processor.NewBlocks.Push(new NestedColumnBlock(this)
             {
-                MonikerRange = range.ToString(),
+                ColumnWidth = columnWidth.ToString(),
                 ColonCount = colonCount,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
@@ -102,18 +112,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var slice = processor.Line;
-            var monikerRange = (MonikerRangeBlock)block;
+            var NestedColumn = (NestedColumnBlock)block;
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', NestedColumn.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "moniker-end", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
                 return BlockState.Continue;
             }
@@ -122,7 +132,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the ending.");
+                Logger.LogWarning($"NestedColumn have some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);
