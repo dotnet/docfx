@@ -184,6 +184,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }, 60);
             }
 
+            // Remove projects that could not be loaded successfully from projectCache.
+            var projectCacheSnapshot = new Dictionary<string, AbstractProject>(projectCache);
+            foreach (var item in projectCacheSnapshot)
+            {
+                if (item.Value == null)
+                {
+                    projectCache.TryRemove(item.Key, out AbstractProject project);
+                }
+            }
+
             foreach (var item in projectCache)
             {
                 var path = item.Key;
