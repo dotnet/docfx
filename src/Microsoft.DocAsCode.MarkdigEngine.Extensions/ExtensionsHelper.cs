@@ -20,6 +20,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static readonly Regex HtmlEscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptions.Compiled);
         public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptions.Compiled);
 
+        public static char SkipSpaces(ref StringSlice slice)
+        {
+            var c = slice.CurrentChar;
+
+            while (c.IsSpaceOrTab())
+            {
+                c = slice.NextChar();
+            }
+
+            return c;
+        }
+
         public static string Escape(string html, bool encode = false)
         {
             return html
@@ -166,6 +178,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return result;
             }
         }
+
 
         #region private methods
         private static string GetAbsolutePathWithTildeCore(string basePath, string tildePath)

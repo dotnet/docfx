@@ -8,12 +8,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
 
-    public class MonikerRangeParser : BlockParser
+    public class RowParser : BlockParser
     {
-        private const string StartString = "moniker";
-        private const string EndString = "moniker-end";
+        private const string StartString = "row:::";
+        private const string EndString = "row-end:::";
         private const char Colon = ':';
-        public MonikerRangeParser()
+        public RowParser()
         {
             OpeningCharacters = new[] { ':' };
         }
@@ -46,46 +46,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "moniker", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return BlockState.None;
             }
 
-            ExtensionsHelper.SkipSpaces(ref slice);
-
-            if (!ExtensionsHelper.MatchStart(ref slice, "range=\"", false))
+            processor.NewBlocks.Push(new RowBlock(this)
             {
-                return BlockState.None;
-            }
-
-            var range = StringBuilderCache.Local();
-            c = slice.CurrentChar;
-
-            while (c != '"')
-            {
-                range.Append(c);
-                c = slice.NextChar();
-            }
-
-            if (c != '"')
-            {
-                return BlockState.None;
-            }
-
-            c = slice.NextChar();
-            while (c.IsSpace())
-            {
-                c = slice.NextChar();
-            }
-
-            if (!c.IsZero())
-            {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the starting.");
-            }
-
-            processor.NewBlocks.Push(new MonikerRangeBlock(this)
-            {
-                MonikerRange = range.ToString(),
                 ColonCount = colonCount,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
@@ -102,18 +69,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var slice = processor.Line;
-            var monikerRange = (MonikerRangeBlock)block;
+            var Row = (RowBlock)block;
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', Row.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "moniker-end", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
                 return BlockState.Continue;
             }
@@ -122,7 +89,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the ending.");
+                Logger.LogWarning($"Row has some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);
