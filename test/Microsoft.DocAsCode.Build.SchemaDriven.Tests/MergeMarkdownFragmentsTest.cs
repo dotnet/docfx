@@ -5,7 +5,6 @@
     using System.Composition;
     using System.IO;
     using System.Linq;
-
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
