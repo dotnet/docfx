@@ -301,7 +301,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Name = item.Name,
                 Href = item.Href,
                 CommentId = item.CommentId,
-                IsSpec = item.Specs.Count > 0,
+                IsSpec = item.IsExternal != true,
             };
             if (item.NameInDevLangs.Count > 0)
             {
