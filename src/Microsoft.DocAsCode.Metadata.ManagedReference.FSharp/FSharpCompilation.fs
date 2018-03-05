@@ -445,7 +445,15 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
                                                     SyntaxLanguage.CSharp, List(parts)]))
         addReference names.Name ri
-        names.Name                                              
+        names.Name              
+
+    /// Returns a reference to a literal name (i.e. without linking to something).
+    let literalRef (name: string) =
+        let parts = [LinkItem(DisplayName=name, DisplayNamesWithType=name, DisplayQualifiedNames=name)]
+        let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
+                                                    SyntaxLanguage.CSharp, List(parts)]))
+        addReference name ri
+        name                                                    
 
     /// A sequence of the names of all symbols and entities within the specified F# entity.
     let rec enclosedSymbolNames (ent: FSharpEntity) = seq {
@@ -580,7 +588,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                             cand = prefixedRef))
             match result with
             | Some s -> CRefTarget(Id=symbolRef s, CommentId=s.XmlDocSig)
-            | None -> null
+            | None -> 
+                Log.warning "Cross reference \"%s\" for %s defined in %s Line %d could not be resolved."
+                            xmlRef md.Source.Name md.Source.Path md.Source.StartLine
+                CRefTarget(Id=literalRef xmlRef)
 
         md.CommentId <- xmlDocSig
         md.RawComment <- xmlDoc |> String.concat "\n"
