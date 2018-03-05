@@ -106,15 +106,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         // MUST be a dictionary
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
-                        // Validate against the schema first
-                        _schemaValidator.Validate(obj);
-
                         // load overwrite fragments
                         string markdownFragmentsContent = null;
                         var markdownFragmentsFile = file.File + ".md";
                         if (EnvironmentContext.FileAbstractLayer.Exists(markdownFragmentsFile))
                         {
                             markdownFragmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(markdownFragmentsFile);
+                        }
+                        else
+                        {
+                            // Validate against the schema first, only when markdown fragments don't exist
+                            _schemaValidator.Validate(obj);
                         }
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
