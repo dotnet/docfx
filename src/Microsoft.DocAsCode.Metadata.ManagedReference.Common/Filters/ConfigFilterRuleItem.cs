@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Text.RegularExpressions;
 
-    using Microsoft.CodeAnalysis;
     using YamlDotNet.Serialization;
 
     public abstract class ConfigFilterRuleItem
@@ -35,13 +34,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlIgnore]
         public abstract bool CanVisit { get; }
 
-        public bool IsMatch(ISymbol symbol)
+        public bool IsMatch(SymbolFilterData symbol)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
-            var id = VisitorHelper.GetId(symbol);
+            var id = symbol.Id;
             
             return (_uidRegex == null || (id != null && _uidRegex.IsMatch(id))) &&
                 (Kind == null || Kind.Value.Contains(symbol)) &&

@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _currentCompilation = compilation;
             _currentCompilationRef = compilation.ToMetadataReference();
             _preserveRawInlineComments = preserveRawInlineComments;
-            var configFilterRule = LoadConfigFilterRule(filterConfigFile);
+            var configFilterRule = ConfigFilterRule.LoadWithDefaults(filterConfigFile);
             FilterVisitor = new DefaultFilterVisitor().WithConfig(configFilterRule).WithCache();
             _extensionMethods = extensionMethods != null ? extensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
         }
@@ -916,39 +916,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 // only record the id now, the value would be fed at later phase after merge
                 item.References[id] = null;
-            };
-        }
-
-        private ConfigFilterRule LoadConfigFilterRule(string filterConfigFile)
-        {
-            ConfigFilterRule defaultRule, userRule;
-
-            var assembly = this.GetType().Assembly;
-            var defaultConfigPath = $"{assembly.GetName().Name}.Filters.defaultfilterconfig.yml";
-            using (var stream = assembly.GetManifestResourceStream(defaultConfigPath))
-            using (var reader = new StreamReader(stream))
-            {
-                defaultRule = YamlUtility.Deserialize<ConfigFilterRule>(reader);
-            }
-
-            if (string.IsNullOrEmpty(filterConfigFile))
-            {
-                return defaultRule;
-            }
-            else
-            {
-                userRule = ConfigFilterVisitor.LoadRules(filterConfigFile);
-                return MergeConfigRule(defaultRule, userRule);
-            }
-        }
-
-        private static ConfigFilterRule MergeConfigRule(ConfigFilterRule defaultRule, ConfigFilterRule userRule)
-        {
-            return new ConfigFilterRule
-            {
-                // user rule always overwrite default rule
-                ApiRules = userRule.ApiRules.Concat(defaultRule.ApiRules).ToList(),
-                AttributeRules = userRule.AttributeRules.Concat(defaultRule.AttributeRules).ToList(),
             };
         }
 

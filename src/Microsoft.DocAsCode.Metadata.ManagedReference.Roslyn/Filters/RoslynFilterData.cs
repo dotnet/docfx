@@ -3,36 +3,31 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
+    using System;
+    using System.Linq;
+
     using Microsoft.CodeAnalysis;
 
-    public enum ExtendedSymbolKind
+    internal class RoslynFilterData
     {
-        Assembly = 0x100,
-        Namespace = 0x110,
-        Type = 0x120,
-        Class,
-        Struct,
-        Enum,
-        Interface,
-        Delegate,
-        Member = 0x200,
-        Event,
-        Field,
-        Method,
-        Property,
-    }
-
-    public static class ExtendedSymbolKindHelper
-    {
-        public static bool Contains(this ExtendedSymbolKind kind, ISymbol symbol)
+        public static SymbolFilterData GetSymbolFilterData(ISymbol symbol)
         {
-            ExtendedSymbolKind? k = GetExtendedSymbolKindFromSymbol(symbol);
-
-            if (k == null)
+            return new SymbolFilterData
             {
-                return false;
-            }
-            return (kind & k.Value) == kind;
+                Id = VisitorHelper.GetId(symbol),
+                Kind = GetExtendedSymbolKindFromSymbol(symbol),
+                Attributes = symbol.GetAttributes().Select(GetAttributeFilterData)
+            };
+        }
+
+        public static AttributeFilterData GetAttributeFilterData(AttributeData attribute)
+        {
+            return new AttributeFilterData
+            {
+                Id = VisitorHelper.GetId(attribute.AttributeClass),
+                ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString),
+                ConstructorNamedArguments = attribute.NamedArguments.ToDictionary(pair => pair.Key, pair => GetLiteralString(pair.Value))
+            };
         }
 
         private static ExtendedSymbolKind? GetExtendedSymbolKindFromSymbol(ISymbol symbol)
@@ -86,5 +81,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return null;
             }
         }
+
+        private static string GetLiteralString(TypedConstant constant)
+        {
+            var type = constant.Type;
+            var value = constant.Value;
+
+            if (type.TypeKind == TypeKind.Enum)
+            {
+                var namedType = (INamedTypeSymbol)type;
+                var pairs = (from member in namedType.GetMembers().OfType<IFieldSymbol>()
+                             where member.IsConst && member.HasConstantValue
+                             select Tuple.Create(member.Name, member.ConstantValue)).ToDictionary(tuple => tuple.Item2, tuple => tuple.Item1);
+
+                return $"{VisitorHelper.GetId(namedType)}.{pairs[value]}";
+            }
+
+            if (value is ITypeSymbol)
+            {
+                return VisitorHelper.GetId((ITypeSymbol)value);
+            }
+
+            return value.ToString();
+        }    
     }
 }
