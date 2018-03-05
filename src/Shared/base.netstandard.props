@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
     <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
