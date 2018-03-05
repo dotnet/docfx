@@ -152,27 +152,28 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                     return;
                 }
 
-                var keys = map.Children.Keys.Select(k => k.ToString()).ToList();
+                var keys = schema.Properties.Keys;
                 foreach (var key in keys)
                 {
                     var opath = oPathPrefix + key;
-                    if (!schema.Properties.ContainsKey(key) || schema.Properties[key] == null)
-                    {
-                        //Console.WriteLine("Warning! Not supported property found in yaml: " + opath);
-                        continue;
-                    }
                     var propSchema = schema.Properties[key];
-
                     if (propSchema.Type == JSchemaType.String && propSchema.ContentType == ContentType.Markdown)
                     {
-                        var val = map.Children[key].ToString();
-                        map.Children.Remove(key);
+                        var val = "";
+                        if (map.Children.ContainsKey(key))
+                        {
+                            val = map.Children[key].ToString();
+                            map.Children.Remove(key);
+                        }
 
                         fragments[uid].AddOrUpdateFragmentProperty(opath, val);
                     }
                     else if (propSchema.Type == JSchemaType.Object || propSchema.Type == JSchemaType.Array)
                     {
-                        Traverse(map.Children[key], fragments, propSchema, opath, uid);
+                        if (map.Children.ContainsKey(key))
+                        {
+                            Traverse(map.Children[key], fragments, propSchema, opath, uid);
+                        }
                     }
                 }
             }
