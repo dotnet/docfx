@@ -312,11 +312,18 @@ namespace Microsoft.DocAsCode.Common
             string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
             string.Join("/", _parts);
 
+        /// <summary>
+        /// Test whether a relative path starts with another folder relative path
+        /// </summary>
         public bool StartsWith(RelativePath value)
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
+            }
+            if (value._parts[value._parts.Length - 1] != "")
+            {
+                return false;
             }
             if (_isFromWorkingFolder ^ value._isFromWorkingFolder)
             {
