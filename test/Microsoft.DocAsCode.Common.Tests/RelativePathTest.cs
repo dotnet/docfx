@@ -423,6 +423,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         [InlineData("a/b/c", "a/b/c", true)]
         [InlineData("a/b/c", "a/b/c/d", false)]
         [InlineData("a/b/c", "a/b/d", false)]
+        [InlineData("a/../b/c", "b", true)]
         [InlineData("../a/b", "../a", false)]
         [InlineData("../a/b", "../", false)]
         [InlineData("../a/b", "../../a", false)]
