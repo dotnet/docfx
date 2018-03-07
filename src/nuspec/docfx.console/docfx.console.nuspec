@@ -12,7 +12,7 @@
     <developmentDependency>true</developmentDependency>
     <description>This is a tool to generate API documentation for .NET projects.</description>
     <releaseNotes>Support generating both CSHARP and VB projects.</releaseNotes>
-    <copyright>Copyright 2015-2017</copyright>
+    <copyright>Copyright 2015-2018</copyright>
     <tags>Documentation API Metadata docascode docfx</tags>
   </metadata>
   <files>
