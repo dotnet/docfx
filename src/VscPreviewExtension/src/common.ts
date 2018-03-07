@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+
 import * as childProcess from "child_process";
 
 export class ChildProcessManagement {
@@ -16,7 +17,6 @@ export class ChildProcessManagement {
         else {
             file = '/bin/sh';
             args = ['-c', command];
-            args = ['-c', 'chmod 777 ', command];
         }
         return childProcess.spawn(file, args, options);
     };
