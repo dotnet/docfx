@@ -10,7 +10,7 @@
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx/tools/DfmHttpService</projectUrl>
     <description>HTTP Server Wrapper for DocFX Favorable Markdown.</description>
-    <copyright>Copyright 2015-2017</copyright>
+    <copyright>Copyright 2015-2018</copyright>
     <tags>DFM markdown docascode docfx</tags>
   </metadata>
   <files>

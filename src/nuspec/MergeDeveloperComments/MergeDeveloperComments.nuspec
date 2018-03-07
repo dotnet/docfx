@@ -10,7 +10,7 @@
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
     <description>This is a DocFX tool to merge developer comments.</description>
-    <copyright>Copyright 2015-2017</copyright>
+    <copyright>Copyright 2015-2018</copyright>
     <tags>Documentation API Metadata docascode docfx</tags>
   </metadata>
   <files>
