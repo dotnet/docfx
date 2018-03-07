@@ -342,7 +342,7 @@ namespace Microsoft.DocAsCode.Common
             int i;
             for (i = 0; i < value._parts.Length; i++)
             {
-                if (value._parts[i] == "")
+                if (value._parts[i] == string.Empty)
                 {
                     return true;
                 }
