@@ -434,6 +434,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         [InlineData("../a/b", "../../a", false)]
         [InlineData("../../", "../", false)]
         [InlineData("../", "../../", false)]
+        [InlineData("~/a/b", "~/../", false)]
         public void TestStartsWith(string source, string dest, bool isStarstsWith)
         {
             Assert.Equal(isStarstsWith, ((RelativePath)source).StartsWith((RelativePath)dest));
