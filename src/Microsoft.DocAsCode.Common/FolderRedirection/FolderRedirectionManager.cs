@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Common
 
             foreach (var redirection in _rules)
             {
-                if (redirection.From.StartsWith(fromRel) || fromRel.StartsWith(redirection.From))
+                if (redirection.From.InDirectory(fromRel) || fromRel.InDirectory(redirection.From))
                 {
                     throw new ArgumentException($"Can't add redirection rule ({from})=>({to}): conflicts with the existing rule ({redirection.From})=>({redirection.To})", nameof(from));
                 }
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Common
         {
             foreach (var redirection in _rules)
             {
-                if (file.StartsWith(redirection.From))
+                if (file.InDirectory(redirection.From))
                 {
                     return redirection.To + (file - redirection.From);
                 }

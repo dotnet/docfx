@@ -315,7 +315,7 @@ namespace Microsoft.DocAsCode.Common
         /// <summary>
         /// Test whether a relative path starts with another folder relative path
         /// </summary>
-        public bool StartsWith(RelativePath value)
+        public bool InDirectory(RelativePath value)
         {
             if (value == null)
             {
