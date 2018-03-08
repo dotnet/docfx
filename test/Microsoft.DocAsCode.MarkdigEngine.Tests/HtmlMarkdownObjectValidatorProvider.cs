@@ -6,10 +6,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Collections.Immutable;
     using System.Composition;
 
-    using MarkdigEngine.Extensions;
-
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     [Export(ContractName, typeof(IMarkdownObjectValidatorProvider))]
     public class HtmlMarkdownObjectValidatorProvider : IMarkdownObjectValidatorProvider

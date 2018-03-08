@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
 
     using Markdig.Syntax;
+    using Microsoft.DocAsCode.Plugins;
 
     public static class MarkdownObjectRewriterFactory
     {
