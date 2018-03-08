@@ -15,7 +15,7 @@ export class ChildProcessManagement {
         }
         else {
             file = '/bin/sh';
-            args = ['-c', command];
+            args = ['-c', 'chmod 777 ', command];
         }
         return childProcess.spawn(file, args, options);
     };
