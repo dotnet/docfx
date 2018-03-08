@@ -354,7 +354,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 var sdp = new SchemaDrivenDocumentProcessor(
                                     schema,
                                     new CompositionContainer(CompositionContainer.DefaultContainer),
-                                    markdigMarkdownService);
+                                    markdigMarkdownService,
+                                    new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
                                 Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                                 yield return sdp;
                             }
