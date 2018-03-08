@@ -5,8 +5,8 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public interface IMarkdownValidatorContext
     {
-        string GlobalRulesConfigFilePath { get; }
+        string GlobalRulesFilePath { get; }
 
-        string CustomRulesConfigFilePath { get; }
+        string CustomRulesFilePath { get; }
     }
 }
