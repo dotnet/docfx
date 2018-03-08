@@ -415,5 +415,29 @@ namespace Microsoft.DocAsCode.Common.Tests
         {
             Assert.Equal(expected, ((RelativePath)path).UrlDecode());
         }
+
+        [Theory]
+        [InlineData("a/b/c", "a/b/", true)]
+        [InlineData("~/a/b/c", "~/a/b/", true)]
+        [InlineData("a/b/c", "~/a/b/", false)]
+        [InlineData("~/a/b/c", "a/b/", false)]
+        [InlineData("a/b", "a/b", false)]
+        [InlineData("a/b/", "a/b", false)]
+        [InlineData("a/b", "a/b/", false)]
+        [InlineData("a/b/", "a/b/", true)]
+        [InlineData("a/b/c", "a/b/c", false)]
+        [InlineData("a/b/c", "a/b/c/d", false)]
+        [InlineData("a/b/c", "a/b/d", false)]
+        [InlineData("a/../b/c", "b/", true)]
+        [InlineData("../a/b", "../a", false)]
+        [InlineData("../a/b", "../", false)]
+        [InlineData("../a/b", "../../a", false)]
+        [InlineData("../../", "../", false)]
+        [InlineData("../", "../../", false)]
+        [InlineData("~/a/b", "~/../", false)]
+        public void TestStartsWith(string source, string dest, bool isStarstsWith)
+        {
+            Assert.Equal(isStarstsWith, ((RelativePath)source).InDirectory((RelativePath)dest));
+        }
     }
 }
