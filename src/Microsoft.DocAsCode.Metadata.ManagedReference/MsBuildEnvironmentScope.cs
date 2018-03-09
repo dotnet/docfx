@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    using Microsoft.Build.MSBuildLocator;
+    using Microsoft.Build.Locator;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
