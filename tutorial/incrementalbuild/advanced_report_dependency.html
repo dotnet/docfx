@@ -8,7 +8,7 @@
     <title>&#128295; Advanced: Report Dependency | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Advanced: Report Dependency | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -163,7 +163,7 @@
 </tbody>
 </table>
 <h4 id="register-a-customized-dependency-type">Register a customized dependency type</h4>
-<p>Plugins are flexible to register customized dependency types by implementing <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html">ISupportIncrementalBuildStep</a> interface&#39;s method <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">GetDependencyTypesToRegister()</a>. The method would be called by the framework at the very start of the whole build.</p>
+<p>Plugins are flexible to register customized dependency types by implementing @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface&#39;s method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister. The method would be called by the framework at the very start of the whole build.</p>
 <p>Sample code:</p>
 <pre><code class="lang-csharp">    public IEnumerable&lt;DependencyType&gt; GetDependencyTypesToRegister() =&gt; new[]
     {
@@ -225,16 +225,16 @@
 </tbody>
 </table>
 <h3 id="how-to-report">How to report</h3>
-<p><a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a> interface provides the methods to report directed/reversed dependency items.</p>
+<p>@Microsoft.DocAsCode.Plugins.IHostService interface provides the methods to report directed/reversed dependency items.</p>
 <p>If you want to report the dependency between an file and another file, you can use below method:</p>
-<p>directed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyTo_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportDependencyTo(FileModel, String, String)</a></p>
-<p>reversed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyFrom_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportDependencyFrom(FileModel, String, String)</a></p>
+<p>directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
+<p>reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
 <p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on file <code>~/../include/token/md</code>, dependency type is <code>include</code>,
 i could call the method <code>ReportDependencyTo(a, &quot;~/../include/token.md&quot;, &quot;include&quot;)</code>.</p>
 <p>Plugins are only allowed to report a dependency during <code>Compile</code> phase. However, some plugins might don&#39;t have enough info to resolve some dependency to file until the whole phase completes. Incremental build framework provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.</p>
-<p>directed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyTo_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_System_String_">ReportDependencyTo(FileModel, String, String, String)</a></p>
-<p>reversed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyFrom_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_System_String_">ReportDependencyFrom(FileModel, String, String, String)</a></p>
-<p>report reference:    <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportReference_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportReference(FileModel, String, String)</a></p>
+<p>directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)</p>
+<p>reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)</p>
+<p>report reference:    @Microsoft.DocAsCode.Plugins.IHostService.ReportReference(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
 <p>A common usage is to report dependency between file and uid.</p>
 <p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on sentenceId @Testid(filemodel is <code>b</code>), dependency type is <code>link</code>,
 i could call the method <code>ReportDependencyTo(a, &quot;Testid&quot;, &quot;sentenceId&quot;, &quot;link&quot;)</code> to report the dependency and <code>ReportReference(b, &quot;Testid&quot;, &quot;sentenceId&quot;)</code> to report the mapping between sentenceId and file. This way, the framework would do the resolution work and resolve it to file-file dependency.</p>

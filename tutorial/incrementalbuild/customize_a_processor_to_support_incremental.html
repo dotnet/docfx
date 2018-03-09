@@ -8,7 +8,7 @@
     <title>Walkthrough: Customize a processor to support incremental build | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough: Customize a processor to support incremental build | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -78,7 +78,7 @@
 <h1 id="walkthrough-customize-a-processor-to-support-incremental-build">Walkthrough: Customize a processor to support incremental build</h1>
 
 <p>During this tutorial, we&#39;ll walk through the steps to enable a processor to be incremental.</p>
-<h2 id="step1-implement-microsoftdocascodepluginsisupportincrementaldocumentprocessor-interface-for-the-processor">Step1. Implement <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html">ISupportIncrementalDocumentProcessor</a> interface for the processor</h2>
+<h2 id="step1-implement-microsoftdocascodepluginsisupportincrementaldocumentprocessor-interface-for-the-processor">Step1. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor interface for the processor</h2>
 <pre><code class="lang-csharp">public class RtfDocumentProcessor : ISupportIncrementalDocumentProcessor
 {
     // to-do: implements IDocumentProcessor
@@ -98,9 +98,9 @@
         // to-do: the logic to load filemodel
     }
 }
-</code></pre><h2 id="step2-implement-microsoftdocascodepluginsisupportincrementalbuildstep-interface-for-all-the-plugins-plugged-in-the-processor">Step2. Implement <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html">ISupportIncrementalBuildStep</a> interface for all the plugins plugged in the processor</h2>
-<p>Plugins are flexible to register customized dependency types by implementing the interface&#39;s method <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">GetDependencyTypesToRegister()</a>.</p>
-<p>Plugins are also flexible to report dependencies by invoking the methods provided by <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a>.</p>
+</code></pre><h2 id="step2-implement-microsoftdocascodepluginsisupportincrementalbuildstep-interface-for-all-the-plugins-plugged-in-the-processor">Step2. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface for all the plugins plugged in the processor</h2>
+<p>Plugins are flexible to register customized dependency types by implementing the interface&#39;s method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister.</p>
+<p>Plugins are also flexible to report dependencies by invoking the methods provided by @Microsoft.DocAsCode.Plugins.IHostService.</p>
 <pre><code class="lang-csharp">public class RtfBuildStep : ISupportIncrementalBuildStep
 {
     // to-do: implements IDocumentBuildStep
@@ -126,10 +126,10 @@
     }
 }
 </code></pre><p>The above sample registered a dependency type named <code>ref</code>, this type of dependency applies during <code>Link</code> phase and it isn&#39;t transitive. <code>DocFX</code> has some reserved dependency types, you can refer to <a href="advanced_report_dependency.html#reserved-dependency-types">Reserved Dependency Types</a> for more details.</p>
-<p>In <code>Build</code> step, this plugin reports dependencies of type <code>ref</code> by invoking <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a> &#39;s <code>ReportDependencyTo</code> method. <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a> also provides <code>ReportDependencyFrom</code> method you can report reverse dependency.</p>
+<p>In <code>Build</code> step, this plugin reports dependencies of type <code>ref</code> by invoking @Microsoft.DocAsCode.Plugins.IHostService &#39;s <code>ReportDependencyTo</code> method. @Microsoft.DocAsCode.Plugins.IHostService also provides <code>ReportDependencyFrom</code> method you can report reverse dependency.</p>
 <p>For more details about how to register your own dependency types and report , you can refer to <a href="advanced_report_dependency.html">Advanced: register and report dependency</a>.</p>
-<h2 id="step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info">Step3. [Optional]Implement <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html">ICanTraceContextInfoBuildStep</a> interface for plugins that need to access context info</h2>
-<p>When building articles, some plugins might need the info of unloaded articles. Incremental Build Framework provides the interface <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html">ICanTraceContextInfoBuildStep</a>, which is the superset of <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html">ISupportIncrementalBuildStep</a> and also contains methods to save/load context info.</p>
+<h2 id="step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info">Step3. [Optional]Implement @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep interface for plugins that need to access context info</h2>
+<p>When building articles, some plugins might need the info of unloaded articles. Incremental Build Framework provides the interface @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep, which is the superset of @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep and also contains methods to save/load context info.</p>
 <pre><code class="lang-csharp">public class RtfBuildStep : ICanTraceContextInfoBuildStep
 {
     // to-do: implements ISupportIncrementalBuildStep

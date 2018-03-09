@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ManagedReferenceDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -93,43 +93,21 @@
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-    <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html">ISupportIncrementalDocumentProcessor</a></div>
-    <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html">IDocumentProcessor</a></div>
+    <div><span class="xref">ISupportIncrementalDocumentProcessor</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Load_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadOverwrite_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.LoadOverwrite(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadOverwrite_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.LoadOverwrite(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
     </div>
     <div>
       <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Dispose">DisposableDocumentProcessor.Dispose()</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a>
-    </div>
-    <div>
-      <span class="xref">System.Object.ToString()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_FileModel_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.ManagedReference.html">Microsoft.DocAsCode.Build.ManagedReference</a></h6>
@@ -137,7 +115,7 @@
   <h5 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export(typeof (IDocumentProcessor))]
-public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase, IDisposable, ISupportIncrementalDocumentProcessor, IDocumentProcessor</code></pre>
+public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase, IDisposable, ISupportIncrementalDocumentProcessor</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -184,7 +162,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">IDocumentBuildStep</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -383,13 +361,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetProcessingPriority_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetProcessingPriority(FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ManagedReferenceDocumentProcessor.cs/#L129">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetProcessingPriority_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetProcessingPriority*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetProcessingPriority_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetProcessingPriority(FileAndType)">GetProcessingPriority(FileAndType)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -407,7 +385,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
+        <td><span class="xref">FileAndType</span></td>
         <td><span class="parametername">file</span></td>
         <td></td>
       </tr>
@@ -423,13 +401,11 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.ProcessingPriority.html">ProcessingPriority</a></td>
+        <td><span class="xref">ProcessingPriority</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_">DisposableDocumentProcessor.GetProcessingPriority(FileAndType)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_GetSerializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetSerializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -462,13 +438,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ManagedReferenceDocumentProcessor.cs/#L81">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">LoadArticle(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">LoadArticle(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -486,7 +462,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
+        <td><span class="xref">FileAndType</span></td>
         <td><span class="parametername">file</span></td>
         <td></td>
       </tr>
@@ -507,13 +483,11 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadArticle_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.LoadArticle(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadIntermediateModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadIntermediateModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -556,20 +530,20 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save(FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ManagedReferenceDocumentProcessor.cs/#L168">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_FileModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save(FileModel)">Save(FileModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -587,7 +561,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -603,22 +577,20 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.SaveResult.html">SaveResult</a></td>
+        <td><span class="xref">SaveResult</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Save_Microsoft_DocAsCode_Plugins_FileModel_">ReferenceDocumentProcessorBase.Save(FileModel)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_SaveIntermediateModel_FileModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.SaveIntermediateModel(FileModel%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ManagedReferenceDocumentProcessor.cs/#L193">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_SaveIntermediateModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.SaveIntermediateModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel,System.IO.Stream)">SaveIntermediateModel(FileModel, Stream)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_SaveIntermediateModel_FileModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.SaveIntermediateModel(FileModel,System.IO.Stream)">SaveIntermediateModel(FileModel, Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -636,7 +608,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -723,13 +695,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_UpdateModelContent_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.UpdateModelContent(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_UpdateModelContent_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.UpdateModelContent(FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ManagedReferenceDocumentProcessor.cs/#L217">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_UpdateModelContent_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.UpdateModelContent*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_UpdateModelContent_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.UpdateModelContent(Microsoft.DocAsCode.Plugins.FileModel)">UpdateModelContent(FileModel)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_UpdateModelContent_FileModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.UpdateModelContent(FileModel)">UpdateModelContent(FileModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -747,7 +719,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -758,14 +730,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">System.IDisposable</a>
   </div>
   <div>
-      <a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html">ISupportIncrementalDocumentProcessor</a>
-  </div>
-  <div>
-      <a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html">IDocumentProcessor</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+      <span class="xref">ISupportIncrementalDocumentProcessor</span>
   </div>
 <div id="disqus_thread"></div>
                 <script>

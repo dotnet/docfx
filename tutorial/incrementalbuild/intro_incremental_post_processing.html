@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Incremental Post Processing | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Incremental Post Processing | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -100,7 +100,7 @@
 <li>Both last cache file <a href="advanced_cache_file_structure.html"><code>build.info</code></a> and its <a href="advanced_cache_file_structure.html#postprocessinfo-model"><code>PostProcessInfo</code></a> exist, which is essential to restore the last incremental post processing info.</li>
 <li>Not set option <code>forcePostProcess</code> and <code>force</code> of build command or <code>docfx.json</code> config, to enable incremental post processing.</li>
 <li>Post processor requirement:<ol>
-<li>Each of the post processor implements <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor.html">ISupportIncrementalPostProcessor</a>. Currently, @Microsoft.DocAsCode.Build.Engine.HtmlPostProcessor implements the interface while <a class="xref" href="../../api/Microsoft.DocAsCode.Build.Engine.ExtractSearchIndex.html">ExtractSearchIndex</a> does not. Refer to <a href="customize_a_post_processor_to_be_incremental.html">Customize a post processor to be incremental</a> for more details.</li>
+<li>Each of the post processor implements @Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor. Currently, @Microsoft.DocAsCode.Build.Engine.HtmlPostProcessor implements the interface while <a class="xref" href="../../api/Microsoft.DocAsCode.Build.Engine.ExtractSearchIndex.html">ExtractSearchIndex</a> does not. Refer to <a href="customize_a_post_processor_to_be_incremental.html">Customize a post processor to be incremental</a> for more details.</li>
 <li>Post processor number isn&#39;t changed.</li>
 <li>Each post processor&#39;s <code>IncrementalContextHash</code> isn&#39;t changed</li>
 </ol>

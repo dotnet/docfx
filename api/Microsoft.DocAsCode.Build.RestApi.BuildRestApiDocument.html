@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class BuildRestApiDocument
    | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -90,50 +90,25 @@
     <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html">BuildReferenceDocumentBase</a></div>
     <div class="level3"><span class="xref">BuildRestApiDocument</span></div>
   </div>
-  <div classs="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a></div>
-  </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
       <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOrder">BuildReferenceDocumentBase.BuildOrder</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BuildReferenceDocumentBase.Build(FileModel, IHostService)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_Build_FileModel_IHostService_">BuildReferenceDocumentBase.Build(FileModel, IHostService)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOverwrite_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_">BuildReferenceDocumentBase.BuildOverwrite(IHostService, FileModel)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOverwrite_IHostService_FileModel_">BuildReferenceDocumentBase.BuildOverwrite(IHostService, FileModel)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticleCore_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Build_Common_IModelAttributeHandler_Microsoft_DocAsCode_Build_Common_HandleModelAttributesContext_System_Boolean_">BuildReferenceDocumentBase.BuildArticleCore(IHostService, FileModel, IModelAttributeHandler, HandleModelAttributesContext, Boolean)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticleCore_IHostService_FileModel_Microsoft_DocAsCode_Build_Common_IModelAttributeHandler_Microsoft_DocAsCode_Build_Common_HandleModelAttributesContext_System_Boolean_">BuildReferenceDocumentBase.BuildArticleCore(IHostService, FileModel, IModelAttributeHandler, HandleModelAttributesContext, Boolean)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_FileModel__IHostService_">BaseDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
-    </div>
-    <div>
-      <span class="xref">System.Object.ToString()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.MemberwiseClone()</span>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_FileModel__IHostService_">BaseDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.RestApi.html">Microsoft.DocAsCode.Build.RestApi</a></h6>
@@ -141,7 +116,7 @@
   <h5 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export(&quot;RestApiDocumentProcessor&quot;, typeof (IDocumentBuildStep))]
-public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildStep</code></pre>
+public class BuildRestApiDocument : BuildReferenceDocumentBase</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
@@ -181,13 +156,13 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService%2CMicrosoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildArticle_IHostService_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildArticle(IHostService%2CFileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/BuildRestApiDocument.cs/#L25">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildArticle_" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildArticle*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)">BuildArticle(IHostService, FileModel)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildArticle_IHostService_FileModel_" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildArticle(IHostService,FileModel)">BuildArticle(IHostService, FileModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -205,28 +180,26 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
+        <td><span class="xref">IHostService</span></td>
         <td><span class="parametername">host</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_">BuildReferenceDocumentBase.BuildArticle(IHostService, FileModel)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildItem_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiItemViewModelBase_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildItem(Microsoft.DocAsCode.Plugins.IHostService%2CMicrosoft.DocAsCode.DataContracts.RestApi.RestApiItemViewModelBase%2CMicrosoft.DocAsCode.Plugins.FileModel%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildItem_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiItemViewModelBase_FileModel_System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildItem(IHostService%2CMicrosoft.DocAsCode.DataContracts.RestApi.RestApiItemViewModelBase%2CFileModel%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/BuildRestApiDocument.cs/#L45">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildItem_" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildItem*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildItem_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiItemViewModelBase_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildItem(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.DataContracts.RestApi.RestApiItemViewModelBase,Microsoft.DocAsCode.Plugins.FileModel,System.Func{System.String,System.Boolean})">BuildItem(IHostService, RestApiItemViewModelBase, FileModel, Func&lt;String, Boolean&gt;)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildItem_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiItemViewModelBase_FileModel_System_Func_System_String_System_Boolean__" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildItem(IHostService,Microsoft.DocAsCode.DataContracts.RestApi.RestApiItemViewModelBase,FileModel,System.Func{System.String,System.Boolean})">BuildItem(IHostService, RestApiItemViewModelBase, FileModel, Func&lt;String, Boolean&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -244,7 +217,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
+        <td><span class="xref">IHostService</span></td>
         <td><span class="parametername">host</span></td>
         <td></td>
       </tr>
@@ -254,7 +227,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -282,13 +255,13 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildTag_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiTagViewModel_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildTag(Microsoft.DocAsCode.Plugins.IHostService%2CMicrosoft.DocAsCode.DataContracts.RestApi.RestApiTagViewModel%2CMicrosoft.DocAsCode.Plugins.FileModel%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildTag_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiTagViewModel_FileModel_System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildTag(IHostService%2CMicrosoft.DocAsCode.DataContracts.RestApi.RestApiTagViewModel%2CFileModel%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/BuildRestApiDocument.cs/#L118">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildTag_" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildTag*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildTag_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiTagViewModel_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildTag(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.DataContracts.RestApi.RestApiTagViewModel,Microsoft.DocAsCode.Plugins.FileModel,System.Func{System.String,System.Boolean})">BuildTag(IHostService, RestApiTagViewModel, FileModel, Func&lt;String, Boolean&gt;)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_RestApi_BuildRestApiDocument_BuildTag_IHostService_Microsoft_DocAsCode_DataContracts_RestApi_RestApiTagViewModel_FileModel_System_Func_System_String_System_Boolean__" data-uid="Microsoft.DocAsCode.Build.RestApi.BuildRestApiDocument.BuildTag(IHostService,Microsoft.DocAsCode.DataContracts.RestApi.RestApiTagViewModel,FileModel,System.Func{System.String,System.Boolean})">BuildTag(IHostService, RestApiTagViewModel, FileModel, Func&lt;String, Boolean&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -306,7 +279,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
+        <td><span class="xref">IHostService</span></td>
         <td><span class="parametername">host</span></td>
         <td></td>
       </tr>
@@ -316,7 +289,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="xref">FileModel</span></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -342,14 +315,6 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase, IDocumentBuildSt
       </tr>
     </tbody>
   </table>
-  <h3 id="implements">Implements</h3>
-  <div>
-      <a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
-  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

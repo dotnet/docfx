@@ -8,7 +8,7 @@
     <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate Your Markdown Files | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -142,7 +142,7 @@ You can create a custom HTML tag rule to achieve this. </p>
 <ol>
 <li>Create a project in your code editor (e.g. Visual Studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
-<li>Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.html">ICustomMarkdownTagValidator</a>.</li>
+<li>Create a class and implement @Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.</li>
 <li>Add ExportAttribute with contract name.</li>
 </ol>
 <p>For example, we require HTML link (<code>&lt;a&gt;</code>) should not contain <code>onclick</code> attribute:</p>
@@ -199,7 +199,7 @@ For more information about template, please refer to our <a href="howto_build_yo
 <ol>
 <li>Create a project in your code editor (e.g. Visual Studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.MarkdownLite</code> and <code>Microsoft.Composition</code>.</li>
-<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html">IMarkdownTokenValidatorProvider</a><blockquote><p><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html">MarkdownTokenValidatorFactory</a> contains some helper methods to create a validator.</p>
+<li>Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider<blockquote><p>@Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some helper methods to create a validator.</p>
 </blockquote>
 </li>
 <li>Add ExportAttribute with rule name.</li>
@@ -226,15 +226,15 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 }
 </code></pre><p>Then follow the same steps in <a href="#how-to-enable-custom-html-tag-rules">How to enable custom HTML tag rules</a>, run <code>docfx</code> you&#39;ll see your rule executed.</p>
 <h3 id="logging-in-your-rules">Logging in your rules</h3>
-<p>As you can see in the above example, you can throw <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.DocumentException.html">DocumentException</a> to raise an error, this will stop the build immediately.</p>
-<p>You can also use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_">LogWarning(String, String, String, String)</a> and <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_">LogError(String, String, String, String)</a> to report a warning and an error respectively.</p>
+<p>As you can see in the above example, you can throw @Microsoft.DocAsCode.Plugins.DocumentException to raise an error, this will stop the build immediately.</p>
+<p>You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String) and @Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String) to report a warning and an error respectively.</p>
 <div class="NOTE"><h5>Note</h5><p>To use these methods, you need to install nuget package <code>Microsoft.DocAsCode.Common</code> first.</p>
 </div>
 <p>The different between <code>ReportError</code> and throw <code>DocumentException</code> is throwing exception will stop the build immediately but <code>ReportError</code> won&#39;t stop build but will eventually fail the build after rules are run.</p>
 <h3 id="advanced-validating-tokens-with-file-context">Advanced: validating tokens with file context</h3>
 <p>For some cases, we need to validate some tokens with file context.</p>
 <p>For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. <code># &lt;title&gt;</code>).
-But you cannot count them in <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html">IMarkdownTokenValidator</a>, it is shared by all files, and it will never be hit when there is no heading.</p>
+But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will never be hit when there is no heading.</p>
 <p>For this purpose, we need to create validator like following:</p>
 <pre><code class="lang-csharp">MarkdownTokenValidatorFactory.FromLambda&lt;MarkdownHeadingBlockToken&gt;(
     t =&gt;
@@ -258,10 +258,10 @@ But you cannot count them in <a class="xref" href="../api/Microsoft.DocAsCode.Ma
             }
         })
     });
-</code></pre><p>The <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory_FromLambda__1_System_Action___0__System_Action_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine__">FromLambda</a> method takes two callbacks:</p>
+</code></pre><p>The <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})">FromLambda</a> method takes two callbacks:</p>
 <ul>
-<li>The first will be invoked on <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html">MarkdownHeadingBlockToken</a> matched in all files.
-And the static property <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorContext_CurrentRewriteEngine">CurrentRewriteEngine</a> will provide current context object.</li>
+<li>The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
+And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.</li>
 <li>The second will be invoked on starting a new file.
 And you can initialize some variables for each file, and register some callbacks when the file completed.</li>
 </ul>
@@ -290,7 +290,7 @@ And we allow to add some plug-ins to validate metadata written in markdown files
 <ol>
 <li>Create a project in your code editor (e.g. Visual Studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
-<li>Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.IInputMetadataValidator.html">IInputMetadataValidator</a></li>
+<li>Create a class and implement @Microsoft.DocAsCode.Plugins.IInputMetadataValidator</li>
 </ol>
 <p>For example, the following validator prohibits any metadata with name <code>hello</code>:</p>
 <pre><code class="lang-csharp">[Export(typeof(IInputMetadataValidator))]

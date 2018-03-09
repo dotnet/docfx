@@ -8,7 +8,7 @@
     <title>Walkthrough: Customize a post processor to be incremental | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough: Customize a post processor to be incremental | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -78,7 +78,7 @@
 <h1 id="walkthrough-customize-a-post-processor-to-be-incremental">Walkthrough: Customize a post processor to be incremental</h1>
 
 <p>In this tutorial, we&#39;ll walk through how to enable a post processor to be incremental.</p>
-<h2 id="implement-microsoftdocascodepluginsisupportincrementalpostprocessor-for-the-post-processor">Implement <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor.html">ISupportIncrementalPostProcessor</a> for the post processor</h2>
+<h2 id="implement-microsoftdocascodepluginsisupportincrementalpostprocessor-for-the-post-processor">Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor for the post processor</h2>
 <pre><code class="lang-csharp">public class AppendIntegerPostProcessor : ISupportIncrementalPostProcessor
 {
     // to-do: implements IPostProcessor
@@ -91,7 +91,7 @@
     }
 }
 </code></pre><h2 id="optional-load-and-save-customized-context-information-from-cache">Optional: Load and save customized context information from cache</h2>
-<p><a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IPostProcessorHost.html">IPostProcessorHost</a> is the host to provide incremental post processing information as following.</p>
+<p>@Microsoft.DocAsCode.Plugins.IPostProcessorHost is the host to provide incremental post processing information as following.</p>
 <table>
 <thead>
 <tr>
@@ -103,7 +103,7 @@
 <tbody>
 <tr>
 <td>SourceFileInfos</td>
-<td>List of <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.SourceFileInfo.html">SourceFileInfo</a></td>
+<td>List of @Microsoft.DocAsCode.Plugins.SourceFileInfo</td>
 <td>Information of source files</td>
 </tr>
 <tr>
@@ -118,7 +118,7 @@
 </tr>
 </tbody>
 </table>
-<p><a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IPostProcessorHost.html">IPostProcessorHost</a> can also load and save customized context information per post processor in incremental cache.</p>
+<p>@Microsoft.DocAsCode.Plugins.IPostProcessorHost can also load and save customized context information per post processor in incremental cache.</p>
 <table>
 <thead>
 <tr>

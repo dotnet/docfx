@@ -8,7 +8,7 @@
     <title>Markdown Lite | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Markdown Lite | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -93,36 +93,36 @@ We follow GFM syntax, but when some rules is too hard to implement, just breakin
 Performance is not our major concern.</li>
 </ol>
 <h2 id="steps">Steps</h2>
-<p>There are three steps when calling <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownEngine_Markup_System_String_System_String_">markup method</a>:</p>
+<p>There are three steps when calling <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.Markup(System.String,System.String)">markup method</a>:</p>
 <ul>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html">Parse</a></li>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html">Rewrite</a> or <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html">validate</a></li>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">Render</a></li>
+<li><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownParser">Parse</a></li>
+<li><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter">Rewrite</a> or <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator">validate</a></li>
+<li><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer">Render</a></li>
 </ul>
 <h3 id="step-1-parse">Step 1: Parse</h3>
-<p>In this step, it will parse markdown text to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">tokens</a>.
-The parser is based on <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html">rules</a>, which make up the <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">context</a>.</p>
+<p>In this step, it will parse markdown text to <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken">tokens</a>.
+The parser is based on <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRule">rules</a>, which make up the <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownContext">context</a>.</p>
 <p>For example,
-<a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html">heading token</a> is created by <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule.html">heading rule</a>,
-the heading rule is belonging to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html">block context</a>.</p>
+<a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken">heading token</a> is created by <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule">heading rule</a>,
+the heading rule is belonging to <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext">block context</a>.</p>
 <h3 id="step-2-rewrite-or-validate">Step 2: Rewrite or validate</h3>
-<p>In this step, it will walk through all <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">tokens</a>,
+<p>In this step, it will walk through all <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken">tokens</a>,
 we can change it to another, or just validate.</p>
 <p>For example, we can create a rewriter to change all heading token with depth + 1:</p>
 <pre><code class="lang-csharp">MarkdownTokenRewriterFactory.FromLambda&lt;IMarkdownRewriteEngine, MarkdownHeadingBlockToken&gt;(
     (engine, token) =&gt; new MarkdownHeadingBlockToken(token.Rule, token.Context, token.Content, token.Id, token.Depth + 1, token.SourceInfo);
 </code></pre><h3 id="step-3-render">Step 3: Render</h3>
 <p>In this step, it renders models to text content (html format by default).
-To simplify extension, we created an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter.html">adapter</a>,
+To simplify extension, we created an <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter">adapter</a>,
 the adapter invoke methods by following rules:</p>
 <ol>
 <li>Method name is <code>Render</code></li>
 <li>Instance method</li>
-<li>Return type is <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.StringBuffer.html">StringBuffer</a></li>
+<li>Return type is @Microsoft.DocAsCode.MarkdownLite.StringBuffer</li>
 <li>The count of parameters is 3, and types are following:<ol>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">IMarkdownRenderer</a> or any type implements it.</li>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a> or any type implements it.</li>
-<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">IMarkdownContext</a> or any type implements it.</li>
+<li>@Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer or any type implements it.</li>
+<li>@Microsoft.DocAsCode.MarkdownLite.IMarkdownToken or any type implements it.</li>
+<li>@Microsoft.DocAsCode.MarkdownLite.IMarkdownContext or any type implements it.</li>
 </ol>
 </li>
 <li>Always invoke the best overloaded method (The best is defined by <a href="https://msdn.microsoft.com/en-us/library/microsoft.csharp.runtimebinder.binder.invoke(v=vs.110).aspx">binder</a>).</li>
@@ -131,7 +131,7 @@ the adapter invoke methods by following rules:</p>
 <p>Engine is a set of parser, rewriter and renderer.
 It can markup a markdown file to html file (or others).
 But it cannot be invoked in parallel.</p>
-<p>So we create an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder.html">engine builder</a>.
+<p>So we create an <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder">engine builder</a>.
 It defines all the rules of parser, rewriter and renderer.
 It can create instances when needed.</p>
 <h2 id="how-to-customize-markdown-syntax">How to customize markdown syntax</h2>

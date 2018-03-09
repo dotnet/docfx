@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.32.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.32.2) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.32.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="title" content="Version Notes (Current Version: v2.32.2) | DocFX website ">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -68,9 +68,19 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2321">Version Notes (Current Version: v2.32.1)</h1>
+<h1 id="version-notes-current-version-v2322">Version Notes (Current Version: v2.32.2)</h1>
 
-<h2 id="v2321">v2.32.1</h2>
+<h2 id="v2322">v2.32.2</h2>
+<ol>
+<li>Bug fixes:<ol>
+<li>Fix metadata broken with mono and linux (#2358).</li>
+<li>Partially fix metadata broken with latest VS 15.6 with workaround:<pre><code class="lang-batch">set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
+set VisualStudioVersion=15.0
+set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin
+</code></pre></li>
+</ol>
+</li>
+</ol>
 <h2 id="v232">v2.32</h2>
 <ol>
 <li>Support remove special host name from xref service.</li>
@@ -813,7 +823,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </li>
 <li>Improve performance for document build.</li>
 <li>Breaking changes:<ol>
-<li>modify interface <a class="xref" href="api/Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a>.</li>
+<li>modify interface @Microsoft.DocAsCode.Plugins.IDocumentBuildStep.</li>
 </ol>
 </li>
 </ol>
@@ -845,7 +855,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 </li>
 <li><p>Update yaml serializion:
-Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute.html">ExtensibleMemberAttribute</a></p>
+Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
 </li>
 <li>Improve <code>docfx init</code>, now with <code>docfx init</code>, a <code>docfx_project</code> seed project will will generated.</li>
 <li>Several improvements for <code>default</code> template:<ol>
@@ -900,10 +910,10 @@ Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMe
 </ol>
 </li>
 <li>Code improvements<ol>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html">Microsoft.DocAsCode.YamlSerialization</a>
+<li>Add @Microsoft.DocAsCode.YamlSerialization
 This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
-<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html">Microsoft.DocAsCode.MarkdownLite</a></li>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable-1.html">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
+<li>Refactor markdown engine @Microsoft.DocAsCode.MarkdownLite</li>
+<li>Add @Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1. It provides a way to operate markdown tokens.</li>
 </ol>
 </li>
 <li>Other improvements<ol>

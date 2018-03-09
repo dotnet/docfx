@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ItemViewModel
    | DocFX website ">
-    <meta name="generator" content="docfx 2.32.1.0">
+    <meta name="generator" content="docfx 2.32.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -171,7 +171,6 @@ public AdditionalNotes AdditionalNotes { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;assemblies&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;assemblies&quot;)]
 public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
   </div>
@@ -205,7 +204,6 @@ public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;attributes&quot;)]
 [JsonProperty(&quot;attributes&quot;)]
-[MergeOption(MergeOption.Ignore)]
 public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -237,7 +235,6 @@ public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;children&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;children&quot;)]
 public List&lt;string&gt; Children { get; set; }</code></pre>
   </div>
@@ -334,7 +331,6 @@ public string Conceptual { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;derivedClasses&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;derivedClasses&quot;)]
 public List&lt;string&gt; DerivedClasses { get; set; }</code></pre>
   </div>
@@ -400,7 +396,6 @@ public SourceDetail Documentation { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;example&quot;)]
 [JsonProperty(&quot;example&quot;)]
-[MergeOption(MergeOption.Replace)]
 public List&lt;string&gt; Examples { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -464,7 +459,6 @@ public List&lt;ExceptionInfo&gt; Exceptions { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;extensionMethods&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;extensionMethods&quot;)]
 public List&lt;string&gt; ExtensionMethods { get; set; }</code></pre>
   </div>
@@ -592,8 +586,7 @@ public string FullNameForVB { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;fullName.&quot;)]
-[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
 public SortedList&lt;string, string&gt; FullNames { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -689,7 +682,6 @@ public string Id { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;implements&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;implements&quot;)]
 public List&lt;string&gt; Implements { get; set; }</code></pre>
   </div>
@@ -722,7 +714,6 @@ public List&lt;string&gt; Implements { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritance&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;inheritance&quot;)]
 public List&lt;string&gt; Inheritance { get; set; }</code></pre>
   </div>
@@ -755,7 +746,6 @@ public List&lt;string&gt; Inheritance { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritedMembers&quot;)]
-[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;inheritedMembers&quot;)]
 public List&lt;string&gt; InheritedMembers { get; set; }</code></pre>
   </div>
@@ -851,8 +841,7 @@ public bool IsExtensionMethod { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ExtensibleMember]
-[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -883,9 +872,7 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;modifiers.&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
 public SortedList&lt;string, List&lt;string&gt;&gt; Modifiers { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1012,8 +999,7 @@ public string NameForVB { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;name.&quot;)]
-[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
 public SortedList&lt;string, string&gt; Names { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1076,8 +1062,7 @@ public string NamespaceName { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;nameWithType.&quot;)]
-[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
 public SortedList&lt;string, string&gt; NamesWithType { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1302,7 +1287,6 @@ public string Parent { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;platform&quot;)]
 [JsonProperty(&quot;platform&quot;)]
-[MergeOption(MergeOption.Replace)]
 public List&lt;string&gt; Platform { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1655,7 +1639,6 @@ public MemberType? Type { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;uid&quot;)]
 [JsonProperty(&quot;uid&quot;)]
-[MergeOption(MergeOption.MergeKey)]
 public string Uid { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1676,10 +1659,6 @@ public string Uid { get; set; }</code></pre>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html">IOverwriteDocumentViewModel</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
   </div>
 <div id="disqus_thread"></div>
                 <script>
