@@ -12,14 +12,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, NestedColumnBlock obj)
         {
-            renderer.Write("<div class=\"column").WriteAttributes(obj);
+            renderer.Write("<div class=\"column");
 
             if (obj.ColumnWidth != "1")
             {
                 renderer.Write($" span{obj.ColumnWidth}");
             }
-
-            renderer.WriteLine("\">");
+            renderer.Write("\"").WriteAttributes(obj);
+            renderer.WriteLine(">");
             renderer.WriteChildren(obj);
             renderer.WriteLine("</div>");
         }
