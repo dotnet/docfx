@@ -84,13 +84,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private void BuildCore(FileModel model, IHostService host)
         {
             var markdownService = (MarkdigMarkdownService)model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService;
-            var overwriteDocumentModelCreater = new OverwriteDocumentModelCreater(model.File);
+            var overwriteDocumentModelCreater = new OverwriteDocumentModelCreater(model.MarkdownFragmentsModel.OriginalFileAndType.File);
             var overwriteApplier = new OverwriteApplier(host, OverwriteModelType.MarkdownFragments);
             var schema = model.Properties.Schema as DocumentSchema;
             List<OverwriteDocumentModel> overwriteDocumentModels;
 
             // 1. string => AST(MarkdownDocument)
-            var ast = markdownService.Parse((string)model.MarkdownFragmentsModel.Content, model.File);
+            var ast = markdownService.Parse((string)model.MarkdownFragmentsModel.Content, model.MarkdownFragmentsModel.OriginalFileAndType.File);
 
             // 2 AST(MarkdownDocument) => MarkdownFragmentModel
             var fragments = new MarkdownFragmentsCreater().Create(ast);

@@ -31,12 +31,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly SchemaValidator _schemaValidator;
         private readonly bool _allowOverwrite;
         private readonly MarkdigMarkdownService _markdigMarkdownService;
+        private readonly FolderRedirectionManager _folderRedirectionManager;
         #endregion
 
         public SchemaValidator SchemaValidator => _schemaValidator;
         #region Constructors
 
-        public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container, MarkdigMarkdownService markdigMarkdownService)
+        public SchemaDrivenDocumentProcessor(
+            DocumentSchema schema,
+            ICompositionContainer container,
+            MarkdigMarkdownService markdigMarkdownService,
+            FolderRedirectionManager folderRedirectionManager)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
@@ -49,6 +54,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             _allowOverwrite = schema.AllowOverwrite;
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
             _markdigMarkdownService = markdigMarkdownService ?? throw new ArgumentNullException(nameof(MarkdigMarkdownService));
+            _folderRedirectionManager = folderRedirectionManager;
             if (container != null)
             {
                 var commonSteps = container.GetExports<IDocumentBuildStep>(nameof(SchemaDrivenDocumentProcessor));
@@ -109,6 +115,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         // load overwrite fragments
                         string markdownFragmentsContent = null;
                         var markdownFragmentsFile = file.File + ".md";
+                        if (_folderRedirectionManager != null)
+                        {
+                            markdownFragmentsFile = _folderRedirectionManager.GetRedirectedPath((RelativePath)markdownFragmentsFile).ToString();
+                        }
                         if (EnvironmentContext.FileAbstractLayer.Exists(markdownFragmentsFile))
                         {
                             markdownFragmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(markdownFragmentsFile);

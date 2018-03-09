@@ -326,6 +326,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.KeepFileLink = true;
             }
 
+            if (config.Pairing != null)
+            {
+                parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
+            }
+
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();

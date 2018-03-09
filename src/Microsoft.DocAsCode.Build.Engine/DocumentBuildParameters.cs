@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
@@ -87,6 +88,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string FALName { get; set; }
 
         public bool DisableGitFeatures { get; set; }
+
+        public ImmutableArray<FolderRedirectionRule> OverwriteFragmentsRedirectionRules { get; set; }
+            = ImmutableArray<FolderRedirectionRule>.Empty;
 
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
