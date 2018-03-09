@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 #if NET461
-using Microsoft.Build.MSBuildLocator;
+using Microsoft.Build.Locator;
 #endif
 
 #if NETCOREAPP2_0 || NET461
