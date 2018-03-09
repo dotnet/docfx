@@ -555,59 +555,65 @@ $(function () {
 
     function getHierarchy() {
       // supported headers are h1, h2, h3, and h4
-      // The topest header is ignored
-      var selector = ".article article";
-      var affixSelector = "#affix";
-      var headers = ['h4', 'h3', 'h2', 'h1'];
-      var hierarchy = [];
-      var toppestIndex = -1;
-      var startIndex = -1;
-      // 1. get header hierarchy
-      for (var i = headers.length - 1; i >= 0; i--) {
-        var header = $(selector + " " + headers[i]);
-        var length = header.length;
+      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function(h) { return ".article article " + h; }).join(", "));
 
-        // If contains no header in current selector, find the next one
-        if (length === 0) continue;
-
-        // If the toppest header contains only one item, e.g. title, ignore
-        if (length === 1 && hierarchy.length === 0 && toppestIndex < 0) {
-          toppestIndex = i;
-          continue;
+      // a stack of hierarchy items that are currently being built
+      var stack = [];
+      $headers.each(function(i, e){
+        if (!e.id) {
+          return;
         }
 
-        // Get second level children
-        var nextLevelSelector = i > 0 ? headers[i - 1] : null;
-        var prevSelector;
-        for (var j = length - 1; j >= 0; j--) {
-          var e = header[j];
-          var id = e.id;
-          if (!id) continue; // For affix, id is a must-have
-          var item = {
-            name: htmlEncode($(e).text()),
-            href: "#" + id,
-            items: []
-          };
-          if (nextLevelSelector) {
-            var selector = '#' + cssEscape(id) + "~" + nextLevelSelector;
-            var currentSelector = selector;
-            if (prevSelector) currentSelector += ":not(" + prevSelector + ")";
-            $(header[j]).siblings(currentSelector).each(function (index, e) {
-              if (e.id) {
-                item.items.push({
-                  name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
-                  href: "#" + e.id
-                })
-              }
-            })
-            prevSelector = selector;
+        var item = {
+          name: htmlEncode($(e).text()),
+          href: "#" + e.id,
+          items: []
+        };
+
+        if (!stack.length) {
+          stack.push({ type: e.tagName, siblings: [item] });
+          return;
+        }
+
+        var frame = stack[stack.length - 1];
+        if (e.tagName === frame.type) {
+          frame.siblings.push(item);
+        } else if (e.tagName[1] > frame.type[1]) {
+          // we are looking at a child of the last element of frame.siblings.
+          // push a frame onto the stack. After we've finished building this item's children,
+          // we'll attach it as a child of the last element
+          stack.push({ type: e.tagName, siblings: [item] });
+        } else {  // e.tagName[1] < frame.type[1]
+          // we are looking at a sibling of an ancestor of the current item.
+          // pop frames from the stack, building items as we go, until we reach the correct level at which to attach this item.
+          while (e.tagName[1] < stack[stack.length - 1].type[1]) {
+            buildParent();
           }
-          hierarchy.push(item);
+          if (e.tagName === stack[stack.length - 1].type) {
+            stack[stack.length - 1].siblings.push(item);
+          } else {
+            stack.push({ type: e.tagName, siblings: [item] });
+          }
         }
-        break;
-      };
-      hierarchy.reverse();
-      return hierarchy;
+      });
+      while (stack.length > 1) {
+        buildParent();
+      }
+      
+      function buildParent() {
+        var childrenToAttach = stack.pop();
+        var parentFrame = stack[stack.length - 1];
+        var parent = parentFrame.siblings[parentFrame.siblings.length - 1];
+        $.each(childrenToAttach.siblings, function(i, child) {
+          parent.items.push(child);
+        });
+      }
+
+      var topLevel = stack.pop().siblings;
+      if (topLevel.length === 1) {  // if there's only one topmost header, dump it
+        return topLevel[0].items;
+      }
+      return topLevel;
     }
 
     function htmlEncode(str) {
