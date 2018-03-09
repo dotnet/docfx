@@ -106,15 +106,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         // MUST be a dictionary
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
-                        // Validate against the schema first
-                        _schemaValidator.Validate(obj);
-
-                        // load overwrite segments
+                        // load overwrite fragments
                         string markdownFragmentsContent = null;
                         var markdownFragmentsFile = file.File + ".md";
                         if (EnvironmentContext.FileAbstractLayer.Exists(markdownFragmentsFile))
                         {
                             markdownFragmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(markdownFragmentsFile);
+                        }
+                        else
+                        {
+                            // Validate against the schema first, only when markdown fragments don't exist
+                            _schemaValidator.Validate(obj);
                         }
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
@@ -141,28 +143,25 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         {
                             LocalPathFromRoot = localPathFromRoot,
                         };
-                        if (markdownFragmentsContent != null)
-                        {
-                            fm.MarkdownFragmentsModel = new FileModel(
-                                file,
-                                markdownFragmentsContent,
-                                new FileAndType(
-                                    file.BaseDir,
-                                    markdownFragmentsFile,
-                                    DocumentType.MarkdownFragments,
-                                    file.SourceDir,
-                                    file.DestinationDir),
-                                new BinaryFormatter())
-                            {
-                                LocalPathFromRoot = PathUtility.MakeRelativePath(
-                                    EnvironmentContext.BaseDirectory,
-                                    EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile))
-                            };
-                            fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;
-                        }
-
+                        fm.MarkdownFragmentsModel = new FileModel(
+                            file,
+                            markdownFragmentsContent,
+                            new FileAndType(
+                                file.BaseDir,
+                                markdownFragmentsFile,
+                                DocumentType.MarkdownFragments,
+                                file.SourceDir,
+                                file.DestinationDir),
+                            new BinaryFormatter());
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
+                        fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;
+                        if (markdownFragmentsContent != null)
+                        {
+                            fm.MarkdownFragmentsModel.LocalPathFromRoot = PathUtility.MakeRelativePath(
+                                EnvironmentContext.BaseDirectory,
+                                EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile));
+                        }
                         return fm;
                     }
                     catch (YamlDotNet.Core.YamlException e)

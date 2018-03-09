@@ -1,11 +1,11 @@
 ﻿namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
     using System.Linq;
-
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -26,7 +26,7 @@
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
         private FileCollection _files;
-   
+
         private TestLoggerListener _listener;
         private string _rawModelFilePath;
 
@@ -267,6 +267,90 @@ markdown content
             Assert.Null(rawModel["summary"]);
         }
 
+        [Fact]
+        public void TestFragmentsWithIncremental()
+        {
+            using (var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental)))
+            {
+                // first build
+                using (new LoggerPhaseScope("FirstBuild"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.Null(rawModel["summary"]);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                ClearLog(listener.Items);
+
+                // add fragments
+                var mdFile = CreateFile(
+                    "Suppressions.yml.md",
+                    @"# `management.azure.com.advisor.suppressions`
+## ``summary``
+I add a summary.
+With [!include[invalid](invalid.md)]",
+                    _inputFolder);
+                using (new LoggerPhaseScope("AddFragments"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I add a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                List<string> lastMessages;
+                var messages = ClearLog(listener.Items);
+
+                // modify fragments
+                UpdateFile(
+                    "Suppressions.yml.md",
+                    new string[] { @"# `management.azure.com.advisor.suppressions`",
+                    "## ``summary``",
+                    "I update a summary.",
+                    "With [!include[invalid](invalid.md)]",
+                    },
+                    _inputFolder);
+                using (new LoggerPhaseScope("ModifyFragments"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I update a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                lastMessages = messages;
+                messages = ClearLog(listener.Items);
+                Assert.True(messages.SequenceEqual(lastMessages));
+
+                // rebuild
+                using (new LoggerPhaseScope("Rebuild"))
+                {
+                    BuildDocument(_files);
+                }
+                Assert.True(File.Exists(_rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+                Assert.NotNull(rawModel["summary"]);
+                Assert.Contains("I update a summary", rawModel["summary"].ToString());
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                lastMessages = messages;
+                messages = ClearLog(listener.Items);
+                Assert.True(messages.SequenceEqual(lastMessages));
+            }
+        }
+
+        private List<string> ClearLog(List<ILogItem> items)
+        {
+            var result = items.Select(i => i.Message).ToList();
+            items.Clear();
+            return result;
+        }
+
         private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
@@ -281,12 +365,6 @@ markdown content
             {
                 builder.Build(parameters);
             }
-        }
-
-        // TODO: remove this class when ApplyOverwriteFragments supports incremental and exports to all schemas
-        [Export("SchemaDrivenDocumentProcessor.RESTMixedTest", typeof(IDocumentBuildStep))]
-        public class ApplyOverwriteFragmentsForTest : ApplyOverwriteFragments
-        {
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

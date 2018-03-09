@@ -47,7 +47,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange()
                 .UseValidators(context, parameters)
-                .UseInteractiveCode();
+                .UseInteractiveCode()
+                .UseRow()
+                .UseNestedColumn();
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -211,6 +213,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new YamlHeaderExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.AddIfNotAlready<RowExtension>();
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.AddIfNotAlready<NestedColumnExtension>();
             return pipeline;
         }
     }

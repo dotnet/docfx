@@ -5,6 +5,7 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
 

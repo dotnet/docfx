@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case ".sln":
                     return FileType.Solution;
                 case ".csproj":
+                case ".fsproj":
                 case ".vbproj":
                     return FileType.Project;
                 case ".cs":

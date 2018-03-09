@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
     <description>This is a plugin for DocFX to split ManagedReference classes into member level pages. Members with the same overload name are grouped into one page, members with no overload are splited to one page per member. This package contains the plugin for ManagedReference document processor only.</description>
     <releaseNotes>The initial version to split class pages to member level.</releaseNotes>
-    <copyright>Copyright 2015-2017</copyright>
+    <copyright>Copyright 2015-2018</copyright>
     <tags>Documentation API Metadata docascode docfx plugin</tags>
   </metadata>
   <files>

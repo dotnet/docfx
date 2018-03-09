@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
     <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
@@ -14,6 +14,7 @@
     <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
 
     <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
+    <VersionFSFile Condition="'$(VersionFSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.fs</VersionFSFile>        
     <VersionFileExists Condition="Exists($(VersionCSFile))" >true</VersionFileExists>
 
     <GenerateAssemblyVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyVersionAttribute>
@@ -49,7 +50,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionCSFile)) And '$(MSBuildProjectExtension)' == '.csproj'" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionFSFile)) And '$(MSBuildProjectExtension)' == '.fsproj'" Include="$(VersionFSFile)" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

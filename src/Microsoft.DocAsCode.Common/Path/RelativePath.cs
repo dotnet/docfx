@@ -312,6 +312,49 @@ namespace Microsoft.DocAsCode.Common
             string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
             string.Join("/", _parts);
 
+        /// <summary>
+        /// Test whether a relative path starts with another folder relative path
+        /// Return false if either path starts with "../"
+        /// </summary>
+        public bool InDirectory(RelativePath value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            if (value._parts[value._parts.Length - 1] != "")
+            {
+                return false;
+            }
+            if (_isFromWorkingFolder ^ value._isFromWorkingFolder)
+            {
+                return false;
+            }
+            if (_parentDirectoryCount > 0 || value._parentDirectoryCount > 0)
+            {
+                return false;
+            }
+            if (_parts.Length < value._parts.Length)
+            {
+                return false;
+            }
+
+            int i;
+            for (i = 0; i < value._parts.Length; i++)
+            {
+                if (value._parts[i] == string.Empty)
+                {
+                    return true;
+                }
+                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(_parts[i], value._parts[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Private Members

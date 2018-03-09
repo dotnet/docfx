@@ -44,14 +44,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (colonCount < 3) return BlockState.None;
 
-            SkipSapces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "moniker", false))
             {
                 return BlockState.None;
             }
 
-            SkipSapces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "range=\"", false))
             {
@@ -104,21 +104,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var slice = processor.Line;
             var monikerRange = (MonikerRangeBlock)block;
 
-            SkipSapces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
-            SkipSapces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "moniker-end", false))
             {
                 return BlockState.Continue;
             }
 
-            var c = SkipSapces(ref slice);
+            var c = ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!c.IsZero())
             {
@@ -128,18 +128,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             block.UpdateSpanEnd(slice.End);
 
             return BlockState.BreakDiscard;
-        }
-
-        public char SkipSapces(ref StringSlice slice)
-        {
-            var c = slice.CurrentChar;
-
-            while (c.IsSpaceOrTab())
-            {
-                c = slice.NextChar();
-            }
-
-            return c;
         }
     }
 }

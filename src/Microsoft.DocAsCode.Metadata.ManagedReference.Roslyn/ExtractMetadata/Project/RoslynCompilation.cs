@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public RoslynCompilation(Compilation compilation)
         {
             _compilation = compilation;
+
         }
 
         public Compilation Compilation => _compilation;
