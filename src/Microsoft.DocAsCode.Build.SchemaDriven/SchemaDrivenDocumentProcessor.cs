@@ -154,18 +154,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             LocalPathFromRoot = localPathFromRoot,
                         };
                         fm.MarkdownFragmentsModel = new FileModel(
-                            file,
-                            markdownFragmentsContent,
                             new FileAndType(
                                 file.BaseDir,
                                 markdownFragmentsFile,
                                 DocumentType.MarkdownFragments,
                                 file.SourceDir,
                                 file.DestinationDir),
-                            new BinaryFormatter());
+                            markdownFragmentsContent,
+                            serializer: new BinaryFormatter());
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
                         fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;
+                        fm.MarkdownFragmentsModel.Properties.Metadata = pageMetadata;
                         if (markdownFragmentsContent != null)
                         {
                             fm.MarkdownFragmentsModel.LocalPathFromRoot = PathUtility.MakeRelativePath(
