@@ -3,6 +3,8 @@
 
 v2.33 (Pre-release)
 -----------
+1. Bug fix:
+   1. XRefService lookup of generic classes doesn't work (#2448)
 
 v2.32
 -----------
