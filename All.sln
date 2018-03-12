@@ -220,7 +220,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarkdownFragments", "Markdo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YamlSplitter", "tools\YamlSplitter\YamlSplitter.csproj", "{2CA09972-F737-459A-A79E-EB96CC726200}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Validator", "src\Microsoft.DocAsCode.MarkdigEngine.Validator\Microsoft.DocAsCode.MarkdigEngine.Validator.csproj", "{BD35FD90-4F00-4A19-9530-2279A6A15EE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Validators", "src\Microsoft.DocAsCode.MarkdigEngine.Validators\Microsoft.DocAsCode.MarkdigEngine.Validators.csproj", "{BD35FD90-4F00-4A19-9530-2279A6A15EE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

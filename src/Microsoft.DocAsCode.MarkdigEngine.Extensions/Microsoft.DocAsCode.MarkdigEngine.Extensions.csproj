@@ -6,7 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Validator\Microsoft.DocAsCode.MarkdigEngine.Validator.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Validators\Microsoft.DocAsCode.MarkdigEngine.Validators.csproj" />
   </ItemGroup>
 
 </Project>

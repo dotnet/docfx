@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine.Validator;
+    using Microsoft.DocAsCode.MarkdigEngine.Validators;
     
     [Export(ContractName, typeof(IMarkdownObjectValidatorProvider))]
     public class HtmlMarkdownObjectValidatorProvider : IMarkdownObjectValidatorProvider

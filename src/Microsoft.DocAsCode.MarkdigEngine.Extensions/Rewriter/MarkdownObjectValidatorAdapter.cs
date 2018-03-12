@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Immutable;
 
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Validator;
+    using Microsoft.DocAsCode.MarkdigEngine.Validators;
 
     internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     {

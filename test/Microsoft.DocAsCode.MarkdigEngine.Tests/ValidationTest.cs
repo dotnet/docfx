@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Markdig;
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine.Validator;
+    using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
