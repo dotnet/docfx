@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.MarkdigEngine.Validator;
 
     public class MarkdownValidatorBuilder
     {

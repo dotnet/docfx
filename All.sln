@@ -220,6 +220,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarkdownFragments", "Markdo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YamlSplitter", "tools\YamlSplitter\YamlSplitter.csproj", "{2CA09972-F737-459A-A79E-EB96CC726200}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Validator", "src\Microsoft.DocAsCode.MarkdigEngine.Validator\Microsoft.DocAsCode.MarkdigEngine.Validator.csproj", "{BD35FD90-4F00-4A19-9530-2279A6A15EE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1046,6 +1048,18 @@ Global
 		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|x64.Build.0 = Release|Any CPU
 		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|x86.ActiveCfg = Release|Any CPU
 		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|x86.Build.0 = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|x64.Build.0 = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1152,6 +1166,7 @@ Global
 		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{12B398BA-5002-40BE-A863-5B51FEB6EC68} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{2CA09972-F737-459A-A79E-EB96CC726200} = {12B398BA-5002-40BE-A863-5B51FEB6EC68}
+		{BD35FD90-4F00-4A19-9530-2279A6A15EE8} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}
