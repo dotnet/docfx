@@ -69,6 +69,23 @@ C: Good!
         }
 
         [Fact]
+        public void TestBasicClassWithNullCharactor()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "~" }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
+B: 1
+C: ""~""
+".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(1, value.B);
+            Assert.Equal("~", value.C);
+        }
+
+        [Fact]
         public void TestBoolean()
         {
             var sw = new StringWriter();
