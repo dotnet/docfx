@@ -98,6 +98,11 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             }
 
             var mime = YamlMime.ReadMime(ymlInputFile);
+            if (string.IsNullOrEmpty(mime))
+            {
+                Console.WriteLine("Cannot find MIME in ", ymlInputFile);
+                return;
+            }
             var schemaName = mime.Substring(YamlMime.YamlMimePrefix.Length);
             if (!schemas.ContainsKey(schemaName))
             {
