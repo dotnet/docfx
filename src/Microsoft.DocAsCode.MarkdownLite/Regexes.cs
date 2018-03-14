@@ -166,7 +166,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex LeadingBlockquote = new Regex(@"^ *> ?", RegexOptions.Multiline | RegexOptionCompiled);
             public static readonly Regex LeadingBullet = new Regex(@"^ *([*+-]|\d+\.) +", RegexOptionCompiled);
 
-            public static readonly Regex StartHtmlLink = new Regex(@"^<a ", RegexOptions.IgnoreCase | RegexOptionCompiled);
+            public static readonly Regex StartHtmlLink = new Regex(@"^<a [\s\S]*(?<!\/)>$", RegexOptions.IgnoreCase | RegexOptionCompiled);
             public static readonly Regex EndHtmlLink = new Regex(@"^<\/a>", RegexOptions.IgnoreCase | RegexOptionCompiled);
         }
 
