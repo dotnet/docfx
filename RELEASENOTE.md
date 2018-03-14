@@ -6,6 +6,7 @@ v2.33 (Pre-release)
 1. Bug fix:
    1. XRefService lookup of generic classes doesn't work (#2448)
    2. Fix yaml serialize for string '~' (#2519)
+   3. Fix link bug after `<a/>` in markdown (#2521)
 
 v2.32
 -----------
