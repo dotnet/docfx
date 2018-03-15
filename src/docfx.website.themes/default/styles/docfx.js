@@ -8,6 +8,7 @@ $(function () {
   var hide = 'hide';
   var util = new utility();
 
+  workAroundFixedHeaderForAnchors();
   highlight();
   enableSearch();
 
@@ -1024,4 +1025,65 @@ function renderTabs(){
       return this;
     }
   }
-})
+
+  // adjusted from https://stackoverflow.com/a/13067009/1523776
+  function workAroundFixedHeaderForAnchors() {
+    var HISTORY_SUPPORT = !!(history && history.pushState);
+    var ANCHOR_REGEX = /^#[^ ]+$/;
+
+    function getFixedOffset() {
+      return $('header').first().height();
+    }
+  
+    /**
+     * If the provided href is an anchor which resolves to an element on the
+     * page, scroll to it.
+     * @param  {String} href
+     * @return {Boolean} - Was the href an anchor.
+     */
+    function scrollIfAnchor(href, pushToHistory) {
+      var match, rect, anchorOffset;
+
+      if(!ANCHOR_REGEX.test(href)) {
+        return false;
+      }
+
+      match = document.getElementById(href.slice(1));
+
+      if(match) {
+        rect = match.getBoundingClientRect();
+        anchorOffset = window.pageYOffset + rect.top - getFixedOffset();
+        window.scrollTo(window.pageXOffset, anchorOffset);
+
+        // Add the state to history as-per normal anchor links
+        if(HISTORY_SUPPORT && pushToHistory) {
+          history.pushState({}, document.title, location.pathname + href);
+        }
+      }
+
+      return !!match;
+    }
+  
+    /**
+     * Attempt to scroll to the current location's hash.
+     */
+    function scrollToCurrent() {
+      scrollIfAnchor(window.location.hash);
+    }
+
+    /**
+     * If the click event's target was an anchor, fix the scroll position.
+     */
+    function delegateAnchors(e) {
+      var elem = e.target;
+
+      if(scrollIfAnchor(elem.getAttribute('href'), true)) {
+        e.preventDefault();
+      }
+    }
+
+    $(window).on('hashchange', scrollToCurrent);
+    $(document.body).click('a', delegateAnchors);
+    scrollToCurrent();
+  }
+});
