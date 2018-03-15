@@ -81,7 +81,7 @@ If adding option `--shouldSkipMarkup` in metadata command, it means that DocFX w
 
 e.g. `docfx metadata --shouldSkipMarkup`
 
-#### 2.2.2 Command option `--property <n1>=<v1>;<n2>=<v2>`
+#### 2.2.3 Command option `--property <n1>=<v1>;<n2>=<v2>`
 An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument.
 For example: `docfx metadata --property TargetFramework=net46` generates metadata files with .NET framework 4.6. This command can be used when the project supports multiple `TargetFrameworks`.
 
