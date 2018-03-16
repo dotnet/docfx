@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     class XrefInlineShortParser : InlineParser
     {
         private const string ContinuableCharacters = ".,;:!?~";
-        private const string StopCharacters = @"""'<>";
+        private const string StopCharacters = @"""'<>[]|";
 
         public XrefInlineShortParser()
         {
