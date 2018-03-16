@@ -2,3 +2,5 @@
   href: intro_multiple_langs_support.md
 - name: JavaScript
   href: gen_doc_for_js.md
+- name: TypeScript
+  href: gen_doc_for_ts.md
