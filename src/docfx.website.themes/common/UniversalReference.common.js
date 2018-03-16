@@ -20,6 +20,7 @@ exports.transform = function (model) {
         model.isNamespace = true;
         if (model.children) groupChildren(model, namespaceCategory);
         break;
+      case 'package':
       case 'class':
       case 'interface':
       case 'struct':
@@ -256,7 +257,8 @@ function getDefinitions(category) {
     "struct":       { inStruct: true,       typePropertyName: "inStruct",       id: "structs" },
     "interface":    { inInterface: true,    typePropertyName: "inInterface",    id: "interfaces" },
     "enum":         { inEnum: true,         typePropertyName: "inEnum",         id: "enums" },
-    "delegate":     { inDelegate: true,     typePropertyName: "inDelegate",     id: "delegates" }
+    "delegate":     { inDelegate: true,     typePropertyName: "inDelegate",     id: "delegates" },
+    "package":      { inDelegate: true,     typePropertyName: "inPackage",      id: "packages" }
   };
   var classItems = {
     "constructor":  { inConstructor: true,  typePropertyName: "inConstructor",  id: "constructors" },

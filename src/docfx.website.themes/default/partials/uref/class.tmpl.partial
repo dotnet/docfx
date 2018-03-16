@@ -24,7 +24,7 @@
 <h5 class="decalaration">{{__global.declaration}}</h5>
 {{#syntax}}
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
+  <pre><code class="lang-{{syntax.content.0.lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
 {{#parameters.0}}
 <h5 class="parameters">{{__global.parameters}}</h5>
@@ -101,8 +101,8 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{{type.specName.0.value}}}</td>
-      <td>{{{description}}}</td>
+      <td>{{{value.type.0.specName.0.value}}}</td>
+      <td>{{{value.description}}}</td>
     </tr>
   </tbody>
 </table>
@@ -118,8 +118,8 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{{type.specName.0.value}}}</td>
-      <td>{{{description}}}</td>
+      <td>{{{value.type.0.specName.0.value}}}</td>
+      <td>{{{value.description}}}</td>
     </tr>
   </tbody>
 </table>
@@ -178,12 +178,12 @@
   </thead>
   <tbody>
 {{/exceptions.0}}
-{{#exceptions}}
+{{#exceptions.0.value}}
     <tr>
       <td>{{{type.specName.0.value}}}</td>
       <td>{{{description}}}</td>
     </tr>
-{{/exceptions}}
+{{/exceptions.0.value}}
 {{#exceptions.0}}
   </tbody>
 </table>
