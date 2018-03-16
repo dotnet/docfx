@@ -3,10 +3,12 @@
 
 v2.33 (Pre-release)
 -----------
-1. Bug fix:
+1. Support generating API reference for TypeScript (#2220)
+2. Bug fix:
    1. XRefService lookup of generic classes doesn't work (#2448)
    2. Fix yaml serialize for string '~' (#2519)
    3. Fix link bug after `<a/>` in markdown (#2521)
+   4. Fix VSTS's git url under detached HEAD (#2516)
 
 v2.32
 -----------
