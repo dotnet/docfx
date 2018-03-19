@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.33)
 =======================================
 
-v2.33 (Pre-release)
+v2.33
 -----------
 1. Support generating API reference for TypeScript (#2220)
 2. Bug fix:
