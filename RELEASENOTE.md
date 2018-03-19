@@ -10,6 +10,17 @@ v2.33 (Pre-release)
    3. Fix link bug after `<a/>` in markdown (#2521)
    4. Fix VSTS's git url under detached HEAD (#2516)
 
+v2.32.2
+-----------
+1. Bug fixes:
+   1. Fix metadata broken with mono and linux (#2358).
+   2. Partially fix metadata broken with latest VS 15.6 with workaround:
+      ```batch
+      set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
+      set VisualStudioVersion=15.0
+      set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin
+      ```
+
 v2.32
 -----------
 1. Support remove special host name from xref service.
