@@ -61,12 +61,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
         {
-            var tokenRewriter = context.Mvb.CreateRewriter();
-            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
+            var tokenValidator = context.Mvb.CreateRewriter();
+            var documentValidators = context.Mvb.CreateMarkdownDocumentValidators();
+            var visitor = new MarkdownDocumentVisitor(tokenValidator);
 
             pipeline.DocumentProcessed += document =>
             {
                 visitor.Visit(document);
+                foreach(var validator in documentValidators)
+                {
+                    validator.Validate(document);
+                }
             };
 
             return pipeline;

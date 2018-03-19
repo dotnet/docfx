@@ -301,11 +301,58 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.Equal(expectedMessage, message);
         }
 
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestMarkdownDocumentValidator()
+        {
+            const string content = "## Hello World";
+            const string expected = "<h2>Hello World</h2>\n";
+            const string expectedMessage = "H1 should be in the first line";
+            string message = null;
+
+            var markdownValidator = MarkdownDocumentValidationFactory.FromLambda(
+                document =>
+                {
+                    if (document.First() is HeadingBlock heading)
+                    {
+                        if (heading.Level != 1)
+                        {
+                            message = expectedMessage;
+                        };
+                    }
+                });
+
+            var html = Markup(content, markdownValidator, null);
+            Assert.Equal(expected.Replace("\r\n", "\n"), html);
+            Assert.Equal(expectedMessage, message);
+        }
+
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();
             var documentRewriter = new MarkdownDocumentVisitor(rewriter);
             pipelineBuilder.DocumentProcessed += document => documentRewriter.Visit(document);
+
+            var pipeline = pipelineBuilder.Build();
+
+            if (listener != null)
+            {
+                Logger.RegisterListener(listener);
+            }
+
+            var html = Markdown.ToHtml(content, pipeline);
+            if (listener != null)
+            {
+                Logger.UnregisterListener(listener);
+            }
+
+            return html;
+        }
+
+        private string Markup(string content, IMarkdownDocumentValidator validator, TestLoggerListener listener = null)
+        {
+            var pipelineBuilder = new MarkdownPipelineBuilder();
+            pipelineBuilder.DocumentProcessed += document => validator.Validate(document);
 
             var pipeline = pipelineBuilder.Build();
 
