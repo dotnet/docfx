@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
 
-        public ICompositionContainer Container { get; }
+        private ICompositionContainer Container { get; }
 
         public MarkdownValidatorBuilder(ICompositionContainer container)
         {
@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        public void AddTagValidators(MarkdownTagValidationRule[] validators)
+        internal void AddTagValidators(MarkdownTagValidationRule[] validators)
         {
             if (validators == null)
             {
@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        public void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
+        internal void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
         {
             if (validators == null)
             {
@@ -144,7 +144,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        public void AddSettings(MarkdownValidationSetting[] settings)
+        internal void AddSettings(MarkdownValidationSetting[] settings)
         {
             if (settings == null)
             {
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        public void EnsureDefaultValidator()
+        private void EnsureDefaultValidator()
         {
             if (!_globalValidators.ContainsKey(DefaultValidatorName))
             {

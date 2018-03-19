@@ -301,6 +301,34 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.Equal(expectedMessage, message);
         }
 
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestMarkdownDocumentValidator()
+        {
+            const string content = "## Hello World";
+            const string expected = "<h2>Hello World</h2>\n";
+            const string expectedMessage = "H1 should be in the first line";
+            string message = null;
+
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
+                MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
+                    root =>
+                    {
+                        if (root.First() is HeadingBlock heading)
+                        {
+                            if (heading.Level != 1)
+                            {
+                                message = expectedMessage;
+                            }
+                        }
+                    })
+                );
+
+            var html = Markup(content, rewriter, null);
+            Assert.Equal(expected.Replace("\r\n", "\n"), html);
+            Assert.Equal(expectedMessage, message);
+        }
+
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();

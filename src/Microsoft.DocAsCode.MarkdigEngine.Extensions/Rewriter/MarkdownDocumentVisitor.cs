@@ -23,7 +23,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             _rewriter.PreProcess(document);
+
+            // rewrite root node of AST
+            document = _rewriter.Rewrite(document) as MarkdownDocument;
             RewriteContainerBlock(document);
+
             _rewriter.PostProcess(document);
         }
 
