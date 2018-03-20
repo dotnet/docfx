@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
 
@@ -17,13 +18,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Visit(MarkdownDocument document)
         {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
             if (_rewriter == null)
             {
                 return;
             }
 
             _rewriter.PreProcess(document);
+
+            // rewrite root node of AST
+            document = _rewriter.Rewrite(document) as MarkdownDocument;
+            if (document == null)
+            {
+                throw new InvalidOperationException("The result of rewriting a root node in AST can't be null.");
+            }
+
             RewriteContainerBlock(document);
+
             _rewriter.PostProcess(document);
         }
 
