@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var path = RelativePath.TryParse(href);
+            var path = RelativePath.TryParse(href)?.UrlDecode();
             if (path == null)
             {
                 throw new ArgumentException("only relative path is supported", nameof(href));
@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Common
             };
             if (path.IsFromWorkingFolder())
             {
-                var targetInSource = path.UrlDecode();
+                var targetInSource = path;
                 fli.ToFileInSource = targetInSource.RemoveWorkingFolder();
                 fli.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
                 fli.FileLinkInSource = targetInSource - (RelativePath)fromFileInSource;
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Common
             }
             else
             {
-                fli.FileLinkInSource = path.UrlDecode();
+                fli.FileLinkInSource = path;
                 fli.ToFileInSource = ((RelativePath)fromFileInSource + path).RemoveWorkingFolder();
                 fli.FileLinkInDest = fli.FileLinkInSource;
                 fli.Href = href;
