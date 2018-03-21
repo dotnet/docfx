@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.33)
+﻿Version Notes (Current Version: v2.33.1)
 =======================================
+v2.33.1
+-----------
+1. Enable emoji in markdig
+2. Decode href in FileLinkInfo
 
 v2.33
 -----------
