@@ -16,7 +16,7 @@ git clone https://github.com/Azure/azure-iot-sdk-node.git
 
 
 ### 2.2 Generate Metadata for a package
-We use [typedoc](hhttp://typedoc.org/) tool and [type2docfx](https://www.npmjs.com/package/type2docfx) to generate YAML files.
+We use [typedoc](http://typedoc.org/) tool and [type2docfx](https://www.npmjs.com/package/type2docfx) to generate YAML files.
 
 First, let's install the tools globally.
 ```
