@@ -15,17 +15,30 @@ git clone https://github.com/Azure/azure-iot-sdk-node.git
 ```
 
 
-### 2.2 Generate Metadata
-We use [ts-reference-ci-scripts](https://www.npmjs.com/package/ts-reference-ci-scripts) tool to generate YAML files.
+### 2.2 Generate Metadata for a package
+We use [typedoc](hhttp://typedoc.org/) tool and [type2docfx](https://www.npmjs.com/package/type2docfx) to generate YAML files.
+
+First, let's install the tools globally.
 ```
-npm install ts-reference-ci-scripts -g
+npm intall -g typedoc, type2docfx
 ```
 
-Now we can extract metadata from TypeScript source code:
+#### 2.2.1 TypeDoc to parse source code into a JSON format output
+Go to the folder where package.json file locate.
+Run
 ```
-ts-reference-ci-scripts azure-iot-sdk-node/device/core --destPathWithoutSuffix yml
+typedoc --json api.json /src --module commonjs --includeDeclarations --ignoreCompilerErrors --excludeExternals
 ```
-This scirpt will find all `package.json` under `azure-iot-sdk-node/device/core` folder, and generate metadata from TypeScript source code under it.
+
+The parameter may differ for your needs. You can use `typedoc -h` to explore more options.
+
+
+#### 2.2.2 Type2docfx to extract the JSON format output into YAML files
+Find the output `api.json` file and run:
+```
+type2docfx api.json outputYAML
+```
+`outputYAML` stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by `type2docfx -h`. With `--sourceUrl, --sourceBranch, and --basePath` parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.
 
 > [!NOTE]
 >
