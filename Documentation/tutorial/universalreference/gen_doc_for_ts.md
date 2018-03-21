@@ -20,14 +20,14 @@ We use [typedoc](http://typedoc.org/) tool and [type2docfx](https://www.npmjs.co
 
 First, let's install the tools globally.
 ```
-npm intall -g typedoc, type2docfx
+npm intall -g typedoc type2docfx
 ```
 
 #### 2.2.1 TypeDoc to parse source code into a JSON format output
 Go to the folder where package.json file locate.
 Run
 ```
-typedoc --json api.json /src --module commonjs --includeDeclarations --ignoreCompilerErrors --excludeExternals
+typedoc --json api.json azure-iot-sdk-node/device/core/src --module commonjs --includeDeclarations --ignoreCompilerErrors --excludeExternals
 ```
 
 The parameter may differ for your needs. You can use `typedoc -h` to explore more options.
@@ -36,7 +36,7 @@ The parameter may differ for your needs. You can use `typedoc -h` to explore mor
 #### 2.2.2 Type2docfx to extract the JSON format output into YAML files
 Find the output `api.json` file and run:
 ```
-type2docfx api.json outputYAML
+type2docfx api.json yml
 ```
 `outputYAML` stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by `type2docfx -h`. With `--sourceUrl, --sourceBranch, and --basePath` parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.
 
