@@ -38,7 +38,7 @@ Find the output `api.json` file and run:
 ```
 type2docfx api.json yml
 ```
-`outputYAML` stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by `type2docfx -h`. With `--sourceUrl, --sourceBranch, and --basePath` parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.
+The `yml` stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by `type2docfx -h`. With `--sourceUrl, --sourceBranch, and --basePath` parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.
 
 > [!NOTE]
 >
