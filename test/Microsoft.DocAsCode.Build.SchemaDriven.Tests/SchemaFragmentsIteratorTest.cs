@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             Assert.Single(counter.ExistingUids);
             Assert.Equal("management.azure.com.advisor.suppressions", counter.ExistingUids[0]);
             Assert.Single(counter.ExistingMarkdownProperties);
-            Assert.Equal("/summary", counter.ExistingMarkdownProperties[0]);
+            Assert.Equal("definitions[name=\"Application 1\"]/properties[name=\"id\"]/description", counter.ExistingMarkdownProperties[0]);
             Assert.Equal(6, counter.MissingMarkdownProperties.Count);
         }
 

@@ -1,7 +1,6 @@
 ﻿### YamlMime:RESTMixedTest
 uid: management.azure.com.advisor.suppressions
 name: Suppressions
-summary: This summary will be overwritten by the one in MarkdownFragments
 operations:
 - id: management.azure.com.advisor.suppressions.create
 definitions:
@@ -9,6 +8,7 @@ definitions:
   kind: object
   properties:
   - name: id
+    description: this will be overwritten in MarkdownFragments
     types:
     - uid: string
   - name: displayName
