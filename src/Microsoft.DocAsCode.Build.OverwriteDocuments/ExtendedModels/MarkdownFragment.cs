@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 {
     using Microsoft.DocAsCode.Common;
 
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 
         public override string ToString()
         {
-            string uidWrapper = FragmentModelHelper.GetUidWrapper(Uid);
+            string uidWrapper = OverwriteUtility.GetUidWrapper(Uid);
             StringBuilder sb = new StringBuilder();
             sb.Append("# " + uidWrapper);
             sb.Append(Uid);

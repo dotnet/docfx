@@ -7,8 +7,10 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
 
-    public class OverwriteUtility
+    public static class OverwriteUtility
     {
+        private static readonly string[] UidWrappers = { "`", "``", "```", "````", "`````", "``````" };
+
         private static readonly Regex OPathRegex =
             new Regex(
                 @"^(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?(?:\/|$)",
@@ -52,6 +54,73 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 leftString = leftString.Substring(match.Length);
             }
             return OPathSegments;
+        }
+
+        public static string GetUidWrapper(string uid)
+        {
+            int wrapperCount = 0;
+            int lastPos = 0;
+            for (int i = 0; i < uid.Length; i++)
+            {
+                if (uid[i] == '`')
+                {
+                    wrapperCount = System.Math.Max(wrapperCount, i - lastPos);
+                }
+                else
+                {
+                    lastPos = i;
+                }
+            }
+            return UidWrappers[wrapperCount];
+        }
+
+        public static void AddOrUpdateFragmentEntity(this Dictionary<string, MarkdownFragment> fragments, string uid, Dictionary<string, object> metadata = null)
+        {
+            if (!fragments.ContainsKey(uid))
+            {
+                fragments.Add(uid, new MarkdownFragment()
+                {
+                    Uid = uid,
+                    Properties = new Dictionary<string, MarkdownProperty>(),
+                    Metadata = metadata
+                });
+            }
+            fragments[uid].Metadata = MergeMetadata(fragments[uid].Metadata, metadata);
+        }
+
+        public static void AddOrUpdateFragmentProperty(this MarkdownFragment fragment, string oPath, string content = null, Dictionary<string, object> metadata = null)
+        {
+            if (!fragment.Properties.ContainsKey(oPath))
+            {
+                fragment.Properties[oPath] = new MarkdownProperty()
+                {
+                    OPath = oPath
+                };
+            }
+            if (string.IsNullOrEmpty(fragment.Properties[oPath].Content))
+            {
+                fragment.Properties[oPath].Content = string.IsNullOrWhiteSpace(content) ? "" : content.Trim('\n', '\r');
+            }
+            fragment.Metadata = MergeMetadata(fragment.Metadata, metadata);
+        }
+
+        private static Dictionary<string, object> MergeMetadata(Dictionary<string, object> left, Dictionary<string, object> right)
+        {
+            if (left == null)
+            {
+                return right;
+            }
+            if (right?.Count > 0)
+            {
+                foreach (var pair in right)
+                {
+                    if (!left.ContainsKey(pair.Key))
+                    {
+                        left[pair.Key] = right[pair.Key];
+                    }
+                }
+            }
+            return left;
         }
     }
 }

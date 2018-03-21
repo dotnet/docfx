@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 {
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Build.OverwriteDocuments;
+
     public class FragmentFile
     {
         public Dictionary<string, MarkdownFragment> FragmentsByUid { get; set; }
