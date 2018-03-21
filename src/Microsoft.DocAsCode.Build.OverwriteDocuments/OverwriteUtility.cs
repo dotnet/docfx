@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
             if (string.IsNullOrEmpty(fragment.Properties[oPath].Content))
             {
-                fragment.Properties[oPath].Content = string.IsNullOrWhiteSpace(content) ? "" : content.Trim('\n', '\r');
+                fragment.Properties[oPath].Content = string.IsNullOrWhiteSpace(content) ? string.Empty : content.Trim('\n', '\r');
             }
             fragment.Metadata = MergeMetadata(fragment.Metadata, metadata);
         }

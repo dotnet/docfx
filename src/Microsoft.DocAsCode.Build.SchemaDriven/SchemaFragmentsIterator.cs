@@ -8,13 +8,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
+    using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json.Schema;
     using YamlDotNet.RepresentationModel;
 
     public class SchemaFragmentsIterator
     {
-        ISchemaFragmentsHandler _handler;
+        private readonly ISchemaFragmentsHandler _handler;
 
         public SchemaFragmentsIterator(ISchemaFragmentsHandler handler)
         {
@@ -62,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
                 else if (string.IsNullOrEmpty(uid))
                 {
-                    Console.WriteLine("Cannot find Uid, aborting...");
+                    Logger.LogError("Cannot find Uid");
                     return;
                 }
 
@@ -88,7 +89,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 if (string.IsNullOrEmpty(uid))
                 {
-                    Console.WriteLine("Cannot find Uid, aborting...");
+                    Logger.LogError("Cannot find Uid");
                     return;
                 }
                 if (schema.Items != null && schema.Items.Properties.Any(s => s.Value.ContentType == ContentType.Markdown || s.Value.Type == JSchemaType.Object || s.Value.Type == JSchemaType.Array))
