@@ -175,7 +175,7 @@ namespace Test1
                 Assert.NotNull(returnValue);
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Nullable{{TResult}}", returnValue.Type);
-                Assert.Equal(@"public TResult? Func1<TResult>(T? x, IEnumerable<T> y)where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public TResult? Func1<TResult>(T? x, IEnumerable<T> y)\r\n    where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, function.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -657,7 +657,7 @@ namespace Test1
                 Assert.Equal("Bar<T>", type.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar`1", type.Name);
-                Assert.Equal(@"public delegate T Bar<T>(IEnumerable<T> x = null)where T : class;", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public delegate T Bar<T>(IEnumerable<T> x = null)\r\n    where T : class;", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
 
                 Assert.NotNull(type.Syntax.Parameters);
@@ -739,7 +739,7 @@ namespace Test1
                 Assert.Equal("Foo<T>.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M2``1(``0)", method.Name);
-                Assert.Equal("protected virtual Foo<T> M2<TArg>(TArg arg)where TArg : Foo<T>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected virtual Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<T>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "protected", "virtual" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -749,7 +749,7 @@ namespace Test1
                 Assert.Equal("Foo<T>.M3<TResult>(String)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.M3<TResult>(System.String)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M3``1(System.String)", method.Name);
-                Assert.Equal("public static TResult M3<TResult>(string x)where TResult : class", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public static TResult M3<TResult>(string x)\r\n    where TResult : class", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -782,7 +782,7 @@ namespace Test1
                 Assert.Equal("Bar.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2``1(``0)", method.Name);
-                Assert.Equal("protected override sealed Foo<T> M2<TArg>(TArg arg)where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected override sealed Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.M2``1({TArg})", method.Overridden);
             }
             {
@@ -792,7 +792,7 @@ namespace Test1
                 Assert.Equal("Bar.M5<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M5<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M5``1(``0)", method.Name);
-                Assert.Equal("public int M5<TArg>(TArg arg)where TArg : struct, new ()", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public int M5<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5``1({TArg})", method.Implements[0]);
             }
@@ -814,7 +814,7 @@ namespace Test1
                 Assert.Equal("IFooBar.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M2``1(``0)", method.Name);
-                Assert.Equal("Foo<T> M2<TArg>(TArg arg)where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -824,7 +824,7 @@ namespace Test1
                 Assert.Equal("IFooBar.M5<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M5``1(``0)", method.Name);
-                Assert.Equal("int M5<TArg>(TArg arg)where TArg : struct, new ()", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("int M5<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
@@ -2475,12 +2475,12 @@ namespace Test1
             Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
-[TypeConverter(typeof (TestAttribute))]
-[TypeConverter(typeof (TestAttribute[]))]
+[TypeConverter(typeof(TestAttribute))]
+[TypeConverter(typeof(TestAttribute[]))]
 [Test(""test"")]
 [Test(new int[]{1, 2, 3})]
 [Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
-[Test(new Type[]{typeof (Func<>), typeof (Func<, >), typeof (Func<string, string>)})]
+[Test(new Type[]{typeof(Func<>), typeof(Func<, >), typeof(Func<string, string>)})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
 
             Assert.NotNull(@class.Attributes);
@@ -2684,7 +2684,7 @@ namespace Test1
             Assert.Equal(1, foo.Items.Count);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
-            Assert.Equal("public int Bar(int x = default (int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar(int x = default(int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
