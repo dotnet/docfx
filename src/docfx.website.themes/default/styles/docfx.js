@@ -37,6 +37,7 @@ $(function () {
     renderTabs();
   }
 
+  // Add this event listener when needed
   // window.addEventListener('content-update', contentUpdate);
 
   function breakText() {
@@ -981,6 +982,7 @@ $(function () {
     }
 
     function notifyContentUpdated() {
+      // Dispatch this event when needed
       // window.dispatchEvent(new CustomEvent('content-update'));
     }
   }
