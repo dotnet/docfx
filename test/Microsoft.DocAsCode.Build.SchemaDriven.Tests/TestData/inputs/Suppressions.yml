@@ -8,6 +8,7 @@ definitions:
   kind: object
   properties:
   - name: id
+    description: this will be overwritten in MarkdownFragments
     types:
     - uid: string
   - name: displayName
