@@ -209,6 +209,62 @@ For it to be organized and shown to website, we also need to modify our `D:\docf
 Now, let's run `docfx --serve` again, and the website is now:
 ![Step4](images/walkthrough2_step4.png).
 
+Step5. Combine conceptual and reference information in the left-side nav bar.
+------------------------------------------------------------------------------
+The left-side nav bar can contain links to both conceptual information (overview, getting started, etc.) and reference information. In this example, assume that this is the `toc.yml` file at root. (It determines what's in the main horizontal menu bar.)
+
+```yml
+- name: Home
+  href: index.md
+- name: Articles
+  href: articles/
+- name: API Documentation
+  href: obj/api/
+- name: REST API
+  href: restapi/
+  ```
+
+Add a new folder at root (e.g., `fusion`).
+
+Inside `fusion`, add `toc.yml`:
+
+```
+- name: Conceptual
+  href: ../articles/toc.md
+- name: Reference
+  href: ../obj/api/toc.yml
+```
+In `toc.yml` at root, replace the link to `../obj/api/toc.yml` with the path to `fusion`:
+
+```yml
+- name: Home
+  href: index.md
+- name: Articles
+  href: articles/
+  homepage: articles/docfx_getting_started.md
+- name: API Documentation
+  href: fusion/
+- name: REST API
+  href: restapi/
+```
+
+Add the `fusion` folder in `docfx.json` so the project includes it:
+
+```json
+"content": [
+  { 
+    "files": "fusion/**"
+  }
+]
+```
+The output:
+
+![Step5](images/walkthrough2_step5.png).
+
+The [docfx-seed sample project repo](https://github.com/docascode/docfx-seed) is another example of this kind of setup.
+
+More details: http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file
+
 Conclusion
 ---------
 In this walkthrough, we build a website containing both **Conceptual Documentation** and **API Documentation**. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
