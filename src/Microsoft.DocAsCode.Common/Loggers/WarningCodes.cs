@@ -41,10 +41,5 @@ namespace Microsoft.DocAsCode.Common
             public const string DuplicateOPaths = "DuplicateOPaths";
             public const string InvalidMarkdownFragments = "InvalidMarkdownFragments";
         }
-
-        public static class Fragments
-        {
-            public const string OverwriteUneditableProperty = "OverwriteUneditableProperty";
-        }
     }
 }

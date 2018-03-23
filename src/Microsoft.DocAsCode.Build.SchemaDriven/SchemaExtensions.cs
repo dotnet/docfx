@@ -8,20 +8,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public static class SchemaExtensions
     {
-        private const string IsRequiredInFragmentsTag = "editable";
-
-        private const string IsLegalInFragmentsTag = "editable";
+        private const string IsEditableTag = "editable";
 
         /// <summary>
-        /// Return if a property is required to appear in markdown fragments
+        /// Return if a property is editable
         /// </summary>
-        public static bool IsRequiredInFragments(this BaseSchema schema)
-            => schema.Tags.Contains(IsRequiredInFragmentsTag, StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Return if a property is legal to appear in markdown fragmetns
-        /// </summary>
-        public static bool IsLegalInFragments(this BaseSchema schema)
-            => schema.Tags.Contains(IsLegalInFragmentsTag, StringComparer.OrdinalIgnoreCase);
+        public static bool IsEditable(this BaseSchema schema)
+            => schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
     }
 }

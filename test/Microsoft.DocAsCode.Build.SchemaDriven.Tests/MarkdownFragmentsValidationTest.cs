@@ -65,14 +65,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             }
 
             var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Fragments.OverwriteUneditableProperty);
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
             Assert.True(File.Exists(_rawModelFilePath));
             Assert.Equal(4, warningLogs.Count());
             Assert.Equal(
-                @"You cannot overwrite an uneditable property: /depot_name, please add an `editable` tag on this property in schema if you want to overwrite this property
-You cannot overwrite an uneditable property: /discription, please add an `editable` tag on this property in schema if you want to overwrite this property
-You cannot overwrite an uneditable property: /name, please add an `editable` tag on this property in schema if you want to overwrite this property
-You cannot overwrite an uneditable property: /operations/0/summary, please add an `editable` tag on this property in schema if you want to overwrite this property",
+                @"You cannot overwrite a readonly property: /depot_name, please add an `editable` tag on this property in schema if you want to overwrite this property
+You cannot overwrite a readonly property: /discription, please add an `editable` tag on this property in schema if you want to overwrite this property
+You cannot overwrite a readonly property: /name, please add an `editable` tag on this property in schema if you want to overwrite this property
+You cannot overwrite a readonly property: /operations/0/summary, please add an `editable` tag on this property in schema if you want to overwrite this property",
                 String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
         }
 

@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using System;
     using System.Collections.Generic;
 
+    using Markdig.Syntax;
+
     using Microsoft.DocAsCode.Common;
 
     public class FragmentsValidationInterpreter : IInterpreter
@@ -17,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
         {
-            if (value is IDictionary<string, Object> || value is IDictionary<object, Object> || value is IList<object>)
+            if (value is IDictionary<string, object> || value is IDictionary<object, object> || value is IList<object>)
             {
                 return value;
             }
@@ -27,20 +29,20 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            if (schema?.Tags != null && schema.IsLegalInFragments())
+            if (schema?.Tags != null && schema.IsEditable())
             {
                 return value;
             }
 
-            if (value is string && schema == null)
+            if (!(value is MarkdownDocument) && schema == null)
             {
                 return value;
             }
 
             // TODO: improve error message by including line number and OPathString
             Logger.LogWarning(
-                $"You cannot overwrite an uneditable property: {path}, please add an `editable` tag on this property in schema if you want to overwrite this property",
-                code: WarningCodes.Fragments.OverwriteUneditableProperty);
+                $"You cannot overwrite a readonly property: {path}, please add an `editable` tag on this property in schema if you want to overwrite this property",
+                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
 
             return value;
         }
