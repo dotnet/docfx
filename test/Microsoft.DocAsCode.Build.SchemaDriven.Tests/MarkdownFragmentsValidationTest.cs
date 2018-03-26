@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             Assert.Equal(
                 @"You cannot overwrite a readonly property: /depot_name, please add an `editable` tag on this property in schema if you want to overwrite this property
 You cannot overwrite a readonly property: /discription, please add an `editable` tag on this property in schema if you want to overwrite this property
-There is an invalid H2: /name: the ContentType of `/name` in schema must be `markdown`
+There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`
 You cannot overwrite a readonly property: /operations/0/summary, please add an `editable` tag on this property in schema if you want to overwrite this property",
                 String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
         }

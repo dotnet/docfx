@@ -14,6 +14,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         /// Return if a property is editable
         /// </summary>
         public static bool IsEditable(this BaseSchema schema)
-            => schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
+        {
+            if (schema?.Tags == null)
+            {
+                return false;
+            }
+
+            return schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             if ((value is MarkdownDocument) && (schema?.ContentType != ContentType.Markdown))
             {
                 Logger.LogWarning(
-                $"There is an invalid H2: {path}: the ContentType of `{path}` in schema must be `markdown`",
+                $"There is an invalid H2: {path}: the contentType of `{path}` in schema must be `markdown`",
                 code: WarningCodes.Overwrite.InvalidMarkdownFragments);
             }
 
