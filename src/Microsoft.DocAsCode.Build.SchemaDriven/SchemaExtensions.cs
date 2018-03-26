@@ -3,22 +3,37 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
+    using System;
+    using System.Linq;
+
     public static class SchemaExtensions
     {
-        private const string IsRequiredInFragmentsTag = "editable";
-
-        private const string IsLegalInFragmentsTag = "editable";
+        private const string IsEditableTag = "editable";
 
         /// <summary>
         /// Return if a property is required to appear in markdown fragments
         /// </summary>
         public static bool IsRequiredInFragments(this BaseSchema schema)
-            => schema.Tags.IndexOf(IsRequiredInFragmentsTag) >= 0;
+        {
+            if (schema?.Tags == null)
+            {
+                return false;
+            }
+
+            return schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// Return if a property is legal to appear in markdown fragmetns
         /// </summary>
         public static bool IsLegalInFragments(this BaseSchema schema)
-            => schema.Tags.IndexOf(IsLegalInFragmentsTag) >= 0;
+        {
+            if (schema?.Tags == null)
+            {
+                return false;
+            }
+
+            return schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

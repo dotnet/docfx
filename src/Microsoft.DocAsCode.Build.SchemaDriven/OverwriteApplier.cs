@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     break;
                 case OverwriteModelType.MarkdownFragments:
                     _overwriteProcessor = new SchemaProcessor(
+                        new FragmentsValidationInterpreter(),
                         new FileIncludeInterpreter(),
                         new FileInterpreter(true, false),
                         new HrefInterpreter(true, false),
