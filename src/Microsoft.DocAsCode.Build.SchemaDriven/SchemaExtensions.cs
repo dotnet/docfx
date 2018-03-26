@@ -11,9 +11,22 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private const string IsEditableTag = "editable";
 
         /// <summary>
-        /// Return if a property is editable
+        /// Return if a property is required to appear in markdown fragments
         /// </summary>
-        public static bool IsEditable(this BaseSchema schema)
+        public static bool IsRequiredInFragments(this BaseSchema schema)
+        {
+            if (schema?.Tags == null)
+            {
+                return false;
+            }
+
+            return schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Return if a property is legal to appear in markdown fragmetns
+        /// </summary>
+        public static bool IsLegalInFragments(this BaseSchema schema)
         {
             if (schema?.Tags == null)
             {

@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
-    using System;
     using System.Collections.Generic;
 
     using Markdig.Syntax;
@@ -41,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            if (schema.Tags != null && schema.IsEditable())
+            if (schema.IsLegalInFragments())
             {
                 return value;
             }
