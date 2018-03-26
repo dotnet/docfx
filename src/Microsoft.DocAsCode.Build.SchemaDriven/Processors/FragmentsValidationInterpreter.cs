@@ -24,17 +24,24 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            if (schema?.MergeType == MergeType.Key)
+            if ((value is MarkdownDocument) && (schema?.ContentType != ContentType.Markdown))
+            {
+                Logger.LogWarning(
+                $"There is an invalid H2: {path}: the ContentType of `{path}` in schema must be `markdown`",
+                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+            }
+
+            if (schema == null)
             {
                 return value;
             }
 
-            if (schema?.Tags != null && schema.IsEditable())
+            if (schema.MergeType == MergeType.Key)
             {
                 return value;
             }
 
-            if (!(value is MarkdownDocument) && schema == null)
+            if (schema.Tags != null && schema.IsEditable())
             {
                 return value;
             }
