@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    using Microsoft.Build.MSBuildLocator;
+    using Microsoft.Build.Locator;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
@@ -29,21 +29,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private EnvironmentScope GetScope()
         {
-            var vsInstallDirEnv = Environment.GetEnvironmentVariable(VSInstallDirKey);
-            if (!string.IsNullOrEmpty(vsInstallDirEnv))
-            {
-                Logger.LogInfo($"Environment variable {VSInstallDirKey} is set to {vsInstallDirEnv}, it is used as the inner compiler.");
-                return null;
-            }
-
-            var msbuildExePathEnv = Environment.GetEnvironmentVariable(MSBuildExePathKey);
-
-            if (!string.IsNullOrEmpty(msbuildExePathEnv))
-            {
-                Logger.LogInfo($"Environment variable {MSBuildExePathKey} is set to {msbuildExePathEnv}, it is used as the inner compiler.");
-                return null;
-            }
-
             if (EnvironmentHelper.IsMono)
             {
                 string extensionPath = null;
@@ -92,6 +77,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     // workaround for https://github.com/dotnet/docfx/issues/1969
                     // FYI https://github.com/dotnet/roslyn/issues/21799#issuecomment-343695700
                     var latest = instances.FirstOrDefault(a => a.Version.Major == 15);
+
+                    MSBuildLocator.RegisterInstance(latest);
+
                     if (latest != null)
                     {
                         Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner compiler.");
