@@ -70,18 +70,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var keys = schema.Properties.Keys;
                 foreach (var key in keys)
                 {
-                    var opath = oPathPrefix + key;
                     var propSchema = schema.Properties[key];
                     if (propSchema.Type == JSchemaType.Object || propSchema.Type == JSchemaType.Array)
                     {
                         if (map.Children.ContainsKey(key))
                         {
-                            TraverseCore(map.Children[key], fragments, propSchema, opath, uid);
+                            TraverseCore(map.Children[key], fragments, propSchema, oPathPrefix + key, uid);
                         }
                     }
                     else
                     {
-                        _handler.HandleProperty(key, (YamlMappingNode)node, fragments, schema, parentOPath, uid);
+                        _handler.HandleProperty(key, (YamlMappingNode)node, fragments, schema, oPathPrefix, uid);
                     }
                 }
             }

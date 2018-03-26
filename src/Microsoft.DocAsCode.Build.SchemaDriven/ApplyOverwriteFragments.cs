@@ -3,9 +3,9 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
-    using System;
     using System.Collections.Generic;
     using System.Composition;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
+
+    using YamlDotNet.RepresentationModel;
 
     [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverwriteFragments : BaseDocumentBuildStep, ISupportIncrementalBuildStep
@@ -93,11 +95,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var ast = markdownService.Parse((string)model.MarkdownFragmentsModel.Content, model.MarkdownFragmentsModel.OriginalFileAndType.File);
 
             // 2 AST(MarkdownDocument) => MarkdownFragmentModel
-            var fragments = new MarkdownFragmentsCreater().Create(ast);
+            var fragments = new MarkdownFragmentsCreater().Create(ast).ToList();
 
             // 3. MarkdownFragmentModel => OverwriteDocument
             overwriteDocumentModels = fragments.Select(overwriteDocumentModelCreater.Create).ToList();
             model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
+
+            // Validate here as OverwriteDocumentModelCreater already filtered some invalid cases, e.g. duplicated H2
+            ValidateWithSchema(fragments, model);
 
             // 4. Apply schema to OverwriteDocument, and merge with skeyleton YAML object
             foreach (var overwriteDocumentModel in overwriteDocumentModels)
@@ -135,6 +140,20 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             model.FileLinkSources = model.FileLinkSources.Merge(model.MarkdownFragmentsModel.FileLinkSources);
             model.UidLinkSources = model.UidLinkSources.Merge(model.MarkdownFragmentsModel.UidLinkSources);
             model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
+        }
+
+        private void ValidateWithSchema(List<MarkdownFragmentModel> fragments, FileModel model)
+        {
+            var iterator = new SchemaFragmentsIterator(new ValidateFragmentsHandler());
+            var yamlStream = new YamlStream();
+            using (var sr = new StreamReader(model.FileAndType.File))
+            {
+                yamlStream.Load(sr);
+            }
+            iterator.Traverse(
+                yamlStream.Documents[0].RootNode,
+                fragments.ToDictionary(m => m.Uid, m => m.ToMarkdownFragment()),
+                model.Properties.Schema);
         }
 
         private void CheckMarkdownService(IHostService host)
