@@ -65,11 +65,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
                 if (node.Children.ContainsKey(propertyKey))
                 {
-                    ExistingMarkdownProperties.Add($"{oPathPrefix}/{propertyKey}");
+                    ExistingMarkdownProperties.Add($"{oPathPrefix}{propertyKey}");
                 }
                 else
                 {
-                    MissingMarkdownProperties.Add($"{oPathPrefix}/{propertyKey}");
+                    MissingMarkdownProperties.Add($"{oPathPrefix}{propertyKey}");
                 }
             }
         }
