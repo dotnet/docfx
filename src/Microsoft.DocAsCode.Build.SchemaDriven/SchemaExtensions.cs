@@ -13,21 +13,19 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         /// <summary>
         /// Return if a property is required to appear in markdown fragments
         /// </summary>
-        public static bool IsRequiredInFragments(this BaseSchema schema)
-        {
-            if (schema?.Tags == null)
-            {
-                return false;
-            }
-
-            return schema.Tags.Contains(IsEditableTag, StringComparer.OrdinalIgnoreCase);
-        }
+        public static bool IsRequiredInFragments(this BaseSchema schema) => IsEditable(schema);
 
         /// <summary>
         /// Return if a property is legal to appear in markdown fragmetns
-        /// </summary>
-        public static bool IsLegalInFragments(this BaseSchema schema)
+        /// </summary
+        public static bool IsLegalInFragments(this BaseSchema schema) => IsEditable(schema);
+
+        private static bool IsEditable(this BaseSchema schema)
         {
+            if (schema.ContentType == ContentType.Markdown)
+            {
+                return true;
+            }
             if (schema?.Tags == null)
             {
                 return false;

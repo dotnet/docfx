@@ -67,12 +67,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             var logs = _listener.Items;
             var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
             Assert.True(File.Exists(_rawModelFilePath));
-            Assert.Equal(4, warningLogs.Count());
+            Assert.Single(warningLogs);
             Assert.Equal(
-                @"You cannot overwrite a readonly property: /depot_name, please add an `editable` tag on this property in schema if you want to overwrite this property
-You cannot overwrite a readonly property: /discription, please add an `editable` tag on this property in schema if you want to overwrite this property
-There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`
-You cannot overwrite a readonly property: /operations/0/summary, please add an `editable` tag on this property in schema if you want to overwrite this property",
+                @"There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`",
                 String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
         }
 
