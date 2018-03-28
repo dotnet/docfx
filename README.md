@@ -76,7 +76,7 @@ This project has adopted the code of conduct defined by the [Contributor Covenan
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## Contributors & Thank You
-Thanks go to our community of developers who have helped improve the quality of *DocFX* by helping with code contributions.
+Thanks goes to our community of developers who helped improve the quality of *DocFX* through their code contributions.
 Contributors: 
 
 ## License
