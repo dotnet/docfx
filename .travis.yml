@@ -6,3 +6,6 @@ script:
 os:
   - linux
   - osx
+branches:
+  only:
+  - v3
