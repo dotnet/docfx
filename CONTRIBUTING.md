@@ -1,4 +1,4 @@
-# Contributing to Docfx
+# Contributing to DocFX
 
 Welcome and thank you for your interest in contributing to docfx ❤️
 

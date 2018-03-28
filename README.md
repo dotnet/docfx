@@ -18,7 +18,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-Licensed under the [MIT](https://github.com/dotnet/docfx/blob/v3.0/LICENSE.txt) License.
+Licensed under the [MIT](https://github.com/dotnet/docfx/blob/v3/LICENSE.txt) License.
 
 ## .NET Foundation
 
