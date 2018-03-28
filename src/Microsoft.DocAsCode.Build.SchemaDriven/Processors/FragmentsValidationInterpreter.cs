@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             // TODO: improve error message by including line number and OPathString
             Logger.LogWarning(
-                $"You cannot overwrite a readonly property: {path}, please add an `editable` tag on this property in schema if you want to overwrite this property",
+                $"You cannot overwrite a readonly property: {path}, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
                 code: WarningCodes.Overwrite.InvalidMarkdownFragments);
 
             return value;
