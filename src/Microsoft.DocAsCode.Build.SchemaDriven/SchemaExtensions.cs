@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         private static bool IsEditable(this BaseSchema schema)
         {
-            if (schema.ContentType == ContentType.Markdown)
+            if (schema?.ContentType == ContentType.Markdown)
             {
                 return true;
             }
