@@ -7,6 +7,7 @@ open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
 [<assembly: InternalsVisibleTo("Microsoft.DocAsCode.Metadata.ManagedReference.Tests")>]
+[<assembly: InternalsVisibleTo("Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests")>]
 
 do
     ()
