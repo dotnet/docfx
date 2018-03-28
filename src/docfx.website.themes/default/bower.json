@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "bootstrap": "~3.3.5",
-    "highlightjs": "~8.8.0",
+    "highlightjs": "~9.12.0",
     "jquery": "~2.1.4",
     "js-url": "1.8.6",
     "lunr.js": "2.1.2",
