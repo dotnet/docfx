@@ -87,11 +87,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return BlockState.None;
             }
-         
-            if (!c.IsZero())
-            {
-                Logger.LogWarning($"NestedColumn have some invalid chars in the starting.");
-            }
 
             processor.NewBlocks.Push(new NestedColumnBlock(this)
             {
