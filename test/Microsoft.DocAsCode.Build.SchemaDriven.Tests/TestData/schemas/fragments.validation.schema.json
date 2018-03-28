@@ -10,8 +10,7 @@
       "items": {
         "properties": {
           "summary": {
-            "type": "string",
-            "contentType": "markdown"
+            "type": "string"
           },
           "discription": {
             "type": "string",
@@ -40,6 +39,10 @@
       "description": "service uid",
       "type": "string",
       "contentType": "markdown"
+    },
+    "site_name": {
+      "description": "service uid",
+      "type": "string"
     },
     "summary": {
       "type": "string",
