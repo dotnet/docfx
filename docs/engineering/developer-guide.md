@@ -1,6 +1,6 @@
 # Developer Guide
 
-> __v3__ develop work currently happens in _v3.0_ branch, these instructions only applies to source code in _v3.0_ branch.
+> __v3__ develop work currently happens in _v3_ branch, these instructions only applies to source code in _v3_ branch.
 
 ## Building and Run
 
