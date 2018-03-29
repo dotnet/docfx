@@ -1,7 +1,7 @@
-version: 1.0.{build}
-image: Visual Studio 2015
+version: 1.0.{build}.{APPVEYOR_REPO_BRANCH}
+image: Visual Studio 2017
 init:
-  - git config --global core.autocrlf true
+  - npm install
+  - node .\node_modules\typescript\bin\tsc
 build_script:
-  - build.cmd
-test: off
+  - node .\node_modules\gulp\bin\gulp.js {APPVEYOR_REPO_BRANCH}
