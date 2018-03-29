@@ -9,7 +9,7 @@ image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
 install:
-  - git clone -q https://github.com/docascode/docfx-seed.git docfx-seed
+  - git clone -q https://github.com/docascode/docfx-seed.git ../docfx-seed
   - ps: cd .\tools\Deployment
   - ps: Install-Product node $env:nodejs_version
   - node --version
