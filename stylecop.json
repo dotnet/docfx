@@ -14,11 +14,11 @@
       "orderingRules": {
           "usingDirectivesPlacement": "outsideNamespace",
           "elementOrder": [
+              "kind",
               "constant",
               "static",
               "readonly",
-              "accessibility",
-              "kind"
+              "accessibility"
           ]
       }
     }
