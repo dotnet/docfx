@@ -16,4 +16,4 @@ install:
   - npm install glob
   - node .\node_modules\typescript\bin\tsc
 build_script:
-  - node .\node_modules\gulp\bin\gulp.js {APPVEYOR_REPO_BRANCH}
+  - node .\node_modules\gulp\bin\gulp.js %APPVEYOR_REPO_BRANCH%
