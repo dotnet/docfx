@@ -8,9 +8,10 @@ branches:
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
-  - ps: Install-Product node $env:nodejs_version
+  - git clone -q https://github.com/docascode/docfx-seed.git
 install:
   - ps: cd .\tools\Deployment
+  - ps: Install-Product node $env:nodejs_version
   - node --version
   - npm install
   - npm install glob
