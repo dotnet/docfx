@@ -4,19 +4,25 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public sealed class DocumentBuildParameters : MarshalByRefObject
+    using Newtonsoft.Json.Linq;
+
+    public sealed class DocumentBuildParameters : MarshalByRefObject, IBuildParameters
     {
         [IncrementalIgnore]
         public FileCollection Files { get; set; }
 
         [IncrementalIgnore]
         public string OutputBaseDir { get; set; }
+
+        [IncrementalIgnore]
+        public IReadOnlyDictionary<string, JArray> TagParameters { get; set; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
 
