@@ -1,0 +1,5 @@
+branches:
+  only:
+  - v3
+build_script:
+  - ps: ./build.ps1

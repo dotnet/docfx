@@ -1,0 +1,25 @@
+{
+    "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+    "settings": {
+      "documentationRules": {
+        "xmlHeader": false,
+        "documentInternalElements": false,
+        "fileNamingConvention": "metadata",
+        "copyrightText": "Copyright (c) Microsoft. All rights reserved.\nLicensed under the MIT license. See LICENSE file in the project root for full license information."
+      },
+      "namingRules": {
+          "allowCommonHungarianPrefixes": false,
+          "allowedHungarianPrefixes": ["s", "t"]
+      },
+      "orderingRules": {
+          "usingDirectivesPlacement": "outsideNamespace",
+          "elementOrder": [
+              "kind",
+              "constant",
+              "static",
+              "readonly",
+              "accessibility"
+          ]
+      }
+    }
+  }

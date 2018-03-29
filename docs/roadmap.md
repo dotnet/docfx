@@ -41,4 +41,3 @@ The goal is that in June, we can have a runnable v3 to build Markdown files, and
 4. Overwrite markdown
 5. Incremental build
 6. `metadata`
-
