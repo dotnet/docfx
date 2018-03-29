@@ -1,6 +1,8 @@
 version: 1.0.{build}
 image: Visual Studio 2017
 init:
+  - git config --global core.autocrlf input
+install:
   - npm install --prefix .\tools\Deployment
   - node .\node_modules\typescript\bin\tsc
 build_script:
