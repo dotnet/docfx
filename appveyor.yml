@@ -10,6 +10,7 @@ init:
   - git config --global core.autocrlf input
 install:
   - ps: cd .\tools\Deployment
+  - node --version
   - npm install
   - npm install glob
   - node .\node_modules\typescript\bin\tsc
