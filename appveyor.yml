@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.0.{build}.{APPVEYOR_REPO_BRANCH}
 image: Visual Studio 2017
 init:
   - npm install
