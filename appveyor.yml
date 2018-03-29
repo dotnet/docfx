@@ -9,6 +9,7 @@ init:
 install:
   - ps: cd .\tools\Deployment
   - npm install
+  - npm install glob
   - node .\node_modules\typescript\bin\tsc
 build_script:
   - node .\node_modules\gulp\bin\gulp.js {branch}
