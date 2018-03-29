@@ -1,4 +1,8 @@
-version: 1.0.{build}
+version: 1.0.{build}-{branch}
+branches:
+  only:
+    - master
+    - dev
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
@@ -6,4 +10,4 @@ install:
   - npm install --prefix .\tools\Deployment
   - node .\node_modules\typescript\bin\tsc
 build_script:
-  - node .\node_modules\gulp\bin\gulp.js $env:APPVEYOR_REPO_BRANCH
+  - node .\node_modules\gulp\bin\gulp.js {branch}
