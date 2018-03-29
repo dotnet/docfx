@@ -1,6 +1,6 @@
 # Build your docs with DocFX
 
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/pqqfyw0ag3w4p0es/branch/v3?svg=true)](https://ci.appveyor.com/project/yufeih/docfx)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/v957lo1ma6payu0t/branch/v3)](https://ci.appveyor.com/project/DocFXService/docfx)
 [![Linux Build Status](https://travis-ci.org/dotnet/docfx.svg?branch=v3)](https://travis-ci.org/dotnet/docfx)
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
