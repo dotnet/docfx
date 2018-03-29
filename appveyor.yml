@@ -1,4 +1,4 @@
-version: 1.0.{build}-{APPVEYOR_REPO_BRANCH}
+version: 1.0.{build}-%APPVEYOR_REPO_BRANCH%
 environment:
   nodejs_version: "7"
 branches:
@@ -8,8 +8,8 @@ branches:
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
-  - git clone -q https://github.com/docascode/docfx-seed.git docfx-seed
 install:
+  - git clone -q https://github.com/docascode/docfx-seed.git docfx-seed
   - ps: cd .\tools\Deployment
   - ps: Install-Product node $env:nodejs_version
   - node --version
