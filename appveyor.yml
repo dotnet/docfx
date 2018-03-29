@@ -1,6 +1,6 @@
 version: 1.0.{build}-{branch}
 environment:
-  nodejs_version: LTS
+  nodejs_version: "7"
 branches:
   only:
     - master
@@ -8,6 +8,7 @@ branches:
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
+  - ps: Install-Product node $env:nodejs_version
 install:
   - ps: cd .\tools\Deployment
   - node --version
