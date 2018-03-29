@@ -67,9 +67,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             var logs = _listener.Items;
             var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
             Assert.True(File.Exists(_rawModelFilePath));
-            Assert.Single(warningLogs);
+            Assert.Equal(2, warningLogs.Count());
             Assert.Equal(
-                @"There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`",
+                @"There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`
+""/operations/1"" in overwrite object fails to overwrite ""/operations"" for ""management.azure.com.advisor.fragmentsValidation"" because it does not match any existing item.",
                 String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
         }
 

@@ -120,7 +120,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var schemaForCurrentUid = jsonPointer.FindSchema(schema);
                 var source = jsonPointer.GetValue(model.Content);
                 var overwriteObject = overwriteApplier.BuildOverwriteWithSchema(model.MarkdownFragmentsModel, overwriteDocumentModel, schema);
-                // TODO: Log warning when adding a new item to an array in fragments
                 overwriteApplier.MergeContentWithOverwrite(ref source, overwriteObject, ud.Name, string.Empty, schemaForCurrentUid);
             }
 
