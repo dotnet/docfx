@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 {
     public class Constants
     {
-        public const string OPathStringDataName = "oPathString";
-        public const string OPathLineNumberDataName = "oPathLineNumber";
+        public const string OPathStringDataName = "opathString";
+        public const string OPathLineNumberDataName = "opathLineNumber";
     }
 }
