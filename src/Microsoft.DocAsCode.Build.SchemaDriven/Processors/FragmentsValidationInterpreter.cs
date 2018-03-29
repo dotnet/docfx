@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             if (markdownDocument != null && (schema?.ContentType != ContentType.Markdown))
             {
                 Logger.LogWarning(
-                    $"There is an invalid H2: `{markdownDocument.GetData(Constants.OPathStringDataName) ?? string.Empty}`: the contentType of this property in schema must be `markdown`",
+                    $"There is an invalid H2: `{markdownDocument.GetData(Constants.OPathStringDataName)}`: the contentType of this property in schema must be `markdown`",
                     line: markdownDocument.GetData(Constants.OPathLineNumberDataName)?.ToString(),
                     code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 return value;
