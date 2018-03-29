@@ -1,7 +1,7 @@
 version: 1.0.{build}
 image: Visual Studio 2017
 init:
-  - npm install
+  - npm install --prefix .\tools\Deployment
   - node .\node_modules\typescript\bin\tsc
 build_script:
   - node .\node_modules\gulp\bin\gulp.js %APPVEYOR_REPO_BRANCH%
