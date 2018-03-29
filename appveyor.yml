@@ -1,4 +1,4 @@
-version: 1.0.{build}-{branch}
+version: 1.0.{build}-{APPVEYOR_REPO_BRANCH}
 environment:
   nodejs_version: "7"
 branches:
@@ -16,4 +16,4 @@ install:
   - npm install glob
   - node .\node_modules\typescript\bin\tsc
 build_script:
-  - node .\node_modules\gulp\bin\gulp.js {branch}
+  - node .\node_modules\gulp\bin\gulp.js {APPVEYOR_REPO_BRANCH}
