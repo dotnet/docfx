@@ -24,17 +24,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            var originalValue = value as MarkdownMetadataItemModel;
-            if (originalValue != null)
-            {
-                value = originalValue.Value;
-            }
-
-            if ((value is MarkdownDocument) && (schema?.ContentType != ContentType.Markdown))
+            var markdownDocument = value as MarkdownDocument;
+            if (markdownDocument != null && (schema?.ContentType != ContentType.Markdown))
             {
                 Logger.LogWarning(
-                    $"There is an invalid H2: `{originalValue.OPathString}`: the contentType of this property in schema must be `markdown`",
-                    line: originalValue.LineNumber.ToString(),
+                    $"There is an invalid H2: `{markdownDocument.GetData(Constants.OPathStringDataName) ?? string.Empty}`: the contentType of this property in schema must be `markdown`",
+                    line: markdownDocument.GetData(Constants.OPathLineNumberDataName)?.ToString(),
                     code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 return value;
             }
@@ -54,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            // TODO: improve error message by including line number and OPathString for yaml code
+            // TODO: improve error message by including line number and OPathString for YAML code block
             Logger.LogWarning(
                 $"You cannot overwrite a readonly property: `{path.Trim('/')}`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
                 code: WarningCodes.Overwrite.InvalidMarkdownFragments);
