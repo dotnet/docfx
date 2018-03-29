@@ -65,12 +65,16 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             }
 
             var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments).ToList();
             Assert.True(File.Exists(_rawModelFilePath));
-            Assert.Single(warningLogs);
+            Assert.Equal(3, warningLogs.Count());
             Assert.Equal(
-                @"There is an invalid H2: /name: the contentType of `/name` in schema must be `markdown`",
+                @"You cannot overwrite a readonly property: `site_name`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property
+There is an invalid H2: `name`: the contentType of this property in schema must be `markdown`
+There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsValidation.create""]/summary`: the contentType of this property in schema must be `markdown`",
                 String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
+            Assert.Equal("14", warningLogs[1].Line);
+            Assert.Equal("17", warningLogs[2].Line);
         }
 
         private void BuildDocument(FileCollection files)

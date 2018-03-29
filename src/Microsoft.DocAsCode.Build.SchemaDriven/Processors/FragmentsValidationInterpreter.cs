@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
     using Markdig.Syntax;
 
+    using Microsoft.DocAsCode.Build.OverwriteDocuments;
     using Microsoft.DocAsCode.Common;
 
     public class FragmentsValidationInterpreter : IInterpreter
@@ -23,11 +24,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            if ((value is MarkdownDocument) && (schema?.ContentType != ContentType.Markdown))
+            var markdownDocument = value as MarkdownDocument;
+            if (markdownDocument != null && (schema?.ContentType != ContentType.Markdown))
             {
                 Logger.LogWarning(
-                $"There is an invalid H2: {path}: the contentType of `{path}` in schema must be `markdown`",
-                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                    $"There is an invalid H2: `{markdownDocument.GetData(Constants.OPathStringDataName) ?? string.Empty}`: the contentType of this property in schema must be `markdown`",
+                    line: markdownDocument.GetData(Constants.OPathLineNumberDataName)?.ToString(),
+                    code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                return value;
             }
 
             if (schema == null)
@@ -45,9 +49,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            // TODO: improve error message by including line number and OPathString
+            // TODO: improve error message by including line number and OPathString for YAML code block
             Logger.LogWarning(
-                $"You cannot overwrite a readonly property: {path}, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
+                $"You cannot overwrite a readonly property: `{path.Trim('/')}`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
                 code: WarningCodes.Overwrite.InvalidMarkdownFragments);
 
             return value;
