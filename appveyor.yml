@@ -1,4 +1,4 @@
-version: 1.0.{build}-{%APPVEYOR_REPO_BRANCH%}
+version: 1.0.{build}
 environment:
   nodejs_version: "7"
 branches:
