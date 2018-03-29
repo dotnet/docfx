@@ -7,7 +7,8 @@ image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
 install:
-  - npm install --prefix .\tools\Deployment
+  - ps: cd .\tools\Deployment
+  - npm install --prefix
   - node .\node_modules\typescript\bin\tsc
 build_script:
   - node .\node_modules\gulp\bin\gulp.js {branch}
