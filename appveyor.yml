@@ -1,6 +1,6 @@
 version: 1.0.{build}-{branch}
 environment:
-  nodejs_version: "9"
+  nodejs_version: LTS
 branches:
   only:
     - master
