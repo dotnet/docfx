@@ -39,9 +39,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 return;
             }
             var opath = oPathPrefix + propertyKey;
+            // TODO: also check whether it exists in fragments[uid].Metadata
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                Logger.LogWarning($"Missing property {oPathPrefix + propertyKey} in markdown fragments.");
+                Logger.LogWarning($"Missing property {opath} in markdown fragments.");
             }
         }
     }
