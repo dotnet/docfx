@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             DocumentSchema schema;
             using (var sr = new StreamReader("TestData/schemas/rest.mixed.schema.json"))
             {
-                schema = DocumentSchema.Load(sr, "mref.test");
+                schema = DocumentSchema.Load(sr, "rest.mixed");
             }
             var yamlStream = new YamlStream();
             using (var sr = new StreamReader("TestData/inputs/Suppressions.yml"))
@@ -65,11 +65,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
                 if (node.Children.ContainsKey(propertyKey))
                 {
-                    ExistingMarkdownProperties.Add($"{oPathPrefix}/{propertyKey}");
+                    ExistingMarkdownProperties.Add($"{oPathPrefix}{propertyKey}");
                 }
                 else
                 {
-                    MissingMarkdownProperties.Add($"{oPathPrefix}/{propertyKey}");
+                    MissingMarkdownProperties.Add($"{oPathPrefix}{propertyKey}");
                 }
             }
         }

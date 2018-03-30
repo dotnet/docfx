@@ -5,7 +5,11 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.Common;
 
     public static class OverwriteUtility
     {
@@ -102,6 +106,45 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 fragment.Properties[oPath].Content = string.IsNullOrWhiteSpace(content) ? string.Empty : content.Trim('\n', '\r');
             }
             fragment.Metadata = MergeMetadata(fragment.Metadata, metadata);
+        }
+
+        public static MarkdownFragment ToMarkdownFragment(this MarkdownFragmentModel model, string originalContent = null)
+        {
+            Dictionary<string, object> metadata = null;
+            if (!string.IsNullOrEmpty(model.YamlCodeBlock))
+            {
+                using (TextReader sr = new StringReader(model.YamlCodeBlock))
+                {
+                    metadata = YamlUtility.Deserialize<Dictionary<string, object>>(sr);
+                }
+            }
+
+            return new MarkdownFragment()
+            {
+                Uid = model.Uid,
+                Metadata = metadata,
+                Properties = model.Contents?.Select(prop => prop.ToMarkdownProperty(originalContent)).ToDictionary(p => p.OPath, p => p)
+            };
+        }
+
+        public static MarkdownProperty ToMarkdownProperty(this MarkdownPropertyModel model, string originalContent = null)
+        {
+            var content = string.Empty;
+            if (model.PropertyValue?.Count > 0 && originalContent != null)
+            {
+                var start = model.PropertyValue.First().Span.Start;
+                var length = model.PropertyValue.Last().Span.End - start + 1;
+                var piece = originalContent.Substring(start, length);
+                if (!string.IsNullOrWhiteSpace(piece))
+                {
+                    content = piece;
+                }
+            }
+            return new MarkdownProperty()
+            {
+                OPath = model.PropertyName,
+                Content = content
+            };
         }
 
         private static Dictionary<string, object> MergeMetadata(Dictionary<string, object> left, Dictionary<string, object> right)
