@@ -31,8 +31,13 @@ type private SymbolNames = {
     DisplayName:            string
     DisplayNameWithType:    string
     DisplayQualifiedName:   string
+    DisplaySuffix:          string option   
     XmlDocSig:              string
-}
+} with
+    member this.DisplayNameWithSuffix =
+        match this.DisplaySuffix with
+        | Some suffix -> this.DisplayName + suffix
+        | None -> this.DisplayName
 
 
 /// <summary>An F# compilation of an F# project. Can extract metadata from the F# project.</summary>
@@ -54,7 +59,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             filename, filename
 
     /// all (nested) modules within the specified entity
-    let rec containedModules (ents: FSharpEntity seq) = seq {
+    let rec containedModules (ents: seq<FSharpEntity>) = seq {
         for ent in ents do
             if ent.IsFSharpModule then
                 yield ent
@@ -65,11 +70,22 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     let allModules =
         containedModules compilation.AssemblySignature.Entities
 
-    /// references used within this assembly
-    let mutable references = Dictionary<string, ReferenceItem>()
+    /// all (nested) namespaces within the specified entity
+    let rec containedNamespaces (ents: seq<FSharpEntity>) = seq {
+        for ent in ents do
+            match ent.Namespace with
+            | Some ns -> yield ns
+            | None -> ()
+            yield! containedNamespaces ent.PublicNestedEntities
+    }
 
     /// namespaces defined within this assembly
-    let mutable knownNamespaces = HashSet<string>()
+    let allNamespaces = 
+        containedNamespaces compilation.AssemblySignature.Entities
+        |> Set.ofSeq
+
+    /// references used within this assembly
+    let mutable references = Dictionary<string, ReferenceItem>()
 
     /// visibility filter
     let mutable filter = ConfigFilterRule()
@@ -213,7 +229,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     let entityQualifiedName (ent: FSharpEntity) =
         if ent.IsFSharpAbbreviation then
             let nsPart =
-                knownNamespaces
+                allNamespaces
                 |> Seq.filter ent.AccessPath.StartsWith
                 |> Seq.maxBy (fun ns -> ns.Length)
             let modPart = ent.AccessPath.[nsPart.Length+1..]
@@ -224,9 +240,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// Namespace of the specified F# entity.
     let entityNamespace (ent: FSharpEntity) =
         match ent.Namespace with
-        | Some ns -> 
-            knownNamespaces.Add ns |> ignore
-            ns
+        | Some ns -> ns
         | None ->
             let pos = (entityQualifiedName ent).LastIndexOf('.')
             if pos = -1 then ""
@@ -234,14 +248,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// Resolve module path, i.e. remove "Module"-suffix if necessary.                
     let rec resolveModulePath fullName =
-        let ent =
-            allModules 
-            |> Seq.find (fun ent -> ent.IsFSharpModule && ent.FullName = fullName)
-        let ns = entityNamespace ent
-        if ent.AccessPath.Length > ns.Length then
-            resolveModulePath ent.AccessPath + "." + ent.DisplayName
-        else
-            ns + "." + ent.DisplayName
+        match allModules |> Seq.tryFind (fun ent -> ent.IsFSharpModule && ent.FullName = fullName) with
+        | Some ent ->
+            let ns = entityNamespace ent
+            if ent.AccessPath.Length > ns.Length then
+                resolveModulePath ent.AccessPath + "." + ent.DisplayName
+            else
+                ns + "." + ent.DisplayName
+        | None -> fullName
 
     /// Syntax string for the fields of an F# union case.
     let unionCaseFieldsSyntax fullType (cfs: seq<FSharpField>) = 
@@ -274,23 +288,24 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             else
                 displayGenName                    
         let dispSuffix =
-            if ent.IsFSharpModule then " (mod)"
-            elif ent.IsFSharpRecord then " (rec)"
-            elif ent.IsFSharpUnion then " (union)"
-            elif ent.IsEnum then ""
-            elif ent.IsFSharpExceptionDeclaration then ""
-            elif ent.IsFSharpAbbreviation then " (abrv)"
-            elif ent.IsMeasure then " (meas)"
-            elif ent.IsDelegate then ""
-            elif ent.IsClass then ""
-            elif ent.IsInterface then ""
-            elif ent.IsValueType then ""
-            else ""           
+            if ent.IsFSharpModule then Some " (mod)"
+            elif ent.IsFSharpRecord then Some " (rec)"
+            elif ent.IsFSharpUnion then Some " (union)"
+            elif ent.IsEnum then None
+            elif ent.IsFSharpExceptionDeclaration then None
+            elif ent.IsFSharpAbbreviation then Some " (abrv)"
+            elif ent.IsMeasure then Some " (meas)"
+            elif ent.IsDelegate then None
+            elif ent.IsClass then None
+            elif ent.IsInterface then None
+            elif ent.IsValueType then None
+            else None
         {
             Name = name     
-            DisplayName = dispName + dispSuffix
+            DisplayName = dispName 
             DisplayNameWithType = name 
             DisplayQualifiedName = name
+            DisplaySuffix = dispSuffix            
             XmlDocSig = ent.XmlDocSig                  
         }    
 
@@ -308,6 +323,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 DisplayName = sprintf "val %s: %s" dispName (typeSyntax false field.FieldType) 
                 DisplayNameWithType = sprintf "val %s: %s" nameWithType (typeSyntax false field.FieldType)
                 DisplayQualifiedName = sprintf "val %s: %s" fullName (typeSyntax true field.FieldType) 
+                DisplaySuffix = None
                 XmlDocSig = field.XmlDocSig
             }
         | :? FSharpUnionCase as case ->
@@ -316,6 +332,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 DisplayName = sprintf "%s%s" dispName (unionCaseFieldsSyntax false case.UnionCaseFields) 
                 DisplayNameWithType = sprintf "%s%s" nameWithType (unionCaseFieldsSyntax false case.UnionCaseFields) 
                 DisplayQualifiedName = sprintf "%s%s" fullName (unionCaseFieldsSyntax true case.UnionCaseFields)                
+                DisplaySuffix = None
                 XmlDocSig = case.XmlDocSig
             }
         | :? FSharpMemberOrFunctionOrValue as mem ->
@@ -367,6 +384,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "new: %s" dispType 
                     DisplayNameWithType = sprintf "new: %s" dispType 
                     DisplayQualifiedName = sprintf "new: %s" fullType 
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }
             elif mem.IsExtensionMember then 
@@ -375,6 +393,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "extension %s.%s: %s" logicalName dispName dispType 
                     DisplayNameWithType = sprintf "extension %s.%s: %s" logicalName dispName dispType 
                     DisplayQualifiedName = sprintf "extension %s: %s" mem.FullName fullType 
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }           
             elif isEvent then
@@ -383,6 +402,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "%s%sevent %s: %s" ifDispType mods dispName dispType
                     DisplayNameWithType = sprintf "%s%sevent %s: %s" ifDispType mods nameWithType dispType 
                     DisplayQualifiedName = sprintf "%s%sevent %s: %s" ifFullType mods fullName fullType
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }                         
             elif mem.IsProperty then
@@ -391,6 +411,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "%s%sproperty %s: %s" ifDispType mods dispName dispType
                     DisplayNameWithType = sprintf "%s%sproperty %s: %s" ifDispType mods nameWithType dispType 
                     DisplayQualifiedName = sprintf "%s%sproperty %s: %s" ifFullType mods fullName fullType
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }        
             elif mem.IsMember then
@@ -399,6 +420,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "%s%smember %s: %s" ifDispType mods dispName dispType
                     DisplayNameWithType = sprintf "%s%smember %s: %s" ifDispType mods nameWithType dispType 
                     DisplayQualifiedName = sprintf "%s%smember %s: %s" ifFullType mods fullName fullType                    
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }       
             elif mem.IsActivePattern then
@@ -410,6 +432,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                         DisplayName = sprintf "val %s: %s" dispName dispParams 
                         DisplayNameWithType = sprintf "val %s: %s" nameWithType dispParams
                         DisplayQualifiedName = sprintf "val %s: %s" fullName fullParams    
+                        DisplaySuffix = None
                         XmlDocSig = mem.XmlDocSig                    
                     }   
                 else
@@ -418,6 +441,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                         DisplayName = sprintf "val %s: %s" dispName dispType 
                         DisplayNameWithType = sprintf "val %s: %s" nameWithType dispType
                         DisplayQualifiedName = sprintf "val %s: %s" fullName fullType                       
+                        DisplaySuffix = None
                         XmlDocSig = mem.XmlDocSig
                     }   
             elif mem.FullType.IsFunctionType then
@@ -426,6 +450,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "val %s: %s" dispName dispType 
                     DisplayNameWithType = sprintf "val %s: %s" nameWithType dispType
                     DisplayQualifiedName = sprintf "val %s: %s" fullName fullType           
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }     
             else
@@ -434,13 +459,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     DisplayName = sprintf "val %s" dispName
                     DisplayNameWithType = sprintf "val %s: %s" nameWithType (typeSyntax false mem.FullType)
                     DisplayQualifiedName =  sprintf "val %s: %s" fullName (typeSyntax true mem.FullType)                   
+                    DisplaySuffix = None
                     XmlDocSig = mem.XmlDocSig
                 }     
         | _ -> failwithf "Unsupported symbol: %A" sym
 
     /// Returns the reference string to an F# entity or symbol.
     let symbolRef (names: SymbolNames) =
-        let parts = [LinkItem(Name=names.Name, DisplayName=names.DisplayName, DisplayNamesWithType=names.DisplayNameWithType,
+        let parts = [LinkItem(Name=names.Name, DisplayName=names.DisplayNameWithSuffix, DisplayNamesWithType=names.DisplayNameWithType,
                               DisplayQualifiedNames=names.DisplayQualifiedName)]
         let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
                                                     SyntaxLanguage.CSharp, List(parts)]))
@@ -558,8 +584,40 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     let curriedParamsMetadata (cpgs: IList<IList<FSharpParameter>>) =
         List(cpgs |> Seq.collect (Seq.map paramMetadata))
 
+    /// The inheritance hierarchy of the specified F# type returned as references.
+    let rec inheritanceHierarchy (t: FSharpType option) = seq {
+        match t with
+        | Some t when t.IsAbbreviation ->
+            yield! inheritanceHierarchy (Some t.AbbreviatedType)
+        | Some t ->
+            yield! inheritanceHierarchy t.BaseType
+            yield typeRef t
+        | None -> ()
+    }
+
+    /// Inhertitable members of the specified F# type returned as references.
+    let inhertiableMembers (t: FSharpType) = 
+        t.TypeDefinition.MembersFunctionsAndValues
+        |> Seq.filter (fun mem -> mem.Accessibility.IsPublic && not mem.IsExtensionMember && 
+                                    not mem.IsConstructor && not mem.IsPropertyGetterMethod && 
+                                    not mem.IsPropertySetterMethod &&
+                                    (mem.IsProperty || mem.IsMember))
+        |> Seq.map (fun mem -> symbolRef (symbolNames mem mem.EnclosingEntity.Value))
+
+    /// All members (transitively) inherited by the specified F# type returned as references.
+    let rec inheritedMembers filter (t: FSharpType option) = seq {
+        match t with
+        | Some t when filter |> List.contains t.TypeDefinition.DisplayName -> ()
+        | Some t when t.IsAbbreviation ->
+            yield! inheritedMembers filter (Some t.AbbreviatedType)
+        | Some t ->
+            yield! inheritedMembers filter t.BaseType
+            yield! inhertiableMembers t
+        | None -> ()
+    }
+
     /// Extracts documentation from XML docstrings and adds it to the specified MetadataItem.
-    let extractXmlDoc (md: MetadataItem) (xmlDoc: IList<string>) (xmlDocSig: string) =
+    member internal __.ExtractXmlDoc (md: MetadataItem) (xmlDoc: IList<string>) (xmlDocSig: string) =
         
         /// Resolves a cref within the XML documenation.
         let resolveCRef xmlRef =
@@ -633,7 +691,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             md.Summary <- md.RawComment
 
     /// Extract MetadataItem for an F# symbol.
-    let symbolMetadata (encEnt: FSharpEntity) (encMd: MetadataItem) (sym: FSharpSymbol) =
+    member internal this.SymbolMetadata (encEnt: FSharpEntity) (encMd: MetadataItem) (sym: FSharpSymbol) =
         let names = symbolNames sym encEnt
         let dispName = sym.DisplayName
         let nameWithType = encEnt.DisplayName + "." + sym.DisplayName
@@ -643,6 +701,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         let symMd = MetadataItem()
         symMd.Syntax <- SyntaxDetail()
         symMd.Name <- names.Name
+        symMd.Language <- SyntaxLanguage.FSharp
         symMd.DisplayNames <- names.DisplayName |> syn
         symMd.DisplayNamesWithType <- names.DisplayNameWithType |> syn
         symMd.DisplayQualifiedNames <- names.DisplayQualifiedName |> syn
@@ -667,7 +726,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 |> syn
             symMd.Syntax.Return <- 
                 ApiParameter(Type=typeRef field.FieldType, Attributes=List(field.FieldAttributes |> Seq.choose attrMetadata))
-            extractXmlDoc symMd field.XmlDoc field.XmlDocSig
+            this.ExtractXmlDoc symMd field.XmlDoc field.XmlDocSig
             
             filterData.Kind <- Nullable ExtendedSymbolKind.Field
             filterData.Attributes <- attrsFilterData field.PropertyAttributes
@@ -682,7 +741,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 |> Seq.map (fun f -> ApiParameter(Name=(if f.Name <> "Item" then f.Name else ""), 
                                                     Type=typeRef f.FieldType))
                 |> List
-            extractXmlDoc symMd case.XmlDoc case.XmlDocSig
+            this.ExtractXmlDoc symMd case.XmlDoc case.XmlDocSig
 
             filterData.Kind <- Nullable ExtendedSymbolKind.Member
             filterData.Attributes <- attrsFilterData case.Attributes
@@ -708,7 +767,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 symMd.Syntax.Return <- paramMetadata mem.ReturnParameter
             symMd.IsExplicitInterfaceImplementation <- mem.IsExplicitInterfaceImplementation
             symMd.Attributes <- List(mem.Attributes |> Seq.choose attrMetadata)
-            extractXmlDoc symMd mem.XmlDoc mem.XmlDocSig
+            this.ExtractXmlDoc symMd mem.XmlDoc mem.XmlDocSig
 
             // add overload reference
             if mem.FullType.IsFunctionType || mem.IsProperty then
@@ -862,40 +921,8 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         else None
 
 
-    /// The inheritance hierarchy of the specified F# type returned as references.
-    let rec inheritanceHierarchy (t: FSharpType option) = seq {
-        match t with
-        | Some t when t.IsAbbreviation ->
-            yield! inheritanceHierarchy (Some t.AbbreviatedType)
-        | Some t ->
-            yield! inheritanceHierarchy t.BaseType
-            yield typeRef t
-        | None -> ()
-    }
-
-    /// Inhertitable members of the specified F# type returned as references.
-    let inhertiableMembers (t: FSharpType) = 
-        t.TypeDefinition.MembersFunctionsAndValues
-        |> Seq.filter (fun mem -> mem.Accessibility.IsPublic && not mem.IsExtensionMember && 
-                                    not mem.IsConstructor && not mem.IsPropertyGetterMethod && 
-                                    not mem.IsPropertySetterMethod &&
-                                    (mem.IsProperty || mem.IsMember))
-        |> Seq.map (fun mem -> symbolRef (symbolNames mem mem.EnclosingEntity.Value))
-
-    /// All members (transitively) inherited by the specified F# type returned as references.
-    let rec inheritedMembers filter (t: FSharpType option) = seq {
-        match t with
-        | Some t when filter |> List.contains t.TypeDefinition.DisplayName -> ()
-        | Some t when t.IsAbbreviation ->
-            yield! inheritedMembers filter (Some t.AbbreviatedType)
-        | Some t ->
-            yield! inheritedMembers filter t.BaseType
-            yield! inhertiableMembers t
-        | None -> ()
-    }
-
     /// Creates a MetadataItem for an F# entity.
-    let entityMetadata (ent: FSharpEntity) =
+    member internal this.EntityMetadata (ent: FSharpEntity) =
         let md = MetadataItem(Syntax=SyntaxDetail(), Items=List())
         let names = entityNames ent   
         let dispName = names.DisplayName     
@@ -922,11 +949,12 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         md.NamespaceName <- entityNamespace ent
         md.AssemblyNameList <- List([assemblyName])
         md.Type <- typ
-        md.DisplayNames <- names.DisplayName |> syn
+        md.Language <- SyntaxLanguage.FSharp        
+        md.DisplayNames <- names.DisplayNameWithSuffix |> syn
         md.DisplayNamesWithType <- names.DisplayNameWithType |> syn
         md.DisplayQualifiedNames <- names.DisplayQualifiedName |> syn
         md.Syntax.TypeParameters <- List(ent.GenericParameters |> Seq.map genericParamMetadata)        
-        extractXmlDoc md ent.XmlDoc ent.XmlDocSig
+        this.ExtractXmlDoc md ent.XmlDoc ent.XmlDocSig
 
         // extract inheritance and implementation information
         let filteredIfs = ["Object"; "ValueType"]
@@ -949,7 +977,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 md.Implements <- List(ent.AllInterfaces |> Seq.map typeRef |> Seq.sort)
 
         // gather metadata for contained members, fields, functions, union cases, etc.
-        let getMds syms = syms |> Seq.choose (symbolMetadata ent md) |> Seq.cache
+        let getMds syms = syms |> Seq.choose (this.SymbolMetadata ent md) |> Seq.cache
         let memberMds = getMds ent.MembersFunctionsAndValues
         let fieldMds = getMds ent.FSharpFields
         let caseMds = getMds ent.UnionCases
@@ -1032,7 +1060,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             Some md   
 
     /// Generate MetadataItem for namespace containing the specified entities.    
-    let namespaceMetadata name (containedMds: seq<MetadataItem>) =
+    member internal __.NamespaceMetadata name (containedMds: seq<MetadataItem>) =
         let md = MetadataItem()
 
         // create namespace metadata
@@ -1058,7 +1086,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             None
 
     /// Metadata for the assembly of this F# compilation.
-    let assemblyMetadata() =
+    member internal this.AssemblyMetadata () =
         let md = MetadataItem()
 
         // basic assembly information
@@ -1077,7 +1105,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let ent = toProcess.Pop()
             if ent.Accessibility.IsPublic then
                 if (entityNamespace ent).Length > 0 then
-                    entityMetadata ent |> Option.iter topLevelMds.Add 
+                    this.EntityMetadata ent |> Option.iter topLevelMds.Add 
                     for subEnt in ent.PublicNestedEntities do
                         toProcess.Push subEnt
                 else
@@ -1088,25 +1116,26 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         md.Items <-
             topLevelMds
             |> Seq.groupBy (fun md -> md.NamespaceName)
-            |> Seq.choose (fun (nsName, mds) -> namespaceMetadata nsName mds)                
+            |> Seq.choose (fun (nsName, mds) -> this.NamespaceMetadata nsName mds)                
             |> List
         md
 
     /// Generates a MetadataItem for the assembly corresponding to this F# compilation.
     /// <param name="parameters">Build parameters.</param>
-    member __.ExtractMetadata (parameters: IInputParameters) =
+    member this.ExtractMetadata (parameters: IInputParameters) =
         Log.verbose "Extracting F# metadata for assembly %s" assemblyName
 
         filter <- ConfigFilterRule.LoadWithDefaults parameters.Options.FilterConfigFile
         references <- Dictionary<string, ReferenceItem>()
-        knownNamespaces <- HashSet<string>()
-        let md = assemblyMetadata()
+        let md = this.AssemblyMetadata()
 
         Log.verbose "F# metadata for assembly %s extracted" assemblyName
         md
 
     override this.GetBuildController() =
         FSharpBuildController (this) :> IBuildController
+
+    member internal __.Compilation = compilation
 
 
 /// <summary>Build controller for an F# compilation.</summary>

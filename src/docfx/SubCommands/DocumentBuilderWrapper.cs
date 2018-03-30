@@ -226,6 +226,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 FALName = config.FALName,
                 DisableGitFeatures = config.DisableGitFeatures,
                 SchemaLicense = config.SchemaLicense,
+                TagParameters = config.TagParameters
             };
             if (config.GlobalMetadata != null)
             {
