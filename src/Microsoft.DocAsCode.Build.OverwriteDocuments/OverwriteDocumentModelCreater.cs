@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     throw new MarkdownFragmentsException(ex.Message, content.PropertyNameSource.Line, ex);
                 }
 
-                AppendNewObject(OPathSegments, content.PropertyNameSource, content.PropertyValue, contentsMetadata);
+                AppendNewObject(OPathSegments, content.PropertyNameSource, CreateDocument(content), contentsMetadata);
             }
 
             return contentsMetadata;
@@ -95,13 +95,13 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             return metadata.ToDictionary(g => g.Key, g => g.Last().Value);
         }
 
-        private void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
+        private void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, MarkdownDocument propertyValue, Dictionary<string, object> contentsMetadata)
         {
             FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, 0, propertyValue,
                 string.Join("/", OPathSegments.Select(o => o.OriginalSegmentString)));
         }
 
-        private void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, List<Block> propertyValue, string originalOPathString)
+        private void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, MarkdownDocument propertyValue, string originalOPathString)
         {
             var segment = OPathSegments[index];
             if (index == OPathSegments.Count - 1)
@@ -175,7 +175,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
         }
 
-        private void CreateCoreObject(OPathSegment lastSegment, Block codeHeaderBlock, Dictionary<string, object> currentObject, List<Block> propertyValue, string originalOPathString)
+        private void CreateCoreObject(OPathSegment lastSegment, Block codeHeaderBlock, Dictionary<string, object> currentObject, MarkdownDocument propertyValue, string originalOPathString)
         {
             if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
             {
@@ -195,18 +195,23 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
             }
 
-            currentObject[lastSegment.SegmentName] = CreateDocument(propertyValue);
+            currentObject[lastSegment.SegmentName] = propertyValue;
         }
 
-        private MarkdownDocument CreateDocument(List<Block> blocks)
+        private MarkdownDocument CreateDocument(MarkdownPropertyModel model)
         {
             var result = new MarkdownDocument();
-            foreach (var block in blocks)
+            if (model != null)
             {
-                block.Parent?.Remove(block);
-                result.Add(block);
+                foreach (var block in model.PropertyValue)
+                {
+                    block.Parent?.Remove(block);
+                    result.Add(block);
+                }
+                result.SetData("filePath", _file);
+                result.SetData(Constants.OPathStringDataName, model.PropertyName);
+                result.SetData(Constants.OPathLineNumberDataName, model.PropertyNameSource.Line + 1);
             }
-            result.SetData("filePath", _file);
             return result;
         }
 

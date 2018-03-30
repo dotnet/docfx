@@ -2,6 +2,7 @@
 ```
 author: bob
 depot_name: MSDN.test
+site_name: test
 ms.product: MSDN
 ```
 
