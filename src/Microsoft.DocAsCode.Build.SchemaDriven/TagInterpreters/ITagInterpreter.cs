@@ -5,7 +5,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     public interface ITagInterpreter
     {
-        string TagName { get; }
-        object Interpret(BaseSchema schema, object value, IProcessContext context, string path);
+        int Order { get; }
+        bool Matches(string tagName);
+        object Interpret(string tagName, BaseSchema schema, object value, IProcessContext context, string path);
     }
 }
