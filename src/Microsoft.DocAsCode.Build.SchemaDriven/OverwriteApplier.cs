@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             new XrefPropertiesInterpreter()
         );
 
-        private readonly Merger _merger = new Merger();
+        private readonly Merger _merger;
 
         private readonly IHostService _host;
         private readonly SchemaProcessor _overwriteProcessor;
@@ -29,6 +29,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         {
             _host = host ?? throw new ArgumentNullException(nameof(host));
             _overwriteModelType = type;
+            _merger = new Merger
+            {
+                OverwriteType = type
+            };
             switch (type)
             {
                 case OverwriteModelType.Classic:

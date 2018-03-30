@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
     internal sealed class Merger
     {
+        public OverwriteModelType OverwriteType { get; set; }
+
         public void Merge(ref object src, object overwrite, string uid, string path, BaseSchema schema)
         {
             if (schema == null)
@@ -107,7 +109,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                         }
                         if (!matched)
                         {
-                            Logger.LogWarning($"\"{path}/{j}\" in overwrite object fails to overwrite \"{path}\" for \"{uid}\" because it does not match any existing item.");
+                            Logger.LogWarning($"\"{path}/{j}\" in overwrite object fails to overwrite \"{path}\" for \"{uid}\" because it does not match any existing item.",
+                                code: OverwriteType == OverwriteModelType.MarkdownFragments ? WarningCodes.Overwrite.InvalidMarkdownFragments : null);
                         }
                     }
                 }
