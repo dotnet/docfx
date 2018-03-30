@@ -199,11 +199,11 @@ items:
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
                 BuildDocument(files);
 
-                Assert.Equal(1, listener.Items.Count);
+                Assert.Single(listener.Items);
 
                 var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
                 var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
-                Assert.Equal(0, xrefmap.References.Count);
+                Assert.Empty(xrefmap.References);
 
                 var outputFileName = Path.ChangeExtension(inputFileName, ".html");
 
@@ -248,7 +248,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
                 BuildDocument(files);
 
-                Assert.Equal(1, listener.Items.Count);
+                Assert.Single(listener.Items);
                 listener.Items.Clear();
 
                 var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
@@ -407,6 +407,76 @@ metadata: Web Apps Documentation
         }
 
         [Fact]
+        public void TestUidWithPatternedTag()
+        {
+            using (var listener = new TestListenerScope("TestUidWithPatternedTag"))
+            {
+                var schemaFile = CreateFile("template/schemas/patterned.uid.test.schema.json", @"
+{
+  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""version"": ""1.0.0"",
+  ""title"": ""PatternedUid"",
+  ""description"": ""A simple test schema for sdp's patterned uid"",
+  ""type"": ""object"",
+  ""properties"": {
+      ""uid"": {
+            ""type"": ""string"",
+            ""tags"": [ ""patterned:uid"" ] 
+      }
+  }
+}
+", _templateFolder);
+
+                var inputFile = CreateFile("PatternedUid.yml", @"### YamlMime:PatternedUid
+uid: azure.hello1
+", _inputFolder);
+
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                BuildDocument(files, new DocumentBuildParameters
+                {
+                    Files = files,
+                    OutputBaseDir = _outputFolder,
+                    ApplyTemplateSettings = _applyTemplateSettings,
+                    TemplateManager = _templateManager,
+                    TagParameters = new Dictionary<string, JArray>
+                    {
+                        ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
+                    },
+                });
+
+                Assert.Equal(2, listener.Items.Count);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): PatternedUid")));
+                listener.Items.Clear();
+
+                inputFile = CreateFile("PatternedUid2.yml", @"### YamlMime:PatternedUid
+uid: invalid.hello1
+", _inputFolder);
+
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+
+                inputFile = CreateFile("PatternedUid3.yml", @"### YamlMime:PatternedUid
+uid: invalid.azure.hello2
+", _inputFolder);
+
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
+                {
+                    Files = files,
+                    OutputBaseDir = _outputFolder,
+                    ApplyTemplateSettings = _applyTemplateSettings,
+                    TemplateManager = _templateManager,
+                    TagParameters = new Dictionary<string, JArray>
+                    {
+                        ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
+                    },
+                }));
+
+                Assert.Equal(2, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
+            }
+        }
+
+        [Fact]
         public void TestInvalidObjectAgainstSchema()
         {
             using (var listener = new TestListenerScope("TestInvalidMetadataReference"))
@@ -435,7 +505,7 @@ metadata: Web Apps Documentation
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
                 Assert.Throws<DocumentException>(() => BuildDocument(files));
                 var errors = listener.Items.Where(s => s.LogLevel == LogLevel.Error).ToList();
-                Assert.Equal(1, errors.Count);
+                Assert.Single(errors);
                 Assert.Equal($"Unable to load file: {inputFile} via processor: MetadataReferenceTest: Validation against \"http://dotnet.github.io/docfx/schemas/v1.0/schema.json#\" failed: \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
             }
         }
@@ -483,9 +553,9 @@ searchScope:
             }
         }
 
-        private void BuildDocument(FileCollection files)
+        private void BuildDocument(FileCollection files, DocumentBuildParameters dbp = null)
         {
-            var parameters = new DocumentBuildParameters
+            var parameters = dbp ?? new DocumentBuildParameters
             {
                 Files = files,
                 OutputBaseDir = _outputFolder,
@@ -641,11 +711,18 @@ searchScope:
         {
             public string TagName => "metadata";
 
-            public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
+            public int Order => 1;
+
+            public object Interpret(string tagName, BaseSchema schema, object value, IProcessContext context, string path)
             {
                 ((dynamic)value).hello = "world";
                 ((dynamic)value).path = path;
                 return value;
+            }
+
+            public bool Matches(string tagName)
+            {
+                return TagName == tagName;
             }
         }
     }

@@ -23,11 +23,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
         {
-            var val = value;
-            var tagInterpreters = _tagInterpreters.Where(s => schema.Tags.Contains(s.TagName, StringComparer.OrdinalIgnoreCase));
-            foreach (var i in tagInterpreters)
+            if (!CanInterpret(schema))
             {
-                val = i.Interpret(schema, val, context, path);
+                return value;
+            }
+            var val = value;
+
+            foreach(var tag in schema.Tags)
+            {
+                foreach (var i in _tagInterpreters.Where(t => t.Matches(tag)).OrderBy(t => t.Order))
+                {
+                    val = i.Interpret(tag, schema, val, context, path);
+                }
             }
 
             return val;

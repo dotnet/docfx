@@ -31,13 +31,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             var schemaProcessor = new SchemaProcessor(new TagsInterpreter(TagInterpreters.ToList()));
 
-            foreach (var model in models)
+            models.Where(s => s.Type == DocumentType.Article).RunAll(model =>
             {
-                if (model.Type == DocumentType.Article)
-                {
-                    model.Content = schemaProcessor.Process(model.Content, model.Properties.Schema, new ProcessContext(host, model));
-                }
-            }
+                model.Content = schemaProcessor.Process(model.Content, model.Properties.Schema, new ProcessContext(host, model));
+            });
         }
 
         #region ISupportIncrementalBuildStep Members
