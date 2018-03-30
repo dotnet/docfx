@@ -3,7 +3,6 @@ environment:
   nodejs_version: "7"
 branches:
   only:
-    - master
     - dev
 image: Visual Studio 2017
 init:
@@ -12,9 +11,8 @@ install:
   - git clone -q https://github.com/docascode/docfx-seed.git ../docfx-seed
   - ps: cd .\tools\Deployment
   - ps: Install-Product node $env:nodejs_version
-  - node --version
   - npm install
   - npm install glob
   - node .\node_modules\typescript\bin\tsc
 build_script:
-  - node .\node_modules\gulp\bin\gulp.js %APPVEYOR_REPO_BRANCH%
+  - node .\node_modules\gulp\bin\gulp.js dev
