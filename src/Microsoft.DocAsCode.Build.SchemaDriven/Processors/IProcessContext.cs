@@ -37,5 +37,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         MarkdigMarkdownService MarkdigMarkdownService { get; }
 
         T GetModel<T>();
+
+        Dictionary<string, object> Metadata { get; }
     }
 }
