@@ -38,6 +38,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         T GetModel<T>();
 
-        Dictionary<string, object> Metadata { get; }
+        IDictionary<string, object> Metadata { get; }
     }
 }
