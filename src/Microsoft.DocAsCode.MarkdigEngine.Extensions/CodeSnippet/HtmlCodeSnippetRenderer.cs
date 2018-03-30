@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static readonly string ScriptFamilyCodeSnippetCommentStartLineTemplate = "#<{tagname}>";
         private static readonly string ScriptFamilyCodeSnippetCommentEndLineTemplate = "#</{tagname}>";
 
-        // Lisp code snippet comment block: rem <[/]snippetname>
+        // Batch code snippet comment block: rem <[/]snippetname>
         private static readonly string BatchFileCodeSnippetRegionStartLineTemplate = "rem<{tagname}>";
         private static readonly string BatchFileCodeSnippetRegionEndLineTemplate = "rem</{tagname}>";
 
