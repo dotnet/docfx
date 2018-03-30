@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Common
     {
         public static class Build
         {
-            public const string InvalidPropertyFormat = "InvalidTagParametersConfig";
+            public const string InvalidPropertyFormat = "InvalidPropertyFormat";
         }
     }
 }
