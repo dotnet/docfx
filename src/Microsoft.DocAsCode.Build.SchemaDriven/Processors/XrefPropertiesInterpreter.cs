@@ -51,9 +51,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             }
 
             var uid = JsonPointer.GetChild(value, "uid") as string;
+            if (uid == null)
+            {
+                // schema validation threw error when uid is required, so here when uid is null, it must be optional, which is allowed
+                return value;
+            }
+            
             if (string.IsNullOrEmpty(uid))
             {
-                Logger.LogWarning($"Invalid xrefProperties for {path}: uid is not defined.");
+                Logger.LogWarning($"Invalid xrefProperties for /{path}: empty uid is not allowed.");
                 return value;
             }
 
