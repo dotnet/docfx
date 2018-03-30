@@ -90,11 +90,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (type.TypeKind == TypeKind.Enum)
             {
                 var namedType = (INamedTypeSymbol)type;
-                var pairs = (from member in namedType.GetMembers().OfType<IFieldSymbol>()
-                             where member.IsConst && member.HasConstantValue
-                             select Tuple.Create(member.Name, member.ConstantValue)).ToDictionary(tuple => tuple.Item2, tuple => tuple.Item1);
+                var name = (from member in namedType.GetMembers().OfType<IFieldSymbol>()
+                            where member.IsConst && member.HasConstantValue
+                            where constant.Value.Equals(member.ConstantValue)
+                            select member.Name).FirstOrDefault();
 
-                return $"{VisitorHelper.GetId(namedType)}.{pairs[value]}";
+                if (name != null)
+                {
+                    return $"{VisitorHelper.GetId(namedType)}.{name}";
+                }
+
+                // todo : define filter data format (language neutral), just use number for combine case by now.
+                // e.g.: [Flags] public enum E { X=1,Y=2,Z=4,YZ=6 }
+                // Case: [E(E.X | E.Y)]
+                // Case: [E((E)99)]
+                // Case: [E(E.X | E.YZ)]
+                return value.ToString();
             }
 
             if (value is ITypeSymbol)
@@ -103,6 +114,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return value.ToString();
-        }    
+        }
     }
 }

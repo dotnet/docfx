@@ -210,6 +210,41 @@ namespace Test1
             Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
         }
 
+        [Fact]
+        public void TestFilterBugIssue2547()
+        {
+            string code = @"using System;
+
+namespace Test1
+{
+    [Flags]
+    public enum ExecutionMode
+    {
+        None = 0,
+        Runtime = 1,
+        Editor = 2,
+        Thumbnail = 4,
+        Preview = 8,
+        EffectCompile = 16,
+        All = Runtime | Editor | Thumbnail | Preview | EffectCompile,
+    }
+
+    public class Test1Attribute : Attribute
+    {
+        public ExecutionMode ExecutionMode { get; set; } = ExecutionMode.All;
+    }
+
+    [Test1(ExecutionMode = ExecutionMode.Runtime | ExecutionMode.Thumbnail | ExecutionMode.Preview)]
+    public class Test2
+    {
+    }
+}";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @namespace = output.Items[0];
+            Assert.NotNull(@namespace);
+            Assert.Equal(3, @namespace.Items.Count);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
