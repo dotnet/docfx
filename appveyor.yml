@@ -12,7 +12,6 @@ install:
   - ps: cd .\tools\Deployment
   - ps: Install-Product node $env:nodejs_version
   - npm install
-  - npm install glob
   - node .\node_modules\typescript\bin\tsc
 build_script:
   - node .\node_modules\gulp\bin\gulp.js dev
