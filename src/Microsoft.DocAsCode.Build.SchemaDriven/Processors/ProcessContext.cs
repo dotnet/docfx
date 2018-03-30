@@ -39,6 +39,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public MarkdigMarkdownService MarkdigMarkdownService { get; set; }
 
+        public IDictionary<string, object> Metadata { get; }
+
         public T GetModel<T>()
         {
             return (T)_model.Content;
@@ -58,6 +60,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             Dependency = new HashSet<string>();
             XRefSpecs = new List<XRefSpec>();
             ExternalXRefSpecs = new List<XRefSpec>();
+            Metadata = new Dictionary<string, object>();
             if (((IDictionary<string, object>)(fm.Properties)).TryGetValue("PathProperties", out var properties))
             {
                 var pathProperties = properties as Dictionary<string, Dictionary<string, object>>;
