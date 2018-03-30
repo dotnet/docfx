@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Newtonsoft.Json.Linq;
 
     internal class HostServiceCreator : IHostServiceCreator
     {
@@ -46,7 +47,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 parameters.VersionName,
                 parameters.VersionDir,
                 parameters.LruSize,
-                parameters.GroupInfo)
+                parameters.GroupInfo,
+                new BuildParameters(parameters.TagParameters))
             {
                 MarkdownService = markdownService,
                 Processor = processor,
@@ -122,6 +124,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return result.ToImmutableDictionary();
+        }
+
+        private sealed class BuildParameters : IBuildParameters
+        {
+            public IReadOnlyDictionary<string, JArray> TagParameters { get; }
+
+            public BuildParameters(IReadOnlyDictionary<string, JArray> tagParameters)
+            {
+                TagParameters = tagParameters;
+            }
         }
     }
 }

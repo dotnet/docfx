@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [Serializable]
     public class BuildJsonConfig
@@ -63,6 +64,9 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
+
+        [JsonProperty("tagParameters")]
+        public Dictionary<string, JArray> TagParameters { get; set; }
 
         [JsonProperty("fileMetadataFiles")]
         public ListWithStringFallback FileMetadataFilePaths { get; set; } = new ListWithStringFallback();
