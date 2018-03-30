@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "src/Microsoft.DocAsCode.Metadata.ManagedReference.FSharp"
+		},
+		{
+			"path": "test/Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests"
+		}
+	],
+	"settings": {}
+}
