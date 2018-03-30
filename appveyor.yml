@@ -4,6 +4,7 @@ environment:
 branches:
   only:
     - dev
+skip_non_tags: true
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
