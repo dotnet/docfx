@@ -24,7 +24,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         public OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
-            // TODO: support multi-layer yaml
             var yamlCodeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
             var contentsMetadata = ConvertContents(model.Contents);
 
