@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex ScriptFamilyCodeSnippetCommentStartLineRegex = new Regex(@"^\s*#\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex ScriptFamilyCodeSnippetCommentEndLineRegex = new Regex(@"^\s*#\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        // Lisp code snippet comment block: rem <[/]snippetname>
+        // Batch code snippet comment block: rem <[/]snippetname>
         private static readonly Regex BatchFileCodeSnippetRegionStartLineRegex = new Regex(@"^\s*rem\s+\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex BatchFileCodeSnippetRegionEndLineRegex = new Regex(@"^\s*rem\s+\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
