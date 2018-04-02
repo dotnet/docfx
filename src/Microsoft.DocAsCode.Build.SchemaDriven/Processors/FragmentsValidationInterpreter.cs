@@ -39,6 +39,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
+            if (markdownDocument == null && schema.ContentType == ContentType.Markdown)
+            {
+                Logger.LogWarning(
+                $"There is an invalid yaml item: `{path.Trim('/')}`: the contentType of this property in schema cannot be `markdown`, please move it to content section",
+                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                return value;
+            };
+
             if (schema.MergeType == MergeType.Key)
             {
                 return value;
