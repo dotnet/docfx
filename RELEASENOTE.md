@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.33.1)
+﻿Version Notes (Current Version: v2.33.2)
 =======================================
+v2.33.2
+-----------
+1. support more languages for markdig (#2574)
+2. MonikerRange infinite loop bug (#2572)
+
 v2.33.1
 -----------
 1. Enable emoji in markdig
