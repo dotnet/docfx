@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var range = StringBuilderCache.Local();
             c = slice.CurrentChar;
 
-            while (c != '"')
+            while (c != '\0' && c != '"')
             {
                 range.Append(c);
                 c = slice.NextChar();

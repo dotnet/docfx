@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     public class MonikerRangeTest
     {
         [Fact]
-        public void XrefTestGeneral()
+        public void MonikerRangeTestGeneral()
         {
             //arange
             var content = @"# Article 2
@@ -52,6 +52,20 @@ Inline ::: should not end moniker zone.</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""21"" sourceEndLineNumber=""21"">Shared content.</p>
 ".Replace("\r\n", "\n");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+
+        [Fact]
+        public void MonikerRangeTestInvalid()
+        {
+            //arange
+            var source = @"::: moniker range=""azure-rest-1.0";
+
+            // assert
+            var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
+";
+
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
     }
 }
