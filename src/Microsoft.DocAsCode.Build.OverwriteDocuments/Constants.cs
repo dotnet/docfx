@@ -7,5 +7,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         public const string OPathStringDataName = "opathString";
         public const string OPathLineNumberDataName = "opathLineNumber";
+        public const string FragmentsYAMLBlockKey = "_fragments_yamlBlock";
+        public const string FragmentsContentsKey = "_fragments_contentsBlock";
     }
 }

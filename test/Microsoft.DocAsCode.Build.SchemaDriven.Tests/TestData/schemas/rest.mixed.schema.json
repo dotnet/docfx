@@ -10,7 +10,10 @@
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
+			"type": "string",
+			"tags": [
+				"editable"
+			]
 		},
 		"operations": {
 			"items": {
