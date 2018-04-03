@@ -39,6 +39,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
+            if (markdownDocument == null && schema.ContentType == ContentType.Markdown)
+            {
+                Logger.LogWarning(
+                $"Markdown property `{path.Trim('/')}` is not allowed inside a YAML code block",
+                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                return value;
+            };
+
             if (schema.MergeType == MergeType.Key)
             {
                 return value;
