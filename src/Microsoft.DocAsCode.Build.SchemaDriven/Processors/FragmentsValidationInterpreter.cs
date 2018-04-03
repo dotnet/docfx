@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             if (markdownDocument == null && schema.ContentType == ContentType.Markdown)
             {
                 Logger.LogWarning(
-                $"There is an invalid yaml item: `{path.Trim('/')}`: the contentType of this property in schema cannot be `markdown`, please move it to content section",
+                $"Markdown property `{path.Trim('/')}` is not allowed inside a YAML code block",
                 code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 return value;
             };

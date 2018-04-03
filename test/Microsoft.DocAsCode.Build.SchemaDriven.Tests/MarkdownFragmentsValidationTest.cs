@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             Assert.True(File.Exists(_rawModelFilePath));
             Assert.Equal(5, warningLogs.Count());
             Assert.Equal(
-                @"There is an invalid yaml item: `depot_name`: the contentType of this property in schema cannot be `markdown`, please move it to content section
+                @"Markdown property `depot_name` is not allowed inside a YAML code block
 You cannot overwrite a readonly property: `site_name`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property
 There is an invalid H2: `name`: the contentType of this property in schema must be `markdown`
 There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsValidation.create""]/summary`: the contentType of this property in schema must be `markdown`
