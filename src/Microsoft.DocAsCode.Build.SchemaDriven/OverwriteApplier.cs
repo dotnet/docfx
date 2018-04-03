@@ -89,8 +89,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             return _overwriteModelType == OverwriteModelType.Classic
-                ? BuildClassicOverwriteCore(owModel, overwrite, schema)
-                : BuildFragmentsCore(owModel, overwrite, schema);
+                ? BuildClassicOverwriteWithSchema(owModel, overwrite, schema)
+                : BuildFragmentsWithSchema(owModel, overwrite, schema);
         }
 
         public void MergeContentWithOverwrite(ref object source, object overwrite, string uid, string path, BaseSchema schema)
@@ -98,18 +98,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             _merger.Merge(ref source, overwrite, uid, path, schema);
         }
 
-        private object BuildClassicOverwriteCore(FileModel owModel, OverwriteDocumentModel overwrite, BaseSchema schema)
+        private object BuildClassicOverwriteWithSchema(FileModel owModel, OverwriteDocumentModel overwrite, BaseSchema schema)
         {
-            dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);
-            overwriteObject.uid = overwrite.Uid;
-            var overwriteModel = new FileModel(owModel.FileAndType, overwriteObject, owModel.OriginalFileAndType);
-            var context = (((IDictionary<string, object>)(owModel.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
-                ? new ProcessContext(_host, overwriteModel, null, (MarkdigMarkdownService)service)
-                : new ProcessContext(_host, overwriteModel);
-
-            context.ContentAnchorParser = new ContentAnchorParser(overwrite.Conceptual);
-
-            var transformed = _overwriteProcessor.Process(overwriteObject, schema, context) as IDictionary<string, object>;
+            ProcessContext context;
+            var transformed = BuildWithSchemaCore(overwrite.Metadata, owModel, overwrite, schema, out context) as IDictionary<string, object>;
             if (!context.ContentAnchorParser.ContainsAnchor)
             {
                 transformed["conceptual"] = context.ContentAnchorParser.Content;
@@ -120,35 +112,47 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             return transformed;
         }
 
-        private object BuildFragmentsCore(
+        private object BuildFragmentsWithSchema(
             FileModel owModel,
             OverwriteDocumentModel overwrite,
             BaseSchema schema)
         {
-            dynamic yamlBlockObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata[OverwriteDocuments.Constants.FragmentsYAMLBlockKey]);
-            dynamic contentsObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata[OverwriteDocuments.Constants.FragmentsContentsKey]);
-            yamlBlockObject.uid = overwrite.Uid;
-            contentsObject.uid = overwrite.Uid;
-            var yamlBlockModel = new FileModel(owModel.FileAndType, yamlBlockObject, owModel.OriginalFileAndType);
-            var contentsModel = new FileModel(owModel.FileAndType, contentsObject, owModel.OriginalFileAndType);
-
-            var context = (((IDictionary<string, object>)(owModel.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
-                ? new ProcessContext(_host, yamlBlockModel, null, (MarkdigMarkdownService)service)
-                : new ProcessContext(_host, yamlBlockModel);
-
-            var yamlBlockTransformed = _overwriteProcessor.Process(yamlBlockObject, schema, context) as IDictionary<string, object>;
-            var contentsTransformed = _overwriteProcessor.Process(contentsObject, schema, context) as IDictionary<string, object>;
-
+            ProcessContext context;
             var transformed =  new Dictionary<string, object>
             {
-                { OverwriteDocuments.Constants.FragmentsYAMLBlockKey, yamlBlockTransformed },
-                { OverwriteDocuments.Constants.FragmentsContentsKey, contentsTransformed },
+                { OverwriteDocuments.Constants.FragmentsYAMLBlockKey,
+                    BuildWithSchemaCore(overwrite.Metadata[OverwriteDocuments.Constants.FragmentsYAMLBlockKey], owModel, overwrite, schema, out context) },
+                { OverwriteDocuments.Constants.FragmentsContentsKey,
+                    BuildWithSchemaCore(overwrite.Metadata[OverwriteDocuments.Constants.FragmentsContentsKey], owModel, overwrite, schema, out context) },
             };
 
             AddSourceDetail(transformed, overwrite);
             ReportDependencies(owModel, context);
 
             return transformed;
+        }
+
+        private IDictionary<string, object> BuildWithSchemaCore(
+            object metadata,
+            FileModel owModel,
+            OverwriteDocumentModel overwrite,
+            BaseSchema schema,
+            out ProcessContext context)
+        {
+            dynamic metadataObject = ConvertToObjectHelper.ConvertToDynamic(metadata);
+            metadataObject.uid = overwrite.Uid;
+            var model = new FileModel(owModel.FileAndType, metadataObject, owModel.OriginalFileAndType);
+
+            context = (((IDictionary<string, object>)(owModel.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
+                ? new ProcessContext(_host, model, null, (MarkdigMarkdownService)service)
+                : new ProcessContext(_host, model);
+
+            if(_overwriteModelType == OverwriteModelType.Classic)
+            {
+                context.ContentAnchorParser = new ContentAnchorParser(overwrite.Conceptual);
+            }
+
+            return _overwriteProcessor.Process(metadataObject, schema, context);
         }
 
         private void AddSourceDetail(IDictionary<string, object> transformed, OverwriteDocumentModel overwrite)
