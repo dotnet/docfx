@@ -129,7 +129,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             // 5. Validate schema after the merge
-            ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
+            using (new LoggerFileScope(model.LocalPathFromRoot))
+            {
+                ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
+            }
 
             // 6. Re-export xrefspec after the merge
             overwriteApplier.UpdateXrefSpec(model, schema);
