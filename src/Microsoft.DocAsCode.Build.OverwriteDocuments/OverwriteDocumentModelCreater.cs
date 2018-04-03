@@ -24,14 +24,17 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         public OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
-            // TODO: support multi-layer yaml
             var yamlCodeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
             var contentsMetadata = ConvertContents(model.Contents);
 
             return new OverwriteDocumentModel
             {
                 Uid = model.Uid,
-                Metadata = MergeYamlCodeMetadataWithContentsMetadata(yamlCodeBlockMetadata, contentsMetadata)
+                Metadata = new Dictionary<string, object>
+                {
+                    { Constants.FragmentsYAMLBlockKey, yamlCodeBlockMetadata },
+                    { Constants.FragmentsContentsKey, contentsMetadata},
+                }
             };
         }
 
@@ -77,22 +80,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
 
             return contentsMetadata;
-        }
-
-        internal static Dictionary<string, object> MergeYamlCodeMetadataWithContentsMetadata(Dictionary<string, object> yamlCodeMetadata, Dictionary<string, object> contentsMetadata)
-        {
-            var metadata = yamlCodeMetadata.Concat(contentsMetadata).GroupBy(p => p.Key);
-            var metadatasWithSameOPath = from meta in metadata
-                                         where meta.Count() > 1
-                                         select meta;
-            foreach (var meta in metadatasWithSameOPath)
-            {
-                Logger.LogWarning(
-                    $"There are two duplicate OPaths `{meta.Key}` in yaml code block and contents block, the item in yaml code block will be overwritten by contents block item",
-                    code: WarningCodes.Overwrite.DuplicateOPaths);
-            }
-
-            return metadata.ToDictionary(g => g.Key, g => g.Last().Value);
         }
 
         private void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, MarkdownDocument propertyValue, Dictionary<string, object> contentsMetadata)

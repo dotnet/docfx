@@ -124,8 +124,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
                 var schemaForCurrentUid = jsonPointer.FindSchema(schema);
                 var source = jsonPointer.GetValue(model.Content);
-                var overwriteObject = overwriteApplier.BuildOverwriteWithSchema(model.MarkdownFragmentsModel, overwriteDocumentModel, schema);
-                overwriteApplier.MergeContentWithOverwrite(ref source, overwriteObject, ud.Name, string.Empty, schemaForCurrentUid);
+                var overwriteObject = overwriteApplier.BuildOverwriteWithSchema(model.MarkdownFragmentsModel, overwriteDocumentModel, schema) as IDictionary<string, object>;
+                overwriteApplier.MergeContentWithOverwrite(ref source, overwriteObject[Constants.FragmentsYAMLBlockKey], ud.Name, string.Empty, schemaForCurrentUid);
+                overwriteApplier.MergeContentWithOverwrite(ref source, overwriteObject[Constants.FragmentsContentsKey], ud.Name, string.Empty, schemaForCurrentUid);
             }
 
             // 5. Validate schema after the merge

@@ -174,42 +174,6 @@ e: f
             Assert.Equal(0, ex.Position);
         }
 
-        [Fact]
-        public void DuplicateOPathsInYamlCodeBlockAndContentsBlock()
-        {
-            var yamlCodeMatadata = new Dictionary<string, object>
-            {
-                {"a", "b"},
-                {"c", "d"},
-                {"e", "f"}
-            };
-            var contentsMetadata = new Dictionary<string, object>
-            {
-                {"a", "k"},
-                {"g", "h"},
-                {"i", "j"},
-            };
-            Dictionary<string, object> mergedMetadata;
-            Logger.RegisterListener(_listener);
-            try
-            {
-                using (new LoggerPhaseScope("overwrite_document_model_creater"))
-                {
-                    mergedMetadata = OverwriteDocumentModelCreater.MergeYamlCodeMetadataWithContentsMetadata(yamlCodeMatadata, contentsMetadata);
-                }
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            Assert.Equal(1, logs.Count);
-            Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.DuplicateOPaths).Count());
-            Assert.Equal(5, mergedMetadata.Count);
-            Assert.Equal("k", mergedMetadata["a"]);
-        }
-
         private string ExtractDictionaryKeys(Dictionary<string, object> dict)
         {
             return string.Join(",", dict.Keys.ToArray());
