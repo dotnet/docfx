@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 if (!isLogged)
                 {
-                    Logger.LogWarning($"Missing UID {uid} in markdown fragments. This may be caused by YAML update. Please ensure your markdown fragments up to date.", WarningCodes.Overwrite.InvalidMarkdownFragments);
+                    Logger.LogWarning($"Missing UID {uid} in markdown fragments. This may be caused by YAML update. Please ensure your markdown fragments are up to date.", WarningCodes.Overwrite.InvalidMarkdownFragments);
                     _isMissingUidsLogged[uid] = true;
                 }
                 return;
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             // TODO: also check whether it exists in fragments[uid].Metadata
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                Logger.LogWarning($"Missing property {opath} in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments up to date.");
+                Logger.LogWarning($"Missing property {opath} in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", WarningCodes.Overwrite.InvalidMarkdownFragments);
             }
         }
     }
