@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Newtonsoft.Json.Linq;
+
     using Xunit;
 
     [Trait("Owner", "jipe")]
@@ -24,17 +26,20 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
         [Fact]
         public void YamlCodeBlockTest()
         {
-            var yamlCodeBlockString = "a: b\nc: d\ne: f";
-            var testYamlCodeBlock = Markdown.Parse(@"```
-a: b
-c: d
-e: f
-```")[0];
-            var actual = OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock);
-            Assert.Equal("a,c,e", ExtractDictionaryKeys(actual));
-            Assert.Equal("b", actual["a"]);
-            Assert.Equal("d", actual["c"]);
-            Assert.Equal("f", actual["e"]);
+            var yamlCodeBlockString = @"name: name overwrite
+definitions:
+- name: Application 1
+  properties:
+  - name: id
+    description: overwrite in yaml block
+  - name: displayName
+    description: overwrite in yaml block";
+            var testYamlCodeBlock = Markdown.Parse($"```\n{yamlCodeBlockString}\n```")[0];
+            var actual = JObject.FromObject(OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock));
+            Assert.Equal("name overwrite", actual["name"].ToString());
+            Assert.Equal("Application 1", actual["definitions"][0]["name"].ToString());
+            Assert.Equal("id", actual["definitions"][0]["properties"][0]["name"].ToString());
+            Assert.Equal("overwrite in yaml block", actual["definitions"][0]["properties"][1]["description"].ToString());
         }
 
         [Fact]
@@ -62,25 +67,25 @@ e: f
                 });
             }
 
-            var contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents);
+            var contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
             Assert.Equal(3, contentsMetadata.Count);
             Assert.Equal("summary,return,function", ExtractDictionaryKeys(contentsMetadata));
-            Assert.Equal(2, ((Dictionary<string, object>)contentsMetadata["return"]).Count);
+            Assert.Equal(2, ((Dictionary<object, object>)contentsMetadata["return"]).Count);
             Assert.Equal("description,type",
-                ExtractDictionaryKeys((Dictionary<string, object>)contentsMetadata["return"]));
-            Assert.Single((Dictionary<string, object>)contentsMetadata["function"]);
+                ExtractDictionaryKeys((Dictionary<object, object>)contentsMetadata["return"]));
+            Assert.Single((Dictionary<object, object>)contentsMetadata["function"]);
             Assert.Equal(2,
-                ((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"]).Count);
+                ((List<object>)((Dictionary<object, object>)contentsMetadata["function"])["parameters"]).Count);
             Assert.Equal("id,description,type",
                 ExtractDictionaryKeys(
-                    (Dictionary<string, object>)((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[0]));
+                    (Dictionary<object, object>)((List<object>)((Dictionary<object, object>)contentsMetadata["function"])["parameters"])[0]));
             Assert.Equal("id,description",
                 ExtractDictionaryKeys(
-                    (Dictionary<string, object>)((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[1]));
+                    (Dictionary<object, object>)((List<object>)((Dictionary<object, object>)contentsMetadata["function"])["parameters"])[1]));
         }
 
         [Fact]
-        public void DuplicateTest()
+        public void DuplicateOPathInMarkdownSectionTest()
         {
             var testOPath = "function/parameters";
             var contents = new List<MarkdownPropertyModel>();
@@ -104,7 +109,7 @@ e: f
             {
                 using (new LoggerPhaseScope("overwrite_document_model_creater"))
                 {
-                    contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents);
+                    contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
                 }
             }
             finally
@@ -113,11 +118,69 @@ e: f
             }
 
             var logs = _listener.Items;
-            Assert.Equal(1, logs.Count);
-            Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidOPaths).Count());
-            Assert.Equal(1, contentsMetadata.Count);
+            Assert.Single(logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments));
+            Assert.Single(contentsMetadata);
             Assert.Equal("test2",
-                ((ParagraphBlock)((MarkdownDocument)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
+                ((ParagraphBlock)((MarkdownDocument)((Dictionary<object, object>)contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
+        }
+
+        [Fact]
+        public void DuplicateOPathsInYamlCodeBlockAndContentsBlockTest()
+        {
+            // Yaml section
+            var yamlCodeBlockString = @"name: name overwrite
+definitions:
+- name: Application 1
+  properties:
+  - name: id
+    description: overwrite in yaml block
+  - name: displayName
+    description: overwrite in yaml block";
+            var testYamlCodeBlock = Markdown.Parse($"```\n{yamlCodeBlockString}\n```")[0];
+            var yamlMetadata = OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock);
+
+            // Markdown section
+            var testBlockList = Markdown.Parse("Test").ToList();
+
+            string[] testOPaths =
+            {
+                "summary",
+                "definitions[name=\"Application 1\"]/properties[name=\"displayName\"]/description",
+                "definitions[name=\"Application 1\"]/properties[name=\"summary\"]/description",
+            };
+            var contents = new List<MarkdownPropertyModel>();
+            foreach (var item in testOPaths)
+            {
+                contents.Add(new MarkdownPropertyModel
+                {
+                    PropertyName = item,
+                    PropertyNameSource = Markdown.Parse($"## `{item}`")[0],
+                    PropertyValue = testBlockList
+                });
+            }
+
+            Dictionary<string, object> metadata;
+            Logger.RegisterListener(_listener);
+            try
+            {
+                using (new LoggerPhaseScope("overwrite_document_model_creater"))
+                {
+                    metadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(yamlMetadata, contents);
+                }
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments).ToList();
+            Assert.Single(warningLogs);
+            Assert.Equal("Two duplicate OPaths `definitions[name=\"Application 1\"]/properties[name=\"displayName\"]/description` in yaml code block and contents block", warningLogs[0].Message);
+            Assert.Equal("name overwrite", metadata["name"].ToString());
+            Assert.Equal(typeof(MarkdownDocument), metadata["summary"].GetType());
+            Assert.Equal(typeof(MarkdownDocument), ((Dictionary<object, object>)((List<object>)((Dictionary<object, object>)((List<object>)metadata["definitions"])[0])["properties"])[1])["description"].GetType());
+            Assert.Equal(typeof(MarkdownDocument), ((Dictionary<object, object>)((List<object>)((Dictionary<object, object>)((List<object>)metadata["definitions"])[0])["properties"])[2])["description"].GetType());
         }
 
         [Fact]
@@ -140,7 +203,7 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
             Assert.Equal(
                 "A(parameters) is not expected to be an array like \"A[c=d]/B\", however it is used as an array in line 0 with `parameters[id=\"para1\"]/...`",
                 ex.Message);
@@ -167,47 +230,16 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
             Assert.Equal(
                 "A(parameters) is not expected to be an object like \"A/B\", however it is used as an object in line 0 with `parameters/...`",
                 ex.Message);
             Assert.Equal(0, ex.Position);
         }
 
-        [Fact]
-        public void DuplicateOPathsInYamlCodeBlockAndContentsBlock()
+        private string ExtractDictionaryKeys(Dictionary<object, object> dict)
         {
-            var yamlCodeMatadata = new Dictionary<string, object>
-            {
-                {"a", "b"},
-                {"c", "d"},
-                {"e", "f"}
-            };
-            var contentsMetadata = new Dictionary<string, object>
-            {
-                {"a", "k"},
-                {"g", "h"},
-                {"i", "j"},
-            };
-            Dictionary<string, object> mergedMetadata;
-            Logger.RegisterListener(_listener);
-            try
-            {
-                using (new LoggerPhaseScope("overwrite_document_model_creater"))
-                {
-                    mergedMetadata = OverwriteDocumentModelCreater.MergeYamlCodeMetadataWithContentsMetadata(yamlCodeMatadata, contentsMetadata);
-                }
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            Assert.Equal(1, logs.Count);
-            Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.DuplicateOPaths).Count());
-            Assert.Equal(5, mergedMetadata.Count);
-            Assert.Equal("k", mergedMetadata["a"]);
+            return string.Join(",", dict.Keys.ToArray());
         }
 
         private string ExtractDictionaryKeys(Dictionary<string, object> dict)
