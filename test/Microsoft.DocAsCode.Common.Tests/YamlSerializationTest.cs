@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
+    using System.Collections.ObjectModel;
+    using System.Collections.Immutable;
 
     [Trait("Owner", "zhyan")]
     public class YamlSerializationTest
@@ -343,6 +345,71 @@ bar: bar
             public string A { get; set; }
             [ExtensibleMember]
             public string StringExtensions { get; set; }
+        }
+
+        [Fact]
+        public void TestClassWithInterfaceMember()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new ClassWithInterfaceMember
+            {
+                List = new List<string> { "a" },
+                ReadOnlyList = new[] { "b" },
+                Collection = new Collection<string> { "c" },
+                ReadOnlyCollection = ImmutableList.Create("d"),
+                Enumerable = Enumerable.Range(1, 1),
+                Dictionary = new Dictionary<string, string> { ["k1"] = "v1" },
+                ReadOnlyDictionary = new SortedDictionary<string, string> { ["k2"] = "v2" },
+                Set = new SortedSet<string> { "s" },
+            });
+            Assert.Equal(@"List:
+- a
+ReadOnlyList:
+- b
+Collection:
+- c
+ReadOnlyCollection:
+- d
+Enumerable:
+- 1
+Dictionary:
+  k1: v1
+ReadOnlyDictionary:
+  k2: v2
+Set:
+- s
+".Replace("\r\n", "\n"), sw.ToString().Replace("\r\n", "\n"));
+
+            var obj = YamlUtility.Deserialize<ClassWithInterfaceMember>(new StringReader(sw.ToString()));
+            Assert.NotNull(obj);
+            Assert.Single(obj.List);
+            Assert.Equal("a", obj.List[0]);
+            Assert.Single(obj.ReadOnlyList);
+            Assert.Equal("b", obj.ReadOnlyList[0]);
+            Assert.Single(obj.Collection);
+            Assert.Equal("c", obj.Collection.First());
+            Assert.Single(obj.ReadOnlyCollection);
+            Assert.Equal("d", obj.ReadOnlyCollection.First());
+            Assert.Single(obj.Enumerable);
+            Assert.Equal(1, obj.Enumerable.First());
+            Assert.Single(obj.Dictionary);
+            Assert.Equal(new KeyValuePair<string, string>("k1", "v1"), obj.Dictionary.First());
+            Assert.Single(obj.ReadOnlyDictionary);
+            Assert.Equal(new KeyValuePair<string, string>("k2", "v2"), obj.ReadOnlyDictionary.First());
+            Assert.Single(obj.Set);
+            Assert.Equal("s", obj.Set.First());
+        }
+
+        public class ClassWithInterfaceMember
+        {
+            public IList<string> List { get; set; }
+            public IReadOnlyList<string> ReadOnlyList { get; set; }
+            public ICollection<string> Collection { get; set; }
+            public IReadOnlyCollection<string> ReadOnlyCollection { get; set; }
+            public IEnumerable<int> Enumerable { get; set; }
+            public IDictionary<string, string> Dictionary { get; set; }
+            public IReadOnlyDictionary<string, string> ReadOnlyDictionary { get; set; }
+            public ISet<string> Set { get; set; }
         }
     }
 }
