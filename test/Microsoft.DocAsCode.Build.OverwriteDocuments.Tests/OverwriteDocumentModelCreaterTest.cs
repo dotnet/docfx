@@ -176,7 +176,7 @@ definitions:
             var logs = _listener.Items;
             var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments).ToList();
             Assert.Single(warningLogs);
-            Assert.Equal("There are two duplicate OPaths `definitions[name=\"Application 1\"]/properties[name=\"displayName\"]/description` in yaml code block and contents block, and markdown property is not allowed inside a YAML code block", warningLogs[0].Message);
+            Assert.Equal("Two duplicate OPaths `definitions[name=\"Application 1\"]/properties[name=\"displayName\"]/description` in yaml code block and contents block", warningLogs[0].Message);
             Assert.Equal("name overwrite", metadata["name"].ToString());
             Assert.Equal(typeof(MarkdownDocument), metadata["summary"].GetType());
             Assert.Equal(typeof(MarkdownDocument), ((Dictionary<object, object>)((List<object>)((Dictionary<object, object>)((List<object>)metadata["definitions"])[0])["properties"])[1])["description"].GetType());
