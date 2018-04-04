@@ -5,6 +5,8 @@ v2.34 (Pre-release)
 -----------
 1. Bug fix:
    1. Fix error with enum flags in attributes. (#2573)
+   2. Improve syntax formatting when containing `where` keyword. (#2410)
+   3. Fix XML syntax highlighting issue. (#2553)
 
 v2.33
 -----------
