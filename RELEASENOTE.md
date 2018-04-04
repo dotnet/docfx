@@ -8,6 +8,16 @@ v2.34 (Pre-release)
    2. Improve syntax formatting when containing `where` keyword. (#2410)
    3. Fix XML syntax highlighting issue. (#2553)
 
+v2.33.2
+-----------
+1. support more languages for markdig (#2574)
+2. MonikerRange infinite loop bug (#2572)
+
+v2.33.1
+-----------
+1. Enable emoji in markdig
+2. Decode href in FileLinkInfo
+
 v2.33
 -----------
 1. Support generating API reference for TypeScript (#2220)
