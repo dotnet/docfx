@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         {
             var iterator = new SchemaFragmentsIterator(new ValidateFragmentsHandler());
             var yamlStream = new YamlStream();
-            using (var sr = new StreamReader(model.FileAndType.File))
+            using (var sr = EnvironmentContext.FileAbstractLayer.OpenReadText(model.FileAndType.File))
             {
                 yamlStream.Load(sr);
             }
