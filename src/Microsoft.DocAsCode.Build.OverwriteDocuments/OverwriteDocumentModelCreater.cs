@@ -172,17 +172,17 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                         line: codeHeaderBlock.Line.ToString(),
                         code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 }
-                else if(value is Dictionary<object, object> || value is List<object>)
+                else if (value is Dictionary<object, object> || value is List<object>)
                 {
                     throw new MarkdownFragmentsException(
-                        $"A({lastSegment.SegmentName}) is expected to be an dictionary like \"A/B\" or an array of dictionaries like \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} like \"../A\" OPath syntax",
+                        $"A({lastSegment.SegmentName}) is expected to be a dictionary like \"A/B\" or an array of dictionaries like \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} like \"../A\" OPath syntax",
                         codeHeaderBlock.Line);
                 }
                 else
                 {
                     // Duplicate OPath in yaml section and markdown section
                     Logger.LogWarning(
-                        $"There are two duplicate OPaths `{originalOPathString}` in yaml code block and contents block, and markdown property is not allowed inside a YAML code block",
+                        $"Two duplicate OPaths `{originalOPathString}` in yaml code block and contents block",
                         line: codeHeaderBlock.Line.ToString(),
                         code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 }
