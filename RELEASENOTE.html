@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.33.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.34) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.33.2) | DocFX website ">
-    <meta name="generator" content="docfx 2.33.2.0">
+    <meta name="title" content="Version Notes (Current Version: v2.34) | DocFX website ">
+    <meta name="generator" content="docfx 2.34.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -68,8 +68,17 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2332">Version Notes (Current Version: v2.33.2)</h1>
+<h1 id="version-notes-current-version-v234">Version Notes (Current Version: v2.34)</h1>
 
+<h2 id="v234">v2.34</h2>
+<ol>
+<li>Bug fix:<ol>
+<li>Fix error with enum flags in attributes. (#2573)</li>
+<li>Improve syntax formatting when containing <code>where</code> keyword. (#2410)</li>
+<li>Fix XML syntax highlighting issue. (#2553)</li>
+</ol>
+</li>
+</ol>
 <h2 id="v2332">v2.33.2</h2>
 <ol>
 <li>support more languages for markdig (#2574)</li>
@@ -88,6 +97,17 @@
 <li>Fix yaml serialize for string &#39;~&#39; (#2519)</li>
 <li>Fix link bug after <code>&lt;a/&gt;</code> in markdown (#2521)</li>
 <li>Fix VSTS&#39;s git url under detached HEAD (#2516)</li>
+</ol>
+</li>
+</ol>
+<h2 id="v2322">v2.32.2</h2>
+<ol>
+<li>Bug fixes:<ol>
+<li>Fix metadata broken with mono and linux (#2358).</li>
+<li>Partially fix metadata broken with latest VS 15.6 with workaround:<pre><code class="lang-batch">set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
+set VisualStudioVersion=15.0
+set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin
+</code></pre></li>
 </ol>
 </li>
 </ol>

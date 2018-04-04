@@ -8,7 +8,7 @@
     <title>Walkthrough Part II: Adding API Documentation to the Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part II: Adding API Documentation to the Website | DocFX website ">
-    <meta name="generator" content="docfx 2.33.2.0">
+    <meta name="generator" content="docfx 2.34.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -249,6 +249,42 @@
   href: api-vb/
 </code></pre><p>Now, let&#39;s run <code>docfx --serve</code> again, and the website is now:
 <img src="images/walkthrough2_step4.png" alt="Step4">.</p>
+<h2 id="step5-combine-conceptual-and-reference-information-in-the-left-side-nav-bar">Step5. Combine conceptual and reference information in the left-side nav bar.</h2>
+<p>The left-side nav bar can contain links to both conceptual information (overview, getting started, etc.) and reference information. In this example, assume that this is the <code>toc.yml</code> file at root. (It determines what&#39;s in the main horizontal menu bar.)</p>
+<pre><code class="lang-yml">- name: Home
+  href: index.md
+- name: Articles
+  href: articles/
+- name: API Documentation
+  href: obj/api/
+- name: REST API
+  href: restapi/
+</code></pre><p>Add a new folder at root (e.g., <code>fusion</code>).</p>
+<p>Inside <code>fusion</code>, add <code>toc.yml</code>:</p>
+<pre><code>- name: Conceptual
+  href: ../articles/toc.md
+- name: Reference
+  href: ../obj/api/toc.yml
+</code></pre><p>In <code>toc.yml</code> at root, replace the link to <code>../obj/api/toc.yml</code> with the path to <code>fusion</code>:</p>
+<pre><code class="lang-yml">- name: Home
+  href: index.md
+- name: Articles
+  href: articles/
+  homepage: articles/docfx_getting_started.md
+- name: API Documentation
+  href: fusion/
+- name: REST API
+  href: restapi/
+</code></pre><p>Add the <code>fusion</code> folder in <code>docfx.json</code> so the project includes it:</p>
+<pre><code class="lang-json">&quot;content&quot;: [
+  { 
+    &quot;files&quot;: &quot;fusion/**&quot;
+  }
+]
+</code></pre><p>The output:</p>
+<p><img src="images/walkthrough2_step5.png" alt="Step5">.</p>
+<p>The <a href="https://github.com/docascode/docfx-seed">docfx-seed sample project repo</a> is another example of this kind of setup.</p>
+<p>More details: <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file">http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file</a></p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this walkthrough, we build a website containing both <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong>. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
 <h2 id="read-more">Read more</h2>

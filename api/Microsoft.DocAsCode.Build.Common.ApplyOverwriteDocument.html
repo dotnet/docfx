@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApplyOverwriteDocument
    | DocFX website ">
-    <meta name="generator" content="docfx 2.33.2.0">
+    <meta name="generator" content="docfx 2.34.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -192,7 +192,8 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected void ApplyOverwrite&lt;T&gt;(IHostService host, List&lt;FileModel&gt; overwrites, string uid, List&lt;FileModel&gt; articles, Func&lt;FileModel, string, IHostService, IEnumerable&lt;T&gt;&gt; getItemsFromOverwriteDocument, Func&lt;FileModel, string, IHostService, IEnumerable&lt;T&gt;&gt; getItemsToOverwrite)where T : class, IOverwriteDocumentViewModel</code></pre>
+    <pre><code class="lang-csharp hljs">protected void ApplyOverwrite&lt;T&gt;(IHostService host, List&lt;FileModel&gt; overwrites, string uid, List&lt;FileModel&gt; articles, Func&lt;FileModel, string, IHostService, IEnumerable&lt;T&gt;&gt; getItemsFromOverwriteDocument, Func&lt;FileModel, string, IHostService, IEnumerable&lt;T&gt;&gt; getItemsToOverwrite)
+    where T : class, IOverwriteDocumentViewModel</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -370,7 +371,8 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected IEnumerable&lt;T&gt; Transform&lt;T&gt;(FileModel model, string uid, IHostService host)where T : class, IOverwriteDocumentViewModel</code></pre>
+    <pre><code class="lang-csharp hljs">protected IEnumerable&lt;T&gt; Transform&lt;T&gt;(FileModel model, string uid, IHostService host)
+    where T : class, IOverwriteDocumentViewModel</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">

@@ -5505,6 +5505,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.SitemapOptions
   nameWithType: DocumentBuildParameters.SitemapOptions
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters
+  name: TagParameters
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_TagParameters
+  commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters
+  nameWithType: DocumentBuildParameters.TagParameters
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters*
+  name: TagParameters
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_TagParameters_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TagParameters
+  nameWithType: DocumentBuildParameters.TagParameters
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.TemplateDir
   name: TemplateDir
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_TemplateDir
@@ -14307,6 +14320,24 @@ references:
   commentId: N:Microsoft.DocAsCode.Build.OverwriteDocuments
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments
   nameWithType: Microsoft.DocAsCode.Build.OverwriteDocuments
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants
+  name: Constants
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.html
+  commentId: T:Microsoft.DocAsCode.Build.OverwriteDocuments.Constants
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants
+  nameWithType: Constants
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathLineNumberDataName
+  name: OPathLineNumberDataName
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.html#Microsoft_DocAsCode_Build_OverwriteDocuments_Constants_OPathLineNumberDataName
+  commentId: F:Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathLineNumberDataName
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathLineNumberDataName
+  nameWithType: Constants.OPathLineNumberDataName
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathStringDataName
+  name: OPathStringDataName
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.html#Microsoft_DocAsCode_Build_OverwriteDocuments_Constants_OPathStringDataName
+  commentId: F:Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathStringDataName
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.Constants.OPathStringDataName
+  nameWithType: Constants.OPathStringDataName
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.InlineCodeHeadingRule
   name: InlineCodeHeadingRule
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.InlineCodeHeadingRule.html
@@ -14493,6 +14524,64 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.L2InlineCodeHeadingRule.TokenName
   nameWithType: L2InlineCodeHeadingRule.TokenName
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment
+  name: MarkdownFragment
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html
+  commentId: T:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment
+  nameWithType: MarkdownFragment
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Metadata
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata
+  nameWithType: MarkdownFragment.Metadata
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata*
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Metadata_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Metadata
+  nameWithType: MarkdownFragment.Metadata
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties
+  name: Properties
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Properties
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties
+  nameWithType: MarkdownFragment.Properties
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties*
+  name: Properties
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Properties_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Properties
+  nameWithType: MarkdownFragment.Properties
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString
+  name: ToString()
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_ToString
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString()
+  nameWithType: MarkdownFragment.ToString()
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString*
+  name: ToString
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_ToString_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString
+  nameWithType: MarkdownFragment.ToString
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
+  name: Uid
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Uid
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
+  nameWithType: MarkdownFragment.Uid
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid*
+  name: Uid
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Uid_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
+  nameWithType: MarkdownFragment.Uid
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel
   name: MarkdownFragmentModel
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel.html
@@ -14652,6 +14741,64 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentsException.Position
   nameWithType: MarkdownFragmentsException.Position
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty
+  name: MarkdownProperty
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html
+  commentId: T:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty
+  nameWithType: MarkdownProperty
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content
+  name: Content
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Content
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content
+  nameWithType: MarkdownProperty.Content
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content*
+  name: Content
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Content_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Content
+  nameWithType: MarkdownProperty.Content
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Metadata
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata
+  nameWithType: MarkdownProperty.Metadata
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata*
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Metadata_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Metadata
+  nameWithType: MarkdownProperty.Metadata
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath
+  name: OPath
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_OPath
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath
+  nameWithType: MarkdownProperty.OPath
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath*
+  name: OPath
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_OPath_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.OPath
+  nameWithType: MarkdownProperty.OPath
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo(System.Text.StringBuilder)
+  name: SerializeTo(StringBuilder)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_SerializeTo_System_Text_StringBuilder_
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo(System.Text.StringBuilder)
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo(System.Text.StringBuilder)
+  nameWithType: MarkdownProperty.SerializeTo(StringBuilder)
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo*
+  name: SerializeTo
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_SerializeTo_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo
+  nameWithType: MarkdownProperty.SerializeTo
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel
   name: MarkdownPropertyModel
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel.html
@@ -14793,6 +14940,51 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility
   nameWithType: OverwriteUtility
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity(System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},System.String,System.Collections.Generic.Dictionary{System.String,System.Object})
+  name: AddOrUpdateFragmentEntity(Dictionary<String, MarkdownFragment>, String, Dictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_AddOrUpdateFragmentEntity_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__System_String_System_Collections_Generic_Dictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity(System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},System.String,System.Collections.Generic.Dictionary{System.String,System.Object})
+  name.vb: AddOrUpdateFragmentEntity(Dictionary(Of String, MarkdownFragment), String, Dictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity(System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, System.String, System.Collections.Generic.Dictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity(System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), System.String, System.Collections.Generic.Dictionary(Of System.String, System.Object))
+  nameWithType: OverwriteUtility.AddOrUpdateFragmentEntity(Dictionary<String, MarkdownFragment>, String, Dictionary<String, Object>)
+  nameWithType.vb: OverwriteUtility.AddOrUpdateFragmentEntity(Dictionary(Of String, MarkdownFragment), String, Dictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity*
+  name: AddOrUpdateFragmentEntity
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_AddOrUpdateFragmentEntity_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentEntity
+  nameWithType: OverwriteUtility.AddOrUpdateFragmentEntity
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object})
+  name: AddOrUpdateFragmentProperty(MarkdownFragment, String, String, Dictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_AddOrUpdateFragmentProperty_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_System_String_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object})
+  name.vb: AddOrUpdateFragmentProperty(MarkdownFragment, String, String, Dictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment, System.String, System.String, System.Collections.Generic.Dictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment, System.String, System.String, System.Collections.Generic.Dictionary(Of System.String, System.Object))
+  nameWithType: OverwriteUtility.AddOrUpdateFragmentProperty(MarkdownFragment, String, String, Dictionary<String, Object>)
+  nameWithType.vb: OverwriteUtility.AddOrUpdateFragmentProperty(MarkdownFragment, String, String, Dictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty*
+  name: AddOrUpdateFragmentProperty
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_AddOrUpdateFragmentProperty_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.AddOrUpdateFragmentProperty
+  nameWithType: OverwriteUtility.AddOrUpdateFragmentProperty
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper(System.String)
+  name: GetUidWrapper(String)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_GetUidWrapper_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper(System.String)
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper(System.String)
+  nameWithType: OverwriteUtility.GetUidWrapper(String)
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper*
+  name: GetUidWrapper
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_GetUidWrapper_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.GetUidWrapper
+  nameWithType: OverwriteUtility.GetUidWrapper
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ParseOPath(System.String)
   name: ParseOPath(String)
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_ParseOPath_System_String_
@@ -14806,6 +14998,32 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ParseOPath
   nameWithType: OverwriteUtility.ParseOPath
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel,System.String)
+  name: ToMarkdownFragment(MarkdownFragmentModel, String)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_ToMarkdownFragment_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragmentModel_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel,System.String)
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragmentModel, System.String)
+  nameWithType: OverwriteUtility.ToMarkdownFragment(MarkdownFragmentModel, String)
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment*
+  name: ToMarkdownFragment
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_ToMarkdownFragment_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownFragment
+  nameWithType: OverwriteUtility.ToMarkdownFragment
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel,System.String)
+  name: ToMarkdownProperty(MarkdownPropertyModel, String)
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_ToMarkdownProperty_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownPropertyModel_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel,System.String)
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty(Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel, System.String)
+  nameWithType: OverwriteUtility.ToMarkdownProperty(MarkdownPropertyModel, String)
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty*
+  name: ToMarkdownProperty
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.html#Microsoft_DocAsCode_Build_OverwriteDocuments_OverwriteUtility_ToMarkdownProperty_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.OverwriteUtility.ToMarkdownProperty
+  nameWithType: OverwriteUtility.ToMarkdownProperty
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.YamlCodeBlockRule
   name: YamlCodeBlockRule
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.YamlCodeBlockRule.html
@@ -16702,6 +16920,44 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.IContentAnchorParser.Parse
   nameWithType: IContentAnchorParser.Parse
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler
+  name: ISchemaFragmentsHandler
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler
+  nameWithType: ISchemaFragmentsHandler
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name: HandleProperty(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ISchemaFragmentsHandler_HandleProperty_System_String_YamlDotNet_RepresentationModel_YamlMappingNode_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name.vb: HandleProperty(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  nameWithType: ISchemaFragmentsHandler.HandleProperty(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  nameWithType.vb: ISchemaFragmentsHandler.HandleProperty(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty*
+  name: HandleProperty
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ISchemaFragmentsHandler_HandleProperty_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleProperty
+  nameWithType: ISchemaFragmentsHandler.HandleProperty
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name: HandleUid(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ISchemaFragmentsHandler_HandleUid_System_String_YamlDotNet_RepresentationModel_YamlMappingNode_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name.vb: HandleUid(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  nameWithType: ISchemaFragmentsHandler.HandleUid(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  nameWithType.vb: ISchemaFragmentsHandler.HandleUid(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid*
+  name: HandleUid
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ISchemaFragmentsHandler_HandleUid_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler.HandleUid
+  nameWithType: ISchemaFragmentsHandler.HandleUid
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.JsonPointer
   name: JsonPointer
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.JsonPointer.html
@@ -17045,6 +17301,38 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FileInterpreter.Interpret
   nameWithType: FileInterpreter.Interpret
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter
+  name: FragmentsValidationInterpreter
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter
+  nameWithType: FragmentsValidationInterpreter
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  name: CanInterpret(BaseSchema)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_FragmentsValidationInterpreter_CanInterpret_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  nameWithType: FragmentsValidationInterpreter.CanInterpret(BaseSchema)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret*
+  name: CanInterpret
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_FragmentsValidationInterpreter_CanInterpret_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.CanInterpret
+  nameWithType: FragmentsValidationInterpreter.CanInterpret
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
+  name: Interpret(BaseSchema, Object, IProcessContext, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_FragmentsValidationInterpreter_Interpret_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_Object_Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.Object, Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext, System.String)
+  nameWithType: FragmentsValidationInterpreter.Interpret(BaseSchema, Object, IProcessContext, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret*
+  name: Interpret
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_FragmentsValidationInterpreter_Interpret_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.FragmentsValidationInterpreter.Interpret
+  nameWithType: FragmentsValidationInterpreter.Interpret
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.HrefInterpreter
   name: HrefInterpreter
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.HrefInterpreter.html
@@ -17248,6 +17536,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.MarkdigMarkdownService
   nameWithType: IProcessContext.MarkdigMarkdownService
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Metadata
+  commentId: P:Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata
+  nameWithType: IProcessContext.Metadata
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata*
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Metadata_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Metadata
+  nameWithType: IProcessContext.Metadata
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.OriginalFileAndType
   name: OriginalFileAndType
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_OriginalFileAndType
@@ -17319,12 +17620,12 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter
   nameWithType: ITagInterpreter
-- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
-  name: Interpret(BaseSchema, Object, IProcessContext, String)
-  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Interpret_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_Object_Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
-  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.Object, Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext, System.String)
-  nameWithType: ITagInterpreter.Interpret(BaseSchema, Object, IProcessContext, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(System.String,Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
+  name: Interpret(String, BaseSchema, Object, IProcessContext, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Interpret_System_String_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_Object_Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(System.String,Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.Object,Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext,System.String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret(System.String, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.Object, Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext, System.String)
+  nameWithType: ITagInterpreter.Interpret(String, BaseSchema, Object, IProcessContext, String)
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret*
   name: Interpret
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Interpret_
@@ -17332,19 +17633,32 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Interpret
   nameWithType: ITagInterpreter.Interpret
-- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName
-  name: TagName
-  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_TagName
-  commentId: P:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName
-  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName
-  nameWithType: ITagInterpreter.TagName
-- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName*
-  name: TagName
-  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_TagName_
-  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches(System.String)
+  name: Matches(String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Matches_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches(System.String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches(System.String)
+  nameWithType: ITagInterpreter.Matches(String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches*
+  name: Matches
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Matches_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches
   isSpec: "True"
-  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.TagName
-  nameWithType: ITagInterpreter.TagName
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Matches
+  nameWithType: ITagInterpreter.Matches
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order
+  name: Order
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Order
+  commentId: P:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order
+  nameWithType: ITagInterpreter.Order
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order*
+  name: Order
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ITagInterpreter_Order_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ITagInterpreter.Order
+  nameWithType: ITagInterpreter.Order
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.MarkdownAstInterpreter
   name: MarkdownAstInterpreter
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.MarkdownAstInterpreter.html
@@ -17657,6 +17971,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.MarkdigMarkdownService
   nameWithType: ProcessContext.MarkdigMarkdownService
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ProcessContext_Metadata
+  commentId: P:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata
+  nameWithType: ProcessContext.Metadata
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata*
+  name: Metadata
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ProcessContext_Metadata_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.Metadata
+  nameWithType: ProcessContext.Metadata
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.OriginalFileAndType
   name: OriginalFileAndType
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.ProcessContext.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_ProcessContext_OriginalFileAndType
@@ -18120,6 +18447,73 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.UpdateHref
   nameWithType: SchemaDrivenDocumentProcessor.UpdateHref
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions
+  name: SchemaExtensions
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions
+  nameWithType: SchemaExtensions
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  name: IsLegalInFragments(BaseSchema)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaExtensions_IsLegalInFragments_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  nameWithType: SchemaExtensions.IsLegalInFragments(BaseSchema)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments*
+  name: IsLegalInFragments
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaExtensions_IsLegalInFragments_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsLegalInFragments
+  nameWithType: SchemaExtensions.IsLegalInFragments
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  name: IsRequiredInFragments(BaseSchema)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaExtensions_IsRequiredInFragments_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  nameWithType: SchemaExtensions.IsRequiredInFragments(BaseSchema)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments*
+  name: IsRequiredInFragments
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaExtensions_IsRequiredInFragments_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaExtensions.IsRequiredInFragments
+  nameWithType: SchemaExtensions.IsRequiredInFragments
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator
+  name: SchemaFragmentsIterator
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator
+  nameWithType: SchemaFragmentsIterator
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.#ctor(Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler)
+  name: SchemaFragmentsIterator(ISchemaFragmentsHandler)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaFragmentsIterator__ctor_Microsoft_DocAsCode_Build_SchemaDriven_ISchemaFragmentsHandler_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.#ctor(Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.SchemaFragmentsIterator(Microsoft.DocAsCode.Build.SchemaDriven.ISchemaFragmentsHandler)
+  nameWithType: SchemaFragmentsIterator.SchemaFragmentsIterator(ISchemaFragmentsHandler)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.#ctor*
+  name: SchemaFragmentsIterator
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaFragmentsIterator__ctor_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.#ctor
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.SchemaFragmentsIterator
+  nameWithType: SchemaFragmentsIterator.SchemaFragmentsIterator
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse(YamlDotNet.RepresentationModel.YamlNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  name: Traverse(YamlNode, Dictionary<String, MarkdownFragment>, BaseSchema)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaFragmentsIterator_Traverse_YamlDotNet_RepresentationModel_YamlNode_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse(YamlDotNet.RepresentationModel.YamlNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  name.vb: Traverse(YamlNode, Dictionary(Of String, MarkdownFragment), BaseSchema)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse(YamlDotNet.RepresentationModel.YamlNode, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  fullName.vb: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse(YamlDotNet.RepresentationModel.YamlNode, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
+  nameWithType: SchemaFragmentsIterator.Traverse(YamlNode, Dictionary<String, MarkdownFragment>, BaseSchema)
+  nameWithType.vb: SchemaFragmentsIterator.Traverse(YamlNode, Dictionary(Of String, MarkdownFragment), BaseSchema)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse*
+  name: Traverse
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.html#Microsoft_DocAsCode_Build_SchemaDriven_SchemaFragmentsIterator_Traverse_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaFragmentsIterator.Traverse
+  nameWithType: SchemaFragmentsIterator.Traverse
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidateService
   name: SchemaValidateService
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidateService.html
@@ -18210,6 +18604,44 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.ValidateMetaSchema
   nameWithType: SchemaValidator.ValidateMetaSchema
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler
+  name: ValidateFragmentsHandler
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html
+  commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler
+  nameWithType: ValidateFragmentsHandler
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name: HandleProperty(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ValidateFragmentsHandler_HandleProperty_System_String_YamlDotNet_RepresentationModel_YamlMappingNode_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name.vb: HandleProperty(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  nameWithType: ValidateFragmentsHandler.HandleProperty(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  nameWithType.vb: ValidateFragmentsHandler.HandleProperty(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty*
+  name: HandleProperty
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ValidateFragmentsHandler_HandleProperty_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleProperty
+  nameWithType: ValidateFragmentsHandler.HandleProperty
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name: HandleUid(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ValidateFragmentsHandler_HandleUid_System_String_YamlDotNet_RepresentationModel_YamlMappingNode_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment__Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid(System.String,YamlDotNet.RepresentationModel.YamlMappingNode,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment},Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema,System.String,System.String)
+  name.vb: HandleUid(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment>, Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid(System.String, YamlDotNet.RepresentationModel.YamlMappingNode, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment), Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema, System.String, System.String)
+  nameWithType: ValidateFragmentsHandler.HandleUid(String, YamlMappingNode, Dictionary<String, MarkdownFragment>, BaseSchema, String, String)
+  nameWithType.vb: ValidateFragmentsHandler.HandleUid(String, YamlMappingNode, Dictionary(Of String, MarkdownFragment), BaseSchema, String, String)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid*
+  name: HandleUid
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.html#Microsoft_DocAsCode_Build_SchemaDriven_ValidateFragmentsHandler_HandleUid_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.ValidateFragmentsHandler.HandleUid
+  nameWithType: ValidateFragmentsHandler.HandleUid
 - uid: Microsoft.DocAsCode.Build.TableOfContents
   name: Microsoft.DocAsCode.Build.TableOfContents
   href: api/Microsoft.DocAsCode.Build.TableOfContents.html
@@ -20507,6 +20939,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.BuildJsonConfig.SitemapOptions
   nameWithType: BuildJsonConfig.SitemapOptions
+- uid: Microsoft.DocAsCode.BuildJsonConfig.TagParameters
+  name: TagParameters
+  href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_TagParameters
+  commentId: P:Microsoft.DocAsCode.BuildJsonConfig.TagParameters
+  fullName: Microsoft.DocAsCode.BuildJsonConfig.TagParameters
+  nameWithType: BuildJsonConfig.TagParameters
+- uid: Microsoft.DocAsCode.BuildJsonConfig.TagParameters*
+  name: TagParameters
+  href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_TagParameters_
+  commentId: Overload:Microsoft.DocAsCode.BuildJsonConfig.TagParameters
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.BuildJsonConfig.TagParameters
+  nameWithType: BuildJsonConfig.TagParameters
 - uid: Microsoft.DocAsCode.BuildJsonConfig.Templates
   name: Templates
   href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_Templates
