@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
 
@@ -12,8 +14,6 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
-    using System.Collections.ObjectModel;
-    using System.Collections.Immutable;
 
     [Trait("Owner", "zhyan")]
     public class YamlSerializationTest
