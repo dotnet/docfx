@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.34)
 =======================================
 
-v2.34 (Pre-release)
+v2.34
 -----------
 1. Bug fix:
    1. Fix error with enum flags in attributes. (#2573)
