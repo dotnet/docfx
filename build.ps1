@@ -21,11 +21,12 @@ $framework = "net461"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
-if ($PSVersionTable.PSEdition -eq "Desktop" -or $PSVersionTable.Platform -eq "Win32NT") {
+if (-not (Test-Path variable:PSVersionTable) -or $PSVersionTable.PSEdition -eq "Desktop" -or $PSVersionTable.Platform -eq "Win32NT") {
     $os = "Windows"
 } else {
     $os = "Linux"
 }
+Write-Host "Running on OS $os"
 
 if ($os -eq "Windows") {
     $nugetCommand = "$env:LOCALAPPDATA/Nuget/Nuget.exe"
