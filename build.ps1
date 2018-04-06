@@ -21,7 +21,7 @@ $framework = "net461"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
-if (-not (Test-Path variable:PSVersionTable) -or $PSVersionTable.PSEdition -eq "Desktop" -or $PSVersionTable.Platform -eq "Win32NT") {
+if ([environment]::OSVersion.Platform -eq "Win32NT") {
     $os = "Windows"
 } else {
     $os = "Linux"
