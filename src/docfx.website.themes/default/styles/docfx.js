@@ -223,6 +223,9 @@ $(function () {
         $("body").bind("queryReady", function () {
           worker.postMessage({ q: query });
         });
+        if (query && (query.length >= 3)) {
+          worker.postMessage({ q: query });
+        }
       });
     }
 
