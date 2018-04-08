@@ -14,7 +14,10 @@ using Octokit;
 
 namespace Microsoft.Docs
 {
-    internal static class GitHub
+    /// <summary>
+    /// The GitHub util
+    /// </summary>
+    public static class GitHub
     {
         private static readonly ProductHeaderValue s_header = new ProductHeaderValue("ops", "1.0");
         private static readonly ConcurrentDictionary<string, GitHubUser> s_usersByLogin = new ConcurrentDictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
@@ -23,6 +26,12 @@ namespace Microsoft.Docs
 
         static GitHub() => LoadProfileCache();
 
+        /// <summary>
+        /// Try to parse github info from git remote url
+        /// </summary>
+        /// <param name="remote">The git remote url</param>
+        /// <param name="info">The github info</param>
+        /// <returns>Parse successfully or not</returns>
         public static bool TryParse(string remote, out (string owner, string name, string fragment) info)
         {
             if (Uri.TryCreate(remote, UriKind.Absolute, out var uri) && uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
@@ -38,20 +47,40 @@ namespace Microsoft.Docs
             return false;
         }
 
+        /// <summary>
+        /// Get github user info by user name
+        /// </summary>
+        /// <param name="name">The github user name</param>
+        /// <returns>The github user information</returns>
         public static GitHubUser GetUser(string name)
             => s_usersByLogin.TryGetValue(name, out var user) ? user :
                s_usersByEmail.TryGetValue(name, out user) ? user :
                s_usersByName.TryGetValue(name, out user) ? user : null;
 
-        public static Task<List<GitHubUser>> GetUsers(List<GitCommit> commits, int max = int.MaxValue, string[] excludes = null, string[] tokenPool = null)
+        /// <summary>
+        /// Get a collection of user info from a collection of commits
+        /// </summary>
+        /// <param name="owner">The repo owner</param>
+        /// <param name="name">The repo name</param>
+        /// <param name="commits">A collection of git commits</param>
+        /// <param name="max">The max count to get</param>
+        /// <param name="excludes">The excludions of github user names</param>
+        /// <param name="tokenPool">The github token pools</param>
+        /// <returns>A collection of github user info</returns>
+        public static async Task<List<GitHubUser>> GetUsers(string owner, string name, List<GitCommit> commits, int max = int.MaxValue, string[] excludes = null, string[] tokenPool = null)
         {
             var res = new List<GitHubUser>();
             var github = new GitHubClient(s_header, new CredentialStore(tokenPool));
 
             foreach (var commit in commits)
             {
-                if (s_usersByEmail.TryGetValue(commit.AuthorEmail ?? "", out var author) ||
-                    s_usersByName.TryGetValue(commit.AuthorName ?? "", out author))
+                if (!s_usersByEmail.TryGetValue(commit.AuthorEmail ?? "", out var author) &&
+                    !s_usersByName.TryGetValue(commit.AuthorName ?? "", out author))
+                {
+                    author = (await GetUserFromCommit(owner, name, commit.Sha, github)).author;
+                }
+
+                if (author != null)
                 {
                     if (!res.Contains(author) && (excludes == null || !excludes.Contains(author.Login)))
                     {
@@ -63,7 +92,7 @@ namespace Microsoft.Docs
                     }
                 }
             }
-            return Task.FromResult(res);
+            return res;
         }
 
         private static async Task<(GitHubUser author, GitHubUser committer)> GetUserFromCommit(string owner, string name, string reference, GitHubClient github)
@@ -102,7 +131,13 @@ namespace Microsoft.Docs
             // This is a temporary solution to github profile cache, it is read-only.
             // In the future, it should be read/write to a cache component
             var dir = AppContext.BaseDirectory;
-            var cache = JObject.Parse(File.ReadAllText(Path.Combine(dir, "data/github-user.json")));
+            var cacheFile = Path.Combine(dir, "data/github-user.json");
+            if (!File.Exists(cacheFile))
+            {
+                return;
+            }
+
+            var cache = JObject.Parse(File.ReadAllText(cacheFile));
             foreach (var (login, value) in cache)
             {
                 var name = value.Value<string>("display_name") ?? value.Value<string>("name");
