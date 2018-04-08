@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Test
         {
             var repo = Git.FindRepo(Directory.GetCurrentDirectory());
             Assert.True(File.Exists(Path.Combine(repo, "README.md")));
-            var (branch, remote) = Git.GetInfo(repo);
+            var(branch, remote) = Git.GetInfo(repo);
             Assert.NotEmpty(remote);
         }
 
@@ -59,7 +59,6 @@ namespace Microsoft.Docs.Test
                         AuthorEmail = split[3],
                     }).ToArray();
             }
-
         }
     }
 }

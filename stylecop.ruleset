@@ -27,6 +27,8 @@
     <Rule Id="CA2007" Action="None" />
     <!-- CA1806DoNotIgnoreMethodResults -->
     <Rule Id="CA1806" Action="None" />
+    <!-- SA1652EnableXMLDocumentOutput -->
+    <Rule Id="SA1652" Action="None" />
   </Rules>
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1001" Action="Warning" />

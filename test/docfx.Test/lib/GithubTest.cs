@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Microsoft.Docs.Test.lib
+namespace Microsoft.Docs.Test
 {
     public static class GitHubTest
     {
