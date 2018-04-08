@@ -23,6 +23,10 @@
     <Rule Id="SA1503" Action="None" />
     <!-- SA1513ClosingBraceMustBeFollowedByBlankLine -->
     <Rule Id="SA1513" Action="None" />
+    <!-- CA2007DoNotDirectlyAwaitATaskAnalyzer -->
+    <Rule Id="CA2007" Action="None" />
+    <!-- CA1806DoNotIgnoreMethodResults -->
+    <Rule Id="CA1806" Action="None" />
   </Rules>
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1001" Action="Warning" />
