@@ -15,8 +15,16 @@ using TreeMap = System.Collections.Concurrent.ConcurrentDictionary<long, System.
 
 namespace Microsoft.Docs
 {
-    internal static class Git
+    /// <summary>
+    /// Provide git operations
+    /// </summary>
+    public static class Git
     {
+        /// <summary>
+        /// Find git repo directory
+        /// </summary>
+        /// <param name="path">The git repo entry point</param>
+        /// <returns>The git repo root path</returns>
         public static string FindRepo(string path)
         {
             var repo = path;
@@ -32,6 +40,11 @@ namespace Microsoft.Docs
             return repo;
         }
 
+        /// <summary>
+        /// Get git repo information, will change to git exe later
+        /// </summary>
+        /// <param name="repoPath">The git repo root path</param>
+        /// <returns>The git repo current branch and remote uri</returns>
         public static unsafe (string branch, string remote) GetInfo(string repoPath)
         {
             string branch = null;
@@ -55,6 +68,13 @@ namespace Microsoft.Docs
             }
         }
 
+        /// <summary>
+        /// Get git commits group by files
+        /// </summary>
+        /// <param name="repoPath">The git repo root path</param>
+        /// <param name="files">The collection of git repo files</param>
+        /// <param name="progress">The processing progress</param>
+        /// <returns>A collection of git commits</returns>
         public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files, Action<int, int> progress = null)
         {
             if (string.IsNullOrEmpty(repoPath))
@@ -262,9 +282,10 @@ namespace Microsoft.Docs
                 var blob = 0L;
                 for (var i = 0; i < commitsToFollow.Count; i++)
                 {
-                    if (commitsToFollow[i].commit == commit)
+                    var commitToCheck = commitsToFollow[i];
+                    if (commitToCheck.commit == commit)
                     {
-                        blob = commitsToFollow[i].blob;
+                        blob = commitToCheck.blob;
                         commitsToFollow.RemoveAt(i);
                         found = true;
                         break;

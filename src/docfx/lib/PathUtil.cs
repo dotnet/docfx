@@ -9,7 +9,10 @@ using System.Text;
 
 namespace Microsoft.Docs
 {
-    internal static class PathUtil
+    /// <summary>
+    /// Provide utils of path
+    /// </summary>
+    public static class PathUtil
     {
         /// <summary>
         /// Determines if a file or path is inside a folder. Input should both be normalized.
