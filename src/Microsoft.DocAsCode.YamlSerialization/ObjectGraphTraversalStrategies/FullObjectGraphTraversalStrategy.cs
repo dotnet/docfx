@@ -29,11 +29,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
     public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     {
         private static MethodInfo TraverseGenericDictionaryHelperMethod { get; } =
-#if NetCore
-            typeof(FullObjectGraphTraversalStrategy).GetTypeInfo().GetDeclaredMethod(nameof(TraverseGenericDictionaryHelper));
-#else
             typeof(FullObjectGraphTraversalStrategy).GetMethod(nameof(TraverseGenericDictionaryHelper));
-#endif
         protected YamlSerializer Serializer { get; }
         private readonly int _maxRecursion;
         private readonly ITypeInspector _typeDescriptor;
@@ -75,45 +71,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                 return;
             }
 
-#if NetCore
-            if (value.Type == typeof(bool) ||
-                value.Type == typeof(byte) ||
-                value.Type == typeof(short) ||
-                value.Type == typeof(int) ||
-                value.Type == typeof(long) ||
-                value.Type == typeof(sbyte) ||
-                value.Type == typeof(ushort) ||
-                value.Type == typeof(uint) ||
-                value.Type == typeof(ulong) ||
-                value.Type == typeof(float) ||
-                value.Type == typeof(double) ||
-                value.Type == typeof(decimal) ||
-                value.Type == typeof(string) ||
-                value.Type == typeof(char) ||
-                value.Type == typeof(DateTime) ||
-                value.Type == typeof(TimeSpan))
-            {
-                visitor.VisitScalar(value, context);
-            }
-            else if (value.Value == null)
-            {
-                visitor.VisitScalar(new BetterObjectDescriptor(null, typeof(object), typeof(object)), context);
-            }
-            else
-            {
-                var underlyingType = Nullable.GetUnderlyingType(value.Type);
-                if (underlyingType != null)
-                {
-                    // This is a nullable type, recursively handle it with its underlying type.
-                    // Note that if it contains null, the condition above already took care of it
-                    Traverse(new BetterObjectDescriptor(value.Value, underlyingType, value.Type, value.ScalarStyle), visitor, currentDepth, context);
-                }
-                else
-                {
-                    TraverseObject(value, visitor, currentDepth, context);
-                }
-            }
-#else
             var typeCode = Type.GetTypeCode(value.Type);
             switch (typeCode)
             {
@@ -159,7 +116,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                     }
                     break;
             }
-#endif
         }
 
         protected virtual void TraverseObject<TContext>(IObjectDescriptor value, IObjectGraphVisitor<TContext> visitor, int currentDepth, TContext context)
@@ -167,11 +123,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
             var key = Tuple.Create(value.Type, typeof(TContext));
             if (!_behaviorCache.TryGetValue(key, out var action))
             {
-#if NetCore
-                if (typeof(IDictionary).GetTypeInfo().IsAssignableFrom(value.Type.GetTypeInfo()))
-#else
                 if (typeof(IDictionary).IsAssignableFrom(value.Type))
-#endif
                 {
                     action = TraverseDictionary<TContext>;
                 }
@@ -182,11 +134,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                     {
                         action = (v, vi, d, c) => TraverseGenericDictionary<TContext>(v, dictionaryType, vi, d, c);
                     }
-#if NetCore
-                    else if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(value.Type.GetTypeInfo()))
-#else
                     else if (typeof(IEnumerable).IsAssignableFrom(value.Type))
-#endif
                     {
                         action = TraverseList<TContext>;
                     }
@@ -225,11 +173,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
         {
             var v = (IObjectGraphVisitor<TContext>)visitor;
             var c = (TContext)context;
-#if NetCore
-            var entryTypes = dictionaryType.GetTypeInfo().GenericTypeParameters;
-#else
             var entryTypes = dictionaryType.GetGenericArguments();
-#endif
 
             // dictionaryType is IDictionary<TKey, TValue>
             v.VisitMappingStart(dictionary, entryTypes[0], entryTypes[1], c);
@@ -293,11 +237,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
             var c = (TContext)context;
             var enumerableType = ReflectionUtility.GetImplementedGenericInterface(value.Type, typeof(IEnumerable<>));
             var itemType = enumerableType != null ?
-#if NetCore
-                enumerableType.GetTypeInfo().GenericTypeParameters[0]
-#else
                 enumerableType.GetGenericArguments()[0]
-#endif
                 : typeof(object);
 
             v.VisitSequenceStart(value, itemType, c);

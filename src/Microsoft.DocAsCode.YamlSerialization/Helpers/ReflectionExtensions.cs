@@ -19,35 +19,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
         /// </returns>
         public static bool HasDefaultConstructor(this Type type)
         {
-#if NetCore
-            var ti = type.GetTypeInfo();
-            return ti.IsValueType || ti.DeclaredConstructors.Any(c => c.IsPublic && c.GetParameters().Length == 0);
-#else
             return type.IsValueType || type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null) != null;
-#endif
         }
 
         public static IEnumerable<PropertyInfo> GetPublicProperties(this Type type)
         {
-#if NetCore
-            var ti = type.GetTypeInfo();
-            if (ti.IsInterface)
-            {
-                return
-                    (from p in ti.DeclaredProperties
-                     select p)
-                    .Concat(
-                        from tinfo in
-                            from t in ti.ImplementedInterfaces
-                            select t.GetTypeInfo()
-                        where tinfo.IsPublic
-                        from p in tinfo.DeclaredProperties
-                        select p);
-            }
-            return from p in ti.DeclaredProperties
-                   where p.GetMethod?.IsPublic ?? false
-                   select p;
-#else
             var instancePublic = BindingFlags.Instance | BindingFlags.Public;
             if (type.IsInterface)
             {
@@ -56,7 +32,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
                        select p;
             }
             return type.GetProperties(instancePublic);
-#endif
         }
     }
 }
