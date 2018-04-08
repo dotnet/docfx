@@ -5,6 +5,12 @@
     <IsPackable>false</IsPackable>
     <LangVersion>Latest</LangVersion>
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
+    <AssemblyName>Microsoft.Docs.Test</AssemblyName>
+    <RootNamespace>Microsoft.Docs.Test</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
