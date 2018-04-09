@@ -1364,7 +1364,7 @@ End Namespace
 
         [Trait("Related", "Attribute")]
         [Fact]
-        public void TestGenereateMetadataWithAttribute()
+        public void TestGenerateMetadataWithAttribute()
         {
             string code = @"
 Imports System
