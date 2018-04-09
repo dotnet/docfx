@@ -18,7 +18,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide git operations
     /// </summary>
-    public static class Git
+    public static class GitUtil
     {
         /// <summary>
         /// Find git repo directory

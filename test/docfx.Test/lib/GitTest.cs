@@ -18,9 +18,9 @@ namespace Microsoft.Docs.Test
         [Fact]
         public static void GetRepoInfo()
         {
-            var repo = Git.FindRepo(Directory.GetCurrentDirectory());
+            var repo = GitUtil.FindRepo(Directory.GetCurrentDirectory());
             Assert.True(File.Exists(Path.Combine(repo, "README.md")));
-            var(branch, remote) = Git.GetInfo(repo);
+            var(branch, remote) = GitUtil.GetInfo(repo);
             Assert.NotEmpty(remote);
         }
 
@@ -28,10 +28,10 @@ namespace Microsoft.Docs.Test
         [InlineData("README.md")]
         public static void GetCommitsSameAsGitLog(string file)
         {
-            var repo = Git.FindRepo(Path.GetFullPath(file));
+            var repo = GitUtil.FindRepo(Path.GetFullPath(file));
             var pathToRepo = PathUtil.NormalizeFile(file);
             var exe = GetContributorsGitExe(repo, pathToRepo).ToList();
-            var lib = Git.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
+            var lib = GitUtil.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
             Assert.Equal(JsonConvert.SerializeObject(exe), JsonConvert.SerializeObject(lib));
 
             GitCommit[] GetContributorsGitExe(string cwd, string path)
