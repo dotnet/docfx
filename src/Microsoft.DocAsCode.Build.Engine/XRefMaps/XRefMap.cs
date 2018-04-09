@@ -24,6 +24,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [YamlMember(Alias = "baseUrl")]
         public string BaseUrl { get; set; }
 
+        [YamlMember(Alias = "tags")]
+        public List<string> Tags { get; set; }
+
         [YamlMember(Alias = "redirections")]
         public List<XRefMapRedirection> Redirections { get; set; }
 

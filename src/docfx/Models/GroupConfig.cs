@@ -14,6 +14,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string Destination { get; set; }
 
+        [JsonProperty("xrefTags")]
+        public ListWithStringFallback XrefTags { get; set; }
+
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }

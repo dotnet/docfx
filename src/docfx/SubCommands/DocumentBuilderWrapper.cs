@@ -344,6 +344,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                     {
                         p.GroupInfo.Destination = gi.Destination;
+                        p.GroupInfo.XrefTags = gi.XrefTags ?? new List<string>();
                         p.GroupInfo.Metadata = gi.Metadata;
                         if (!string.IsNullOrEmpty(gi.Destination))
                         {
