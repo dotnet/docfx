@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Test
 {
-    public static class GitUtilTest
+    public static class GitUtilityTest
     {
         [Theory]
         [InlineData("README.md")]

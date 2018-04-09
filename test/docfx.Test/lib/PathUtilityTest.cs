@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Test
 {
-    public static class PathUtilTest
+    public static class PathUtilityTest
     {
         [Theory]
         [InlineData(".", "")]
