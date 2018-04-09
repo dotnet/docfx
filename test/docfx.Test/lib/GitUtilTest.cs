@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Test
 {
-    public static class GitTest
+    public static class GitUtilTest
     {
         [Fact]
         public static void GetRepoInfo()

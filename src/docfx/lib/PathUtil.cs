@@ -15,20 +15,13 @@ namespace Microsoft.Docs
     public static class PathUtil
     {
         /// <summary>
-        /// Determines if a file or path is inside a folder. Input should both be normalized.
-        /// </summary>
-        public static bool Inside(string folder, string path)
-        {
-            Debug.Assert(folder.Length > 0 && folder[folder.Length - 1] == '/');
-
-            return folder == "./" || path.StartsWith(folder, StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
         /// Create a relative path from one path to another file.
         /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
         /// <paramref name="fileRelativeTo"/> is a file.
         /// </summary>
+        /// <param name="fileRelativeTo">The file path relative to</param>
+        /// <param name="path">The original path </param>
+        /// <returns>The relative path</returns>
         public static string GetRelativePathToFile(string fileRelativeTo, string path)
         {
             var directory = Path.GetDirectoryName(fileRelativeTo);
@@ -43,6 +36,8 @@ namespace Microsoft.Docs
         /// <summary>
         /// A normalized folder always ends with `/`, does not contain `\` and does not have consegative `.` or `/`.
         /// </summary>
+        /// <param name="path">The folder path want to be normalized</param>
+        /// <returns>The normalized folder path</returns>
         public static string NormalizeFolder(string path)
         {
             Debug.Assert(path.IndexOfAny(Path.GetInvalidPathChars()) < 0);
@@ -63,6 +58,8 @@ namespace Microsoft.Docs
         /// <summary>
         /// A normalized file cannot end with `/`, does not contain `\` and does not have consegative `.` or `/`.
         /// </summary>
+        /// <param name="path">The file path want to be normalized</param>
+        /// <returns>The normalized file path</returns>
         public static string NormalizeFile(string path)
         {
             Debug.Assert(Path.GetDirectoryName(path).IndexOfAny(Path.GetInvalidPathChars()) < 0);
