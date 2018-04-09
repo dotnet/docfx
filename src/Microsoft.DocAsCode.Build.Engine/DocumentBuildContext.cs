@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder, ImmutableArray<string> xrefServiceUrls)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty, null) { }
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty, null, null) { }
 
         public DocumentBuildContext(DocumentBuildParameters parameters)
         {
@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _xrefMapUrls = parameters.XRefMaps;
             _xrefServiceUrls = parameters.XRefServiceUrls;
             GroupInfo = parameters.GroupInfo;
+            XRefTags = parameters.XRefTags;
             MaxParallelism = parameters.MaxParallelism;
             MaxHttpParallelism = parameters.MaxHttpParallelism;
 
@@ -86,7 +87,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             string rootTocPath,
             string versionFolder,
             ImmutableArray<string> xrefServiceUrls,
-            GroupInfo groupInfo)
+            GroupInfo groupInfo,
+            List<string> xrefTags)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
@@ -97,6 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _xrefMapUrls = xrefMaps;
             _xrefServiceUrls = xrefServiceUrls;
             GroupInfo = groupInfo;
+            XRefTags = xrefTags;
             MaxParallelism = maxParallelism;
             MaxHttpParallelism = maxParallelism * 2;
             if (xrefMaps.Length > 0)
@@ -130,6 +133,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string VersionFolder { get; }
 
         public GroupInfo GroupInfo { get; }
+
+        public List<string> XRefTags { get; }
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 

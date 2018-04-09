@@ -39,6 +39,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("pairing")]
         public List<ContentPairingInfo> Pairing { get; set; }
 
+        [JsonProperty("xrefTags")]
+        public ListWithStringFallback XrefTags { get; set; }
+
         [JsonProperty("xref")]
         public ListWithStringFallback XRefMaps { get; set; }
 

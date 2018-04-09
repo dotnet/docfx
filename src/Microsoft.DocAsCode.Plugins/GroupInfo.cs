@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string Destination { get; set; }
 
-        public List<string> XrefTags { get; set; }
+        public List<string> XRefTags { get; set; }
 
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }

@@ -290,7 +290,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogVerbose("Exporting xref map...");
             var xrefMap = new XRefMap
             {
-                Tags = context.GroupInfo.XrefTags,
+                Tags = context.GroupInfo?.XRefTags ?? context.XRefTags,
             };
             xrefMap.References =
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
