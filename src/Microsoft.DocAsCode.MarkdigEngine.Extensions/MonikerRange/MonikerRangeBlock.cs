@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public string MonikerRange { get; set; }
         public int ColonCount { get; set; }
+        public bool Closed { get; set; }
         public MonikerRangeBlock(BlockParser parser) : base(parser)
         {
         }
