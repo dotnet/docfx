@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     public class MonikerRangeTest
     {
+        static public string LoggerPhase = "MonikerRange";
+
         [Fact]
         public void MonikerRangeTestGeneral()
         {
@@ -65,10 +67,13 @@ Inline ::: should not end moniker zone.</p>
             // assert
             var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
 ";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
 
             Logger.RegisterListener(listener);
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            }
             Logger.UnregisterListener(listener);
 
             Assert.Single(listener.Items);
@@ -87,18 +92,21 @@ Inline ::: should not end moniker zone.</p>
             var expected = @"<div range=""start"">
 </div>
 ";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
 
             Logger.RegisterListener(listener);
-            TestUtility.AssertEqual(expected, source2, TestUtility.MarkupWithoutSourceInfo);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                TestUtility.AssertEqual(expected, source2, TestUtility.MarkupWithoutSourceInfo);
 
-            Assert.Empty(listener.Items);
+                Assert.Empty(listener.Items);
 
-            TestUtility.AssertEqual(expected, source1, TestUtility.MarkupWithoutSourceInfo);
+                TestUtility.AssertEqual(expected, source1, TestUtility.MarkupWithoutSourceInfo);
+            }
             Logger.UnregisterListener(listener);
 
             Assert.Single(listener.Items);
-            Assert.Equal("No \"::: moniker-end\" found, MonikerRange does not end explictly.", listener.Items[0].Message);
+            Assert.Equal("No \"::: moniker-end\" found for \"start\", MonikerRange does not end explictly.", listener.Items[0].Message);
         }
     }
 }

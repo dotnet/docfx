@@ -138,7 +138,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var monikerRange = (MonikerRangeBlock)block;
             if (monikerRange != null && monikerRange.Closed == false)
             {
-                Logger.LogWarning($"No \"::: moniker-end\" found, MonikerRange does not end explictly.");
+                Logger.LogWarning($"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.");
             }
             return true;
         }
