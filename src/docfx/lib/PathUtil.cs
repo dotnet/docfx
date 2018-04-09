@@ -73,14 +73,11 @@ namespace Microsoft.Docs
             path = path.Replace('\\', '/');
 
             var needReorder = false;
-            foreach (var c in path)
+            if (path.IndexOf('.') != -1)
             {
-                if (c == '.')
-                {
-                    needReorder = true;
-                    break;
-                }
+                needReorder = true;
             }
+
             if (!needReorder)
             {
                 return path;
@@ -89,7 +86,7 @@ namespace Microsoft.Docs
             var parentCount = 0;
             var rooted = path[0] == '/';
             var stack = new List<string>();
-            foreach (var segment in path.Split('/', '\\'))
+            foreach (var segment in path.Split('/'))
             {
                 if (segment == ".." && stack.Count > 0)
                     stack.RemoveAt(stack.Count - 1);

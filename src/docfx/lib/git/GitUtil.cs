@@ -42,34 +42,6 @@ namespace Microsoft.Docs
         }
 
         /// <summary>
-        /// Get git repo information, will change to git exe later
-        /// </summary>
-        /// <param name="repoPath">The git repo root path</param>
-        /// <returns>The git repo current branch and remote uri</returns>
-        public static unsafe (string branch, string remote) GetInfo(string repoPath)
-        {
-            string branch = null;
-            fixed (byte* pRepoPath = NativeMethods.ToUtf8Native(repoPath))
-            fixed (byte* pOrigin = NativeMethods.ToUtf8Native("origin"))
-            {
-                if (NativeMethods.GitRepositoryOpen(out var repo, pRepoPath) != 0)
-                {
-                    return default;
-                }
-
-                NativeMethods.GitRepositoryHead(out var head, repo);
-                NativeMethods.GitRemoteLookup(out var remote, repo, pOrigin);
-                var remoteUrl = NativeMethods.FromUtf8Native(NativeMethods.GitRemoteUrl(remote));
-                if (NativeMethods.GitBranchName(out var pBranch, head) == 0)
-                    branch = NativeMethods.FromUtf8Native(pBranch);
-                NativeMethods.GitRemoteFree(remote);
-                NativeMethods.GitReferenceFree(head);
-                NativeMethods.GitRepositoryFree(repo);
-                return (branch, remoteUrl);
-            }
-        }
-
-        /// <summary>
         /// Get git commits group by files
         /// </summary>
         /// <param name="repoPath">The git repo root path</param>

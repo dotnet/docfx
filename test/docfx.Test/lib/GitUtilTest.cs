@@ -15,15 +15,6 @@ namespace Microsoft.Docs.Test
 {
     public static class GitUtilTest
     {
-        [Fact]
-        public static void GetRepoInfo()
-        {
-            var repo = GitUtil.FindRepo(Directory.GetCurrentDirectory());
-            Assert.True(File.Exists(Path.Combine(repo, "README.md")));
-            var(branch, remote) = GitUtil.GetInfo(repo);
-            Assert.NotEmpty(remote);
-        }
-
         [Theory]
         [InlineData("README.md")]
         public static void GetCommitsSameAsGitLog(string file)
