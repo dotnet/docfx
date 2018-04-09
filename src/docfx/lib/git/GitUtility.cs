@@ -62,7 +62,7 @@ namespace Microsoft.Docs
                 throw new ArgumentNullException(nameof(repoPath));
             }
 
-            Debug.Assert(files.All(file => !PathUtility.FolderPathHasInvalidChars(file)));
+            Debug.Assert(files.All(file => !PathUtility.FilePathHasInvalidChars(file)));
 
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
