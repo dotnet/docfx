@@ -28,11 +28,6 @@ namespace Microsoft.Docs
         /// <returns>The git repo root path</returns>
         public static string FindRepo(string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
             var repo = path;
@@ -57,11 +52,6 @@ namespace Microsoft.Docs
         /// <returns>A collection of git commits</returns>
         public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files, Action<int, int> progress = null)
         {
-            if (string.IsNullOrEmpty(repoPath))
-            {
-                throw new ArgumentNullException(nameof(repoPath));
-            }
-
             Debug.Assert(files.All(file => !PathUtility.FilePathHasInvalidChars(file)));
 
             var pathToParent = BuildPathToParentPath(files);

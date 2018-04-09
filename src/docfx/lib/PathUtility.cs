@@ -34,7 +34,7 @@ namespace Microsoft.Docs
         }
 
         /// <summary>
-        /// A normalized folder always ends with `/`, does not contain `\` and does not have consegative `.` or `/`.
+        /// A normalized folder always ends with `/`, does not contain `\` and does not have consecutive `.` or `/`.
         /// </summary>
         /// <param name="path">The folder path want to be normalized</param>
         /// <returns>The normalized folder path</returns>
@@ -56,7 +56,7 @@ namespace Microsoft.Docs
         }
 
         /// <summary>
-        /// A normalized file cannot end with `/`, does not contain `\` and does not have consegative `.` or `/`.
+        /// A normalized file cannot end with `/`, does not contain `\` and does not have consecutive `.` or `/`.
         /// </summary>
         /// <param name="path">The file path want to be normalized</param>
         /// <returns>The normalized file path</returns>
