@@ -372,8 +372,8 @@ article section {
 }
 
 @-o-keyframes index-loading {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from { -o-transform: rotate(0deg);}
+    to { -o-transform: rotate(360deg);}
 }
 
 #search-results .sr-items {
