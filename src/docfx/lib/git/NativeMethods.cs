@@ -21,11 +21,6 @@ namespace Microsoft.Docs
             GitLibgit2Opts(22 /*GIT_OPT_ENABLE_STRICT_HASH_VERIFICATION*/, 0);
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-#pragma warning disable SA1300
-        public unsafe delegate int git_treewalk_cb(byte* root, IntPtr entry, void* payload);
-#pragma warning restore SA1300
-
         public enum GitObjectType
         {
             Any = -2,
@@ -189,20 +184,16 @@ namespace Microsoft.Docs
         [StructLayout(LayoutKind.Sequential)]
         public struct GitTime
         {
-#pragma warning disable SA1307 // c++ structure
-            public long time;
-            public int offset;
-#pragma warning disable SA1307 // c++ structure
+            public long Time;
+            public int Offset;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public unsafe struct GitSignature
         {
-#pragma warning disable SA1307 // c++ structure
-            public byte* name;
-            public byte* email;
-            public GitTime when;
-#pragma warning disable SA1307 // c++ structure
+            public byte* Name;
+            public byte* Email;
+            public GitTime When;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -210,15 +201,13 @@ namespace Microsoft.Docs
         {
             public const int Size = 20;
 
-#pragma warning disable SA1307 // c++ structure
-            public long a;
-            public long b;
-            public int c;
-#pragma warning disable SA1307 // c++ structure
+            public long A;
+            public long B;
+            public int C;
 
-            public static bool Equals(ref GitOid a, ref GitOid b) => a.a == b.a && a.b == b.b && a.c == b.c;
+            public static bool Equals(ref GitOid a, ref GitOid b) => a.A == b.A && a.B == b.B && a.C == b.C;
 
-            public bool Equals(GitOid other) => a == other.a && b == other.b && c == other.c;
+            public bool Equals(GitOid other) => A == other.A && B == other.B && C == other.C;
 
             public override bool Equals(object obj) => obj is GitOid && Equals((GitOid)obj);
 

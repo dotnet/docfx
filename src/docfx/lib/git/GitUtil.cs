@@ -168,8 +168,8 @@ namespace Microsoft.Docs
                     Tree = *NativeMethods.GitCommitTreeId(commit),
                     GitCommit = new GitCommit
                     {
-                        AuthorName = NativeMethods.FromUtf8Native(author->name),
-                        AuthorEmail = NativeMethods.FromUtf8Native(author->email),
+                        AuthorName = NativeMethods.FromUtf8Native(author->Name),
+                        AuthorEmail = NativeMethods.FromUtf8Native(author->Email),
                         Sha = commitId.ToString(),
                         Time = NativeMethods.ToDateTimeOffset(NativeMethods.GitCommitTime(commit), NativeMethods.GitCommitTimeOffset(commit)),
                     },
@@ -204,7 +204,7 @@ namespace Microsoft.Docs
             {
                 var tree = commit.Tree;
                 var blobs = new Dictionary<string, long>(RefComparer.Instance);
-                if (trees.TryAdd(tree.a, blobs))
+                if (trees.TryAdd(tree.A, blobs))
                 {
                     WalkTree(&tree, "", blobs);
                 }
@@ -233,9 +233,9 @@ namespace Microsoft.Docs
                     }
 
                     var blob = NativeMethods.GitTreeEntryId(entry);
-                    blobs[file.file] = blob->a;
+                    blobs[file.file] = blob->A;
 
-                    if (type == 2 /* GIT_OBJ_TREE */ && trees.TryAdd(blob->a, blobs))
+                    if (type == 2 /* GIT_OBJ_TREE */ && trees.TryAdd(blob->A, blobs))
                     {
                         WalkTree(blob, file.file, blobs);
                     }
@@ -273,7 +273,7 @@ namespace Microsoft.Docs
             const int MaxParentBlob = 32;
 
             var contributors = new List<GitCommit>();
-            var commitsToFollow = new List<(Commit commit, long blob)> { (commits[0], GetBlob(trees, pathToParent, commits[0].Tree.a, file)) };
+            var commitsToFollow = new List<(Commit commit, long blob)> { (commits[0], GetBlob(trees, pathToParent, commits[0].Tree.A, file)) };
             var parentBlobs = stackalloc long[MaxParentBlob];
 
             foreach (var commit in commits)
@@ -302,7 +302,7 @@ namespace Microsoft.Docs
 
                 for (var i = 0; i < parentCount; i++)
                 {
-                    parentBlobs[i] = GetBlob(trees, pathToParent, commit.Parents[i].Tree.a, file);
+                    parentBlobs[i] = GetBlob(trees, pathToParent, commit.Parents[i].Tree.A, file);
                     if (parentBlobs[i] == blob)
                     {
                         // and it was TREESAME to one parent, follow only that parent.
