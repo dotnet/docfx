@@ -69,6 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c != '"')
             {
+                Logger.LogWarning("MonikerRange does not have ending charactor (\").");
                 return BlockState.None;
             }
 
@@ -85,6 +86,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(new MonikerRangeBlock(this)
             {
+                Closed = false,
                 MonikerRange = range.ToString(),
                 ColonCount = colonCount,
                 Column = column,
@@ -126,8 +128,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             block.UpdateSpanEnd(slice.End);
+            monikerRange.Closed = true;
 
             return BlockState.BreakDiscard;
+        }
+
+        public override bool Close(BlockProcessor processor, Block block)
+        {
+            var monikerRange = (MonikerRangeBlock)block;
+            if (monikerRange != null && monikerRange.Closed == false)
+            {
+                Logger.LogWarning($"No \"::: moniker-end\" found, MonikerRange does not end explictly.");
+            }
+            return true;
         }
     }
 }

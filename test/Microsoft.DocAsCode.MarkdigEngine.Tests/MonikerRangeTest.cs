@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -64,8 +65,40 @@ Inline ::: should not end moniker zone.</p>
             // assert
             var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
 ";
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
 
+            Logger.RegisterListener(listener);
             TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            Logger.UnregisterListener(listener);
+
+            Assert.Single(listener.Items);
+            Assert.Equal("MonikerRange does not have ending charactor (\").", listener.Items[0].Message);
+        }
+
+        [Fact]
+        public void MonikerRangeTestNotClosed()
+        {
+            //arange
+            var source1 = @"::: moniker range=""start""";
+            var source2 = @"::: moniker range=""start""
+::: moniker-end";
+
+            // assert
+            var expected = @"<div range=""start"">
+</div>
+";
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
+
+            Logger.RegisterListener(listener);
+            TestUtility.AssertEqual(expected, source2, TestUtility.MarkupWithoutSourceInfo);
+
+            Assert.Empty(listener.Items);
+
+            TestUtility.AssertEqual(expected, source1, TestUtility.MarkupWithoutSourceInfo);
+            Logger.UnregisterListener(listener);
+
+            Assert.Single(listener.Items);
+            Assert.Equal("No \"::: moniker-end\" found, MonikerRange does not end explictly.", listener.Items[0].Message);
         }
     }
 }
