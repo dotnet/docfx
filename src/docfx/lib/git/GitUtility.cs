@@ -19,7 +19,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide git operations
     /// </summary>
-    public static class GitUtil
+    public static class GitUtility
     {
         /// <summary>
         /// Find git repo directory
@@ -28,6 +28,13 @@ namespace Microsoft.Docs
         /// <returns>The git repo root path</returns>
         public static string FindRepo(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
+
             var repo = path;
             while (!string.IsNullOrEmpty(repo))
             {
@@ -55,7 +62,7 @@ namespace Microsoft.Docs
                 throw new ArgumentNullException(nameof(repoPath));
             }
 
-            Debug.Assert(files.All(file => file == PathUtil.NormalizeFile(file)));
+            Debug.Assert(files.All(file => !PathUtility.FolderPathHasInvalidChars(file)));
 
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);

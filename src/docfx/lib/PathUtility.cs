@@ -12,7 +12,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide utils of path
     /// </summary>
-    public static class PathUtil
+    public static class PathUtility
     {
         /// <summary>
         /// Create a relative path from one path to another file.
@@ -40,7 +40,7 @@ namespace Microsoft.Docs
         /// <returns>The normalized folder path</returns>
         public static string NormalizeFolder(string path)
         {
-            Debug.Assert(path.IndexOfAny(Path.GetInvalidPathChars()) < 0);
+            Debug.Assert(!FolderPathHasInvalidChars(path));
 
             var str = Normalize(path);
             if (str.Length == 0 || str == "/")
@@ -62,23 +62,51 @@ namespace Microsoft.Docs
         /// <returns>The normalized file path</returns>
         public static string NormalizeFile(string path)
         {
-            Debug.Assert(Path.GetDirectoryName(path).IndexOfAny(Path.GetInvalidPathChars()) < 0);
-            Debug.Assert(Path.GetFileName(path).IndexOfAny(Path.GetInvalidFileNameChars()) < 0);
+            Debug.Assert(!FilePathHasInvalidChars(path));
 
             return Normalize(path);
+        }
+
+        /// <summary>
+        /// Check if the folder path has invalid chars
+        /// </summary>
+        /// <param name="path">The folder path</param>
+        /// <returns>Has invalid chars or not</returns>
+        public static bool FolderPathHasInvalidChars(string path)
+        {
+            path = !path.EndsWith('\\') && !path.EndsWith('/') ? path + "/" : path;
+
+            return FilePathHasInvalidChars(path);
+        }
+
+        /// <summary>
+        /// Check if the file path has invalid chars
+        /// </summary>
+        /// <param name="path">The file chars</param>
+        /// <returns>Has invalid chars or not</returns>
+        public static bool FilePathHasInvalidChars(string path)
+        {
+            bool ret = false;
+            if (!string.IsNullOrEmpty(path))
+            {
+                try
+                {
+                    var fileName = Path.GetFileName(path);
+                    var fileDirectory = Path.GetDirectoryName(path);
+                }
+                catch (ArgumentException)
+                {
+                    ret = true;
+                }
+            }
+            return ret;
         }
 
         private static string Normalize(string path)
         {
             path = path.Replace('\\', '/');
 
-            var needReorder = false;
-            if (path.IndexOf('.') != -1)
-            {
-                needReorder = true;
-            }
-
-            if (!needReorder)
+            if (path.IndexOf('.') == -1)
             {
                 return path;
             }

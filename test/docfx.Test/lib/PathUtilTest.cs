@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Test
         [InlineData("a\\b\\./c/d/../e", "a/b/c/e")]
         [InlineData("/a\\b\\./c/d/../e", "/a/b/c/e")]
         public static void NormalizeFile(string path, string expected)
-            => Assert.Equal(expected, PathUtil.NormalizeFile(path));
+            => Assert.Equal(expected, PathUtility.NormalizeFile(path));
 
         [Theory]
         [InlineData("", "./")]
@@ -28,13 +28,13 @@ namespace Microsoft.Docs.Test
         [InlineData("a\\b\\./c/d/../e", "a/b/c/e/")]
         [InlineData("/a\\b\\./c/d/../e", "/a/b/c/e/")]
         public static void NormalizeFolder(string path, string expected)
-            => Assert.Equal(expected, PathUtil.NormalizeFolder(path));
+            => Assert.Equal(expected, PathUtility.NormalizeFolder(path));
 
         [Theory]
         [InlineData("a", "b", "b")]
         [InlineData("a/b", "a/c", "c")]
         [InlineData("a/b", "c/d", "../c/d")]
         public static void GetRelativePathToFile(string relativeTo, string path, string expected)
-            => Assert.Equal(expected, PathUtil.GetRelativePathToFile(relativeTo, path).Replace("\\", "/", StringComparison.Ordinal));
+            => Assert.Equal(expected, PathUtility.GetRelativePathToFile(relativeTo, path).Replace("\\", "/", StringComparison.Ordinal));
     }
 }
