@@ -11,6 +11,7 @@
 /**/node_modules/
 /**/*.sln.ide/
 /TestResults/
+/TestTools/
 /.vs/
 .NuGet/
 artifacts/
