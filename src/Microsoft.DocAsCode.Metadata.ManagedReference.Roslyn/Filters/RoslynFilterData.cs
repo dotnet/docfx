@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System;
     using System.Linq;
 
     using Microsoft.CodeAnalysis;
@@ -25,7 +24,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new AttributeFilterData
             {
                 Id = VisitorHelper.GetId(attribute.AttributeClass),
-                ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString),
+                ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString).ToList(),
                 ConstructorNamedArguments = attribute.NamedArguments.ToDictionary(pair => pair.Key, pair => GetLiteralString(pair.Value))
             };
         }
@@ -87,6 +86,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var type = constant.Type;
             var value = constant.Value;
 
+            // Consider it as a language neutral syntax that null is always using "null"
+            if (value == null)
+            {
+                return "null";
+            }
             if (type.TypeKind == TypeKind.Enum)
             {
                 var namedType = (INamedTypeSymbol)type;
