@@ -131,10 +131,10 @@ namespace Microsoft.Docs
             => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}", TimeSpan.FromMinutes(5));
 
         /// <summary>
-        /// Reset current repo to remote
+        /// Reset current repo to remote branch
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="branch">The branch name</param>
+        /// <param name="branch">The remote branch name</param>
         /// <returns>Task status</returns>
         public static Task Reset(string cwd, string branch)
         {
@@ -152,11 +152,11 @@ namespace Microsoft.Docs
            => ExecuteQuery(cwd, "rev-parse HEAD");
 
         /// <summary>
-        /// Get commits per file
+        /// Get commits (per file)
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="file">The file path</param>
-        /// <param name="count">The commit count you want to retrieve</param>
+        /// <param name="file">The file path, can be null</param>
+        /// <param name="count">The commit count you want to retrieve, defualt is all</param>
         /// <returns>A collection of git commit info</returns>
         public static Task<IReadOnlyList<GitCommit>> GetCommits(string cwd, string file = null, int count = -1)
         {
