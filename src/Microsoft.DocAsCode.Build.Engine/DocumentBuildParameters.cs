@@ -63,6 +63,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public GroupInfo GroupInfo { get; set; }
 
+        [IncrementalIgnore]
+        public List<string> XRefTags { get; set; }
+
         public string RootTocPath { get; set; }
 
         [IncrementalIgnore]

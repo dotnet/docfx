@@ -288,7 +288,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
         {
             Logger.LogVerbose("Exporting xref map...");
-            var xrefMap = new XRefMap();
+            var xrefMap = new XRefMap
+            {
+                Tags = context.GroupInfo?.XRefTags ?? context.XRefTags,
+            };
             xrefMap.References =
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)

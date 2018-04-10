@@ -332,6 +332,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
             }
 
+            parameters.XRefTags = config.XrefTags;
+
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
@@ -344,6 +346,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                     {
                         p.GroupInfo.Destination = gi.Destination;
+                        p.GroupInfo.XRefTags = gi.XrefTags ?? new List<string>();
                         p.GroupInfo.Metadata = gi.Metadata;
                         if (!string.IsNullOrEmpty(gi.Destination))
                         {
