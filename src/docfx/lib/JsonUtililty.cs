@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -18,8 +17,7 @@ namespace Microsoft.Docs
     /// </summary>
     public static class JsonUtililty
     {
-        private static readonly ThreadLocal<JsonSerializer> s_defaultSerializer = new ThreadLocal<JsonSerializer>(
-            () => new JsonSerializer
+        private static readonly JsonSerializer s_defaultSerializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
@@ -28,7 +26,7 @@ namespace Microsoft.Docs
                     new StringEnumConverter { CamelCaseText = true },
                 },
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            });
+            };
 
         private static readonly JsonMergeSettings s_jsonMergeSettings = new JsonMergeSettings
         {
@@ -40,11 +38,18 @@ namespace Microsoft.Docs
         /// </summary>
         public static void Serialize(TextWriter writer, object graph, bool isStable = false, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            var localSerializer = serializer ?? s_defaultSerializer.Value;
+            var localSerializer = serializer ?? s_defaultSerializer;
             if (isStable)
             {
                 localSerializer.Formatting = Formatting.Indented;
-                localSerializer.Serialize(writer, Stablize(JToken.FromObject(graph, localSerializer)));
+                try
+                {
+                    localSerializer.Serialize(writer, Stablize(JToken.FromObject(graph, localSerializer)));
+                }
+                finally
+                {
+                    localSerializer.Formatting = Formatting.None;
+                }
             }
             else
             {
@@ -72,7 +77,7 @@ namespace Microsoft.Docs
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return (serializer ?? s_defaultSerializer.Value).Deserialize<T>(json);
+                return (serializer ?? s_defaultSerializer).Deserialize<T>(json);
             }
         }
 
