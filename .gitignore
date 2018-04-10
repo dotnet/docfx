@@ -1,6 +1,7 @@
 .vs
 .vscode
 bin
+drop
 obj
 
 *.suo

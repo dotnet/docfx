@@ -23,6 +23,8 @@
     <Rule Id="SA1503" Action="None" />
     <!-- SA1513ClosingBraceMustBeFollowedByBlankLine -->
     <Rule Id="SA1513" Action="None" />
+    <!-- SA1652EnableXMLDocumentOutput -->
+    <Rule Id="SA1652" Action="None" />
   </Rules>
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1001" Action="Warning" />
@@ -42,10 +44,14 @@
     <Rule Id="CA1405" Action="Warning" />
     <Rule Id="CA1410" Action="Warning" />
     <Rule Id="CA1415" Action="Warning" />
+    <!-- CA1806DoNotIgnoreMethodResults -->
+    <Rule Id="CA1806" Action="None" />
     <Rule Id="CA1821" Action="Warning" />
     <Rule Id="CA1900" Action="Warning" />
     <Rule Id="CA1901" Action="Warning" />
     <Rule Id="CA2002" Action="Warning" />
+    <!-- CA2007DoNotDirectlyAwaitATaskAnalyzer -->
+    <Rule Id="CA2007" Action="None" />
     <Rule Id="CA2100" Action="Warning" />
     <Rule Id="CA2101" Action="Warning" />
     <Rule Id="CA2108" Action="Warning" />

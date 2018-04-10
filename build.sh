@@ -1,3 +1,4 @@
 #!/bin/bash
-dotnet test test/docfx.Test
-dotnet publish src/docfx -c Release
+set -e
+dotnet test test/docfx.Test -c Release
+dotnet pack src/docfx -c Release
