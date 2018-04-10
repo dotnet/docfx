@@ -20,7 +20,6 @@ namespace Microsoft.Docs
         private static readonly JsonSerializer s_defaultSerializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                 Converters =
                 {
                     new StringEnumConverter { CamelCaseText = true },
