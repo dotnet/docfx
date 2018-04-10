@@ -96,6 +96,11 @@ namespace Test1
         public int D { get; set; }
 
         void IFoo.Bar() {}
+
+        [EnumDisplay(Test = null)]
+        public void Test(string a = null)
+        {
+        }
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -103,8 +108,18 @@ namespace Test1
     {
         void Bar();
     }
-}
 
+    public class EnumDisplayAttribute : Attribute
+    {
+        public string Test { get; set; } = null;
+        public string Description { get; private set; }
+
+        public EnumDisplayAttribute(string description = null)
+        {
+            Description = description;
+        }
+    }
+}
 ";
             string configFile = "TestData/filterconfig.yml";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
@@ -112,7 +127,7 @@ namespace Test1
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
             Assert.Equal("Test1", @namespace.Name);
-            Assert.Equal(4, @namespace.Items.Count);
+            Assert.Equal(5, @namespace.Items.Count);
             {
                 var class1 = @namespace.Items[0];
                 Assert.Equal("Test1.Class1", class1.Name);
@@ -135,7 +150,7 @@ namespace Test1
             {
                 var class6 = @namespace.Items[3];
                 Assert.Equal("Test1.Class6", class6.Name);
-                Assert.Equal(1, class6.Items.Count);
+                Assert.Equal(2, class6.Items.Count);
                 Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
             }
 

@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System;
     using System.Linq;
 
     using Microsoft.CodeAnalysis;
+    using Microsoft.DocAsCode.Common;
 
     internal class RoslynFilterData
     {
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new AttributeFilterData
             {
                 Id = VisitorHelper.GetId(attribute.AttributeClass),
-                ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString),
+                ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString).ToList(),
                 ConstructorNamedArguments = attribute.NamedArguments.ToDictionary(pair => pair.Key, pair => GetLiteralString(pair.Value))
             };
         }
@@ -84,12 +84,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetLiteralString(TypedConstant constant)
         {
-            var type = constant.Type;
-            var value = constant.Value;
-
-            if (type.TypeKind == TypeKind.Enum)
+            if (constant.Kind == TypedConstantKind.Enum)
             {
-                var namedType = (INamedTypeSymbol)type;
+                var namedType = (INamedTypeSymbol)constant.Type;
                 var name = (from member in namedType.GetMembers().OfType<IFieldSymbol>()
                             where member.IsConst && member.HasConstantValue
                             where constant.Value.Equals(member.ConstantValue)
@@ -105,15 +102,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 // Case: [E(E.X | E.Y)]
                 // Case: [E((E)99)]
                 // Case: [E(E.X | E.YZ)]
-                return value.ToString();
+                return constant.Value.ToString();
             }
 
-            if (value is ITypeSymbol)
+            if (constant.Kind == TypedConstantKind.Array)
             {
-                return VisitorHelper.GetId((ITypeSymbol)value);
+                return string.Join(",", constant.Values.Select(GetLiteralString));
             }
 
-            return value.ToString();
+            var value = constant.Value;
+            if (value is ISymbol)
+            {
+                return VisitorHelper.GetId(constant.Value as ISymbol);
+            }
+
+            return value?.ToString() ?? "null";
         }
     }
 }
