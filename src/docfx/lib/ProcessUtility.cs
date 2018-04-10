@@ -12,15 +12,17 @@ namespace Microsoft.Docs
     internal static class ProcessUtility
     {
         /// <summary>
-        /// Execute exe process with args
+        /// Execute process with args
         /// </summary>
-        /// <param name="exe">The exe path localization</param>
-        /// <param name="commandLineArgs">The command line args</param>
+        /// <param name="fileName">The process path name or location</param>
+        /// <param name="commandLineArgs">The process command line args</param>
         /// <param name="cwd">The current working directory</param>
         /// <param name="timeout">The timeout setting</param>
         /// <returns>The executed result</returns>
-        public static Task<string> Execute(string exe, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
+        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
         {
+            Debug.Assert(!string.IsNullOrEmpty(fileName));
+
             var tcs = new TaskCompletionSource<string>();
 
             var error = new StringBuilder();
@@ -31,7 +33,7 @@ namespace Microsoft.Docs
                 EnableRaisingEvents = true,
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = exe,
+                    FileName = fileName,
                     WorkingDirectory = cwd,
                     Arguments = commandLineArgs,
                     CreateNoWindow = true,
@@ -55,7 +57,7 @@ namespace Microsoft.Docs
                 }
                 else
                 {
-                    var message = $"'\"{exe}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
+                    var message = $"'\"{process}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
 
                     tcs.TrySetException(new InvalidOperationException(message));
                 }

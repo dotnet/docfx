@@ -85,7 +85,7 @@ namespace Microsoft.Docs
                 Directory.CreateDirectory(cwd);
             }
 
-            await ExecuteNonQuery(cwd, $"init");
+            await ExecuteNonQuery(cwd, "init");
             await ExecuteNonQuery(cwd, @"commit -m ""Init Commit"" --allow-empty");
         }
 
@@ -97,7 +97,11 @@ namespace Microsoft.Docs
         /// <param name="path">The path to clone</param>
         /// <returns>Task status</returns>
         public static Task Clone(string cwd, string remote, string path)
-            => ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}", TimeSpan.FromMinutes(20));
+        {
+            Debug.Assert(PathUtility.FolderPathHasInvalidChars(path));
+
+            return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}", TimeSpan.FromMinutes(20));
+        }
 
         /// <summary>
         /// Fetch update from remote
@@ -105,7 +109,7 @@ namespace Microsoft.Docs
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
         public static Task Fetch(string cwd)
-            => ExecuteNonQuery(cwd, $"fetch", TimeSpan.FromMinutes(3));
+            => ExecuteNonQuery(cwd, "fetch", TimeSpan.FromMinutes(3));
 
         /// <summary>
         /// Pull update from remote
@@ -133,7 +137,11 @@ namespace Microsoft.Docs
         /// <param name="branch">The branch name</param>
         /// <returns>Task status</returns>
         public static Task Reset(string cwd, string branch)
-            => ExecuteNonQuery(cwd, $"reset --hard origin/{branch}", TimeSpan.FromMinutes(10));
+        {
+            Debug.Assert(!string.IsNullOrEmpty(branch));
+
+            return ExecuteNonQuery(cwd, $"reset --hard origin/{branch}", TimeSpan.FromMinutes(10));
+        }
 
         /// <summary>
         /// Retrieve git head version
@@ -210,6 +218,9 @@ namespace Microsoft.Docs
 
         private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser)
         {
+            Debug.Assert(!string.IsNullOrEmpty(cwd));
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(cwd));
+
             // todo: check git exist or not
             var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout);
             return parser(response);
