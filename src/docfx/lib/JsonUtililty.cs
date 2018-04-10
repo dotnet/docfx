@@ -17,42 +17,42 @@ namespace Microsoft.Docs
     /// </summary>
     public static class JsonUtililty
     {
-        private static readonly JsonSerializer s_defaultSerializer = new JsonSerializer
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters =
+        private static readonly JsonSerializerSettings noneFormatJsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Converters =
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            };
-
-        private static readonly JsonMergeSettings s_jsonMergeSettings = new JsonMergeSettings
-        {
-            MergeArrayHandling = MergeArrayHandling.Replace,
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
+
+        private static readonly JsonSerializerSettings indentedFormatJsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented,
+            Converters =
+                {
+                    new StringEnumConverter { CamelCaseText = true },
+                },
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        };
+
+        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(noneFormatJsonSerializerSettings);
+        private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(indentedFormatJsonSerializerSettings);
 
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
-        public static void Serialize(TextWriter writer, object graph, bool isStable = false, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
+        public static void Serialize(TextWriter writer, object graph, bool isStable = false, Formatting formatting = Formatting.None)
         {
-            var localSerializer = serializer ?? s_defaultSerializer;
+            var localSerializer = isStable || formatting == Formatting.Indented ? s_defaultIndentedFormatSerializer : s_defaultNoneFormatSerializer;
             if (isStable)
             {
-                localSerializer.Formatting = Formatting.Indented;
-                try
-                {
-                    localSerializer.Serialize(writer, Stablize(JToken.FromObject(graph, localSerializer)));
-                }
-                finally
-                {
-                    localSerializer.Formatting = Formatting.None;
-                }
+                localSerializer.Serialize(writer, Stablize(JToken.FromObject(graph, localSerializer)));
             }
             else
             {
-                localSerializer.Formatting = formatting;
                 localSerializer.Serialize(writer, graph);
             }
         }
@@ -60,11 +60,11 @@ namespace Microsoft.Docs
         /// <summary>
         /// Serialize an object to string
         /// </summary>
-        public static string Serialize(object graph, bool isStable = false, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
+        public static string Serialize(object graph, bool isStable = false, Formatting formatting = Formatting.None)
         {
             using (StringWriter writer = new StringWriter())
             {
-                Serialize(writer, graph, isStable, formatting, serializer);
+                Serialize(writer, graph, isStable, formatting);
                 return writer.ToString();
             }
         }
@@ -72,20 +72,20 @@ namespace Microsoft.Docs
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
-        public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
+        public static T Deserialize<T>(TextReader reader)
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return (serializer ?? s_defaultSerializer).Deserialize<T>(json);
+                return s_defaultNoneFormatSerializer.Deserialize<T>(json);
             }
         }
 
         /// <summary>
         /// Deserialize a string to an object
         /// </summary>
-        public static T Deserialize<T>(string json, JsonSerializer serializer = null)
+        public static T Deserialize<T>(string json)
         {
-            return Deserialize<T>(new StringReader(json), serializer);
+            return Deserialize<T>(new StringReader(json));
         }
 
         private static JToken Stablize(JToken token)
