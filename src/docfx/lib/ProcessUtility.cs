@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs
@@ -57,7 +56,7 @@ namespace Microsoft.Docs
                 }
                 else
                 {
-                    var message = $"'\"{process}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
+                    var message = $"'\"{fileName}\" {commandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{output}'\nSTDERR:\n'{error}'";
 
                     tcs.TrySetException(new InvalidOperationException(message));
                 }

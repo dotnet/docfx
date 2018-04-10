@@ -29,11 +29,12 @@ namespace Microsoft.Docs.Test
         [Fact]
         public static async Task GitCommandConcurreny()
         {
+            await GitUtility.SetIdentity("test", "test@microsoft.com");
             var cwd = Path.Combine(Directory.GetCurrentDirectory(), ".tmp");
 
             await GitUtility.Init(cwd);
 
-            var results = await Task.WhenAll(Enumerable.Range(0, 100).AsParallel().Select(i => GitUtility.HeadRevision(cwd)));
+            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.HeadRevision(cwd)));
 
             Assert.True(results.All(r => r.Any()));
         }

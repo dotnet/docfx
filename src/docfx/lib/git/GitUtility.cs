@@ -74,6 +74,21 @@ namespace Microsoft.Docs
         }
 
         /// <summary>
+        /// Set git identity
+        /// </summary>
+        /// <param name="name">The git user name</param>
+        /// <param name="email">The git user email</param>
+        /// <returns>Task status</returns>
+        public static async Task SetIdentity(string name, string email)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(name));
+            Debug.Assert(!string.IsNullOrEmpty(email));
+
+            await ExecuteNonQuery(".", $"config --global user.name \"{name}\"");
+            await ExecuteNonQuery(".", $"config --global user.email \"{email}\"");
+        }
+
+        /// <summary>
         /// Init git repository
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -149,7 +164,7 @@ namespace Microsoft.Docs
         /// <param name="cwd">The working directory</param>
         /// <returns>The git head version</returns>
         public static Task<string> HeadRevision(string cwd)
-           => ExecuteQuery(cwd, "rev-parse HEAD");
+           => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
         /// <summary>
         /// Get commits (per file)
