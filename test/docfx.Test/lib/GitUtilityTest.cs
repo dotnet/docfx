@@ -17,39 +17,25 @@ namespace Microsoft.Docs.Test
     {
         [Theory]
         [InlineData("README.md")]
-        public static void GetCommitsSameAsGitLog(string file)
+        public static async Task GetCommitsSameAsGitLog(string file)
         {
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             var pathToRepo = PathUtility.NormalizeFile(file);
-            var exe = GetContributorsGitExe(repo, pathToRepo).ToList();
+            var exe = await GitUtility.GetCommits(repo, pathToRepo);
             var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
             Assert.Equal(JsonConvert.SerializeObject(exe), JsonConvert.SerializeObject(lib));
         }
 
-        private static GitCommit[] GetContributorsGitExe(string cwd, string path)
+        [Fact]
+        public static async Task GitCommandConcurreny()
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "git",
-                Arguments = $"log --format=\"%H|%cI|%an|%ae|%cn|%ce\" \"{path}\"",
-                WorkingDirectory = cwd,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-            };
-            var git = Process.Start(psi);
-            var output = Task.Factory.StartNew(() => git.StandardOutput.ReadToEnd(), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            git.WaitForExit();
+            var cwd = Environment.ExpandEnvironmentVariables($@"%TEMP%\OpenLocalization\LocalGit\{Guid.NewGuid()}");
 
-            return (
-                from c in output.Result.Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                let split = c.Split('|')
-                select new GitCommit
-                {
-                    Sha = split[0],
-                    Time = DateTimeOffset.Parse(split[1], null),
-                    AuthorName = split[2],
-                    AuthorEmail = split[3],
-                }).ToArray();
+            await GitUtility.Init(cwd);
+
+            var results = await Task.WhenAll(Enumerable.Range(0, 100).AsParallel().Select(i => GitUtility.HeadRevision(cwd)));
+
+            Assert.True(results.All(r => r.Any()));
         }
     }
 }

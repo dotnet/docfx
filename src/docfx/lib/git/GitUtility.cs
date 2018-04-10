@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Docs.Git;
@@ -21,6 +22,8 @@ namespace Microsoft.Docs
     /// </summary>
     public static class GitUtility
     {
+        private static readonly char[] s_newline = new[] { '\r', '\n' };
+
         /// <summary>
         /// Find git repo directory
         /// </summary>
@@ -70,6 +73,106 @@ namespace Microsoft.Docs
             return result;
         }
 
+        /// <summary>
+        /// Init git repository
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <returns>Task status</returns>
+        public static async Task Init(string cwd)
+        {
+            if (!Directory.Exists(cwd))
+            {
+                Directory.CreateDirectory(cwd);
+            }
+
+            await ExecuteNonQuery(cwd, $"init");
+            await ExecuteNonQuery(cwd, @"commit -m ""Init Commit"" --allow-empty");
+        }
+
+        /// <summary>
+        /// Clone git repository from remote to local
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="remote">The remote url</param>
+        /// <param name="path">The path to clone</param>
+        /// <returns>Task status</returns>
+        public static Task Clone(string cwd, string remote, string path)
+            => ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}", TimeSpan.FromMinutes(20));
+
+        /// <summary>
+        /// Fetch update from remote
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <returns>Task status</returns>
+        public static Task Fetch(string cwd)
+            => ExecuteNonQuery(cwd, $"fetch", TimeSpan.FromMinutes(3));
+
+        /// <summary>
+        /// Pull update from remote
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="remote">The remote name, default is origin</param>
+        /// <returns>Task status</returns>
+        public static Task Pull(string cwd, string remote = null)
+            => ExecuteNonQuery(cwd, $"pull {remote ?? string.Empty}", TimeSpan.FromMinutes(3));
+
+        /// <summary>
+        /// Checkout repo to specified branch
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="create">Create this branch if not exists or not</param>
+        /// <param name="branch">The branch name, default is master</param>
+        /// <returns>Task status</returns>
+        public static Task Checkout(string cwd, bool create, string branch = null)
+            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}", TimeSpan.FromMinutes(5));
+
+        /// <summary>
+        /// Reset current repo to remote
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="branch">The branch name</param>
+        /// <returns>Task status</returns>
+        public static Task Reset(string cwd, string branch)
+            => ExecuteNonQuery(cwd, $"reset --hard origin/{branch}", TimeSpan.FromMinutes(10));
+
+        /// <summary>
+        /// Retrieve git head version
+        /// </summary>
+        /// <param name="cwd">The working directory</param>
+        /// <returns>The git head version</returns>
+        public static Task<string> HeadRevision(string cwd)
+           => ExecuteQuery(cwd, "rev-parse HEAD");
+
+        /// <summary>
+        /// Get commits per file
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="file">The file path</param>
+        /// <param name="count">The commit count you want to retrieve</param>
+        /// <returns>A collection of git commit info</returns>
+        public static Task<IReadOnlyList<GitCommit>> GetCommits(string cwd, string file = null, int count = -1)
+        {
+            string formatter = "%H|%cI|%an|%ae|%cn|%ce";
+            var argumentsBuilder = new StringBuilder();
+            argumentsBuilder.Append($@"--no-pager log --format=""{formatter}""");
+            if (count > 0)
+            {
+                argumentsBuilder.Append($" -{count}");
+            }
+
+            if (!string.IsNullOrEmpty(file))
+            {
+                argumentsBuilder.Append($@" -- ""{file}""");
+            }
+
+            return ExecuteQuery(cwd, argumentsBuilder.ToString(), ParseListCommitOutPut);
+        }
+
+        private static IReadOnlyList<GitCommit> ParseListCommitOutPut(string lines)
+            => (from line in lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries)
+                let parts = line.Split('|')
+                select new GitCommit { Sha = parts[0], Time = DateTimeOffset.Parse(parts[1], null), AuthorName = parts[2], AuthorEmail = parts[3] }).ToList();
+
         private static FileMap BuildPathToParentPath(List<string> files)
         {
             var res = new HashSet<string>(files.Count + 128);
@@ -94,6 +197,22 @@ namespace Microsoft.Docs
 
                 return (file, i >= 0 && res.TryGetValue(file.Substring(0, i + 1), out var parent) ? parent : null);
             });
+        }
+
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x);
+
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, parser);
+
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x);
+
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser)
+        {
+            // todo: check git exist or not
+            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout);
+            return parser(response);
         }
 
         private static unsafe IntPtr OpenRepo(string path)
