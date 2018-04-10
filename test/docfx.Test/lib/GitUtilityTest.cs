@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Test
         [Fact]
         public static async Task GitCommandConcurreny()
         {
-            var cwd = Environment.ExpandEnvironmentVariables($@"%TEMP%\OpenLocalization\LocalGit\{Guid.NewGuid()}");
+            var cwd = Path.Combine(Directory.GetCurrentDirectory(), ".tmp");
 
             await GitUtility.Init(cwd);
 
