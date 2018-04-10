@@ -5,6 +5,9 @@
     <IsPackable>false</IsPackable>
     <LangVersion>Latest</LangVersion>
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
+    <AssemblyName>docfx.Test</AssemblyName>
+    <RootNamespace>Microsoft.Docs.Test</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
