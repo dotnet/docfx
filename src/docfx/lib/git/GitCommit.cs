@@ -8,7 +8,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// The git commit information
     /// </summary>
-    public class GitCommit
+    internal class GitCommit
     {
         /// <summary>
         /// Gets or sets the git commmit author name

@@ -16,6 +16,10 @@ namespace Microsoft.Docs.Test
         [InlineData("a\\b./c/d../e", "a/b./c/d../e")]
         [InlineData("a\\b\\./c/d/../e", "a/b/c/e")]
         [InlineData("/a\\b\\./c/d/../e", "/a/b/c/e")]
+        [InlineData("a\\\\b\\./c/d/../e", "a/b/c/e")]
+        [InlineData("a\\b\\.///c/d/../e", "a/b/c/e")]
+        [InlineData("a.b//c", "a.b/c")]
+        [InlineData("ab//c", "ab/c")]
         public static void NormalizeFile(string path, string expected)
             => Assert.Equal(expected, PathUtility.NormalizeFile(path));
 

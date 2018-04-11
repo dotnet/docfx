@@ -12,7 +12,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide utils of path
     /// </summary>
-    public static class PathUtility
+    internal static class PathUtility
     {
         /// <summary>
         /// Create a relative path from one path to another file.
@@ -106,7 +106,7 @@ namespace Microsoft.Docs
         {
             path = path.Replace('\\', '/');
 
-            if (path.IndexOf('.') == -1)
+            if (path.IndexOf('.') == -1 && !path.Contains("//"))
             {
                 return path;
             }
