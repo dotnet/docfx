@@ -43,13 +43,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseXref()
                 .UseEmojiAndSmiley(false)
                 .UseTabGroup()
-                .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange()
                 .UseValidators(context, parameters)
                 .UseInteractiveCode()
                 .UseRow()
-                .UseNestedColumn();
+                .UseNestedColumn()
+                // Do not add extension after the InineParser
+                .UseInineParserOnly(context);
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
