@@ -16,7 +16,7 @@ namespace Microsoft.Docs
         /// <param name="fileName">The process path name or location</param>
         /// <param name="commandLineArgs">The process command line args</param>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="timeout">The timeout setting, default value is 5 minutes</param>
+        /// <param name="timeout">The timeout setting, default is none</param>
         /// <returns>The executed result</returns>
         public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
         {
@@ -42,6 +42,7 @@ namespace Microsoft.Docs
                 },
             };
 
+            // Todo: output steam to current window
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
 
@@ -62,7 +63,9 @@ namespace Microsoft.Docs
                 }
             };
 
-            Task.Delay(timeout ?? TimeSpan.FromMinutes(5)).ContinueWith(
+            if (timeout != null)
+            {
+                Task.Delay(timeout.Value).ContinueWith(
                 task =>
                 {
                     if (!process.HasExited)
@@ -70,8 +73,10 @@ namespace Microsoft.Docs
                         process.Kill();
                     }
 
-                    tcs.TrySetCanceled();
+                    var message = $"'\"{fileName}\" {commandLineArgs}' timeout in directory '{cwd}' after {timeout.Value.Seconds} seconds";
+                    tcs.TrySetException(new TimeoutException(message));
                 }, TaskScheduler.Default);
+            }
 
             process.Start();
             process.BeginOutputReadLine();

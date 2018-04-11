@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs
@@ -41,35 +42,6 @@ namespace Microsoft.Docs
         }
 
         /// <summary>
-        /// Set git identity
-        /// </summary>
-        /// <param name="name">The git user name</param>
-        /// <param name="email">The git user email</param>
-        /// <returns>Task status</returns>
-        public static async Task SetIdentity(string name, string email)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(name));
-            Debug.Assert(!string.IsNullOrEmpty(email));
-
-            await ExecuteNonQuery(".", $"config --global user.name \"{name}\"");
-            await ExecuteNonQuery(".", $"config --global user.email \"{email}\"");
-        }
-
-        /// <summary>
-        /// Init git repository
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <returns>Task status</returns>
-        public static async Task Init(string cwd)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(cwd));
-
-            Directory.CreateDirectory(cwd);
-            await ExecuteNonQuery(cwd, "init");
-            await ExecuteNonQuery(cwd, @"commit -m ""Init Commit"" --allow-empty");
-        }
-
-        /// <summary>
         /// Clone git repository from remote to local
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -80,7 +52,7 @@ namespace Microsoft.Docs
         {
             Debug.Assert(PathUtility.FolderPathHasInvalidChars(path));
 
-            return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}", TimeSpan.FromMinutes(20));
+            return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}");
         }
 
         /// <summary>
@@ -89,7 +61,7 @@ namespace Microsoft.Docs
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
         public static Task Fetch(string cwd)
-            => ExecuteNonQuery(cwd, "fetch", TimeSpan.FromMinutes(3));
+            => ExecuteNonQuery(cwd, "fetch");
 
         /// <summary>
         /// Pull update from remote
@@ -98,7 +70,7 @@ namespace Microsoft.Docs
         /// <param name="remote">The remote name, default is origin</param>
         /// <returns>Task status</returns>
         public static Task Pull(string cwd, string remote = null)
-            => ExecuteNonQuery(cwd, $"pull {remote ?? string.Empty}", TimeSpan.FromMinutes(3));
+            => ExecuteNonQuery(cwd, $"pull {remote ?? string.Empty}");
 
         /// <summary>
         /// Checkout repo to specified branch
@@ -108,10 +80,10 @@ namespace Microsoft.Docs
         /// <param name="branch">The branch name, default is master</param>
         /// <returns>Task status</returns>
         public static Task Checkout(string cwd, bool create, string branch = null)
-            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}", TimeSpan.FromMinutes(5));
+            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}", TimeSpan.FromMinutes(10));
 
         /// <summary>
-        /// Reset current repo to remote branch
+        /// Reset(hard) current repo to remote branch
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <param name="branch">The remote branch name</param>
@@ -153,10 +125,10 @@ namespace Microsoft.Docs
                 argumentsBuilder.Append($@" -- ""{file}""");
             }
 
-            return ExecuteQuery(cwd, argumentsBuilder.ToString(), ParseListCommitOutPut);
+            return ExecuteQuery(cwd, argumentsBuilder.ToString(), ParseListCommitOutput);
         }
 
-        private static IReadOnlyList<GitCommit> ParseListCommitOutPut(string lines)
+        private static IReadOnlyList<GitCommit> ParseListCommitOutput(string lines)
             => (from line in lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries)
                 let parts = line.Split('|')
                 select new GitCommit { Sha = parts[0], Time = DateTimeOffset.Parse(parts[1], null), AuthorName = parts[2], AuthorEmail = parts[3] }).ToList();
