@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs
 {
-    internal static class ProcessUtility
+    /// <summary>
+    /// Provide process utility
+    /// </summary>
+    public static class ProcessUtility
     {
         /// <summary>
         /// Execute process with args
