@@ -17,7 +17,7 @@ namespace Microsoft.Docs
     /// </summary>
     public static class JsonUtililty
     {
-        private static readonly JsonSerializerSettings noneFormatJsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             Converters =
@@ -27,7 +27,7 @@ namespace Microsoft.Docs
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
-        private static readonly JsonSerializerSettings indentedFormatJsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
@@ -38,8 +38,8 @@ namespace Microsoft.Docs
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
-        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(noneFormatJsonSerializerSettings);
-        private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(indentedFormatJsonSerializerSettings);
+        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+        private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
 
         /// <summary>
         /// Serialize an object to TextWriter

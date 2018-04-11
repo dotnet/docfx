@@ -39,18 +39,6 @@ namespace Microsoft.Docs.Test
         }
 
         [Fact]
-        public void TestNotWorkInJsonDotNet39()
-        {
-            const string Text = "😄";
-            var sw = new StringWriter();
-            JsonUtililty.Serialize(sw, new BasicClass { C = Text });
-            var json = sw.ToString();
-            var value = JsonUtililty.Deserialize<BasicClass>(new StringReader(json));
-            Assert.NotNull(value);
-            Assert.Equal(Text, value.C);
-        }
-
-        [Fact]
         public void TestBasicClass()
         {
             var json = JsonUtililty.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, formatting: Formatting.Indented);
