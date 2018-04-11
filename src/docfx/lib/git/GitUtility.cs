@@ -49,7 +49,7 @@ namespace Microsoft.Docs
         /// <returns>Task status</returns>
         public static Task Clone(string cwd, string remote, string path)
         {
-            Debug.Assert(PathUtility.FolderPathHasInvalidChars(path));
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
             return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}");
         }
