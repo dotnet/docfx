@@ -51,7 +51,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             };
         }
 
-        public MarkdownDocument Parse(string content, string filePath, bool isInline = false)
+        public MarkdownDocument Parse(string content, string filePath)
+        {
+            return Parse(content, filePath, false);
+        }
+
+        public MarkdownDocument Parse(string content, string filePath, bool isInline)
         {
             if (content == null)
             {
@@ -72,7 +77,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return document;
         }
 
-        public MarkupResult Render(MarkdownDocument document, bool isInline = false)
+        public MarkupResult Render(MarkdownDocument document)
+        {
+            return Render(document, false);
+        }
+
+        public MarkupResult Render(MarkdownDocument document, bool isInline)
         {
             if (document == null)
             {
