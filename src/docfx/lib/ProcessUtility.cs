@@ -11,7 +11,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide process utility
     /// </summary>
-    public static class ProcessUtility
+    internal static class ProcessUtility
     {
         /// <summary>
         /// Execute process with args

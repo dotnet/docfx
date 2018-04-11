@@ -15,7 +15,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide git utility using git bash
     /// </summary>
-    public static partial class GitUtility
+    internal static partial class GitUtility
     {
         private static readonly char[] s_newline = new[] { '\r', '\n' };
 

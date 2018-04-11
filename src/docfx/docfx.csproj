@@ -24,4 +24,10 @@
     <PackageReference Include="YamlDotNet" Version="4.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
