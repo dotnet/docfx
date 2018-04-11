@@ -1,0 +1,17 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
+namespace Microsoft.Docs
+{
+    internal class FileConfig
+    {
+        private static readonly string[] s_defaultFileInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultFileExclude = Array.Empty<string>();
+
+        public string[] Include { get; } = s_defaultFileInclude;
+
+        public string[] Exclude { get; } = s_defaultFileExclude;
+    }
+}
