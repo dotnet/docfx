@@ -16,7 +16,7 @@ namespace Microsoft.Docs
         /// <param name="fileName">The process path name or location</param>
         /// <param name="commandLineArgs">The process command line args</param>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="timeout">The timeout setting</param>
+        /// <param name="timeout">The timeout setting, default value is 5 minutes</param>
         /// <returns>The executed result</returns>
         public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
         {
