@@ -343,6 +343,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 #  temp file  #
 ###############
 *.yml
+.manifest
 ");
             var files = new Tuple<string, string>[] { tocYaml, indexMarkdownFile, apiTocFile, apiIndexFile, articleTocFile, articleMarkdownFile, gitignore, apiGitignore };
             foreach (var file in files)
