@@ -1,10 +1,10 @@
 ---
-title: Overwrite Document V3 - Markdown Fragments
+title: Markdown Fragments
 description: overwrite document in DocFX v3
 author: renzeyu
 ---
 
-# Overwrite Document V3 - Markdown Fragments
+# Markdown Fragments
 
 ## 1 Overview
 
