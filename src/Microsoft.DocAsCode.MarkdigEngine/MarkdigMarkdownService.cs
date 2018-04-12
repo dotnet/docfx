@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var dependency = new HashSet<string>();
             var engine = CreateEngine(dependency);
 
-            var context = CreateContext(content, filePath);
+            var context = CreateContext(content, filePath, false);
 
             return new MarkupResult
             {
@@ -52,6 +52,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         }
 
         public MarkdownDocument Parse(string content, string filePath)
+        {
+            return Parse(content, filePath, false);
+        }
+
+        public MarkdownDocument Parse(string content, string filePath, bool isInline)
         {
             if (content == null)
             {
@@ -64,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
 
             var engine = CreateEngine(new HashSet<string>());
-            var context = CreateContext(content, filePath);
+            var context = CreateContext(content, filePath, isInline);
 
             var document = engine.Parse(context, _parameters);
             document.SetData("filePath", filePath);
@@ -73,6 +78,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         }
 
         public MarkupResult Render(MarkdownDocument document)
+        {
+            return Render(document, false);
+        }
+
+        public MarkupResult Render(MarkdownDocument document, bool isInline)
         {
             if (document == null)
             {
@@ -85,7 +95,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var context = CreateContext(null, filePath);
+            var context = CreateContext(null, filePath, isInline);
 
             var dependency = new HashSet<string>();
             var engine = CreateEngine(dependency);
@@ -107,13 +117,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return new MarkdownEngine(dependency);
         }
 
-        private MarkdownContext CreateContext(string content, string filePath)
+        private MarkdownContext CreateContext(string content, string filePath, bool isInline)
         {
             return new MarkdownContextBuilder()
                             .WithFilePath(filePath)
                             .WithBasePath(_parameters.BasePath)
                             .WithMvb(_mvb)
                             .WithContent(content)
+                            .WithIsInline(isInline)
                             .Build();
         }
     }
