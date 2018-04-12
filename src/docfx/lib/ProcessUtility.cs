@@ -51,6 +51,9 @@ namespace Microsoft.Docs
 
             process.Exited += (a, b) =>
             {
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
                 // Wait for exit here to ensure the standard output/error is flushed.
                 process.WaitForExit();
 
@@ -82,8 +85,6 @@ namespace Microsoft.Docs
             }
 
             process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
 
             return tcs.Task;
         }
