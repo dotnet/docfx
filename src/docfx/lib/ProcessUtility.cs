@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs
@@ -49,13 +50,15 @@ namespace Microsoft.Docs
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
 
+            // var readingStart = false;
+            var processExited = new object();
             process.Exited += (a, b) =>
             {
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                // Wait for exit here to ensure the standard output/error is flushed.
-                process.WaitForExit();
+                lock (processExited)
+                {
+                    // Wait for exit here to ensure the standard output/error is flushed.
+                    process.WaitForExit();
+                }
 
                 if (process.ExitCode == 0)
                 {
@@ -84,7 +87,16 @@ namespace Microsoft.Docs
                 }, TaskScheduler.Default);
             }
 
-            process.Start();
+            lock (processExited)
+            {
+                process.Start();
+
+                // Thread.Sleep(10000);
+                // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
+                // Add lock to ensure the locked area code can be always exected before exited event
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+            }
 
             return tcs.Task;
         }
