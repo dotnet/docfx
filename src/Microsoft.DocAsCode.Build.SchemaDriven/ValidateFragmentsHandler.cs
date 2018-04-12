@@ -39,10 +39,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 return;
             }
             var opath = oPathPrefix + propertyKey;
-            // TODO: also check whether it exists in fragments[uid].Metadata
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                Logger.LogWarning($"Missing property {opath} in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                if (string.IsNullOrEmpty(oPathPrefix) && fragments[uid].Metadata?.ContainsKey(opath) == true)
+                {
+                    return;
+                }
+                // TODO: also check whether it exists in inner objects
+                Logger.LogWarning($"Missing property '{opath}' for UID '{uid}' in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", code: WarningCodes.Overwrite.InvalidMarkdownFragments);
             }
         }
     }

@@ -12,7 +12,7 @@
           "summary": {
             "type": "string"
           },
-          "discription": {
+          "description": {
             "type": "string",
             "contentType": "markdown",
             "tags": [
@@ -51,7 +51,7 @@
         "editable"
       ]
     },
-    "discription": {
+    "description": {
       "type": "string",
       "contentType": "markdown",
       "tags": [

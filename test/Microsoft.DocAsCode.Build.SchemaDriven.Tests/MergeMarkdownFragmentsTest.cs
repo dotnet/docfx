@@ -244,6 +244,29 @@ markdown content
 
 ## `summary`
 markdown content
+
+# `management.azure.com.advisor.suppressions`
+```
+author: bob
+```
+
+## `operations[id=""management.azure.com.advisor.suppressions.create""]/summary`
+Enables the snoozed or dismissed attribute of a **recommendation**.
+
+## `definitions[name=""Application 1""]/description`
+
+## `definitions[name=""Application 1""]/properties[name=""displayName""]/description`
+
+## `definitions[name=""Application 1""]/properties[name=""id""]/description`
+
+Some empty lines between H2 and this paragraph is tolerant
+
+## ``summary``
+
+## `definitions[name=""CloudError""]/description`
+
+## `definitions[name=""CloudError""]/properties[name=""error""]/description`
+
 ",
                 _inputFolder);
 
@@ -264,7 +287,7 @@ markdown content
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Single(warningLogs);
             Assert.Equal("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
-            Assert.Null(rawModel["summary"]);
+            Assert.Empty(rawModel["summary"]);
         }
 
         [Fact]

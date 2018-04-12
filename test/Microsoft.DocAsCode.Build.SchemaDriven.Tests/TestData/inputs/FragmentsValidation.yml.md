@@ -9,7 +9,7 @@ ms.product: MSDN
 ## `summary`
 This is a summary at YAML's **ROOT** level...
 
-## `discription`
+## `description`
 
 ## `name`
 This is a name at YAML's **ROOT** level...
@@ -17,5 +17,7 @@ This is a name at YAML's **ROOT** level...
 ## `operations[id="management.azure.com.advisor.fragmentsValidation.create"]/summary`
 Enables the snoozed or dismissed attribute of a **recommendation**.
 
-## `operations[id="management.azure.com.advisor.fragmentsValidation.delete"]/discription`
+## `operations[id="management.azure.com.advisor.fragmentsValidation.create"]/description`
+
+## `operations[id="management.azure.com.advisor.fragmentsValidation.delete"]/description`
 Enables the snoozed or dismissed attribute of a **recommendation**.
