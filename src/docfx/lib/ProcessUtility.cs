@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs
@@ -50,7 +49,6 @@ namespace Microsoft.Docs
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
 
-            // var readingStart = false;
             var processExited = new object();
             process.Exited += (a, b) =>
             {
