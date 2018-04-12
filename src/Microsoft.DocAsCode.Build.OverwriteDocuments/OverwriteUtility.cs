@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             while (leftString.Length > 0)
             {
                 var match = OPathRegex.Match(leftString);
-                if (match.Length == 0 )
+                if (match.Length == 0)
                 {
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }

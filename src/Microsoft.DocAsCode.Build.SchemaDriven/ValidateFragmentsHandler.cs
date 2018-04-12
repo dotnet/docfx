@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
@@ -39,11 +40,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 return;
             }
             var opath = oPathPrefix + propertyKey;
-            // TODO: also check whether it exists in fragments[uid].Metadata
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                Logger.LogWarning($"Missing property {opath} in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                if (IsSimpleOpath(opath) && fragments[uid].Metadata.ContainsKey(opath))
+                {
+                    return;
+                }
+                // TODO: also check whether it exists in inner objects
+                Logger.LogWarning($"Missing property '{opath}' for UID '{uid}' in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", code: WarningCodes.Overwrite.InvalidMarkdownFragments);
             }
         }
+
+        private bool IsSimpleOpath(string opath)
+            => opath.IndexOfAny(new char[] { '/', '[', ']' }) == -1;
     }
 }
