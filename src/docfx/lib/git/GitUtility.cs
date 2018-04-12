@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs
@@ -15,7 +14,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide git utility using git bash
     /// </summary>
-    public static partial class GitUtility
+    internal static partial class GitUtility
     {
         private static readonly char[] s_newline = new[] { '\r', '\n' };
 
@@ -50,7 +49,7 @@ namespace Microsoft.Docs
         /// <returns>Task status</returns>
         public static Task Clone(string cwd, string remote, string path)
         {
-            Debug.Assert(PathUtility.FolderPathHasInvalidChars(path));
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
             return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}");
         }

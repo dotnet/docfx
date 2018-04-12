@@ -18,7 +18,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Git utility using native methods
     /// </summary>
-    public static partial class GitUtility
+    internal static partial class GitUtility
     {
         /// <summary>
         /// Get git commits group by files
