@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var opath = oPathPrefix + propertyKey;
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                if (string.IsNullOrEmpty(oPathPrefix) && fragments[uid].Metadata.ContainsKey(opath))
+                if (string.IsNullOrEmpty(oPathPrefix) && fragments[uid].Metadata?.ContainsKey(opath) == true)
                 {
                     return;
                 }
