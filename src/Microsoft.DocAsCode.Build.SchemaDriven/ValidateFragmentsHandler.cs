@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
-    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var opath = oPathPrefix + propertyKey;
             if (!fragments[uid].Properties.ContainsKey(opath))
             {
-                if (IsSimpleOpath(opath) && fragments[uid].Metadata.ContainsKey(opath))
+                if (string.IsNullOrEmpty(oPathPrefix) && fragments[uid].Metadata.ContainsKey(opath))
                 {
                     return;
                 }
@@ -50,8 +49,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 Logger.LogWarning($"Missing property '{opath}' for UID '{uid}' in markdown fragments. This may be caused by YAML update or schema update. Please ensure your markdown fragments are up to date.", code: WarningCodes.Overwrite.InvalidMarkdownFragments);
             }
         }
-
-        private bool IsSimpleOpath(string opath)
-            => opath.IndexOfAny(new char[] { '/', '[', ']' }) == -1;
     }
 }
