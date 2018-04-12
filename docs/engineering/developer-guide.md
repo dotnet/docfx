@@ -17,11 +17,15 @@ We follow [C# Coding Style](https://github.com/dotnet/corefx/blob/master/Documen
 
 Besides that, we have some recommended but not mandatory (that is, not enabled by StyleCop/FxCop) rules as illustrated below.
 
-#### Performance Consideration
+#### Conventions
 * **DO** use `sealed` for private classes if they are not to be inherited.
-* **DO** add `readonly` to fields if they do not tend to be changed.
 * **DO** use `static` methods if it is not instance relevant.
-* **DO** use `RegexOptions.Compiled` for **readonly** *Regex*.
+
+#### *Sealed* classes
+Seal the class when it is not designed for extensibility. *When designing, it may be a good idea to lean towards sealing public types that don't explicitly need to be extended since unsealing a class in a future version is a non-breaking change while the reverse is not true.* In general, private classes can be `private sealed class` if they are not to be inherited.
+
+#### Regex
+Be careful about `RegexOptions.Compiled`. Generally if the regex expression is `static` `readonly` one to be shared and regularly reused, make it `RegexOptions.Compiled`. But when the regex expression is an instance object and the pattern always changes, because of the overhead of object instantiation and regular expression compilation, creating and rapidly destroying numerous Regex objects is a very expensive process. Details refer to https://docs.microsoft.com/en-us/dotnet/standard/base-types/compilation-and-reuse-in-regular-expressions#the-regular-expressions-cache
 
 #### Unit tests and functional tests
 ##### Assembly naming
@@ -35,11 +39,10 @@ In general there should be exactly one unit tests assembly for each product runt
 Test class names end with `Test` suffix and live in the same namespace as the class being tested. For example, the unit tests for the `Microsoft.Foo.Boo` class would be in a `Microsoft.Foo.BooTest` class in the unit tests assembly `Microsoft.Foo.Tests`.
 
 ##### Unit test method naming
-Unit test method names must be descriptive about *what developers are testing, under what conditions, and what the expectations are*. Pascal casing and underscores can be used to improve readability. The following test names are correct:
+Unit test method names must be descriptive about *what developers are testing, under what conditions, and what the expectations are*. The following test name is correct:
 
 ```cs
 PublicApiArgumentsShouldHaveNotNullAnnotation
-Public_api_arguments_should_have_not_null_annotation
 ```
 
 The following test names are incorrect:
