@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs
 {
-    internal interface ILogger
+    internal interface ILog
     {
     }
 }

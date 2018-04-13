@@ -5,14 +5,56 @@ namespace Microsoft.Docs
 {
     internal class Document
     {
+        /// <summary>
+        /// Gets the owning docset of this document. A document can only belong to one docset.
+        /// </summary>
         public Docset Docset { get; }
 
+        /// <summary>
+        /// Gets the content type of this document.
+        /// </summary>
         public ContentType ContentType { get; }
 
-        public FilePath FilePath { get; }
+        /// <summary>
+        /// Gets a normalized path relative to docset root that:
+        ///
+        ///  - Does not start with '/'
+        ///  - Does not end with '/'
+        ///
+        ///  - All '\' are replaced with '/'
+        ///  - Does not contain any consecutive '//'
+        ///  - Does not contain any directory indicators including './' and '../'
+        /// </summary>
+        public string FilePath { get; }
 
-        public FilePath SitePath { get; }
+        /// <summary>
+        /// Gets a normalized path relative to site root that:
+        ///
+        ///  - Does not start with '/'
+        ///  - Does not end with '/'
+        ///
+        ///  - All '\' are replaced with '/'
+        ///  - Does not contain any consecutive '//'
+        ///  - Does not contain any directory indicators including './' and '../'
+        /// </summary>
+        public string SitePath { get; }
 
-        public UrlPath SiteUrl { get; }
+        /// <summary>
+        /// Gets a normalized Url relative to site root that:
+        ///
+        ///  - Always start with '/'
+        ///  - May end with '/' if it is index.html
+        ///
+        ///  - All '\' are replaced with '/'
+        ///  - Does not contain any consecutive '//'
+        ///  - Does not contain any directory indicators including './' and '../'
+        /// </summary>
+        public string SiteUrl { get; }
+
+        public Document(Docset docset, string filePath)
+        {
+            Docset = docset;
+            FilePath = filePath;
+        }
     }
 }

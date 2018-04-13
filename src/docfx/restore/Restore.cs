@@ -8,13 +8,12 @@ namespace Microsoft.Docs
 {
     internal static class Restore
     {
-        public static async Task Run(string docsetPath)
+        public static Task Run(string docsetPath, CommandLineOptions options, Context context)
         {
-            throw new NotImplementedException();
-        }
+            // Restore has to use Config directly, it cannot depend on Docset,
+            // because Docset assumes the repo to physically exist on disk.
+            var config = Config.Load(docsetPath, options);
 
-        public static async Task Run(Context context, Docset docset)
-        {
             throw new NotImplementedException();
         }
     }

@@ -5,7 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Microsoft.Docs.Git
+namespace Microsoft.Docs
 {
     internal static class NativeMethods
     {

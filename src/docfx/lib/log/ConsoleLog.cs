@@ -3,12 +3,7 @@
 
 namespace Microsoft.Docs
 {
-    internal class Repo
+    internal class ConsoleLog : ILog
     {
-        public string RepoPath { get; }
-
-        public string Remote { get; }
-
-        public string Branch { get; }
     }
 }

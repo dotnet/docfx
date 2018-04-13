@@ -5,19 +5,20 @@ namespace Microsoft.Docs
 {
     internal class Context
     {
+        /// <summary>
+        /// Gets the file system abstraction.
+        /// </summary>
         public IFileSystem FileSystem { get; }
 
-        public ILogger Log { get; }
+        /// <summary>
+        /// Gets the logger to write logs, report diagnostics and progress.
+        /// </summary>
+        public ILog Log { get; }
 
-        public Context(IFileSystem fileSystem, ILogger log)
+        public Context(IFileSystem fileSystem, ILog log)
         {
             FileSystem = fileSystem;
             Log = log;
-        }
-
-        public static Context Create(string docsetPath)
-        {
-
         }
     }
 }
