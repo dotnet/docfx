@@ -6,6 +6,5 @@ drop
 obj
 
 *.suo
-*.sln
 *.sdf
 *.user
