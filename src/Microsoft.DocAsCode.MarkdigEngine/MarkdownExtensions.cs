@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             return pipeline
                 //.UseMathematics()
-                //.UseEmphasisExtras()
+                .UseEmphasisExtras()
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
