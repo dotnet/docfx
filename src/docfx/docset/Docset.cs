@@ -9,8 +9,7 @@ namespace Microsoft.Docs
     internal class Docset
     {
         /// <summary>
-        /// Gets the normalized absolute path to `docfx.yml`, always ends with '/'.
-        /// It is not necessarily the path to git repository.
+        /// Gets the path to `docfx.yml`, it is not necessarily the path to git repository.
         /// </summary>
         public string DocsetPath { get; }
 

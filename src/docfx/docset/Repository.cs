@@ -6,7 +6,7 @@ namespace Microsoft.Docs
     internal class Repository
     {
         /// <summary>
-        /// Gets the normalized absolute path to the git repository.
+        /// Gets the path to the git repository.
         /// </summary>
         public string RepositoryPath { get; }
     }

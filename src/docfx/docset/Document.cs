@@ -16,38 +16,29 @@ namespace Microsoft.Docs
         public ContentType ContentType { get; }
 
         /// <summary>
-        /// Gets a normalized path relative to docset root that:
+        /// Gets a relative path to the owning docset folder that is:
         ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
         ///  - Does not end with '/'
-        ///
-        ///  - All '\' are replaced with '/'
-        ///  - Does not contain any consecutive '//'
-        ///  - Does not contain any directory indicators including './' and '../'
         /// </summary>
         public string FilePath { get; }
 
         /// <summary>
-        /// Gets a normalized path relative to site root that:
+        /// Gets a relative path to site root that is:
         ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
         ///  - Does not end with '/'
-        ///
-        ///  - All '\' are replaced with '/'
-        ///  - Does not contain any consecutive '//'
-        ///  - Does not contain any directory indicators including './' and '../'
         /// </summary>
         public string SitePath { get; }
 
         /// <summary>
-        /// Gets a normalized Url relative to site root that:
+        /// Gets a Url relative to site root that is:
         ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
         ///  - May end with '/' if it is index.html
-        ///
-        ///  - All '\' are replaced with '/'
-        ///  - Does not contain any consecutive '//'
-        ///  - Does not contain any directory indicators including './' and '../'
         /// </summary>
         public string SiteUrl { get; }
 
