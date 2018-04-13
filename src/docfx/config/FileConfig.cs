@@ -10,8 +10,14 @@ namespace Microsoft.Docs
         private static readonly string[] s_defaultFileInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultFileExclude = Array.Empty<string>();
 
+        /// <summary>
+        /// Gets the include patterns of files to be build.
+        /// </summary>
         public string[] Include { get; } = s_defaultFileInclude;
 
+        /// <summary>
+        /// Gets the exclude patterns of files to be build.
+        /// </summary>
         public string[] Exclude { get; } = s_defaultFileExclude;
     }
 }
