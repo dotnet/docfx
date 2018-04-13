@@ -10,7 +10,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Provide Utilities of Json

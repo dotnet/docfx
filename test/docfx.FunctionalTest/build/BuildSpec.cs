@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     internal class BuildSpec
     {

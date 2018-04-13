@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// A docset is a collection of documents in the folder identified by `docfx.yml`.

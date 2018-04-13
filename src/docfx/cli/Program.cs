@@ -3,7 +3,7 @@
 
 using System.Threading.Tasks;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     internal class Program
     {

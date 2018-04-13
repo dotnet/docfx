@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// The git commit information

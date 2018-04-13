@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <LangVersion>Latest</LangVersion>
-    <RootNamespace>Microsoft.Docs.Test</RootNamespace>
+    <RootNamespace>Microsoft.Docs.Build</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

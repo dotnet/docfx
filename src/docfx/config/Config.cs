@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     internal class Config
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public static class GitUtilityTest
     {

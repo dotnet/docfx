@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     internal class FileConfig
     {

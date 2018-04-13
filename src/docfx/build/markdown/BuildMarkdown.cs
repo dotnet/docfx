@@ -4,7 +4,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
