@@ -11,7 +11,7 @@ namespace Microsoft.Docs
     /// <summary>
     /// Provide process utility
     /// </summary>
-    public static class ProcessUtility
+    internal static class ProcessUtility
     {
         /// <summary>
         /// Execute process with args
@@ -49,10 +49,14 @@ namespace Microsoft.Docs
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
 
+            var processExited = new object();
             process.Exited += (a, b) =>
             {
-                // Wait for exit here to ensure the standard output/error is flushed.
-                process.WaitForExit();
+                lock (processExited)
+                {
+                    // Wait for exit here to ensure the standard output/error is flushed.
+                    process.WaitForExit();
+                }
 
                 if (process.ExitCode == 0)
                 {
@@ -81,9 +85,16 @@ namespace Microsoft.Docs
                 }, TaskScheduler.Default);
             }
 
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            lock (processExited)
+            {
+                process.Start();
+
+                // Thread.Sleep(10000);
+                // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
+                // Add lock to ensure the locked area code can be always exected before exited event
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+            }
 
             return tcs.Task;
         }
