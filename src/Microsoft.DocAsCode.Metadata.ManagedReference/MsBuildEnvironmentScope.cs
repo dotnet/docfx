@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (latest != null)
                     {
                         Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner compiler.");
-
+                        MSBuildLocator.RegisterInstance(latest);
                         return new EnvironmentScope(new Dictionary<string, string>
                         {
                             [VSInstallDirKey] = latest.VisualStudioRootPath,

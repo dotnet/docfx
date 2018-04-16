@@ -9,7 +9,7 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Common\Microsoft.DocAsCode.Metadata.ManagedReference.Common.csproj" />    
+    <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Common\Microsoft.DocAsCode.Metadata.ManagedReference.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
@@ -18,5 +18,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.0.13" />
   </ItemGroup>
 </Project>
