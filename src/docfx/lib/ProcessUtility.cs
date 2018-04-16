@@ -20,8 +20,9 @@ namespace Microsoft.Docs
         /// <param name="commandLineArgs">The process command line args</param>
         /// <param name="cwd">The current working directory</param>
         /// <param name="timeout">The timeout setting, default is none</param>
+        /// <param name="outputHandler">The process output action</param>
         /// <returns>The executed result</returns>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
+        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
@@ -48,6 +49,12 @@ namespace Microsoft.Docs
             // Todo: output steam to current window
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
+
+            if (outputHandler != null)
+            {
+                process.OutputDataReceived += (sender, e) => outputHandler(e.Data, false);
+                process.ErrorDataReceived += (sender, e) => outputHandler(e.Data, true);
+            }
 
             var processExited = new object();
             process.Exited += (a, b) =>

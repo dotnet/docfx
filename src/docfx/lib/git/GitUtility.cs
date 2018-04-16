@@ -132,23 +132,37 @@ namespace Microsoft.Docs
                 let parts = line.Split('|')
                 select new GitCommit { Sha = parts[0], Time = DateTimeOffset.Parse(parts[1], null), AuthorName = parts[2], AuthorEmail = parts[3] }).ToList();
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, parser);
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, parser, outputHandler);
 
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x);
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler);
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(cwd));
 
             // todo: check git exist or not
-            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout);
+            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
             return parser(response);
+        }
+
+        private static void DefaultOutputHandler(string outputLine, bool isError)
+        {
+            if (isError)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine(outputLine);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine(outputLine);
+            }
         }
     }
 }
