@@ -7,24 +7,43 @@ using System.Linq;
 
 namespace Microsoft.Docs
 {
-    public class FileGlob
+    /// <summary>
+    /// Provide Utilities of File glob
+    /// </summary>
+    public static class FileGlob
     {
+        /// <summary>
+        /// Get files with patterns
+        /// </summary>
         public static IEnumerable<string> GetFiles(string cwd, IEnumerable<string> patterns, IEnumerable<string> excludePatterns, GlobMatcherOptions options = GlobMatcher.DefaultOptions)
         {
             // If there is no pattern, nothing will be included
-            if (patterns == null) return Enumerable.Empty<string>();
-            if (string.IsNullOrEmpty(cwd)) cwd = Directory.GetCurrentDirectory();
+            if (patterns == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            if (string.IsNullOrEmpty(cwd))
+            {
+                cwd = Directory.GetCurrentDirectory();
+            }
 
             IEnumerable<GlobMatcher> globList = patterns.Select(s => new GlobMatcher(s, options));
             IEnumerable<GlobMatcher> excludeGlobList = Enumerable.Empty<GlobMatcher>();
             if (excludePatterns != null)
+            {
                 excludeGlobList = excludePatterns.Select(s => new GlobMatcher(s, options));
+            }
             return GetFilesCore(cwd, globList, excludeGlobList);
         }
 
         private static IEnumerable<string> GetFilesCore(string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
         {
-            if (!Directory.Exists(cwd)) yield break;
+            if (!Directory.Exists(cwd))
+            {
+                yield break;
+            }
+
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
                 yield return NormalizeToFullPath(file);
@@ -58,6 +77,7 @@ namespace Microsoft.Docs
         private static string GetRelativeFilePath(string directory, string file)
         {
             var subpath = file.Substring(directory.Length);
+
             // directory could be
             // 1. root folder, e.g. E:\ or /
             // 2. sub folder, e.g. a or a/ or a\
@@ -89,11 +109,17 @@ namespace Microsoft.Docs
         {
             foreach (var exclude in excludeGlobs)
             {
-                if (exclude.Match(path, false)) return false;
+                if (exclude.Match(path, false))
+                {
+                    return false;
+                }
             }
             foreach (var glob in globs)
             {
-                if (glob.Match(path, partial)) return true;
+                if (glob.Match(path, partial))
+                {
+                    return true;
+                }
             }
             return false;
         }

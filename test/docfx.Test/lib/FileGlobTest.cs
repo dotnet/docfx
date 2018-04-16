@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Microsoft.Docs
 {
-    public class GlobFileTest
+    public class FileGlobTest
     {
         private string _workingDirectory;
 
-        public GlobFileTest()
+        public FileGlobTest()
         {
             _workingDirectory = Path.GetRandomFileName();
         }
@@ -60,7 +60,7 @@ namespace Microsoft.Docs
                 _workingDirectory,
                 null,
                 new string[] { "**.md" }).ToArray();
-            Assert.Equal(0, result.Length);
+            Assert.Empty(result);
             result = FileGlob.GetFiles(
                 _workingDirectory,
                 new string[] { "**" },
@@ -70,12 +70,12 @@ namespace Microsoft.Docs
                  _workingDirectory,
                  new string[] { "**.md" },
                  new string[] { "**{J,L}/**" }).ToArray();
-            Assert.Equal(1, result.Length);
+            Assert.Single(result);
             result = FileGlob.GetFiles(
                  _workingDirectory,
                  new string[] { "**.md", "**.csproj" },
                  new string[] { "**J/**", "**/M/**" }).ToArray();
-            Assert.Equal(1, result.Length);
+            Assert.Single(result);
             result = FileGlob.GetFiles(
                  _workingDirectory + "/Root",
                  new string[] { "[EJ]/*.{md,cs,csproj}" },

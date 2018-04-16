@@ -35,169 +35,168 @@ namespace Microsoft.Docs
 
         [Theory]
         [Trait("Related", "Glob")]
-        [InlineData("", new string[]
-        {
-            ""
-        }, true)]
-        [InlineData("\\a", new string[]
-        {
-            "a"
-        }, true)]
-        [InlineData("a*", new string[]
-        {
-            "a", "abc", "abd", "abe"
-        }, true)]
-        [InlineData(".a*", new string[]
-        {
-            ".a", ".abc", ".abd", ".abe"
-        }, true)]
-        [InlineData("b*/", new string[]
-        {
-            "bdir/"
-        }, true)]
-        [InlineData("**/a/*/b.cs", new string[]
-        {
-            "b/a/a/a/b.cs"
-        }, true)]
+        [InlineData(
+            "",
+            new string[] { "" },
+            true)]
+        [InlineData(
+            "\\a",
+            new string[] { "a" },
+            true)]
+        [InlineData(
+            "a*",
+            new string[] { "a", "abc", "abd", "abe" },
+            true)]
+        [InlineData(
+            ".a*",
+            new string[] { ".a", ".abc", ".abd", ".abe" },
+            true)]
+        [InlineData(
+            "b*/",
+            new string[] { "bdir/" },
+            true)]
+        [InlineData(
+            "**/a/*/b.cs",
+            new string[] { "b/a/a/a/b.cs" },
+            true)]
 
         // ** is a shortcut for **/*
-        [InlineData("**", new string[]
-        {
-            "a", "b", "abc", "bdir/cfile"
-        }, true)]
-        [InlineData("A/**", new string[]
-        {
-            "A/"
-        }, false)]
+        [InlineData(
+            "**",
+            new string[] { "a", "b", "abc", "bdir/cfile" },
+            true)]
+        [InlineData(
+            "A/**",
+            new string[] { "A/" },
+            false)]
 
         // ** is a shortcut for **/*
-        [InlineData("**/*", new string[]
-        {
-          "a", "ab", "bdir/cfile", "a/b/c"
-        }, true)]
-        [InlineData("**/*", new string[]
-        {
-           "abc/"
-        }, false)]
+        [InlineData(
+            "**/*",
+            new string[] { "a", "ab", "bdir/cfile", "a/b/c" },
+            true)]
+        [InlineData(
+            "**/*",
+            new string[] { "abc/" },
+            false)]
 
         // To match folders, / should be explictly specified
-        [InlineData("**/", new string[]
-        {
-            "bdir/", "bdir/cdir/"
-        }, true)]
-        [InlineData("[a-c]b*", new string[]
-        {
-            "abc", "abd", "abe", "bb", "cb"
-        }, true)]
-        [InlineData("[a-y]*[^c]", new string[]
-        {
-            "abd", "abe", "bb", "bcd"
-        }, true)]
-        [InlineData("!abc", new string[]
-        {
-            "d", "dd", "def"
-        }, true)]
-        [InlineData("[^a-c]*", new string[]
-        {
-            "d", "dd", "def"
-        }, true)]
-        [InlineData("a\\*b/*", new string[]
-        {
-            "a*b/ooo"
-        }, true)]
-
-        [InlineData("a\\*?/*", new string[]
-        {
-            "a*b/ooo"
-        }, true)]
-        [InlineData("a[\\\\b]c", new string[]
-        {
-            "abc"
-        }, true)]
-        [InlineData("*.\\*", new string[]
-        {
-            "r.*"
-        }, true)]
-        [InlineData("a******?c", new string[]
-        {
-            "abc"
-        }, true)]
-        [InlineData("?******??", new string[]
-        {
-            "abc"
-        }, true)]
-        [InlineData("*******??", new string[]
-        {
-            "abc"
-        }, true)]
-        [InlineData("***?***?c", new string[]
-        {
-            "abc", "a/b/dec", "a/bcdc"
-        }, true)]
-        [InlineData("***?***?c", new string[]
-        {
-            "a/b/c/dc"
-        }, false)]
-        [InlineData("*******c", new string[]
-        {
-            "abc", "a/bc", "a/b/c"
-        }, true)]
-        [InlineData("*******?", new string[]
-        {
-            "abc", "a/b/c"
-        }, true)]
-        [InlineData("[a[]", new string[]
-        {
-            "[", "a"
-        }, true)]
-        [InlineData("[(]", new string[]
-        {
-            "("
-        }, true)]
-        [InlineData("[]]", new string[]
-        {
-            "]"
-        }, true)]
-        [InlineData("[", new string[]
-        {
-            "["
-        }, true)]
-        [InlineData("[abc[]]a", new string[]
-        {
-            "a]a", "b]a", "[]a"
-        }, true)]
-        [InlineData("[\\w]a", new string[]
-        {
-            "aa", "ba"
-        }, true)]
-        [InlineData("[abc[]]a", new string[]
-        {
-            "]"
-        }, false)]
-        [InlineData(@"\[*", new string[]
-        {
-            "[abc"
-        }, true)]
-        [InlineData("b*/", new string[]
-        {
-            "bfile"
-        }, false)]
-        [InlineData("**", new string[]
-        {
-            ".a", "a/.b", ".a/b"
-        }, false)]
-        [InlineData("a/*", new string[]
-        {
-            "a/"
-        }, false)]
-        [InlineData("a/*", new string[]
-        {
-            "a/.a"
-        }, false)]
-        [InlineData("*.cs", new string[]
-        {
-            "acs"
-        }, false)]
+        [InlineData(
+            "**/",
+            new string[] { "bdir/", "bdir/cdir/" },
+            true)]
+        [InlineData(
+            "[a-c]b*",
+            new string[] { "abc", "abd", "abe", "bb", "cb" },
+            true)]
+        [InlineData(
+            "[a-y]*[^c]",
+            new string[] { "abd", "abe", "bb", "bcd" },
+            true)]
+        [InlineData(
+            "!abc",
+            new string[] { "d", "dd", "def" },
+            true)]
+        [InlineData(
+            "[^a-c]*",
+            new string[] { "d", "dd", "def" },
+            true)]
+        [InlineData(
+            "a\\*b/*",
+            new string[] { "a*b/ooo" },
+            true)]
+        [InlineData(
+            "a\\*?/*",
+            new string[] { "a*b/ooo" },
+            true)]
+        [InlineData(
+            "a[\\\\b]c",
+            new string[] { "abc" },
+            true)]
+        [InlineData(
+            "*.\\*",
+            new string[] { "r.*" },
+            true)]
+        [InlineData(
+            "a******?c",
+            new string[] { "abc" },
+            true)]
+        [InlineData(
+            "?******??",
+            new string[] { "abc" },
+            true)]
+        [InlineData(
+            "*******??",
+            new string[] { "abc" },
+            true)]
+        [InlineData(
+            "***?***?c",
+            new string[] { "abc", "a/b/dec", "a/bcdc" },
+            true)]
+        [InlineData(
+            "***?***?c",
+            new string[] { "a/b/c/dc" },
+            false)]
+        [InlineData(
+            "*******c",
+            new string[] { "abc", "a/bc", "a/b/c" },
+            true)]
+        [InlineData(
+            "*******?",
+            new string[] { "abc", "a/b/c" },
+            true)]
+        [InlineData(
+            "[a[]",
+            new string[] { "[", "a" },
+            true)]
+        [InlineData(
+            "[(]",
+            new string[] { "(" },
+            true)]
+        [InlineData(
+            "[]]",
+            new string[] { "]" },
+            true)]
+        [InlineData(
+            "[",
+            new string[] { "[" },
+            true)]
+        [InlineData(
+            "[abc[]]a",
+            new string[] { "a]a", "b]a", "[]a" },
+            true)]
+        [InlineData(
+            "[\\w]a",
+            new string[] { "aa", "ba" },
+            true)]
+        [InlineData(
+            "[abc[]]a",
+            new string[] { "]" },
+            false)]
+        [InlineData(
+            @"\[*",
+            new string[] { "[abc" },
+            true)]
+        [InlineData(
+            "b*/",
+            new string[] { "bfile" },
+            false)]
+        [InlineData(
+            "**",
+            new string[] { ".a", "a/.b", ".a/b" },
+            false)]
+        [InlineData(
+            "a/*",
+            new string[] { "a/" },
+            false)]
+        [InlineData(
+            "a/*",
+            new string[] { "a/.a" },
+            false)]
+        [InlineData(
+            "*.cs",
+            new string[] { "acs" },
+            false)]
         public void GlobMatchWithoutDotMatchShouldMatchNonDotFiles(string pattern, string[] files, bool expected)
         {
             var glob = new GlobMatcher(pattern);
@@ -209,26 +208,26 @@ namespace Microsoft.Docs
         }
 
         [Theory]
-        [InlineData("a/*", new string[]
-        {
-            "a/.a"
-        }, true)]
-        [InlineData("*/", new string[]
-        {
-            ".a/"
-        }, true)]
-        [InlineData("**", new string[]
-        {
-            ".a/.a"
-        }, true)]
-        [InlineData("**J/**", new string[]
-        {
-            "M", "M/JA", "a/b/c", "a/b/c.csproj"
-        }, false)]
-        [InlineData("**/A/**", new string[]
-        {
-            "A/B/C"
-        }, true)]
+        [InlineData(
+            "a/*",
+            new string[] { "a/.a" },
+            true)]
+        [InlineData(
+            "*/",
+            new string[] { ".a/" },
+            true)]
+        [InlineData(
+            "**",
+            new string[] { ".a/.a" },
+            true)]
+        [InlineData(
+            "**J/**",
+            new string[] { "M", "M/JA", "a/b/c", "a/b/c.csproj" },
+            false)]
+        [InlineData(
+            "**/A/**",
+            new string[] { "A/B/C" },
+            true)]
         public void GlobMatchWithDotMatchShouldMatchDotFiles(string pattern, string[] files, bool expected)
         {
             var glob = new GlobMatcher(pattern, GlobMatcher.DefaultOptions | GlobMatcherOptions.AllowDotMatch);
@@ -240,42 +239,42 @@ namespace Microsoft.Docs
         }
 
         [Theory]
-        [InlineData("**", new string[]
-        {
-            ".a/.a"
-        }, true)]
-        [InlineData("**.csproj", new string[]
-        {
-            ".a/", "a/", "a/a/", "a/.a/"
-        }, true)]
-        [InlineData("E/*.md", new string[]
-        {
-            "E/"
-        }, true)]
-        [InlineData("*.cs", new string[]
-        {
-            "a", "a.c"
-        }, false)]
-        [InlineData("**.md", new string[]
-        {
-            "Root/"
-        }, true)]
-        [InlineData("**", new string[]
-        {
-            "Root/"
-        }, true)]
+        [InlineData(
+            "**",
+            new string[] { ".a/.a" },
+            true)]
+        [InlineData(
+            "**.csproj",
+            new string[] { ".a/", "a/", "a/a/", "a/.a/" },
+            true)]
+        [InlineData(
+            "E/*.md",
+            new string[] { "E/" },
+            true)]
+        [InlineData(
+            "*.cs",
+            new string[] { "a", "a.c" },
+            false)]
+        [InlineData(
+            "**.md",
+            new string[] { "Root/" },
+            true)]
+        [InlineData(
+            "**",
+            new string[] { "Root/" },
+            true)]
 
         // partial match must match folder ends with "/"
-        [InlineData("**.md", new string[]
-        {
-            "a", "a/b"
-        }, false)]
+        [InlineData(
+            "**.md",
+            new string[] { "a", "a/b" },
+            false)]
 
         // partial match must match folder ends with "/"
-        [InlineData("b/", new string[]
-        {
-            "b/c/a"
-        }, false)]
+        [InlineData(
+            "b/",
+            new string[] { "b/c/a" },
+            false)]
         public void GlobPartialMatchShouldMatchFolder(string pattern, string[] folders, bool expected)
         {
             var glob = new GlobMatcher(pattern, GlobMatcher.DefaultOptions | GlobMatcherOptions.AllowDotMatch);

@@ -9,14 +9,53 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs
 {
-    [Serializable]
+    [Flags]
+    public enum GlobMatcherOptions
+    {
+        None = 0x0,
+        IgnoreCase = 0x1,
+        AllowNegate = 0x2,
+        AllowExpand = 0x4,
+        AllowEscape = 0x8,
+        AllowGlobStar = 0x10,
+
+        /// <summary>
+        /// Allow patterns to match filenames starting with a period even if the pattern does not explicitly have a period.
+        /// By default disabled: a/**/b will **not** match a/.c/d, unless `AllowDotMatch` is set
+        /// </summary>
+        AllowDotMatch = 0x20,
+    }
+
+    /// <summary>
+    /// Matcher of glob
+    /// </summary>
     public class GlobMatcher
     {
-        #region Private fields
-        private static readonly string[] EmptyString = new string[0];
+        public GlobMatcherOptions Options { get; }
+
+        public string Raw { get; }
+
+        public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
+
         private const char NegateChar = '!';
         private const string GlobStar = "**";
         private const string ReplacerGroupName = "replacer";
+
+        /// <summary>
+        /// Any character other than /
+        /// </summary>
+        private const string QuestionMarkToRegex = "[^/]";
+
+        // Never match .abc file unless AllowDotMatch option is set
+        private const string PatternStartWithDotAllowed = @"(?!(?:^|\/)\.{1,2}(?:$|\/))";
+        private const string PatternStartWithoutDotAllowed = @"(?!\.)";
+
+        /// <summary>
+        /// Any number of character other than /, non-greedy mode
+        /// </summary>
+        private const string SingleStarToRegex = "[^/]*?";
+
+        private static readonly string[] EmptyString = Array.Empty<string>();
         private static readonly HashSet<char> NeedEscapeCharactersInRegex = new HashSet<char>(@"'().*{}+?[]^$\!".ToCharArray());
         private static readonly Regex UnescapeGlobRegex = new Regex(@"\\(?<replacer>.)", RegexOptions.Compiled);
 
@@ -25,33 +64,114 @@ namespace Microsoft.Docs
         /// </summary>
         private static readonly Regex ExpandGlobStarRegex = new Regex(@"^\*{2,}(?=[^/*])", RegexOptions.Compiled);
 
-        // Never match .abc file unless AllowDotMatch option is set
-        private const string PatternStartWithDotAllowed = @"(?!(?:^|\/)\.{1,2}(?:$|\/))";
-        private const string PatternStartWithoutDotAllowed = @"(?!\.)";
         private static readonly HashSet<char> RegexCharactersWithDotPossible = new HashSet<char>(new char[] { '.', '[', '(' });
-
-        /// <summary>
-        /// Any character other than /
-        /// </summary>
-        private const string QuestionMarkToRegex = "[^/]";
-
-        /// <summary>
-        /// Any number of character other than /, non-greedy mode
-        /// </summary>
-        private const string SingleStarToRegex = "[^/]*?";
 
         private static readonly Regex GlobStarRegex = new Regex(@"^\*{2,}/?$", RegexOptions.Compiled);
 
         private GlobRegexItem[][] _items;
         private bool _negate = false;
         private bool _ignoreCase = false;
-        #endregion
 
-        public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
+        private enum GlobRegexItemType
+        {
+            GlobStarForFileOnly, // ** to match files only
+            GlobStar, // **/ to match files or folders
+            PlainText,
+            Regex,
+        }
 
-        public GlobMatcherOptions Options { get; }
+        internal static bool ParseNegate(ref string pattern, GlobMatcherOptions options = DefaultOptions)
+        {
+            if (!options.HasFlag(GlobMatcherOptions.AllowNegate))
+            {
+                return false;
+            }
 
-        public string Raw { get; }
+            bool negate = false;
+            int i = 0;
+            while (i < pattern.Length && pattern[i] == NegateChar)
+            {
+                negate = !negate;
+                i++;
+            }
+
+            if (i <= pattern.Length)
+            {
+                pattern = pattern.Substring(i);
+            }
+
+            return negate;
+        }
+
+        /// <summary>
+        /// {a,b}c => [ac, bc]
+        /// </summary>
+        internal static string[] ExpandGroup(string pattern, GlobMatcherOptions options = DefaultOptions)
+        {
+            GlobUngrouper ungrouper = new GlobUngrouper();
+            bool escaping = false;
+            bool disableEscape = !options.HasFlag(GlobMatcherOptions.AllowEscape);
+            foreach (char c in pattern)
+            {
+                if (escaping)
+                {
+                    if (c != ',' && c != '{' && c != '}')
+                    {
+                        ungrouper.AddChar('\\');
+                    }
+                    ungrouper.AddChar(c);
+                    escaping = false;
+                    continue;
+                }
+                else if (c == '\\' && !disableEscape)
+                {
+                    escaping = true;
+                    continue;
+                }
+                switch (c)
+                {
+                    case '{':
+                        ungrouper.StartLevel();
+                        break;
+                    case ',':
+                        if (ungrouper.Level < 1)
+                        {
+                            ungrouper.AddChar(c);
+                        }
+                        else
+                        {
+                            ungrouper.AddGroup();
+                        }
+                        break;
+                    case '}':
+                        if (ungrouper.Level < 1)
+                        {
+                            // Unbalanced closing bracket matches nothing
+                            return EmptyString;
+                        }
+                        ungrouper.FinishLevel();
+                        break;
+                    default:
+                        ungrouper.AddChar(c);
+                        break;
+                }
+            }
+            return ungrouper.Flatten();
+        }
+
+        private static string UnescapeGlob(string s)
+        {
+            return UnescapeGlobRegex.Replace(s, new MatchEvaluator(ReplaceReplacerGroup));
+        }
+
+        private static string ReplaceReplacerGroup(Match m)
+        {
+            if (m.Success)
+            {
+                return m.Groups[ReplacerGroupName].Value;
+            }
+            return m.Value;
+        }
 
         public GlobMatcher(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
@@ -91,7 +211,10 @@ namespace Microsoft.Docs
 
         public bool Match(string file, bool partial = false)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
             var fileParts = Split(file, '/', '\\').ToArray();
             bool isMatch = false;
             foreach (var glob in _items)
@@ -105,8 +228,6 @@ namespace Microsoft.Docs
             return _negate ^ isMatch;
         }
 
-        #region Private methods
-
         private IEnumerable<GlobRegexItem[]> Compile(string pattern)
         {
             string[] globs;
@@ -114,7 +235,10 @@ namespace Microsoft.Docs
             if (Options.HasFlag(GlobMatcherOptions.AllowExpand))
             {
                 globs = ExpandGroup(pattern, Options);
-                if (globs.Length == 0) return Enumerable.Empty<GlobRegexItem[]>();
+                if (globs.Length == 0)
+                {
+                    return Enumerable.Empty<GlobRegexItem[]>();
+                }
             }
             else
             {
@@ -130,7 +254,10 @@ namespace Microsoft.Docs
         private IEnumerable<string> Split(string path, params char[] splitter)
         {
             var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 0) yield break;
+            if (parts.Length == 0)
+            {
+                yield break;
+            }
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 yield return parts[i] + "/";
@@ -232,7 +359,10 @@ namespace Microsoft.Docs
 
                             // simply keeps what it is inside char class
                             currentCharClass.Add(c);
-                            if (c != '\\') escaping = false;
+                            if (c != '\\')
+                            {
+                                escaping = false;
+                            }
                             cur++;
                         }
                         if (currentCharClass != null)
@@ -428,103 +558,63 @@ namespace Microsoft.Docs
             return false;
         }
 
-        private static string UnescapeGlob(string s)
-        {
-            return UnescapeGlobRegex.Replace(s, new MatchEvaluator(ReplaceReplacerGroup));
-        }
-
-        private static string ReplaceReplacerGroup(Match m)
-        {
-            if (m.Success)
-            {
-                return m.Groups[ReplacerGroupName].Value;
-            }
-            return m.Value;
-        }
-        #endregion
-
-        internal static bool ParseNegate(ref string pattern, GlobMatcherOptions options = DefaultOptions)
-        {
-            if (!options.HasFlag(GlobMatcherOptions.AllowNegate))
-            {
-                return false;
-            }
-
-            bool negate = false;
-            int i = 0;
-            while (i < pattern.Length && pattern[i] == NegateChar)
-            {
-                negate = !negate;
-                i++;
-            }
-
-            if (i <= pattern.Length)
-            {
-                pattern = pattern.Substring(i);
-            }
-
-            return negate;
-        }
-
-        /// <summary>
-        /// {a,b}c => [ac, bc]
-        /// </summary>
-        internal static string[] ExpandGroup(string pattern, GlobMatcherOptions options = DefaultOptions)
-        {
-            GlobUngrouper ungrouper = new GlobUngrouper();
-            bool escaping = false;
-            bool disableEscape = !options.HasFlag(GlobMatcherOptions.AllowEscape);
-            foreach (char c in pattern)
-            {
-                if (escaping)
-                {
-                    if (c != ',' && c != '{' && c != '}')
-                    {
-                        ungrouper.AddChar('\\');
-                    }
-                    ungrouper.AddChar(c);
-                    escaping = false;
-                    continue;
-                }
-                else if (c == '\\' && !disableEscape)
-                {
-                    escaping = true;
-                    continue;
-                }
-                switch (c)
-                {
-                    case '{':
-                        ungrouper.StartLevel();
-                        break;
-                    case ',':
-                        if (ungrouper.Level < 1)
-                        {
-                            ungrouper.AddChar(c);
-                        }
-                        else
-                        {
-                            ungrouper.AddGroup();
-                        }
-                        break;
-                    case '}':
-                        if (ungrouper.Level < 1)
-                        {
-                            // Unbalanced closing bracket matches nothing
-                            return EmptyString;
-                        }
-                        ungrouper.FinishLevel();
-                        break;
-                    default:
-                        ungrouper.AddChar(c);
-                        break;
-                }
-            }
-            return ungrouper.Flatten();
-        }
-
-        #region Private classes
         private sealed class GlobUngrouper
         {
+            private readonly SequenceNode _rootNode;
+
+            private GlobNode _currentNode;
+
+            private int _level;
+
+            public GlobUngrouper()
+            {
+                _rootNode = new SequenceNode(null);
+                _currentNode = _rootNode;
+                _level = 0;
+            }
+
+            public int Level
+            {
+                get { return _level; }
+            }
+
+            public void AddChar(char c)
+            {
+                _currentNode = _currentNode.AddChar(c);
+            }
+
+            public void StartLevel()
+            {
+                _currentNode = _currentNode.StartLevel();
+                _level++;
+            }
+
+            public void AddGroup()
+            {
+                _currentNode = _currentNode.AddGroup();
+            }
+
+            public void FinishLevel()
+            {
+                _currentNode = _currentNode.FinishLevel();
+                _level--;
+            }
+
+            public string[] Flatten()
+            {
+                if (_level != 0)
+                {
+                    return EmptyString;
+                }
+                List<StringBuilder> list = _rootNode.Flatten();
+                string[] result = new string[list.Count];
+                for (int i = 0; i < list.Count; i++)
+                {
+                    result[i] = list[i].ToString();
+                }
+                return result;
+            }
+
             public abstract class GlobNode
             {
                 public readonly GlobNode _parent;
@@ -636,7 +726,6 @@ namespace Microsoft.Docs
                 }
             }
 
-
             public class SequenceNode : GlobNode
             {
                 private readonly List<GlobNode> _nodes;
@@ -692,61 +781,6 @@ namespace Microsoft.Docs
                     return result;
                 }
             }
-
-            private readonly SequenceNode _rootNode;
-
-            private GlobNode _currentNode;
-
-            private int _level;
-
-            public GlobUngrouper()
-            {
-                _rootNode = new SequenceNode(null);
-                _currentNode = _rootNode;
-                _level = 0;
-            }
-
-            public void AddChar(char c)
-            {
-                _currentNode = _currentNode.AddChar(c);
-            }
-
-            public void StartLevel()
-            {
-                _currentNode = _currentNode.StartLevel();
-                _level++;
-            }
-
-            public void AddGroup()
-            {
-                _currentNode = _currentNode.AddGroup();
-            }
-
-            public void FinishLevel()
-            {
-                _currentNode = _currentNode.FinishLevel();
-                _level--;
-            }
-
-            public int Level
-            {
-                get { return _level; }
-            }
-
-            public string[] Flatten()
-            {
-                if (_level != 0)
-                {
-                    return EmptyString;
-                }
-                List<StringBuilder> list = _rootNode.Flatten();
-                string[] result = new string[list.Count];
-                for (int i = 0; i < list.Count; i++)
-                {
-                    result[i] = list[i].ToString();
-                }
-                return result;
-            }
         }
 
         /// <summary>
@@ -782,14 +816,6 @@ namespace Microsoft.Docs
             public static readonly GlobRegexItem GlobStarForFileOnly = new GlobRegexItem(GlobRegexItemType.GlobStarForFileOnly);
             public static readonly GlobRegexItem Empty = new GlobRegexItem(string.Empty, string.Empty, GlobRegexItemType.PlainText);
 
-            public GlobRegexItemType ItemType { get; }
-
-            public string RegexContent { get; }
-
-            public string PlainText { get; }
-
-            public Regex Regex { get; }
-
             public GlobRegexItem(string content, string plainText, GlobRegexItemType type, bool ignoreCase = true)
             {
                 RegexContent = content;
@@ -806,32 +832,14 @@ namespace Microsoft.Docs
             {
                 ItemType = itemType;
             }
+
+            public GlobRegexItemType ItemType { get; }
+
+            public string RegexContent { get; }
+
+            public string PlainText { get; }
+
+            public Regex Regex { get; }
         }
-
-        private enum GlobRegexItemType
-        {
-            GlobStarForFileOnly, // ** to match files only
-            GlobStar, // **/ to match files or folders
-            PlainText,
-            Regex,
-        }
-        #endregion
-    }
-
-    [Flags]
-    public enum GlobMatcherOptions
-    {
-        None = 0x0,
-        IgnoreCase = 0x1,
-        AllowNegate = 0x2,
-        AllowExpand = 0x4,
-        AllowEscape = 0x8,
-        AllowGlobStar = 0x10,
-
-        /// <summary>
-        /// Allow patterns to match filenames starting with a period even if the pattern does not explicitly have a period.
-        /// By default disabled: a/**/b will **not** match a/.c/d, unless `AllowDotMatch` is set
-        /// </summary>
-        AllowDotMatch = 0x20,
     }
 }
