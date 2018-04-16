@@ -1,5 +1,5 @@
-## Current Version **0.1.2**
-* Bug fix: fail if there are spaces in paths
+## Current Version **0.1.3**
+* Bug fix: fix `> [!Important]` syntax style
 
 ## Known Issues
 * When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
@@ -10,6 +10,9 @@
 * Docs template preview support
 
 ## Version History
+* **0.1.2**
+  * Bug fix: fail if there are spaces in paths
+
 * **0.1.1**
   * Improve: support config extension markdown engine(Default to be `LegacyMode`) in docfx.json
 

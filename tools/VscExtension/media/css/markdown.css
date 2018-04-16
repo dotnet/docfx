@@ -179,26 +179,41 @@ pre {
   border: 1px solid transparent;
   border-radius: 2px;
   font-size: .9em;
-  border-color: rgba(0,0,0,.05);
-  background: #f3fbff;
-  color: #0070a7;
+  border-color: #bce8f1;;
+  background: #d9edf7;
+  color: #31708f;
 }
 
 .WARNING {
   padding-left:  16px;
   padding-right: 16px;
+  margin-top: .6em;
   margin-right: 1em;
+  margin-bottom: 1.2em;
   border:1px solid transparent;
   border-radius: 2px;
   font-size: .9em;
-  border-color: rgba(0,0,0,.05);
+  border-color: #faebcc;
+  background: #fcf8e3;
+  color: #8a6d3b;
+}
+
+.IMPORTANT {
+  padding-left:  16px;
+  padding-right: 16px;
+  margin-top: .6em;
+  margin-right: 1em;
+  margin-bottom: 1.2em;
+  border:1px solid transparent;
+  border-radius: 2px;
+  font-size: .9em;
+  border-color: #ebccd1;
   background: #f2dede;
   color: #a94442;
 }
 
 .NOTE > h5 {
   padding-top: 0;
-  color: #0070a7!important;
   font-weight: bolder;
   font-size: 12px!important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -207,11 +222,11 @@ pre {
 
 .NOTE p{
    padding-bottom: 0;
+   color: #31708f
 }
 
 .WARNING > h5 {
   padding-top: 0;
-  color: #a94442!important;
   font-weight: bolder;
   font-size: 12px!important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -220,4 +235,18 @@ pre {
 
 .WARNING p{
   padding-bottom: 0;
+  color: #8a6d3b;
+}
+
+.IMPORTANT > h5 {
+  padding-top: 0;
+  font-weight: bolder;
+  font-size: 12px!important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-bottom: 2px solid rgba(150,80,80 , 0.3);
+}
+
+.IMPORTANT p{
+  padding-bottom: 0;
+  color: #a94442;
 }
