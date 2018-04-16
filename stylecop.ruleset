@@ -9,6 +9,8 @@
     <Rule Id="SA1122" Action="None" />
     <!-- SA1127GenericTypeConstraintsMustBeOnOwnLine -->
     <Rule Id="SA1127" Action="None" />
+    <!-- SA1201ElementsMustAppearInTheCorrectOrder: A constructor should not follow a property -->
+    <Rule Id="SA1201" Action="None" />
     <!-- SA1308VariableNamesMustNotBePrefixed -->
     <Rule Id="SA1308" Action="None" />
     <!-- SA1309FieldNamesMustNotBeginWithUnderscore -->

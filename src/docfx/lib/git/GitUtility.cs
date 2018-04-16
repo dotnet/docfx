@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Provide git utility using git bash

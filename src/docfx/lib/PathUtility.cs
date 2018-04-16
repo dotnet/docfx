@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Provide utils of path

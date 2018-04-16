@@ -4,7 +4,7 @@
 using System;
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public static class PathUtilityTest
     {
