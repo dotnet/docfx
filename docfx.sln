@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5BE2024B-B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.Test", "test\docfx.Test\docfx.Test.csproj", "{B212F8F3-BE11-45C2-B0EA-097051CBF654}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.FunctionalTest", "test\docfx.FunctionalTest\docfx.FunctionalTest.csproj", "{750BD2CA-FA0D-4510-8F00-D4C8016723DD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,18 +44,6 @@ Global
 		{B212F8F3-BE11-45C2-B0EA-097051CBF654}.Release|x64.Build.0 = Release|Any CPU
 		{B212F8F3-BE11-45C2-B0EA-097051CBF654}.Release|x86.ActiveCfg = Release|Any CPU
 		{B212F8F3-BE11-45C2-B0EA-097051CBF654}.Release|x86.Build.0 = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|x64.Build.0 = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Debug|x86.Build.0 = Debug|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|x64.ActiveCfg = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|x64.Build.0 = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|x86.ActiveCfg = Release|Any CPU
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,7 +51,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DDE1E383-87B3-4C05-AF94-5C955035313A} = {D9F346F2-6435-4FD4-8980-33233FC585A6}
 		{B212F8F3-BE11-45C2-B0EA-097051CBF654} = {5BE2024B-B512-492C-87AB-E8C7D3B3F3AE}
-		{750BD2CA-FA0D-4510-8F00-D4C8016723DD} = {5BE2024B-B512-492C-87AB-E8C7D3B3F3AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC590A45-FAD1-4FA6-A5AA-40C7BD265605}

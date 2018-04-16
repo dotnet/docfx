@@ -7,5 +7,4 @@ function exec([string] $cmd) {
 }
 
 exec "dotnet test test\docfx.Test -c Release"
-exec "dotnet test test\docfx.FunctionalTest -c Release"
 exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop"
