@@ -174,7 +174,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             var refFileRelativePath = ((RelativePath)codeSnippet.CodePath).BasedOn((RelativePath)_context.FilePath);
 
-            if (!EnvironmentContext.FileAbstractLayer.Exists(refFileRelativePath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(refFileRelativePath.RemoveWorkingFolder()))
             {
                 string tag = "ERROR CODESNIPPET";
                 string message = $"Unable to find {refFileRelativePath}";
