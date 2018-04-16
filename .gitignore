@@ -1,9 +1,10 @@
 .vs
 .vscode
+
 bin
 drop
 obj
 
 *.suo
-*.user
 *.sdf
+*.user

@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public class JsonUtilityTest
     {
