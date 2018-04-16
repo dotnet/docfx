@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.Common
             public const string EmptyInputFiles = "EmptyInputFiles";
             public const string InvalidTagParametersConfig = "InvalidTagParametersConfig";
             public const string InvalidTaggedPropertyType = "InvalidTaggedPropertyType";
+            // todo : add uid not found in SDP. 
+            public const string UidNotFound = "UidNotFound";
         }
 
         public static class Markdown
