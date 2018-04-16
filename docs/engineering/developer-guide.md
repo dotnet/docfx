@@ -20,6 +20,7 @@ Besides that, we have some recommended but not mandatory (that is, not enabled b
 #### Conventions
 * **DO** use `sealed` for private classes if they are not to be inherited.
 * **DO** use `static` methods if it is not instance relevant.
+* **DO** make sure `static` methods are thread safe.
 
 #### *Sealed* classes
 Seal the class when it is not designed for extensibility. *When designing, it may be a good idea to lean towards sealing public types that don't explicitly need to be extended since unsealing a class in a future version is a non-breaking change while the reverse is not true.* In general, private classes can be `private sealed class` if they are not to be inherited.
