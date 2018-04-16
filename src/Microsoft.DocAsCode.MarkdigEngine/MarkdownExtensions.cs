@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
+    using Markdig.Extensions.EmphasisExtras;
     using Markdig.Parsers;
 
     public static class MarkdownExtensions
@@ -20,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             return pipeline
                 //.UseMathematics()
-                //.UseEmphasisExtras()
+                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
