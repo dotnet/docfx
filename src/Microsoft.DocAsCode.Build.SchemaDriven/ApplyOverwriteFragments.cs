@@ -154,7 +154,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
             iterator.Traverse(
                 yamlStream.Documents[0].RootNode,
-                fragments.ToDictionary(m => m.Uid, m => m.ToMarkdownFragment()),
+                fragments
+                    .GroupBy(f => f.Uid)
+                    .ToDictionary(g => g.Key, g => g.First().ToMarkdownFragment()),
                 model.Properties.Schema);
         }
 
