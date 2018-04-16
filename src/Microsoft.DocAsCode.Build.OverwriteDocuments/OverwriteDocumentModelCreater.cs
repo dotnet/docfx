@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 {
                     // Duplicate OPath in markdown section
                     Logger.LogWarning(
-                        $"There are two duplicate OPaths {originalOPathString}, the previous one will be overwritten",
+                        $"There are two duplicate OPaths `{originalOPathString}`, the previous one will be overwritten.",
                         line: codeHeaderBlock.Line.ToString(),
                         code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 }

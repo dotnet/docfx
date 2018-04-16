@@ -123,7 +123,10 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             {
                 Uid = model.Uid,
                 Metadata = metadata,
-                Properties = model.Contents?.Select(prop => prop.ToMarkdownProperty(originalContent)).ToDictionary(p => p.OPath, p => p)
+                Properties = model.Contents
+                    ?.Select(prop => prop.ToMarkdownProperty(originalContent))
+                    .GroupBy(m => m.OPath)
+                    .ToDictionary(g => g.Key, g => g.First())
             };
         }
 
