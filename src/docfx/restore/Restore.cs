@@ -2,19 +2,80 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static Task Run(string docsetPath, CommandLineOptions options, Context context)
+        private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", ".git");
+
+        public static async Task Run(string docsetPath, CommandLineOptions options, Context context)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             var config = Config.Load(docsetPath, options);
 
-            throw new NotImplementedException();
+            await ParallelUtility.ForEach(config.Dependencies.Values, href => RestoreDependentRepo(href, options));
+        }
+
+        /// <summary>
+        /// Get git repo information from git remote href, like https://github.com/org/repo#master
+        /// </summary>
+        /// <param name="remote">The git remote href</param>
+        /// <returns>The git repo information including local dir, git remote url and branch</returns>
+        public static (string dir, string url, string rev) GetGitInfo(string remote)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+
+            var uri = new Uri(remote);
+            var rev = (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) ? "master" : uri.Fragment.Substring(1);
+            var url = uri.GetLeftPart(UriPartial.Path);
+            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
+            var dir = Path.Combine(s_restoreDir, repo);
+
+            return (PathUtility.NormalizeFolder(dir), url, rev);
+        }
+
+        // Recursively restore dependenct repo including their children
+        private static async Task<IEnumerable<string>> RestoreDependentRepo(string href, CommandLineOptions options)
+        {
+            var childDir = await FetchOrCloneDependentRepo(href);
+
+            if (Config.TryLoad(childDir, options, out var childConfig))
+            {
+                return childConfig.Dependencies.Values;
+            }
+
+            return Array.Empty<string>();
+        }
+
+        // Fetch or clone dependent repo to local
+        private static async Task<string> FetchOrCloneDependentRepo(string href)
+        {
+            var (dir, url, rev) = GetGitInfo(href);
+
+            var repo = GitUtility.FindRepo(dir, false);
+            var repoExists = string.IsNullOrEmpty(repo);
+
+            if (repoExists)
+            {
+                await GitUtility.Pull(dir);
+            }
+            else
+            {
+                await GitUtility.Clone(dir, url, dir);
+
+                if (!string.IsNullOrEmpty(rev))
+                {
+                    await GitUtility.Checkout(dir, false, rev);
+                }
+            }
+
+            return dir;
         }
     }
 }

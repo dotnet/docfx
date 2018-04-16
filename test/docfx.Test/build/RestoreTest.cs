@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Microsoft.Docs.Build;
 using Xunit;
 
 namespace Microsoft.Docs.Test
@@ -18,7 +19,7 @@ namespace Microsoft.Docs.Test
         public static void GetGitInfo(string remote, string expectedDir, string expectedUrl, string expectedRev)
         {
             // Act
-            var(dir, url, rev) = Restore.GetGitInfo(remote);
+            var (dir, url, rev) = Restore.GetGitInfo(remote);
 
             // Assert
             var restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", ".git");

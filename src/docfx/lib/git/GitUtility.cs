@@ -22,8 +22,9 @@ namespace Microsoft.Docs.Build
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>
-        /// <returns>The git repo root path</returns>
-        public static string FindRepo(string path)
+        /// <param name="recursive">Recursively find git root</param>
+        /// <returns>The git repo root path. null if the repo root is not found</returns>
+        public static string FindRepo(string path, bool recursive = true)
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
@@ -35,9 +36,16 @@ namespace Microsoft.Docs.Build
                 {
                     return repo;
                 }
+
+                if (!recursive)
+                {
+                    break;
+                }
+
                 repo = Path.GetDirectoryName(repo);
             }
-            return repo;
+
+            return (repo == path || string.IsNullOrEmpty(repo)) ? null : repo;
         }
 
         /// <summary>
