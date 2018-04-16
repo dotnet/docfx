@@ -5,8 +5,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
-    <AssemblyName>docfx</AssemblyName>
-    <RootNamespace>Microsoft.Docs</RootNamespace>
+    <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
