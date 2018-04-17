@@ -23,7 +23,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 EnvironmentContext.FileAbstractLayerImpl = null;
                 File.WriteAllText("token1573.md", "**token content**");
                 var source = @"[!INCLUDE [title](~/token1573.md)]";
-                var expected = @"<p><strong>token content</strong></p>";
+                var expected = @"<p><strong>token content</strong></p>
+";
                 TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
             }
             finally
