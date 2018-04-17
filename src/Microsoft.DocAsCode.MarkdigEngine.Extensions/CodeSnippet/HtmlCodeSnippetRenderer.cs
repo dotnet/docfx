@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _engine.ReportDependency(refFileRelativePath);
 
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
-            var allLines = EnvironmentContext.FileAbstractLayer.ReadAllLines(refFileRelativePath);
+            var allLines = EnvironmentContext.FileAbstractLayer.ReadAllLines(refFileRelativePath.RemoveWorkingFolder());
 
             // code range priority: tag > #L1 > start/end > range > default
             if (!string.IsNullOrEmpty(obj.TagName))

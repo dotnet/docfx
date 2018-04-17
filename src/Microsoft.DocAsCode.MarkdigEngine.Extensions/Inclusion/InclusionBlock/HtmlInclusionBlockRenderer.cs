@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath);
+            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
             var context = new MarkdownContextBuilder()
                             .WithContext(_context)
                             .WithFilePath(includedFilePath.RemoveWorkingFolder())
