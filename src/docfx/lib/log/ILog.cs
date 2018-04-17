@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
-    internal class Program
+    internal interface ILog
     {
-        internal static void Main() { }
     }
 }
