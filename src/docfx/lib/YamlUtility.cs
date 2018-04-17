@@ -91,59 +91,64 @@ namespace Microsoft.Docs
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
             return ToJson(stream.Documents[0].RootNode);
-
-            JToken ToJson(YamlNode node)
-            {
-                if (node is YamlScalarNode scalar)
-                {
-                    if (scalar.Style == ScalarStyle.Plain)
-                    {
-                        if (string.IsNullOrWhiteSpace(scalar.Value))
-                        {
-                            return null;
-                        }
-                        if (long.TryParse(scalar.Value, out var n))
-                        {
-                            return new JValue(n);
-                        }
-                        if (double.TryParse(scalar.Value, out var d))
-                        {
-                            return new JValue(d);
-                        }
-                        if (bool.TryParse(scalar.Value, out var b))
-                        {
-                            return new JValue(b);
-                        }
-                    }
-                    return new JValue(scalar.Value);
-                }
-                if (node is YamlMappingNode map)
-                {
-                    var obj = new JObject();
-                    foreach (var (key, value) in map)
-                    {
-                        obj[key.ToString()] = ToJson(value);
-                    }
-                    return obj;
-                }
-                if (node is YamlSequenceNode seq)
-                {
-                    var arr = new JArray();
-                    foreach (var item in seq)
-                    {
-                        arr.Add(ToJson(item));
-                    }
-                    return arr;
-                }
-                throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
-            }
         }
 
-        class JsonContractResolver : DefaultContractResolver
+        private static JToken ToJson(YamlNode node)
+        {
+            if (node is YamlScalarNode scalar)
+            {
+                if (scalar.Style == ScalarStyle.Plain)
+                {
+                    if (string.IsNullOrWhiteSpace(scalar.Value))
+                    {
+                        return null;
+                    }
+                    if (scalar.Value == "~")
+                    {
+                        return null;
+                    }
+                    if (long.TryParse(scalar.Value, out var n))
+                    {
+                        return new JValue(n);
+                    }
+                    if (double.TryParse(scalar.Value, out var d))
+                    {
+                        return new JValue(d);
+                    }
+                    if (bool.TryParse(scalar.Value, out var b))
+                    {
+                        return new JValue(b);
+                    }
+                }
+                return new JValue(scalar.Value);
+            }
+            if (node is YamlMappingNode map)
+            {
+                var obj = new JObject();
+                foreach (var (key, value) in map)
+                {
+                    obj[key.ToString()] = ToJson(value);
+                }
+                return obj;
+            }
+            if (node is YamlSequenceNode seq)
+            {
+                var arr = new JArray();
+                foreach (var item in seq)
+                {
+                    arr.Add(ToJson(item));
+                }
+                return arr;
+            }
+            throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
+        }
+
+        private sealed class JsonContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
+
                 if (!prop.Writable)
                 {
                     if (member is PropertyInfo p && p.SetMethod != null)

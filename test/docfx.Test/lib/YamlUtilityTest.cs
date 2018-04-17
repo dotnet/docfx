@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Newtonsoft.Json;
+
 using Xunit;
 
 namespace Microsoft.Docs
@@ -65,6 +67,39 @@ namespace Microsoft.Docs
         }
 
         [Fact]
+        public void TestBigInteger()
+        {
+            var yaml = @"### YamlMime:Test-Yaml-Mime
+- 1234567890000
+- 9876543210000
+- 9223372036854775807
+- 18446744073709551615
+";
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(4, value.Length);
+            Assert.Equal(1234567890000L, value[0]);
+            Assert.Equal(9876543210000L, value[1]);
+            Assert.Equal(long.MaxValue, value[2]);
+            Assert.Equal(1.8446744073709552E+19, value[3]);
+        }
+
+        [Fact]
+        public void TestBasicClassWithNullCharactor()
+        {
+            var yaml = @"### YamlMime:Test-Yaml-Mime
+C: ""~""
+D: ~
+";
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal("~", value["C"]);
+            Assert.Null(value["D"]);
+        }
+
+        [Fact]
         public void TestBasicClass()
         {
             var yaml = @"### YamlMime:Test-Yaml-Mime
@@ -77,7 +112,7 @@ D: true
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
         }
 
         [Fact]
@@ -179,7 +214,7 @@ ValueBasic:
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
             Assert.Equal((long)1, value.ValueDict["KeyA"]);
             Assert.Equal("Good2!", value.ValueDict["KeyB"]);
             Assert.Equal(true, value.ValueDict["KeyC"]);
@@ -189,7 +224,7 @@ ValueBasic:
             Assert.Equal("ItemB", value.ValueList[3]);
             Assert.Equal((long)2, value.ValueBasic.B);
             Assert.Equal("Good3!", value.ValueBasic.C);
-            Assert.Equal(false, value.ValueBasic.D);
+            Assert.False(value.ValueBasic.D);
         }
 
         public class BasicClass
