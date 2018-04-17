@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     [Flags]
     public enum GlobMatcherOptions
