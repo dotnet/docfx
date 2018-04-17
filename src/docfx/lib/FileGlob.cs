@@ -46,7 +46,7 @@ namespace Microsoft.Docs
 
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
-                yield return NormalizeToFullPath(file);
+                yield return PathUtility.NormalizeFile(file);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.Docs
         {
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = GetRelativeFilePath(cwd, file);
+                var relativePath = PathUtility.GetRelativePathToFile(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
                     yield return file;
@@ -74,25 +74,10 @@ namespace Microsoft.Docs
             }
         }
 
-        private static string GetRelativeFilePath(string directory, string file)
-        {
-            var subpath = file.Substring(directory.Length);
-
-            // directory could be
-            // 1. root folder, e.g. E:\ or /
-            // 2. sub folder, e.g. a or a/ or a\
-            return subpath.TrimStart('\\', '/');
-        }
-
         private static string GetRelativeDirectoryPath(string parentDirectory, string directory)
         {
-            var relativeDirectory = GetRelativeFilePath(parentDirectory, directory);
+            var relativeDirectory = PathUtility.GetRelativePathToFile(parentDirectory, directory);
             return relativeDirectory.TrimEnd('\\', '/') + "/";
-        }
-
-        private static string NormalizeToFullPath(string path)
-        {
-            return Path.GetFullPath(path).Replace('\\', '/');
         }
 
         private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)

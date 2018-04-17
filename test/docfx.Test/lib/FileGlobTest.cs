@@ -14,7 +14,7 @@ namespace Microsoft.Docs
 
         public FileGlobTest()
         {
-            _workingDirectory = Path.GetRandomFileName();
+            _workingDirectory = Path.GetRandomFileName() + "/";
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace Microsoft.Docs
                  new string[] { "**J/**", "**/M/**" }).ToArray();
             Assert.Single(result);
             result = FileGlob.GetFiles(
-                 _workingDirectory + "/Root",
+                 _workingDirectory + "/Root/",
                  new string[] { "[EJ]/*.{md,cs,csproj}" },
                  new string[] { "**.cs" }).ToArray();
             Assert.Equal(2, result.Length);
