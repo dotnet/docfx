@@ -151,10 +151,6 @@ namespace Microsoft.Docs
 
                 if (!prop.Writable)
                 {
-                    if (member is PropertyInfo p && p.SetMethod != null)
-                    {
-                        prop.Writable = true;
-                    }
                     if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
                     {
                         prop.Writable = true;

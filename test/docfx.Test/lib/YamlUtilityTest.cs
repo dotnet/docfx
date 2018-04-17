@@ -191,6 +191,15 @@ D: true
         }
 
         [Fact]
+        public void TestClassWithReadOnlyField()
+        {
+            var yaml = $"B: test";
+            var value = YamlUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal("test", value.B);
+        }
+
+        [Fact]
         public void TestClassWithMoreMembers()
         {
             var yaml = @"B: 1
@@ -234,6 +243,11 @@ ValueBasic:
             public string C { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class ClassWithReadOnlyField
+        {
+            public readonly string B;
         }
 
         public class ClassWithMoreMembers : BasicClass
