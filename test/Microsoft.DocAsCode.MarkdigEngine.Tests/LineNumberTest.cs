@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Xunit;
 
     [Collection("docfx STA")]
-    public class LineNumberTest: TestBase
+    public class LineNumberTest
     {
         [Fact]
         [Trait("Related", "LineNumber")]

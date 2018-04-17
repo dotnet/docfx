@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Xunit;
 
     [Collection("docfx STA")]
-    public class CodeSnippetTest : TestBase
+    public class CodeSnippetTest
     {
         private static MarkupResult SimpleMarkup(string source)
         {

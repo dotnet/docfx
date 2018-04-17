@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Xunit;
 
     [Collection("docfx STA")]
-    public class InclusionTest : TestBase
+    public class InclusionTest
     {
         [Fact]
         [Trait("Related", "Inclusion")]
