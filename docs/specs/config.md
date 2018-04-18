@@ -1,21 +1,32 @@
-# Config
+# Configuration
 
-New format for `docfx.yml`. It merges the `docfx.yml` and `.openpublishing.publish.config.json` under v2. 
+`docfx.yml` is the default config file name in v3. It merges the `docfx.json` and `.openpublishing.publish.config.json` under v2. 
+
+> [!Note]
+>
+> This document contains some scenario related to OPS.
+> Some content have nothing to do with community users.
 
 ## Principle
 
 1. Concise, readable, flexible.
-2. All the configuration that doesn't affect build output and only consumed by service side will not be defined here. They can be placed under a single object, may named with `service_config`. Like: `need_preview_pull_request`, `notification_subscribers`.
+2. Don't include server-side config.
+3. Group config by scenario.
+
+## Major Changes
+1. All configs that doesn't affect build output and only consumed by OPS service side will not be defined here. They can be placed under a single object, named with `service_config`. Like: `need_preview_pull_request`, `notification_subscribers`.
+   Steps to integrate new config:
+   1. Replace `docfx.json`s with `docfx.yml`.
+   2. OPS consumes `docfx.yml` to build output, use `.openpublishing.publish.config.json` to fetch service side config.
+   3. Move remaining configs `.openpublishing.publish.config.json` to server side config, then remove it.
+2. Config is the source of truth when building. If the actual source of truth is in DHS, like `product_name` or `docset_name`, config should be updated on DHS change, and validated before each build.
+2. Abandon `docset` and `group` level config. All configs is applied to all files or a set of files matching certain glob pattern.
 3. Distinguish config from metadata:
-* Metadata: part of content, can be consumed by template.
-* Config: not content, can only be consumed by DocFX.
+   * Metadata: part of content, can be consumed by template. In general, it's passed through from input to template. DocFX core needn't consume it.
+   * Config: not content, can be consumed by DocFX
+4. Merge GlobalMetadata and FileMetadata.
 
-## Things to Improve
-1. Merge GlobalMetadata and FileMetadata.
-2. File metadata changed from `"key": {"glob": "value"}` to `"glob": {"key": "value"}`.
-3. Remove concept of "docset".
-
-## Existing Configs to Investigate
+## Config Examples
 
 ### `azure-docs-pr`: Multiple CRR
 [op.json](https://github.com/MicrosoftDocs/azure-docs-pr/blob/master/.openpublishing.publish.config.json) [docfx.json](https://github.com/MicrosoftDocs/azure-docs-pr/blob/master/docfx.json)
@@ -23,7 +34,7 @@ New format for `docfx.yml`. It merges the `docfx.yml` and `.openpublishing.publi
 ``` yml
 name: azure-documents
 product: Azure
-defaults: docs.ms
+defaults: msdocs.yml
 basePath: azure
 content:
 - include:
@@ -68,8 +79,6 @@ contributors:
     - MattGLaBelle
 dependencies:
   api-management-policy-samples: https://github.com/Azure/api-management-policy-snippets
-  cli_scripts: https://github.com/Azure/azure-docs-cli-python-samples
-  powershell_scripts: https://github.com/Azure/azure-docs-powershell-samples
   policy-templates: https://github.com/Azure/azure-policy
   samples-mediaservices-integration: https://github.com/Azure-Samples/media-services-dotnet-functions-integration
   samples-mediaservices-encryptiondrm: https://github.com/Azure-Samples/media-services-dotnet-dynamic-encryption-with-drm
@@ -81,10 +90,27 @@ dependencies:
   samples-mediaservices-encoderstandard: https://github.com/Azure-Samples/media-services-dotnet-on-demand-encoding-with-media-encoder-standard
   samples-durable-functions: https://github.com/Azure/azure-functions-durable-extension
   samples-luis: https://github.com/Microsoft/Luis-Samples
+  cli_scripts: 
+    url: https://github.com/Azure/azure-docs-cli-python-samples
+    branch_mapping: 
+      release-build-mysql: release-build
+      release-build-postgresql: release-build
+      release-build-stellar: release-build
+  powershell_scripts: 
+    url: https://github.com/Azure/azure-docs-powershell-samples
+    branch_mapping: 
+      release-build-mysql: release-build
+      release-build-postgresql: release-build
+      release-build-stellar: release-build
   WebApp-OpenIdConnect-DotNet: 
     url: https://github.com/AzureADQuickStarts/WebApp-OpenIdConnect-DotNet
     branch: GuidedSetup
 ```
+Configs is grouped by scenario:
+* `contribution`: to config whether to enable contribution, and where to config.
+* `contrtibutors`: to config which contributors to include or exclude.
+* `dependencies`: to config CRRs.
+Extension config is supported to share default config for all OPS repos, by `defaults: msdocs.yml`. Current config has higher priority than extension config when conflicts.
 
 ### `dotnet/docs`: Complicate Metadata
 https://github.com/dotnet/docs/blob/master/docfx.json#L84-L126
@@ -126,6 +152,11 @@ metadata:
   values:
     dev_langs: vb
 ```
+Global/File metadata is merged into single `metadata`:
+| Key           | Optional? | Type         | Description |
+|:-------------:|:---------:|:------------:|-------------|
+| paths         | Y         | string/array | one/multiple glob pattern(s). Omit for global metadata |
+| values        |           |   object | the key-value pair of metadata applied to paths |
 
 ### `ATADocs-pr`: Multiple Docset
 [op.config](https://github.com/MicrosoftDocs/ATADocs-pr/blob/master/.openpublishing.publish.config.json)
@@ -138,12 +169,12 @@ name:
   ATADocs/Understand/**: ATAUnderstand
   ATPDocs: ATPDocs
 basePath:
-  ATADocs/DeployUse: advanced-threat-analytics/deploy-use
-  ATADocs: advanced-threat-analytics
-  ATADocs/PlanDesign: advanced-threat-analytics/plan-design
-  ATADocs/Troubleshoot: advanced-threat-analytics/troubleshoot
-  ATADocs/Understand: advanced-threat-analytics/understand-explore
-  ATPDocs: azure-advanced-threat-protection
+  ATADocs/DeployUse/**: advanced-threat-analytics/deploy-use
+  ATADocs/**: advanced-threat-analytics
+  ATADocs/PlanDesign/**: advanced-threat-analytics/plan-design
+  ATADocs/Troubleshoot/**: advanced-threat-analytics/troubleshoot
+  ATADocs/Understand/**: advanced-threat-analytics/understand-explore
+  ATPDocs/**: azure-advanced-threat-protection
 product:
   ATADocs/**: Azure
   ATPDocs/**: MSDN
@@ -159,8 +190,11 @@ metadata:
   values:
     extendBreadcrumb: true
 ```
+No config is set to docset level.
+* `name`: docset's name is preserved for generating documentId.
+* `basePath`, `product`: configed to files. No need to bound to docset.
 
-# `sql-docs-pr`: Complicate Versioning
+### `sql-docs-pr`: Complicate Versioning
 [docfx.json](https://github.com/MicrosoftDocs/sql-docs-pr/blob/release-ops-versioning-2/docs/docfx.json)
 ``` yml
 name: sql-content
@@ -197,7 +231,48 @@ contributors:
   - sudeepku
   - saldana
   - iRaindrop
+monikerDefinition: https://api.docs.com/monikers/
 ```
+No config is set to group level.
+* `monikerRange`: an object, to specify the moniker range of a glob pattern.
 
-## Drawback:
-1. If writer use relative path to link cross docsets, and basePath of one docset change, the the link is break until next publish.
+### `MSGraph-Reference`: Markdown Fragments
+[docfx.json](https://github.com/MicrosoftDocs/MSGraph-Reference/blob/master/docfx.json)
+```yml
+name: MSGraphDocs_Reference
+basePath: rest
+product: MSDN
+content: docs-ref-autogen/**
+routing:
+  docs-ref-autogen/1.0/: /rest/api
+  docs-ref-autogen/1.0/toc.yml: /rest/api/toc/toc.json
+  docs-ref-autogen/beta/: /rest/api
+  docs-ref-autogen/beta/toc.yml: /rest/api/toc/toc.json
+fragments:
+  docs-ref-autogen: docs-ref-authored
+metadata:
+  values:
+    breadcrumb_path: /rest/breadcrumb/toc.json
+    extendBreadcrumb: true
+monikerRange:
+  docs-ref-autogen/1.0/**: graph-rest-1.0
+  docs-ref-autogen/beta/**: graph-rest-beta
+monikerDefinition: https://api.docs.com/monikers/
+```
+* `fragments`: an object specify the fragments folder of the contents
+* `routing`: specify the published URL. Note that the key is not glob pattern, it's a **folder** or a **file**. Glob pattern is ambiguous to express which part of path is not needed in publish URL.
+
+## Others
+Some configs not needed in *Phase 1* are not discussed in this spec. They will not introduce breaking changes in current design. Like:
+1. Configs for other features, like: `validation`.
+2. Configs for other programming language CI tools, like the `metadata` command in v2.
+
+## Open Questions:
+### Zero downtime basePath change support
+After abandoning `docset`, writers can use relative path to link cross docsets (means contents with different `name` in v3). If the basePath of one docset changes in DHS, the published URL changes immediately before next publish. Before next publish, the relative path is wrong.
+
+To fix this, there is two solutions:
+1. When resolving links, DocFX checks whether the target and source has the same `name`. If not, use **absolute path** for resolve link.
+2. When changing basePath in DHS, the published URL will not be updated until the next build is finish. Actually, after the config change in DHS, the basePath in `docfx.yml` should also be synced immediately, which will trigger a build.
+
+As #1 will introduce complexity when resolve link, #2 is recommended here. It also benefits data consistency for other similar config changes.
