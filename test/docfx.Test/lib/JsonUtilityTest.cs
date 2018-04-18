@@ -98,6 +98,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestClassWithReadOnlyField()
+        {
+            var json = @"
+{
+    ""b"": ""test""
+}";
+            var value = JsonUtililty.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            Assert.NotNull(value);
+            Assert.Equal("test", value.B);
+        }
+
+        [Fact]
         public void TestClassWithMoreMembersByUnstableSerializeThenDeserialize()
         {
             var sw = new StringWriter();
@@ -148,10 +160,10 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
-            Assert.Equal(false, value.ValueBasic.D);
+            Assert.False(value.ValueBasic.D);
             Assert.Equal(true, value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
@@ -210,10 +222,10 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
-            Assert.Equal(false, value.ValueBasic.D);
+            Assert.False(value.ValueBasic.D);
             Assert.Equal(true, value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
@@ -228,6 +240,11 @@ namespace Microsoft.Docs.Build
             public int B { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class ClassWithReadOnlyField
+        {
+            public readonly string B;
         }
 
         public class ClassWithMoreMembers : BasicClass

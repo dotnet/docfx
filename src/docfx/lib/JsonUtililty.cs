@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -17,6 +18,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     public static class JsonUtililty
     {
+        public static readonly JsonSerializer DefaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -24,7 +27,7 @@ namespace Microsoft.Docs.Build
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
@@ -35,10 +38,9 @@ namespace Microsoft.Docs.Build
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Serialize(TextWriter writer, object graph, bool isStable = false, Formatting formatting = Formatting.None)
         {
-            var localSerializer = isStable || formatting == Formatting.Indented ? s_defaultIndentedFormatSerializer : s_defaultNoneFormatSerializer;
+            var localSerializer = isStable || formatting == Formatting.Indented ? s_defaultIndentedFormatSerializer : DefaultNoneFormatSerializer;
             if (isStable)
             {
                 localSerializer.Serialize(writer, Stablize(JToken.FromObject(graph, localSerializer)));
@@ -76,7 +78,7 @@ namespace Microsoft.Docs.Build
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return s_defaultNoneFormatSerializer.Deserialize<T>(json);
+                return DefaultNoneFormatSerializer.Deserialize<T>(json);
             }
         }
 
@@ -103,6 +105,23 @@ namespace Microsoft.Docs.Build
             }
 
             return token;
+        }
+
+        private sealed class JsonContractResolver : CamelCasePropertyNamesContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+
+                if (!prop.Writable)
+                {
+                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                    {
+                        prop.Writable = true;
+                    }
+                }
+                return prop;
+            }
         }
     }
 }

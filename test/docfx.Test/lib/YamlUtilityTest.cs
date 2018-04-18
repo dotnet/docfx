@@ -1,15 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Newtonsoft.Json;
-
 using Xunit;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     public class YamlUtilityTest
     {
@@ -83,6 +82,32 @@ namespace Microsoft.Docs
             Assert.Equal(9876543210000L, value[1]);
             Assert.Equal(long.MaxValue, value[2]);
             Assert.Equal(1.8446744073709552E+19, value[3]);
+        }
+
+        [Fact]
+        public void TestNotprimitiveKey()
+        {
+            var yaml = @"
+? - item1
+  - item2
+: value
+";
+            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Deserialize(new StringReader(yaml)));
+
+            Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
+        }
+
+        [Fact]
+        public void TestAnchor()
+        {
+            var yaml = @"
+A: &anchor test
+B: *anchor
+";
+            var value = YamlUtility.Deserialize<Dictionary<string, string>>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal("test", value["A"]);
+            Assert.Equal("test", value["B"]);
         }
 
         [Fact]
