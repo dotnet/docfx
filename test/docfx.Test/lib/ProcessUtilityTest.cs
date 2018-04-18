@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build.lib
         [Fact]
         public static async Task ConcurrencyOperations_CreateFile_Expect_NoException()
         {
-            var fileName = $"{Guid.NewGuid()}";
+            var fileName = $".process_test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(i => ProcessUtility.ProcessLock(
             () =>
             {
