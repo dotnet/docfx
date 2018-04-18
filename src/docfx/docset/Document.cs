@@ -45,17 +45,25 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string SiteUrl { get; }
 
-        public Document(Context context, Docset docset, string filePath)
+        public Document(Docset docset, string filePath)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
             Docset = docset;
             FilePath = PathUtility.NormalizeFile(filePath);
-            ContentType = GetContentType(context, filePath, docset.DocsetPath);
+            ContentType = GetContentType(filePath, docset.DocsetPath);
             SitePath = FilePath;
         }
 
-        private static ContentType GetContentType(Context context, string path, string docsetPath)
+        /// <summary>
+        /// Reads a file as stream, throws if it does not exists.
+        /// </summary>
+        public Stream OpenRead()
+        {
+            return File.OpenRead(Path.Combine(FilePath, Docset.DocsetPath));
+        }
+
+        private static ContentType GetContentType(string path, string docsetPath)
         {
             var name = Path.GetFileName(path).ToLowerInvariant();
             var extension = Path.GetExtension(name);

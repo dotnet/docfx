@@ -18,13 +18,18 @@ namespace Microsoft.Docs.Build
         public FileConfig Files { get; } = new FileConfig();
 
         /// <summary>
+        /// Gets the output config.
+        /// </summary>
+        public OutputConfig Output { get; } = new OutputConfig();
+
+        /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
         public JObject Metadata { get; } = new JObject();
 
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
-            return null;
+            return new Config();
         }
     }
 }
