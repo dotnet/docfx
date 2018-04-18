@@ -16,10 +16,9 @@ namespace Microsoft.Docs.Build
         [InlineData("README.md")]
         public static async Task GetCommitsSameAsGitLog(string file)
         {
-            var repo = GitUtility.FindRepo(Path.GetFullPath(file), recursive: false);
-            Assert.Null(repo);
+            Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
-            repo = GitUtility.FindRepo(Path.GetFullPath(file), recursive: true);
+            var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
             var pathToRepo = PathUtility.NormalizeFile(file);

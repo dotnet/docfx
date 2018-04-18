@@ -116,24 +116,29 @@ namespace Microsoft.Docs.Build
         /// <param name="retry">The retry count, default is 600 times</param>
         /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
         /// <returns>The task status</returns>
-        public static async Task ProcessLock(Func<Task> action, string lockPath = null, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task ProcessLock(Func<Task> action, string lockPath, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
         {
-            lockPath = lockPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "docfx", "lock", $"{Guid.NewGuid()}.lock");
-
+            Debug.Assert(!string.IsNullOrEmpty(lockPath));
             Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
 
             var retryCount = 0;
-            var exceptions = new List<Exception>();
+            Exception exception = null;
             while (retryCount < retry)
             {
                 try
                 {
                     using (FileStream lockFile = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete))
                     {
-                        await action();
+                        try
+                        {
+                            await action();
+                        }
+                        finally
+                        {
+                            File.Delete(lockPath);
+                        }
 
-                        File.Delete(lockPath);
                         return;
                     }
                 }
@@ -141,14 +146,14 @@ namespace Microsoft.Docs.Build
                 {
                     // TODO: error handling
                     // TODO: notify user current waiting process
-                    exceptions.Add(e);
+                    exception = e;
                     await Task.Delay(retryTimeSpanInterval ?? TimeSpan.FromSeconds(1));
                 }
 
                 retryCount++;
             }
 
-            throw new AggregateException(exceptions);
+            throw exception;
         }
     }
 }

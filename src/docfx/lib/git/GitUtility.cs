@@ -22,30 +22,38 @@ namespace Microsoft.Docs.Build
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>
-        /// <param name="recursive">Recursively find git root</param>
         /// <returns>The git repo root path. null if the repo root is not found</returns>
-        public static string FindRepo(string path, bool recursive = true)
+        public static string FindRepo(string path)
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
             var repo = path;
             while (!string.IsNullOrEmpty(repo))
             {
-                var gitPath = Path.Combine(repo, ".git");
-                if (Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */)
+                if (IsRepo(repo))
                 {
                     return repo;
-                }
-
-                if (!recursive)
-                {
-                    break;
                 }
 
                 repo = Path.GetDirectoryName(repo);
             }
 
-            return (repo == path || string.IsNullOrEmpty(repo)) ? null : repo;
+            return string.IsNullOrEmpty(repo) ? null : repo;
+        }
+
+        /// <summary>
+        /// Determine if the path is a git repo
+        /// </summary>
+        /// <param name="path">The repo path</param>
+        /// <returns>Is git repo or not</returns>
+        public static bool IsRepo(string path)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
+
+            var gitPath = Path.Combine(path, ".git");
+
+            return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
         }
 
         /// <summary>

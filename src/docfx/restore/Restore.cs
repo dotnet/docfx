@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", ".git");
+        private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
 
         public static Task Run(string docsetPath, CommandLineOptions options, Context context)
         {
@@ -61,9 +61,7 @@ namespace Microsoft.Docs.Build
             await ProcessUtility.ProcessLock(
                 async () =>
                 {
-                    var repo = GitUtility.FindRepo(dir, false);
-
-                    if (!string.IsNullOrEmpty(repo))
+                    if (GitUtility.IsRepo(dir))
                     {
                         // already exists, just pull the new updates from remote
                         await GitUtility.Pull(dir);
