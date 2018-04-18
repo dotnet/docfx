@@ -62,7 +62,7 @@
       }
     },
     "dest": "_site",
-    "markdownEngineName": "dfm-latest",
+    "markdownEngineName": "markdig",
     "template": [
       "default",
       "custom_template"
