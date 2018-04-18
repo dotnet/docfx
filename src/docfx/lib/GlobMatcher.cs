@@ -809,7 +809,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [Serializable]
         private sealed class GlobRegexItem
         {
             public static readonly GlobRegexItem GlobStar = new GlobRegexItem(GlobRegexItemType.GlobStar);

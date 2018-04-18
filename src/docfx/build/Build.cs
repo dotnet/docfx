@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -20,7 +22,9 @@ namespace Microsoft.Docs.Build
 
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
-            return new List<Document>();
+            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Files.Include, docset.Config.Files.Exclude)
+                           .Select(file => new Document(context, docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
         private static async Task BuildFiles(Context context, List<Document> files)
@@ -47,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         private static Task BuildAsset(Context context, Document file)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

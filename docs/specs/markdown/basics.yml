@@ -4,8 +4,7 @@ inputs:
   hello.md: Hello `docfx`!
 outputs:
   hello.html: Hello `docfx`!
-
-...
+---
 # Basic markdown syntax
 inputs:
   inline.md: _this_ *is* an ***inline*** `markdown` **test**

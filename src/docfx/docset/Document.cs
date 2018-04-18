@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
+using System.IO;
+
 namespace Microsoft.Docs.Build
 {
     internal class Document
@@ -42,10 +45,47 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string SiteUrl { get; }
 
-        public Document(Docset docset, string filePath)
+        public Document(Context context, Docset docset, string filePath)
         {
+            Debug.Assert(!Path.IsPathRooted(filePath));
+
             Docset = docset;
-            FilePath = filePath;
+            FilePath = PathUtility.NormalizeFile(filePath);
+            ContentType = GetContentType(context, filePath, docset.DocsetPath);
+            SitePath = FilePath;
+        }
+
+        private static ContentType GetContentType(Context context, string path, string docsetPath)
+        {
+            var name = Path.GetFileName(path).ToLowerInvariant();
+            var extension = Path.GetExtension(name);
+
+            switch (extension)
+            {
+                case "md":
+                    if (name == "toc.md")
+                    {
+                        return ContentType.TableOfContents;
+                    }
+                    return ContentType.Markdown;
+                case "yml":
+                    if (name == "docfx.yml")
+                    {
+                        return ContentType.Unknown;
+                    }
+                    if (name == "toc.yml")
+                    {
+                        if (File.Exists(Path.Combine(docsetPath, Path.ChangeExtension(path, ".md"))))
+                        {
+                            // TODO: warn 'toc.md' is picked instead
+                            return ContentType.Unknown;
+                        }
+                        return ContentType.TableOfContents;
+                    }
+                    return ContentType.SchemaDocument;
+                default:
+                    return ContentType.Asset;
+            }
         }
     }
 }

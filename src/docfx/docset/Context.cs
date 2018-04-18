@@ -15,6 +15,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public ILog Log { get; }
 
+        public Context()
+            : this(new FileSystem(), new ConsoleLog())
+        {
+        }
+
         public Context(IFileSystem fileSystem, ILog log)
         {
             FileSystem = fileSystem;

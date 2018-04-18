@@ -6,5 +6,5 @@ inputs:
   ignore.md:
   docs/index.md:
 outputs:
-  docs/index.md:
+  docs/index.html:
 ---

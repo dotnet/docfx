@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var (command, docset, options) = ParseCommandLineOptions(args);
-                var context = new Context(new FileSystem(), new ConsoleLog());
+                var context = new Context();
 
                 switch (command)
                 {
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
-            return default;
+            return (args[0], args[1], default);
         }
     }
 }
