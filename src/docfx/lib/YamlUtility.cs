@@ -117,11 +117,11 @@ namespace Microsoft.Docs
                 {
                     if (string.IsNullOrWhiteSpace(scalar.Value))
                     {
-                        return "";
+                        return null;
                     }
                     if (scalar.Value == "~")
                     {
-                        return "";
+                        return null;
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
