@@ -8,6 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Context
     {
+        private readonly bool _stable;
         private readonly string _outputPath;
 
         /// <summary>
@@ -15,9 +16,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public ILog Log { get; }
 
-        public Context(ILog log, string outputPath)
+        public Context(ILog log, string outputPath, bool stable)
         {
             Log = log;
+            _stable = stable;
             _outputPath = Path.GetFullPath(outputPath);
         }
 
@@ -25,7 +27,7 @@ namespace Microsoft.Docs.Build
         /// Opens a write stream to write to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public Stream OpenWrite(string destRelativePath)
+        public Stream WriteStream(string destRelativePath)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
@@ -34,6 +36,18 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 
             return File.OpenWrite(destinationPath);
+        }
+
+        /// <summary>
+        /// Writes the input object as json to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void WriteJson(object graph, string destRelativePath)
+        {
+            using (var writer = new StreamWriter(WriteStream(destRelativePath)))
+            {
+                JsonUtililty.Serialize(writer, graph, _stable);
+            }
         }
 
         /// <summary>

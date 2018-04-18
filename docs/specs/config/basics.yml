@@ -2,9 +2,11 @@
 # Specify include files
 inputs:
   docfx.yml: |
-    files: docs/**/*.md
+    files:
+      include:
+        - docs/**/*.md
   ignore.md:
   docs/index.md:
 outputs:
-  docs/index.html:
----
+  docs/index.json: |
+    { "content": "" }

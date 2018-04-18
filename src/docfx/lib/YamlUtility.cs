@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -93,6 +94,21 @@ namespace Microsoft.Docs
             return ToJson(stream.Documents[0].RootNode);
         }
 
+        /// <summary>
+        /// Deserialize to JToken from TextReader
+        /// </summary>
+        public static IEnumerable<T> DeserializeMany<T>(string yaml)
+        {
+            var stream = new YamlStream();
+
+            stream.Load(new StringReader(yaml));
+
+            foreach (var document in stream.Documents)
+            {
+                yield return ToJson(document.RootNode).ToObject<T>();
+            }
+        }
+
         private static JToken ToJson(YamlNode node)
         {
             if (node is YamlScalarNode scalar)
@@ -101,11 +117,11 @@ namespace Microsoft.Docs
                 {
                     if (string.IsNullOrWhiteSpace(scalar.Value))
                     {
-                        return null;
+                        return "";
                     }
                     if (scalar.Value == "~")
                     {
-                        return null;
+                        return "";
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {

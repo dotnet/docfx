@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public FileGlobTest()
         {
-            _workingDirectory = Path.GetRandomFileName() + "/";
+            _workingDirectory = Path.Combine("glob", Path.GetRandomFileName() + "/");
         }
 
         [Fact]

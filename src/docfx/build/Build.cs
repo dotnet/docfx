@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
         {
             var config = Config.Load(docsetPath, options);
-            var context = new Context(log, config.Output.Path);
+            var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
             var docset = new Docset(docsetPath, options);
 
             var globbedFiles = GlobFiles(context, docset);

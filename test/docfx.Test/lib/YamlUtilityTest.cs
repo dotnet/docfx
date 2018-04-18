@@ -96,7 +96,7 @@ D: ~
             var value = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal("~", value["C"]);
-            Assert.Null(value["D"]);
+            Assert.Equal("", value["D"]);
         }
 
         [Fact]

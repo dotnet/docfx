@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Xunit;
-using YamlDotNet.RepresentationModel;
 
 namespace Microsoft.Docs.Build
 {
@@ -29,9 +29,14 @@ namespace Microsoft.Docs.Build
             var i = 1;
             var specName = specPath.Replace("\\", "/").Replace("specs/", "").Replace(".yml", "");
 
-            foreach (var spec in LoadSpecs(specPath))
+            foreach (var spec in YamlUtility.DeserializeMany<BuildTestSpec>(File.ReadAllText(specPath)))
             {
                 var docsetPath = Path.Combine("specs.drop", specName, $"{i++}");
+
+                if (Directory.Exists(docsetPath))
+                {
+                    Directory.Delete(docsetPath, recursive: true);
+                }
 
                 foreach (var (file, content) in spec.Inputs)
                 {
@@ -55,43 +60,66 @@ namespace Microsoft.Docs.Build
 
             switch (Path.GetExtension(file.ToLower()))
             {
+                case ".json":
+                    VerifyJsonContainEquals(
+                        JToken.Parse(content),
+                        JToken.Parse(File.ReadAllText(file)));
+                    break;
+
                 default:
-                    Assert.Equal(File.ReadAllText(file), content);
+                    Assert.Equal(
+                        content.Trim(),
+                        File.ReadAllText(file).Trim(),
+                        ignoreCase: false,
+                        ignoreLineEndingDifferences: true,
+                        ignoreWhiteSpaceDifferences: true);
                     break;
             }
         }
 
-        private static IEnumerable<BuildTestSpec> LoadSpecs(string specPath)
+        private static void VerifyJsonContainEquals(JToken expected, JToken actual)
         {
-            var yaml = new YamlStream();
-            yaml.Load(new StringReader(File.ReadAllText(specPath)));
-
-            foreach (var doc in yaml.Documents)
+            if (expected is JArray expectedArray)
             {
-                if (doc.RootNode is YamlMappingNode root)
+                if (actual is JArray actualArray)
                 {
-                    var spec = new BuildTestSpec();
-
-                    foreach (var (file, content) in (YamlMappingNode)root["inputs"])
+                    Assert.Equal(expectedArray.Count, actualArray.Count);
+                    for (var i = 0; i < expectedArray.Count; i++)
                     {
-                        spec.Inputs.Add(((YamlScalarNode)file).Value, ((YamlScalarNode)content).Value);
+                        VerifyJsonContainEquals(expectedArray[i], actualArray[i]);
                     }
-
-                    foreach (var (file, content) in (YamlMappingNode)root["outputs"])
-                    {
-                        spec.Outputs.Add(((YamlScalarNode)file).Value, ((YamlScalarNode)content).Value);
-                    }
-
-                    yield return spec;
                 }
+                else
+                {
+                    Assert.True(actual is JArray, $"Array expected: {actual}");
+                }
+            }
+            else if (expected is JObject expectedObject)
+            {
+                if (actual is JObject actualObject)
+                {
+                    foreach (var (key, value) in expectedObject)
+                    {
+                        Assert.True(actualObject.ContainsKey(key), $"Key '{key}' expected: {actual}");
+                        VerifyJsonContainEquals(value, actualObject[key]);
+                    }
+                }
+                else
+                {
+                    Assert.True(actual is JArray, $"Object expected: {actual}");
+                }
+            }
+            else
+            {
+                Assert.Equal(((JValue)expected).Value, ((JValue)actual).Value);
             }
         }
 
         private class BuildTestSpec
         {
-            public Dictionary<string, string> Inputs { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            public Dictionary<string, string> Outputs { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
     }
 }
