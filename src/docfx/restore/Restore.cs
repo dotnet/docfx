@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -59,21 +58,28 @@ namespace Microsoft.Docs.Build
         {
             var (dir, url, rev) = GetGitInfo(href);
 
-            var repo = GitUtility.FindRepo(dir, false);
-
-            if (string.IsNullOrEmpty(repo))
-            {
-                await GitUtility.Pull(dir);
-            }
-            else
-            {
-                await GitUtility.Clone(dir, url, dir);
-
-                if (!string.IsNullOrEmpty(rev))
+            await ProcessUtility.ProcessLock(
+                async () =>
                 {
-                    await GitUtility.Checkout(dir, false, rev);
-                }
-            }
+                    var repo = GitUtility.FindRepo(dir, false);
+
+                    if (!string.IsNullOrEmpty(repo))
+                    {
+                        // already exist, just pull the new updates from remote
+                        await GitUtility.Pull(dir);
+                    }
+                    else
+                    {
+                        // doesn't exist yet, clone this repo
+                        await GitUtility.Clone(dir, url, dir);
+
+                        if (!string.IsNullOrEmpty(rev))
+                        {
+                            await GitUtility.Checkout(dir, false, rev);
+                        }
+                    }
+                },
+                Path.Combine(dir, ".lock"));
 
             return dir;
         }

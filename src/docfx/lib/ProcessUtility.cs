@@ -2,7 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -104,6 +106,49 @@ namespace Microsoft.Docs.Build
             }
 
             return tcs.Task;
+        }
+
+        /// <summary>
+        /// Provide a process lock function based on locking file
+        /// </summary>
+        /// <param name="action">The action you want to lock</param>
+        /// <param name="lockPath">The lock file path, default is a file with GUID name</param>
+        /// <param name="retry">The retry count, default is 60 times</param>
+        /// <param name="retryTimeSpanInterval">The retry interval, default is 10 seconds</param>
+        /// <returns>The task status</returns>
+        public static async Task ProcessLock(Func<Task> action, string lockPath = null, int retry = 60, TimeSpan? retryTimeSpanInterval = null)
+        {
+            lockPath = lockPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "lock", $"{Guid.NewGuid()}.lock");
+
+            Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
+
+            var retryCount = 0;
+            var exceptions = new List<Exception>();
+            while (retryCount < retry)
+            {
+                try
+                {
+                    using (FileStream lockFile = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete))
+                    {
+                        await action();
+
+                        File.Delete(lockPath);
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // TODO: error handling
+                    // TODO: notify user current waiting process
+                    exceptions.Add(e);
+                    await Task.Delay(retryTimeSpanInterval ?? TimeSpan.FromSeconds(10));
+                }
+
+                retryCount++;
+            }
+
+            throw new AggregateException(exceptions);
         }
     }
 }
