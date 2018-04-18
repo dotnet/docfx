@@ -122,32 +122,35 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
 
+            using (var lockFile = await AcquireFileStreamLock(lockPath, retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            {
+                try
+                {
+                    await action();
+                }
+                finally
+                {
+                    File.Delete(lockPath);
+                }
+            }
+        }
+
+        private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
+        {
             var retryCount = 0;
             Exception exception = null;
             while (retryCount < retry)
             {
                 try
                 {
-                    using (FileStream lockFile = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete))
-                    {
-                        try
-                        {
-                            await action();
-                        }
-                        finally
-                        {
-                            File.Delete(lockPath);
-                        }
-
-                        return;
-                    }
+                    return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
                 }
                 catch (Exception e)
                 {
                     // TODO: error handling
                     // TODO: notify user current waiting process
                     exception = e;
-                    await Task.Delay(retryTimeSpanInterval ?? TimeSpan.FromSeconds(1));
+                    await Task.Delay(retryTimeSpanInterval);
                 }
 
                 retryCount++;
