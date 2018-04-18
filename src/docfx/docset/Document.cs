@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -19,7 +20,7 @@ namespace Microsoft.Docs.Build
         public ContentType ContentType { get; }
 
         /// <summary>
-        /// Gets source file path relative to docset folder that is:
+        /// Gets the source file path relative to docset folder that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
         public string FilePath { get; }
 
         /// <summary>
-        /// Gets a relative path to output directory that is:
+        /// Gets the output file path relative to output directory that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
-        /// Gets a Url relative to site root that is:
+        /// Gets the Url relative to site root that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
@@ -47,12 +48,14 @@ namespace Microsoft.Docs.Build
 
         public Document(Docset docset, string filePath)
         {
-            Debug.Assert(!System.IO.Path.IsPathRooted(filePath));
+            Debug.Assert(!Path.IsPathRooted(filePath));
 
             Docset = docset;
+
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath, docset.DocsetPath);
             OutputPath = GetOutputPath(FilePath, ContentType);
+            SiteUrl = GetSiteUrl(FilePath, ContentType);
         }
 
         /// <summary>
@@ -68,13 +71,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadText()
         {
-            return File.ReadAllText(Path.Combine(Docset.DocsetPath, FilePath));
+            using (var reader = new StreamReader(ReadStream()))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
-        private static ContentType GetContentType(string path, string docsetPath)
+        internal static ContentType GetContentType(string path, string docsetPath)
         {
-            var name = System.IO.Path.GetFileName(path).ToLowerInvariant();
-            var extension = System.IO.Path.GetExtension(name);
+            var name = Path.GetFileName(path).ToLowerInvariant();
+            var extension = Path.GetExtension(name);
 
             switch (extension)
             {
@@ -91,7 +97,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (name == "toc.yml")
                     {
-                        if (File.Exists(System.IO.Path.Combine(docsetPath, System.IO.Path.ChangeExtension(path, ".md"))))
+                        if (File.Exists(Path.Combine(docsetPath, Path.ChangeExtension(path, ".md"))))
                         {
                             // TODO: warn 'toc.md' is picked instead
                             return ContentType.Unknown;
@@ -104,14 +110,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOutputPath(string path, ContentType contentType)
+        internal static string GetOutputPath(string path, ContentType contentType)
         {
             switch (contentType)
             {
                 case ContentType.Markdown:
                 case ContentType.SchemaDocument:
                 case ContentType.TableOfContents:
-                    return System.IO.Path.ChangeExtension(path, ".json");
+                    return Path.ChangeExtension(path, ".json");
+                default:
+                    return path;
+            }
+        }
+
+        internal static string GetSiteUrl(string path, ContentType contentType)
+        {
+            path = '/' + path;
+
+            switch (contentType)
+            {
+                case ContentType.Markdown:
+                case ContentType.SchemaDocument:
+                    var extensionIndex = path.LastIndexOf('.');
+                    if (extensionIndex >= 0)
+                    {
+                        path = path.Substring(0, extensionIndex);
+                    }
+                    if (path.EndsWith("/index", StringComparison.OrdinalIgnoreCase))
+                    {
+                        path = path.Substring(0, path.Length - 5);
+                    }
+                    return path;
+                case ContentType.TableOfContents:
+                    return Path.ChangeExtension(path, ".json");
                 default:
                     return path;
             }
