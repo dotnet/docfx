@@ -8,3 +8,20 @@ obj
 *.suo
 *.sdf
 *.user
+
+_site
+
+# Carried from DocFX v2
+artifacts
+src/docfx/Template/*.zip
+src/docfx.website.themes/default/styles/docfx.vendor.css
+src/docfx.website.themes/default/styles/docfx.vendor.js
+src/docfx.website.themes/default/styles/lunr.js
+src/docfx.website.themes/default/styles/lunr.min.js
+src/docfx.website.themes/default/fonts/
+package-lock.json
+node_modules
+bower_components
+target
+tools/Deployment/out
+launchSettings.json
