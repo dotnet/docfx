@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         /// <param name="progress">The progress total running actions</param>
         /// <param name="error">The error handler</param>
         /// <returns>The task status</returns>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task<IEnumerable<T>>> action, Action<int, int> progress = null, Action<Exception, T> error = null)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Action<int, int> progress = null, Action<Exception, T> error = null)
         {
             ActionBlock<T> queue = null;
 
@@ -46,11 +46,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        var childActions = await action(item);
-                        foreach (var childAction in childActions)
-                        {
-                            Enqueue(childAction);
-                        }
+                        await action(item, Enqueue);
                     }
                     catch (Exception ex) when (error != null)
                     {

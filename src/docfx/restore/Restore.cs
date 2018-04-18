@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", ".git");
 
-        public static async Task Run(string docsetPath, CommandLineOptions options, Context context)
+        public static Task Run(string docsetPath, CommandLineOptions options, Context context)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             var config = Config.Load(docsetPath, options);
 
-            await ParallelUtility.ForEach(config.Dependencies.Values, href => RestoreDependentRepo(href, options));
+            return ParallelUtility.ForEach(config.Dependencies.Values, (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild));
         }
 
         /// <summary>
@@ -40,17 +40,18 @@ namespace Microsoft.Docs.Build
             return (PathUtility.NormalizeFolder(dir), url, rev);
         }
 
-        // Recursively restore dependenct repo including their children
-        private static async Task<IEnumerable<string>> RestoreDependentRepo(string href, CommandLineOptions options)
+        // Recursively restore dependent repo including their children
+        private static async Task RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild)
         {
             var childDir = await FetchOrCloneDependentRepo(href);
 
             if (Config.TryLoad(childDir, options, out var childConfig))
             {
-                return childConfig.Dependencies.Values;
+                foreach (var (key, childHref) in childConfig.Dependencies)
+                {
+                    restoreChild(childHref);
+                }
             }
-
-            return Array.Empty<string>();
         }
 
         // Fetch or clone dependent repo to local
@@ -59,9 +60,8 @@ namespace Microsoft.Docs.Build
             var (dir, url, rev) = GetGitInfo(href);
 
             var repo = GitUtility.FindRepo(dir, false);
-            var repoExists = string.IsNullOrEmpty(repo);
 
-            if (repoExists)
+            if (string.IsNullOrEmpty(repo))
             {
                 await GitUtility.Pull(dir);
             }
