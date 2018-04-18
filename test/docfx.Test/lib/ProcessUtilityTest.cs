@@ -12,10 +12,10 @@ namespace Microsoft.Docs.Build.lib
     public static class ProcessUtilityTest
     {
         [Fact]
-        public static async Task ConcurrencyOperations()
+        public static async Task ConcurrencyOperations_CreateFile_Expect_NoException()
         {
             var fileName = $"{Guid.NewGuid()}";
-            await Task.WhenAll(Enumerable.Range(0, 3).AsParallel().Select(i => ProcessUtility.ProcessLock(
+            await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(i => ProcessUtility.ProcessLock(
             () =>
             {
                 using (var streamWriter = File.CreateText(fileName))

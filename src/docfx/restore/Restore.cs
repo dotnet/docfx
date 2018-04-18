@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
                     if (!string.IsNullOrEmpty(repo))
                     {
-                        // already exist, just pull the new updates from remote
+                        // already exists, just pull the new updates from remote
                         await GitUtility.Pull(dir);
                     }
                     else

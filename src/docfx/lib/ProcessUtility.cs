@@ -113,12 +113,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="action">The action you want to lock</param>
         /// <param name="lockPath">The lock file path, default is a file with GUID name</param>
-        /// <param name="retry">The retry count, default is 60 times</param>
-        /// <param name="retryTimeSpanInterval">The retry interval, default is 10 seconds</param>
+        /// <param name="retry">The retry count, default is 600 times</param>
+        /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
         /// <returns>The task status</returns>
-        public static async Task ProcessLock(Func<Task> action, string lockPath = null, int retry = 60, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task ProcessLock(Func<Task> action, string lockPath = null, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
         {
-            lockPath = lockPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "lock", $"{Guid.NewGuid()}.lock");
+            lockPath = lockPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "docfx", "lock", $"{Guid.NewGuid()}.lock");
 
             Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                     // TODO: error handling
                     // TODO: notify user current waiting process
                     exceptions.Add(e);
-                    await Task.Delay(retryTimeSpanInterval ?? TimeSpan.FromSeconds(10));
+                    await Task.Delay(retryTimeSpanInterval ?? TimeSpan.FromSeconds(1));
                 }
 
                 retryCount++;
