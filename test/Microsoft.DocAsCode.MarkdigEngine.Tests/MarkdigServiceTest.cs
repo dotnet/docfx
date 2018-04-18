@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Xunit;
 
     [Collection("docfx STA")]
-    public class MarkdigServiceTest : TestBase
+    public class MarkdigServiceTest
     {
         [Fact]
         [Trait("Related", "MarkdigService")]

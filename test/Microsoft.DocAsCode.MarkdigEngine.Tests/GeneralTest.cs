@@ -4,13 +4,40 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using System.IO;
 
     using Xunit;
 
     [Collection("docfx STA")]
-    public class GeneralTest : TestBase
+    public class GeneralTest
     {
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void MarkdigWithDefaultFAL()
+        {
+            var saved = EnvironmentContext.FileAbstractLayerImpl;
+            var tokenFileName = "token1573.md";
+
+            try
+            {
+                EnvironmentContext.FileAbstractLayerImpl = null;
+                File.WriteAllText(tokenFileName, "**token content**");
+                var source = $"[!INCLUDE [title](~/{tokenFileName})]";
+                var expected = @"<p><strong>token content</strong></p>
+";
+                TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            }
+            finally
+            {
+                if (File.Exists(tokenFileName))
+                {
+                    File.Delete(tokenFileName);
+                }
+                EnvironmentContext.FileAbstractLayerImpl = saved;
+            }
+        }
+
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfm_TaskList()

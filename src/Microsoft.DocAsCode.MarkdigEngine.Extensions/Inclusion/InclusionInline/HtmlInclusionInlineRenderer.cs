@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var includedFilePath = ((RelativePath)inclusion.Context.IncludedFilePath).BasedOn(currentFilePath);
 
-            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePath.RemoveWorkingFolder()))
             {
                 Logger.LogWarning($"Can't find {includedFilePath}.");
                 renderer.Write(inclusion.Context.GetRaw());
@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath);
+            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
             var context = new MarkdownContextBuilder()
                             .WithContext(_context)
                             .WithFilePath(includedFilePath.RemoveWorkingFolder())
