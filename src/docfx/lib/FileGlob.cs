@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
-                yield return PathUtility.NormalizeFile(file);
+                yield return Path.GetFullPath(file);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = PathUtility.GetRelativePathToFile(cwd, file);
+                var relativePath = GetRelativeFilePath(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
                     yield return file;
@@ -74,9 +74,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static string GetRelativeFilePath(string directory, string file)
+        {
+            var subpath = file.Substring(directory.Length);
+
+            // directory could be
+            // 1. root folder, e.g. E:\ or /
+            // 2. sub folder, e.g. a or a/ or a\
+            return subpath.TrimStart('\\', '/');
+        }
+
         private static string GetRelativeDirectoryPath(string parentDirectory, string directory)
         {
-            var relativeDirectory = PathUtility.GetRelativePathToFile(parentDirectory, directory);
+            var relativeDirectory = GetRelativeFilePath(parentDirectory, directory);
             return relativeDirectory.TrimEnd('\\', '/') + "/";
         }
 

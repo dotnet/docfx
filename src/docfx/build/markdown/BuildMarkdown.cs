@@ -10,7 +10,17 @@ namespace Microsoft.Docs.Build
     {
         public static Task Build(Context context, Document file)
         {
-            throw new NotImplementedException();
+            var markdown = file.ReadText();
+            var model = new PageModel<string> { Content = Markup(markdown) };
+
+            context.WriteJson(model, file.OutputPath);
+
+            return Task.CompletedTask;
+        }
+
+        private static string Markup(string markdown)
+        {
+            return markdown;
         }
     }
 }

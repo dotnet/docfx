@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -9,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class Docset
     {
         /// <summary>
-        /// Gets the path to `docfx.yml`, it is not necessarily the path to git repository.
+        /// Gets the absolute path to folder containing `docfx.yml`, it is not necessarily the path to git repository.
         /// </summary>
         public string DocsetPath { get; }
 
@@ -25,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public Docset(string docsetPath, CommandLineOptions options)
         {
-            DocsetPath = docsetPath;
+            DocsetPath = Path.GetFullPath(docsetPath);
             Config = Config.Load(docsetPath, options);
         }
     }
