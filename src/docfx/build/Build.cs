@@ -3,14 +3,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, Context context)
+        public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
         {
+            var config = Config.Load(docsetPath, options);
+            var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
             var docset = new Docset(docsetPath, options);
 
             var globbedFiles = GlobFiles(context, docset);
@@ -20,12 +24,14 @@ namespace Microsoft.Docs.Build
 
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
-            return new List<Document>();
+            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Files.Include, docset.Config.Files.Exclude)
+                           .Select(file => new Document(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
-        private static async Task BuildFiles(Context context, List<Document> files)
+        private static Task BuildFiles(Context context, List<Document> files)
         {
-            await ParallelUtility.ForEach(files, file => BuildOneFile(context, file));
+            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file));
         }
 
         private static Task BuildOneFile(Context context, Document file)
@@ -47,7 +53,8 @@ namespace Microsoft.Docs.Build
 
         private static Task BuildAsset(Context context, Document file)
         {
-            throw new NotImplementedException();
+            context.Copy(file, file.FilePath);
+            return Task.CompletedTask;
         }
     }
 }

@@ -7,34 +7,25 @@ namespace Microsoft.Docs.Build
 {
     internal class Program
     {
-        internal static async Task<int> Main(string[] args)
+        internal static async Task Main(string[] args)
         {
-            try
-            {
-                var (command, docset, options) = ParseCommandLineOptions(args);
-                var context = new Context(new FileSystem(), new ConsoleLog());
+            var (command, docset, options) = ParseCommandLineOptions(args);
+            var log = new ConsoleLog();
 
-                switch (command)
-                {
-                    case "restore":
-                        await Restore.Run(docset, options, context);
-                        break;
-                    case "build":
-                        await Build.Run(docset, options, context);
-                        break;
-                }
-
-                return 0;
-            }
-            catch
+            switch (command)
             {
-                return 1;
+                case "restore":
+                    await Restore.Run(docset, options, log);
+                    break;
+                case "build":
+                    await Build.Run(docset, options, log);
+                    break;
             }
         }
 
         private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
-            return default;
+            return (args[0], args[1], default);
         }
     }
 }
