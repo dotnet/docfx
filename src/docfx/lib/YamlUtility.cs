@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(TextReader reader)
         {
             var json = Deserialize(reader);
-            return json.ToObject<T>(JsonUtililty.DefaultNoneFormatSerializer);
+            return json.ToObject<T>(JsonUtililty.DefaultDeserializer);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        throw new NotSupportedException($"Not Supported: {key.ToString()} is not a primitive type");
+                        throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
                 return obj;
