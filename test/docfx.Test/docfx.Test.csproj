@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="../../docs/specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../src/docfx/docfx.csproj" />
   </ItemGroup>
 

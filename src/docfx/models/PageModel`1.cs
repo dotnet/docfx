@@ -3,7 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal interface IFileSystem
+    internal class PageModel<T>
     {
+        public T Content { get; set; }
     }
 }

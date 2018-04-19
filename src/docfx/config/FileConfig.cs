@@ -13,11 +13,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the include patterns of files to be build.
         /// </summary>
-        public string[] Include { get; } = s_defaultFileInclude;
+        public readonly string[] Include = s_defaultFileInclude;
 
         /// <summary>
         /// Gets the exclude patterns of files to be build.
         /// </summary>
-        public string[] Exclude { get; } = s_defaultFileExclude;
+        public readonly string[] Exclude = s_defaultFileExclude;
     }
 }

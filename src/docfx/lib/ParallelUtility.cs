@@ -17,12 +17,39 @@ namespace Microsoft.Docs.Build
             MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded,
             BoundedCapacity = DataflowBlockOptions.Unbounded,
             EnsureOrdered = false,
-
         };
 
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null, Action<Exception, T> error = null)
         {
-            return Task.CompletedTask;
+            var done = 0;
+            var total = 0;
+            var queue = new ActionBlock<T>(Run, s_dataflowOptions);
+
+            foreach (var item in source)
+            {
+                var posted = queue.Post(item);
+                Debug.Assert(posted);
+                total++;
+            }
+
+            queue.Complete();
+            return queue.Completion;
+
+            async Task Run(T item)
+            {
+                try
+                {
+                    await action(item);
+                }
+                catch (Exception ex) when (error != null)
+                {
+                    error(ex, item);
+                }
+                finally
+                {
+                    progress?.Invoke(Interlocked.Increment(ref done), total);
+                }
+            }
         }
 
         /// <summary>
