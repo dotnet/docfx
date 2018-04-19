@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using Newtonsoft.Json.Linq;
@@ -86,6 +87,21 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
             return ToJson(stream.Documents[0].RootNode);
+        }
+
+        /// <summary>
+        /// Deserialize to JToken from TextReader
+        /// </summary>
+        public static IEnumerable<T> DeserializeMany<T>(string yaml)
+        {
+            var stream = new YamlStream();
+
+            stream.Load(new StringReader(yaml));
+
+            foreach (var document in stream.Documents)
+            {
+                yield return ToJson(document.RootNode).ToObject<T>();
+            }
         }
 
         private static JToken ToJson(YamlNode node)
