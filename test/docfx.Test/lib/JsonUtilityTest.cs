@@ -76,8 +76,8 @@ namespace Microsoft.Docs.Build
             var value = JsonUtililty.Deserialize<object[]>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
-            Assert.Equal(true, value[0]);
-            Assert.Equal(false, value[1]);
+            Assert.True((bool)value[0]);
+            Assert.False((bool)value[1]);
         }
 
         [Fact]
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
             Assert.False(value.ValueBasic.D);
-            Assert.Equal(true, value.ValueDict["a"]);
+            Assert.True((bool)value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);
@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
             Assert.False(value.ValueBasic.D);
-            Assert.Equal(true, value.ValueDict["a"]);
+            Assert.True((bool)value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);

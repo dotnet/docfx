@@ -17,6 +17,8 @@
     <Rule Id="SA1309" Action="None" />
     <!-- SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter -->
     <Rule Id="SA1311" Action="None" />
+    <!-- SA1401FieldsMustBePrivate -->
+    <Rule Id="SA1401" Action="None" />
     <!-- SA1405DebugAssertMustProvideMessageText -->
     <Rule Id="SA1405" Action="None" />
     <!-- SA1502ElementMustNotBeOnSingleLine -->
@@ -25,6 +27,16 @@
     <Rule Id="SA1503" Action="None" />
     <!-- SA1513ClosingBraceMustBeFollowedByBlankLine -->
     <Rule Id="SA1513" Action="None" />
+    <!-- SA1600ElementsMustBeDocumented -->
+    <Rule Id="SA1600" Action="None" />
+    <!-- SA1602EnumerationItemsMustBeDocumented -->
+    <Rule Id="SA1602" Action="None" />
+    <!-- SA1611ElementParametersMustBeDocumented -->
+    <Rule Id="SA1611" Action="None" />
+    <!-- SA1615ElementReturnValueMustBeDocumented -->
+    <Rule Id="SA1615" Action="None" />
+    <!-- SA1618GenericTypeParametersMustBeDocumented -->
+    <Rule Id="SA1618" Action="None" />
     <!-- SA1652EnableXMLDocumentOutput -->
     <Rule Id="SA1652" Action="None" />
   </Rules>
@@ -48,7 +60,9 @@
     <Rule Id="CA1415" Action="Warning" />
     <!-- CA1806DoNotIgnoreMethodResults -->
     <Rule Id="CA1806" Action="None" />
+    <Rule Id="CA1814" Action="None" />
     <Rule Id="CA1821" Action="Warning" />
+    <Rule Id="CA1822" Action="None" />
     <Rule Id="CA1900" Action="Warning" />
     <Rule Id="CA1901" Action="Warning" />
     <Rule Id="CA2002" Action="Warning" />

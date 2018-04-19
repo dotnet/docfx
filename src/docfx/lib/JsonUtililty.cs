@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-            ContractResolver = new CamelCasePropertyNamesContractResolver (),
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings

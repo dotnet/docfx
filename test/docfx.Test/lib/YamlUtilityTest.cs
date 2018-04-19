@@ -151,8 +151,8 @@ D: true
             var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
-            Assert.Equal(true, value[0]);
-            Assert.Equal(false, value[1]);
+            Assert.True((bool)value[0]);
+            Assert.False((bool)value[1]);
             var value2 = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
@@ -251,7 +251,7 @@ ValueBasic:
             Assert.True(value.D);
             Assert.Equal((long)1, value.ValueDict["KeyA"]);
             Assert.Equal("Good2!", value.ValueDict["KeyB"]);
-            Assert.Equal(true, value.ValueDict["KeyC"]);
+            Assert.True((bool)value.ValueDict["KeyC"]);
             Assert.Equal("ItemA", value.ValueList[0]);
             Assert.Equal("True", value.ValueList[1]);
             Assert.Equal("3", value.ValueList[2]);

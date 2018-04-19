@@ -28,12 +28,12 @@ namespace Microsoft.Docs.Build
                 throw new ArgumentNullException(nameof(reader));
             }
             var line = reader.ReadLine();
-            if (line == null || !line.StartsWith("#"))
+            if (line == null || !line.StartsWith("#", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
             var content = line.TrimStart('#').Trim(' ');
-            if (!content.StartsWith(YamlMimePrefix))
+            if (!content.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }

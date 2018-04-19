@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
                 yield return parts[i] + "/";
             }
 
-            yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+            yield return path.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
 
         private bool IsFolderPath(string path)
         {
-            return path.EndsWith("/");
+            return path.EndsWith("/", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace Microsoft.Docs.Build
                             status[cur, j + 1] = string.Equals(filePart, globPart.PlainText, comparison) && status[prev, j];
                             break;
                         case GlobRegexItemType.Regex:
-                            status[cur, j + 1] = globPart.Regex.IsMatch(filePart) && status[prev, j];
+                            status[cur, j + 1] = globPart.GetRegex().IsMatch(filePart) && status[prev, j];
                             break;
                     }
                 }
@@ -550,7 +550,7 @@ namespace Microsoft.Docs.Build
         {
             if (filePart == "."
                 || filePart == ".."
-                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".")))
+                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".", StringComparison.OrdinalIgnoreCase)))
             {
                 return true;
             }
@@ -824,7 +824,7 @@ namespace Microsoft.Docs.Build
                 if (type == GlobRegexItemType.Regex)
                 {
                     var regexSegment = $"^{RegexContent}$";
-                    Regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
+                    regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
                 }
             }
 
@@ -839,7 +839,13 @@ namespace Microsoft.Docs.Build
 
             public string PlainText { get; }
 
-            public Regex Regex { get; }
+            [NonSerialized]
+            private readonly Regex regex;
+
+            public Regex GetRegex()
+            {
+                return regex;
+            }
         }
     }
 }
