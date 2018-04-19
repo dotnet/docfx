@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Docs.Build;
 using Xunit;
 
@@ -18,6 +17,8 @@ namespace Microsoft.Docs.Test
         [InlineData("https://github.com/dotnet/docfx#live", "github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "live")]
         [InlineData("https://github.com/dotnet/docfx#", "github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "master")]
         [InlineData("https://github.com/dotnet/docfx#986127a", "github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "986127a")]
+        [InlineData("https://github.com/dotnet/docfx#a#a", "github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "a#a")]
+        [InlineData("https://github.com/dotnet/docfx#a/c", "github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "a/c")]
         public static void GetGitInfo(string remote, string expectedDir, string expectedUrl, string expectedRev)
         {
             // Act

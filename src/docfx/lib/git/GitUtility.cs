@@ -63,11 +63,15 @@ namespace Microsoft.Docs.Build
         /// <param name="remote">The remote url</param>
         /// <param name="path">The path to clone</param>
         /// <returns>Task status</returns>
-        public static Task Clone(string cwd, string remote, string path)
+        public static Task Clone(string cwd, string remote, string path, string branch = null)
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
-            return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}");
+            var cmd = string.IsNullOrEmpty(branch)
+                ? $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}"
+                : $"clone -b {branch} --single-branch {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}";
+
+            return ExecuteNonQuery(cwd, cmd);
         }
 
         /// <summary>

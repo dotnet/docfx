@@ -25,18 +25,18 @@ namespace Microsoft.Docs.Build
         /// Get git repo information from git remote href, like https://github.com/org/repo#master
         /// </summary>
         /// <param name="remote">The git remote href</param>
-        /// <returns>The git repo information including local dir, git remote url and branch</returns>
-        public static (string dir, string url, string rev) GetGitInfo(string remote)
+        /// <returns>The git repo information including local dir, git remote url and the ref sepc</returns>
+        public static (string restoreDir, string url, string refSpec) GetGitInfo(string remote)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
             var uri = new Uri(remote);
-            var rev = (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) ? "master" : uri.Fragment.Substring(1);
+            var refSpec = (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) ? "master" : uri.Fragment.Substring(1);
             var url = uri.GetLeftPart(UriPartial.Path);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
             var dir = Path.Combine(s_restoreDir, repo);
 
-            return (PathUtility.NormalizeFolder(dir), url, rev);
+            return (PathUtility.NormalizeFolder(dir), url, refSpec);
         }
 
         // Recursively restore dependent repo including their children
@@ -56,30 +56,25 @@ namespace Microsoft.Docs.Build
         // Fetch or clone dependent repo to local
         private static async Task<string> FetchOrCloneDependentRepo(string href)
         {
-            var (dir, url, rev) = GetGitInfo(href);
+            var (restoreDir, url, rev) = GetGitInfo(href);
 
             await ProcessUtility.ProcessLock(
                 async () =>
                 {
-                    if (GitUtility.IsRepo(dir))
+                    if (GitUtility.IsRepo(restoreDir))
                     {
                         // already exists, just pull the new updates from remote
-                        await GitUtility.Pull(dir);
+                        await GitUtility.Pull(restoreDir);
                     }
                     else
                     {
-                        // doesn't exist yet, clone this repo
-                        await GitUtility.Clone(dir, url, dir);
-
-                        if (!string.IsNullOrEmpty(rev))
-                        {
-                            await GitUtility.Checkout(dir, false, rev);
-                        }
+                        // doesn't exist yet, clone this repo to a speciiced branch
+                        await GitUtility.Clone(restoreDir, url, restoreDir, rev);
                     }
                 },
-                Path.Combine(dir, ".lock"));
+                Path.Combine(restoreDir, ".lock"));
 
-            return dir;
+            return restoreDir;
         }
     }
 }

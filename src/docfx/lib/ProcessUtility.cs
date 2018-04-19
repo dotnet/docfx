@@ -119,10 +119,11 @@ namespace Microsoft.Docs.Build
         public static async Task ProcessLock(Func<Task> action, string lockPath, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockPath));
+            Debug.Assert(!string.IsNullOrEmpty(Path.GetDirectoryName(lockPath)));
             Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
 
-            using (var lockFile = await AcquireFileStreamLock(lockPath, retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {
                 try
                 {
@@ -138,25 +139,19 @@ namespace Microsoft.Docs.Build
         private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
         {
             var retryCount = 0;
-            Exception exception = null;
-            while (retryCount < retry)
+            while (true)
             {
                 try
                 {
                     return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
                 }
-                catch (Exception e)
+                catch when (retryCount++ < retry)
                 {
                     // TODO: error handling
                     // TODO: notify user current waiting process
-                    exception = e;
                     await Task.Delay(retryTimeSpanInterval);
                 }
-
-                retryCount++;
             }
-
-            throw exception;
         }
     }
 }

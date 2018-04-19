@@ -7,12 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Microsoft.Docs.Build.lib
+namespace Microsoft.Docs.Build
 {
     public static class ProcessUtilityTest
     {
         [Fact]
-        public static async Task ConcurrencyOperations_CreateFile_Expect_NoException()
+        public static async Task ConcurrencyCreatingFileShouldNotThrowNoException()
         {
             var fileName = $".process_test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(i => ProcessUtility.ProcessLock(
