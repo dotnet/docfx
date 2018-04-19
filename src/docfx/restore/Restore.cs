@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="remote">The git remote href</param>
         /// <returns>The git repo information including local dir, git remote url and the ref sepc</returns>
-        public static (string restoreDir, string url, string refSpec) GetGitInfo(string remote)
+        public static (string restoreDir, string url, string refSpec) GetGitRestoreInfo(string remote)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         // Fetch or clone dependent repo to local
         private static async Task<string> FetchOrCloneDependentRepo(string href)
         {
-            var (restoreDir, url, rev) = GetGitInfo(href);
+            var (restoreDir, url, rev) = GetGitRestoreInfo(href);
 
             await ProcessUtility.ProcessLock(
                 async () =>
