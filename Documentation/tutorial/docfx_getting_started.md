@@ -28,6 +28,8 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 *Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
 Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `choco install docfx -y`.
 
+DocFX also ships as a [Homebrew package](http://brewformulas.org/docfx), install with `brew install docfx`.
+
 Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
