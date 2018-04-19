@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        // doesn't exist yet, clone this repo to a speciiced branch
+                        // doesn't exist yet, clone this repo to a specified branch
                         await GitUtility.Clone(restoreDir, url, restoreDir, rev);
                     }
                 },
