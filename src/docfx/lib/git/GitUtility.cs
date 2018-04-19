@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>
-        /// <returns>The git repo root path</returns>
+        /// <returns>The git repo root path. null if the repo root is not found</returns>
         public static string FindRepo(string path)
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
@@ -30,14 +30,30 @@ namespace Microsoft.Docs.Build
             var repo = path;
             while (!string.IsNullOrEmpty(repo))
             {
-                var gitPath = Path.Combine(repo, ".git");
-                if (Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */)
+                if (IsRepo(repo))
                 {
                     return repo;
                 }
+
                 repo = Path.GetDirectoryName(repo);
             }
-            return repo;
+
+            return string.IsNullOrEmpty(repo) ? null : repo;
+        }
+
+        /// <summary>
+        /// Determine if the path is a git repo
+        /// </summary>
+        /// <param name="path">The repo path</param>
+        /// <returns>Is git repo or not</returns>
+        public static bool IsRepo(string path)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
+
+            var gitPath = Path.Combine(path, ".git");
+
+            return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
         }
 
         /// <summary>
@@ -47,11 +63,15 @@ namespace Microsoft.Docs.Build
         /// <param name="remote">The remote url</param>
         /// <param name="path">The path to clone</param>
         /// <returns>Task status</returns>
-        public static Task Clone(string cwd, string remote, string path)
+        public static Task Clone(string cwd, string remote, string path, string branch = null)
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
-            return ExecuteNonQuery(cwd, $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}");
+            var cmd = string.IsNullOrEmpty(branch)
+                ? $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}"
+                : $"clone -b {branch} --single-branch {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}";
+
+            return ExecuteNonQuery(cwd, cmd);
         }
 
         /// <summary>
@@ -132,23 +152,37 @@ namespace Microsoft.Docs.Build
                 let parts = line.Split('|')
                 select new GitCommit { Sha = parts[0], Time = DateTimeOffset.Parse(parts[1], null), AuthorName = parts[2], AuthorEmail = parts[3] }).ToList();
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, parser);
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, parser, outputHandler);
 
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x);
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler);
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(cwd));
 
             // todo: check git exist or not
-            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout);
+            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
             return parser(response);
+        }
+
+        private static void DefaultOutputHandler(string outputLine, bool isError)
+        {
+            if (isError)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine(outputLine);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine(outputLine);
+            }
         }
     }
 }
