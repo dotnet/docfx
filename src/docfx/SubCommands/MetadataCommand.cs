@@ -157,6 +157,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
                 MSBuildProperties = configModel?.MSBuildProperties,
                 OutputFolder = outputFolder,
+                CodeSourceBasePath = configModel.CodeSourceBasePath
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);

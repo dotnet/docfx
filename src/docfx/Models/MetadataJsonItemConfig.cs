@@ -43,5 +43,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("disableGitFeatures")]
         public bool DisableGitFeatures { get; set; }
+
+        [JsonProperty("codeSourceBasePath")]
+        public string CodeSourceBasePath { get; set; }
     }
 }
