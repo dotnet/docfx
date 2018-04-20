@@ -2,7 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,8 +22,9 @@ namespace Microsoft.Docs.Build
         /// <param name="commandLineArgs">The process command line args</param>
         /// <param name="cwd">The current working directory</param>
         /// <param name="timeout">The timeout setting, default is none</param>
+        /// <param name="outputHandler">The process output action</param>
         /// <returns>The executed result</returns>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null)
+        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
@@ -48,6 +51,12 @@ namespace Microsoft.Docs.Build
             // Todo: output steam to current window
             process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
             process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
+
+            if (outputHandler != null)
+            {
+                process.OutputDataReceived += (sender, e) => outputHandler(e.Data, false);
+                process.ErrorDataReceived += (sender, e) => outputHandler(e.Data, true);
+            }
 
             var processExited = new object();
             process.Exited += (a, b) =>
@@ -97,6 +106,52 @@ namespace Microsoft.Docs.Build
             }
 
             return tcs.Task;
+        }
+
+        /// <summary>
+        /// Provide a process lock function based on locking file
+        /// </summary>
+        /// <param name="action">The action you want to lock</param>
+        /// <param name="lockPath">The lock file path, default is a file with GUID name</param>
+        /// <param name="retry">The retry count, default is 600 times</param>
+        /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
+        /// <returns>The task status</returns>
+        public static async Task ProcessLock(Func<Task> action, string lockPath, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(lockPath));
+            Debug.Assert(!string.IsNullOrEmpty(Path.GetDirectoryName(lockPath)));
+            Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
+
+            using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            {
+                try
+                {
+                    await action();
+                }
+                finally
+                {
+                    File.Delete(lockPath);
+                }
+            }
+        }
+
+        private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
+        {
+            var retryCount = 0;
+            while (true)
+            {
+                try
+                {
+                    return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
+                }
+                catch when (retryCount++ < retry)
+                {
+                    // TODO: error handling
+                    // TODO: notify user current waiting process
+                    await Task.Delay(retryTimeSpanInterval);
+                }
+            }
         }
     }
 }
