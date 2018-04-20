@@ -76,8 +76,8 @@ namespace Microsoft.Docs.Build
             var value = JsonUtililty.Deserialize<object[]>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
-            Assert.Equal(true, value[0]);
-            Assert.Equal(false, value[1]);
+            Assert.True((bool)value[0]);
+            Assert.False((bool)value[1]);
         }
 
         [Fact]
@@ -95,6 +95,18 @@ namespace Microsoft.Docs.Build
                 Assert.Equal($"Good{i}!", values[i].C);
                 Assert.Equal((i % 2 == 0) ? true : false, values[i].D);
             }
+        }
+
+        [Fact]
+        public void TestClassWithReadOnlyField()
+        {
+            var json = @"
+{
+    ""b"": ""test""
+}";
+            var value = JsonUtililty.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            Assert.NotNull(value);
+            Assert.Equal("test", value.B);
         }
 
         [Fact]
@@ -148,11 +160,11 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
-            Assert.Equal(false, value.ValueBasic.D);
-            Assert.Equal(true, value.ValueDict["a"]);
+            Assert.False(value.ValueBasic.D);
+            Assert.True((bool)value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);
@@ -210,11 +222,11 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
-            Assert.Equal(true, value.D);
+            Assert.True(value.D);
             Assert.Equal(5, value.ValueBasic.B);
             Assert.Equal("Amazing!", value.ValueBasic.C);
-            Assert.Equal(false, value.ValueBasic.D);
-            Assert.Equal(true, value.ValueDict["a"]);
+            Assert.False(value.ValueBasic.D);
+            Assert.True((bool)value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
             Assert.Equal((long)10, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);
@@ -228,6 +240,11 @@ namespace Microsoft.Docs.Build
             public int B { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class ClassWithReadOnlyField
+        {
+            public readonly string B;
         }
 
         public class ClassWithMoreMembers : BasicClass

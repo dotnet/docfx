@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -17,6 +18,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     public static class JsonUtililty
     {
+        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new JsonContractResolver() };
+
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -38,8 +41,8 @@ namespace Microsoft.Docs.Build
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
 
-        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
+        private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -76,7 +79,7 @@ namespace Microsoft.Docs.Build
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return s_defaultNoneFormatSerializer.Deserialize<T>(json);
+                return DefaultDeserializer.Deserialize<T>(json);
             }
         }
 
@@ -103,6 +106,23 @@ namespace Microsoft.Docs.Build
             }
 
             return token;
+        }
+
+        private sealed class JsonContractResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+
+                if (!prop.Writable)
+                {
+                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                    {
+                        prop.Writable = true;
+                    }
+                }
+                return prop;
+            }
         }
     }
 }

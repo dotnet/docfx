@@ -4,16 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Provide Utilities of Yaml
@@ -21,8 +18,6 @@ namespace Microsoft.Docs
     public static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
-
-        private static readonly JsonSerializer s_jsonSerializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new JsonContractResolver() };
 
         /// <summary>
         /// Get YamlMime from TextReader
@@ -34,12 +29,12 @@ namespace Microsoft.Docs
                 throw new ArgumentNullException(nameof(reader));
             }
             var line = reader.ReadLine();
-            if (line == null || !line.StartsWith("#"))
+            if (line == null || !line.StartsWith("#", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
             var content = line.TrimStart('#').Trim(' ');
-            if (!content.StartsWith(YamlMimePrefix))
+            if (!content.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
@@ -68,7 +63,7 @@ namespace Microsoft.Docs
         public static T Deserialize<T>(TextReader reader)
         {
             var json = Deserialize(reader);
-            return json.ToObject<T>(s_jsonSerializer);
+            return json.ToObject<T>(JsonUtililty.DefaultDeserializer);
         }
 
         /// <summary>
@@ -143,7 +138,14 @@ namespace Microsoft.Docs
                 var obj = new JObject();
                 foreach (var (key, value) in map)
                 {
-                    obj[key.ToString()] = ToJson(value);
+                    if (key is YamlScalarNode scalarKey)
+                    {
+                        obj[scalarKey.Value] = ToJson(value);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
+                    }
                 }
                 return obj;
             }
@@ -157,23 +159,6 @@ namespace Microsoft.Docs
                 return arr;
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
-        }
-
-        private sealed class JsonContractResolver : DefaultContractResolver
-        {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                var prop = base.CreateProperty(member, memberSerialization);
-
-                if (!prop.Writable)
-                {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                    {
-                        prop.Writable = true;
-                    }
-                }
-                return prop;
-            }
         }
     }
 }
