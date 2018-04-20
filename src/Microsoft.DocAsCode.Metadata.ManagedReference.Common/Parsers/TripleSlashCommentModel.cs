@@ -332,7 +332,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     path = Path.Combine(directory, path);
                 }
 
-                ResolveCodeSource(node, path, region.Value);
+                ResolveCodeSource(node, path, region?.Value);
             }
         }
 
@@ -348,30 +348,37 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var regionCount = 0;
             foreach (var line in File.ReadLines(source))
             {
-                var match = RegionRegex.Match(line);
-                if (match.Success)
+                if (!string.IsNullOrEmpty(region))
                 {
-                    var name = match.Groups[1].Value.Trim();
-                    if (name == region)
+                    var match = RegionRegex.Match(line);
+                    if (match.Success)
                     {
-                        ++regionCount;
-                        continue;
+                        var name = match.Groups[1].Value.Trim();
+                        if (name == region)
+                        {
+                            ++regionCount;
+                            continue;
+                        }
+                        else if (regionCount > 0)
+                        {
+                            ++regionCount;
+                        }
                     }
-                    else if (regionCount > 0)
+                    else if (regionCount > 0 && EndRegionRegex.IsMatch(line))
                     {
-                        ++regionCount;
+                        --regionCount;
+                        if (regionCount == 0)
+                        {
+                            break;
+                        }
                     }
-                }
-                else if (regionCount > 0 && EndRegionRegex.IsMatch(line))
-                {
-                    --regionCount;
-                    if (regionCount == 0)
-                    {
-                        break;
-                    }
-                }
 
-                if (string.IsNullOrEmpty(region) || regionCount > 0)
+                    if (regionCount > 0)
+                    {
+                        builder.AppendLine(line);
+                    }
+                }
+                else
                 {
                     builder.AppendLine(line);
                 }
