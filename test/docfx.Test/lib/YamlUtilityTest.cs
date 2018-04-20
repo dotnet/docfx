@@ -1,15 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Newtonsoft.Json;
-
 using Xunit;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     public class YamlUtilityTest
     {
@@ -86,6 +85,32 @@ namespace Microsoft.Docs
         }
 
         [Fact]
+        public void TestNotprimitiveKey()
+        {
+            var yaml = @"
+? - item1
+  - item2
+: value
+";
+            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Deserialize(new StringReader(yaml)));
+
+            Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
+        }
+
+        [Fact]
+        public void TestAnchor()
+        {
+            var yaml = @"
+A: &anchor test
+B: *anchor
+";
+            var value = YamlUtility.Deserialize<Dictionary<string, string>>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal("test", value["A"]);
+            Assert.Equal("test", value["B"]);
+        }
+
+        [Fact]
         public void TestBasicClassWithNullCharactor()
         {
             var yaml = @"### YamlMime:Test-Yaml-Mime
@@ -126,8 +151,8 @@ D: true
             var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
-            Assert.Equal(true, value[0]);
-            Assert.Equal(false, value[1]);
+            Assert.True((bool)value[0]);
+            Assert.False((bool)value[1]);
             var value2 = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
@@ -226,7 +251,7 @@ ValueBasic:
             Assert.True(value.D);
             Assert.Equal((long)1, value.ValueDict["KeyA"]);
             Assert.Equal("Good2!", value.ValueDict["KeyB"]);
-            Assert.Equal(true, value.ValueDict["KeyC"]);
+            Assert.True((bool)value.ValueDict["KeyC"]);
             Assert.Equal("ItemA", value.ValueList[0]);
             Assert.Equal("True", value.ValueList[1]);
             Assert.Equal("3", value.ValueList[2]);
