@@ -10,8 +10,9 @@
 ## Principle
 
 1. Concise, readable, flexible.
-2. Don't include server-side config.
+2. Make base usage simple.
 3. Group config by scenario.
+4. Don't include server-side config.
 
 ## Major Changes
 1. All configs that doesn't affect build output and only consumed by OPS service side will not be defined here. They can be placed under a single object, named with `service_config`. Like: `need_preview_pull_request`, `notification_subscribers`.
