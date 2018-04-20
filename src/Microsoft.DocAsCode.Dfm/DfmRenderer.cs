@@ -80,7 +80,11 @@ namespace Microsoft.DocAsCode.Dfm
             StringBuffer content = string.Empty;
             if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
             {
-                Logger.LogWarning("The content part of [!div] syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+                Logger.LogWarning(
+                    "The content part of [!div] syntax is suggested to start in a new line.",
+                    file: splitToken.Token.SourceInfo.File,
+                    line: splitToken.Token.SourceInfo.LineNumber.ToString(),
+                    code: WarningCodes.Markdown.MissingNewLineBelowSectionHeader);
             }
             content += "<div";
             content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
@@ -100,7 +104,11 @@ namespace Microsoft.DocAsCode.Dfm
             StringBuffer content = string.Empty;
             if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
             {
-                Logger.LogWarning("The content part of NOTE/WARNING/CAUTION/IMPORTANT/NEXT syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+                Logger.LogWarning(
+                    "The content part of NOTE/WARNING/CAUTION/IMPORTANT/NEXT syntax is suggested to start in a new line.",
+                    file: splitToken.Token.SourceInfo.File,
+                    line: splitToken.Token.SourceInfo.LineNumber.ToString(),
+                    code: WarningCodes.Markdown.MissingNewLineBelowSectionHeader);
             }
             var noteToken = (DfmNoteBlockToken)splitToken.Token;
             content += "<div class=\"";

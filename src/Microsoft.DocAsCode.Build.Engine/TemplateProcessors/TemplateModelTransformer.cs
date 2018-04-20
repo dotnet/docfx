@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 message = $"Model is transformed to empty string with template \"{template.Name}\". To get the detailed view model, please run docfx with debug mode --debug";
                             }
-                            Logger.LogWarning(message);
+                            Logger.LogWarning(message, code:WarningCodes.Build.EmptyOutputFiles);
                         }
 
                         List<XRefDetails> invalidXRefs;
@@ -193,7 +193,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var distinctUids = unresolvedXRefs.Select(i => i.RawSource).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
-            Logger.LogWarning($"{distinctUids.Count} invalid cross reference(s) {distinctUids.ToDelimitedString(", ")}.");
+            Logger.LogWarning(
+                $"{distinctUids.Count} invalid cross reference(s) {distinctUids.ToDelimitedString(", ")}.",
+                code: WarningCodes.Build.UidNotFound);
             foreach (var group in unresolvedXRefs.GroupBy(i => i.SourceFile))
             {
                 // For each source file, print the first 10 invalid cross reference

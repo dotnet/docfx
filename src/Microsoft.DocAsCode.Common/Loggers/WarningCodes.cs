@@ -21,10 +21,12 @@ namespace Microsoft.DocAsCode.Common
             public const string UnknownUriTemplatePipeline = "UnknownUriTemplatePipeline";
             public const string EmptyTocItemName = "EmptyTocItemName";
             public const string EmptyInputFiles = "EmptyInputFiles";
+            public const string EmptyOutputFiles = "EmptyOutputFiles";
             public const string InvalidTagParametersConfig = "InvalidTagParametersConfig";
             public const string InvalidTaggedPropertyType = "InvalidTaggedPropertyType";
             // todo : add uid not found in SDP. 
             public const string UidNotFound = "UidNotFound";
+            public const string UnknownContentType = "UnknownContentType";
         }
 
         public static class Markdown
@@ -36,6 +38,8 @@ namespace Microsoft.DocAsCode.Common
             public const string NoVisibleTab = "NoVisibleTab";
             public const string DuplicateTabId = "DuplicateTabId";
             public const string DifferentTabIdSet = "DifferentTabIdSet";
+            public const string MissingNewLineBelowSectionHeader = "MissingNewLineBelowSectionHeader";
+            public const string InvalidTabGroup = "InvalidTabGroup";
         }
 
         public static class Overwrite
@@ -44,6 +48,11 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidOPaths = "InvalidOPaths";
             public const string DuplicateOPaths = "DuplicateOPaths";
             public const string InvalidMarkdownFragments = "InvalidMarkdownFragments";
+        }
+
+        public static class Yaml
+        {
+            public const string MissingYamlMime = "MissingYamlMime";
         }
     }
 }
