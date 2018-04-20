@@ -219,7 +219,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             DocumentSchema schema = model.Properties.Schema;
             model.Content = new SchemaProcessor(
                 new HrefInterpreter(false, true),
-                new FileInterpreter(false, true)).Process(content, schema, pc);
+                new FileInterpreter(false, true),
+                new XrefInterpreter(false, true)
+                ).Process(content, schema, pc);
         }
 
         #endregion

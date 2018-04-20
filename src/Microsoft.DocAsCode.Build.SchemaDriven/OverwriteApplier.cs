@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         new MarkdownWithContentAnchorInterpreter(new MarkdownInterpreter()),
                         new FileInterpreter(true, false),
                         new HrefInterpreter(true, false),
-                        new XrefInterpreter()
+                        new XrefInterpreter(true, false)
                     );
                     break;
                 case OverwriteModelType.MarkdownFragments:
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         new FileInterpreter(true, false),
                         new HrefInterpreter(true, false),
                         new MarkdownAstInterpreter(new MarkdownInterpreter()),
-                        new XrefInterpreter()
+                        new XrefInterpreter(true, false)
                     );
                     break;
             }
