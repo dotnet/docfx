@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static void GenerateNodeWithCommentWrapper(HtmlRenderer htmlRenderer, string tag, string message, string rawContent, int lineNumber)
         {
-            Logger.LogWarning($"At line {lineNumber}: {message}");
+            Logger.LogWarning(message, code: WarningCodes.Markdown.InvalidCodeSnippet, line: lineNumber.ToString());
             htmlRenderer.Write("<!-- BEGIN ");
             htmlRenderer.WriteEscape(tag).Write(": ");
             htmlRenderer.WriteEscape(message).Write(" -->");

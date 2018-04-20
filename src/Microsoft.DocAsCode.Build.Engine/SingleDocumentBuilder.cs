@@ -206,7 +206,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 .ToList();
             if (notToHandleItems.Count > 0)
             {
-                Logger.LogWarning($"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}");
+                Logger.LogWarning(
+                    $"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}",
+                    WarningCodes.Build.UnknownContentType);
             }
 
             try

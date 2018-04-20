@@ -82,7 +82,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             if (YamlMime.ReadMime(file.File) == null)
             {
-                Logger.LogWarning("Please add yamlmime in the first line of file, e.g.: `### YamlMime:ManagedReference`, we will decline yaml files without yamlmime in next release.", file: file.File);
+                Logger.LogWarning(
+                    "Please add yamlmime in the first line of file, e.g.: `### YamlMime:ManagedReference`, we will decline yaml files without yamlmime in next release.",
+                    file: file.File,
+                    code: WarningCodes.Yaml.MissingYamlMime);
             }
 
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);

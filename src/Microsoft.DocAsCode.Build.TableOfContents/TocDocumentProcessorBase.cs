@@ -152,7 +152,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
-                Logger.LogWarning($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRoot}\"");
+                Logger.LogWarning(
+                    $"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRoot}\"",
+                    code: WarningCodes.Build.UidNotFound);
             }
             return xref;
         }
