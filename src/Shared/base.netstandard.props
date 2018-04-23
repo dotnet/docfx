@@ -7,11 +7,14 @@
     <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
     <Product Condition=" '$(Product)' == '' ">$(MSBuildProjectName)</Product>
     <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+    <Authors>Microsoft</Authors>
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
-    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © Microsoft docfx 2015-2017</Copyright>
+    <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
 
     <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/dotnet/docfx</PackageProjectUrl>
     <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageDescription Condition=" '$(PackageDescription)' == '' " >$(Product)</PackageDescription>
 
     <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
     <VersionFSFile Condition="'$(VersionFSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.fs</VersionFSFile>        
