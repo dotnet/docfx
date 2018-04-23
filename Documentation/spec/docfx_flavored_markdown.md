@@ -583,7 +583,7 @@ a: b
 ---
 ```
 
-In GFM, it would be rendered as `<hr>a: b<hr>`.
+In GFM, it would be rendered as `<hr>a: b<hr>`.  
 In DFM, it would be rendered as a YAML header.
 
 If you want to get `<hr>` in html in DFM, please use:
@@ -611,5 +611,5 @@ For example:
 >     This is code.
 ```
 
-In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.
+In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
 In DFM, it will be rendered as a code in note.
