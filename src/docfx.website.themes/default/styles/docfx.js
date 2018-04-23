@@ -914,7 +914,7 @@ $(function () {
     function selectTabs(tabIds) {
       for (var _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
         var tabId = tabIds_1[_i];
-        var a = document$1.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
+        var a = document.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
         if (a === null) {
           return;
         }
