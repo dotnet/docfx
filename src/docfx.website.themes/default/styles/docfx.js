@@ -36,7 +36,10 @@ $(function () {
     renderAffix();
     renderTabs();
   }
-  
+
+  // Add this event listener when needed
+  // window.addEventListener('content-update', contentUpdate);
+
   function breakText() {
     $(".xref").addClass("text-break");
     var texts = $(".text-break");
@@ -544,7 +547,7 @@ $(function () {
       $('#affix a').click((e) => {
         var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
         var target = e.target.hash;
-        if (scrollspy && target){
+        if (scrollspy && target) {
           scrollspy.activate(target);
         }
       });
@@ -606,6 +609,7 @@ $(function () {
         });
       }
       if (stack.length > 0) {
+
         var topLevel = stack.pop().siblings;
         if (topLevel.length === 1) {  // if there's only one topmost header, dump it
           return topLevel[0].items;
@@ -731,8 +735,8 @@ $(function () {
         this.a = a;
         this.section = section;
       }
-      Object.defineProperty(Tab.prototype, "tabId", {
-        get: function () { return this.a.getAttribute('data-tab'); },
+      Object.defineProperty(Tab.prototype, "tabIds", {
+        get: function () { return this.a.getAttribute('data-tab').split(' '); },
         enumerable: true,
         configurable: true
       });
@@ -781,39 +785,48 @@ $(function () {
       return Tab;
     }());
 
-    initTabs();
+    initTabs(document.body);
 
-    function initTabs() {
+    function initTabs(container) {
       var queryStringTabs = readTabsQueryStringParam();
-      var elements = document.querySelectorAll('.tabGroup');
+      var elements = container.querySelectorAll('.tabGroup');
       var state = { groups: [], selectedTabs: [] };
       for (var i = 0; i < elements.length; i++) {
-        initTabGroup(elements.item(i), state);
+        var group = initTabGroup(elements.item(i));
+        if (!group.independent) {
+          updateVisibilityAndSelection(group, state);
+          state.groups.push(group);
+        }
       }
+      container.addEventListener('click', function (event) { return handleClick(event, state); });
       if (state.groups.length === 0) {
         return state;
       }
-      document.body.addEventListener('click', function (event) { return handleClick(event, state); });
-      selectTabs(queryStringTabs);
+      selectTabs(queryStringTabs, container);
       updateTabsQueryStringParam(state);
+      notifyContentUpdated();
       return state;
     }
 
-    function initTabGroup(element, state) {
-      var group = { tabs: [] };
+    function initTabGroup(element) {
+      var group = {
+        independent: element.hasAttribute('data-tab-group-independent'),
+        tabs: []
+      };
       var li = element.firstElementChild.firstElementChild;
       while (li) {
         var a = li.firstElementChild;
         a.setAttribute(contentAttrs.name, 'tab');
-        var section = document.getElementById(a.getAttribute('aria-controls'));
+        var dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ');
+        a.setAttribute('data-tab', dataTab);
+        var section = element.querySelector("[id=\"" + a.getAttribute('aria-controls') + "\"]");
         var tab = new Tab(li, a, section);
         group.tabs.push(tab);
         li = li.nextElementSibling;
       }
-      updateVisibilityAndSelection(group, state);
       element.setAttribute(contentAttrs.name, 'tab-group');
       element.tabGroup = group;
-      state.groups.push(group);
+      return group;
     }
 
     function updateVisibilityAndSelection(group, state) {
@@ -827,34 +840,40 @@ $(function () {
             firstVisibleTab = tab;
           }
         }
-        tab.selected = tab.visible && state.selectedTabs.indexOf(tab.tabId) !== -1;
+        tab.selected = tab.visible && arraysIntersect(state.selectedTabs, tab.tabIds);
         anySelected = anySelected || tab.selected;
       }
       if (!anySelected) {
         for (var _b = 0, _c = group.tabs; _b < _c.length; _b++) {
-          var tab_1 = _c[_b];
-          var index = state.selectedTabs.indexOf(tab_1.tabId);
-          if (index === -1) {
-            continue;
+          var tabIds = _c[_b].tabIds;
+          for (var _d = 0, tabIds_1 = tabIds; _d < tabIds_1.length; _d++) {
+            var tabId = tabIds_1[_d];
+            var index = state.selectedTabs.indexOf(tabId);
+            if (index === -1) {
+              continue;
+            }
+            state.selectedTabs.splice(index, 1);
           }
-          state.selectedTabs.splice(index, 1);
         }
-        var tab = firstVisibleTab;
-        tab.selected = true;
-        state.selectedTabs.push(tab.tabId);
+        firstVisibleTab.selected = true;
+        state.selectedTabs.push(tab.tabIds[0]);
       }
     }
 
     function getTabInfoFromEvent(event) {
-      if (!(event.target instanceof HTMLAnchorElement)) {
+      if (!(event.target instanceof HTMLElement)) {
         return null;
       }
-      var tabId = event.target.getAttribute('data-tab');
-      if (tabId === null) {
+      var anchor = event.target.closest('a[data-tab]');
+      if (anchor === null) {
         return null;
       }
-      var group = event.target.parentElement.parentElement.parentElement.tabGroup;
-      return { tabId: tabId, group: group, anchor: event.target };
+      var tabIds = anchor.getAttribute('data-tab').split(' ');
+      var group = anchor.parentElement.parentElement.parentElement.tabGroup;
+      if (group === undefined) {
+        return null;
+      }
+      return { tabIds: tabIds, group: group, anchor: anchor };
     }
 
     function handleClick(event, state) {
@@ -863,18 +882,29 @@ $(function () {
         return;
       }
       event.preventDefault();
-      var tabId = info.tabId, group = info.group;
-      if (state.selectedTabs.indexOf(tabId) !== -1) {
-        return;
-      }
+      info.anchor.href = 'javascript:';
+      setTimeout(function () { return info.anchor.href = '#' + info.anchor.getAttribute('aria-controls'); });
+      var tabIds = info.tabIds, group = info.group;
       var originalTop = info.anchor.getBoundingClientRect().top;
-      var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabId;
-      state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabId);
-      updateTabsQueryStringParam(state);
-      for (var _i = 0, _a = state.groups; _i < _a.length; _i++) {
-        var group_1 = _a[_i];
-        updateVisibilityAndSelection(group_1, state);
+      if (group.independent) {
+        for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+          var tab = _a[_i];
+          tab.selected = arraysIntersect(tab.tabIds, tabIds);
+        }
       }
+      else {
+        if (arraysIntersect(state.selectedTabs, tabIds)) {
+          return;
+        }
+        var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabIds[0];
+        state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0]);
+        for (var _b = 0, _c = state.groups; _b < _c.length; _b++) {
+          var group_1 = _c[_b];
+          updateVisibilityAndSelection(group_1, state);
+        }
+        updateTabsQueryStringParam(state);
+      }
+      notifyContentUpdated();
       var top = info.anchor.getBoundingClientRect().top;
       if (top !== originalTop && event instanceof MouseEvent) {
         window.scrollTo(0, window.pageYOffset + top - originalTop);
@@ -935,6 +965,24 @@ $(function () {
         urlParams[decode(match[1])] = decode(match[2]);
       }
       return urlParams;
+    }
+
+    function arraysIntersect(a, b) {
+      for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
+        var itemA = a_1[_i];
+        for (var _a = 0, b_1 = b; _a < b_1.length; _a++) {
+          var itemB = b_1[_a];
+          if (itemA === itemB) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function notifyContentUpdated() {
+      // Dispatch this event when needed
+      // window.dispatchEvent(new CustomEvent('content-update'));
     }
   }
 
