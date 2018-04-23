@@ -35,6 +35,7 @@ let config = {
     "sync": nconf.get("sync")
 };
 
+config.myget.exe = process.env.NUGETEXE || config.myget.exe;
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
 Guard.argumentNotNull(config.firefox, "config.docfx", "Can't find firefox configuration.");
 Guard.argumentNotNull(config.myget, "config.docfx", "Can't find myget configuration.");
