@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return result;
         }
 
-        public static ReferenceViewModel ToReferenceViewModel(KeyValuePair<string, ReferenceItem> model)
+        private static ReferenceViewModel ToReferenceViewModel(KeyValuePair<string, ReferenceItem> model)
         {
             Debug.Assert(model.Value != null, "Unexpected reference.");
             var result = new ReferenceViewModel

@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (!references.TryGetValue(id, out ReferenceItem reference))
             {
-                references[id] = new ReferenceItem { CommentId = commentId, };
+                references[id] = new ReferenceItem { CommentId = commentId };
             }
         }
 
