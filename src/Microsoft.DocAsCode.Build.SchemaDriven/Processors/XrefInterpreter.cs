@@ -5,11 +5,20 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System;
     using System.Collections.Generic;
-
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public class XrefInterpreter : IInterpreter
     {
+        private readonly bool _aggregateXrefs;
+        private readonly bool _resolveXrefs;
+
+        public XrefInterpreter(bool aggregateXrefs, bool resolveXref)
+        {
+            _aggregateXrefs = aggregateXrefs;
+            _resolveXrefs = resolveXref;
+        }
+
         public bool CanInterpret(BaseSchema schema)
         {
             return schema != null && schema.ContentType == ContentType.Xref;
@@ -27,11 +36,24 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }
 
-            AddUidLinkSource(context.UidLinkSources, new LinkSourceInfo
+            if (_aggregateXrefs)
             {
-                Target = val,
-                SourceFile = context.OriginalFileAndType.File
-            });
+                AddUidLinkSource(context.UidLinkSources, new LinkSourceInfo
+                {
+                    Target = val,
+                    SourceFile = context.OriginalFileAndType.File
+                });
+            }
+
+            if (_resolveXrefs)
+            {
+                // TODO: add resolved xref to the object if needed
+                var xref = context.BuildContext.GetXrefSpec(val);
+                if (xref == null)
+                {
+                    Logger.LogWarning($"Unable to find file with uid \"{val}\".", WarningCodes.Build.UidNotFound);
+                }
+            }
 
             return value;
         }

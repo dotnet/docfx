@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             new XrefPropertiesInterpreter(),
             new FileInterpreter(true, false),
             new HrefInterpreter(true, false),
-            new XrefInterpreter()
+            new XrefInterpreter(true, false)
             );
 
         public override string Name => nameof(BuildSchemaBasedDocument);
