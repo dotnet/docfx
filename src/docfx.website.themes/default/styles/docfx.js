@@ -36,10 +36,7 @@ $(function () {
     renderAffix();
     renderTabs();
   }
-
-  // Add this event listener when needed
-  // window.addEventListener('content-update', contentUpdate);
-
+  
   function breakText() {
     $(".xref").addClass("text-break");
     var texts = $(".text-break");
@@ -938,24 +935,6 @@ $(function () {
         urlParams[decode(match[1])] = decode(match[2]);
       }
       return urlParams;
-    }
-
-    function arraysIntersect(a, b) {
-      for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
-        var itemA = a_1[_i];
-        for (var _a = 0, b_1 = b; _a < b_1.length; _a++) {
-          var itemB = b_1[_a];
-          if (itemA === itemB) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    function notifyContentUpdated() {
-      // Dispatch this event when needed
-      // window.dispatchEvent(new CustomEvent('content-update'));
     }
   }
 
