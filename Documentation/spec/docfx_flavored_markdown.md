@@ -496,11 +496,11 @@ e.g.:
 ```md
 Tab Group 1:
 
-# [Tab Text 1](#tab/tabid-1)
+# [**Tab Text 1**](#tab/tabid-1)
 
 Tab content-1.
 
-# [Tab Text 2](#tab/tabid-2)
+# [**Tab Text 2**](#tab/tabid-2)
 
 Tab content-2.
 
