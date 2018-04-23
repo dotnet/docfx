@@ -11,24 +11,45 @@
 5. Naming:
    1. Use `camelCase`.
    2. Use plural form for array value.
-   3. Use singular form for str value.
-   4. Use plural form for an object that key is not fixed. e.g. `values` in `metadata`.
+   3. Use singular form for str/object value.
+   4. Use plural form for an object that key is not fixed. e.g. `values` in `fileMetadata`.
    5. Use plural form for an object that key is fixed. e.g. `contribution`.
    6. Use singular form if type is dynamic. e.g. `path`, although it can be a list.
+   7. Use verb's original form, instead of simple present form.
 6. If some settings need to be applied to file(s), use filename of foldername as the key, not glob pattern, to avoid `**.md` everywhere.
 
-## Major Changes
+## Key Points
 1. All configs that doesn't affect build output and only consumed by OPS service side will not be defined here. They can be placed under a single object, named with `service_config`. Like: `need_preview_pull_request`, `notification_subscribers`.
    Steps to integrate new config:
    1. Replace `docfx.json`s with `docfx.yml`.
    2. OPS consumes `docfx.yml` to build output, use `.openpublishing.publish.config.json` to fetch service side config.
    3. Move remaining configs `.openpublishing.publish.config.json` to server side config, then remove it.
-2. Config is the source of truth when building. If the actual source of truth is in DHS, like `product_name` or `docset_name`, config should be updated on DHS change, and validated before each build.
+2. Config is the source of truth when building. If the actual source of truth is in DHS, like `product_name` or `docset_name` in v2, config should be updated on DHS change, and validated before each build.
 2. Abandon `docset` and `group` level config. All configs is applied to all files or a set of files matching certain glob pattern.
 3. Distinguish config from metadata:
    * Metadata: part of content, can be consumed by template. In general, it's passed through from input to template. DocFX core needn't consume it.
    * Config: not content, can be consumed by DocFX
-4. Merge GlobalMetadata and FileMetadata.
+4. Many configs share the pattern "I want to applies a spcified config to some files", like `fileMetadata`, `monikerRange`. We name it **file level config**. All these configs should use this pattern:
+   1. Object form: It is a simple form that supports folder and file level config:
+   ```yml
+   aConfig:
+     a/: aValue
+     a/b.md: anotherValue
+   ```
+   2. Array form: it is a complex form that supports glob pattern config:
+   ```yml
+   aConfig:
+   - include: "a/**.md"
+     value: aValue
+   - include:
+     - "b/**.md"
+     - "c/**.yml"
+     exclude: "y/toc.yml"
+     value: anotherValue
+   ```
+   DocFX can know which type is used by seeing whether it is object or array. Both forms are parsed from top to bottom, so the latter one will overwrite the former one if conflicts.
+   > [!NOTE]
+   > Some configs like `routes` or `fragments` don't apply to this, as they means a "folder to folder" mapping.
 
 ## Config Examples
 
@@ -74,7 +95,7 @@ contributor:
     - ktoliver
     - itechedit
     - MattGLaBelle
-gitDependencies:
+dependencies:
   api-management-policy-samples: https://github.com/Azure/api-management-policy-snippets
   policy-templates: https://github.com/Azure/azure-policy
   samples-mediaservices-integration: https://github.com/Azure-Samples/media-services-dotnet-functions-integration
@@ -99,75 +120,68 @@ Extension config is supported to share default config for all OPS repos, by `def
 Some configs:
 * `name`: It's equivalent to `{docset_product}.{docset_name}` in docfx v2. `product` is no long needed as a separate config in v3.
 * `include`/`exclude`: can be `string` or `string array`, indicate which file/folder to include or exclude. All contents/resources/TOCs is defined here. Document type is inferred by extension or YAMLMime. Extra config will be provided if the default inference is wrong. The latter one will overwrite the former one if matched multiple times.
-* `metadata`: means globalMeatdata if it's an object. It's array in the sample below, which can express file metadata.
+* `fileMetadata`: It's array in the sample below, which can express file metadata.
 
 ### `dotnet/docs`: Complicate Metadata
 https://github.com/dotnet/docs/blob/master/docfx.json#L84-L126
 ``` yml
-metadata:
-- path: "**"
-  values:
-    breadcrumb_path: /dotnet/breadcrumb/toc.json
-    _displayLangs: ["csharp"]
-    author: dotnet-bot
-    ms.author: dotnetcontent
-    manager: wpickett
-    searchScope: [".NET"],
-    uhfHeaderId: MSDocsHeader-DotNet
-    apiPlatform: dotnet
-- path: _csharplang/spec
+globalMetadata:
+  breadcrumb_path: /dotnet/breadcrumb/toc.json
+  _displayLangs: ["csharp"]
+  author: dotnet-bot
+  ms.author: dotnetcontent
+  manager: wpickett
+  searchScope: [".NET"],
+  uhfHeaderId: MSDocsHeader-DotNet
+  apiPlatform: dotnet
+fileMetadata:
+- include: _csharplang/spec/**
   values:
     ms.prod: .net
     ms.topic: language-reference
     ms.date: 07/01/2017
     ms.technology: devlang-csharp
     ms.author: wiwagn
-- path: _vblang/spec
+- include: _vblang/spec/**
   values:
     ms.prod: .net
     ms.topic: language-reference
     ms.date: 07/21/2017
     ms.technology: devlang-visual-basic
     ms.author: wiwagn
-- path: csharp/quick-starts
+- includ: csharp/quick-starts/**
   values:
     ms.technology: csharp-interactive
-- path:
-  - docs/core
-  - docs/csharp
-  - docs/framework
-  - docs/fsharp
-  - docs/standard
-  - docs/visual-basic
+- include:
+  - docs/core/**
+  - docs/csharp/**
+  - docs/framework/**
+  - docs/fsharp/**
+  - docs/standard/**
+  - docs/visual-basic/**
   values:
     dev_langs: vb
 ```
-Global/File metadata is merged into single `metadata`:
-| Key           | Optional? | Type         | Description |
-|:-------------:|:---------:|:------------:|-------------|
-| paths         | Y         | string/array | one/multiple filename/foldername(s). Omit for global metadata |
-| values        |           |   object | the key-value pair of metadata applied to paths |
+* fileMetadata: *file level config* pattern.
 
 ### `ATADocs-pr`: Multiple Docset
 [op.config](https://github.com/MicrosoftDocs/ATADocs-pr/blob/master/.openpublishing.publish.config.json)
 ``` yml
 name: Azure.ATADocs
 include: "{ATADocs,ATPDocs}/**/*.{md,svg,png,jpg,jpeg,gif,svg}"
-metadata:
-- path: "**"
-  values:
-    layout: Conceptual
-    breadcrumb_path: /enterprise-mobility-security/toc.json
-- path: ATPDocs/**
-  values:
+globalMetadata:
+  layout: Conceptual
+  breadcrumb_path: /enterprise-mobility-security/toc.json
+fileMetadata:
+  ATPDocs:
     extendBreadcrumb: true
 routes:
-  ATADocs/DeployUse/**: advanced-threat-analytics/deploy-use
-  ATADocs/**: advanced-threat-analytics
-  ATADocs/PlanDesign/**: advanced-threat-analytics/plan-design
-  ATADocs/Troubleshoot/**: advanced-threat-analytics/troubleshoot
-  ATADocs/Understand/**: advanced-threat-analytics/understand-explore
-  ATPDocs/**: azure-advanced-threat-protection
+  ATADocs/: advanced-threat-analytics
+  ATADocs/DeployUse/: advanced-threat-analytics/deploy-use
+  ATADocs/PlanDesign/: advanced-threat-analytics/plan-design
+  ATADocs/Troubleshoot/: advanced-threat-analytics/troubleshoot
+  ATADocs/Understand/: advanced-threat-analytics/understand-explore
+  ATPDocs/: azure-advanced-threat-protection
 ```
 No config is set to docset level.
 * `name`: docset's name is preserved for generating documentId. We assume multiple docsets share the same name in a repo. Otherwise, the config is a bit complicated like below:
@@ -190,24 +204,24 @@ name: SQL.sql-content
 include: "docs/**/*.{md,yml}"
 exclude: "docs/mref/**"
 monikerRange:
-  advanced-analytics: ">= sql-server-2016 || = sqlallproducts-allversions",
-  analysis-services: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
-  analytics-platform-system: ">= aps-pdw-2016 || = sqlallproducts-allversions",
-  database-engine: ">= sql-server-2016 || = sqlallproducts-allversions",
-  dmx: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
-  integration-services: ">= sql-server-2016 || = sqlallproducts-allversions",
-  linux: ">= sql-server-linux-2017 || = sqlallproducts-allversions",
-  mdx: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
-  powershell: ">= aps-pdw-2016 || = azure-sqldw-latest || = azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
-  relational-databases: ">= sql-server-2016 || = sqlallproducts-allversions",
-  reporting-services: ">= sql-server-2016 || = sqlallproducts-allversions",
-  samples: "= azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
-  ssdt: ">= ssdt-15vs2017 || = sqlallproducts-allversions",
-  ssms: ">= aps-pdw-2016 || = azure-sqldw-latest || = azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
-  tools: ">= sql-server-2016 || = sqlallproducts-allversions",
-  t-sql: "= azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
-  xquery: ">= sql-server-2016 || = sqlallproducts-allversions",
-  "**": "= azuresqldb-current || = azuresqldb-mi-current || = azure-sqldw-latest || >= aps-pdw-2016 || >= sql-analysis-services-2016 || >= sql-analysis-services-2017 || >= sql-server-2016 || >= sql-server-2017 || >= sql-server-linux-2017 || >= ssdt-15vs2017 || = sqlallproducts-allversions"
+  advanced-analytics/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  analysis-services/: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
+  analytics-platform-system/: ">= aps-pdw-2016 || = sqlallproducts-allversions",
+  database-engine/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  dmx/: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
+  integration-services/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  linux/: ">= sql-server-linux-2017 || = sqlallproducts-allversions",
+  mdx/: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
+  powershell/: ">= aps-pdw-2016 || = azure-sqldw-latest || = azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
+  relational-databases/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  reporting-services/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  samples/: "= azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
+  ssdt/: ">= ssdt-15vs2017 || = sqlallproducts-allversions",
+  ssms/: ">= aps-pdw-2016 || = azure-sqldw-latest || = azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
+  tools/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  t-sql/: "= azuresqldb-current || >= sql-server-2016 || = sqlallproducts-allversions",
+  xquery/: ">= sql-server-2016 || = sqlallproducts-allversions",
+  /: "= azuresqldb-current || = azuresqldb-mi-current || = azure-sqldw-latest || >= aps-pdw-2016 || >= sql-analysis-services-2016 || >= sql-analysis-services-2017 || >= sql-server-2016 || >= sql-server-2017 || >= sql-server-linux-2017 || >= ssdt-15vs2017 || = sqlallproducts-allversions"
 metadata:
   breadcrumb_path: ~/breadcrumb/toc.yml
   searchScope: ["sql"]
@@ -221,7 +235,7 @@ contributors:
 monikerDefinition: https://api.docs.com/monikers/
 ```
 No config is set to group level.
-* `monikerRange`: an object, to specify the moniker range of a glob pattern.
+* `monikerRange`: Use *file level config* pattern.
 
 ### `MSGraph-Reference`: Markdown Fragments
 [docfx.json](https://github.com/MicrosoftDocs/MSGraph-Reference/blob/master/docfx.json)
@@ -230,7 +244,7 @@ name: MSGraphDocs_Reference
 basePath: rest
 product: MSDN
 content: docs-ref-autogen/**
-routing:
+routes:
   docs-ref-autogen/1.0: /rest/api
   docs-ref-autogen/1.0/toc.yml: /rest/api/toc/toc.json
   docs-ref-autogen/beta: /rest/api
@@ -242,12 +256,12 @@ metadata:
     breadcrumb_path: /rest/breadcrumb/toc.json
     extendBreadcrumb: true
 monikerRanges:
-  docs-ref-autogen/1.0/**: graph-rest-1.0
-  docs-ref-autogen/beta/**: graph-rest-beta
+  docs-ref-autogen/1.0/: graph-rest-1.0
+  docs-ref-autogen/beta/: graph-rest-beta
 monikerDefinition: https://api.docs.com/monikers/
 ```
 * `fragments`: an object specify the fragments folder of the contents
-* `routing`: specify the published URL. Note that the key is not glob pattern, it's a **folder** or a **file**. Glob pattern is ambiguous to express which part of path is not needed in publish URL.
+* `routes`: specify the published URL. Note that the key is not glob pattern, it's a **folder** or a **file**. Glob pattern is ambiguous to express which part of path is not needed in publish URL.
 
 ## Others
 Some configs not needed in *Phase 1* are not discussed in this spec. They will not introduce breaking changes in current design. Like:
@@ -271,3 +285,6 @@ It is not suposed to be supported for now. If it is supported, there is 2 option
 
 ### 3. Can we restrict one `name` for one `repo`?
 If so, `name` needn't be an object. That's to say, all "docsets" in a repo share the same name.
+
+### 4. DocumentId might need a dedicated section
+A lot of configs is related to it.
