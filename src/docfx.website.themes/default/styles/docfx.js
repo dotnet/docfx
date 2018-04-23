@@ -562,11 +562,11 @@ $(function () {
 
     function getHierarchy() {
       // supported headers are h1, h2, h3, and h4
-      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function(h) { return ".article article " + h; }).join(", "));
+      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", "));
 
       // a stack of hierarchy items that are currently being built
       var stack = [];
-      $headers.each(function(i, e){
+      $headers.each(function (i, e) {
         if (!e.id) {
           return;
         }
@@ -606,21 +606,23 @@ $(function () {
       while (stack.length > 1) {
         buildParent();
       }
-      
+
       function buildParent() {
         var childrenToAttach = stack.pop();
         var parentFrame = stack[stack.length - 1];
         var parent = parentFrame.siblings[parentFrame.siblings.length - 1];
-        $.each(childrenToAttach.siblings, function(i, child) {
+        $.each(childrenToAttach.siblings, function (i, child) {
           parent.items.push(child);
         });
       }
-
-      var topLevel = stack.pop().siblings;
-      if (topLevel.length === 1) {  // if there's only one topmost header, dump it
-        return topLevel[0].items;
+      if (stack.length > 0) {
+        var topLevel = stack.pop().siblings;
+        if (topLevel.length === 1) {  // if there's only one topmost header, dump it
+          return topLevel[0].items;
+        }
+        return topLevel;
       }
-      return topLevel;
+      return undefined;
     }
 
     function htmlEncode(str) {
@@ -739,8 +741,8 @@ $(function () {
         this.a = a;
         this.section = section;
       }
-      Object.defineProperty(Tab.prototype, "tabIds", {
-        get: function () { return this.a.getAttribute('data-tab').split(' '); },
+      Object.defineProperty(Tab.prototype, "tabId", {
+        get: function () { return this.a.getAttribute('data-tab'); },
         enumerable: true,
         configurable: true
       });
@@ -789,48 +791,39 @@ $(function () {
       return Tab;
     }());
 
-    initTabs(document.body);
+    initTabs();
 
-    function initTabs(container) {
+    function initTabs() {
       var queryStringTabs = readTabsQueryStringParam();
-      var elements = container.querySelectorAll('.tabGroup');
+      var elements = document.querySelectorAll('.tabGroup');
       var state = { groups: [], selectedTabs: [] };
       for (var i = 0; i < elements.length; i++) {
-        var group = initTabGroup(elements.item(i));
-        if (!group.independent) {
-          updateVisibilityAndSelection(group, state);
-          state.groups.push(group);
-        }
+        initTabGroup(elements.item(i), state);
       }
-      container.addEventListener('click', function (event) { return handleClick(event, state); });
       if (state.groups.length === 0) {
         return state;
       }
-      selectTabs(queryStringTabs, container);
+      document.body.addEventListener('click', function (event) { return handleClick(event, state); });
+      selectTabs(queryStringTabs);
       updateTabsQueryStringParam(state);
-      notifyContentUpdated();
       return state;
     }
 
-    function initTabGroup(element) {
-      var group = {
-        independent: element.hasAttribute('data-tab-group-independent'),
-        tabs: []
-      };
+    function initTabGroup(element, state) {
+      var group = { tabs: [] };
       var li = element.firstElementChild.firstElementChild;
       while (li) {
         var a = li.firstElementChild;
         a.setAttribute(contentAttrs.name, 'tab');
-        var dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ');
-        a.setAttribute('data-tab', dataTab);
-        var section = element.querySelector("[id=\"" + a.getAttribute('aria-controls') + "\"]");
+        var section = document.getElementById(a.getAttribute('aria-controls'));
         var tab = new Tab(li, a, section);
         group.tabs.push(tab);
         li = li.nextElementSibling;
       }
+      updateVisibilityAndSelection(group, state);
       element.setAttribute(contentAttrs.name, 'tab-group');
       element.tabGroup = group;
-      return group;
+      state.groups.push(group);
     }
 
     function updateVisibilityAndSelection(group, state) {
@@ -844,40 +837,34 @@ $(function () {
             firstVisibleTab = tab;
           }
         }
-        tab.selected = tab.visible && arraysIntersect(state.selectedTabs, tab.tabIds);
+        tab.selected = tab.visible && state.selectedTabs.indexOf(tab.tabId) !== -1;
         anySelected = anySelected || tab.selected;
       }
       if (!anySelected) {
         for (var _b = 0, _c = group.tabs; _b < _c.length; _b++) {
-          var tabIds = _c[_b].tabIds;
-          for (var _d = 0, tabIds_1 = tabIds; _d < tabIds_1.length; _d++) {
-            var tabId = tabIds_1[_d];
-            var index = state.selectedTabs.indexOf(tabId);
-            if (index === -1) {
-              continue;
-            }
-            state.selectedTabs.splice(index, 1);
+          var tab_1 = _c[_b];
+          var index = state.selectedTabs.indexOf(tab_1.tabId);
+          if (index === -1) {
+            continue;
           }
+          state.selectedTabs.splice(index, 1);
         }
-        firstVisibleTab.selected = true;
-        state.selectedTabs.push(tab.tabIds[0]);
+        var tab = firstVisibleTab;
+        tab.selected = true;
+        state.selectedTabs.push(tab.tabId);
       }
     }
 
     function getTabInfoFromEvent(event) {
-      if (!(event.target instanceof HTMLElement)) {
+      if (!(event.target instanceof HTMLAnchorElement)) {
         return null;
       }
-      var anchor = event.target.closest('a[data-tab]');
-      if (anchor === null) {
+      var tabId = event.target.getAttribute('data-tab');
+      if (tabId === null) {
         return null;
       }
-      var tabIds = anchor.getAttribute('data-tab').split(' ');
-      var group = anchor.parentElement.parentElement.parentElement.tabGroup;
-      if (group === undefined) {
-        return null;
-      }
-      return { tabIds: tabIds, group: group, anchor: anchor };
+      var group = event.target.parentElement.parentElement.parentElement.tabGroup;
+      return { tabId: tabId, group: group, anchor: event.target };
     }
 
     function handleClick(event, state) {
@@ -886,29 +873,18 @@ $(function () {
         return;
       }
       event.preventDefault();
-      info.anchor.href = 'javascript:';
-      setTimeout(function () { return info.anchor.href = '#' + info.anchor.getAttribute('aria-controls'); });
-      var tabIds = info.tabIds, group = info.group;
+      var tabId = info.tabId, group = info.group;
+      if (state.selectedTabs.indexOf(tabId) !== -1) {
+        return;
+      }
       var originalTop = info.anchor.getBoundingClientRect().top;
-      if (group.independent) {
-        for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
-          var tab = _a[_i];
-          tab.selected = arraysIntersect(tab.tabIds, tabIds);
-        }
+      var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabId;
+      state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabId);
+      updateTabsQueryStringParam(state);
+      for (var _i = 0, _a = state.groups; _i < _a.length; _i++) {
+        var group_1 = _a[_i];
+        updateVisibilityAndSelection(group_1, state);
       }
-      else {
-        if (arraysIntersect(state.selectedTabs, tabIds)) {
-          return;
-        }
-        var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabIds[0];
-        state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0]);
-        for (var _b = 0, _c = state.groups; _b < _c.length; _b++) {
-          var group_1 = _c[_b];
-          updateVisibilityAndSelection(group_1, state);
-        }
-        updateTabsQueryStringParam(state);
-      }
-      notifyContentUpdated();
       var top = info.anchor.getBoundingClientRect().top;
       if (top !== originalTop && event instanceof MouseEvent) {
         window.scrollTo(0, window.pageYOffset + top - originalTop);
@@ -918,7 +894,7 @@ $(function () {
     function selectTabs(tabIds) {
       for (var _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
         var tabId = tabIds_1[_i];
-        var a = document$1.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
+        var a = document.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
         if (a === null) {
           return;
         }
@@ -1083,7 +1059,7 @@ $(function () {
     function getFixedOffset() {
       return $('header').first().height();
     }
-  
+
     /**
      * If the provided href is an anchor which resolves to an element on the
      * page, scroll to it.
@@ -1093,26 +1069,26 @@ $(function () {
     function scrollIfAnchor(href, pushToHistory) {
       var match, rect, anchorOffset;
 
-      if(!ANCHOR_REGEX.test(href)) {
+      if (!ANCHOR_REGEX.test(href)) {
         return false;
       }
 
       match = document.getElementById(href.slice(1));
 
-      if(match) {
+      if (match) {
         rect = match.getBoundingClientRect();
         anchorOffset = window.pageYOffset + rect.top - getFixedOffset();
         window.scrollTo(window.pageXOffset, anchorOffset);
 
         // Add the state to history as-per normal anchor links
-        if(HISTORY_SUPPORT && pushToHistory) {
+        if (HISTORY_SUPPORT && pushToHistory) {
           history.pushState({}, document.title, location.pathname + href);
         }
       }
 
       return !!match;
     }
-  
+
     /**
      * Attempt to scroll to the current location's hash.
      */
@@ -1126,13 +1102,14 @@ $(function () {
     function delegateAnchors(e) {
       var elem = e.target;
 
-      if(scrollIfAnchor(elem.getAttribute('href'), true)) {
+      if (scrollIfAnchor(elem.getAttribute('href'), true)) {
         e.preventDefault();
       }
     }
 
     $(window).on('hashchange', scrollToCurrent);
-    $(document.body).click('a', delegateAnchors);
+    // Exclude tabbed content case
+    $('a:not([data-tab])').click(delegateAnchors);
     scrollToCurrent();
   }
 });
