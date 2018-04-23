@@ -172,12 +172,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             foreach (var item in model.References)
             {
-                result.References.Add(item.ToReferenceViewModel());
+                result.References.Add(ToReferenceViewModel(item));
             }
             return result;
         }
 
-        public static ReferenceViewModel ToReferenceViewModel(this KeyValuePair<string, ReferenceItem> model)
+        public static ReferenceViewModel ToReferenceViewModel(KeyValuePair<string, ReferenceItem> model)
         {
             Debug.Assert(model.Value != null, "Unexpected reference.");
             var result = new ReferenceViewModel
@@ -425,9 +425,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static bool? GetIsExternal(ReferenceItem reference)
         {
-            if (reference.IsDefinition != true)
+            if (reference.IsDefinition == null)
             {
                 return null;
+            }
+            if (reference.IsDefinition == false)
+            {
+                if (reference.Definition != null)
+                {
+                    return null;
+                }
+                return true;
             }
             foreach (var list in reference.Parts.Values)
             {
@@ -439,7 +447,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         private static string GetHref(ReferenceItem reference)

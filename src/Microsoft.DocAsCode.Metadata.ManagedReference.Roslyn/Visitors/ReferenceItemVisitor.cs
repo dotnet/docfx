@@ -84,6 +84,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(symbol),
                 DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified).GetName(symbol),
+                IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
             });
         }
 
