@@ -544,20 +544,13 @@ $(function () {
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
-      $('#affix').on('activate.bs.scrollspy', function (e) {
-        if (e.target) {
-          if ($(e.target).find('li.active').length > 0) {
-            return;
-          }
-          var top = $(e.target).position().top;
-          $(e.target).parents('li').each(function (i, e) {
-            top += $(e).position().top;
-          });
-          var container = $('#affix > ul');
-          var height = container.height();
-          container.scrollTop(container.scrollTop() + top - height / 2);
+      $('#affix a').click((e) => {
+        var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
+        var target = e.target.hash;
+        if (scrollspy && target){
+          scrollspy.activate(target);
         }
-      })
+      });
     }
 
     function getHierarchy() {
