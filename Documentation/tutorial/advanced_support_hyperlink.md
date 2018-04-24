@@ -1,4 +1,4 @@
-﻿🔧 Advanced: Support Hyperlink
+🔧 Advanced: Support Hyperlink
 ===============================
 
 In this topic, we will support hyperlinking in rtf files.
@@ -70,16 +70,16 @@ Prepare
 
 Update rtf document processor
 -----------------------------
-1.  Following the rules for hyperlink, add a `FixLink` help method:
-    [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=FixLink)]
+1. Following the rules for hyperlink, add a `FixLink` help method:
+   [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=FixLink)]
 
-    `RelativePath` helps us generate the links correctly.
+   `RelativePath` helps us generate the links correctly.
 
-2.  Then add `CollectLinksAndFixDocument` method:
-    [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=CollectLinksAndFixDocument)]
+2. Then add `CollectLinksAndFixDocument` method:
+   [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=CollectLinksAndFixDocument)]
 
-3.  Modify `Save` method with report links:
-    [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=Save)]
+3. Modify `Save` method with report links:
+   [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=Save)]
 
 <!-- todo : `Update Reference` is preserved for next version of plugin. -->
 

@@ -1,7 +1,7 @@
 # DocFX Document Schema v1.0 Specification
 
 ## 1. Introduction
-DocFX supports different [document processors](..\tutorial\howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.
+DocFX supports different [document processors](../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.
 
 DocFX Document Schema (abbreviated to *THIS schema* below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to **annotate**, **validate** and **interpret** the document data. 
 
@@ -19,7 +19,7 @@ DocFX Document Schema is in [JSON](http://www.json.org/) format. It borrows most
 
 ### 3.3 Interpretation
 Besides annotate and validate the input document model, *THIS schema* also defines multiple interpretations for each property of the document model.
-For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `markup` interpretation for the `summary` property, so that the property can be marked using [DFM](..\spec\docfx_flavored_markdown.md) syntax.
+For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `markup` interpretation for the `summary` property, so that the property can be marked using [DFM](../spec/docfx_flavored_markdown.md) syntax.
 
 ## 4. General Considerations
 * *THIS schema* leverages JSON schema definition, that is to say, keywords defined in JSON schema keeps its meaning in *THIS schema* when it is supported by *THIS schema*.
@@ -58,6 +58,7 @@ This is the root document object for *THIS schema*.
 | metadata        | string | In `json-pointer` format as defined in http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.9. The format for JSON pointer is defined by https://tools.ietf.org/html/rfc6901, referencing to the metadata object. Metadata object is the object to define the metadata for current document, and can be also set through `globalMetadata` or `fileMetadata` in DocFX. The default value for metadata is empty which stands for the root object.
 
 ##### Patterned Field
+
 | Field Name | Type | Description
 |------------|------|----------
 | ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
@@ -91,6 +92,7 @@ An object to describe the schema of the value of the property.
 | xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to [xrefProperties](#66-xrefproperties) for detailed description of how to leverage this property.
 
 ##### Patterned Field
+
 | Field Name | Type | Description
 |------------|------|----------
 | ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
@@ -132,7 +134,7 @@ It defines how applications interpret the property. If not defined, the behavior
 The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*.
 
 ### 6.5 mergeType
-The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
+The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](../tutorial/intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
 
@@ -169,7 +171,7 @@ A common usage of this is the **Namespace** page in ManagedReference. The **Name
       <xref uid="{{uid}}" template="class.tr.tmpl" />
     {{/children}}
     ```
-    
+
 ## 7. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
 ```yaml
@@ -285,4 +287,4 @@ Here's the schema to describe these operations:
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
     * Decision: *Remove* `d-` prefix.
-    
+

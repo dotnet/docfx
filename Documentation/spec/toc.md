@@ -1,4 +1,4 @@
-﻿# Metadata Specification
+# Metadata Specification
 ## [General Metadata Specification](metadata_format_spec.md)
 ## [.NET Metadata Specification](metadata_dotnet_spec.md)
 # Schema-driven Document Processor

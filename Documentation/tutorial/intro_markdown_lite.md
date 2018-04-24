@@ -114,7 +114,6 @@ public class MarkdownMyLabelBlockToken : IMarkdownToken
 
     public SourceInfo SourceInfo { get; }
 }
-
 ```
 
 ### Define rule

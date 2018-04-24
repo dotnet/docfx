@@ -60,8 +60,10 @@ PostProcessOutputsFile         | string                  | The file link for pos
 PostProcessorInfos             | List<[PostProcessorInfo](#postprocessorinfo-model)>  | The information of post processors
 
 ### PostProcessorInfo model
-Property                       | Type                    | Description
----------------------          | ---------------------   | ---------------------
-Name                           | string                  | The name of the step
-IncrementalContextHash         | string                  | The context hash of the step
-ContextInfoFile                | string                  | The file link for the context info 
+
+|        Property        |  Type  |            Description             |
+|------------------------|--------|------------------------------------|
+|          Name          | string |        The name of the step        |
+| IncrementalContextHash | string |    The context hash of the step    |
+|    ContextInfoFile     | string | The file link for the context info |
+
