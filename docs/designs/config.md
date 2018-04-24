@@ -13,7 +13,7 @@
    2. Use plural form for array value.
    3. Use singular form for str/object value.
    4. Use plural form for an object that key is not fixed. e.g. `values` in `fileMetadata`.
-   5. Use plural form for an object that key is fixed. e.g. `contribution`.
+   5. Use singular form for an object that key is fixed. e.g. `contribution`.
    6. Use singular form if type is dynamic. e.g. `path`, although it can be a list.
    7. Use verb's original form, instead of simple present form.
 6. If some settings need to be applied to file(s), use filename of foldername as the key, not glob pattern, to avoid `**.md` everywhere.
