@@ -230,6 +230,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.IsExternal = GetIsExternal(model.Value);
                 result.Href = GetHref(model.Value);
             }
+            else
+            {
+                result.IsExternal = true;
+            }
             return result;
         }
 
