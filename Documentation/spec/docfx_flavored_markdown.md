@@ -115,13 +115,15 @@ Allows you to insert code with code language specified. The content of specified
 * __`<codepath>`__ is the relative path in file system which indicates the code snippet file that you want to expand.
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
 
-|                          | query string using `#`                 | query string using `?`
-|--------------------------|----------------------------------------|-----------------------------------------------
-| 1. line range            | `#L{startlinenumber}-L{endlinenumber}` | `?start={startlinenumber}&end={endlinenumber}`
-| 2. tagname               | `#{tagname}`                           | `?name={tagname}`
-| 3. multiple region range | _Unsupported_                          | `?range={rangequerystring}`
-| 4. highlight lines       | _Unsupported_                          | `?highlight={rangequerystring}`
-| 5. dedent                | _Unsupported_                          | `?dedent={dedentlength}`
+
+|                          |         query string using `#`         |             query string using `?`             |
+|--------------------------|----------------------------------------|------------------------------------------------|
+|      1. line range       | `#L{startlinenumber}-L{endlinenumber}` | `?start={startlinenumber}&end={endlinenumber}` |
+|        2. tagname        |              `#{tagname}`              |               `?name={tagname}`                |
+| 3. multiple region range |             *Unsupported*              |          `?range={rangequerystring}`           |
+|    4. highlight lines    |             *Unsupported*              |        `?highlight={rangequerystring}`         |
+|        5. dedent         |             *Unsupported*              |            `?dedent={dedentlength}`            |
+
 * In `?` query string, the whole file will be included if none of the first three option is specified.
 * If `dedent` isn't specified, the maximum common indent will be trimmed automatically.
 * __`<title>`__ can be omitted.
