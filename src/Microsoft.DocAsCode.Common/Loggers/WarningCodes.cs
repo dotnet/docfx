@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode.Common
             // todo : add uid not found in SDP. 
             public const string UidNotFound = "UidNotFound";
             public const string UnknownContentType = "UnknownContentType";
+            public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
         }
 
         public static class Markdown

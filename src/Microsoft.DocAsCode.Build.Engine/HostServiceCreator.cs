@@ -74,7 +74,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}");
+                    Logger.LogError(
+                        $"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}",
+                        code: ErrorCodes.Build.InvalidInputFile);
                     throw;
                 }
             }

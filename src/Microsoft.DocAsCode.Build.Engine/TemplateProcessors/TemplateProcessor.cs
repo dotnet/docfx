@@ -91,7 +91,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
                 if (notSupportedDocumentTypes.Any())
                 {
-                    Logger.LogWarning($"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}");
+                    Logger.LogWarning(
+                        $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
+                        code: WarningCodes.Build.UnknownContentTypeForTemplate);
                 }
                 var templatesInUse = documentTypes.Select(s => _templateCollection[s]).Where(s => s != null).ToList();
                 ProcessDependenciesCore(settings.OutputFolder, templatesInUse);
