@@ -1,8 +1,7 @@
 Getting Started with *DocFX*
 ===============
 
-1. What is *DocFX*
----------------
+## 1. What is *DocFX*
 
 *DocFX* is an API documentation generator for .NET, which currently supports C# and VB.
 It generates API reference documentation from triple-slash comments in your source code.
@@ -22,8 +21,7 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 > [!Warning]
 > **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
-2. Use *DocFX* as a command-line tool
------------------------
+## 2. Use *DocFX* as a command-line tool
 
 *Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
 Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `choco install docfx -y`.
@@ -46,8 +44,7 @@ docfx docfx_project\docfx.json --serve
 
 Now you can view the generated website on http://localhost:8080.
 
-3. Use *DocFX* integrated with Visual Studio
----------------
+## 3. Use *DocFX* integrated with Visual Studio
 
 *Step1.* Create a **Class Library (.NET Framework)** project
 
@@ -72,8 +69,7 @@ Now you can view the generated website on http://localhost:8080.
 >      ]
 
 
-4. Use *DocFX* with a Build Server
----------------
+## 4. Use *DocFX* with a Build Server
 
 *DocFX* can be used in a Continuous Integration environment.
 
@@ -93,8 +89,8 @@ Many build systems set an environment variable with the branch name.  DocFX uses
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
-5. Build from source code
-----------------
+## 5. Build from source code
+
 As a prerequisite, you need:
 - [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
 - [Node.js](https://nodejs.org)
@@ -108,8 +104,8 @@ As a prerequisite, you need:
 
 *Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
 
-6. A seed project to play with *DocFX*
--------------------------
+## 6. A seed project to play with *DocFX*
+
 Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 
 1. A basic C# project under `src`.
@@ -121,8 +117,8 @@ Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 > [!Tip]
 > It's good practice to separate files with different types into different folders.
 
-7. Q&A
--------------------------
+## 7. Q&A
+
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.
 2. Q: What is `uid` and where do I find `uid`?

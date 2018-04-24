@@ -5,32 +5,28 @@ title: docfx.exe User Manual
 Doc-as-code: `docfx.exe` User Manual
 ==========================================
 
-0. Introduction
----------------
+## 0. Introduction
+
 `docfx.exe` is used to generate documentation for programs. It has the ability to:
+
 1. Extract language metadata for programing languages as defined in [Metadata Format Specification](../spec/metadata_format_spec.md). Currently language `VB` and `CSharp` are supported. The language metadata will be saved with `YAML` format as described in [YAML 1.2][1].
-
 2. Look for available conceptual files as provided and link it with existing programs with syntax described in [Section 3. Work with Metadata in Markdown](../spec/metadata_format_spec.md). Supported conceptual files are *plain text* files, *html* files, and *markdown* files.
-
 3. Generate documentation to
-
-    a. Visualize language metadata, with extra **content** provided by linked conceptual files using syntax described in [Section 3. Work with Metadata in Markdown](../spec/metadata_format_spec.md).
-
-    b. Organize and render available conceptual files. It can be easily cross-referenced with language metadata pages. We support **Docfx Flavored Markdown(DFM)** for writing conceptual files. **DFM** supports all *Github Flavored Markdown(GFM)* syntax with 2 exceptions when resolving [list](../spec/docfx_flavored_markdown.md#differences-between-dfm-and-gfm). It also adds several new features including *file inclusion*, *cross reference*, and *yaml header*. For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
+   a. Visualize language metadata, with extra **content** provided by linked conceptual files using syntax described in [Section 3. Work with Metadata in Markdown](../spec/metadata_format_spec.md).
+   b. Organize and render available conceptual files. It can be easily cross-referenced with language metadata pages. We support **Docfx Flavored Markdown(DFM)** for writing conceptual files. **DFM** supports all *Github Flavored Markdown(GFM)* syntax with 2 exceptions when resolving [list](../spec/docfx_flavored_markdown.md#differences-between-dfm-and-gfm). It also adds several new features including *file inclusion*, *cross reference*, and *yaml header*. For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 Currently generating documentations to a *client only* **website** is supported. The generated **website** can be easily published to whatever platform such as *Github Pages* and *Azure Website* with no extra effort.
 
 Generating offline documentation such as **PDF** is also supported now.
 
-1. Syntax
----------------
+## 1. Syntax
 
 ```
 docfx <command> [<args>]
 ```
 
-2. Commands
----------------
+## 2. Commands
+
 ### 2.0 Init command `docfx init`
 `docfx init` helps generate an `docfx.json` file.
 
@@ -66,8 +62,8 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 
    Multiple files are seperated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
 
-> [!Note]
-> Glob pattern is **NOT** supported in command line options.
+   > [!Note]
+   > Glob pattern is **NOT** supported in command line options.
 
 2. From *docfx.json* file, as described in **Section3**.
 
@@ -82,10 +78,12 @@ If adding option `--shouldSkipMarkup` in metadata command, it means that DocFX w
 e.g. `docfx metadata --shouldSkipMarkup`
 
 #### 2.2.3 Command option `--property <n1>=<v1>;<n2>=<v2>`
+
 An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument.
 For example: `docfx metadata --property TargetFramework=net46` generates metadata files with .NET framework 4.6. This command can be used when the project supports multiple `TargetFrameworks`.
 
 ### 2.3 Generate documentation command `docfx build`
+
 **Syntax**
 ```
 docfx build [-o:<output_path>] [-t:<template folder>]
@@ -123,6 +121,7 @@ homepage | The default content shown when no article is selected.
 ## [Roslyn Wiki](roslyn_wiki/)
 ## [Roslyn API](api_roslyn/)
 ```
+
 #### 2.3.1 Optional `<output_path>` argument
 
 The default output folder is `_site/` folder
@@ -147,6 +146,7 @@ If specified, use the template from template folder
 ```
 
 ### 2.4 Generate PDF documentation command `docfx pdf`
+
 **Syntax**
 ```
 docfx pdf [<config_file_path>] [-o:<output_path>]
@@ -158,8 +158,8 @@ docfx pdf [<config_file_path>] [-o:<output_path>]
 
 Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
 
-3. `docfx.json` Format
-------------------------
+## 3. `docfx.json` Format
+
 Top level `docfx.json` structure is key-value pair. `key` is the name of the subcommand, current supported subcommands are `metadata` and `build`.
 
 ### 3.1 Properties for `metadata`
@@ -209,7 +209,6 @@ properties               |  Defines an optional set of MSBuild properties used w
     }
   ]
 }
-
 ```
 > [!Note]
 > Make sure to specify `"TargetFramework": <one of the frameworks>` in your docfx.json when the project is targeting for multiple platforms.
@@ -428,6 +427,7 @@ Note that, metadata set in command line will merge with metadata set in `docfx.j
 Given multiple metadata files, the behavior would be **undetermined**, if same key is set in these files.
 
 #### 3.2.4 Xref service url pattern
+
 Xref service url pattern will exact url by following steps:
 
 1. Replace environment variables.
@@ -459,6 +459,7 @@ It will run as following steps:
 5. Run post pipeline `removeHost`.
 
 #### 3.2.5 SitemapOptions
+
 The SitemapOptions is to configure the values for generating [sitemap.xml](https://www.sitemaps.org/protocol.html) file.
 
 Property Name         | Type    | Description
@@ -491,7 +492,6 @@ Sample settings:
         }
     }
 }
-
 ```
 
 Possible generated sitemap.xml:
@@ -520,7 +520,8 @@ Possible generated sitemap.xml:
 ```
 
 
-###3.3 Properties for `pdf`
+### 3.3 Properties for `pdf`
+
 `pdf` supports **ALL** the [properties for `build`](#32-properties-for-build), besides that, the following table lists additional properties specified for `pdf` only.
 
 Key                      | Description
@@ -530,17 +531,18 @@ generatesAppendices      | If specified, an `appendices.pdf` file is generated c
 keepRawFiles             | If specified, the intermediate html files used to generate the PDF are not deleted after the PDF has been generated.
 wkhtmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
 
-#### 4.3.1 Properties for the `wkhtmltopdf` Key
+#### 3.3.1 Properties for the `wkhtmltopdf` Key
 
 Key                      | Description
 -------------------------|-----------------------------
 additionalArguments      | Additional arguments that should be passed to the wkhtmltopdf executable.
 
-4. Supported File Mapping Format
----------------------------------------------
+## 4. Supported File Mapping Format
+
 There are several ways to define file mapping.
 
 ### 4.1 Array Format
+
 This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:
 
@@ -568,6 +570,7 @@ escape             | **TOBEIMPLEMENTED**. Default value is `false`. If set to `t
 ```
 
 ### 4.2 Compact Format
+
 ```json
 "key": ["file1", "file2"]
 ```
@@ -575,6 +578,7 @@ escape             | **TOBEIMPLEMENTED**. Default value is `false`. If set to `t
 
 
 ### 4.3 Glob Pattern
+
 `DocFX` uses [Glob](https://github.com/vicancy/Glob) to support *glob* pattern in file path.
 It offers several options to determine how to parse the Glob pattern:
   * `caseSensitive`: Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
@@ -590,8 +594,8 @@ In general, the *glob* pattern contains the following rules:
 **SAMPLES**
 
 
-5. Q & A
----------------
+## 5. Q & A
+
 1. Do we support files outside current project folder(the folder when `docfx.json` exists)?  
    A: YES. DO specify `src` and files outside of current folder will be copied to output folder keeping the same relative path to `src`.
 2. Do we support output folder outside current project folder(the folder when `docfx.json` exists)?  

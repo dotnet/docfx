@@ -21,6 +21,7 @@ public class AppendIntegerPostProcessor : ISupportIncrementalPostProcessor
 ## Optional: Load and save customized context information from cache
 
 @Microsoft.DocAsCode.Plugins.IPostProcessorHost is the host to provide incremental post processing information as following.
+
 Property                     | Type                    | Description
 ---------------------        | ---------------------   | ---------------------
 SourceFileInfos              | List of @Microsoft.DocAsCode.Plugins.SourceFileInfo | Information of source files
@@ -28,6 +29,7 @@ ShouldTraceIncrementalInfo   | bool                  | Whether the post processo
 IsIncremental                | bool                  | Whether the post processor can be incremental
 
 @Microsoft.DocAsCode.Plugins.IPostProcessorHost can also load and save customized context information per post processor in incremental cache.
+
 Method                     | Return Type         | Description
 ---------------------      | ---------------     | ---------------------
 LoadContextInfo()          | Stream              | Load context information from last post processing

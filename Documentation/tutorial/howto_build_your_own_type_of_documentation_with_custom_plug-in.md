@@ -46,40 +46,40 @@ Create a document processor
 
 ### Create our RtfDocumentProcessor
 
-1.  Create a new class (RtfDocumentProcessor.cs) with the following code:
-    ```csharp
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
-    {
-        // todo : implements IDocumentProcessor.
-    }
-    ```
+1. Create a new class (RtfDocumentProcessor.cs) with the following code:
+   ```csharp
+   [Export(typeof(IDocumentProcessor))]
+   public class RtfDocumentProcessor : IDocumentProcessor
+   {
+       // todo : implements IDocumentProcessor.
+   }
+   ```
 
-2.  Declare that we can handle the `.rtf` file:
+2. Declare that we can handle the `.rtf` file:
 
-    [!Code-csharp[GetProcessingPriority](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=GetProcessingPriority)]
+   [!Code-csharp[GetProcessingPriority](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=GetProcessingPriority)]
 
-    Here we declare this processor can handle any `.rtf` file in the article category with normal priority.
-    When two or more processors compete for the same file, DocFX will give it to the higher priority one.
-    *Unexpected*: two or more processor declare for the same file with same priority.
+   Here we declare this processor can handle any `.rtf` file in the article category with normal priority.
+   When two or more processors compete for the same file, DocFX will give it to the higher priority one.
+   *Unexpected*: two or more processor declare for the same file with same priority.
 
-3.  Load our rtf file by reading all text:
-    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
+3. Load our rtf file by reading all text:
+   [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
-    We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs) stores the content of markdown files.
+   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs) stores the content of markdown files.
 
-4.  Implement `Save` method as follows:
-    [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Save)]
+4. Implement `Save` method as follows:
+   [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Save)]
 
-5.  `BuildSteps` property can provide several build steps for the model. We suggest implementing this in the following manner:
-    [!Code-csharp[BuildSteps](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=BuildSteps)]
+5. `BuildSteps` property can provide several build steps for the model. We suggest implementing this in the following manner:
+   [!Code-csharp[BuildSteps](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=BuildSteps)]
 
-6.  `Name` property is used to display in the log, so give any constant string you like.  
-    e.g.:  
-    [!Code-csharp[Name](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Name)]
+6. `Name` property is used to display in the log, so give any constant string you like.  
+   e.g.:  
+   [!Code-csharp[Name](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Name)]
 
-7.  Since we don't support hyperlink, keep the `UpdateHref` method empty.
-    [!Code-csharp[UpdateHref](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=UpdateHref)]
+7. Since we don't support hyperlink, keep the `UpdateHref` method empty.
+   [!Code-csharp[UpdateHref](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=UpdateHref)]
 
 View the final [RtfDocumentProcessor.cs](../codesnippet/Rtf/RtfDocumentProcessor.cs)
 
@@ -114,20 +114,20 @@ Create a document build step
 
 ### Create our RtfBuildStep:
 
-1.  Create a new class (RtfBuildStep.cs), and declare it is a build step for `RtfDocumentProcessor`:
-    ```csharp
-    [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class RtfBuildStep : IDocumentBuildStep
-    {
-        // todo : implements IDocumentBuildStep.
-    }
-    ```
+1. Create a new class (RtfBuildStep.cs), and declare it is a build step for `RtfDocumentProcessor`:
+   ```csharp
+   [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
+   public class RtfBuildStep : IDocumentBuildStep
+   {
+       // todo : implements IDocumentBuildStep.
+   }
+   ```
 
-2.  In the `Build` method, convert rtf to html:
-    [!Code-csharp[Build](../codesnippet/Rtf/RtfBuildStep.cs?name=build)]
+2. In the `Build` method, convert rtf to html:
+   [!Code-csharp[Build](../codesnippet/Rtf/RtfBuildStep.cs?name=build)]
 
-3.  Implement other methods:
-    [!Code-csharp[Others](../codesnippet/Rtf/RtfBuildStep.cs?name=Others)]
+3. Implement other methods:
+   [!Code-csharp[Others](../codesnippet/Rtf/RtfBuildStep.cs?name=Others)]
 
 View the final [RtfBuildStep.cs](../codesnippet/Rtf/RtfBuildStep.cs)
 

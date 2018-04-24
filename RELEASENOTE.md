@@ -1,4 +1,4 @@
-﻿Version Notes (Current Version: v2.35)
+Version Notes (Current Version: v2.35)
 =======================================
 
 v2.35 (Pre-release)
@@ -160,7 +160,7 @@ v2.24
 8. Add class level implements to default template. https://github.com/dotnet/docfx/issues/1223
 9. Obsolete `version` and use `group` instead.
 10. Bug fixed:
-   1. Fix #1982: c# 7.1 feature `default` is not correctly handled
+    1. Fix #1982: c# 7.1 feature `default` is not correctly handled
 
 v2.23
 -----------
@@ -552,16 +552,16 @@ v2.2.1
 
 v2.2
 -----------
-1.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
-2.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
-3.  Support plug-in for post processor.
-4.  Support href for see/seealso tags.
-5.  Improve API reference documentation of namespace and enum.
-6.  Update prerequisite to build docfx.
-7.  Update manifest schema.
-8.  Add chocolatey support in CI script.
-9.  Provide with options in build.cmd.
-10.  Bug fixes:
+1. Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
+2. Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
+3. Support plug-in for post processor.
+4. Support href for see/seealso tags.
+5. Improve API reference documentation of namespace and enum.
+6. Update prerequisite to build docfx.
+7. Update manifest schema.
+8. Add chocolatey support in CI script.
+9. Provide with options in build.cmd.
+10. Bug fixes:
     1. syntax for static class is incorrect.
     2. improve warning message about global namespace class. (https://github.com/dotnet/docfx/issues/417)
     3. fix normalizexml bug for empty `<code></code>` in tripleslashcomment.
