@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public static class GitUtilityTest
     {
@@ -16,7 +16,11 @@ namespace Microsoft.Docs.Test
         [InlineData("README.md")]
         public static async Task GetCommitsSameAsGitLog(string file)
         {
+            Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
+
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
+            Assert.NotNull(repo);
+
             var pathToRepo = PathUtility.NormalizeFile(file);
             var exe = await GitUtility.GetCommits(repo, pathToRepo);
             var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();

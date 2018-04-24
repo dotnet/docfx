@@ -8,12 +8,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Docs.Git;
 
 using FileMap = System.Collections.Generic.Dictionary<string, (string file, string parent)>;
 using TreeMap = System.Collections.Concurrent.ConcurrentDictionary<long, System.Collections.Generic.Dictionary<string, long>>;
 
-namespace Microsoft.Docs
+namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Git utility using native methods
