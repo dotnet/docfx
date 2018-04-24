@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Plugins
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException(name, nameof(name));
+                throw new ArgumentException("Uid name cannot be null or empty.", nameof(name));
             }
 
             Name = name;
