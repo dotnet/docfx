@@ -93,7 +93,7 @@
         {
             get
             {
-                return _dict.TryGetValue(IsSpecKey, out _);
+                return _dict.ContainsKey(IsSpecKey);
             }
             set
             {
