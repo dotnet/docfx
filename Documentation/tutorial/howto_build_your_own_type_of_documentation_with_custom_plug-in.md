@@ -26,7 +26,7 @@ Preparation
     otherwise add the nuget packages with the same version as DocFX.
 
 4.  Add framework assembly references:
-    `PresentationCore`, `PresentationFramework`, `WindowsBase`
+    `PresentationCore`, `PresentationFramework`, `WindowsBase`. (This step is optional in Visual Studio 2017)
 
 5.  Add a project for converting rtf to html:  
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
