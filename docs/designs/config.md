@@ -15,15 +15,16 @@
    4. Use plural form for an object that key is not fixed. e.g. `values` in `fileMetadata`.
    5. Use singular form for an object that key is fixed. e.g. `contribution`.
    6. Use singular form if type is dynamic. e.g. `path`, although it can be a list.
-   7. Use verb's original form, instead of simple present form.
+   7. Use verb's original form, instead of simple present form. e.g. `include` instead of `includes`.
 6. If some settings need to be applied to file(s), use filename of foldername as the key, not glob pattern, to avoid `**.md` everywhere.
 
 ## Key Points
 1. All configs that doesn't affect build output and only consumed by OPS service side will not be defined here. They can be placed under a single object, named with `service_config`. Like: `need_preview_pull_request`, `notification_subscribers`.
-   Steps to integrate new config:
+   Steps to integrate new config for build:
    1. Replace `docfx.json`s with `docfx.yml`.
    2. OPS consumes `docfx.yml` to build output, use `.openpublishing.publish.config.json` to fetch service side config.
    3. Move remaining configs `.openpublishing.publish.config.json` to server side config, then remove it.
+   For provision, it need a conversion tool append to the flow in v2.
 2. Config is the source of truth when building. If the actual source of truth is in DHS, like `product_name` or `docset_name` in v2, config should be updated on DHS change, and validated before each build.
 2. Abandon `docset` and `group` level config. All configs is applied to all files or a set of files matching certain glob pattern.
 3. Distinguish config from metadata:
@@ -60,9 +61,10 @@
 name: Azure.azure-documents
 default: msdocs.yml
 basePath: azure
-include:
-- articles/**/*.{md,yml,svg,png,jpg,jpeg,gif,svg}
-- bread/**/*.{md,yml}
+content:
+  include:
+  - articles/**/*.{md,yml,svg,png,jpg,jpeg,gif,svg}
+  - bread/**/*.{md,yml}
 metadata:
   breadcrumb_path: /azure/bread/toc.json
   brand: azure
@@ -168,7 +170,8 @@ fileMetadata:
 [op.config](https://github.com/MicrosoftDocs/ATADocs-pr/blob/master/.openpublishing.publish.config.json)
 ``` yml
 name: Azure.ATADocs
-include: "{ATADocs,ATPDocs}/**/*.{md,svg,png,jpg,jpeg,gif,svg}"
+content:
+  include: "{ATADocs,ATPDocs}/**/*.{md,svg,png,jpg,jpeg,gif,svg}"
 globalMetadata:
   layout: Conceptual
   breadcrumb_path: /enterprise-mobility-security/toc.json
@@ -201,8 +204,9 @@ No config is set to docset level.
 [docfx.json](https://github.com/MicrosoftDocs/sql-docs-pr/blob/release-ops-versioning-2/docs/docfx.json)
 ``` yml
 name: SQL.sql-content
-include: "docs/**/*.{md,yml}"
-exclude: "docs/mref/**"
+content:
+  include: "docs/**/*.{md,yml}"
+  exclude: "docs/mref/**"
 monikerRange:
   advanced-analytics/: ">= sql-server-2016 || = sqlallproducts-allversions",
   analysis-services/: ">= sql-analysis-services-2016 || = sqlallproducts-allversions",
