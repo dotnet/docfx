@@ -1,7 +1,7 @@
 Version Notes (Current Version: v2.35)
 =======================================
 
-v2.35 (Pre-release)
+v2.35
 -----------
 1. Bug fix:
    1. Fix Tabbed Content rendering bug. (#2645)
