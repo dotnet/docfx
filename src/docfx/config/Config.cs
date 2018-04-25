@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public Dictionary<string, string> Dependencies { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
