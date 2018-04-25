@@ -21,9 +21,9 @@ Preparation
     * `System.Collections.Immutable` with version 1.3.1
     * `Microsoft.Composition` with version 1.0.31
 
-3.  Add `Microsoft.DocAsCode.Plugins`  
+3.  Add `Microsoft.DocAsCode.Plugins` and `Microsoft.DocAsCode.Common`
     If building DocFX from source code then add a reference to the project,
-    otherwise add the nuget package `Microsoft.DocAsCode.Plugins` with the same version as DocFX.
+    otherwise add the nuget packages with the same version as DocFX.
 
 4.  Add framework assembly references:
     `PresentationCore`, `PresentationFramework`, `WindowsBase`
@@ -31,7 +31,7 @@ Preparation
 5.  Add a project for converting rtf to html:  
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
 
-6.  Copy the code file StaTaskScheduler.cs from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
+6.  Copy the code file `C#,C++,F#,VB\ParallelExtensionsExtras\TaskSchedulers\StaTaskScheduler.cs` from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
 
 Create a document processor
 ---------------------------
