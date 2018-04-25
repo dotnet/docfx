@@ -56,6 +56,18 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Encode file/folder name to a valide file/folder name
+        /// </summary>
+        /// <param name="path">The file path</param>
+        /// <returns>The encoded file path</returns>
+        public static string Encode(string path)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            return Uri.EscapeDataString(path);
+        }
+
+        /// <summary>
         /// A normalized file cannot end with `/`, does not contain `\` and does not have consecutive `.` or `/`.
         /// </summary>
         /// <param name="path">The file path want to be normalized</param>

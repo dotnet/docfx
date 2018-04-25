@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        private static readonly string s_lockDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "lock");
+
         /// <summary>
         /// Execute process with args
         /// </summary>
@@ -111,18 +113,19 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Provide a process lock function based on locking file
         /// </summary>
+        /// <param name="lockRelativePath">The lock file relative path</param>
         /// <param name="action">The action you want to lock</param>
-        /// <param name="lockPath">The lock file path, default is a file with GUID name</param>
         /// <param name="retry">The retry count, default is 600 times</param>
         /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
         /// <returns>The task status</returns>
-        public static async Task ProcessLock(Func<Task> action, string lockPath, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task ProcessLock(string lockRelativePath, Func<Task> action, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
         {
-            Debug.Assert(!string.IsNullOrEmpty(lockPath));
-            Debug.Assert(!string.IsNullOrEmpty(Path.GetDirectoryName(lockPath)));
-            Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockPath));
-            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
+            Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
+            Debug.Assert(!Path.IsPathRooted(lockRelativePath));
+            Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockRelativePath));
 
+            var lockPath = Path.Combine(s_lockDir, lockRelativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
             using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {
                 try

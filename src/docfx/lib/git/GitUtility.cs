@@ -67,11 +67,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
+            Directory.CreateDirectory(cwd);
             var cmd = string.IsNullOrEmpty(branch)
                 ? $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}"
                 : $"clone -b {branch} --single-branch {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}";
 
-            return ExecuteNonQuery(cwd, cmd);
+            return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
         }
 
         /// <summary>
@@ -173,6 +174,11 @@ namespace Microsoft.Docs.Build
 
         private static void DefaultOutputHandler(string outputLine, bool isError)
         {
+            if (string.IsNullOrEmpty(outputLine))
+            {
+                return;
+            }
+
             if (isError)
             {
                 Console.BackgroundColor = ConsoleColor.Red;

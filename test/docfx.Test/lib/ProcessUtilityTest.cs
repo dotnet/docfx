@@ -15,17 +15,20 @@ namespace Microsoft.Docs.Build
         public static async Task ConcurrencyCreatingFileShouldNotThrowNoException()
         {
             var fileName = $".process_test\\{Guid.NewGuid()}";
-            await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(i => ProcessUtility.ProcessLock(
-            () =>
-            {
-                using (var streamWriter = File.CreateText(fileName))
-                {
-                    streamWriter.WriteLine(fileName);
-                }
+            await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(
+                i => ProcessUtility.ProcessLock(
+                    $"{fileName}.lock",
+                    () =>
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(fileName)));
+                        using (var streamWriter = File.CreateText(fileName))
+                        {
+                            streamWriter.WriteLine(fileName);
+                        }
 
-                File.Delete(fileName);
-                return Task.FromResult(0);
-            }, Path.GetFullPath($"{fileName}.lock"))));
+                        File.Delete(fileName);
+                        return Task.FromResult(0);
+                    })));
         }
     }
 }
