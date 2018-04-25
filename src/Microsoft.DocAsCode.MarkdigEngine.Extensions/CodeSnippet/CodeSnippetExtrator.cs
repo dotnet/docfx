@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-
+    using Markdig.Helpers;
     using Microsoft.DocAsCode.Common;
 
     public class CodeSnippetExtrator
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             // match before
             while (column < line.Length && index < beforeTagName.Length)
             {
-                if (line[column] != ' ')
+                if (!CharHelper.IsWhitespace(line[column]))
                 {
                     if (char.ToLower(line[column]) != beforeTagName[index]) return false;
                     index++;
