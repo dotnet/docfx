@@ -284,7 +284,7 @@ To use a custom template, one way is to specify template path with `--template` 
 > The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
 >
 > [!Warning]
-> DocFX has embedded templates: `default`, `defaut(zh-cn)`, `pdf.default`, `statictoc` and `common`.
+> DocFX has embedded templates: `default`, `default(zh-cn)`, `pdf.default`, `statictoc` and `common`.
 > Please avoid using these as template folder name.
 
 To custom theme, one way is to specify theme name with `--theme` command option, multiple themes must be separated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json` as similar to defining template. Also, both `.zip` file and folder are supported.
