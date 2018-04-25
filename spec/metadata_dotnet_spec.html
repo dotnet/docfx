@@ -8,7 +8,7 @@
     <title>DocFx: Metadata Format for .NET Languages | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFx: Metadata Format for .NET Languages | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -87,20 +89,21 @@
 <li>Types, including class, struct, interface, enum, delegate</li>
 <li>Type members, including field, property, method, event</li>
 </ol>
-<p>Other elements such as parameters and generic parameters are not standalone <em>items</em>, they&#39;re part of other <em>items</em>.</p>
+<p>Other elements such as parameters and generic parameters are not standalone <em>items</em>, they're part of other <em>items</em>.</p>
 <h2 id="2-identifiers">2. Identifiers</h2>
 <h3 id="21-unique-identifiers">2.1 Unique Identifiers</h3>
-<p>For any <em>item</em> in .NET languages, its <em>UID</em> is defined by concatenating its <em>parent</em>&#39;s <em>UID</em> and its own <em>ID</em> with a dot.
+<p>For any <em>item</em> in .NET languages, its <em>UID</em> is defined by concatenating its <em>parent</em>'s <em>UID</em> and its own <em>ID</em> with a dot.
 The <em>ID</em> for each kind of item is defined in following sections. The basic principle here is to make <em>ID</em> format close to source code and easy for human reading.</p>
 <p><em>UID</em> is similar to the document comment id, which is started with type prefix, for example, <code>T:</code>, or <code>M:</code>, but <em>UID</em> do not.</p>
 <p>There <strong>MUST NOT</strong> be any whitespace between method name, parentheses, parameters, and commas.</p>
 <h3 id="22-spec-identifiers">2.2 Spec Identifiers</h3>
 <p>Spec identifier is another form of <em>UID</em>.
-It can spec a generic type with type arguments (for example, for parameters, return types or inheritances) and these <em>UID</em>s are unique in one yaml file. </p>
+It can spec a generic type with type arguments (for example, for parameters, return types or inheritances) and these <em>UID</em>s are unique in one yaml file.</p>
 <p>It is a simple modified Unique Identifiers, when it contains generic type arguments, it will use <code>{Name}</code> instead <code>`N</code>.
 For type parameter, it will be <code>{Name}</code>.
 And it also supports array and pointer.</p>
-<blockquote><p>Example 2.2 Spec Identifier</p>
+<blockquote>
+<p>Example 2.2 Spec Identifier</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace Foo
 {
@@ -112,28 +115,33 @@ And it also supports array and pointer.</p>
       }
    }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">references:
 - uid: System.Collections.Generic.List{System.String}
 - uid: System.Int32[]
 - uid: System.Byte*
 - uid: {TArg}
 - uid: System.Collections.Generic.List{{TArg}[]}
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h2 id="3-namespaces">3. Namespaces</h2>
 <p>For all namespaces, they are flat, e.i. namespaces do not have the parent namespace.
-So for any namespace, <em>ID</em> is always same with its <em>UID</em>. </p>
-<blockquote><p>Example 3 Namespace</p>
+So for any namespace, <em>ID</em> is always same with its <em>UID</em>.</p>
+<blockquote>
+<p>Example 3 Namespace</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System.IO
 {
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">uid: System.IO
 id: System.IO
 name: System.IO
 fullName: System.IO
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <p>The children of namespace are all the visible types in the namespace.</p>
 <h2 id="4-types">4. Types</h2>
 <p>Types include classes, structs, interfaces, enums, and delegates.
@@ -142,7 +150,8 @@ The <em>parents</em> of types are namespaces.
 The <em>children</em> of types are members.</p>
 <h4 id="id">ID</h4>
 <p><em>ID</em> for a type is also its <em>name</em>.</p>
-<blockquote><p>Example 4 Type</p>
+<blockquote>
+<p>Example 4 Type</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -152,7 +161,8 @@ The <em>children</em> of types are members.</p>
     public enum ConsoleColor {}
     public delegate void Action();
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.String
   id: String
   name.csharp: String
@@ -173,11 +183,13 @@ The <em>children</em> of types are members.</p>
   id: Action
   name.csharp: Action
   fullName.csharp: System.Action
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="41-id-for-nested-types">4.1 ID for Nested Types</h4>
 <p>For nested types, <em>ID</em> is defined by concatenating the <em>ID</em> of all its containing types and the <em>ID</em> of itself, separated by a dot.</p>
 <p>The parent type of a nested type is its containing namespace, rather than its containing type.</p>
-<blockquote><p>Example 4.1 Nested type</p>
+<blockquote>
+<p>Example 4.1 Nested type</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -186,15 +198,18 @@ The <em>children</em> of types are members.</p>
         public enum SpecialFolder {}
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">uid: System.Environment.SpecialFolder
 id: Environment.SpecialFolder
 name.csharp: Environment.SpecialFolder
 fullName.csharp: System.Environment.SpecialFolder
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="42-inheritance">4.2 Inheritance</h4>
 <p>Only class contains inheritance, and the inheritance is a list of spec id.</p>
-<blockquote><p>Example 4.2 Inheritance</p>
+<blockquote>
+<p>Example 4.2 Inheritance</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System.Collections.Generic
 {
@@ -202,13 +217,15 @@ fullName.csharp: System.Environment.SpecialFolder
     {
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">uid : System.Collections.Generic.KeyedByTypeCollection`1
 inheritance:
 - System.Collections.ObjectModel.KeyedCollection{System.Type,{TItem}}
 - System.Collections.ObjectModel.Collection{{TItem}}
 - System.Object
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="43-syntax">4.3 Syntax</h4>
 <p>The syntax part for type contains declaration, and descriptions of type parameters for different languages.
 For delegates, it also contains descriptions of parameters and a return type.</p>
@@ -222,7 +239,8 @@ all parameter types or return types are spec id.</p>
 <p>The <em>ID</em> of a constructor is defined by <code>#ctor</code>, followed by the list of the <em>UIDs</em> of its parameter types:
 When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</strong> end with parentheses.</p>
 <p>The syntax part for constructors contains a special language declaration, and descriptions of parameters.</p>
-<blockquote><p>Example 5.1 Constructor</p>
+<blockquote>
+<p>Example 5.1 Constructor</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -232,7 +250,8 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
         public String(char[] chars);
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.String.#ctor
   id: #ctor
   name.csharp: String()
@@ -241,13 +260,16 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
   id: #ctor(System.Char[])
   name.csharp: String(Char[])
   fullName.csharp: System.String.String(System.Char[])
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="52-methods">5.2 Methods</h4>
 <p>The <em>ID</em> of a method is defined by its name, followed by the list of the <em>UIDs</em> of its parameter types:</p>
 <pre><code class="lang-yaml">method_name(param1,param2,...)
-</code></pre><p>When a method does not have parameter, its <em>ID</em> <strong>MUST</strong> end with parentheses.</p>
+</code></pre>
+<p>When a method does not have parameter, its <em>ID</em> <strong>MUST</strong> end with parentheses.</p>
 <p>The syntax part for method contains a special language declaration, and descriptions of type parameters for generic method, descriptions of parameters and return type.</p>
-<blockquote><p>Example 5.2 Method</p>
+<blockquote>
+<p>Example 5.2 Method</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -257,7 +279,8 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
         public String ToString(IFormatProvider provider);
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.String.ToString
   id: ToString
   name.csharp: ToString()
@@ -266,10 +289,12 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
   id: ToString(System.IFormatProvider)
   name.csharp: ToString(IFormatProvider)
   fullName.csharp: System.String.ToString(System.IFormatProvider)
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="521-explicit-interface-implementation">5.2.1 Explicit Interface Implementation</h4>
 <p>The <em>ID</em> of an explicit interface implementation (EII) member <strong>MUST</strong> be prefixed by the <em>UID</em> of the interface it implements and replace <code>.</code> to <code>#</code>.</p>
-<blockquote><p>Example 2.6 Explicit interface implementation (EII)</p>
+<blockquote>
+<p>Example 2.6 Explicit interface implementation (EII)</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -280,19 +305,22 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
         IEnumerator IEnumerable.GetEnumerator();
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: &quot;System.String.System#Collections#IEnumerable#GetEnumerator&quot;
   id: &quot;System#Collections#IEnumerable#GetEnumerator&quot;
   name.csharp: IEnumerable.GetEnumerator()
   fullName.csharp: System.String.System.Collections.IEnumerable.GetEnumerator()
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="54-operator-overloads">5.4 Operator Overloads</h4>
 <p>The <em>IDs</em> of operator overloads are same with the metadata name (for example, <code>op_Equality</code>).
 The names of operator overloads are similar to MSDN, just remove <code>op_</code> from the metadata name of the method.
 For instance, the name of the equals (<code>==</code>) operator is <code>Equality</code>.</p>
 <p>Type conversion operator can be considered a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be <code>Explicit(System.String to System.Int32)</code>.</p>
 <p>The syntax part for methods contains a special language declaration, descriptions of parameters and return type.</p>
-<blockquote><p>Example 5.4 Operator overload</p>
+<blockquote>
+<p>Example 5.4 Operator overload</p>
 <pre><code class="lang-csharp">namespace System
 {
     public struct Decimal
@@ -305,7 +333,8 @@ For instance, the name of the equals (<code>==</code>) operator is <code>Equalit
         public static bool operator ==(String a, String b);
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.Decimal.op_Implicit(System.Char)~System.Decimal
   id: op_Implicit(System.Char)~System.Decimal
   name.csharp: Implicit(Char to Decimal)
@@ -314,14 +343,16 @@ For instance, the name of the equals (<code>==</code>) operator is <code>Equalit
   id: op_Equality(System.String,System.String)
   name.csharp: Equality(String,String)
   fullName.csharp: System.String.Equality(System.String,System.String)
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <p>Please check <a href="https://msdn.microsoft.com/en-us/library/8edha89s.aspx">overloadable operators</a> for all overloadable operators.</p>
 <h4 id="55-field-property-or-event">5.5 Field, Property or Event</h4>
 <p>The <em>ID</em> of field, property or event is its name.
 The syntax part for field contains a special language declaration and descriptions of field type.
 For property, it contains a special language declaration, descriptions of parameters, and return type.
 For event, it contains a special language declaration and descriptions of event handler type.</p>
-<blockquote><p>Example 5.5 Field, Property and Event</p>
+<blockquote>
+<p>Example 5.5 Field, Property and Event</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -336,7 +367,8 @@ For event, it contains a special language declaration and descriptions of event 
         public static event ConsoleCancelEventHandler CancelKeyPress;
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.String.Empty
   id: Empty
   name.csharp: Empty
@@ -349,10 +381,12 @@ For event, it contains a special language declaration and descriptions of event 
   id: CancelKeyPress
   name.csharp: CancelKeyPress
   fullName.csharp: System.Console.CancelKeyPress
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h4 id="56-indexer">5.6 Indexer</h4>
-<p>Indexer operator&#39;s name is metadata name, by default, it is <code>Item</code>, with brackets and parameters.</p>
-<blockquote><p>Example 5.6 Indexer</p>
+<p>Indexer operator's name is metadata name, by default, it is <code>Item</code>, with brackets and parameters.</p>
+<blockquote>
+<p>Example 5.6 Indexer</p>
 <pre><code class="lang-csharp">namespace System.Collections
 {
     public interface IList
@@ -360,17 +394,20 @@ For event, it contains a special language declaration and descriptions of event 
         object this[int index] { get; set; }
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: &quot;System.Collections.IList.Item[System.Int32]&quot;
   id: &quot;Item[System.Int32]&quot;
   name.csharp: Item[Int32]
   fullName.csharp: System.Collections.IList.Item[System.Int32]
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h2 id="6-generics">6. Generics</h2>
 <p>The <em>ID</em> of a generic type is its name with followed by <code>`n</code>, <code>n</code> and the count of generic type count, which is the same as the rule for document comment ID.
 For example, <code>Dictionary`2</code>.</p>
 <p>The <em>ID</em> of a generic method uses postfix <code>``n</code>, <code>n</code> is the count of in method parameters, for example, <code>System.Tuple.Create``1(``0)</code>.</p>
-<blockquote><p>Example 2.7 Generic</p>
+<blockquote>
+<p>Example 2.7 Generic</p>
 <pre><code class="lang-csharp">namespace System
 {
     public static class Tuple
@@ -379,7 +416,8 @@ For example, <code>Dictionary`2</code>.</p>
         public static Tuple&lt;T1, T2&gt; Create&lt;T1, T2&gt;(T1 item1, T2 item2);
     }
 }
-</code></pre><p>YAML:</p>
+</code></pre>
+<p>YAML:</p>
 <pre><code class="lang-yaml">- uid: System.Tuple.Create``1(``0)
   id: Create``1(``0)
   name.csharp:  Create&lt;T1&gt;(T1)
@@ -388,13 +426,15 @@ For example, <code>Dictionary`2</code>.</p>
   id: Create``2(``0,``1)
   name.csharp:  Create&lt;T1,T2&gt;(T1,T2)
   fullName.csharp: System.Tuple.Create&lt;T1,T2&gt;(T1,T2)
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <h2 id="7-reference">7. Reference</h2>
 <p>The reference contains the following members:
-  name, fullName, summary, isExternal, href, and more.</p>
+name, fullName, summary, isExternal, href, and more.</p>
 <p>The <em>UID</em> in reference can be a <em>Spec Id</em>, then it contains one more member: spec.
 The <em>spec</em> in reference is very like a list of lightweight references, it describes how to compose the generic type in some special language.</p>
-<blockquote><p>Example 7 <em>spec</em> for references</p>
+<blockquote>
+<p>Example 7 <em>spec</em> for references</p>
 <p>YAML:</p>
 <pre><code class="lang-yaml">references:
 - uid: System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Int32}}
@@ -411,8 +451,8 @@ The <em>spec</em> in reference is very like a list of lightweight references, it
     name: String
     fullName: System.String
     isExternal: true
-  - name: &#39;, &#39;
-    fullName: &#39;, &#39;
+  - name: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.List`1
     name: List
     fullName: System.Collections.Generic.List
@@ -423,11 +463,12 @@ The <em>spec</em> in reference is very like a list of lightweight references, it
     name: Int32
     fullName: System.Int32
     isExternal: true
-  - name: &#39;&gt;&#39;
-    fullName: &#39;&gt;&#39;
-  - name: &#39;&gt;&#39;
-    fullName: &#39;&gt;&#39;
-</code></pre></blockquote>
+  - name: '&gt;'
+    fullName: '&gt;'
+  - name: '&gt;'
+    fullName: '&gt;'
+</code></pre>
+</blockquote>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

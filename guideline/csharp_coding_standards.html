@@ -8,7 +8,7 @@
     <title>C# Coding Standards | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="C# Coding Standards | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -79,7 +81,8 @@
 
 <h2 id="introduction">Introduction</h2>
 <p>The C# Coding Standards will be used in conjunction with customized versions of <em>StyleCop</em> and <em>FxCop</em> [<strong>TODO</strong>] during both development and build process. This will help ensure that all developers on the team are in a consistent manner.</p>
-<blockquote><p>&quot;Any fool can write code that a computer can understand. Good programmers write code that humans understand&quot;.</p>
+<blockquote>
+<p>&quot;Any fool can write code that a computer can understand. Good programmers write code that humans understand&quot;.</p>
 <p>Martin Fowler. <em>Refactoring: Improving the design of existing code.</em></p>
 </blockquote>
 <h3 id="purpose">Purpose</h3>
@@ -100,12 +103,16 @@
 <p>The file name derives from the class name.</p>
 <pre><code>Class   : Observer
 Filename: Observer.cs
-</code></pre><h3 id="class-definition-order-mandatory">Class Definition Order (Mandatory)</h3>
+</code></pre>
+<h3 id="class-definition-order-mandatory">Class Definition Order (Mandatory)</h3>
 <p>The class definition contains class members in the following order, from <em>less</em> restricted scope (public) to <em>more</em> restrictive (private):</p>
 <ul>
-<li><del>~ Nested types, e.g. classes, enum, struct, etc.</del>~ Non-private nested types are not allowed.</li>
+<li>
+<pre><code class="lang-Nested"></code></pre>
+</li>
 <li>Field members (for example, member variables, const, etc.)</li>
-<li>Member functions<ul>
+<li>Member functions
+<ul>
 <li>Constructors</li>
 <li>Finalizer (Do not use unless absolutely necessary)</li>
 <li>Methods (Properties, Events, Operations, Overridables and Static)</li>
@@ -115,47 +122,51 @@ Filename: Observer.cs
 </ul>
 <h3 id="naming-mandatory">Naming (Mandatory)</h3>
 <ul>
-<li><strong>DO</strong> use plural form for namespaces</li>
+<li><p><strong>DO</strong> use plural form for namespaces</p>
+</li>
 <li><p><strong>DO</strong> use PascalCasing for all public member, type, and namespace names consisting of multiple words.</p>
-<p>  PropertyDescriptor
-  HtmlTag
-  IOStream</p>
-<blockquote><p><strong>Note</strong></p>
+<p>PropertyDescriptor
+HtmlTag
+IOStream</p>
+<blockquote>
+<p><strong>Note</strong></p>
 <p>A special case is made for two-letter acronyms in which both letters are capitalized, e.g. <em>IOStream</em></p>
 </blockquote>
 </li>
 <li><p><strong>DO</strong> use camelCasing for parameter names.</p>
-<p>  propertyDescriptor
-  htmlTag
-  ioStream</p>
+<p>propertyDescriptor
+htmlTag
+ioStream</p>
 </li>
 <li><p><strong>DO</strong> start with underscore for private fields:</p>
-<p>  private readonly Guid _userId = Guid.NewGuid();</p>
+<p>private readonly Guid _userId = Guid.NewGuid();</p>
 </li>
 <li><p><strong>DO</strong> start static readonly field and constant names with capitalized case</p>
-<p>  private static readonly IEntityAccessor EntityAccessor = null;
-      private const string MetadataName = &quot;MetadataName&quot;;</p>
+<p>private static readonly IEntityAccessor EntityAccessor = null;
+private const string MetadataName = &quot;MetadataName&quot;;</p>
 </li>
 <li><p><strong>DO NOT</strong> capitalize each word in so-called <a href="http://msdn.microsoft.com/en-us/library/ms229043.aspx">closed-form compound words</a>.</p>
 </li>
 <li><p><strong>DO</strong> use <code>Async</code> suffix in the asynchronous method names to notice people how to use it properly</p>
 <pre><code>public async Task&lt;string&gt; LoadContentAsync() { ... }
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 <h3 id="formatting-mandatory">Formatting (Mandatory)</h3>
 <ul>
 <li><strong>DO</strong> use spaces over tabs, and always show all spaces/tabs in IDE</li>
 </ul>
-<blockquote><p><strong>Tips</strong></p>
+<blockquote>
+<p><strong>Tips</strong></p>
 <p>Visual Studio &gt; Tools &gt; Options... &gt; Text Editor &gt; C# &gt; Tabs &gt; Insert spaces (Tab size: 4)</p>
 <p>Visual Studio &gt; Edit &gt; Advanced &gt; View White Space (Ctrl+R, Ctrl+W)</p>
 </blockquote>
 <ul>
 <li><p><strong>DO</strong> add <em>using</em> inside <em>namespace</em> declaration</p>
-<p>  namespace Microsoft.Content.Build.BuildWorker.UnitTest
-  {
-    using System;
-  }</p>
+<p>namespace Microsoft.Content.Build.BuildWorker.UnitTest
+{
+using System;
+}</p>
 </li>
 <li><p><strong>DO</strong> add a space when:</p>
 <ol>
@@ -176,11 +187,13 @@ Filename: Observer.cs
 <ul>
 <li><strong>DO</strong> use <code>Enviroment.NewLine</code> instead of hard-coding the line break, as Windows uses <code>\r\n</code> and OSX/Linux uses <code>\n</code>.</li>
 </ul>
-<blockquote><p><strong>Note</strong></p>
+<blockquote>
+<p><strong>Note</strong></p>
 <p>Be aware that these line-endings may cause problems in code when using <code>@&quot;&quot;</code> text blocks with line breaks, e.g.:</p>
 <pre><code class="lang-cs">var x = @&quot;line1
 line2&quot;;
-</code></pre></blockquote>
+</code></pre>
+</blockquote>
 <ul>
 <li><strong>DO</strong> use <code>Path.Combine()</code> or <code>Path.DirectorySeparatorChar</code> to separate directories. If this is not possible (such as in scripting), use a forward slash <code>/</code>. Windows is more forgiving than Linux in this regard.</li>
 </ul>
@@ -195,19 +208,23 @@ line2&quot;;
 <p>Unit test method names must be descriptive about <em>what developers are testing, under what conditions, and what the expectations are</em>. Pascal casing and underscores can be used to improve readability. The following test names are correct:</p>
 <pre><code class="lang-cs">PublicApiArgumentsShouldHaveNotNullAnnotation
 Public_api_arguments_should_have_not_null_annotation
-</code></pre><p>The following test names are incorrect:</p>
+</code></pre>
+<p>The following test names are incorrect:</p>
 <pre><code class="lang-cs">Test1
 Constructor
 FormatString
 GetData
-</code></pre><h4 id="unit-test-structure">Unit test structure</h4>
+</code></pre>
+<h4 id="unit-test-structure">Unit test structure</h4>
 <p>The contents of every unit test should be split into three distinct stages (arrange, act and assert), optionally separated by these comments:</p>
 <pre><code class="lang-cs">// Arrange
 // Act
 // Assert
-</code></pre><p>The crucial thing here is the <code>Act</code> stage is exactly one statement. That one statement calls only the one method that you are trying to test. Keeping that one statement as simple as possible is also very important. For example, this is not ideal:</p>
+</code></pre>
+<p>The crucial thing here is the <code>Act</code> stage is exactly one statement. That one statement calls only the one method that you are trying to test. Keeping that one statement as simple as possible is also very important. For example, this is not ideal:</p>
 <pre><code class="lang-cs">int result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());
-</code></pre><p>This style is not recommended because too much can go wrong in this one statement. All the <code>GetComplexParamN()</code> calls can throw exceptions for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occurred.</p>
+</code></pre>
+<p>This style is not recommended because too much can go wrong in this one statement. All the <code>GetComplexParamN()</code> calls can throw exceptions for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occurred.</p>
 <p>The ideal pattern is to move the complex parameter building into the <code>Arrange</code> section:</p>
 <pre><code class="lang-cs">// Arrange
 P1 p1 = GetComplexParam1();
@@ -219,7 +236,8 @@ int result = myObj.CallSomeMethod(p1, p2, p3);
 
 // Assert
 Assert.AreEqual(1234, result);
-</code></pre><p>Now the only reason the line with <code>CallSomeMethod()</code> can fail is if the method itself throws an error.</p>
+</code></pre>
+<p>Now the only reason the line with <code>CallSomeMethod()</code> can fail is if the method itself throws an error.</p>
 <h4 id="testing-exception-messages">Testing exception messages</h4>
 <p>Testing the specific exception message in a unit test is important. This ensures that the desired exception is being tested rather than a different exception of the same type. In order to verify the exact exception, it is important to verify the message.</p>
 <pre><code class="lang-cs">// Act
@@ -227,8 +245,9 @@ var ex = Assert.Throws&lt;InvalidOperationException&gt;(() =&gt; fruitBasket.Get
 
 // Assert
 Assert.Equal(&quot;Cannot load banana with negative identifier.&quot;, ex.Message);
-</code></pre><h4 id="use-xunitnets-plethora-of-built-in-assertions">Use xUnit.net&#39;s plethora of built-in assertions</h4>
-<p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This makes the tests much more readable and also allows the test runner to report the best possible errors (whether it&#39;s local or the CI machine). For example, these are bad:</p>
+</code></pre>
+<h4 id="use-xunitnets-plethora-of-built-in-assertions">Use xUnit.net's plethora of built-in assertions</h4>
+<p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This makes the tests much more readable and also allows the test runner to report the best possible errors (whether it's local or the CI machine). For example, these are bad:</p>
 <pre><code class="lang-cs">Assert.Equal(true, someBool);
 
 Assert.True(&quot;abc123&quot; == someString);
@@ -242,15 +261,17 @@ for (int i = 0; i &lt; list1.Length; i++) {
             list2[i],
             StringComparison.OrdinalIgnoreCase));
 }
-</code></pre><p>These are good:</p>
+</code></pre>
+<p>These are good:</p>
 <pre><code class="lang-cs">Assert.True(someBool);
 
 Assert.Equal(&quot;abc123&quot;, someString);
 
 // built-in collection assertions!
 Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
-</code></pre><h4 id="parallel-tests">Parallel tests</h4>
-<p>By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn&#39;t depend on any shared state, and so should generally be runnable in parallel. If tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel testing!</p>
+</code></pre>
+<h4 id="parallel-tests">Parallel tests</h4>
+<p>By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel testing!</p>
 <p>For functional tests, you can disable parallel tests.</p>
 <div id="disqus_thread"></div>
                 <script>

@@ -8,7 +8,7 @@
     <title>How-to: Customize DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Customize DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -86,20 +88,27 @@ In older version, you need to define a new markdown renderer and export a new <a
 <pre><code class="lang-md">```cs
 Console.WriteLine();
 ```
-</code></pre><p>And the html will be:</p>
+</code></pre>
+<p>And the html will be:</p>
 <pre><code class="lang-html">&lt;pre&gt;&lt;code class=&quot;lang-cs&quot;&gt;Console.WriteLine();
 &lt;/code&gt;&lt;/pre&gt;
-</code></pre><h3 id="set-goal">Set goal</h3>
+</code></pre>
+<h3 id="set-goal">Set goal</h3>
 <p>Now we want any csharp code (<code>cs</code>, <code>c#</code>, <code>csharp</code>) will generate following html:</p>
 <pre><code class="lang-html">&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;Console.WriteLine();
 &lt;/code&gt;&lt;/pre&gt;
-</code></pre><h3 id="create-customize-rendering-plugin-project">Create customize rendering plugin project</h3>
+</code></pre>
+<h3 id="create-customize-rendering-plugin-project">Create customize rendering plugin project</h3>
 <p>To complete this goal, we need to create a customized rendering plugin.</p>
 <ol>
-<li>Create a project, set project names.</li>
-<li>Add required nuget package: <code>Microsoft.DocAsCode.Dfm</code> with version &gt;= 2.17.</li>
-<li>Create a class, for example with name <code>CustomBlockCodeRendererPart</code>.</li>
-<li>Inherit <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase-3.html">DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;</a> (which implements @Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart).</li>
+<li><p>Create a project, set project names.</p>
+</li>
+<li><p>Add required nuget package: <code>Microsoft.DocAsCode.Dfm</code> with version &gt;= 2.17.</p>
+</li>
+<li><p>Create a class, for example with name <code>CustomBlockCodeRendererPart</code>.</p>
+</li>
+<li><p>Inherit <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase-3.html">DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;</a> (which implements @Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart).</p>
+</li>
 <li><p>Implements renderer part class like following:</p>
 <pre><code class="lang-cs">public class CustomBlockCodeRendererPart : DfmCustomizedRendererPartBase&lt;IMarkdownRenderer, MarkdownCodeBlockToken, MarkdownBlockContext&gt;
 {
@@ -121,7 +130,10 @@ Console.WriteLine();
         return result;
     }
 }
-</code></pre><div class="TIP"><h5>Tip</h5><p>If your part require dispose some resource, please implement <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</p>
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>If your part require dispose some resource, please implement <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</p>
 </div>
 </li>
 <li><p>Create another class, for example with name <code>CustomBlockCodeRendererPartProvider</code></p>
@@ -135,8 +147,10 @@ public class CustomBlockCodeRendererPartProvider : IDfmCustomizedRendererPartPro
         yield return new CustomBlockCodeRendererPart();
     }
 }
-</code></pre></li>
-<li>Build the project.</li>
+</code></pre>
+</li>
+<li><p>Build the project.</p>
+</li>
 </ol>
 <h3 id="enable-customize-rendering-plugin">Enable customize rendering plugin</h3>
 <ol>
@@ -169,10 +183,14 @@ public class CustomBlockCodeRendererPartProvider : IDfmCustomizedRendererPartPro
 </ul>
 <h3 id="how-to-create-a-new-markdown-extension-by-plugin">How to create a new markdown extension by plugin</h3>
 <ol>
-<li>Define markdown syntax (same with <a href="intro_markdown_lite.html#define-markdown-syntax">markdown lite</a>).</li>
-<li>Select token kind (same with <a href="intro_markdown_lite.html#select-token-kind">markdown lite</a>).</li>
-<li>Define token (same with <a href="intro_markdown_lite.html#define-token">markdown lite</a>).</li>
-<li>Define rule (same with <a href="intro_markdown_lite.html#define-rule">markdown lite</a>).</li>
+<li><p>Define markdown syntax (same with <a href="intro_markdown_lite.html#define-markdown-syntax">markdown lite</a>).</p>
+</li>
+<li><p>Select token kind (same with <a href="intro_markdown_lite.html#select-token-kind">markdown lite</a>).</p>
+</li>
+<li><p>Define token (same with <a href="intro_markdown_lite.html#define-token">markdown lite</a>).</p>
+</li>
+<li><p>Define rule (same with <a href="intro_markdown_lite.html#define-rule">markdown lite</a>).</p>
+</li>
 <li><p>Create a new renderer part.</p>
 <pre><code class="lang-cs">public sealed class LabelRendererPart : DfmCustomizedRendererPartBase&lt;IMarkdownRenderer, MarkdownMyLabelBlockToken, MarkdownBlockContext&gt;
 {
@@ -182,7 +200,8 @@ public class CustomBlockCodeRendererPartProvider : IDfmCustomizedRendererPartPro
 
     public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownMyLabelBlockToken token, MarkdownBlockContext context) =&gt; &quot;&lt;div id=\&quot;&quot; + token.Label + &quot;\&quot;&gt;&lt;/div&gt;&quot;;
 }
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>Create a new renderer part provider.</p>
 <pre><code class="lang-cs">[Export(typeof(IDfmCustomizedRendererPartProvider))]
 public class LabelRendererPartProvider : IDfmCustomizedRendererPartProvider
@@ -192,7 +211,8 @@ public class LabelRendererPartProvider : IDfmCustomizedRendererPartProvider
         yield return new LabelRendererPart();
     }
 }
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>Create a new DFM engine customizer.</p>
 <pre><code class="lang-cs">[Export(typeof(IDfmEngineCustomizer))]
 public class MyDfmEngineCustomizer : IDfmEngineCustomizer
@@ -203,9 +223,12 @@ public class MyDfmEngineCustomizer : IDfmEngineCustomizer
         builder.BlockRules = builder.BlockRules.Insert(index, new MyHeadingRule());
     }
 }
-</code></pre></li>
-<li>Build project.</li>
-<li>Enable and test your plugin.</li>
+</code></pre>
+</li>
+<li><p>Build project.</p>
+</li>
+<li><p>Enable and test your plugin.</p>
+</li>
 </ol>
 <div id="disqus_thread"></div>
                 <script>

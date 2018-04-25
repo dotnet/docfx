@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -104,11 +106,16 @@
 <pre><code>/- some_template/
     |- conceptual.html.primary.tmpl
     \- conceptual.mta.json.tmpl
-</code></pre><p>There are two Markdown files <code>A.md</code> and <code>B.md</code>, the content for <code>A.md</code> is:</p>
+</code></pre>
+<p>There are two Markdown files <code>A.md</code> and <code>B.md</code>, the content for <code>A.md</code> is:</p>
 <pre><code class="lang-markdown">[Link To B](B.md)
-</code></pre><p><em>DocFX Template System</em> produces two output files for <code>A.md</code>: <code>A.html</code> and <code>A.mta.json</code>, and also two output files for <code>B.md</code>: <code>B.html</code> and <code>B.mta.json</code>. According to <code>conceptual.html.primary.tmpl</code>, <code>.html</code> is the <strong>primary</strong> output file, the link from <code>A.md</code> to <code>B.md</code> is resolved to <code>B.html</code> instead of <code>B.mta.json</code>, which is to say, the content of <code>A.md</code> is transformed to:</p>
+</code></pre>
+<p><em>DocFX Template System</em> produces two output files for <code>A.md</code>: <code>A.html</code> and <code>A.mta.json</code>, and also two output files for <code>B.md</code>: <code>B.html</code> and <code>B.mta.json</code>. According to <code>conceptual.html.primary.tmpl</code>, <code>.html</code> is the <strong>primary</strong> output file, the link from <code>A.md</code> to <code>B.md</code> is resolved to <code>B.html</code> instead of <code>B.mta.json</code>, which is to say, the content of <code>A.md</code> is transformed to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;B.html&quot;&gt;Link To B&lt;/a&gt;
-</code></pre><div class="NOTE"><h5>Note</h5><p>If no <code>primary</code> <em>Renderer</em> is defined, DocFX randomly picks one <em>Renderer</em> as the primary one, and the result is unpredictable.</p>
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If no <code>primary</code> <em>Renderer</em> is defined, DocFX randomly picks one <em>Renderer</em> as the primary one, and the result is unpredictable.</p>
 </div>
 <h3 id="renderer-in-mustache-syntax"><em>Renderer</em> in Mustache syntax</h3>
 <h4 id="introduction-to-mustache">Introduction to Mustache</h4>
@@ -120,78 +127,88 @@
 <p>For example, inside a <em>Template</em>, there is a <strong>Partial</strong> file <code>part.tmpl.partial</code> with content:</p>
 <pre><code class="lang-mustache">Inside Partial
 {{ name }}
-</code></pre><p>To reuse this <strong>Partial</strong> file, <em>Renderer</em> file uses the following syntax:</p>
+</code></pre>
+<p>To reuse this <strong>Partial</strong> file, <em>Renderer</em> file uses the following syntax:</p>
 <pre><code class="lang-mustache">Inside Renderer
 {{ &gt;part }}
-</code></pre><p>It has the same effect with the following <em>Renderer</em> file:</p>
+</code></pre>
+<p>It has the same effect with the following <em>Renderer</em> file:</p>
 <pre><code class="lang-mustache">Inside Renderer
 Inside Partial
 {{ name }}
-</code></pre><h4 id="extended-syntax-for-dependencies">Extended syntax for Dependencies</h4>
-<p>When rendering the input data model into output files, for example, html files, the html file may rely on other files to display correctly. For example, the html file dependents on stylesheet file <code>main.css</code>. We call such file <code>main.css</code> a <em>Dependency</em> to the <em>Renderer</em>. </p>
+</code></pre>
+<h4 id="extended-syntax-for-dependencies">Extended syntax for Dependencies</h4>
+<p>When rendering the input data model into output files, for example, html files, the html file may rely on other files to display correctly. For example, the html file dependents on stylesheet file <code>main.css</code>. We call such file <code>main.css</code> a <em>Dependency</em> to the <em>Renderer</em>.</p>
 <p>DocFX introduces the following syntax to define the dependency for the <em>Renderer</em>:</p>
-<pre><code class="lang-mustache">{{!include(&#39;&lt;file_name&gt;&#39;)}}
-</code></pre><p><code>docfx</code> copies these dependencies to output folder preserving its relative path to the <em>Renderer</em> file.</p>
-<div class="TIP"><h5>Tip</h5><p>Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively.
+<pre><code class="lang-mustache">{{!include('&lt;file_name&gt;')}}
+</code></pre>
+<p><code>docfx</code> copies these dependencies to output folder preserving its relative path to the <em>Renderer</em> file.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively.
 So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
 </div>
 <h4 id="extended-syntax-for-master-page">Extended syntax for Master page</h4>
-<p>In most cases templates with different document types share the same layout and style, for example, most of the pages can share navbar, header, or footer. </p>
+<p>In most cases templates with different document types share the same layout and style, for example, most of the pages can share navbar, header, or footer.</p>
 <p>DocFX introduces the following syntax to use a master page:</p>
-<pre><code class="lang-mustache">{{!master(&#39;&lt;master_page_name&gt;&#39;)}}
-</code></pre><p>Inside the master page, the following syntax is used for pages to place their content body:</p>
+<pre><code class="lang-mustache">{{!master('&lt;master_page_name&gt;')}}
+</code></pre>
+<p>Inside the master page, the following syntax is used for pages to place their content body:</p>
 <pre><code class="lang-mustache">{{!body}}
-</code></pre><p>For example, with the following master page <code>_master.html</code>:
-```html with mustache
-<html>
-    <head></head>
-    <body>
+</code></pre>
+<p>For example, with the following master page <code>_master.html</code>:</p>
+<pre><code class="lang-html">&lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
         {{!body}}
-    <body>
-</body></body></html></p>
-<pre><code>
-A template `conceptual.html.tmpl` as follows:
-```mustache
-{{!master(&#39;_master.html&#39;)}}
+    &lt;body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>A template <code>conceptual.html.tmpl</code> as follows:</p>
+<pre><code class="lang-mustache">{{!master('_master.html')}}
 Hello World
-</code></pre><p>renders as the same as:</p>
+</code></pre>
+<p>renders as the same as:</p>
 <pre><code class="lang-mustache">&lt;html&gt;
     &lt;head&gt;&lt;/head&gt;
     &lt;body&gt;
         Hello World
     &lt;body&gt;
 &lt;/html&gt;
-</code></pre><h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
+</code></pre>
+<h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
 <h4 id="naming-rule-1">Naming rule</h4>
-<p><em>Renderer</em>s in <a href="https://github.com/Shopify/liquid">Liquid</a> syntax <strong>MUST</strong> end with <code>.liquid</code> extension. Liquid contains <a href="https://help.shopify.com/themes/liquid/tags/theme-tags#include">include</a> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. </p>
+<p><em>Renderer</em>s in <a href="https://github.com/Shopify/liquid">Liquid</a> syntax <strong>MUST</strong> end with <code>.liquid</code> extension. Liquid contains <a href="https://help.shopify.com/themes/liquid/tags/theme-tags#include">include</a> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template.</p>
 <h4 id="extended-syntax-for-dependencies-1">Extended syntax for Dependencies</h4>
 <p>DocFX introduces a custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code>, to specify the resource files that current template depends on.</p>
 <h4 id="extended-syntax-for-master-page-1">Extended syntax for Master page</h4>
 <p>DocFX introduces custom tags <code>master</code> and <code>body</code> to use master page:</p>
 <pre><code class="lang-liquid">{% master &lt;master_page_name&gt; %}
-</code></pre><p>Inside the master page, the following syntax is used for pages to place their content body:</p>
+</code></pre>
+<p>Inside the master page, the following syntax is used for pages to place their content body:</p>
 <pre><code class="lang-liquid">{% body %}
-</code></pre><p>For example, with the following master page <code>_master.html</code>:
-```html with liquid
-<html>
-    <head></head>
-    <body>
+</code></pre>
+<p>For example, with the following master page <code>_master.html</code>:</p>
+<pre><code class="lang-html">&lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
         {% body %}
-    <body>
-</body></body></html></p>
-<pre><code>
-A template `conceptual.html.liquid` as follows:
-```liqud
-{% master _master.html %}
+    &lt;body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>A template <code>conceptual.html.liquid</code> as follows:</p>
+<pre><code class="lang-liqud">{% master _master.html %}
 Hello World
-</code></pre><p>renders as the same as:</p>
+</code></pre>
+<p>renders as the same as:</p>
 <pre><code class="lang-liqud">&lt;html&gt;
     &lt;head&gt;&lt;/head&gt;
     &lt;body&gt;
         Hello World
     &lt;body&gt;
 &lt;/html&gt;
-</code></pre><h2 id="preprocessor"><em>Preprocessor</em></h2>
+</code></pre>
+<h2 id="preprocessor"><em>Preprocessor</em></h2>
 <p><em>Renderer</em>s take the input data model produced by document processor and render them into output files. Sometimes the input data model is not exactly what <em>Renderer</em>s want. <em>DocFX Template System</em> introduces the concept of <em>Preprocessor</em> to transform the input data model into what <em>Renderer</em>s exactly want. We call the data model <em>Preprocessor</em> returns the <em>View Model</em>. <em>View Model</em> is the data model to apply <em>Renderer</em>.</p>
 <h3 id="naming-rule-for-preprocessor">Naming rule for <em>Preprocessor</em></h3>
 <p>The naming of <em>Preprocessor</em> follows the naming of <em>Renderer</em> with file extension changes to <code>.js</code>: <code>&lt;renderer_file_name_without_extension&gt;.js</code>.</p>
@@ -204,19 +221,23 @@ The Module syntax in <em>Preprocessor</em> is simple,</p>
 <ol>
 <li><p>To export function property from one Module file <code>common.js</code>:</p>
 <pre><code class="lang-js">exports.util = function () {}
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>To use the exported function property inside <code>common.js</code>:</p>
-<pre><code class="lang-js">var common = require(&#39;./common.js&#39;);
+<pre><code class="lang-js">var common = require('./common.js');
 // call util
 common.util();
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-<div class="NOTE"><h5>Note</h5><p>Only relative path starting with <code>./</code> is supported.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Only relative path starting with <code>./</code> is supported.</p>
 </div>
 <h4 id="log">Log</h4>
 <p>You can call the following functions to log messages with different error level: <code>console.log</code>, <code>console.warn</code> or <code>console.warning</code> and <code>console.err</code>.</p>
 <h3 id="function-signature">Function Signature</h3>
-<p>A <em>Preprocessor</em> file is also considered as a Module. It <strong>MUST</strong> export the function property with the signature required by <code>docfx</code>&#39;s prescriptive interop pattern.</p>
+<p>A <em>Preprocessor</em> file is also considered as a Module. It <strong>MUST</strong> export the function property with the signature required by <code>docfx</code>'s prescriptive interop pattern.</p>
 <p>There are two functions defined.</p>
 <h4 id="function-1-exportsgetoptions">Function 1: <code>exports.getOptions</code></h4>
 <p>Function property <code>getOptions</code> takes the data model produced by document processor as the input argument, and the return value must be an object with the following properties:</p>
@@ -242,8 +263,8 @@ common.util();
         isShared: true;
     };
 }
-</code></pre><!-- TODO: add bookmarks part when it is implemented -->
-
+</code></pre>
+<!-- TODO: add bookmarks part when it is implemented -->
 <h4 id="function-2-exportstransform">Function 2: <code>exports.transform</code></h4>
 <p>Function property <code>transform</code> takes the data model produced by document processor (described in further detail in <a href="#the-input-data-model">The Input Data Model</a>) as the input argument, and returns the <em>View Model</em>. <em>View Model</em> is the exact model to apply the corresponding <em>Renderer</em>.</p>
 <p>A sample <code>exports.transform</code> for <code>conceptual.txt.js</code> is:</p>
@@ -251,11 +272,16 @@ common.util();
     model._title = &quot;Hello World&quot;
     return model;
 }
-</code></pre><p>If <code>conceptual.txt.tmpl</code> is:</p>
+</code></pre>
+<p>If <code>conceptual.txt.tmpl</code> is:</p>
 <pre><code class="lang-mustache">{{{_title}}}
-</code></pre><p>Then Markdown file <code>A.md</code> is transformed to <code>A.txt</code> with content:</p>
+</code></pre>
+<p>Then Markdown file <code>A.md</code> is transformed to <code>A.txt</code> with content:</p>
 <pre><code>Hello World
-</code></pre><div class="TIP"><h5>Tip</h5><p>For each file, the input data model can be exported to a JSON file by calling <code>docfx build --exportRawModel</code>.
+</code></pre>
+<div class="TIP">
+<h5>Tip</h5>
+<p>For each file, the input data model can be exported to a JSON file by calling <code>docfx build --exportRawModel</code>.
 And the returned <em>View Model</em> can be exported to a JSON file by calling <code>docfx build --exportViewModel</code>.</p>
 </div>
 <h2 id="the-input-data-model">The Input Data Model</h2>
@@ -304,7 +330,9 @@ And the returned <em>View Model</em> can be exported to a JSON file by calling <
 </tr>
 </tbody>
 </table>
-<div class="NOTE"><h5>Note</h5><p>Users can also override system generated properties by using <em>YAML Header</em>, <code>fileMetadata</code> or <code>globalMetadata</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Users can also override system generated properties by using <em>YAML Header</em>, <code>fileMetadata</code> or <code>globalMetadata</code>.</p>
 </div>
 <h3 id="globally-shared-properties">Globally Shared Properties</h3>
 <p>Globally shared properties are stored in <code>__global</code> key for every data model. Its initial value is read from <code>global.json</code> inside the <em>Template</em> if the file exists.

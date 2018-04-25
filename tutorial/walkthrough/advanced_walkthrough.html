@@ -8,7 +8,7 @@
     <title>&#128295; Walkthrough Advanced: Customize Your Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Walkthrough Advanced: Customize Your Website | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -83,19 +85,21 @@
 <p>A folder called <code>_exported_templates</code> is added at root with a directory inside called <code>default</code>. This is the DocFX default HTML template.</p>
 <p>To export the default PDF template, run <code>docfx template export pdf.default</code>.</p>
 <h3 id="create-a-new-template">Create a new template</h3>
-<p>Create a new directory at root to hold your custom templates - name it something like <code>templates</code>. Inside that folder, create a new folder and name it wantever you want to name your custom template. In this folder you&#39;ll replicate files from <code>_exported_templates/default</code> or <code>_exported_templates/pdf.default</code> (and only those files) you want to overwrite.</p>
+<p>Create a new directory at root to hold your custom templates - name it something like <code>templates</code>. Inside that folder, create a new folder and name it wantever you want to name your custom template. In this folder you'll replicate files from <code>_exported_templates/default</code> or <code>_exported_templates/pdf.default</code> (and only those files) you want to overwrite.</p>
 <h3 id="apply-the-template">Apply the template</h3>
 <p>To apply your custom HTML template permanently, add the following to <code>docfx.json</code> at the root of the project inside <code>&quot;build&quot;: {</code>:</p>
 <pre><code>    &quot;template&quot;: [
       &quot;default&quot;,
       &quot;templates/&lt;name of your your HTML template folder&gt;&quot;
     ],
-</code></pre><p>To apply your custom PDF template permanently, add the following at the same level as <code>&quot;content&quot;</code> under <code>&quot;pdf&quot;</code>: </p>
+</code></pre>
+<p>To apply your custom PDF template permanently, add the following at the same level as <code>&quot;content&quot;</code> under <code>&quot;pdf&quot;</code>:</p>
 <pre><code>    &quot;template&quot;: [
       &quot;pdf.default&quot;,
       &quot;templates/pdf&quot;
     ],
-</code></pre><p>To apply a template manually, append a <code>-t</code> with the template filepath to the build command:</p>
+</code></pre>
+<p>To apply a template manually, append a <code>-t</code> with the template filepath to the build command:</p>
 <p><code>docfx build docfx.json -t C:\&lt;filepath&gt;\templates\&lt;your custom template folder&gt; --serve</code></p>
 <h3 id="customize-your-template">Customize your template</h3>
 <p>Inside the <code>_exported_templates/default</code> or <code>exported_templates/pdf.default</code> folder, copy any file you want to overwrite with your custom template. Paste it in your custom template folder, replicating the directory structure.</p>
@@ -119,16 +123,19 @@
   margin-bottom: 20px;
   color: #000000;
 }
-</code></pre><p>Example of preventing words from breaking across lines for an HTML template:</p>
+</code></pre>
+<p>Example of preventing words from breaking across lines for an HTML template:</p>
 <pre><code>article h1, h2, h3, h4, h5, h6 {
   word-break: keep-all;
 }
-</code></pre><p>Example of changing heading styles for a PDF template:</p>
+</code></pre>
+<p>Example of changing heading styles for a PDF template:</p>
 <pre><code>h1 {
     font-weight: 200;
     color: #007bb8;
 }
-</code></pre><p>To change the look of the table of contents in the PDF template, use this file: <code>_exported_templates/default/toc.html.tmpl</code></p>
+</code></pre>
+<p>To change the look of the table of contents in the PDF template, use this file: <code>_exported_templates/default/toc.html.tmpl</code></p>
 <h2 id="see-a-list-of-all-your-templates">See a list of all your templates</h2>
 <p><code>docfx template list</code></p>
 <h2 id="see-template-commands">See template commands</h2>

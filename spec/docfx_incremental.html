@@ -8,7 +8,7 @@
     <title>Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -77,11 +79,11 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="doc-as-code-docfxexe-incremental-build-specification">Doc-as-code: DocFx.exe Incremental Build Specification</h1>
 
-<p>This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using <em>Roslyn</em> to compile and analyse source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference. </p>
+<p>This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using <em>Roslyn</em> to compile and analyse source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference.</p>
 <p>There are two level caches in current implementation. First one is called <em>Application</em> Level cache, and the other one is <em>Project</em> level cache.</p>
 <p><em>Application</em> level cache is saved in file <code>%LocalAppData%/xdoc/cache</code>.</p>
 <p>For <em>Project</em> level cache,</p>
-<p>a. If input sources are supported project files, e.g. <code>.csproj</code> or <code>.vbproj</code> files, <em>Project</em> level cache is located in file <code>obj/xdoc/.cache</code> under the same folder of the project file. </p>
+<p>a. If input sources are supported project files, e.g. <code>.csproj</code> or <code>.vbproj</code> files, <em>Project</em> level cache is located in file <code>obj/xdoc/.cache</code> under the same folder of the project file.</p>
 <p>b. If input sources are supported source code files, e.g. <code>.cs</code> or <code>.vb</code> files, <em>Project</em> level cache is located in file <code>obj/xdoc/.cache</code> under the same folder of the alphabetically first source code file.</p>
 <p>The cache file contains key-value pairs saved in <em>JSON</em> format. The key is the normalized input source code files, and the data structure for the value is as below:</p>
 <table>
@@ -114,24 +116,25 @@
 </tr>
 </tbody>
 </table>
-<p>Detailed Steps are described below: </p>
+<p>Detailed Steps are described below:</p>
 <ol>
-<li>For each input solution/project/source files, get most latest <code>LastModifiedTime</code>.
- a. For solution, get <code>LastModifiedTime</code> for the solution file, and containing projects
- b. For project, get <code>LastModifiedTime</code> for the project file, project references, assembly references and containing documents.
- c. For source files, get <code>LastModifiedTime</code> for the files</li>
+<li><p>For each input solution/project/source files, get most latest <code>LastModifiedTime</code>.
+a. For solution, get <code>LastModifiedTime</code> for the solution file, and containing projects
+b. For project, get <code>LastModifiedTime</code> for the project file, project references, assembly references and containing documents.
+c. For source files, get <code>LastModifiedTime</code> for the files</p>
+</li>
 <li><p>Normalize project list, check if <em>Application</em> level cache for these project list exists. Compare <code>TriggeredUTCTime</code> with the <code>LastModifiedTime</code> fetched in #1, and check if checksum remains unchanged for output files. If is, copy result files to output folder. Otherwise, continue to #3.</p>
 </li>
 <li><p>For each supported solution/project/source code files,</p>
-<p> <em>Step 1</em>. Check if <em>Project</em> level cache exists. If not, go to <em>Step 4</em>.</p>
-<p> <em>Step 2</em>. Compare <code>TriggeredUTCTime</code> with the <code>LastModifiedTime</code> fetched in #1, and check if checksum remains unchanged for output files. If not, go to <em>Step 3</em>.</p>
-<p> <em>Step 3</em>. Generate YAML metadata for current project and save to <em>Project</em> level cache.</p>
+<p><em>Step 1</em>. Check if <em>Project</em> level cache exists. If not, go to <em>Step 4</em>.</p>
+<p><em>Step 2</em>. Compare <code>TriggeredUTCTime</code> with the <code>LastModifiedTime</code> fetched in #1, and check if checksum remains unchanged for output files. If not, go to <em>Step 3</em>.</p>
+<p><em>Step 3</em>. Generate YAML metadata for current project and save to <em>Project</em> level cache.</p>
 </li>
 <li><p>Read YAML metadata for each project, and merge with others following rules below:</p>
-<p> <em>Rule 1</em>. For <code>namespace</code>, if <code>uid</code> equals, <strong>append</strong>.</p>
-<p> <em>Rule 2</em>. For other type, if <code>uid</code> equals, <strong>override</strong>.</p>
+<p><em>Rule 1</em>. For <code>namespace</code>, if <code>uid</code> equals, <strong>append</strong>.</p>
+<p><em>Rule 2</em>. For other type, if <code>uid</code> equals, <strong>override</strong>.</p>
 </li>
-<li><p>Save result, and update <em>*Application</em> level cache.</p>
+<li><p>Save result, and update *<em>Application</em> level cache.</p>
 </li>
 </ol>
 <div id="disqus_thread"></div>

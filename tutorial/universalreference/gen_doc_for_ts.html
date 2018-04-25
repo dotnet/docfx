@@ -8,7 +8,7 @@
     <title>Generate API Documentation for TypeScript | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Generate API Documentation for TypeScript | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -87,20 +89,26 @@
 <h3 id="21-prepare-source-code">2.1 Prepare Source Code</h3>
 <p>Prepare the TypeScript source code for generating document. In this tutorial, we take <a href="https://github.com/Azure/azure-iot-sdk-node/tree/master/device/core">azure-iot-device</a> as an example.</p>
 <pre><code>git clone https://github.com/Azure/azure-iot-sdk-node.git
-</code></pre><h3 id="22-generate-metadata-for-a-package">2.2 Generate Metadata for a package</h3>
+</code></pre>
+<h3 id="22-generate-metadata-for-a-package">2.2 Generate Metadata for a package</h3>
 <p>We use <a href="http://typedoc.org/">typedoc</a> tool and <a href="https://www.npmjs.com/package/type2docfx">type2docfx</a> to generate YAML files.</p>
-<p>First, let&#39;s install the tools globally.</p>
+<p>First, let's install the tools globally.</p>
 <pre><code>npm intall -g typedoc type2docfx
-</code></pre><h4 id="221-typedoc-to-parse-source-code-into-a-json-format-output">2.2.1 TypeDoc to parse source code into a JSON format output</h4>
+</code></pre>
+<h4 id="221-typedoc-to-parse-source-code-into-a-json-format-output">2.2.1 TypeDoc to parse source code into a JSON format output</h4>
 <p>Go to the folder where package.json file locate.
 Run</p>
 <pre><code>typedoc --json api.json azure-iot-sdk-node/device/core/src --module commonjs --includeDeclarations --ignoreCompilerErrors --excludeExternals
-</code></pre><p>The parameter may differ for your needs. You can use <code>typedoc -h</code> to explore more options.</p>
+</code></pre>
+<p>The parameter may differ for your needs. You can use <code>typedoc -h</code> to explore more options.</p>
 <h4 id="222-type2docfx-to-extract-the-json-format-output-into-yaml-files">2.2.2 Type2docfx to extract the JSON format output into YAML files</h4>
 <p>Find the output <code>api.json</code> file and run:</p>
 <pre><code>type2docfx api.json yml
-</code></pre><p>The <code>yml</code> stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by <code>type2docfx -h</code>. With <code>--sourceUrl, --sourceBranch, and --basePath</code> parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.</p>
-<div class="NOTE"><h5>Note</h5><p>All sources under <code>node_modules</code> path will be automatically ignored.</p>
+</code></pre>
+<p>The <code>yml</code> stands for the output folder, you can specify the folder as the content publishing folder in Section 2.3. And you can explore more option by <code>type2docfx -h</code>. With <code>--sourceUrl, --sourceBranch, and --basePath</code> parameters, you can generate yaml files referencing to the source code in Github, which will help developer to find the corresponding source code easily.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>All sources under <code>node_modules</code> path will be automatically ignored.</p>
 </div>
 <h3 id="23-build-document">2.3 Build Document</h3>
 <p>Create the configuration <code>docfx.json</code> for DocFX:</p>
@@ -116,12 +124,14 @@ Run</p>
     &quot;dest&quot;: &quot;_site&quot;
   }
 }
-</code></pre><p>More information about <code>docfx.json</code> can be found in <a href="https://dotnet.github.io/docfx/tutorial/docfx.exe_user_manual.html">user manual</a>. Run:</p>
+</code></pre>
+<p>More information about <code>docfx.json</code> can be found in <a href="https://dotnet.github.io/docfx/tutorial/docfx.exe_user_manual.html">user manual</a>. Run:</p>
 <pre><code>docfx docfx.json --serve
-</code></pre><p>Now you can see your generated pages: <a href="http://localhost:8080/api/azure-iot-device/Client.html#azure_iot_device_Client">http://localhost:8080/api/azure-iot-device/Client.html#azure_iot_device_Client</a></p>
+</code></pre>
+<p>Now you can see your generated pages: <a href="http://localhost:8080/api/azure-iot-device/Client.html#azure_iot_device_Client">http://localhost:8080/api/azure-iot-device/Client.html#azure_iot_device_Client</a></p>
 <h2 id="3-know-issues">3. Know issues</h2>
 <ol>
-<li>Some types can&#39;t link to the property correctly now. They displays in plain text and prefixed with <code>@</code>. </li>
+<li>Some types can't link to the property correctly now. They displays in plain text and prefixed with <code>@</code>.</li>
 </ol>
 <div id="disqus_thread"></div>
                 <script>

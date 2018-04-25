@@ -8,7 +8,7 @@
     <title>&#128295; Advanced: Support Hyperlink | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Advanced: Support Hyperlink | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -89,7 +91,8 @@
 <p>An author can write any valid hyperlink in the document, and then needs to run <code>DocFX build</code> to update file links.</p>
 <h3 id="what-is-file-link">What is file link:</h3>
 <ol>
-<li>The hyperlink must be a relative path and not rooted.<ul>
+<li>The hyperlink must be a relative path and not rooted.
+<ul>
 <li>valid: <code>foo\bar.rtf</code>, <code>../foobar.rtf</code></li>
 <li>invalid: <code>/foo.rtf</code>, <code>c:\foo\bar.rtf</code>, <code>http://foo.bar/</code>, <code>mailto:foo@bar.foobar</code></li>
 </ul>
@@ -123,7 +126,8 @@ So we track the <em>normalized file path</em> instead.</p>
 <pre><code>z:\a\b\foo.rtf
 z:\a\b\c\bar.rtf
 z:\a\b\c\foobar.rtf
-</code></pre><p>Link target <code>c/foobar.rtf</code> in <code>foo.rtf</code> and link target <code>foobar.rtf</code> in <code>bar.rtf</code> is the same file.
+</code></pre>
+<p>Link target <code>c/foobar.rtf</code> in <code>foo.rtf</code> and link target <code>foobar.rtf</code> in <code>bar.rtf</code> is the same file.
 When the working folder is <code>z:\a\</code>, the link target is always <code>~/b/c/foobar.rtf</code>.</p>
 </li>
 <li><p>Avoids differences in style when referring to the same file.</p>
@@ -141,7 +145,8 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
 <ol>
 <li><p>Open the rtf plug-in library project in <code>Visual Studio</code>.</p>
 </li>
-<li><p>Add nuget packages:<br>for plug-in: <code>Microsoft.DocAsCode.Utility</code></p>
+<li><p>Add nuget packages:<br>
+for plug-in: <code>Microsoft.DocAsCode.Utility</code></p>
 </li>
 <li><p>Add framework assembly reference:
 <code>System.Core</code>, <code>System.Web</code>, <code>System.Xml.Linq</code></p>
@@ -156,7 +161,7 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
     string anchor = null;
     if (PathUtility.IsRelativePath(link.Value))
     {
-        var index = link.Value.IndexOf(&#39;#&#39;);
+        var index = link.Value.IndexOf('#');
         if (index == -1)
         {
             linkFile = link.Value;
@@ -176,7 +181,8 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
         linkToFiles.Add(HttpUtility.UrlDecode(file));
     }
 }
-</code></pre><p><code>RelativePath</code> helps us generate the links correctly.</p>
+</code></pre>
+<p><code>RelativePath</code> helps us generate the links correctly.</p>
 </li>
 <li><p>Then add <code>CollectLinksAndFixDocument</code> method:</p>
 <pre><code class="lang-csharp" name="CollectLinksAndFixDocument">private static HashSet&lt;string&gt; CollectLinksAndFixDocument(FileModel model)
@@ -216,7 +222,6 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
 </code></pre></li>
 </ol>
 <!-- todo : `Update Reference` is preserved for next version of plugin. -->
-
 <p>View final <a href="../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs">RtfDocumentProcessor.cs</a></p>
 <h2 id="test-and-verify">Test and verify</h2>
 <ol>

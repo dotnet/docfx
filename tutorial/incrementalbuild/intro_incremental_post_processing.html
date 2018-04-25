@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Incremental Post Processing | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Incremental Post Processing | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -82,27 +84,29 @@
 <p>Overall, the output of all post processors would be cached in following:</p>
 <ol>
 <li>Manifest items: to restore incremental manifest items.</li>
-<li>Log message info: to replay the log message. </li>
+<li>Log message info: to replay the log message.</li>
 <li>Output files: to restore the post processing outputs.</li>
 </ol>
-<p>Based on incremental build result, <code>IsIncremental</code> flag of the manifest item could hint whether the item is incremental or not. </p>
+<p>Based on incremental build result, <code>IsIncremental</code> flag of the manifest item could hint whether the item is incremental or not.</p>
 <ol>
-<li>If the post processing meets <a href="#incremental-condition">Incremental Condition</a>:<ol>
+<li>If the post processing meets <a href="#incremental-condition">Incremental Condition</a>:
+<ol>
 <li>For the incremental manifest items, restore from cache.</li>
 <li>For the non-incremental manifest items, they will be handled by post processors, and save the information into cache at the same time.</li>
 </ol>
 </li>
-<li>If the post processing doesn&#39;t meet <a href="#incremental-condition">Incremental Condition</a>, set <code>IsIncremental</code> flag to false to all manifest items, then they will be handled by post processors. </li>
+<li>If the post processing doesn't meet <a href="#incremental-condition">Incremental Condition</a>, set <code>IsIncremental</code> flag to false to all manifest items, then they will be handled by post processors.</li>
 </ol>
 <h2 id="incremental-condition">Incremental Condition</h2>
 <p>The post processing could be incremental only if it meets all of the following conditions:</p>
 <ol>
 <li>Both last cache file <a href="advanced_cache_file_structure.html"><code>build.info</code></a> and its <a href="advanced_cache_file_structure.html#postprocessinfo-model"><code>PostProcessInfo</code></a> exist, which is essential to restore the last incremental post processing info.</li>
 <li>Not set option <code>forcePostProcess</code> and <code>force</code> of build command or <code>docfx.json</code> config, to enable incremental post processing.</li>
-<li>Post processor requirement:<ol>
+<li>Post processor requirement:
+<ol>
 <li>Each of the post processor implements @Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor. Currently, @Microsoft.DocAsCode.Build.Engine.HtmlPostProcessor implements the interface while <a class="xref" href="../../api/Microsoft.DocAsCode.Build.Engine.ExtractSearchIndex.html">ExtractSearchIndex</a> does not. Refer to <a href="customize_a_post_processor_to_be_incremental.html">Customize a post processor to be incremental</a> for more details.</li>
-<li>Post processor number isn&#39;t changed.</li>
-<li>Each post processor&#39;s <code>IncrementalContextHash</code> isn&#39;t changed</li>
+<li>Post processor number isn't changed.</li>
+<li>Each post processor's <code>IncrementalContextHash</code> isn't changed</li>
 </ol>
 </li>
 </ol>

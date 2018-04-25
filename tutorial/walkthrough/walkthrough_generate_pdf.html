@@ -8,7 +8,7 @@
     <title>Walkthrough Part III: Generate PDF Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part III: Generate PDF Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -86,9 +88,12 @@
 |- index.md
 |- toc.yml
 |- docfx.json
-</code></pre><h2 id="step0-install-prerequisite-">Step0. Install prerequisite </h2>
+</code></pre>
+<h2 id="step0-install-prerequisite">Step0. Install prerequisite</h2>
 <p>We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> to some folder, e.g. <code>E:\Program Files\wkhtmltopdf\</code>, and save the executable folder path to <strong>%PATH%</strong> by: <code>set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin</code>.</p>
-<div class="NOTE"><h5>Note</h5><p>Alternativeley you can install wkhtmltopdf via <a href="https://chocolatey.org/">chocolatey</a> with <code>choco install wkhtmltopdf</code>. This will also add the executable folder to <strong>%PATH%</strong> during installation.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Alternativeley you can install wkhtmltopdf via <a href="https://chocolatey.org/">chocolatey</a> with <code>choco install wkhtmltopdf</code>. This will also add the executable folder to <strong>%PATH%</strong> during installation.</p>
 </div>
 <h2 id="step1-add-a-tocyml-specific-for-pdf">Step1. Add a toc.yml specific for PDF</h2>
 <p>Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a <code>toc.yml</code> file specific for PDF under a new folder <code>pdf</code>, using <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file">TOC Include</a> to include content from other TOC files.</p>
@@ -98,7 +103,8 @@
   href: ../api/toc.yml
 - name: Another Api Documentation
   href: ../api-vb/toc.yml
-</code></pre><h2 id="step2-add-pdf-section-into-docfxjson">Step2. Add <em>pdf</em> section into docfx.json</h2>
+</code></pre>
+<h2 id="step2-add-pdf-section-into-docfxjson">Step2. Add <em>pdf</em> section into docfx.json</h2>
 <p>Parameters are similar to <code>build</code> section, definitely it is using a different template (the builtin template is <code>pdf.default</code>), with another output destination. We also exclude TOC files as each TOC file generates a PDF file:</p>
 <pre><code class="lang-json">...
   &quot;pdf&quot;: {
@@ -159,7 +165,8 @@
     ],
     &quot;dest&quot;: &quot;_site_pdf&quot;
   }
-</code></pre><p>Now, let&#39;s run <code>docfx</code>, and you can find pdf file walkthrough3_pdf.pdf generated under <code>_site_pdf</code> folder:
+</code></pre>
+<p>Now, let's run <code>docfx</code>, and you can find pdf file walkthrough3_pdf.pdf generated under <code>_site_pdf</code> folder:
 <img src="images/walkthrough3.png" alt="PDF Preview"></p>
 <h2 id="optional-step3-enable-plugins"><em>Optional</em> Step3. Enable plugins</h2>
 <p>If you wish to use plugins with pdf as well, you need to add a <code>template</code> node to the pdf section. It needs to start with the <code>pdf.template</code> followed by the path to the plugins you want to use:</p>
@@ -167,8 +174,9 @@
   &quot;pdf.default&quot;,
   &quot;pluginPackages/rest.tagpage.2.31.0/content&quot; 
 ],
-</code></pre><h2 id="conclusion">Conclusion</h2>
-<p>In this walkthrough, we build a PDF file according to the TOC file under <code>pdf</code> folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don&#39;t forget to exclude TOC files you don&#39;t want from docfx.json.</p>
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this walkthrough, we build a PDF file according to the TOC file under <code>pdf</code> folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.</p>
 <h2 id="read-more">Read more</h2>
 <ul>
 <li><p><a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a></p>

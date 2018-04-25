@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with a custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with a custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -80,12 +82,14 @@
 <p>In this topic we will create a plug-in to convert some simple <a href="https://en.wikipedia.org/wiki/Rich_Text_Format">rich text format</a> files to html documents.</p>
 <h2 id="goal-and-limitation">Goal and limitation</h2>
 <ol>
-<li>In scope:<ol>
+<li>In scope:
+<ol>
 <li>Our input will be a set of rtf files with <code>.rtf</code> as the file extension name.</li>
 <li>The rtf files will be built as html document.</li>
 </ol>
 </li>
-<li>Out of scope:<ol>
+<li>Out of scope:
+<ol>
 <li>Picture or other object in rtf files.</li>
 <li>Hyperlink in rtf files. (in the <a href="advanced_support_hyperlink.html">advanced tutorial</a>, we will describe how to support hyperlinks in a custom plugin.)</li>
 <li>Metadata and title.</li>
@@ -96,19 +100,21 @@
 <ol>
 <li><p>Create a new C# class library project in <code>Visual Studio</code>.</p>
 </li>
-<li><p>Add nuget packages:  </p>
+<li><p>Add nuget packages:</p>
 <ul>
 <li><code>System.Collections.Immutable</code> with version 1.3.1</li>
 <li><code>Microsoft.Composition</code> with version 1.0.31</li>
 </ul>
 </li>
-<li><p>Add <code>Microsoft.DocAsCode.Plugins</code><br>If building DocFX from source code then add a reference to the project,
+<li><p>Add <code>Microsoft.DocAsCode.Plugins</code><br>
+If building DocFX from source code then add a reference to the project,
 otherwise add the nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version as DocFX.</p>
 </li>
 <li><p>Add framework assembly references:
 <code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code></p>
 </li>
-<li><p>Add a project for converting rtf to html:<br>Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
+<li><p>Add a project for converting rtf to html:<br>
+Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
 </li>
 <li><p>Copy the code file StaTaskScheduler.cs from <a href="https://code.msdn.microsoft.com/ParExtSamples">ParExtSamples</a></p>
 </li>
@@ -130,7 +136,8 @@ public class RtfDocumentProcessor : IDocumentProcessor
 {
     // todo : implements IDocumentProcessor.
 }
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>Declare that we can handle the <code>.rtf</code> file:</p>
 <pre><code class="lang-csharp" name="GetProcessingPriority">public ProcessingPriority GetProcessingPriority(FileAndType file)
 {
@@ -141,7 +148,8 @@ public class RtfDocumentProcessor : IDocumentProcessor
     }
     return ProcessingPriority.NotSupported;
 }
-</code></pre><p>Here we declare this processor can handle any <code>.rtf</code> file in the article category with normal priority.
+</code></pre>
+<p>Here we declare this processor can handle any <code>.rtf</code> file in the article category with normal priority.
 When two or more processors compete for the same file, DocFX will give it to the higher priority one.
 <em>Unexpected</em>: two or more processor declare for the same file with same priority.</p>
 </li>
@@ -156,7 +164,8 @@ When two or more processors compete for the same file, DocFX will give it to the
     };
     return new FileModel(file, content);
 }
-</code></pre><p>We use <code>Dictionary&lt;string, object&gt;</code> as the data model, similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs">ConceptualDocumentProcessor</a> stores the content of markdown files.</p>
+</code></pre>
+<p>We use <code>Dictionary&lt;string, object&gt;</code> as the data model, similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs">ConceptualDocumentProcessor</a> stores the content of markdown files.</p>
 </li>
 <li><p>Implement <code>Save</code> method as follows:</p>
 <pre><code class="lang-csharp" name="Save">public SaveResult Save(FileModel model)
@@ -173,10 +182,11 @@ When two or more processors compete for the same file, DocFX will give it to the
 <pre><code class="lang-csharp" name="BuildSteps">[ImportMany(nameof(RtfDocumentProcessor))]
 public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
 </code></pre></li>
-<li><p><code>Name</code> property is used to display in the log, so give any constant string you like.<br>e.g.:  </p>
+<li><p><code>Name</code> property is used to display in the log, so give any constant string you like.<br>
+e.g.:</p>
 <pre><code class="lang-csharp" name="Name">public string Name =&gt; nameof(RtfDocumentProcessor);
 </code></pre></li>
-<li><p>Since we don&#39;t support hyperlink, keep the <code>UpdateHref</code> method empty.</p>
+<li><p>Since we don't support hyperlink, keep the <code>UpdateHref</code> method empty.</p>
 <pre><code class="lang-csharp" name="UpdateHref">public void UpdateHref(FileModel model, IDocumentBuildContext context)
 {
 }
@@ -186,8 +196,10 @@ public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
 <h2 id="create-a-document-build-step">Create a document build step</h2>
 <h3 id="responsibility-of-the-build-step">Responsibility of the build step</h3>
 <ul>
-<li>Reconstruct documents via the <code>Prebuild</code> method, e.g.: remove some document according to a certain rule.</li>
-<li>Transform document content via <code>Build</code> method, e.g.: transform rtf content to html content.</li>
+<li><p>Reconstruct documents via the <code>Prebuild</code> method, e.g.: remove some document according to a certain rule.</p>
+</li>
+<li><p>Transform document content via <code>Build</code> method, e.g.: transform rtf content to html content.</p>
+</li>
 <li><p>Transform more content required by all document processed via the <code>PostBuild</code> method, e.g.: extract the link text from the title of another document.</p>
 </li>
 <li><p>About build order:</p>
@@ -207,7 +219,8 @@ Parallel(
 )
 A.Postbuild([D1, D2, D3])
 B.Postbuild([D1, D2, D3])
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 <h3 id="create-our-rtfbuildstep">Create our RtfBuildStep:</h3>
 <ol>
@@ -217,7 +230,8 @@ public class RtfBuildStep : IDocumentBuildStep
 {
     // todo : implements IDocumentBuildStep.
 }
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>In the <code>Build</code> method, convert rtf to html:</p>
 <pre><code class="lang-csharp" name="Build">private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
 
@@ -247,11 +261,12 @@ public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; mode
 <h2 id="enable-plug-in">Enable plug-in</h2>
 <ol>
 <li>Build our project.</li>
-<li><p>Copy the output dll files to:</p>
+<li>Copy the output dll files to:
 <ul>
-<li>Global: the folder with name <code>Plugins</code> under DocFX.exe</li>
+<li><p>Global: the folder with name <code>Plugins</code> under DocFX.exe</p>
+</li>
 <li><p>Non-global: the folder with name <code>Plugins</code> under a template folder. Then run <code>DocFX build</code> command with parameter <code>-t {template}</code>.</p>
-<p><em>Hint</em>: DocFX can merge templates so create a template that only contains the <code>Plugins</code> folder, then run the command <code>DocFX build</code> with parameter <code>-t {templateForRender},{templateForPlugins}</code>. </p>
+<p><em>Hint</em>: DocFX can merge templates so create a template that only contains the <code>Plugins</code> folder, then run the command <code>DocFX build</code> with parameter <code>-t {templateForRender},{templateForPlugins}</code>.</p>
 </li>
 </ul>
 </li>

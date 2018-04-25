@@ -8,7 +8,7 @@
     <title>Walkthrough Part II: Adding API Documentation to the Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part II: Adding API Documentation to the Website | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -92,7 +94,8 @@
 |- api
      |- index.md
      |- toc.yml
-</code></pre><h2 id="step1-add-a-c-project">Step1. Add a C# project</h2>
+</code></pre>
+<h2 id="step1-add-a-c-project">Step1. Add a C# project</h2>
 <ol>
 <li>Create a subfolder <code>src</code> under <code>D:\docfx_walkthrough\docfx_project</code>. Open <em>Visual Studio Community 2015</em> (or an above version) and create a <strong>C# Class Library</strong> <code>HelloDocfx</code> under folder <code>src</code>. In the <code>Class1.cs</code>, add some comments and methods to this class, similar to:</li>
 </ol>
@@ -137,7 +140,8 @@
         }
     }
 }
-</code></pre><h2 id="step2-generate-metadata-for-the-c-project">Step2. Generate metadata for the C# project</h2>
+</code></pre>
+<h2 id="step2-generate-metadata-for-the-c-project">Step2. Generate metadata for the C# project</h2>
 <p>Calling <code>docfx metadata</code> under <code>D:\docfx_walkthrough\docfx_project</code>. <code>docfx metadata</code> is a sub-command registered in <code>docfx</code>, and it reads configuration in the <code>metadata</code> section from <code>docfx.json</code>. <code>[ &quot;src/**.csproj&quot; ]</code> in <code>metadata/src/files</code> tells <code>docfx</code> to search all the <code>csproj</code> from <code>src</code> subfolder to generate metadata.</p>
 <pre><code class="lang-json">&quot;metadata&quot;: [
     {
@@ -156,17 +160,19 @@
       &quot;dest&quot;: &quot;api&quot;
     }
   ]
-</code></pre><p>This generates several <code>YAML</code> files in the <code>api</code> folder. The <code>YAML</code> file contains the data model extracted from C# source code file. YAML is the metadata format used in <code>docfx</code>. <a href="http://dotnet.github.io/docfx/spec/metadata_format_spec.html">General Metadata Spec</a> defines the general schema, and <a href="http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html">.NET Metadata Spec</a> defines the metadata schema for .NET languages that <code>docfx</code> can consume.</p>
+</code></pre>
+<p>This generates several <code>YAML</code> files in the <code>api</code> folder. The <code>YAML</code> file contains the data model extracted from C# source code file. YAML is the metadata format used in <code>docfx</code>. <a href="http://dotnet.github.io/docfx/spec/metadata_format_spec.html">General Metadata Spec</a> defines the general schema, and <a href="http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html">.NET Metadata Spec</a> defines the metadata schema for .NET languages that <code>docfx</code> can consume.</p>
 <pre><code>|- HelloDocfx.Class1.InnerClass.yml
 |- HelloDocfx.Class1.yml
 |- HelloDocfx.yml
 |- toc.yml
-</code></pre><h2 id="step3-build-and-preview-our-website">Step3. Build and preview our website</h2>
+</code></pre>
+<h2 id="step3-build-and-preview-our-website">Step3. Build and preview our website</h2>
 <p>Running the command <code>docfx</code>. <code>docfx</code> reads <code>docfx.json</code> and execute subcommands defined in the config file one by one. Our <code>docfx.json</code> defines <code>metadata</code> and <code>build</code>, so by running <code>docfx</code>, we are actually executing <code>docfx metadata</code> and <code>docfx build</code>, and thus generating the website.</p>
 <p>Run <code>docfx serve _site</code>, and the website is now:
 <img src="images/walkthrough2_step3.png" alt="Step3">.</p>
 <h2 id="step4-add-another-api-documentation">Step4. Add another API documentation</h2>
-<p>Create another subfolder <code>src2</code> under <code>D:\docfx_walkthrough\docfx_project</code>. Besides generating API documentation from project files, <code>docfx</code> can generate documentation directly from source code. Let&#39;s create a <code>Class2.cs</code> as similar to:</p>
+<p>Create another subfolder <code>src2</code> under <code>D:\docfx_walkthrough\docfx_project</code>. Besides generating API documentation from project files, <code>docfx</code> can generate documentation directly from source code. Let's create a <code>Class2.cs</code> as similar to:</p>
 <pre><code class="lang-csharp">namespace HelloDocfx
 {
     /// &lt;summary&gt;
@@ -208,7 +214,8 @@
         }
     }
 }
-</code></pre><p>Add it to the <code>metadata</code> section of our <code>docfx.json</code> as follows.</p>
+</code></pre>
+<p>Add it to the <code>metadata</code> section of our <code>docfx.json</code> as follows.</p>
 <pre><code class="lang-json">&quot;metadata&quot;: [
     {
       &quot;src&quot;: [
@@ -230,7 +237,8 @@
       &quot;dest&quot;: &quot;api-vb&quot;
     }
   ]
-</code></pre><p>What it means is that the YAML metadata files for &quot;src2/**.cs&quot; are generated into &quot;api-vb&quot; folder. Let&#39;s also include the generated YAML files in <code>build</code> section:</p>
+</code></pre>
+<p>What it means is that the YAML metadata files for &quot;src2/**.cs&quot; are generated into &quot;api-vb&quot; folder. Let's also include the generated YAML files in <code>build</code> section:</p>
 <pre><code class="lang-json">  &quot;build&quot;: {
     &quot;content&quot;: [
       {
@@ -239,7 +247,8 @@
         ]
       }
       ...
-</code></pre><p>For it to be organized and shown to website, we also need to modify our <code>D:\docfx_walkthrough\docfx_project\toc.yml</code> file. Don&#39;t forget to append slash <code>/</code> for the value of <code>href</code>.</p>
+</code></pre>
+<p>For it to be organized and shown to website, we also need to modify our <code>D:\docfx_walkthrough\docfx_project\toc.yml</code> file. Don't forget to append slash <code>/</code> for the value of <code>href</code>.</p>
 <pre><code>- name: Articles
   href: articles/
 - name: Api Documentation
@@ -247,10 +256,11 @@
   homepage: api/index.md
 - name: Another Api Documentation
   href: api-vb/
-</code></pre><p>Now, let&#39;s run <code>docfx --serve</code> again, and the website is now:
+</code></pre>
+<p>Now, let's run <code>docfx --serve</code> again, and the website is now:
 <img src="images/walkthrough2_step4.png" alt="Step4">.</p>
 <h2 id="step5-combine-conceptual-and-reference-information-in-the-left-side-nav-bar">Step5. Combine conceptual and reference information in the left-side nav bar.</h2>
-<p>The left-side nav bar can contain links to both conceptual information (overview, getting started, etc.) and reference information. In this example, assume that this is the <code>toc.yml</code> file at root. (It determines what&#39;s in the main horizontal menu bar.)</p>
+<p>The left-side nav bar can contain links to both conceptual information (overview, getting started, etc.) and reference information. In this example, assume that this is the <code>toc.yml</code> file at root. (It determines what's in the main horizontal menu bar.)</p>
 <pre><code class="lang-yml">- name: Home
   href: index.md
 - name: Articles
@@ -259,13 +269,15 @@
   href: obj/api/
 - name: REST API
   href: restapi/
-</code></pre><p>Add a new folder at root (e.g., <code>fusion</code>).</p>
+</code></pre>
+<p>Add a new folder at root (e.g., <code>fusion</code>).</p>
 <p>Inside <code>fusion</code>, add <code>toc.yml</code>:</p>
 <pre><code>- name: Conceptual
   href: ../articles/toc.md
 - name: Reference
   href: ../obj/api/toc.yml
-</code></pre><p>In <code>toc.yml</code> at root, replace the link to <code>../obj/api/toc.yml</code> with the path to <code>fusion</code>:</p>
+</code></pre>
+<p>In <code>toc.yml</code> at root, replace the link to <code>../obj/api/toc.yml</code> with the path to <code>fusion</code>:</p>
 <pre><code class="lang-yml">- name: Home
   href: index.md
 - name: Articles
@@ -275,13 +287,15 @@
   href: fusion/
 - name: REST API
   href: restapi/
-</code></pre><p>Add the <code>fusion</code> folder in <code>docfx.json</code> so the project includes it:</p>
+</code></pre>
+<p>Add the <code>fusion</code> folder in <code>docfx.json</code> so the project includes it:</p>
 <pre><code class="lang-json">&quot;content&quot;: [
   { 
     &quot;files&quot;: &quot;fusion/**&quot;
   }
 ]
-</code></pre><p>The output:</p>
+</code></pre>
+<p>The output:</p>
 <p><img src="images/walkthrough2_step5.png" alt="Step5">.</p>
 <p>The <a href="https://github.com/docascode/docfx-seed">docfx-seed sample project repo</a> is another example of this kind of setup.</p>
 <p>More details: <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file">http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file</a></p>

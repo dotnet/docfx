@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -94,22 +96,26 @@ uid: microsoft.com/docfx/Contacts
 some_property: value
 ---
 Further description for `microsoft.com/docfx/Contacts`
-</code></pre><p>Each <em>Overwrite Section</em> is transformed to <em>Overwrite Model</em> inside DocFX. For the above example, the <em>Overwrite Model</em> represented in YAML format is:</p>
+</code></pre>
+<p>Each <em>Overwrite Section</em> is transformed to <em>Overwrite Model</em> inside DocFX. For the above example, the <em>Overwrite Model</em> represented in YAML format is:</p>
 <pre><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
 some_property: value
 conceptual: &lt;p&gt;&lt;b&gt;Content&lt;/b&gt; in Markdown&lt;/p&gt;
-</code></pre><h3 id="anchor-content">Anchor <code>*content</code></h3>
+</code></pre>
+<h3 id="anchor-content">Anchor <code>*content</code></h3>
 <p><code>*content</code> is the keyword invented and used specifically in <em>Overwrite File</em>s to represent the Markdown content following YAML header. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
-<p>The value for <code>*content</code> is always transformed from Markdown content to HTML. When <code>*content</code> is not used, the Markdown content below YAML header will be set to <code>conceptual</code> property; When <code>*content</code> is used, the Markdown content below YAML header will no longer be set to <code>conceptual</code> property. With <code>*content</code>, we can easily add Markdown content to any properties. </p>
+<p>The value for <code>*content</code> is always transformed from Markdown content to HTML. When <code>*content</code> is not used, the Markdown content below YAML header will be set to <code>conceptual</code> property; When <code>*content</code> is used, the Markdown content below YAML header will no longer be set to <code>conceptual</code> property. With <code>*content</code>, we can easily add Markdown content to any properties.</p>
 <pre><code class="lang-md">---
 uid: microsoft.com/docfx/Contacts
 footer: *content
 ---
 Footer for `microsoft.com/docfx/Contacts`
-</code></pre><p>In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;</code>, and the <em>Overwrite Model</em> represented in YAML format is:</p>
+</code></pre>
+<p>In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;</code>, and the <em>Overwrite Model</em> represented in YAML format is:</p>
 <pre><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
 footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;
-</code></pre><p><code>uid</code> for an <em>Overwrite Model</em> stands for the Unique IDentifier of the <em>Model</em> it will overwrite. So it is allowed to have multiple <em>Overwrite Section</em>s with YAML Header containing the same <code>uid</code>. For one <em>Overwrite File</em>, the latter <em>Overwrite Section</em> overwrites the former one with the same <code>uid</code>. For different <em>Overwrite File</em>s, the order of overwrite is <strong>Undetermined</strong>. So it is suggested to have <em>Overwrite Sections</em> with the same <code>uid</code> in the same <em>Overwrite File</em>.</p>
+</code></pre>
+<p><code>uid</code> for an <em>Overwrite Model</em> stands for the Unique IDentifier of the <em>Model</em> it will overwrite. So it is allowed to have multiple <em>Overwrite Section</em>s with YAML Header containing the same <code>uid</code>. For one <em>Overwrite File</em>, the latter <em>Overwrite Section</em> overwrites the former one with the same <code>uid</code>. For different <em>Overwrite File</em>s, the order of overwrite is <strong>Undetermined</strong>. So it is suggested to have <em>Overwrite Sections</em> with the same <code>uid</code> in the same <em>Overwrite File</em>.</p>
 <p>When processing <em>Conceptual File</em>s and <em>Metadata File</em>s, <em>Overwrite Model</em>s with the same <code>uid</code> are applied to the processed <em>Model</em>s. Different <em>Model</em>s have different overwrite principles, <a href="#overwrite-principles">Overwrite principles</a> section describes the them in detail.</p>
 <h2 id="apply-overwrite-files">Apply <em>Overwrite File</em>s</h2>
 <p>Inside <code>docfx.json</code>, <a href="docfx.exe_user_manual.html#32-properties-for-build"><code>overwrite</code></a> is used to specify the <em>Overwrite File</em>s.</p>
@@ -117,7 +123,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 <p>As a general principle, <code>uid</code> is always the key that an <em>Overwrite Model</em> find the <em>Model</em> it is going to overwrite. So a <em>Model</em> with no <code>uid</code> defined will never get overwritten.</p>
 <p>Different types of files produce different <em>Model</em>s. The quickest way to get an idea of what the <em>Model</em> looks like is to run:</p>
 <pre><code>docfx build --exportRawModel
-</code></pre><p><code>--exportRawModel</code> exports <em>Model</em> in JSON format with <code>.raw.json</code> extension.</p>
+</code></pre>
+<p><code>--exportRawModel</code> exports <em>Model</em> in JSON format with <code>.raw.json</code> extension.</p>
 <p>The basic principle of <em>Overwrite Model</em> is:</p>
 <ol>
 <li>It keeps the same data structure as the <em>Model</em> it is going to overwrite</li>

@@ -8,7 +8,7 @@
     <title>Introduction to Multiple Languages Support | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to Multiple Languages Support | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -78,11 +80,11 @@
 <h1 id="introduction-to-multiple-languages-support">Introduction to Multiple Languages Support</h1>
 
 <h2 id="1-introduction">1. Introduction</h2>
-<p>DocFX supports generate API documentation for C# and VB natively. However, it doesn&#39;t limit to these. DocFX is designed to support any languages. When generating document for a language, 2 steps is required: generating metadata and build documents from metadata.</p>
+<p>DocFX supports generate API documentation for C# and VB natively. However, it doesn't limit to these. DocFX is designed to support any languages. When generating document for a language, 2 steps is required: generating metadata and build documents from metadata.</p>
 <h2 id="2-workflow">2. Workflow</h2>
 <h3 id="21-generate-metadata">2.1 Generate Metadata</h3>
 <p>As different programming language has different tool written with different language to generate API documentation, this step is not included in DocFX core. We call the tool used as <strong>Metadata Tool</strong>.</p>
-<p>As <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.Build.UniversalReference">UniversalReferenceDocumentProcessor</a> is used to process these metadata files, metadata tool should generate files according the processor&#39;s input schema. It needs:</p>
+<p>As <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.Build.UniversalReference">UniversalReferenceDocumentProcessor</a> is used to process these metadata files, metadata tool should generate files according the processor's input schema. It needs:</p>
 <ol>
 <li>in YAML format and ends with <code>.yml</code> or <code>.yaml</code></li>
 <li>has YamlMime <code>### YamlMime:UniversalReference</code> at the first line</li>

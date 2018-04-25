@@ -8,7 +8,7 @@
     <title>docfx Design Spec | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx Design Spec | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -108,24 +110,20 @@
 <li>YAML files =&gt; Website</li>
 </ol>
 <!--break list-->
-
 <h2 id="2-architecture">2. Architecture</h2>
 <p><img src="images/docfx_workflow.png" alt="Workflow"></p>
 <h2 id="3-feature-list">3. Feature List</h2>
 <ol>
 <li>Support for <a href="docfx_flavored_markdown.html">DocFX Flavored Markdown</a></li>
 <li>Ability to parse TOC.json/TOC.yml/TOC.md</li>
-<li><p>Custom template naming: {type}.{extension}.tmpl under folder {templateName} </p>
-</li>
-<li><p>Open Issues</p>
-</li>
+<li>Custom template naming: {type}.{extension}.tmpl under folder {templateName}</li>
 </ol>
-<hr>
+<h2 id="4-open-issues">4. Open Issues</h2>
 <ol>
 <li>Should we support other conceptual file format, for example, RST?
 ==&gt; How to parse?</li>
 <li>How do you know which link to replace to html, and which not?
-==&gt; </li>
+==&gt;</li>
 </ol>
 <div id="disqus_thread"></div>
                 <script>

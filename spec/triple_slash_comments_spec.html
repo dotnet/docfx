@@ -8,7 +8,7 @@
     <title>Triple-slash (///) Code Comments Support | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Triple-slash (///) Code Comments Support | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -78,7 +80,9 @@
 <h1 id="triple-slash--code-comments-support">Triple-slash (///) Code Comments Support</h1>
 
 <p>DocFX extracts <a href="https://docs.microsoft.com/en-us/dotnet/articles/csharp/programming-guide/xmldoc/xml-documentation-comments">triple-slash (///) code comments</a> from .NET source code when running <code>docfx metadata</code>. <a href="https://docs.microsoft.com/en-us/dotnet/articles/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments">Tags</a> in triple-slash (///) code comments are converted to corresponding metadata in .NET data model.</p>
-<div class="NOTE"><h5>Note</h5><p><code>docfx</code> supports <a href="docfx_flavored_markdown.html">DocFX Flavored Markdown syntax</a> inside triple-slash (///) code comments. You can disable this feature by set <code>shouldSkipMarkup</code> when generating metadata: <code>docfx metadata --shouldSkipMarkup</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>docfx</code> supports <a href="docfx_flavored_markdown.html">DocFX Flavored Markdown syntax</a> inside triple-slash (///) code comments. You can disable this feature by set <code>shouldSkipMarkup</code> when generating metadata: <code>docfx metadata --shouldSkipMarkup</code>.</p>
 </div>
 <h2 id="supported-tags">Supported tags</h2>
 <h3 id="top-level-block-tags">Top level block tags</h3>

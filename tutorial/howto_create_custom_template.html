@@ -8,7 +8,7 @@
     <title>How-to: Create A Custom Template | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Create A Custom Template | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -79,13 +81,14 @@
 
 <p>Templates are organized as a zip package or a folder. The file path (without the <code>.zip</code> extension) of the zip package or the path of the folder is considered to be the template name.</p>
 <h2 id="quickstart">Quickstart</h2>
-<p>Let&#39;s create a template to transform Markdown files into a simple html file.</p>
+<p>Let's create a template to transform Markdown files into a simple html file.</p>
 <h3 id="step-1-create-a-template-folder">Step 1. Create a template folder</h3>
 <p>Create a folder for the template, for example, <code>c:/docfx_howto/simple_template</code>.</p>
 <h3 id="step-2-add-renderer-file">Step 2. Add <em>Renderer</em> file</h3>
 <p>Create a file <code>conceptual.html.primary.tmpl</code> under the template folder with the following content:</p>
 <pre><code class="lang-mustache">{{{conceptual}}}
-</code></pre><p>Now a simple custom template is created.</p>
+</code></pre>
+<p>Now a simple custom template is created.</p>
 <p>You may notice that DocFX reports a warning message saying that: <em>Warning: [Build Document.Apply Templates]There is no template processing document type(s): Toc</em>. It is because our custom template only specifies how to handle document with type <code>conceptual</code>.</p>
 <p>To test the output of the template, create a simple documentation project following <a href="walkthrough/walkthrough_create_a_docfx_project.html">Walkthrough Part I</a> or download the <a href="walkthrough/artifacts/walkthrough1.zip">zipped documentation project</a> directly.</p>
 <p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>. The <code>-t</code> command option specifies the template name(s) used by the current build.</p>
@@ -99,16 +102,18 @@
     model._extra_property = &quot;Hello world&quot;;
     return model;
 }
-</code></pre><p>Update the file <code>conceptual.html.primary.tmpl</code> with the following content:</p>
+</code></pre>
+<p>Update the file <code>conceptual.html.primary.tmpl</code> with the following content:</p>
 <pre><code class="lang-mustache">&lt;h1&gt;{{_extra_property}}&lt;/h1&gt;
 {{{conceptual}}}
-</code></pre><p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>.</p>
+</code></pre>
+<p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>.</p>
 <p>Open <a href="http://localhost:8080">http://localhost:8080</a> and you can see <code>_extra_property</code> is added to the web page.</p>
 <p><img src="images/web_page_with_extra_property.png" alt="Updated Web Page"></p>
 <h2 id="merge-template-with-default-template">Merge template with <code>default</code> template</h2>
 <p>DocFX contains some embedded template resources that you can refer to directly. You can use <code>docfx template list</code> to list available templates provided by DocFX.</p>
 <p>Take <code>default</code> template as an example.</p>
-<p>Run <code>docfx template export default</code>. It exports what&#39;s inside <code>default</code> template into the folder <code>_exported_templates</code>. You can see that there are sets of <em>Preprocessor</em> and <em>Renderer</em> files to deal with different types of documents.</p>
+<p>Run <code>docfx template export default</code>. It exports what's inside <code>default</code> template into the folder <code>_exported_templates</code>. You can see that there are sets of <em>Preprocessor</em> and <em>Renderer</em> files to deal with different types of documents.</p>
 <p>DocFX supports specifying multiple templates for a documentation project. That allows you to leverage the <code>default</code> template for handling other types of documents, together with your custom template.</p>
 <p>When dealing with multiple templates, DocFX merges the files inside these templates.</p>
 <p>The principle for merging is: if a file name collides then the file in the latter template overwrites the one in the former template.</p>
@@ -119,18 +124,23 @@
         &quot;c:/docfx_howto/simple_template&quot;
     ]
 }
-</code></pre><p>In the documentation project, run <code>docfx build docfx.json -t default,c:/docfx_howto/simple_template --serve</code>.</p>
+</code></pre>
+<p>In the documentation project, run <code>docfx build docfx.json -t default,c:/docfx_howto/simple_template --serve</code>.</p>
 <p>Now the warning message <em>There is no template processing document type(s): Toc</em> disappears because the default template contains <em>Renderer</em> to handle TOC files.</p>
 <p>Open <a href="http://localhost:8080/toc.html">http://localhost:8080/toc.html</a> and you can see a toc web page.
 <img src="images/toc_web_page.png" alt="TOC Web Page"></p>
-<div class="TIP"><h5>Tip</h5><p>Run <code>docfx template export default</code> to view what&#39;s inside the default template.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Run <code>docfx template export default</code> to view what's inside the default template.</p>
 </div>
-<div class="NOTE"><h5>Note</h5><p>It is possible that DocFX updates its embedded templates when a new version is released.
+<div class="NOTE">
+<h5>Note</h5>
+<p>It is possible that DocFX updates its embedded templates when a new version is released.
 So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.</p>
 </div>
 <h2 id="extension-for-preprocessor-file">Extension for <em>Preprocessor</em> file</h2>
-<p>If you want to modify some properties based on DocFX <code>default</code> template&#39;s <em>Preprocessor</em>, you can use <em>Preprocessor</em> extension file to achieve this.</p>
-<p>For example, if you want to add a property to the managed reference&#39;s data model after <code>default</code> template&#39;s <em>Preprocessor</em>, you can update the file <code>ManagedReference.extension.js</code> in your custom template with the following content:</p>
+<p>If you want to modify some properties based on DocFX <code>default</code> template's <em>Preprocessor</em>, you can use <em>Preprocessor</em> extension file to achieve this.</p>
+<p>For example, if you want to add a property to the managed reference's data model after <code>default</code> template's <em>Preprocessor</em>, you can update the file <code>ManagedReference.extension.js</code> in your custom template with the following content:</p>
 <pre><code>/**
  * This method will be called at the start of exports.transform in ManagedReference.html.primary.js
  */
@@ -145,7 +155,8 @@ exports.postTransform = function (model) {
   model._extra_property = &quot;Hello world&quot;;
   return model;
 }
-</code></pre><p>Compared with modifying <code>ManagedReference.html.primary.js</code> directely, you needn&#39;t worry about merging your custom templates with DocFX&#39;s embedded templates when DocFX updates.</p>
+</code></pre>
+<p>Compared with modifying <code>ManagedReference.html.primary.js</code> directely, you needn't worry about merging your custom templates with DocFX's embedded templates when DocFX updates.</p>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

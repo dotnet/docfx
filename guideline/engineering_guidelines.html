@@ -8,7 +8,7 @@
     <title>Engineering Guidelines | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Engineering Guidelines | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -80,20 +82,28 @@
 <h2 id="basics">Basics</h2>
 <h3 id="copyright-header-and-license-notice">Copyright header and license notice</h3>
 <p>All source code files require the following exact header according to its language (please do not make any changes to it).</p>
-<blockquote><p>extension: <strong>.cs</strong></p>
+<blockquote>
+<p>extension: <strong>.cs</strong></p>
 </blockquote>
 <pre><code class="lang-csharp">// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre><blockquote><p>extension: <strong>.js</strong></p>
+</code></pre>
+<blockquote>
+<p>extension: <strong>.js</strong></p>
 </blockquote>
 <pre><code class="lang-js">// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre><blockquote><p>extension: <strong>.css</strong></p>
+</code></pre>
+<blockquote>
+<p>extension: <strong>.css</strong></p>
 </blockquote>
 <pre><code class="lang-css">/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
-</code></pre><blockquote><p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
+</code></pre>
+<blockquote>
+<p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
 </blockquote>
 <pre><code class="lang-mustache">{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-</code></pre><h3 id="external-dependencies">External dependencies</h3>
+</code></pre>
+<h3 id="external-dependencies">External dependencies</h3>
 <p>This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
 <p>Current approved dependencies are:</p>
 <ul>
@@ -106,7 +116,7 @@
 <h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
 <p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
 <p>The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
-<p>In general a PR should be signed off(using the <span class="emoji" shortcode="+1">👍</span> emoticon) by the owner of that code.</p>
+<p>In general a PR should be signed off(using the 👍 emoticon) by the owner of that code.</p>
 <p>To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
 <h2 id="source-code-management">Source Code Management</h2>
 <h3 id="branch-strategy">Branch strategy</h3>
@@ -117,7 +127,7 @@
 </ul>
 <h3 id="solution-and-project-folder-structure-and-naming">Solution and project folder structure and naming</h3>
 <p>Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
-<p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project&#39;s dependencies and configuration options.</p>
+<p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project's dependencies and configuration options.</p>
 <p>The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
 <h3 id="assembly-naming-pattern">Assembly naming pattern</h3>
 <p>The general naming pattern is <code>Microsoft.DocAsCode.&lt;area&gt;.&lt;subarea&gt;</code>.</p>

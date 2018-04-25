@@ -8,7 +8,7 @@
     <title>Walkthrough: Customize a processor to support incremental build | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough: Customize a processor to support incremental build | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -77,15 +79,15 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="walkthrough-customize-a-processor-to-support-incremental-build">Walkthrough: Customize a processor to support incremental build</h1>
 
-<p>During this tutorial, we&#39;ll walk through the steps to enable a processor to be incremental.</p>
-<h2 id="step1-implement-microsoftdocascodepluginsisupportincrementaldocumentprocessor-interface-for-the-processor">Step1. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor interface for the processor</h2>
+<p>During this tutorial, we'll walk through the steps to enable a processor to be incremental.</p>
+<h2 id="step1-implement--interface-for-the-processor">Step1. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor interface for the processor</h2>
 <pre><code class="lang-csharp">public class RtfDocumentProcessor : ISupportIncrementalDocumentProcessor
 {
     // to-do: implements IDocumentProcessor
 
     public virtual string GetIncrementalContextHash()
     {
-        // to-do: context related hash. if it changes, incremental build isn&#39;t triggered.
+        // to-do: context related hash. if it changes, incremental build isn't triggered.
     }
 
     public virtual void SaveIntermediateModel(FileModel model, Stream stream)
@@ -98,8 +100,9 @@
         // to-do: the logic to load filemodel
     }
 }
-</code></pre><h2 id="step2-implement-microsoftdocascodepluginsisupportincrementalbuildstep-interface-for-all-the-plugins-plugged-in-the-processor">Step2. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface for all the plugins plugged in the processor</h2>
-<p>Plugins are flexible to register customized dependency types by implementing the interface&#39;s method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister.</p>
+</code></pre>
+<h2 id="step2-implement--interface-for-all-the-plugins-plugged-in-the-processor">Step2. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface for all the plugins plugged in the processor</h2>
+<p>Plugins are flexible to register customized dependency types by implementing the interface's method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister.</p>
 <p>Plugins are also flexible to report dependencies by invoking the methods provided by @Microsoft.DocAsCode.Plugins.IHostService.</p>
 <pre><code class="lang-csharp">public class RtfBuildStep : ISupportIncrementalBuildStep
 {
@@ -125,10 +128,11 @@
         host.ReportDependencyTo(model, &quot;uid&quot;, DependencyItemSourceType.Uid, &quot;ref&quot;);
     }
 }
-</code></pre><p>The above sample registered a dependency type named <code>ref</code>, this type of dependency applies during <code>Link</code> phase and it isn&#39;t transitive. <code>DocFX</code> has some reserved dependency types, you can refer to <a href="advanced_report_dependency.html#reserved-dependency-types">Reserved Dependency Types</a> for more details.</p>
-<p>In <code>Build</code> step, this plugin reports dependencies of type <code>ref</code> by invoking @Microsoft.DocAsCode.Plugins.IHostService &#39;s <code>ReportDependencyTo</code> method. @Microsoft.DocAsCode.Plugins.IHostService also provides <code>ReportDependencyFrom</code> method you can report reverse dependency.</p>
+</code></pre>
+<p>The above sample registered a dependency type named <code>ref</code>, this type of dependency applies during <code>Link</code> phase and it isn't transitive. <code>DocFX</code> has some reserved dependency types, you can refer to <a href="advanced_report_dependency.html#reserved-dependency-types">Reserved Dependency Types</a> for more details.</p>
+<p>In <code>Build</code> step, this plugin reports dependencies of type <code>ref</code> by invoking @Microsoft.DocAsCode.Plugins.IHostService 's <code>ReportDependencyTo</code> method. @Microsoft.DocAsCode.Plugins.IHostService also provides <code>ReportDependencyFrom</code> method you can report reverse dependency.</p>
 <p>For more details about how to register your own dependency types and report , you can refer to <a href="advanced_report_dependency.html">Advanced: register and report dependency</a>.</p>
-<h2 id="step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info">Step3. [Optional]Implement @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep interface for plugins that need to access context info</h2>
+<h2 id="step3-optionalimplement--interface-for-plugins-that-need-to-access-context-info">Step3. [Optional]Implement @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep interface for plugins that need to access context info</h2>
 <p>When building articles, some plugins might need the info of unloaded articles. Incremental Build Framework provides the interface @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep, which is the superset of @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep and also contains methods to save/load context info.</p>
 <pre><code class="lang-csharp">public class RtfBuildStep : ICanTraceContextInfoBuildStep
 {
@@ -144,7 +148,8 @@
         // to-do: the logic to save current context info
     }
 }
-</code></pre><p>Now you&#39;re done! Your processor can run incrementally!</p>
+</code></pre>
+<p>Now you're done! Your processor can run incrementally!</p>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

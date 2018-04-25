@@ -8,7 +8,7 @@
     <title>Walkthrough: Customize a post processor to be incremental | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough: Customize a post processor to be incremental | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -77,8 +79,8 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="walkthrough-customize-a-post-processor-to-be-incremental">Walkthrough: Customize a post processor to be incremental</h1>
 
-<p>In this tutorial, we&#39;ll walk through how to enable a post processor to be incremental.</p>
-<h2 id="implement-microsoftdocascodepluginsisupportincrementalpostprocessor-for-the-post-processor">Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor for the post processor</h2>
+<p>In this tutorial, we'll walk through how to enable a post processor to be incremental.</p>
+<h2 id="implement--for-the-post-processor">Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalPostProcessor for the post processor</h2>
 <pre><code class="lang-csharp">public class AppendIntegerPostProcessor : ISupportIncrementalPostProcessor
 {
     // to-do: implements IPostProcessor
@@ -87,10 +89,11 @@
 
     public string GetIncrementalContextHash()
     {
-        // to-do: incremental context hash. If it changes, incremental post processing isn&#39;t triggered.
+        // to-do: incremental context hash. If it changes, incremental post processing isn't triggered.
     }
 }
-</code></pre><h2 id="optional-load-and-save-customized-context-information-from-cache">Optional: Load and save customized context information from cache</h2>
+</code></pre>
+<h2 id="optional-load-and-save-customized-context-information-from-cache">Optional: Load and save customized context information from cache</h2>
 <p>@Microsoft.DocAsCode.Plugins.IPostProcessorHost is the host to provide incremental post processing information as following.</p>
 <table>
 <thead>
@@ -140,7 +143,7 @@
 </tr>
 </tbody>
 </table>
-<p>Here&#39;s the sample:</p>
+<p>Here's the sample:</p>
 <pre><code class="lang-csharp">public class AppendIntegerPostProcessor : ISupportIncrementalPostProcessor
 {
     public IPostProcessorHost PostProcessorHost { get; set; }
@@ -168,7 +171,8 @@
         return manifest;
     }
 }
-</code></pre><div id="disqus_thread"></div>
+</code></pre>
+<div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
                 var d = document, s = d.createElement('script');

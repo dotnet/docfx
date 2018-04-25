@@ -8,7 +8,7 @@
     <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -79,7 +81,7 @@
 
 <h2 id="1-introduction">1. Introduction</h2>
 <p>DocFX supports different <a href="../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html">document processors</a> to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.</p>
-<p>DocFX Document Schema (abbreviated to <em>THIS schema</em> below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to <strong>annotate</strong>, <strong>validate</strong> and <strong>interpret</strong> the document data. </p>
+<p>DocFX Document Schema (abbreviated to <em>THIS schema</em> below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to <strong>annotate</strong>, <strong>validate</strong> and <strong>interpret</strong> the document data.</p>
 <h2 id="2-conventions-and-terminology">2. Conventions and Terminology</h2>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>.</p>
 <h2 id="3-overview">3. Overview</h2>
@@ -177,7 +179,7 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tbody>
 </table>
 <h4 id="property-definitions-object">Property Definitions Object</h4>
-<p>It is an object where each key is the name of a property and each value is a schema to describe that property. </p>
+<p>It is an object where each key is the name of a property and each value is a schema to describe that property.</p>
 <h5 id="patterned-field-1">Patterned Field</h5>
 <table>
 <thead>
@@ -284,7 +286,8 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <h2 id="6-keywords-in-detail">6. Keywords in detail</h2>
 <h3 id="61-type">6.1 type</h3>
 <p>Same as in JSON schema: <a href="http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25">http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25</a></p>
-<blockquote><p>The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.</p>
+<blockquote>
+<p>The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.</p>
 <p>String values MUST be one of the six primitive types (&quot;null&quot;, &quot;boolean&quot;, &quot;object&quot;, &quot;array&quot;, &quot;number&quot;, or &quot;string&quot;), or &quot;integer&quot; which matches any number with a zero fractional part.</p>
 <p>An instance validates if and only if the instance is in any of the sets listed for this keyword.</p>
 </blockquote>
@@ -340,7 +343,7 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tr>
 <tr>
 <td><code>markdown</code></td>
-<td><code>type</code> MUST be <code>string</code>. It means the property is in <a href="docfx_flavored_markdown.html">DocFX flavored Markdown</a> syntax. Application CAN help to transform it into HTML format.</td>
+<td><code>type</code> MUST be <code>string</code>. It means the property is in <a href="..%5Cspec%5Cdocfx_flavored_markdown.md">DocFX flavored Markdown</a> syntax. Application CAN help to transform it into HTML format.</td>
 </tr>
 </tbody>
 </table>
@@ -379,22 +382,27 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <p>The value of this keyword MUST be an array of <code>string</code>. Each <code>string</code> value is the property name of current object that will be exported to be <a href="docfx_flavored_markdown.html#cross-reference">Cross Referenced</a> by others.
 To leverage this feature, a new <code>xref</code> syntax with <code>template</code> attribute is support:</p>
 <pre><code class="lang-html">&lt;xref uid=&quot;{uid}&quot; template=&quot;{path_of_partial_template}&quot; /&gt;
-</code></pre><p>For the parital template, the input model is the object containing properties <code>xrefProperties</code> defines.</p>
+</code></pre>
+<p>For the parital template, the input model is the object containing properties <code>xrefProperties</code> defines.</p>
 <p>For example, in the sample schema defined by <a href="#7-samples">7. Samples</a>, <code>&quot;xrefProperties&quot;: [ &quot;title&quot;, &quot;description&quot; ],</code>, <code>title</code> and <code>description</code> are <code>xrefProperties</code> for uid <code>webapp</code>. A partial template to render this xref, for example, named <code>partials/overview.tmpl</code>, looks like:</p>
 <pre><code class="lang-mustache">{{title}}: {{{description}}}
-</code></pre><p>When someone references this uid using <code>&lt;xref uid=&quot;webapp&quot; template=&quot;partials/overview.tmpl&quot;</code>, <code>docfx</code> expand this <code>xref</code> into the following html:</p>
+</code></pre>
+<p>When someone references this uid using <code>&lt;xref uid=&quot;webapp&quot; template=&quot;partials/overview.tmpl&quot;</code>, <code>docfx</code> expand this <code>xref</code> into the following html:</p>
 <pre><code class="lang-html">Web Apps Documentation: &lt;p&gt;This is description&lt;/p&gt;
-</code></pre><p>In this way, users can not only <em>cross reference</em> others to get the target url, but also <em>cross reference</em> other properties as they like.</p>
+</code></pre>
+<p>In this way, users can not only <em>cross reference</em> others to get the target url, but also <em>cross reference</em> other properties as they like.</p>
 <p>A common usage of this is the <strong>Namespace</strong> page in ManagedReference. The <strong>Namespace</strong> page shows a table of its <strong>Classes</strong> with the <code>summary</code> of the <strong>Class</strong>, with the help of <code>xrefProperties</code>, the source of truth <code>summary</code> is always from <strong>Class</strong>. For the <strong>Namespace</strong> page, it can, for example:</p>
 <ol>
 <li>Define a <code>class.tr.tmpl</code> template: <code>&lt;tr&gt;&lt;td&gt;{{name}}&lt;/td&gt;&lt;td&gt;{{{summary}}}&lt;/td&gt;&lt;/tr&gt;</code></li>
-<li>The namespace <code>namespace.tmpl</code> template, use <code>xref</code> to render its children classes: <pre><code class="lang-mustache">{{#children}}
+<li>The namespace <code>namespace.tmpl</code> template, use <code>xref</code> to render its children classes:
+<pre><code class="lang-mustache">{{#children}}
   &lt;xref uid=&quot;{{uid}}&quot; template=&quot;class.tr.tmpl&quot; /&gt;
 {{/children}}
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
 <h2 id="7-samples">7. Samples</h2>
-<p>Here&#39;s an sample of the schema. Assume we have the following YAML file:</p>
+<p>Here's an sample of the schema. Assume we have the following YAML file:</p>
 <pre><code class="lang-yaml">### YamlMime:LandingPage
 title: Web Apps Documentation
 description: This is description
@@ -431,8 +439,9 @@ sections:
   - content: &quot;Create an application using [.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md) or [Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)&quot;
   - content: &quot;[Map an existing custom domain to your application](app-service-web-tutorial-custom-domain.md)&quot;
   - content: &quot;[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)&quot;
-</code></pre><p>In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the <code>href</code> is a file link. It need to be resolved from the relative path to the final href. The <code>content</code> property need to be marked up as a Markdown string. The <code>metadata</code> need to be tagged for further custom operations. We want to use <code>section</code>&#39;s <code>title</code> as the key for overwrite <code>section</code> array.</p>
-<p>Here&#39;s the schema to describe these operations:</p>
+</code></pre>
+<p>In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the <code>href</code> is a file link. It need to be resolved from the relative path to the final href. The <code>content</code> property need to be marked up as a Markdown string. The <code>metadata</code> need to be tagged for further custom operations. We want to use <code>section</code>'s <code>title</code> as the key for overwrite <code>section</code> array.</p>
+<p>Here's the schema to describe these operations:</p>
 <pre><code class="lang-json">{
     &quot;$schema&quot;: &quot;https://dotnet.github.io/docfx/schemas/v1.0/schema.json#&quot;,
     &quot;version&quot;: &quot;1.0.0&quot;,
@@ -487,23 +496,29 @@ sections:
         }
     }
 }
-</code></pre><h2 id="8-q--a">8. Q &amp; A</h2>
+</code></pre>
+<h2 id="8-q--a">8. Q &amp; A</h2>
 <ol>
-<li>DocFX fills <code>_global</code> metadata into the processed data model, should the schema reflect this behavior?<ul>
+<li>DocFX fills <code>_global</code> metadata into the processed data model, should the schema reflect this behavior?
+<ul>
 <li>Decision: <em>NOT</em> include, this schema is for <strong>input model</strong>, use another schema for output model.</li>
 </ul>
 </li>
-<li>Is it necessary to prefix <code>d-</code> to every field that DocFX introduces in?<ul>
-<li>If keep <code>d-</code><ul>
-<li>Pros:<ol>
+<li>Is it necessary to prefix <code>d-</code> to every field that DocFX introduces in?
+<ul>
+<li>If keep <code>d-</code>
+<ul>
+<li>Pros:
+<ol>
 <li><code>d-</code> makes it straightforward that these keywords are introduced by DocFX</li>
 <li>Keywords DocFX introduces in will never duplicate with the one preserved by JSON schema</li>
 </ol>
 </li>
-<li>Cons:<ol>
+<li>Cons:
+<ol>
 <li><code>d-</code> prefix provides a hint that these keywords are not <em>first class</em> keywords</li>
 <li>Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.</li>
-<li>For example<a href="http://swagger.io/">Swagger spec</a> is also based on JSON schema and the fields it introduces in has no prefix. </li>
+<li>For example<a href="http://swagger.io/">Swagger spec</a> is also based on JSON schema and the fields it introduces in has no prefix.</li>
 </ol>
 </li>
 </ul>

@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -92,35 +94,42 @@ If you are interested in creating your own website with your own styles, you can
 <li>Markdown extensions. We introduced <em>DocFX Flavored Markdown(DFM)</em> to help you write API documentation. DFM is <em>100%</em> compatible with <em>GitHub Flavored Markdown(GFM)</em> with some useful extensions, like <em>file inclusion</em>, <em>code snippet</em>, <em>cross reference</em>, and <em>yaml header</em>.
 For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
 </ul>
-<div class="WARNING"><h5>Warning</h5><p><strong>Prerequisites</strong> <a href="https://www.visualstudio.com/downloads/">Visual Studio 2017</a> is needed for <code>docfx metadata</code> msbuild projects. It&#39;s not required when generating metadata directly from source code (<code>.cs</code>, <code>.vb</code>) or assemblies (<code>.dll</code>)</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><strong>Prerequisites</strong> <a href="https://www.visualstudio.com/downloads/">Visual Studio 2017</a> is needed for <code>docfx metadata</code> msbuild projects. It's not required when generating metadata directly from source code (<code>.cs</code>, <code>.vb</code>) or assemblies (<code>.dll</code>)</p>
 </div>
 <h2 id="2-use-docfx-as-a-command-line-tool">2. Use <em>DocFX</em> as a command-line tool</h2>
 <p><em>Step1.</em> DocFX ships as a <a href="https://chocolatey.org/packages/docfx">chocolatey package</a>.
 Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by calling <code>choco install docfx -y</code>.</p>
+<p>DocFX also ships as a <a href="http://brewformulas.org/docfx">Homebrew package</a>, install with <code>brew install docfx</code>.</p>
 <p>Alternatively, you can download and unzip <em>docfx.zip</em> from <a href="https://github.com/dotnet/docfx/releases">https://github.com/dotnet/docfx/releases</a>, extract it to a local folder, and add it to PATH so you can run it anywhere.</p>
 <p><em>Step2.</em> Create a sample project</p>
 <pre><code>docfx init -q
-</code></pre><p>This command generates a default project named <code>docfx_project</code>.</p>
+</code></pre>
+<p>This command generates a default project named <code>docfx_project</code>.</p>
 <p><em>Step3.</em> Build the website</p>
 <pre><code>docfx docfx_project\docfx.json --serve
-</code></pre><p>Now you can view the generated website on <a href="http://localhost:8080">http://localhost:8080</a>.</p>
+</code></pre>
+<p>Now you can view the generated website on <a href="http://localhost:8080">http://localhost:8080</a>.</p>
 <h2 id="3-use-docfx-integrated-with-visual-studio">3. Use <em>DocFX</em> integrated with Visual Studio</h2>
 <p><em>Step1.</em> Create a <strong>Class Library (.NET Framework)</strong> project</p>
 <p><em>Step2.</em> Right click on the project and select <strong>Manage NuGet Package</strong></p>
 <p><em>Step3.</em> Search and install the <a href="https://www.nuget.org/packages/docfx.console/"><code>docfx.console</code></a> NuGet package. It adds itself to the build targets and adds the <code>docfx.json</code> configuration file along with other files.</p>
 <p><em>Step4.</em> <strong>Build</strong> the project, and a <code>_site</code> folder will be generated with the documentation.</p>
-<div class="NOTE"><h5>Note</h5><p><em>Possible warning</em>:</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><em>Possible warning</em>:</p>
 <ul>
 <li><p><em>Cache is corrupted</em>: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the <a href="https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535"><code>TargetFramework</code> property</a> in <code>docfx.json</code>:</p>
-<p>   &quot;metadata&quot;: [
-     {
-       &quot;src&quot;: &quot;...&quot;,
-       &quot;dest&quot;: &quot;...&quot;,
-       &quot;properties&quot;: {
-         &quot;TargetFramework&quot;: &lt;one_of_your_framework&gt;
-       }
-     },
-   ]</p>
+<p>&quot;metadata&quot;: [
+{
+&quot;src&quot;: &quot;...&quot;,
+&quot;dest&quot;: &quot;...&quot;,
+&quot;properties&quot;: {
+&quot;TargetFramework&quot;: &lt;one_of_your_framework&gt;
+}
+},
+]</p>
 </li>
 </ul>
 </div>
@@ -137,7 +146,9 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <li><code>GIT_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
 <li><code>GIT_LOCAL_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
 </ul>
-<div class="NOTE"><h5>Note</h5><p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
 </div>
 <h2 id="5-build-from-source-code">5. Build from source code</h2>
 <p>As a prerequisite, you need:</p>
@@ -148,7 +159,8 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <p><em>Step1.</em> <code>git clone https://github.com/dotnet/docfx.git</code> to get the latest code.</p>
 <p><em>Step2.</em> Run <code>build.cmd</code> under root folder.</p>
 <p><em>Step3.</em> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
-<blockquote><p>Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
+<blockquote>
+<p>Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
 </blockquote>
 <p><em>Step4.</em> Follow steps in #2, #3, #4 to use <em>DocFX</em> in command-line, IDE or .NET Core.</p>
 <h2 id="6-a-seed-project-to-play-with-docfx">6. A seed project to play with <em>DocFX</em></h2>
@@ -160,7 +172,9 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <li><code>toc.yml</code> under root folder. It renders as the navbar of the website.</li>
 <li><code>docfx.json</code> under root folder. It is the configuration file that <code>docfx</code> depends upon.</li>
 </ol>
-<div class="TIP"><h5>Tip</h5><p>It&#39;s good practice to separate files with different types into different folders.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>It's good practice to separate files with different types into different folders.</p>
 </div>
 <h2 id="7-qa">7. Q&amp;A</h2>
 <ol>

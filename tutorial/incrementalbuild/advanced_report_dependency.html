@@ -8,7 +8,7 @@
     <title>&#128295; Advanced: Report Dependency | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Advanced: Report Dependency | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -107,7 +109,7 @@
 </tbody>
 </table>
 <h4 id="reserved-dependency-types">Reserved dependency types</h4>
-<p>Below table lists all reserved dependency types. When creating a customized dependency type, name shouldn&#39;t conflict with the reserved ones.</p>
+<p>Below table lists all reserved dependency types. When creating a customized dependency type, name shouldn't conflict with the reserved ones.</p>
 <table>
 <thead>
 <tr>
@@ -158,12 +160,12 @@
 <td>reference</td>
 <td>Link</td>
 <td>None</td>
-<td>managed reference document&#39;s references</td>
+<td>managed reference document's references</td>
 </tr>
 </tbody>
 </table>
 <h4 id="register-a-customized-dependency-type">Register a customized dependency type</h4>
-<p>Plugins are flexible to register customized dependency types by implementing @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface&#39;s method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister. The method would be called by the framework at the very start of the whole build.</p>
+<p>Plugins are flexible to register customized dependency types by implementing @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface's method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister. The method would be called by the framework at the very start of the whole build.</p>
 <p>Sample code:</p>
 <pre><code class="lang-csharp">    public IEnumerable&lt;DependencyType&gt; GetDependencyTypesToRegister() =&gt; new[]
     {
@@ -174,7 +176,8 @@
             Transitivity = DependencyTransitivity.None,
         }
     };
-</code></pre><h2 id="report-dependency-item"><em>Report Dependency item</em></h2>
+</code></pre>
+<h2 id="report-dependency-item"><em>Report Dependency item</em></h2>
 <h3 id="dependencyitem-model">DependencyItem model</h3>
 <table>
 <thead>
@@ -229,14 +232,14 @@
 <p>If you want to report the dependency between an file and another file, you can use below method:</p>
 <p>directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
 <p>reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
-<p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on file <code>~/../include/token/md</code>, dependency type is <code>include</code>,
+<p>For example, i'd like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on file <code>~/../include/token/md</code>, dependency type is <code>include</code>,
 i could call the method <code>ReportDependencyTo(a, &quot;~/../include/token.md&quot;, &quot;include&quot;)</code>.</p>
-<p>Plugins are only allowed to report a dependency during <code>Compile</code> phase. However, some plugins might don&#39;t have enough info to resolve some dependency to file until the whole phase completes. Incremental build framework provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.</p>
+<p>Plugins are only allowed to report a dependency during <code>Compile</code> phase. However, some plugins might don't have enough info to resolve some dependency to file until the whole phase completes. Incremental build framework provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.</p>
 <p>directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)</p>
 <p>reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)</p>
 <p>report reference:    @Microsoft.DocAsCode.Plugins.IHostService.ReportReference(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)</p>
 <p>A common usage is to report dependency between file and uid.</p>
-<p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on sentenceId @Testid(filemodel is <code>b</code>), dependency type is <code>link</code>,
+<p>For example, i'd like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on sentenceId @Testid(filemodel is <code>b</code>), dependency type is <code>link</code>,
 i could call the method <code>ReportDependencyTo(a, &quot;Testid&quot;, &quot;sentenceId&quot;, &quot;link&quot;)</code> to report the dependency and <code>ReportReference(b, &quot;Testid&quot;, &quot;sentenceId&quot;)</code> to report the mapping between sentenceId and file. This way, the framework would do the resolution work and resolve it to file-file dependency.</p>
 <div id="disqus_thread"></div>
                 <script>

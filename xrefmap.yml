@@ -4718,15 +4718,15 @@ references:
   fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.DocumentBuildContext(System.String, System.Collections.Generic.IEnumerable(Of FileAndType), System.Collections.Immutable.ImmutableArray(Of System.String), System.Collections.Immutable.ImmutableArray(Of System.String), System.Int32, System.String, System.String, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.String, System.String, System.Collections.Immutable.ImmutableArray(Of System.String))
   nameWithType: DocumentBuildContext.DocumentBuildContext(String, IEnumerable<FileAndType>, ImmutableArray<String>, ImmutableArray<String>, Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray<String>)
   nameWithType.vb: DocumentBuildContext.DocumentBuildContext(String, IEnumerable(Of FileAndType), ImmutableArray(Of String), ImmutableArray(Of String), Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray(Of String))
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings,System.String,System.String,System.Collections.Immutable.ImmutableArray{System.String},GroupInfo)
-  name: DocumentBuildContext(String, IEnumerable<FileAndType>, ImmutableArray<String>, ImmutableArray<String>, Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray<String>, GroupInfo)
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ApplyTemplateSettings_System_String_System_String_System_Collections_Immutable_ImmutableArray_System_String__GroupInfo_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings,System.String,System.String,System.Collections.Immutable.ImmutableArray{System.String},GroupInfo)
-  name.vb: DocumentBuildContext(String, IEnumerable(Of FileAndType), ImmutableArray(Of String), ImmutableArray(Of String), Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray(Of String), GroupInfo)
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.DocumentBuildContext(System.String, System.Collections.Generic.IEnumerable<FileAndType>, System.Collections.Immutable.ImmutableArray<System.String>, System.Collections.Immutable.ImmutableArray<System.String>, System.Int32, System.String, System.String, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.String, System.String, System.Collections.Immutable.ImmutableArray<System.String>, GroupInfo)
-  fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.DocumentBuildContext(System.String, System.Collections.Generic.IEnumerable(Of FileAndType), System.Collections.Immutable.ImmutableArray(Of System.String), System.Collections.Immutable.ImmutableArray(Of System.String), System.Int32, System.String, System.String, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.String, System.String, System.Collections.Immutable.ImmutableArray(Of System.String), GroupInfo)
-  nameWithType: DocumentBuildContext.DocumentBuildContext(String, IEnumerable<FileAndType>, ImmutableArray<String>, ImmutableArray<String>, Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray<String>, GroupInfo)
-  nameWithType.vb: DocumentBuildContext.DocumentBuildContext(String, IEnumerable(Of FileAndType), ImmutableArray(Of String), ImmutableArray(Of String), Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray(Of String), GroupInfo)
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings,System.String,System.String,System.Collections.Immutable.ImmutableArray{System.String},GroupInfo,System.Collections.Generic.List{System.String})
+  name: DocumentBuildContext(String, IEnumerable<FileAndType>, ImmutableArray<String>, ImmutableArray<String>, Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray<String>, GroupInfo, List<String>)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ApplyTemplateSettings_System_String_System_String_System_Collections_Immutable_ImmutableArray_System_String__GroupInfo_System_Collections_Generic_List_System_String__
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings,System.String,System.String,System.Collections.Immutable.ImmutableArray{System.String},GroupInfo,System.Collections.Generic.List{System.String})
+  name.vb: DocumentBuildContext(String, IEnumerable(Of FileAndType), ImmutableArray(Of String), ImmutableArray(Of String), Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray(Of String), GroupInfo, List(Of String))
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.DocumentBuildContext(System.String, System.Collections.Generic.IEnumerable<FileAndType>, System.Collections.Immutable.ImmutableArray<System.String>, System.Collections.Immutable.ImmutableArray<System.String>, System.Int32, System.String, System.String, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.String, System.String, System.Collections.Immutable.ImmutableArray<System.String>, GroupInfo, System.Collections.Generic.List<System.String>)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.DocumentBuildContext(System.String, System.Collections.Generic.IEnumerable(Of FileAndType), System.Collections.Immutable.ImmutableArray(Of System.String), System.Collections.Immutable.ImmutableArray(Of System.String), System.Int32, System.String, System.String, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.String, System.String, System.Collections.Immutable.ImmutableArray(Of System.String), GroupInfo, System.Collections.Generic.List(Of System.String))
+  nameWithType: DocumentBuildContext.DocumentBuildContext(String, IEnumerable<FileAndType>, ImmutableArray<String>, ImmutableArray<String>, Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray<String>, GroupInfo, List<String>)
+  nameWithType.vb: DocumentBuildContext.DocumentBuildContext(String, IEnumerable(Of FileAndType), ImmutableArray(Of String), ImmutableArray(Of String), Int32, String, String, ApplyTemplateSettings, String, String, ImmutableArray(Of String), GroupInfo, List(Of String))
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor*
   name: DocumentBuildContext
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_
@@ -5117,6 +5117,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefSpecMap
   nameWithType: DocumentBuildContext.XRefSpecMap
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags
+  name: XRefTags
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefTags
+  commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags
+  nameWithType: DocumentBuildContext.XRefTags
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags*
+  name: XRefTags
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefTags_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefTags
+  nameWithType: DocumentBuildContext.XRefTags
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder
   name: DocumentBuilder
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html
@@ -5596,6 +5609,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefServiceUrls
   nameWithType: DocumentBuildParameters.XRefServiceUrls
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags
+  name: XRefTags
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_XRefTags
+  commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags
+  nameWithType: DocumentBuildParameters.XRefTags
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags*
+  name: XRefTags
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_XRefTags_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.XRefTags
+  nameWithType: DocumentBuildParameters.XRefTags
 - uid: Microsoft.DocAsCode.Build.Engine.EmptyResourceReader
   name: EmptyResourceReader
   href: api/Microsoft.DocAsCode.Build.Engine.EmptyResourceReader.html
@@ -11653,6 +11679,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.XRefMap.Sorted
   nameWithType: XRefMap.Sorted
+- uid: Microsoft.DocAsCode.Build.Engine.XRefMap.Tags
+  name: Tags
+  href: api/Microsoft.DocAsCode.Build.Engine.XRefMap.html#Microsoft_DocAsCode_Build_Engine_XRefMap_Tags
+  commentId: P:Microsoft.DocAsCode.Build.Engine.XRefMap.Tags
+  fullName: Microsoft.DocAsCode.Build.Engine.XRefMap.Tags
+  nameWithType: XRefMap.Tags
+- uid: Microsoft.DocAsCode.Build.Engine.XRefMap.Tags*
+  name: Tags
+  href: api/Microsoft.DocAsCode.Build.Engine.XRefMap.html#Microsoft_DocAsCode_Build_Engine_XRefMap_Tags_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.XRefMap.Tags
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.XRefMap.Tags
+  nameWithType: XRefMap.Tags
 - uid: Microsoft.DocAsCode.Build.Engine.XRefMap.UpdateHref(System.Uri)
   name: UpdateHref(Uri)
   href: api/Microsoft.DocAsCode.Build.Engine.XRefMap.html#Microsoft_DocAsCode_Build_Engine_XRefMap_UpdateHref_System_Uri_
@@ -18151,6 +18190,19 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter
   fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter
   nameWithType: XrefInterpreter
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.#ctor(System.Boolean,System.Boolean)
+  name: XrefInterpreter(Boolean, Boolean)
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_XrefInterpreter__ctor_System_Boolean_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.#ctor(System.Boolean,System.Boolean)
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.XrefInterpreter(System.Boolean, System.Boolean)
+  nameWithType: XrefInterpreter.XrefInterpreter(Boolean, Boolean)
+- uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.#ctor*
+  name: XrefInterpreter
+  href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_XrefInterpreter__ctor_
+  commentId: Overload:Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.#ctor
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.XrefInterpreter
+  nameWithType: XrefInterpreter.XrefInterpreter
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.CanInterpret(Microsoft.DocAsCode.Build.SchemaDriven.BaseSchema)
   name: CanInterpret(BaseSchema)
   href: api/Microsoft.DocAsCode.Build.SchemaDriven.Processors.XrefInterpreter.html#Microsoft_DocAsCode_Build_SchemaDriven_Processors_XrefInterpreter_CanInterpret_Microsoft_DocAsCode_Build_SchemaDriven_BaseSchema_
@@ -21030,6 +21082,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.BuildJsonConfig.XRefServiceUrls
   nameWithType: BuildJsonConfig.XRefServiceUrls
+- uid: Microsoft.DocAsCode.BuildJsonConfig.XrefTags
+  name: XrefTags
+  href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_XrefTags
+  commentId: P:Microsoft.DocAsCode.BuildJsonConfig.XrefTags
+  fullName: Microsoft.DocAsCode.BuildJsonConfig.XrefTags
+  nameWithType: BuildJsonConfig.XrefTags
+- uid: Microsoft.DocAsCode.BuildJsonConfig.XrefTags*
+  name: XrefTags
+  href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_XrefTags_
+  commentId: Overload:Microsoft.DocAsCode.BuildJsonConfig.XrefTags
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.BuildJsonConfig.XrefTags
+  nameWithType: BuildJsonConfig.XrefTags
 - uid: Microsoft.DocAsCode.CascadableOptions
   name: CascadableOptions
   href: api/Microsoft.DocAsCode.CascadableOptions.html
@@ -32359,6 +32424,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.GroupConfig.Metadata
   nameWithType: GroupConfig.Metadata
+- uid: Microsoft.DocAsCode.GroupConfig.XrefTags
+  name: XrefTags
+  href: api/Microsoft.DocAsCode.GroupConfig.html#Microsoft_DocAsCode_GroupConfig_XrefTags
+  commentId: P:Microsoft.DocAsCode.GroupConfig.XrefTags
+  fullName: Microsoft.DocAsCode.GroupConfig.XrefTags
+  nameWithType: GroupConfig.XrefTags
+- uid: Microsoft.DocAsCode.GroupConfig.XrefTags*
+  name: XrefTags
+  href: api/Microsoft.DocAsCode.GroupConfig.html#Microsoft_DocAsCode_GroupConfig_XrefTags_
+  commentId: Overload:Microsoft.DocAsCode.GroupConfig.XrefTags
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.GroupConfig.XrefTags
+  nameWithType: GroupConfig.XrefTags
 - uid: Microsoft.DocAsCode.HtmlToPdf
   name: Microsoft.DocAsCode.HtmlToPdf
   href: api/Microsoft.DocAsCode.HtmlToPdf.html

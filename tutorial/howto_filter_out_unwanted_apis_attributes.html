@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>How-to: Filter Out Unwanted APIs or Attributes  | DocFX website </title>
+    <title>How-to: Filter Out Unwanted APIs or Attributes | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes  | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes | DocFX website ">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -75,7 +77,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="how-to-filter-out-unwanted-apis-or-attributes-">How-to: Filter Out Unwanted APIs or Attributes </h1>
+<h1 id="how-to-filter-out-unwanted-apis-or-attributes">How-to: Filter Out Unwanted APIs or Attributes</h1>
 
 <p>A filter configuration file is in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> format. You may filter out unwanted APIs or attributes by providing a filter configuration file and specifying its path.</p>
 <h2 id="specifying-the-filter-configuration-file-path">Specifying the filter configuration file path</h2>
@@ -105,23 +107,27 @@
     }
   ]
 }
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
-<p>DocFX has a <a href="#3-default-filter-configuration">default filter configuration</a>. If the user doesn&#39;t specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.</p>
+<p>DocFX has a <a href="#3-default-filter-configuration">default filter configuration</a>. If the user doesn't specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.</p>
 <h2 id="the-format-of-the-filter-configuration-file">The format of the filter configuration file</h2>
 <h3 id="1-api-filter-rules">1. API Filter Rules</h3>
 <p>To filter out APIs, you could specify <code>apiRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
-<div class="NOTE"><h5>Note</h5><p>The rules would be executed sequentially and the matching process would stop once one rule is matched.
+<div class="NOTE">
+<h5>Note</h5>
+<p>The rules would be executed sequentially and the matching process would stop once one rule is matched.
 Namely, you need to put the most detailed rule in the top.
 If no rule is matched the API would be included by default.</p>
 </div>
 <h4 id="1-exclude-or-include-apis-by-matching-their-uid-with-the-regex-uidregex">1) <code>exclude</code> or <code>include</code> APIs by matching their uid with the Regex <code>uidRegex</code>.</h4>
-<p>The sample below excludes all APIs whose uids start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
+<p>The sample below excludes all APIs whose uids start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.</p>
 <pre><code>  - include:
       uidRegex: ^Microsoft\.DevDiv\.SpecialCase
   - exclude:
       uidRegex: ^Microsoft\.DevDiv
-</code></pre><h4 id="2-exclude-or-include-apis-by-matching-its-type-this-is-often-combined-with-uidregex">2) <code>exclude</code> or <code>include</code> APIs by matching its <code>type</code>, this is often combined with <code>uidRegex</code>.</h4>
+</code></pre>
+<h4 id="2-exclude-or-include-apis-by-matching-its-type-this-is-often-combined-with-uidregex">2) <code>exclude</code> or <code>include</code> APIs by matching its <code>type</code>, this is often combined with <code>uidRegex</code>.</h4>
 <p>Supported <code>type</code>:</p>
 <ul>
 <li><code>Namespace</code></li>
@@ -137,21 +143,25 @@ If no rule is matched the API would be included by default.</p>
 <li><code>Method</code></li>
 <li><code>Property</code></li>
 </ul>
-<div class="NOTE"><h5>Note</h5><p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
-<p><code>Namespace</code> is flattened. Namely, excluding namespace &#39;A.B&#39; has nothing to do with namespace &#39;A.B.C&#39;.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
+<p><code>Namespace</code> is flattened. Namely, excluding namespace 'A.B' has nothing to do with namespace 'A.B.C'.</p>
 <p>If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 If a type is excluded, all members defined in the type would also be excluded.</p>
 </div>
-<p>The below sample would exclude all APIs whose uid starts with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
+<p>The below sample would exclude all APIs whose uid starts with 'Microsoft.DevDiv' and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
 <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>.</p>
 <pre><code>  - exclude:
       uidRegex: ^Microsoft\.DevDiv
       type: Type
-</code></pre><h4 id="3-exclude-or-include-apis-by-containing-matched-attributes">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
+</code></pre>
+<h4 id="3-exclude-or-include-apis-by-containing-matched-attributes">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
 <p>You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
-<blockquote><p><em>Note</em></p>
-<p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
-Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments. </p>
+<blockquote>
+<p><em>Note</em></p>
+<p><code>ctorArguments</code> requires a full match of the attribute's constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
+Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments.</p>
 </blockquote>
 <p>The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
 <pre><code>  - exclude:
@@ -159,8 +169,9 @@ Namely, <code>ctorArguments</code> should contain all the arguments while <code>
         uid: System.ComponentModel.EditorBrowsableAttribute
         ctorArguments:
         - System.ComponentModel.EditorBrowsableState.Never
-</code></pre><p>The sample below excludes all APIs which have AttributeUsageAttribute and its constructor argument is AttributeTargets.Class
- and its constructor has named argument [Inherited] = true</p>
+</code></pre>
+<p>The sample below excludes all APIs which have AttributeUsageAttribute and its constructor argument is AttributeTargets.Class
+and its constructor has named argument [Inherited] = true</p>
 <pre><code>  - exclude:
     hasAttribute:
       uid: System.AttributeUsageAttribute
@@ -168,7 +179,8 @@ Namely, <code>ctorArguments</code> should contain all the arguments while <code>
       - System.AttributeTargets.Class
       ctorNamedArguments:
         Inherited: &quot;true&quot;
-</code></pre><p>A complete <strong>Sample</strong> of the filter configuration file for filtering out APIs follows:</p>
+</code></pre>
+<p>A complete <strong>Sample</strong> of the filter configuration file for filtering out APIs follows:</p>
 <pre><code class="lang-yaml">apiRules:
 - exclude:
     uidRegex: ^Microsoft\.TeamFoundation\.WorkItemTracking\.Proxy\.IRowSetsNative$
@@ -185,7 +197,8 @@ Namely, <code>ctorArguments</code> should contain all the arguments while <code>
       uid: System.ComponentModel.EditorBrowsableAttribute
       ctorArguments:
       - System.ComponentModel.EditorBrowsableState.Never
-</code></pre><h3 id="2-attribute-filter-rules">2. Attribute Filter Rules</h3>
+</code></pre>
+<h3 id="2-attribute-filter-rules">2. Attribute Filter Rules</h3>
 <p>To filter out Attributes, you could specify <code>attributeRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
 <p>The rules are similar to API filter. Please refer to <a href="#1-api-filter-rules">API Filter Rules</a> section.</p>
 <h3 id="3-default-filter-configuration">3. Default Filter Configuration</h3>
@@ -224,13 +237,13 @@ attributeRules:
     uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Diagnostics\.[^.]+$&#39;
+    uidRegex: '^System\.Diagnostics\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.ComponentModel\.[^.]+$&#39;
+    uidRegex: '^System\.ComponentModel\.[^.]+$'
     type: Type
 - exclude:
     uidRegex: ^System\.Reflection\.DefaultMemberAttribute$
@@ -242,33 +255,34 @@ attributeRules:
     uidRegex: ^System\.Runtime\.CompilerServices\.ExtensionAttribute$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Runtime\.CompilerServices\.[^.]+$&#39;
+    uidRegex: '^System\.Runtime\.CompilerServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Runtime\.InteropServices\.(ComVisibleAttribute|GuidAttribute|ClassInterfaceAttribute|InterfaceTypeAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Runtime\.InteropServices\.[^.]+$&#39;
+    uidRegex: '^System\.Runtime\.InteropServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Security\.(SecurityCriticalAttribute|SecurityTreatAsSafeAttribute|AllowPartiallyTrustedCallersAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Security\.[^.]+$&#39;
+    uidRegex: '^System\.Security\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Web\.UI\.(ControlValuePropertyAttribute|PersistenceModeAttribute|ValidationPropertyAttribute|WebResourceAttribute|TemplateContainerAttribute|ThemeableAttribute|TemplateInstanceAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Web\.UI\.[^.]+$&#39;
+    uidRegex: '^System\.Web\.UI\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Windows\.Markup\.(ConstructorArgumentAttribute|DesignerSerializationOptionsAttribute|ValueSerializerAttribute|XmlnsCompatibleWithAttribute|XmlnsDefinitionAttribute|XmlnsPrefixAttribute)$
     type: Type
 - exclude:
-    uidRegex: &#39;^System\.Windows\.Markup\.[^.]+$&#39;
+    uidRegex: '^System\.Windows\.Markup\.[^.]+$'
     type: Type
-</code></pre><div id="disqus_thread"></div>
+</code></pre>
+<div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
                 var d = document, s = d.createElement('script');

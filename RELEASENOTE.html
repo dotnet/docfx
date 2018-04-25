@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.34) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.35) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.34) | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="title" content="Version Notes (Current Version: v2.35) | DocFX website ">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -68,11 +70,23 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v234">Version Notes (Current Version: v2.34)</h1>
+<h1 id="version-notes-current-version-v235">Version Notes (Current Version: v2.35)</h1>
 
+<h2 id="v235">v2.35</h2>
+<ol>
+<li>Bug fix:
+<ol>
+<li>Fix Tabbed Content rendering bug. (#2645)</li>
+<li>Fix script error in getHierarch. (#2624)</li>
+<li>Fix loading csproj NullObjectReferenceException. (#1944)</li>
+<li>Fix affix &quot;active&quot; class issue. (#2658)</li>
+</ol>
+</li>
+</ol>
 <h2 id="v234">v2.34</h2>
 <ol>
-<li>Bug fix:<ol>
+<li>Bug fix:
+<ol>
 <li>Fix error with enum flags in attributes. (#2573)</li>
 <li>Improve syntax formatting when containing <code>where</code> keyword. (#2410)</li>
 <li>Fix XML syntax highlighting issue. (#2553)</li>
@@ -92,37 +106,43 @@
 <h2 id="v233">v2.33</h2>
 <ol>
 <li>Support generating API reference for TypeScript (#2220)</li>
-<li>Bug fix:<ol>
-<li>XRefService lookup of generic classes doesn&#39;t work (#2448)</li>
-<li>Fix yaml serialize for string &#39;~&#39; (#2519)</li>
+<li>Bug fix:
+<ol>
+<li>XRefService lookup of generic classes doesn't work (#2448)</li>
+<li>Fix yaml serialize for string '~' (#2519)</li>
 <li>Fix link bug after <code>&lt;a/&gt;</code> in markdown (#2521)</li>
-<li>Fix VSTS&#39;s git url under detached HEAD (#2516)</li>
+<li>Fix VSTS's git url under detached HEAD (#2516)</li>
 </ol>
 </li>
 </ol>
 <h2 id="v2322">v2.32.2</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix metadata broken with mono and linux (#2358).</li>
-<li>Partially fix metadata broken with latest VS 15.6 with workaround:<pre><code class="lang-batch">set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
+<li>Partially fix metadata broken with latest VS 15.6 with workaround:
+<pre><code class="lang-batch">set VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise
 set VisualStudioVersion=15.0
 set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
 </li>
 </ol>
 <h2 id="v232">v2.32</h2>
 <ol>
 <li>Support remove special host name from xref service.</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix empty code block in markdown(dfm, dfm-latest).</li>
 </ol>
 </li>
 </ol>
 <h2 id="v231">v2.31</h2>
 <ol>
-<li>Upgrade Roslyn&#39;s CodeAnalysis assemblies to latest 2.6.1</li>
-<li>Bug fixes:<ol>
+<li>Upgrade Roslyn's CodeAnalysis assemblies to latest 2.6.1</li>
+<li>Bug fixes:
+<ol>
 <li>Fix bug for missing <code>seealso</code> section in enum pages (#2402)</li>
 <li>Fix bug for supporting <code>in</code> keyword which is introduced in by C# 7.2 (#2385)</li>
 <li>Fix runtime error when EII name hits VB preserved keywords (#2379)</li>
@@ -137,7 +157,8 @@ set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\En
 <h2 id="v229">v2.29</h2>
 <ol>
 <li>Support generating API reference for JavaScript (#2220)</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix bug for query xref service (#2283)</li>
 </ol>
 </li>
@@ -148,7 +169,8 @@ set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\En
 </ol>
 <h2 id="v2282">v2.28.2</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix issues running under mono (#2262, #1856)</li>
 <li>Fix VS17 15.5 support (#2265)</li>
 </ol>
@@ -156,7 +178,8 @@ set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\En
 </ol>
 <h2 id="v2281">v2.28.1</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix .NET core .csproj files support (#1752)</li>
 </ol>
 </li>
@@ -165,7 +188,8 @@ set MSBuildExtensionsPath=C:\Program Files (x86)\Microsoft Visual Studio\2017\En
 <ol>
 <li>Add warning throttling. (#2187)</li>
 <li>Enable schema validation for SDP.</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix markdown link behavior. (#2181)</li>
 <li>Fix xref map sorted comparer. (#2191)</li>
 <li>Fix yaml deserialize for int64. (#2193)</li>
@@ -191,24 +215,29 @@ Console.WriteLine(&quot;Hello world&quot;);
 ```
 # [JavaScript](#tab/js)
 ```js
-console.log(&#39;hello world&#39;);
+console.log('hello world');
 ```
-</code></pre><p>Renders to:</p>
-<div class="tabGroup" id="tabgroup_jFZgIoc+-G">
+</code></pre>
+<p>Renders to:</p>
+<div class="tabGroup" id="tabgroup_CeZOj-G++Q">
 <ul role="tablist">
 <li role="presentation">
-<a href="#tabpanel_jFZgIoc+-G_csharp" role="tab" aria-controls="tabpanel_jFZgIoc+-G_csharp" data-tab="csharp" tabindex="0" aria-selected="true">Csharp</a>
+<a href="#tabpanel_CeZOj-G++Q_csharp" role="tab" aria-controls="tabpanel_CeZOj-G++Q_csharp" data-tab="csharp" tabindex="0" aria-selected="true">Csharp</a>
 </li>
 <li role="presentation">
-<a href="#tabpanel_jFZgIoc+-G_js" role="tab" aria-controls="tabpanel_jFZgIoc+-G_js" data-tab="js" tabindex="-1">JavaScript</a>
+<a href="#tabpanel_CeZOj-G++Q_js" role="tab" aria-controls="tabpanel_CeZOj-G++Q_js" data-tab="js" tabindex="-1">JavaScript</a>
 </li>
 </ul>
-<section id="tabpanel_jFZgIoc+-G_csharp" role="tabpanel" data-tab="csharp">
+<section id="tabpanel_CeZOj-G++Q_csharp" role="tabpanel" data-tab="csharp">
+
 <pre><code class="lang-cs">Console.WriteLine(&quot;Hello world&quot;);
-</code></pre></section>
-<section id="tabpanel_jFZgIoc+-G_js" role="tabpanel" data-tab="js" aria-hidden="true" hidden="hidden">
-<pre><code class="lang-js">console.log(&#39;hello world&#39;);
-</code></pre></section>
+</code></pre>
+</section>
+<section id="tabpanel_CeZOj-G++Q_js" role="tabpanel" data-tab="js" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-js">console.log('hello world');
+</code></pre>
+</section>
 </div>
 </li>
 <li><p>Fix bugs:</p>
@@ -233,7 +262,8 @@ console.log(&#39;hello world&#39;);
 <li>Remove warning invalid file link when customized href generator can resolve it.</li>
 <li>Support generating sitemap with at least <code>&quot;sitemap&quot;: { &quot;baseUrl&quot;: &quot;https://yourwebsite.com/&quot; }</code> defined in <code>&quot;build&quot;</code> section of <code>docfx.json</code> (<a href="https://github.com/dotnet/docfx/issues/1979">https://github.com/dotnet/docfx/issues/1979</a>)</li>
 <li>Support responsive table: <a href="https://github.com/dotnet/docfx/issues/2024">https://github.com/dotnet/docfx/issues/2024</a></li>
-<li>Bug fixed:<ol>
+<li>Bug fixed:
+<ol>
 <li>Multithreads issue for reading xref zip file.</li>
 <li>404 issue for generated site. <a href="https://github.com/dotnet/docfx/issues/1858">https://github.com/dotnet/docfx/issues/1858</a></li>
 </ol>
@@ -244,8 +274,9 @@ console.log(&#39;hello world&#39;);
 <li>Log warning for manage reference yaml file without yaml mime.</li>
 <li>Obsolete external reference. Please use xref instead.</li>
 <li>Add xref query client.</li>
-<li>Upgrade Roslyn&#39;s CodeAnalysis assemblies to latest 2.3.1</li>
-<li>Schema-driven document processor related<ol>
+<li>Upgrade Roslyn's CodeAnalysis assemblies to latest 2.3.1</li>
+<li>Schema-driven document processor related
+<ol>
 <li>support <code>metadata</code> keyword</li>
 <li>support all the functionalities defined in the spec</li>
 </ol>
@@ -254,7 +285,8 @@ console.log(&#39;hello world&#39;);
 <li>Support global metadata and file metadata for TOC files</li>
 <li>Add class level implements to default template. <a href="https://github.com/dotnet/docfx/issues/1223">https://github.com/dotnet/docfx/issues/1223</a></li>
 <li>Obsolete <code>version</code> and use <code>group</code> instead.</li>
-<li>Bug fixed:<ol>
+<li>Bug fixed:
+<ol>
 <li>Fix #1982: c# 7.1 feature <code>default</code> is not correctly handled</li>
 </ol>
 </li>
@@ -264,7 +296,8 @@ console.log(&#39;hello world&#39;);
 <li>Improve error message for invalid toc yaml file.</li>
 <li>Use xhtml for dfm default setting.</li>
 <li>Add language support for aspx-cs and aspx-vb in code snippet.</li>
-<li>Bug fixed:<ol>
+<li>Bug fixed:
+<ol>
 <li>Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.</li>
 <li>Fix #1937: Anchor icon overlays Note icon.</li>
 <li>Fix #1951, #1905: Running DocFX from outside the folder fails</li>
@@ -276,9 +309,10 @@ console.log(&#39;hello world&#39;);
 <h2 id="v222">v2.22</h2>
 <ol>
 <li>Support <em>REST</em> extensibility by <code>rest.tagpage</code> and <code>rest.operationpage</code> plugins, to split the original <em>REST</em> API page into smaller pages. Refer to <a href="http://dotnet.github.io/docfx/templates-and-plugins/plugins-dashboard.html">plugins dashboard</a> for more details.</li>
-<li>Bug fixed:<ol>
+<li>Bug fixed:
+<ol>
 <li>Fix _rel unfound when href is url decoded.</li>
-<li>Fix #1886: Fails when project doesn&#39;t contain git remote information.</li>
+<li>Fix #1886: Fails when project doesn't contain git remote information.</li>
 <li>Fix toc restruction to support expand child by sequence.</li>
 <li>Ignore default plugged assemblies when loading plugins.</li>
 </ol>
@@ -288,20 +322,22 @@ console.log(&#39;hello world&#39;);
 <ol>
 <li>Add anchor links to default theme.</li>
 <li>Disable LRU cache as it has race condition bug and not easy to fix.</li>
-<li>PDF improvements:<ol>
+<li>PDF improvements:
+<ol>
 <li>Intermediate html files are now removed by default, you can use <code>--keepRawFiles</code> option to keep them.</li>
 <li>Add syntax highlight to PDF, it is using highlight.js in client-side js.</li>
 <li>Add hook files to css and js, you can now customize PDF styles by adding your own <code>main.css</code> and <code>main.js</code>.</li>
 </ol>
 </li>
 <li>Change the default behavior of incremental build that it is always based on the same cache folder (originally the cache folder changes in every build and copy historical files form last cache folder). You can use <code>--cleanupCacheHistory</code> option to cleanup the historical cache data.</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix #1817: Error extracting metadata when containing constant surrogate unicode character.</li>
 <li>Fix #1655: Using hashtag in external cross reference broken.</li>
 <li>Fix #219: Fails when source code contains two type names that differ only in case</li>
 <li>Fix #164: Clean up previous auto-generated metadata YAML files when calling <code>docfx metadata</code></li>
 <li>Fix #1797: the command docfx template list does not show the pdf template</li>
-<li>Fix #1803: Overriding example with *content in same file as other overrides doesn&#39;t work</li>
+<li>Fix #1803: Overriding example with *content in same file as other overrides doesn't work</li>
 <li>Fix #1807: XREF link to API doc with wildcard UID not getting generated</li>
 <li>Fix #1823: Metadata being generated from referenced projects</li>
 <li>FIx #1824: Change generated .manifest file to be indented and ordered.</li>
@@ -317,7 +353,8 @@ console.log(&#39;hello world&#39;);
 <li>Add LogCode for each file to the manifest file.</li>
 <li>DocFX is <strong>NOT</strong> dependent on Build Tool 2015 anymore.</li>
 <li>Add line and source file info for invalid cross reference</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix html pre element behavior in Markdown, empty lines are now allowed in <code>&lt;pre&gt;</code> blocks.</li>
 <li>Fix #1747: add app.config redirect binding to docfx to resolve LoaderException for docfx metadata</li>
 <li>Fix #1737: it is now possible to use <code>&gt; [!warning]</code> format in triple-slash comments</li>
@@ -336,7 +373,8 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v2181">v2.18.1</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Bug fix for markdown empty link.</li>
 <li>Bug fix for html behaivor in dfm-latest.</li>
 </ol>
@@ -366,7 +404,7 @@ console.log(&#39;hello world&#39;);
 <ol>
 <li><p>Introduce <a href="tutorial/intro_template.html#extended-syntax-for-master-page">Master page syntax</a> into Template System:</p>
 <ol>
-<li>Mustache: <code>{{!master(&#39;&lt;master_page_name&gt;&#39;)}}</code></li>
+<li>Mustache: <code>{{!master('&lt;master_page_name&gt;')}}</code></li>
 <li>Liquid: <code>{% master &lt;master_page_name&gt; %}</code></li>
 </ol>
 </li>
@@ -383,8 +421,9 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v2168">v2.16.8</h2>
 <ol>
-<li>Bug fixes:<ol>
-<li>Bug fix for Null exception when <code>&lt;xref href=&#39;&#39;/&gt;</code> exists</li>
+<li>Bug fixes:
+<ol>
+<li>Bug fix for Null exception when <code>&lt;xref href=''/&gt;</code> exists</li>
 <li>Bug fix for <code>docfx metadata</code> for assemblies, to exclude null assembly symbols.</li>
 <li>Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md</li>
 </ol>
@@ -392,7 +431,8 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v216">v2.16</h2>
 <ol>
-<li>Support the latest csproj format <code>&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;</code><ol>
+<li>Support the latest csproj format <code>&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;</code>
+<ol>
 <li>The latest csproj introduces in a new property <code>TargetFrameworks</code>, docfx does not support it for now. To make docfx work, please specify <code>TargetFramework</code> when calling docfx. A sample <code>docfx.json</code> would be as follows. The <code>merge</code> command is to merge YAML files generated with different <code>TargetFramework</code> into one YAML file.</li>
 </ol>
 <pre><code class="lang-json">{
@@ -448,11 +488,13 @@ console.log(&#39;hello world&#39;);
         &quot;dest&quot;: &quot;_site&quot;
     }
 }
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
 <h2 id="v215">v2.15</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Auto dedent the included code snippet, both when including the whole file and file sections.</li>
 <li>[Breaking Change]For inline inclusion, trim ending white spaces, considering ending white spaces in inline inclusion in most cases are typos.</li>
 </ol>
@@ -461,7 +503,8 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v214">v2.14</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix duplicate project references fail GetCompilationAsync. <a href="https://github.com/dotnet/docfx/issues/1414">https://github.com/dotnet/docfx/issues/1414</a></li>
 </ol>
 </li>
@@ -472,21 +515,23 @@ console.log(&#39;hello world&#39;);
 <li>Support working folder for dfm include and code.</li>
 <li>Upgrade YamlDotNet to 4.1.</li>
 <li>Support cross file definition reference for swagger.</li>
-<li>Bug fixes:<ol>
-<li>Filter config file is expected in working dir instead of project&#39;s dir/src dir.</li>
+<li>Bug fixes:
+<ol>
+<li>Filter config file is expected in working dir instead of project's dir/src dir.</li>
 <li>Create msbuild workspace with release configuration by default. <a href="https://github.com/dotnet/docfx/pull/1356">https://github.com/dotnet/docfx/pull/1356</a></li>
 </ol>
 </li>
 </ol>
 <h2 id="v212">v2.12</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li><code>default</code> template: Do not load <code>search-worker.js</code> when search is disabled in <code>docfx.js</code></li>
 <li>C# region support for code snippets broken by #endregion with extra text. <a href="https://github.com/dotnet/docfx/issues/1200">https://github.com/dotnet/docfx/issues/1200</a></li>
 <li>Markdown list continue with def.</li>
 <li>Markdown link rule is not allowed in link text.</li>
 <li>Markdown list restore wrong context.</li>
-<li>Metadata <code>_docfxVersion</code> can&#39;t be overwritten. <a href="https://github.com/dotnet/docfx/issues/1251">https://github.com/dotnet/docfx/issues/1251</a></li>
+<li>Metadata <code>_docfxVersion</code> can't be overwritten. <a href="https://github.com/dotnet/docfx/issues/1251">https://github.com/dotnet/docfx/issues/1251</a></li>
 <li><code>statictoc</code> template out of sync with <code>default</code> template. <a href="https://github.com/dotnet/docfx/issues/1256">https://github.com/dotnet/docfx/issues/1256</a></li>
 <li>Fix footer covering sidetoc. <a href="https://github.com/dotnet/docfx/issues/1222">https://github.com/dotnet/docfx/issues/1222</a></li>
 </ol>
@@ -496,7 +541,8 @@ console.log(&#39;hello world&#39;);
 <ol>
 <li>Export custom href generator.</li>
 <li>Introduce attribute driven data model to Managed Reference</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Generate overload name/fullname form generic method should not contain method parameter.</li>
 <li>Fix href for markdown link to non-exist files in include files.</li>
 </ol>
@@ -504,10 +550,11 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v210">v2.10</h2>
 <ol>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Markdown table content is misplaced if there is empty column in it.</li>
 <li>Markdown include should not share link context.</li>
-<li>Fix rawTitle when article&#39;s first line is HTML comment.</li>
+<li>Fix rawTitle when article's first line is HTML comment.</li>
 </ol>
 </li>
 </ol>
@@ -528,15 +575,17 @@ console.log(&#39;hello world&#39;);
 <ol>
 <li><strong>Breaking Change</strong> Using <code>&lt;span class=&quot;xxx&quot;&gt;</code> for languageKeyWord, paramref and typeparamref in generated yml files, instead of using <code>&lt;em&gt;</code> and <code>&lt;strong&gt;</code>. Change default template accordingly.</li>
 <li>Remove project <code>Microsoft.DocAsCode.Utility</code>, move class to <code>Microsoft.DocAsCode.Common</code>.</li>
-<li>Get documentation&#39;s git information with git command instead of <code>GitSharp</code>.</li>
-<li>REST:<ul>
+<li>Get documentation's git information with git command instead of <code>GitSharp</code>.</li>
+<li>REST:
+<ul>
 <li>Support <code>remarks</code> to be overwritten.</li>
 <li>Support reference in parameters to be overwritten.</li>
 <li>Support DFM syntax in swagger description</li>
 </ul>
 </li>
-<li>Bug fixes:<ol>
-<li>Fix inherited member&#39;s name when xref unresolved.</li>
+<li>Bug fixes:
+<ol>
+<li>Fix inherited member's name when xref unresolved.</li>
 <li>Fix missing items in breadcrumb. (<a href="https://github.com/dotnet/docfx/issues/944">https://github.com/dotnet/docfx/issues/944</a>)</li>
 <li>Fix generating overload method names from generic method.</li>
 <li>Fix full text search not work in index page.</li>
@@ -554,7 +603,8 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v28">v2.8</h2>
 <ol>
-<li>Improve markdown engine:<ul>
+<li>Improve markdown engine:
+<ul>
 <li>Remove paragraph rule.</li>
 <li>Improve parser performance.</li>
 </ul>
@@ -566,13 +616,14 @@ console.log(&#39;hello world&#39;);
 <li>Remove the usage of <code>FileModel.LocalPathFromRepoRoot</code>. This property is marked <code>Obsolete</code>.</li>
 <li>Copy <code>PathUtility</code>, <code>RelativePath</code>, <code>StringExtension</code> and <code>FilePathComparer</code> from project <code>Microsoft.DocAsCode.Utility</code> to <code>Microsoft.DocAsCode.Common</code>. The copied classes in project <code>Microsoft.DocAsCode.Utility</code> are kept there for bits compatibility and marked <code>Obsolete</code>.</li>
 <li>Add command option <code>docfx -v</code> to show version of DocFX</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>concurrency issue of <code>Logger</code>.</li>
 <li>unable to handle file link with query string.</li>
 <li>unable to resolve uid for in html <code>&lt;a href=&quot;xref:...&quot;&gt;</code>.</li>
 <li>display specName wrong for generic type. (<a href="https://github.com/dotnet/docfx/issues/896">https://github.com/dotnet/docfx/issues/896</a>)</li>
 <li>breadcrumb rendered wrong when multiple toc item matched.</li>
-<li>subcommand metadata can&#39;t specify DocFX config file</li>
+<li>subcommand metadata can't specify DocFX config file</li>
 </ol>
 </li>
 </ol>
@@ -592,13 +643,15 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v27">v2.7</h2>
 <ol>
-<li>Improve markdown engine performance.<ul>
+<li>Improve markdown engine performance.
+<ul>
 <li>Improve regex.</li>
 <li>Add regex timeout.</li>
 </ul>
 </li>
 <li>Fix bugs in markdown parser.</li>
-<li>Refine xref.<ul>
+<li>Refine xref.
+<ul>
 <li>Provide more options.</li>
 <li>Support options in query string.</li>
 </ul>
@@ -617,7 +670,8 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v262">v2.6.2</h2>
 <ol>
-<li>Improve markdown engine performance.<ul>
+<li>Improve markdown engine performance.
+<ul>
 <li>Improve regex.</li>
 <li>Add regex timeout.</li>
 </ul>
@@ -665,7 +719,8 @@ console.log(&#39;hello world&#39;);
 <ol>
 <li>Update default template theme.</li>
 <li>Fix resolving properties for swagger.</li>
-<li>Fix bugs in markdown.<ol>
+<li>Fix bugs in markdown.
+<ol>
 <li>Fix id in title (following GitHub rule).</li>
 <li>Fix strikeout not work in dfm.</li>
 <li>Fix tight list item behavior.</li>
@@ -680,7 +735,7 @@ console.log(&#39;hello world&#39;);
 <li>Refine markdown validation.</li>
 <li>Support separated meta json file.</li>
 <li>Change <code>hightlight.js</code> theme to <code>github-gist</code>.</li>
-<li>Support &#39;.json&#39; as supported swagger file extension.</li>
+<li>Support '.json' as supported swagger file extension.</li>
 <li>Support <code>topicHref</code> and <code>tocHref</code> to specify homepage toc.</li>
 <li>Support customized contribute repository and branch for &quot;Improve this Doc&quot; button. (<a href="https://github.com/dotnet/docfx/issues/482">https://github.com/dotnet/docfx/issues/482</a>)</li>
 <li>Improve message for <code>docfx.exe template</code> command.</li>
@@ -705,7 +760,8 @@ console.log(&#39;hello world&#39;);
 <li>Update manifest schema.</li>
 <li>Add chocolatey support in CI script.</li>
 <li>Provide with options in build.cmd.</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>syntax for static class is incorrect.</li>
 <li>improve warning message about global namespace class. (<a href="https://github.com/dotnet/docfx/issues/417">https://github.com/dotnet/docfx/issues/417</a>)</li>
 <li>fix normalizexml bug for empty <code>&lt;code&gt;&lt;/code&gt;</code> in tripleslashcomment.</li>
@@ -714,19 +770,27 @@ console.log(&#39;hello world&#39;);
 </ol>
 <h2 id="v21">v2.1</h2>
 <ol>
-<li>Support for xref zip file in relative path.</li>
-<li>Support anchor in toc file.</li>
-<li>Support plug-in for validating markdown input metadata.</li>
-<li>Add output file md5 hashes.</li>
+<li><p>Support for xref zip file in relative path.</p>
+</li>
+<li><p>Support anchor in toc file.</p>
+</li>
+<li><p>Support plug-in for validating markdown input metadata.</p>
+</li>
+<li><p>Add output file md5 hashes.</p>
+</li>
 <li><p><strong>Breaking Url</strong> Rename generic type file name in metadata step</p>
 <p>E.g. <code>System.Func&lt;T&gt;</code> will generate <code>System.Func-1.yml</code> instead of <code>System.Func`1.yml</code>,
 and after build the url will be <code>System.Func-1.html</code> instead of <code>System.Func%601.html</code>.</p>
 <p>To keep old behavior, please add following option in metadata part in docfx.json:</p>
 <pre><code class="lang-json">&quot;useCompatibilityFileName&quot;: true
-</code></pre></li>
-<li>Display extension methods in API reference documentation</li>
-<li>Provide with option <code>_displayLangs</code> in docfx.json to choose which language version you want to show.</li>
-<li>Support more Swagger syntax:<ul>
+</code></pre>
+</li>
+<li><p>Display extension methods in API reference documentation</p>
+</li>
+<li><p>Provide with option <code>_displayLangs</code> in docfx.json to choose which language version you want to show.</p>
+</li>
+<li><p>Support more Swagger syntax:</p>
+<ul>
 <li>Support <code>allOf</code>. (<a href="https://github.com/dotnet/docfx/issues/360">https://github.com/dotnet/docfx/issues/360</a>)</li>
 <li>Support $ref with <code>[</code> and <code>]</code> in json pointer. (<a href="https://github.com/dotnet/docfx/issues/359">https://github.com/dotnet/docfx/issues/359</a>)</li>
 <li>Support <code>parameters</code> applicable for all the operations under <code>path</code>. (<a href="https://github.com/dotnet/docfx/issues/358">https://github.com/dotnet/docfx/issues/358</a>)</li>
@@ -739,13 +803,14 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 <h2 id="v201">v2.0.1</h2>
 <ol>
-<li>Fix bug that file links can&#39;t be resolved in overwrite file</li>
+<li>Fix bug that file links can't be resolved in overwrite file</li>
 </ol>
 <h2 id="v20">v2.0</h2>
 <ol>
 <li><strong>Breaking Change</strong> Add line info for markdown parser.</li>
 <li>Allow Markdown reference at the end of overwrite file.</li>
-<li>Provide more information for API reference documentation<ol>
+<li>Provide more information for API reference documentation
+<ol>
 <li>display inherited members</li>
 <li>display overridden members</li>
 <li>display implemented interface</li>
@@ -759,20 +824,26 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li><p><strong>Breaking Change</strong> Refactor template system:</p>
 <ol>
 <li>The input data model now contains all the properties including system generated metadata starting with underscore <code>_</code> and globally shared variables stored in <code>__global</code>. You can use <code>docfx build --exportRawModel</code> to view the data model.</li>
-<li><em>Preprocessor</em>&#39;s <code>transform</code> function signature changes to:</li>
+<li><em>Preprocessor</em>'s <code>transform</code> function signature changes to:</li>
 </ol>
 <pre><code class="lang-js">exports.transform = function (model){
     // transform the model
     return model;
 }
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>Provide a new embedded template <code>statictoc</code> with TOC generated in build time. Webpages generated by this template is PURE static and you can simply open the generated webpage file to take a preview, no local server is needed.</p>
 </li>
-<li>Allow switch markdown engine.</li>
-<li>Allow export metadata to manifest file.</li>
-<li>Improve <code>exclude</code> logic to help avoid <code>PathTooLongException</code>. (<a href="https://github.com/dotnet/docfx/issues/156">https://github.com/dotnet/docfx/issues/156</a>)</li>
-<li>Provide with a config file named <code>search-stopwords.json</code> to customise full-text search stop-words. (<a href="https://github.com/dotnet/docfx/issues/279">https://github.com/dotnet/docfx/issues/279</a>)</li>
-<li>Bug fixes:<ol>
+<li><p>Allow switch markdown engine.</p>
+</li>
+<li><p>Allow export metadata to manifest file.</p>
+</li>
+<li><p>Improve <code>exclude</code> logic to help avoid <code>PathTooLongException</code>. (<a href="https://github.com/dotnet/docfx/issues/156">https://github.com/dotnet/docfx/issues/156</a>)</p>
+</li>
+<li><p>Provide with a config file named <code>search-stopwords.json</code> to customise full-text search stop-words. (<a href="https://github.com/dotnet/docfx/issues/279">https://github.com/dotnet/docfx/issues/279</a>)</p>
+</li>
+<li><p>Bug fixes:</p>
+<ol>
 <li>Fix bug when cref contains loop. (<a href="https://github.com/dotnet/docfx/issues/289">https://github.com/dotnet/docfx/issues/289</a>)</li>
 <li>Make sure id is unique for each HTML in markdown transforming. (<a href="https://github.com/dotnet/docfx/issues/224">https://github.com/dotnet/docfx/issues/224</a>)</li>
 <li>Fix index range bugs in <code>YamlHeaderParser</code>. (<a href="https://github.com/dotnet/docfx/issues/265">https://github.com/dotnet/docfx/issues/265</a>)</li>
@@ -796,14 +867,15 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <ol>
 <li>Fix bug when serialize attribute argument for type array. (<a href="https://github.com/dotnet/docfx/issues/280">https://github.com/dotnet/docfx/issues/280</a>)</li>
 <li>Fix bug when include file link to an anchor.</li>
-<li>Don&#39;t modify link when target file not existed.</li>
+<li>Don't modify link when target file not existed.</li>
 </ol>
 <h2 id="v18">v1.8</h2>
 <ol>
 <li>Support multiple regions selection, code lines highlight and dedent length setting in <a href="http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet">Code Snippet</a>. (<a href="https://github.com/dotnet/docfx/issues/189">https://github.com/dotnet/docfx/issues/189</a>)</li>
 <li>Support more tags in triple-slash-comments, e.g. <code>lang</code>, <code>list</code>, <code>code</code>, <code>paramref</code> and <code>typeparamref</code>.</li>
 <li>Add Example section to default template.</li>
-<li>Bug fixes:<ol>
+<li>Bug fixes:
+<ol>
 <li>Fix bug when parsing triple-slash-comments. (<a href="https://github.com/dotnet/docfx/issues/221">https://github.com/dotnet/docfx/issues/221</a>)</li>
 <li>Fix syntax generation for VB module. (<a href="https://github.com/dotnet/docfx/issues/260">https://github.com/dotnet/docfx/issues/260</a>)</li>
 </ol>
@@ -811,11 +883,13 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 <h2 id="v17">v1.7</h2>
 <ol>
-<li>Behavior change<ol>
-<li>For articles not in TOC, it&#39;s TOC file is the nearest <em>TOC File</em> in its output folder. Previously we only search the <em>TOC File</em> under the same input folder of the Not-In-Toc article.</li>
+<li>Behavior change
+<ol>
+<li>For articles not in TOC, it's TOC file is the nearest <em>TOC File</em> in its output folder. Previously we only search the <em>TOC File</em> under the same input folder of the Not-In-Toc article.</li>
 </ol>
 </li>
-<li>Provide more information for API reference documentation<ol>
+<li>Provide more information for API reference documentation
+<ol>
 <li>Type of events (<a href="https://github.com/dotnet/docfx/issues/217">https://github.com/dotnet/docfx/issues/217</a>)</li>
 <li>Parameters/returns for delegates (<a href="https://github.com/dotnet/docfx/issues/218">https://github.com/dotnet/docfx/issues/218</a>)</li>
 <li>Type parameter description (<a href="https://github.com/dotnet/docfx/issues/204">https://github.com/dotnet/docfx/issues/204</a>)</li>
@@ -825,7 +899,8 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li>C# Code snippet now supports referencing source code using a region <code>#engion</code> (<a href="https://github.com/dotnet/docfx/issues/160">https://github.com/dotnet/docfx/issues/160</a>)</li>
 <li>Support <a class="xref" href="tutorial/intro_toc.html#link-to-another-toc-file">TOC reference</a>. With this syntax, we can combine multiple TOC files into a single TOC. (<a href="https://github.com/dotnet/docfx/issues/161">https://github.com/dotnet/docfx/issues/161</a>)</li>
 <li>Improve user experience when using <code>docfx.msbuild</code> in VS IDE</li>
-<li>Code refactor:<ol>
+<li>Code refactor:
+<ol>
 <li>We improved DocFX project structure in this release. <code>Microsoft.DocAsCode.EntityModel</code> namespace is no longer in use. Assemblies are separated into <code>Microsoft.DocAsCode.Build</code>,  <code>Microsoft.DocAsCode.DataContracts</code>, and  <code>Microsoft.DocAsCode.Metadata</code> namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.</li>
 </ol>
 </li>
@@ -833,7 +908,8 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <h2 id="v16">v1.6</h2>
 <ol>
 <li>Add attribute in c# and vb syntax.</li>
-<li>Support full text search, with pure client side implementation:<ol>
+<li>Support full text search, with pure client side implementation:
+<ol>
 <li>The feature is disabled by default. You can enable it by adding <code>&quot;_enableSearch&quot;: true</code> to the <code>globalMetadata</code> property of <code>docfx.json</code>.</li>
 <li>The search engine is powered by <a href="http://lunrjs.com/">lunr.js</a></li>
 </ol>
@@ -841,18 +917,21 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 <h2 id="v15">v1.5</h2>
 <ol>
-<li>Add 3 options to <code>build</code> subcommand:<ol>
+<li>Add 3 options to <code>build</code> subcommand:
+<ol>
 <li><code>--rawModelOutputFolder</code>: to specify the output folder for raw model if <code>--exportRawModel</code>. If the value is not set, raw model will be in the same folder as the output documenation.</li>
 <li><code>--viewModelOutputFolder</code>: to specify the output folder for view model if <code>--exportViewModel</code>. If the value is not set, view model will be in the same folder as the output documenation.</li>
 <li><code>--dryRun</code>: if this option is set, <code>docfx</code> will go through all the build processes for all the documents, however, no documentation will generated.</li>
 </ol>
 </li>
-<li>Improve markdown:<ol>
+<li>Improve markdown:
+<ol>
 <li>Allow paired parentheses in link target, e.g. <code>[text](paired(parentheses(are)supported)now &quot;title&quot;)</code>.</li>
 </ol>
 </li>
 <li>Improve performance for document build.</li>
-<li>Breaking changes:<ol>
+<li>Breaking changes:
+<ol>
 <li>modify interface @Microsoft.DocAsCode.Plugins.IDocumentBuildStep.</li>
 </ol>
 </li>
@@ -868,8 +947,10 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <ol>
 <li><p>Cross-reference related:</p>
 <ol>
-<li>Make @uid rule more strict: if <code>@</code> is not followed by <code>&#39;</code> or <code>&quot;</code>, it must be followed by word character (<code>[a-zA-Z]</code>)</li>
-<li>Introduce new syntax for cross-reference:<ol>
+<li><p>Make @uid rule more strict: if <code>@</code> is not followed by <code>'</code> or <code>&quot;</code>, it must be followed by word character (<code>[a-zA-Z]</code>)</p>
+</li>
+<li><p>Introduce new syntax for cross-reference:</p>
+<ol>
 <li>similar to autolink: <code>&lt;xref:uid&gt;</code></li>
 <li>similar to link: <code>[title](xref:uid)</code> or <code>[title](@uid)</code></li>
 </ol>
@@ -877,18 +958,22 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li><p>support <code>uid</code> in <code>toc.yml</code>:</p>
 <pre><code class="lang-yaml">- uid: getting-started
 - uid: manual
-</code></pre></li>
+</code></pre>
+</li>
 <li><p>support cross reference in <code>toc.md</code></p>
 <pre><code class="lang-md"># &lt;xref:getting-started&gt;
 # [Override title](@getting-started)
-</code></pre></li>
+</code></pre>
+</li>
 </ol>
 </li>
 <li><p>Update yaml serializion:
 Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
 </li>
-<li>Improve <code>docfx init</code>, now with <code>docfx init</code>, a <code>docfx_project</code> seed project will will generated.</li>
-<li>Several improvements for <code>default</code> template:<ol>
+<li><p>Improve <code>docfx init</code>, now with <code>docfx init</code>, a <code>docfx_project</code> seed project will will generated.</p>
+</li>
+<li><p>Several improvements for <code>default</code> template:</p>
+<ol>
 <li>Provide properties to customize layout: <code>_disableNavbar</code>, <code>_disableBreadcrumb</code>, <code>_disableToc</code>, <code>_disableAffix</code>, <code>_disableContribution</code>, <code>_disableFooter</code></li>
 <li>Include empty <code>main.css</code> and <code>main.js</code> to <code>head.tmpl.partial</code> partial template so that there is no need to customize <code>head.tmpl.partial</code> when you want to customize website style.</li>
 </ol>
@@ -913,22 +998,26 @@ Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
 <p>FIX Github pages compatibility issue( Github pages now disallow <em>iframe</em>, however the default template of <code>docfx</code> uses <em>iframe</em> to load side toc): Update <em>default</em> template to use AJAX to load side toc, the original one is renamed to <code>iframe.html</code>. So now we have 2 embedded template, one is <code>default</code> and another is <code>iframe.html</code>.</p>
 <h2 id="v13">v1.3</h2>
 <ol>
-<li><code>docfx</code> improvements<ol>
+<li><code>docfx</code> improvements
+<ol>
 <li>Add subcommand <code>docfx template</code>. You can now <code>docfx template list</code> and <code>docfx template export -A</code> to list and export all the embeded templates!</li>
 <li>Add subcommand <code>docfx merge</code>. You can use this subcommand to merge <code>platform</code> from multiple APIs with the same <code>uid</code></li>
-<li>Add two options to <code>build</code> subcommand, <code>--exportRawModel</code> and <code>--exportViewModel</code>. <code>--exportRawModel</code> exports the data model to apply templates, <code>--exportViewModel</code> exports the view model after running template&#39;s pre-process scripts.</li>
+<li>Add two options to <code>build</code> subcommand, <code>--exportRawModel</code> and <code>--exportViewModel</code>. <code>--exportRawModel</code> exports the data model to apply templates, <code>--exportViewModel</code> exports the view model after running template's pre-process scripts.</li>
 <li>Add <code>--globalMetadata</code>, and <code>--globalMetadataFile</code> options to <code>build</code> subcommand. These options allow <code>globalMetadata</code> to be loaded from command line in json format or from a JSON file.</li>
 <li>Add <code>--fileMetadataFile</code> option to <code>build</code> subcommand. This option allows <code>fileMeatdata</code> to be read from an external JSON file.</li>
 <li>Support plugins. You can create your own template with a <code>plugins</code> folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation.</li>
 </ol>
 </li>
-<li><em>DFM</em> syntax improvements<ol>
+<li><em>DFM</em> syntax improvements
+<ol>
 <li>Support note&amp;div syntax</li>
 <li>Support <em>query</em> format in <em>code snippet</em>
 <code>[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]</code></li>
-<li>Change <em>xref</em> logic:<ol>
-<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
-<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>, it ends when:<ol>
+<li>Change <em>xref</em> logic:
+<ol>
+<li>If content after <code>@</code> is wrapped by <code>'</code> or <code>&quot;</code>,  it contains any character including white space</li>
+<li>If content after <code>@</code> is not wrapped by <code>'</code> or <code>&quot;</code>, it ends when:
+<ol>
 <li>line ends</li>
 <li>meets whitespaces</li>
 <li>line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
@@ -939,14 +1028,16 @@ Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
 </li>
 </ol>
 </li>
-<li>Code improvements<ol>
+<li>Code improvements
+<ol>
 <li>Add @Microsoft.DocAsCode.YamlSerialization
 This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
 <li>Refactor markdown engine @Microsoft.DocAsCode.MarkdownLite</li>
 <li>Add @Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1. It provides a way to operate markdown tokens.</li>
 </ol>
 </li>
-<li>Other improvements<ol>
+<li>Other improvements
+<ol>
 <li>Add a new property <code>_path</code> into <code>_attrs</code>, it stands for the relative path from <code>docfx.json</code> to current file</li>
 <li>Improve <em>missing xref</em> warning message to include containing files.</li>
 <li>Add <code>data-uid</code> as attribute to generated html from <em>default</em> template, so that you can now find <code>uid</code> for API much more easily.</li>
@@ -962,8 +1053,9 @@ This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotN
 <h2 id="v11">v1.1</h2>
 <ol>
 <li>Rewrite Glob
- The syntax of glob is:<ol>
-<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part.</li>
+The syntax of glob is:
+<ol>
+<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it's the only thing in a path part.</li>
 <li>If <code>**</code> is right behind <code>/</code>, it is a shortcut for <code>**/*</code>.</li>
 <li><code>*</code> matches any number of characters, but not <code>/</code></li>
 <li><code>?</code> matches 1 characters, but not <code>/</code></li>
@@ -975,7 +1067,7 @@ This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotN
 </li>
 <li>Support <code>fileMetadata</code>. You can specify different metadata value using glob pattern</li>
 <li>Improve overwrite functionality.
- Now you can overwrite not only summary/remarks, but also descriptions for parameters. You can even add exceptions.</li>
+Now you can overwrite not only summary/remarks, but also descriptions for parameters. You can even add exceptions.</li>
 <li>Now the latest project.json projects are also supported in DNX version.</li>
 <li>Simple code snippet is now supported, syntax is <code>[!code-REST-i[title](path &quot;optionalTitle&quot;)]</code></li>
 <li>Url is now encoded in markdown link.</li>

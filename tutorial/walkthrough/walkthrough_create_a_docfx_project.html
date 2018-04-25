@@ -8,7 +8,7 @@
     <title>Walkthrough Part I: Generate a Simple Documentation Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part I: Generate a Simple Documentation Website | DocFX website ">
-    <meta name="generator" content="docfx 2.34.0.0">
+    <meta name="generator" content="docfx 2.35.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -60,7 +60,9 @@
         
         <div id="search-results">
           <div class="search-list"></div>
-          <div class="sr-items"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
           <ul id="pagination"></ul>
         </div>
       </div>
@@ -77,7 +79,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="walkthrough-part-i-generate-a-simple-documentation-website">Walkthrough Part I: Generate a Simple Documentation Website</h1>
 
-<p>By completing this walkthrough, you&#39;ll become familiar with the workflow of <code>docfx</code> and the general principle of organizing documents inside <code>docfx</code>. You will finish this walkthrough with a static website that can be published to any host service. Download the files used in this walkthrough <a href="artifacts/walkthrough1.zip">here</a>.</p>
+<p>By completing this walkthrough, you'll become familiar with the workflow of <code>docfx</code> and the general principle of organizing documents inside <code>docfx</code>. You will finish this walkthrough with a static website that can be published to any host service. Download the files used in this walkthrough <a href="artifacts/walkthrough1.zip">here</a>.</p>
 <h2 id="step1-setup-docfx">Step1. Setup DocFX</h2>
 <p>Download <em>docfx</em> from <a href="http://dotnet.github.io/docfx/">http://dotnet.github.io/docfx/</a>. <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-exe-directly">Getting Started with docfx</a> describes three ways to install <em>docfx</em>. This walkthrough uses the first one: Use <em>docfx.exe</em> directly.</p>
 <ol>
@@ -100,7 +102,8 @@
 <hr>
 <h2 id="step5-add-a-set-of-articles-to-the-website">Step5. Add a set of articles to the website</h2>
 <ol>
-<li>Place more <code>.md</code> files to <code>articles</code>, e.g. <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the file references any resources, put those resources into the <code>images</code> folder.</li>
+<li><p>Place more <code>.md</code> files to <code>articles</code>, e.g. <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the file references any resources, put those resources into the <code>images</code> folder.</p>
+</li>
 <li><p>In order to organize these articles, we add these files into <code>toc.yml</code> under <code>articles</code> subfolder. The content of <code>toc.yml</code> is as below:</p>
 <pre><code class="lang-yml">- name: Introduction
   href: intro.md
@@ -110,7 +113,8 @@
   href: details2.md
 - name: Details 3
   href: details3.md
-</code></pre><p> So now our folder layout is:</p>
+</code></pre>
+<p>So now our folder layout is:</p>
 <pre><code>|- index.md
 |- toc.yml
 |- articles
@@ -121,9 +125,11 @@
 |    |- toc.yml
 |- images
     |- details1_image.png
-</code></pre></li>
-<li>Run <strong>Step3</strong> and <strong>Step4</strong> again, and the website is now:
-<img src="images/walkthrough_step5.png" alt="Step7">.</li>
+</code></pre>
+</li>
+<li><p>Run <strong>Step3</strong> and <strong>Step4</strong> again, and the website is now:
+<img src="images/walkthrough_step5.png" alt="Step7">.</p>
+</li>
 </ol>
 <p>Notice that more items are added to the sidebar for <em>Articles</em> nav page. The title inside the sidebar is exactly what we set in the <code>toc.yml</code> inside <code>articles</code> subfolder.</p>
 <h2 id="conclusion">Conclusion</h2>
