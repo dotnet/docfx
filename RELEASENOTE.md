@@ -3,6 +3,11 @@ Version Notes (Current Version: v2.35)
 
 v2.35 (Pre-release)
 -----------
+1. Bug fix:
+   1. Fix Tabbed Content rendering bug. (#2645)
+   2. Fix script error in getHierarch. (#2624)
+   3. Fix loading csproj NullObjectReferenceException. (#1944)
+   4. Fix affix "active" class issue. (#2658)
 
 v2.34
 -----------
