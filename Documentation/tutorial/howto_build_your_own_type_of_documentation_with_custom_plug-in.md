@@ -15,7 +15,7 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library project in `Visual Studio`.
+1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.6.1.
 
 2.  Add nuget packages:  
     * `System.Collections.Immutable` with version 1.3.1
