@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
-            // Options should be converted to config and overwrite docfx.yaml
+            // Options should be converted to config and overwrite the config parsed from docfx.yml
             var configPath = Path.Combine(docsetPath, "docfx.yml");
 
             return YamlUtility.Deserialize<Config>(File.ReadAllText(configPath));

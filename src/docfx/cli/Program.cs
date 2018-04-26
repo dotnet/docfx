@@ -34,16 +34,16 @@ namespace Microsoft.Docs.Build
             {
                 // Restore command
                 syntax.DefineCommand("restore", ref command, "restores dependencies before build");
-                syntax.DefineParameter("source", ref source, "docset path that contains ops.yml");
+                syntax.DefineParameter("source", ref source, "docset path that contains docfx.yml");
 
                 // Build command
-                syntax.DefineCommand("build", ref command, "builds a folder containing ops.yml");
+                syntax.DefineCommand("build", ref command, "builds a folder containing docfx.yml");
                 syntax.DefineOption("o|out", ref options.Output, "output folder");
                 syntax.DefineOption("log", ref options.Log, "path to log file");
                 syntax.DefineOption("locale", ref options.BuildLocale, "locale to build");
                 syntax.DefineOptionList("github-token", ref options.GitHubTokens, "GitHub personal access tokens to call github API");
                 syntax.DefineOption("stable", ref options.Stable, "produces stable output for comparison in a diff tool");
-                syntax.DefineParameter("source", ref source, "docset path that contains ops.yml");
+                syntax.DefineParameter("source", ref source, "docset path that contains docfx.yml");
             });
 
             return (command, source, options);
