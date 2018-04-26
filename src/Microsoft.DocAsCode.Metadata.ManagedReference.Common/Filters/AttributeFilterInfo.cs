@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public string Uid { get; set; }
 
         [YamlMember(Alias = "ctorArguments")]
-        public List<string> ConstructorArguments { get; set; } = new List<string>();
+        public List<string> ConstructorArguments { get; set; }
 
         [YamlMember(Alias = "ctorNamedArguments")]
         public Dictionary<string, string> ConstructorNamedArguments { get; set; } = new Dictionary<string, string>();
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
 
                 // arguments need to be a total match of the config
-                if (!ConstructorArguments.SequenceEqual(attribute.ConstructorArguments))
+                if (ConstructorArguments != null && !ConstructorArguments.SequenceEqual(attribute.ConstructorArguments))
                 {
                     continue;
                 }

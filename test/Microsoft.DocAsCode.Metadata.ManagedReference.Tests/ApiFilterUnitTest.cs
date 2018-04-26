@@ -91,11 +91,16 @@ namespace Test1
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int C { get; set; }
-
         [EditorBrowsable(EditorBrowsableState.Always)]
         public int D { get; set; }
 
         void IFoo.Bar() {}
+
+        [Obsolete(""Some text."")]
+        public void ObsoleteTest()
+        {
+        }
+
 
         [EnumDisplay(Test = null)]
         public void Test(string a = null)
@@ -152,6 +157,7 @@ namespace Test1
                 Assert.Equal("Test1.Class6", class6.Name);
                 Assert.Equal(2, class6.Items.Count);
                 Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
+                Assert.Equal("Test1.Class6.Test(System.String)", class6.Items[1].Name);
             }
 
             var nestedNamespace = output.Items[1];
