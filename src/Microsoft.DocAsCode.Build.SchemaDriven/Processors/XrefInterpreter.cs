@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 var xref = context.BuildContext.GetXrefSpec(val);
                 if (xref == null)
                 {
-                    Logger.LogWarning($"Unable to find file with uid \"{val}\".", WarningCodes.Build.UidNotFound);
+                    Logger.LogWarning($"Unable to find file with uid \"{val}\".", code: WarningCodes.Build.UidNotFound);
                 }
             }
 
