@@ -19,7 +19,9 @@ namespace Microsoft.Docs.Build
 
             var globbedFiles = GlobFiles(context, docset);
 
-            await BuildFiles(context, globbedFiles);
+            var tocMap = await BuildTocMap(context, globbedFiles);
+
+            await BuildFiles(context, globbedFiles, tocMap);
         }
 
         private static List<Document> GlobFiles(Context context, Docset docset)
@@ -29,21 +31,36 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static Task BuildFiles(Context context, List<Document> files)
+        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file));
+            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file, tocMap));
         }
 
-        private static Task BuildOneFile(Context context, Document file)
+        private static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
+        {
+            var builder = new TableOfContentsMapBuilder();
+
+            var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
+            if (!tocFiles.Any())
+            {
+                return builder.Build();
+            }
+
+            await ParallelUtility.ForEach(tocFiles, file => BuildTableOfContents.BuildTocMap(context, file, builder));
+
+            return builder.Build();
+        }
+
+        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap)
         {
             switch (file.ContentType)
             {
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file);
+                    return BuildMarkdown.Build(context, file, tocMap);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file);
+                    return BuildSchemaDocument.Build(context, file, tocMap);
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file);
                 default:

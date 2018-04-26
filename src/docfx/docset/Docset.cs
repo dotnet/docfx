@@ -26,9 +26,14 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         public Docset(string docsetPath, CommandLineOptions options)
+            : this(docsetPath, Config.Load(docsetPath, options))
+        {
+        }
+
+        public Docset(string docsetPath, Config config)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
-            Config = Config.Load(docsetPath, options);
+            Config = config;
         }
     }
 }

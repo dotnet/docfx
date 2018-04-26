@@ -77,6 +77,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public override int GetHashCode()
+        {
+            // todo: add docset for calculation
+            return StringComparer.OrdinalIgnoreCase.GetHashCode(FilePath);
+        }
+
+        public bool Equals(Document other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            // todo: add docset for comparing
+            return string.Equals(other.FilePath, FilePath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals((Document)obj);
+        }
+
         internal static ContentType GetContentType(string path, string docsetPath)
         {
             var name = Path.GetFileName(path).ToLowerInvariant();
