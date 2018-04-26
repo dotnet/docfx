@@ -10,9 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public string Output;
         public string Log;
-        public string BuildLocale;
         public bool Stable;
-        public IReadOnlyList<string> GitHubTokens;
 
         public JObject ToJObject() => new JObject
         {
@@ -20,10 +18,8 @@ namespace Microsoft.Docs.Build
             {
                 ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                 ["logPath"] = Log != null ? (JValue)Log : JValue.CreateNull(),
-                ["stable"] = Stable ? (JValue)true : JValue.CreateNull(),
+                ["stable"] = (JValue)Stable,
             },
-            ["locale"] = BuildLocale != null ? (JValue)BuildLocale : JValue.CreateNull(),
-            ["github"] = new JObject { ["token"] = GitHubTokens != null ? JToken.FromObject(GitHubTokens) : JValue.CreateNull() },
         };
     }
 }

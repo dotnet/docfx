@@ -10,43 +10,43 @@ namespace Microsoft.Docs.Build
     {
         internal static async Task Main(string[] args)
         {
-            var (command, source, options) = ParseCommandLineOptions(args);
+            var (command, docset, options) = ParseCommandLineOptions(args);
             var log = new ConsoleLog();
 
             switch (command)
             {
                 case "restore":
-                    await Restore.Run(source, options, log);
+                    await Restore.Run(docset, options, log);
                     break;
                 case "build":
-                    await Build.Run(source, options, log);
+                    await Build.Run(docset, options, log);
                     break;
             }
         }
 
-        private static (string command, string source, CommandLineOptions options) ParseCommandLineOptions(string[] args)
+        private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
-            var command = string.Empty;
-            var source = ".";
+            var command = "build";
+            var docset = ".";
             var options = new CommandLineOptions();
 
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
+                // usage: docfx restore [docset]
                 syntax.DefineCommand("restore", ref command, "restores dependencies before build");
-                syntax.DefineParameter("source", ref source, "docset path that contains docfx.yml");
+                syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
 
                 // Build command
+                // usage: docfx build [dopcset] [-o/--out output] [--log log] [--stable]
                 syntax.DefineCommand("build", ref command, "builds a folder containing docfx.yml");
                 syntax.DefineOption("o|out", ref options.Output, "output folder");
                 syntax.DefineOption("log", ref options.Log, "path to log file");
-                syntax.DefineOption("locale", ref options.BuildLocale, "locale to build");
-                syntax.DefineOptionList("github-token", ref options.GitHubTokens, "GitHub personal access tokens to call github API");
                 syntax.DefineOption("stable", ref options.Stable, "produces stable output for comparison in a diff tool");
-                syntax.DefineParameter("source", ref source, "docset path that contains docfx.yml");
+                syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
             });
 
-            return (command, source, options);
+            return (command, docset, options);
         }
     }
 }
