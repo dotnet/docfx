@@ -46,7 +46,6 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
             });
 
-            System.Console.WriteLine($"{command}, {docset}, {JsonUtililty.Serialize(options)}");
             return (command, docset, options);
         }
     }
