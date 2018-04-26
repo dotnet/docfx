@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with a custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with a custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.35.0.0">
+    <meta name="generator" content="docfx 2.35.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -98,7 +98,7 @@
 </ol>
 <h2 id="preparation">Preparation</h2>
 <ol>
-<li><p>Create a new C# class library project in <code>Visual Studio</code>.</p>
+<li><p>Create a new C# class library project in <code>Visual Studio</code>, targets .NET Framework 4.6.1.</p>
 </li>
 <li><p>Add nuget packages:</p>
 <ul>
@@ -106,17 +106,17 @@
 <li><code>Microsoft.Composition</code> with version 1.0.31</li>
 </ul>
 </li>
-<li><p>Add <code>Microsoft.DocAsCode.Plugins</code><br>
+<li><p>Add <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.DocAsCode.Common</code>
 If building DocFX from source code then add a reference to the project,
-otherwise add the nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version as DocFX.</p>
+otherwise add the nuget packages with the same version as DocFX.</p>
 </li>
 <li><p>Add framework assembly references:
-<code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code></p>
+<code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code>. (This step is optional in Visual Studio 2017)</p>
 </li>
 <li><p>Add a project for converting rtf to html:<br>
 Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
 </li>
-<li><p>Copy the code file StaTaskScheduler.cs from <a href="https://code.msdn.microsoft.com/ParExtSamples">ParExtSamples</a></p>
+<li><p>Copy the code file <code>C#,C++,F#,VB\ParallelExtensionsExtras\TaskSchedulers\StaTaskScheduler.cs</code> from <a href="https://code.msdn.microsoft.com/ParExtSamples">ParExtSamples</a></p>
 </li>
 </ol>
 <h2 id="create-a-document-processor">Create a document processor</h2>
@@ -162,7 +162,12 @@ When two or more processors compete for the same file, DocFX will give it to the
         [&quot;type&quot;] = &quot;Conceptual&quot;,
         [&quot;path&quot;] = file.File,
     };
-    return new FileModel(file, content);
+    var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
+
+    return new FileModel(file, content)
+    {
+        LocalPathFromRoot = localPathFromRoot,
+    };
 }
 </code></pre>
 <p>We use <code>Dictionary&lt;string, object&gt;</code> as the data model, similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs">ConceptualDocumentProcessor</a> stores the content of markdown files.</p>
@@ -173,8 +178,7 @@ When two or more processors compete for the same file, DocFX will give it to the
     return new SaveResult
     {
         DocumentType = &quot;Conceptual&quot;,
-        ModelFile = model.File,
-        LinkToFiles = linkToFiles.ToImmutableArray(),
+        FileWithoutExtension = Path.ChangeExtension(model.File, null),
     };
 }
 </code></pre></li>
