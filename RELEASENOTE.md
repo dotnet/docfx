@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.35)
+Version Notes (Current Version: v2.35.1)
 =======================================
+
+v2.35.1
+-----------
+1. Bug fix: codesnippet tagname is not recognized when the tag starts with \t in Markdig.
 
 v2.35
 -----------
