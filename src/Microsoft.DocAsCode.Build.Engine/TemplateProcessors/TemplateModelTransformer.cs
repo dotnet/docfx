@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
 
-            var distinctUids = unresolvedXRefs.Select(i => i.RawSource).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
+            var distinctUids = unresolvedXRefs.Select(i => i.RawSource ?? i.Uid).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
             Logger.LogWarning(
                 $"{distinctUids.Count} invalid cross reference(s) {distinctUids.ToDelimitedString(", ")}.",
                 code: WarningCodes.Build.UidNotFound);
