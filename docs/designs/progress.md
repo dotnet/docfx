@@ -3,14 +3,15 @@ Progress is to provide progress bar to the end user of the CLI. The design invol
 
 ## API Design
 
-Progress: a global static object
+Progress: a global static object, as it should be non-related to incremental
 
-Non-related to incremental
+Usage:
 ```cs
-ProgressBar.Update();
-ProgressBar.Interrupt();
-ProgressBar.Tick();
-ProgressBar.Complete();
+ProgressBar.Register(stepName, parent);
+ProgressBar.Update(current, total, stepName);
+ProgressBar.Interrupt(description, stepName);
+ProgressBar.Tick(stepName);
+ProgressBar.Complete(stepName);
 ```
 
 ## Typical case studies
