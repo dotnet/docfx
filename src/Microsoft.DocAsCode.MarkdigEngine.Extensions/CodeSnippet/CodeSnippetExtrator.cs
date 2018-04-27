@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             index = 0;
             while(column < line.Length && index < afterTagName.Length)
             {
-                if (line[column] != ' ')
+                if (!CharHelper.IsWhitespace(line[column]))
                 {
                     if (char.ToLower(line[column]) != afterTagName[index]) return false;
                     index++;
@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             if (index != afterTagName.Length) return false;
-            while (column < line.Length && line[column] == ' ') column++;
+            while (column < line.Length && CharHelper.IsWhitespace(line[column])) column++;
             
             return column == line.Length;
         }
