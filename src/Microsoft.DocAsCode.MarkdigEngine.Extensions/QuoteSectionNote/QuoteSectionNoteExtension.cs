@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     using Markdig;
     using Markdig.Parsers;
@@ -13,11 +12,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {
-        private MarkdownServiceParameters _parameters;
+        private MarkdownContext _context;
 
-        public QuoteSectionNoteExtension(MarkdownServiceParameters parameters)
+        public QuoteSectionNoteExtension(MarkdownContext context)
         {
-            _parameters = parameters;
+            _context = context;
         }
 
         void IMarkdownExtension.Setup(MarkdownPipelineBuilder pipeline)
@@ -34,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var htmlRenderer = renderer as HtmlRenderer;
             if (htmlRenderer != null)
             {
-                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_parameters.Tokens);
+                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_context.Tokens);
 
                 if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
                 {

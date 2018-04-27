@@ -6,9 +6,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
 
     using MarkdigEngine.Extensions;
 
+    using Markdig;
+    using Markdig.Renderers;
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Plugins;
 
@@ -39,15 +42,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var dependency = new HashSet<string>();
-            var engine = CreateEngine(dependency);
-
-            var context = CreateContext(content, filePath, false);
+            var options = CreateOptions(content, filePath, false);
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(options)
+                .Build();
 
             return new MarkupResult
             {
-                Html = engine.Markup(context, _parameters),
-                Dependency = dependency.ToImmutableArray()
+                Html = Markdown.ToHtml(content, pipeline),
+                Dependency = options.Dependencies.ToImmutableArray()
             };
         }
 
@@ -68,10 +71,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var engine = CreateEngine(new HashSet<string>());
-            var context = CreateContext(content, filePath, isInline);
+            var options = CreateOptions(content, filePath, isInline);
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(options)
+                .Build();
 
-            var document = engine.Parse(context, _parameters);
+            var document = Markdown.Parse(content, pipeline);
             document.SetData("filePath", filePath);
 
             return document;
@@ -95,37 +100,43 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var context = CreateContext(null, filePath, isInline);
+            var options = CreateOptions(null, filePath, false);
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(options)
+                .Build();
 
-            var dependency = new HashSet<string>();
-            var engine = CreateEngine(dependency);
-
-            return new MarkupResult
+            using (var writer = new StringWriter())
             {
-                Html = engine.Render(document, context, _parameters),
-                Dependency = dependency.ToImmutableArray()
-            };
-        }
+                var renderer = new HtmlRenderer(writer);
+                pipeline.Setup(renderer);
+                renderer.Render(document);
+                writer.Flush();
 
-        private MarkdownEngine CreateEngine(HashSet<string> dependency)
-        {
-            if (dependency == null)
-            {
-                throw new ArgumentNullException(nameof(dependency));
+                return new MarkupResult
+                {
+                    Html = writer.ToString(),
+                    Dependency = options.Dependencies.ToImmutableArray(),
+                };
             }
-
-            return new MarkdownEngine(dependency);
         }
 
-        private MarkdownContext CreateContext(string content, string filePath, bool isInline)
+        private MarkdownContext CreateOptions(string content, string filePath, bool isInline)
         {
-            return new MarkdownContextBuilder()
-                            .WithFilePath(filePath)
-                            .WithBasePath(_parameters.BasePath)
-                            .WithMvb(_mvb)
-                            .WithContent(content)
-                            .WithIsInline(isInline)
-                            .Build();
+            object enableSourceInfoObj = null;
+            _parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfoObj);
+
+            var enabled = enableSourceInfoObj as bool?;
+            var enableSourceInfo = enabled == null || enabled.Value;
+
+            return new MarkdownContext(
+                content,
+                _parameters.BasePath,
+                filePath,
+                isInline,
+                null,
+                enableSourceInfo,
+                _parameters.Tokens,
+                _mvb);
         }
     }
 }

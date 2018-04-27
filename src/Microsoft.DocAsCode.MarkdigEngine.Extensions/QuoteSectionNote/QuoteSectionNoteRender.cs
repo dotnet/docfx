@@ -4,16 +4,16 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
 
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
 
     public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     {
-        private ImmutableDictionary<string, string> _tokens;
+        private IReadOnlyDictionary<string, string> _tokens;
 
-        public QuoteSectionNoteRender(ImmutableDictionary<string, string> tokens)
+        public QuoteSectionNoteRender(IReadOnlyDictionary<string, string> tokens)
         {
             _tokens = tokens;
         }
