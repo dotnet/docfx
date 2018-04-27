@@ -16,3 +16,6 @@
       uid: System.ComponentModel.EditorBrowsableAttribute
       ctorArguments:
       - System.ComponentModel.EditorBrowsableState.Never
+- exclude:
+    hasAttribute:
+      uid: System.ObsoleteAttribute
