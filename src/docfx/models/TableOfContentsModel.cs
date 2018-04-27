@@ -3,9 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsItemModel
+    internal class TableOfContentsModel
     {
-        // todo: add more fields
-        public TableOfContentsModel Items;
     }
 }

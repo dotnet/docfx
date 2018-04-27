@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
@@ -12,13 +11,11 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class TableOfContentsMap
     {
-        private readonly IEnumerable<Document> _tocs;
+        private readonly List<Document> _tocs;
 
         private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
 
-        private readonly ConcurrentDictionary<Document, Document> _nearestTocs = new ConcurrentDictionary<Document, Document>();
-
-        public TableOfContentsMap(IEnumerable<Document> tocs, Dictionary<Document, HashSet<Document>> documentToTocs)
+        public TableOfContentsMap(List<Document> tocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
             _tocs = tocs ?? throw new ArgumentNullException(nameof(tocs));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
@@ -31,7 +28,7 @@ namespace Microsoft.Docs.Build
         /// <returns>The toc relative path</returns>
         public string FindTocRelativePath(Document file)
         {
-            var nearestToc = _nearestTocs.GetOrAdd(file, add => GetNearestToc(add));
+            var nearestToc = GetNearestToc(file);
 
             return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.OutputPath, nearestToc.OutputPath)) : null;
         }
@@ -45,7 +42,7 @@ namespace Microsoft.Docs.Build
         private Document GetNearestToc(Document file)
         {
             // fallback to all tocs if no toc files reference this file
-            var filteredTocFiles = _documentToTocs.TryGetValue(file, out var referencedTocFiles) ? referencedTocFiles : _tocs;
+            var filteredTocFiles = _documentToTocs.TryGetValue(file, out var referencedTocFiles) ? (IEnumerable<Document>)referencedTocFiles : _tocs;
 
             var nearstToc = (Document)null;
             var nearestSubDirCount = 0;
@@ -54,7 +51,9 @@ namespace Microsoft.Docs.Build
             {
                 var relativePath = PathUtility.GetRelativePathToFile(toc.FilePath, file.FilePath);
                 var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
-                if (nearstToc == null || Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount) > 0)
+                var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
+                if (nearstToc == null || distance > 0 ||
+                    (distance == 0 && string.Compare(nearstToc.FilePath, toc.FilePath, StringComparison.OrdinalIgnoreCase) > 0))
                 {
                     nearstToc = toc;
                     nearestSubDirCount = subDirCount;

@@ -80,6 +80,7 @@ namespace Microsoft.Docs.Build
         public override int GetHashCode()
         {
             // todo: add docset for calculation
+            // todo: case senstive or not?
             return StringComparer.OrdinalIgnoreCase.GetHashCode(FilePath);
         }
 
@@ -96,7 +97,7 @@ namespace Microsoft.Docs.Build
 
         public override bool Equals(object obj)
         {
-            return Equals((Document)obj);
+            return Equals(obj as Document);
         }
 
         internal static ContentType GetContentType(string path, string docsetPath)

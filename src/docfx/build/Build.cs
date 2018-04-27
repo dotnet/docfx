@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
             var globbedFiles = GlobFiles(context, docset);
 
-            var tocMap = await BuildTocMap(context, globbedFiles);
+            var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
 
             await BuildFiles(context, globbedFiles, tocMap);
         }
@@ -33,21 +33,6 @@ namespace Microsoft.Docs.Build
         private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             return ParallelUtility.ForEach(files, file => BuildOneFile(context, file, tocMap));
-        }
-
-        private static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
-        {
-            var builder = new TableOfContentsMapBuilder();
-
-            var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
-            if (!tocFiles.Any())
-            {
-                return builder.Build();
-            }
-
-            await ParallelUtility.ForEach(tocFiles, file => BuildTableOfContents.BuildTocMap(context, file, builder));
-
-            return builder.Build();
         }
 
         private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap)

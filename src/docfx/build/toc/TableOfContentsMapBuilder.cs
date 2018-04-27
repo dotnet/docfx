@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -50,7 +49,7 @@ namespace Microsoft.Docs.Build
             // reverse the mapping between toc and documents
             // order by toc path
             var allTocs = new List<Document>();
-            foreach (var (toc, documents) in _tocToDocuments.OrderBy(t => t.Key.FilePath))
+            foreach (var (toc, documents) in _tocToDocuments)
             {
                 if (_referencedTocs.ContainsKey(toc))
                 {
