@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
+            var saved = slice;
             if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return false;
@@ -32,7 +33,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var href = StringBuilderCache.Local();
             var c = slice.CurrentChar;
-            var saved = slice;
             var startChar = '\0';
             int line;
             int column;
@@ -72,6 +72,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var htmlAttributes = xrefInline.GetAttributes();
             htmlAttributes.AddPropertyIfNotExist("data-throw-if-not-resolved", "True");
+
+            var dataRawSource = saved;
+            dataRawSource.End = slice.Start - 1;
+            htmlAttributes.AddPropertyIfNotExist("data-raw-source", dataRawSource.ToString());
             processor.Inline = xrefInline;
 
             return true;
