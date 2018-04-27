@@ -124,8 +124,8 @@ b:
         [InlineData(@"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
     "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api@a\"></xref> <a href=\"mailto:abc@api.com\">abc@api.com</a> <a href=\"mailto:a.b.c@api.com\">a.b.c@api.com</a> <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'a p '\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref></p>\n")]
         [InlineData("[name](xref:uid \"title\")", "<p><a href=\"xref:uid\" title=\"title\">name</a></p>\n")]
-        [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\"></xref>text</p>\n")]
-        [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\"></xref>text</p>\n")]
+        [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
+        [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:'uid with space'&gt;\"></xref>text</p>\n")]
         [InlineData(
     @"[*a*](xref:uid)",
     "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
@@ -538,13 +538,13 @@ csr
 </code></pre>
 <p><a href=""topic.md"">test link</a></p>
 <p><a href=""Topics/topic.md"">test link1</a></p>
-<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True""></xref></p>
+<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref></p>
 <p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@Microsoft.Build.Tasks""></xref></p>
 <p><xref href=""Microsoft.Build.Tasks?text=Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@&quot;Microsoft.Build.Tasks?text=Tasks&quot;""></xref></p>
 <p><a href=""xref:Microsoft.Build.Tasks"">link_text</a></p>
-<p><xref href=""Microsoft.Build.Tasks#Anchor_1"" data-throw-if-not-resolved=""True""></xref></p>
+<p><xref href=""Microsoft.Build.Tasks#Anchor_1"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks#Anchor_1&gt;""></xref></p>
 <xref href=""Microsoft.Build.Tasks?alt=ImmutableArray""/>
-<p><xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True""></xref></p>
+<p><xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:&quot;Microsoft.Build.Tasks?alt=ImmutableArray&quot;&gt;""></xref></p>
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
 <h2 id=""note--section--video"">Note / Section / Video</h2>
 <p><a href=""http://your.company.abc"">http://your.company.abc</a>, abc</p>
