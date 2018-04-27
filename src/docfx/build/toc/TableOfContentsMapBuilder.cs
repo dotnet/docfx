@@ -8,7 +8,7 @@ using System.Linq;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Toc map builder which to build thereferenced toc files and mappings between toc and documents
+    /// Toc map builder which to build the referenced toc files and mappings between toc and documents
     /// </summary>
     internal class TableOfContentsMapBuilder
     {
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Build toc map including referenced tocs and reversed toc mapping(document -> toc) 
+        /// Build toc map including all tocs and reversed toc mapping(document -> toc)
         /// </summary>
         /// <returns>The toc map</returns>
         public TableOfContentsMap Build()

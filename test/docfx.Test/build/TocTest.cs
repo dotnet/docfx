@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build.build
         [InlineData(new[] { "a/toc.md", "b/toc.md" }, "b.md", "a/toc.json")] // order by folder name
         [InlineData(new[] { "c/b/toc.md", "c/a/toc.md" }, "c/d/b.md", "../a/toc.json")] // order by folder name
 
-        // next 1 level(nearest)
+        // next level(nearest)
         [InlineData(new[] { "b/c/toc.md", "a/toc.md" }, "b.md", "a/toc.json")]
         [InlineData(new[] { "b/toc.md", "a/b/toc.md" }, "b.md", "b/toc.json")]
         [InlineData(new[] { "b/./toc.md", "a/b/toc.md" }, "b.md", "b/toc.json")]
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build.build
         [InlineData(new[] { "b/../b/./toc.md", "a/b/toc.md" }, "a/../b.md", "b/toc.json")]
         [InlineData(new[] { "b/c/toc.md", "b/d/toc.md" }, "b.md", "b/c/toc.json")] // order by folder name
 
-        // uplevel(nearest)
+        // up level(nearest)
         [InlineData(new[] { "toc.md", "a/toc.md" }, "b/b.md", "../toc.json")]
         [InlineData(new[] { "toc.md", "c/a/toc.md" }, "c/a/d/b.md", "../toc.json")]
         [InlineData(new[] { "c/b/toc.md", "c/a/toc.md" }, "c/a/d/b.md", "../toc.json")]

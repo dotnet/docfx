@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
 
-        private readonly ConcurrentDictionary<Document, Document> _nearestTocMapping = new ConcurrentDictionary<Document, Document>();
+        private readonly ConcurrentDictionary<Document, Document> _nearestTocs = new ConcurrentDictionary<Document, Document>();
 
         public TableOfContentsMap(IEnumerable<Document> tocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
@@ -32,13 +31,13 @@ namespace Microsoft.Docs.Build
         /// <returns>The toc relative path</returns>
         public string FindTocRelativePath(Document file)
         {
-            var nearestToc = _nearestTocMapping.GetOrAdd(file, add => GetNearestToc(add));
+            var nearestToc = _nearestTocs.GetOrAdd(file, add => GetNearestToc(add));
 
             return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.OutputPath, nearestToc.OutputPath)) : null;
         }
 
         /// <summary>
-        /// return the nearest toc relative to the current file
+        /// Return the nearest toc relative to the current file
         /// "near" means less subdirectory count
         /// when subdirectory counts are same, "near" means less parent directory count
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
@@ -81,7 +80,7 @@ namespace Microsoft.Docs.Build
         private static (int subDirectoryCount, int parentDirectoryCount) GetDirectoryCount(string relativePath)
         {
             relativePath = PathUtility.NormalizeFile(relativePath);
-            var relativePathParts = relativePath.Split('/', '\\');
+            var relativePathParts = relativePath.Split('/');
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
             foreach (var part in relativePathParts)
