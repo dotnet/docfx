@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public class MarkdownContext
     {
@@ -27,6 +28,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public bool IsInline { get; }
 
+        public ImmutableHashSet<string> InclusionSet { get; }
+
         public HashSet<string> Dependencies { get; } = new HashSet<string>();
 
         public bool EnableSourceInfo { get; }
@@ -40,7 +43,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             string basePath,
             string filePath,
             bool isInline,
-            IEnumerable<string> dependencies,
+            ImmutableHashSet<string> inclusionSet,
+            HashSet<string> dependencies,
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb)
@@ -49,14 +53,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             BasePath = basePath;
             FilePath = filePath;
             IsInline = isInline;
-
-            if (dependencies != null)
-            {
-                foreach (var dep in dependencies)
-                {
-                    Dependencies.Add(dep);
-                }
-            }
+            InclusionSet = inclusionSet ?? ImmutableHashSet<string>.Empty;
+            Dependencies = dependencies ?? new HashSet<string>();
 
             Tokens = tokens;
             Mvb = mvb;

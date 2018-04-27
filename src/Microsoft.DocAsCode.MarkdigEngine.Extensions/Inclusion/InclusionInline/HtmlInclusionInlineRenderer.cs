@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            if (!_context.Dependencies.Add(includedFilePath))
+            if (!_context.InclusionSet.Contains(includedFilePath))
             {
                 string tag = "ERROR INCLUDE";
                 string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
@@ -59,12 +59,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
+            _context.Dependencies.Add(includedFilePath);
+
             var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
             var context = new MarkdownContext(
                 content,
                 _context.BasePath,
                 includedFilePath.RemoveWorkingFolder(),
                 true,
+                _context.InclusionSet.Add(currentFilePath),
                 _context.Dependencies,
                 _context.EnableSourceInfo,
                 _context.Tokens,

@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var options = CreateOptions(null, filePath, false);
+            var options = CreateOptions(null, filePath, isInline);
             var pipeline = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(options)
                 .Build();
@@ -132,6 +132,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 _parameters.BasePath,
                 filePath,
                 isInline,
+                null,
                 null,
                 enableSourceInfo,
                 _parameters.Tokens,

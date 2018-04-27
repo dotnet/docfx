@@ -167,7 +167,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context));
-            if (context.Dependencies.Count > 0)
+            if (!context.InclusionSet.IsEmpty)
             {
                 pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             }
