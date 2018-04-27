@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
 
