@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         public void CodeSnippetTagsShouldMatchCaseInsensitive()
         {
             //arange
-            var content = "\t// <tag1>\nline1\n// <tag2>\nline2\n// </tag2>\nline3\n// </TAG1>\n// <unmatched>\n";
+            var content = "\t// <tag1>\t\nline1\n// <tag2>\nline2\n// </tag2>\nline3\n// </TAG1>\n// <unmatched>\n";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
             var marked = TestUtility.MarkupWithoutSourceInfo("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
