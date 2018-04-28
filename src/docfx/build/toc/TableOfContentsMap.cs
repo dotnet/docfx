@@ -79,6 +79,8 @@ namespace Microsoft.Docs.Build
         private static (int subDirectoryCount, int parentDirectoryCount) GetDirectoryCount(string relativePath)
         {
             relativePath = PathUtility.NormalizeFile(relativePath);
+
+            // todo: perf optimization, don't split '/' here again.
             var relativePathParts = relativePath.Split('/');
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
