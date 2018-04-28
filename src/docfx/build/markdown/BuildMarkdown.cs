@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task Build(Context context, Document file)
+        public static Task Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             var markdown = file.ReadText();
             var model = new PageModel<string> { Content = Markup(markdown) };
