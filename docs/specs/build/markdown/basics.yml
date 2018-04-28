@@ -2,7 +2,7 @@
 # Hello World
 inputs:
   docfx.yml: |
-    files:
+    content:
       include:
         - "**/*.*"
   hello.md: Hello `docfx`!
@@ -13,7 +13,7 @@ outputs:
 # Basic markdown syntax
 inputs:
   docfx.yml: |
-    files:
+    content:
       include:
         - "**/*.*"
   inline.md: _this_ *is* an ***inline*** `markdown` **test**

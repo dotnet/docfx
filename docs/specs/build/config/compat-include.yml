@@ -1,0 +1,25 @@
+---
+# Content supports string form
+inputs:
+  docfx.yml: |
+    content: docs1/**/*.md
+  ignore.md:
+  docs1/index.md:
+outputs:
+  docs1/index.json: |
+    { "content": "" }
+---
+# Content supports array form
+inputs:
+  docfx.yml: |
+    content:
+    - docs1/**/*.md
+    - docs2/**/*.md
+  ignore.md:
+  docs1/index.md:
+  docs2/index.md:
+outputs:
+  docs1/index.json: |
+    { "content": "" }
+  docs2/index.json: |
+    { "content": "" }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -10,15 +11,18 @@ namespace Microsoft.Docs.Build
 {
     internal class Config
     {
+        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
+
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
         public readonly string Locale = "en-us";
 
         /// <summary>
-        /// Gets the files that are managed by this docset.
+        /// Gets the contents that are managed by this docset.
         /// </summary>
-        public readonly FileConfig Files = new FileConfig();
+        public readonly FileConfig Content = new FileConfig(s_defaultContentInclude, s_defaultContentExclude);
 
         /// <summary>
         /// Gets the output config.
@@ -41,8 +45,10 @@ namespace Microsoft.Docs.Build
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var configPath = Path.Combine(docsetPath, "docfx.yml");
+            var exists = File.Exists(configPath);
+            var configObject = exists ? Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath))) : new JObject();
 
-            return YamlUtility.Deserialize<Config>(File.ReadAllText(configPath));
+            return configObject.ToObject<Config>(JsonUtililty.DefaultDeserializer);
         }
 
         public static bool TryLoad(string docsetPath, CommandLineOptions options, out Config config)
@@ -58,6 +64,44 @@ namespace Microsoft.Docs.Build
             }
 
             return config != null;
+        }
+
+        private static JObject Expand(JObject config)
+        {
+            config[Constants.Config.Content] = ExpandFiles(config[Constants.Config.Content]);
+            return config;
+        }
+
+        private static JObject ExpandFiles(JToken file)
+        {
+            if (file == null)
+                return null;
+            if (file is JValue str)
+                file = new JArray { str };
+            if (file is JArray arr)
+                file = new JObject { [Constants.Config.Include] = arr };
+            return ExpandIncludeExclude((JObject)file);
+        }
+
+        private static JObject ExpandIncludeExclude(JObject item)
+        {
+            Debug.Assert(item != null);
+            item[Constants.Config.Include] = ExpandStringArray(item[Constants.Config.Include]);
+            item[Constants.Config.Exclude] = ExpandStringArray(item[Constants.Config.Exclude]);
+            return item;
+        }
+
+        private static JArray ExpandStringArray(JToken e)
+        {
+            if (e == null)
+                return null;
+            if (e is JValue str)
+                return new JArray(e);
+            if (e is JArray arr)
+                return arr;
+
+            // TODO: error handle
+            return null;
         }
     }
 }
