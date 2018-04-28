@@ -11,7 +11,7 @@ Table of contents file which is also called TOC file is used to organize file st
 
 ## Markdown format TOC `toc.md`
 
-`toc.md` leverages Markdown [Atx-style headers](http://daringfireball.net/projects/markdown/syntax#header) which use 1-6 hash characters at the start of the line to represent the TOC levels 1-6. We call each line starting with hash characters a *TOC Item*. A *TOC Item* with higher level is considered as the child of the nearest upper *TOC Item* with less level. A sample `toc.md` is as below:
+`toc.md` leverages Markdown [Atx-style headers](http://daringfireball.net/projects/markdown/syntax#header) which use hash characters at the start of the line to represent the TOC levels. We call each line starting with hash characters a *TOC Item*. A *TOC Item* with higher level is considered as the child of the nearest upper *TOC Item* with less level. A sample `toc.md` is as below:
 
 ```md
 # [Header1](href)
@@ -138,7 +138,7 @@ If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link v
 
 ### Link to local file
 
-If the *Toc Item* is linking to a local file, we call this local file *In-Toc File*.
+If the *Toc Item* is linking to a local file, we call this local file *In-Toc File*. The link can also contains query string and fragement like `href: examples/overview.md?branch=master#row=4`
 
 ## Not-In-Toc Files
 
