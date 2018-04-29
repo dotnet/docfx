@@ -24,16 +24,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string ReadMime(TextReader reader)
         {
-            if (reader == null)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-            var line = reader.ReadLine();
-            if (line == null || !line.StartsWith("#", StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-            var content = line.TrimStart('#').Trim(' ');
+            var content = ReadHeader(reader);
             if (!content.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return null;
@@ -42,11 +33,32 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Get the content of the first comment line
+        /// </summary>
+        public static string ReadHeader(TextReader reader)
+        {
+            var line = reader.ReadLine();
+            if (line == null || !line.StartsWith("#", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+            return line.TrimStart('#').Trim();
+        }
+
+        /// <summary>
         /// Get YamlMime from yaml string
         /// </summary>
         public static string ReadMime(string yaml)
         {
             return ReadMime(new StringReader(yaml));
+        }
+
+        /// <summary>
+        /// Get the content of the first comment line
+        /// </summary>
+        public static string ReadHeader(string yaml)
+        {
+            return ReadHeader(new StringReader(yaml));
         }
 
         /// <summary>
@@ -87,21 +99,6 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
             return ToJson(stream.Documents[0].RootNode);
-        }
-
-        /// <summary>
-        /// Deserialize to JToken from TextReader
-        /// </summary>
-        public static IEnumerable<T> DeserializeMany<T>(string yaml)
-        {
-            var stream = new YamlStream();
-
-            stream.Load(new StringReader(yaml));
-
-            foreach (var document in stream.Documents)
-            {
-                yield return ToJson(document.RootNode).ToObject<T>();
-            }
         }
 
         private static JToken ToJson(YamlNode node)

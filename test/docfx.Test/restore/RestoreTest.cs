@@ -12,15 +12,7 @@ namespace Microsoft.Docs.Test
 {
     public static class RestoreTest
     {
-        public static readonly TheoryData<string> Specs = new TheoryData<string>();
-
-        static RestoreTest()
-        {
-            foreach (var spec in Directory.EnumerateFiles("specs/restore", "*.yml", SearchOption.AllDirectories))
-            {
-                Specs.Add(spec);
-            }
-        }
+        public static readonly TheoryData<TestSpec> Specs = TestHelper.FindTestSpecs("restore");
 
         [Theory]
         [InlineData("https://github.com/dotnet/docfx", "github.com/dotnet/docfx/master", "https://github.com/dotnet/docfx", "master")]
@@ -45,19 +37,16 @@ namespace Microsoft.Docs.Test
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task RestoreDependencies(string spec)
+        public static async Task RestoreDependencies(TestSpec spec)
         {
-            var docsets = TestHelper.PrepareDocsetsFromSpec(spec);
-            foreach (var (docsetPath, testSpec) in docsets)
-            {
-                await Program.Main(new[] { "restore", docsetPath });
+            var docsetPath = spec.CreateDocset();
+            await Program.Main(new[] { "restore", docsetPath });
 
-                foreach (var (file, content) in testSpec.Restorations)
-                {
-                    var restoredFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git", file);
-                    Assert.True(File.Exists(restoredFile));
-                    TestHelper.VerifyJsonContainEquals(JToken.Parse(content), JToken.Parse(File.ReadAllText(restoredFile)));
-                }
+            foreach (var (file, content) in spec.Restorations)
+            {
+                var restoredFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git", file);
+                Assert.True(File.Exists(restoredFile));
+                TestHelper.VerifyJsonContainEquals(JToken.Parse(content), JToken.Parse(File.ReadAllText(restoredFile)));
             }
         }
     }
