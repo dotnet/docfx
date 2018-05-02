@@ -12,17 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
         {
-            Config config;
-            try
-            {
-                config = Config.Load(docsetPath, options);
-            }
-            catch
-            {
-                // TODO: error handling
-                return;
-            }
-
+            var config = Config.Load(docsetPath, options);
             var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
             var docset = new Docset(docsetPath, options);
 
