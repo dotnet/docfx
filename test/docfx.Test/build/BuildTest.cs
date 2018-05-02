@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (file, content) in spec.Outputs)
             {
-                VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, "_site", file)), content);
+                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
             }
         }
 
