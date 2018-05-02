@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.35.2)
+Version Notes (Current Version: v2.35.3)
 =======================================
 
-v2.35.2
+v2.35.3
 -----------
+1. Bug fix: Tabbed content always enables second tab. (#2706)
 
 v2.35.1
 -----------
