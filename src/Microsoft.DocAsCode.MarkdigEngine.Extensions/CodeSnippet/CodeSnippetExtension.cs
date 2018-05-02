@@ -8,12 +8,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class CodeSnippetExtension : IMarkdownExtension
     {
-        private IMarkdownEngine _engine;
         private MarkdownContext _context;
 
-        public CodeSnippetExtension(IMarkdownEngine engine, MarkdownContext context)
+        public CodeSnippetExtension(MarkdownContext context)
         {
-            _engine = engine;
             _context = context;
         }
 
@@ -28,7 +26,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlCodeSnippetRenderer>())
             {
                 // Must be inserted before CodeBlockRenderer
-                htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_engine, _context));
+                htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_context));
             }
         }
     }

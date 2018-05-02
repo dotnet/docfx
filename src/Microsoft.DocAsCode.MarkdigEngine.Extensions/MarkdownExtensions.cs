@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.IO;
 
-    using MarkdigEngine.Extensions;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
@@ -17,6 +15,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
     public static class MarkdownExtensions
     {
+        public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        {
+            return pipeline
+                .UseMarkdigAdvancedExtensions()
+                .UseDfmExtensions(context)
+                .RemoveUnusedExtensions();
+        }
+
         public static MarkdownPipelineBuilder UseMarkdigAdvancedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             return pipeline
@@ -28,25 +34,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseAutoLinks();
         }
 
-        public static MarkdownPipelineBuilder UseDfmExtensions(
-            this MarkdownPipelineBuilder pipeline,
-            MarkdownEngine engine,
-            MarkdownContext context,
-            MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             return pipeline
                 .UseHeadingIdRewriter()
-                .UseIncludeFile(engine, context, parameters)
-                .UseCodeSnippet(engine, context)
+                .UseIncludeFile(context)
+                .UseCodeSnippet(context)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
-                .UseQuoteSectionNote(parameters)
+                .UseQuoteSectionNote(context)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
                 .UseTabGroup()
-                .UseLineNumber(context, parameters)
+                .UseLineNumber(context)
                 .UseMonikerRange()
-                .UseValidators(context, parameters)
+                .UseValidators(context)
                 .UseInteractiveCode()
                 .UseRow()
                 .UseNestedColumn()
@@ -61,7 +63,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             var tokenRewriter = context.Mvb.CreateRewriter();
             var visitor = new MarkdownDocumentVisitor(tokenRewriter);
@@ -140,19 +142,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new QuoteSectionNoteExtension(parameters));
+            pipeline.Extensions.Insert(0, new QuoteSectionNoteExtension(context));
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            object enableSourceInfo = null;
-            parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfo);
-
-            var enabled = enableSourceInfo as bool?;
-            if (enabled != null && enabled == false)
+            if (!context.EnableSourceInfo)
             {
                 return pipeline;
             }
@@ -166,19 +164,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new InclusionExtension(compositor, context, parameters));
-            if (context.InclusionSet != null && !context.InclusionSet.IsEmpty)
+            pipeline.Extensions.Insert(0, new InclusionExtension(context));
+            if (!context.InclusionSet.IsEmpty)
             {
                 pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             }
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
+            pipeline.Extensions.Insert(0, new CodeSnippetExtension(context));
 
             return pipeline;
         }

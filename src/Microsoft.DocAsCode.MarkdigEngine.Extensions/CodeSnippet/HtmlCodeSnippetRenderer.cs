@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         private MarkdownContext _context;
-        private IMarkdownEngine _engine;
         private const string tagPrefix = "snippet";
 
         private static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
@@ -110,9 +109,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
         private Dictionary<string, List<CodeSnippetExtrator>> CodeLanguageExtractors = new Dictionary<string, List<CodeSnippetExtrator>>();
 
-        public HtmlCodeSnippetRenderer(IMarkdownEngine engine, MarkdownContext context)
+        public HtmlCodeSnippetRenderer(MarkdownContext context)
         {
-            _engine = engine;
             _context = context;
 
             BuildCodeLanguageExtractors();
@@ -198,7 +196,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn(currentFilePath);
-            _engine.ReportDependency(refFileRelativePath);
+            _context.Dependencies.Add(refFileRelativePath);
 
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
             var allLines = EnvironmentContext.FileAbstractLayer.ReadAllLines(refFileRelativePath.RemoveWorkingFolder());

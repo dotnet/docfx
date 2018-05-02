@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.Text.RegularExpressions;
 
+    using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
@@ -12,16 +13,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
-        private IMarkdownEngine _engine;
         private MarkdownContext _context;
-        private MarkdownServiceParameters _parameters;
+        private MarkdownPipeline _pipeline;
         private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public HtmlInclusionBlockRenderer(IMarkdownEngine engine, MarkdownContext context, MarkdownServiceParameters parameters)
+        public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
-            _engine = engine;
             _context = context;
-            _parameters = parameters;
+            _pipeline = pipeline;
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
@@ -54,8 +53,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var parents = _context.InclusionSet;
-            if (parents != null && parents.Contains(includedFilePath))
+            if (_context.InclusionSet.Contains(includedFilePath))
             {
                 string tag = "ERROR INCLUDE";
                 string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
@@ -65,15 +63,24 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
-            var context = new MarkdownContextBuilder()
-                            .WithContext(_context)
-                            .WithFilePath(includedFilePath.RemoveWorkingFolder())
-                            .WithContent(content)
-                            .WithAddingIncludedFile(currentFilePath)
-                            .Build();
+            var context = new MarkdownContext(
+                content,
+                _context.BasePath,
+                includedFilePath.RemoveWorkingFolder(),
+                _context.IsInline,
+                _context.InclusionSet.Add(currentFilePath),
+                _context.Dependencies,
+                _context.EnableSourceInfo,
+                _context.Tokens,
+                _context.Mvb);
 
-            _engine.ReportDependency(includedFilePath);
-            var result = _engine.Markup(context, _parameters);
+            _context.Dependencies.Add(includedFilePath);
+
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(context)
+                .Build();
+
+            var result = Markdown.ToHtml(content, pipeline);
             result = SkipYamlHeader(result);
 
             renderer.Write(result);

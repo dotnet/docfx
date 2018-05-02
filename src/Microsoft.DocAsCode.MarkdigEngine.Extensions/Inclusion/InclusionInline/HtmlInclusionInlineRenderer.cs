@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
@@ -10,15 +11,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
-        private IMarkdownEngine _engine;
-        private MarkdownContext _context;
-        private MarkdownServiceParameters _parameters;
+        private readonly MarkdownContext _context;
+        private readonly MarkdownPipeline _pipeline;
 
-        public HtmlInclusionInlineRenderer(IMarkdownEngine engine, MarkdownContext context, MarkdownServiceParameters parameters)
+        public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
-            _engine = engine;
             _context = context;
-            _parameters = parameters;
+            _pipeline = pipeline;
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
@@ -51,8 +50,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var parents = _context.InclusionSet;
-            if (parents != null && parents.Contains(includedFilePath))
+            if (_context.InclusionSet.Contains(includedFilePath))
             {
                 string tag = "ERROR INCLUDE";
                 string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
@@ -62,18 +60,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
-            var context = new MarkdownContextBuilder()
-                            .WithContext(_context)
-                            .WithFilePath(includedFilePath.RemoveWorkingFolder())
-                            .WithContent(content)
-                            .WithIsInline(true)
-                            .WithAddingIncludedFile(currentFilePath)
-                            .Build();
+            var context = new MarkdownContext(
+                content,
+                _context.BasePath,
+                includedFilePath.RemoveWorkingFolder(),
+                true,
+                _context.InclusionSet.Add(currentFilePath),
+                _context.Dependencies,
+                _context.EnableSourceInfo,
+                _context.Tokens,
+                _context.Mvb);
 
-            _engine.ReportDependency(includedFilePath);
+            _context.Dependencies.Add(includedFilePath);
+
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(context)
+                .Build();
+
             // Do not need to check if content is a single paragragh
             // context.IsInline = true will force it into a single paragragh and render with no <p></p>
-            var result = _engine.Markup(context, _parameters);
+            var result = Markdown.ToHtml(content, pipeline);
             renderer.Write(result);
         }
     }

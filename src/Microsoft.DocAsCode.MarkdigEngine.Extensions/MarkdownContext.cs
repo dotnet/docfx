@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public class MarkdownContext
@@ -29,21 +30,35 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public ImmutableHashSet<string> InclusionSet { get; }
 
+        public HashSet<string> Dependencies { get; } = new HashSet<string>();
+
+        public bool EnableSourceInfo { get; }
+
         public MarkdownValidatorBuilder Mvb { get; }
 
-        public MarkdownContext(string filePath,
-            string basePath,
-            MarkdownValidatorBuilder mvb,
+        public IReadOnlyDictionary<string, string> Tokens { get; }
+
+        public MarkdownContext(
             string content,
+            string basePath,
+            string filePath,
             bool isInline,
-            ImmutableHashSet<string> inclusionSet)
+            ImmutableHashSet<string> inclusionSet,
+            HashSet<string> dependencies,
+            bool enableSourceInfo,
+            IReadOnlyDictionary<string, string> tokens,
+            MarkdownValidatorBuilder mvb)
         {
             Content = content;
-            FilePath = filePath;
             BasePath = basePath;
-            Mvb = mvb;
+            FilePath = filePath;
             IsInline = isInline;
-            InclusionSet = inclusionSet;
+            InclusionSet = inclusionSet ?? ImmutableHashSet<string>.Empty;
+            Dependencies = dependencies ?? new HashSet<string>();
+
+            Tokens = tokens;
+            Mvb = mvb;
+            EnableSourceInfo = enableSourceInfo;
         }
     }
 }
