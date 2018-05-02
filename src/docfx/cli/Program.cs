@@ -6,6 +6,7 @@ using System.CommandLine;
 using System.IO;
 using System.Reflection;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -31,9 +32,14 @@ namespace Microsoft.Docs.Build
                 }
                 return 0;
             }
+            catch (DocumentException ex)
+            {
+                log.ReportDiagnostics(ex.Code, ex.Message, ex.File);
+                return 1;
+            }
             catch (Exception ex)
             {
-                log.ReportDiagnostics(ErrorCodes.Fatal, CreateFatalErrorMessage(ex, args));
+                log.ReportDiagnostics("fatal", CreateFatalErrorMessage(ex, args));
                 return 1;
             }
         }
@@ -65,16 +71,19 @@ namespace Microsoft.Docs.Build
 
         private static string GetVersion()
         {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         }
 
         private static string CreateFatalErrorMessage(Exception exception, string[] args)
         {
             var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
 
+            // windows command line does not have good emoji support
+            var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
             return
-$@"🚘💥🚗 docfx has crashed 🚔💥🚙
-Please help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:
+$@"{(showEmoji ? "🚘💥🚗" : "")} docfx has crashed {(showEmoji ? "🚔💥🚙" : "")}
+Help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:
 
 
 **Version**: {GetVersion()}
@@ -87,7 +96,7 @@ Please help us improve by creating an an issue at https://github.com/dotnet/docf
 
 `docfx` finished successfully.
 
-**Actual Behavior**:💣🚖🚔🚙
+**Actual Behavior**:
 
 `docfx` crashed with exception:
 
