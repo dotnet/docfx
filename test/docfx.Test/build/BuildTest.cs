@@ -12,29 +12,19 @@ namespace Microsoft.Docs.Build
 {
     public static class BuildTest
     {
-        public static readonly TheoryData<string> Specs = new TheoryData<string>();
-
-        static BuildTest()
-        {
-            foreach (var spec in Directory.EnumerateFiles("specs/build", "*.yml", SearchOption.AllDirectories))
-            {
-                Specs.Add(spec);
-            }
-        }
+        public static readonly TheoryData<string, string> Specs = TestHelper.FindTestSpecs("build");
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string specPath)
+        public static async Task BuildDocset(string path, string yaml)
         {
-            var docsets = TestHelper.PrepareDocsetsFromSpec(specPath);
-            foreach (var (docsetPath, testSpec) in docsets)
-            {
-                await Program.Main(new[] { "build", docsetPath });
+            var (docsetPath, spec) = TestHelper.CreateDocset(path, yaml);
 
-                foreach (var (file, content) in testSpec.Outputs)
-                {
-                    VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, "_site", file)), content);
-                }
+            await Program.Main(new[] { "build", docsetPath });
+
+            foreach (var (file, content) in spec.Outputs)
+            {
+                VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, "_site", file)), content);
             }
         }
 
