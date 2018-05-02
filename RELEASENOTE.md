@@ -1,5 +1,7 @@
-Version Notes (Current Version: v2.35.3)
+Version Notes (Current Version: v2.35.4)
 =======================================
+v2.35.4
+----------
 
 v2.35.3
 -----------
