@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Test
 {
     public static class RestoreTest
     {
-        public static readonly TheoryData<TestSpec> Specs = TestHelper.FindTestSpecs("restore");
+        public static readonly TheoryData<string, string> Specs = TestHelper.FindTestSpecs("restore");
 
         [Theory]
         [InlineData("https://github.com/dotnet/docfx", "github.com/dotnet/docfx/master", "https://github.com/dotnet/docfx", "master")]
@@ -37,9 +37,10 @@ namespace Microsoft.Docs.Test
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task RestoreDependencies(TestSpec spec)
+        public static async Task RestoreDependencies(string path, string yaml)
         {
-            var docsetPath = spec.CreateDocset();
+            var (docsetPath, spec) = TestHelper.CreateDocset(path, yaml);
+
             await Program.Main(new[] { "restore", docsetPath });
 
             foreach (var (file, content) in spec.Restorations)
