@@ -9,7 +9,7 @@ Usage:
 ```cs
 ProgressBar.Register(stepName, parent);
 ProgressBar.Update(current, total, stepName);
-ProgressBar.Interrupt(description, stepName);
+ProgressBar.Update(description, stepName);
 ProgressBar.Tick(stepName);
 ProgressBar.Complete(stepName);
 ```
