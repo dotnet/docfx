@@ -802,6 +802,18 @@ a</pre
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestNoLinkWhenContainWhiteSpace()
+        {
+            // 1. Prepare data
+            var source = @"[macro](Outlook Macro.md)";
+            var expected = @"<p>[macro](Outlook Macro.md)</p>
+";
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestEscape()
         {
             // 1. Prepare data
