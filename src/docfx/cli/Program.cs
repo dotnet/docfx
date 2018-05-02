@@ -1,26 +1,40 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.CommandLine;
+using System.IO;
+using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal class Program
     {
-        internal static async Task Main(string[] args)
+        internal static async Task<int> Main(string[] args)
         {
-            var (command, docset, options) = ParseCommandLineOptions(args);
             var log = new ConsoleLog();
 
-            switch (command)
+            try
             {
-                case "restore":
-                    await Restore.Run(docset, options, log);
-                    break;
-                case "build":
-                    await Build.Run(docset, options, log);
-                    break;
+                var (command, docset, options) = ParseCommandLineOptions(args);
+
+                switch (command)
+                {
+                    case "restore":
+                        await Restore.Run(docset, options, log);
+                        break;
+                    case "build":
+                        await Build.Run(docset, options, log);
+                        break;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                log.ReportDiagnostics(ErrorCodes.Fatal, CreateFatalErrorMessage(ex, args));
+                return 1;
             }
         }
 
@@ -47,6 +61,40 @@ namespace Microsoft.Docs.Build
             });
 
             return (command, docset, options);
+        }
+
+        private static string GetVersion()
+        {
+            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+        }
+
+        private static string CreateFatalErrorMessage(Exception exception, string[] args)
+        {
+            var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
+
+            return
+$@"🚘💥🚗 docfx has crashed 🚔💥🚙
+Please help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:
+
+
+**Version**: {GetVersion()}
+
+**Steps to Reproduce**: 
+
+1. Run `docfx {commandLine}` in `{Directory.GetCurrentDirectory()}`
+
+**Expected Behavior**:
+
+`docfx` finished successfully.
+
+**Actual Behavior**:💣🚖🚔🚙
+
+`docfx` crashed with exception:
+
+```
+{exception}
+```
+";
         }
     }
 }

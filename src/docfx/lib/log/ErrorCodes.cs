@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.Docs.Build
 {
-    internal class ConsoleLog : ILog
+    internal static class ErrorCodes
     {
-        public void ReportDiagnostics(string code, string message, string file = null)
-        {
-        }
+        public static string Fatal = "fatal";
     }
 }

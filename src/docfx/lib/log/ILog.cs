@@ -5,5 +5,9 @@ namespace Microsoft.Docs.Build
 {
     internal interface ILog
     {
+        /// <summary>
+        /// Reports a diagnostics message to the end user.
+        /// </summary>
+        void ReportDiagnostics(string code, string message, string file = null);
     }
 }
