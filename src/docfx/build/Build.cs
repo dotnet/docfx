@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +28,9 @@ namespace Microsoft.Docs.Build
 
             var globbedFiles = GlobFiles(context, docset);
 
-            await BuildFiles(context, globbedFiles);
+            var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
+
+            await BuildFiles(context, globbedFiles, tocMap);
         }
 
         private static List<Document> GlobFiles(Context context, Docset docset)
@@ -39,21 +40,21 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static Task BuildFiles(Context context, List<Document> files)
+        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file));
+            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file, tocMap));
         }
 
-        private static Task BuildOneFile(Context context, Document file)
+        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap)
         {
             switch (file.ContentType)
             {
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file);
+                    return BuildMarkdown.Build(context, file, tocMap);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file);
+                    return BuildSchemaDocument.Build(context, file, tocMap);
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file);
                 default:

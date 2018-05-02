@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -10,33 +9,56 @@ namespace Microsoft.Docs.Build
 {
     internal static class TestHelper
     {
-        public static IEnumerable<(string docsetPath, BuildTestSpec testSpec)> PrepareDocsetsFromSpec(string specPath)
+        public static TheoryData<string, string> FindTestSpecs(string path)
         {
-            Assert.NotNull(specPath);
+            var result = new TheoryData<string, string>();
 
-            var i = 1;
-            var docsets = new List<(string docsetPath, BuildTestSpec testSpec)>();
-            var specName = specPath.Replace("\\", "/").Replace("specs/", "").Replace(".yml", "");
-            foreach (var testSpec in YamlUtility.DeserializeMany<BuildTestSpec>(File.ReadAllText(specPath)))
+            Parallel.ForEach(
+                Directory.EnumerateFiles(Path.Combine("specs", path), "*.yml", SearchOption.AllDirectories),
+                file =>
+                {
+                    foreach (var (name, yaml) in FindTestSpecsInFile(file))
+                    {
+                        result.Add(name, yaml);
+                    }
+                });
+
+            return result;
+        }
+
+        public static IEnumerable<(string name, string yaml)> FindTestSpecsInFile(string path)
+        {
+            var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var section in sections)
             {
-                var docsetPath = Path.Combine("specs.drop", specName, $"{i++}");
+                var yaml = section.Trim('\r', '\n', '-', ' ');
+                var header = YamlUtility.ReadHeader(yaml) ?? "";
+                var name = Path.Combine(path.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header);
 
-                if (Directory.Exists(docsetPath))
-                {
-                    Directory.Delete(docsetPath, recursive: true);
-                }
+                yield return (name, yaml);
+            }
+        }
 
-                foreach (var (file, content) in testSpec.Inputs)
-                {
-                    var filePath = Path.Combine(docsetPath, file);
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    File.WriteAllText(filePath, content);
-                }
+        public static (string docsetPath, TestSpec spec) CreateDocset(string path, string yaml)
+        {
+            var docsetPath = Path.Combine("specs.drop", path);
 
-                docsets.Add((docsetPath, testSpec));
+            if (Directory.Exists(docsetPath))
+            {
+                Directory.Delete(docsetPath, recursive: true);
             }
 
-            return docsets;
+            var definition = YamlUtility.Deserialize<TestSpec>(yaml);
+
+            foreach (var (file, content) in definition.Inputs)
+            {
+                var filePath = Path.Combine(docsetPath, file);
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                File.WriteAllText(filePath, content);
+            }
+
+            return (docsetPath, definition);
         }
 
         public static void VerifyJsonContainEquals(JToken expected, JToken actual)
@@ -66,14 +88,5 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expected, actual);
             }
         }
-    }
-
-    class BuildTestSpec
-    {
-        public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        public readonly Dictionary<string, string> Restorations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
 }
