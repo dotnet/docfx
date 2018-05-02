@@ -44,8 +44,12 @@ Guard.argumentNotNull(config.choco, "config.docfx", "Can't find choco configurat
 
 gulp.task("build", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
-
     return Common.execAsync("powershell", ["./build.ps1", "-prod"], config.docfx.home);
+});
+
+gulp.task("build:release", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
+    return Common.execAsync("powershell", ["./build.ps1", "-prod", "-release"], config.docfx.home);
 });
 
 gulp.task("clean", () => {
@@ -205,6 +209,9 @@ gulp.task("syncBranchCore", () => {
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
-gulp.task("master", gulp.series("clean", "build", "e2eTest", "packAssetZip" ,"updateGhPage", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
+gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "packAssetZip", "updateGhPage"));
+
+gulp.task("master", gulp.series("master:build", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
+
 gulp.task("syncBranch", gulp.series("syncBranchCore"));
 gulp.task("default", gulp.series("dev"));

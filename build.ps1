@@ -2,7 +2,8 @@ param(
     [string] $configuration = "Release",
     [switch] $raw = $false,
     [switch] $prod = $false,
-    [switch] $skipTests = $false
+    [switch] $skipTests = $false,
+    [switch] $release = $false
 )
 ################################################################################################
 # Usage:
@@ -23,14 +24,16 @@ $assemblyVersion = "1.0.0.0"
 
 if ([environment]::OSVersion.Platform -eq "Win32NT") {
     $os = "Windows"
-} else {
+}
+else {
     $os = "Linux"
 }
 Write-Host "Running on OS $os"
 
 if ($os -eq "Windows") {
     $nugetCommand = "$env:LOCALAPPDATA/Nuget/Nuget.exe"
-} else {
+}
+else {
     $nugetCommand = "nuget"
 }
 
@@ -89,7 +92,8 @@ if (-not(ValidateCommand($nugetCommand))) {
 if ($raw -eq $false) {
     ./UpdateTemplate.ps1
     ProcessLastExitCode $lastexitcode "Update template"
-} else {
+}
+else {
     Write-Host "Skip updating template"
 }
 
@@ -100,8 +104,14 @@ if ($prod -eq $true) {
         ProcessLastExitCode 1 "Git is required however it is not installed."
     }
 
-    $branch = & $gitCommand rev-parse --abbrev-ref HEAD
-    ProcessLastExitCode $lastexitcode "Get GIT branch name $branch"
+    if ($release -eq $false) {
+        $branch = & $gitCommand rev-parse --abbrev-ref HEAD
+        ProcessLastExitCode $lastexitcode "Get GIT branch name $branch"
+    }
+    else {
+        $branch = "master";
+        Write-Host "Release version using $branch branch"
+    }
 
     $version = "v1", "0", "0"
 
@@ -118,7 +128,8 @@ if ($prod -eq $true) {
     ProcessLastExitCode $lastexitcode "Get GIT commit information $commitInfo"
     if ($commitInfo.length -gt 1) {
         $revision = $commitInfo[1].PadLeft(4, '0')
-    } else {
+    }
+ else {
         $revision = '0000'
     }
 
@@ -163,7 +174,8 @@ foreach ($sln in (Get-ChildItem *.sln)) {
     if ($os -eq "Windows") {
         & dotnet build $sln.FullName -c $configuration -v n /m:1
         ProcessLastExitCode $lastexitcode "dotnet build $($sln.FullName) -c $configuration -v n /m:1"
-    } else {
+    }
+ else {
         & msbuild $sln.FullName /p:Configuration=$configuration /verbosity:n /m:1
         ProcessLastExitCode $lastexitcode "msbuild $($sln.FullName) /p:Configuration=$configuration /verbosity:n /m:1"        
     }
@@ -183,7 +195,8 @@ if (-not $skipTests) {
             if ($os -eq "Windows") {
                 & dotnet test $proj.FullName --no-build -c $configuration
                 ProcessLastExitCode $lastexitcode "dotnet test $($proj.FullName) --no-build -c $configuration"
-            } else {
+            }
+            else {
                 & mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe "$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll"
                 ProcessLastExitCode $lastexitcode "mono ./TestTools/xunit.runner.console/tools/net452/xunit.console.exe '$($proj.DirectoryName)/bin/$configuration/$framework/$($proj.BaseName).dll'"
             }
@@ -192,11 +205,12 @@ if (-not $skipTests) {
 }
 
 # dotnet pack first
-foreach ($proj in (Get-ChildItem -Path ("src","plugins") -Include *.csproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {
+foreach ($proj in (Get-ChildItem -Path ("src", "plugins") -Include *.csproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {
     if ($os -eq "Windows") {
         & dotnet pack $proj.FullName -c $configuration -o $scriptHome/artifacts/$configuration --no-build /p:Version=$packageVersion
         ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome/artifacts/$configuration --no-build /p:Version=$packageVersion"
-    } else {
+    }
+ else {
         & nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion
         ProcessLastExitCode $lastexitcode "nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion"
     }
@@ -205,43 +219,43 @@ foreach ($proj in (Get-ChildItem -Path ("src","plugins") -Include *.csproj -Excl
 # Pack docfx.console
 $docfxTarget = "target/$configuration/docfx";
 if (-not(Test-Path -path $docfxTarget)) {
-  New-Item $docfxTarget -Type Directory
+    New-Item $docfxTarget -Type Directory
 }
 
 Copy-Item -Path "src/nuspec/docfx.console/build" -Destination $docfxTarget -Force -Recurse
 Copy-Item -Path "src/nuspec/docfx.console/content" -Destination $docfxTarget -Force -Recurse
 
 $packages = @{
-    "docfx" = @{
-        "proj" = $null;
+    "docfx"                     = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
     "AzureMarkdownRewriterTool" = @{
-        "proj" = $null;
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/AzureMarkdownRewriterTool/AzureMarkdownRewriterTool.nuspec");
     };
-    "DfmHttpService" = @{
-        "proj" = $null;
+    "DfmHttpService"            = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/DfmHttpService/DfmHttpService.nuspec");
     };
-    "MergeDeveloperComments" = @{
-        "proj" = $null;
+    "MergeDeveloperComments"    = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/MergeDeveloperComments/MergeDeveloperComments.nuspec");
     };
-    "MergeSourceInfo" =  @{
-        "proj" = $null;
+    "MergeSourceInfo"           = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/MergeSourceInfo/MergeSourceInfo.nuspec");
     };
-    "TocConverter" = @{
-        "proj" = $null;
+    "TocConverter"              = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/TocConverter/TocConverter.nuspec");
     };
-    "MarkdownMigrateTool" = @{
-        "proj" = $null;
+    "MarkdownMigrateTool"       = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/MarkdownMigrateTool/MarkdownMigrateTool.nuspec");
     };
-    "YamlSplitter" = @{
-        "proj" = $null;
+    "YamlSplitter"              = @{
+        "proj"    = $null;
         "nuspecs" = @("src/nuspec/YamlSplitter/YamlSplitter.nuspec");
     };
 }
@@ -256,10 +270,11 @@ foreach ($proj in (Get-ChildItem -Path ("src", "plugins", "tools") -Include *.cs
     if ($nuspecs -ne $null) {
         if ($packages.ContainsKey($name)) {
             $packages[$name].nuspecs = $packages[$name].nuspecs + $nuspecs
-        } else {
+        }
+        else {
             $packages[$name] = @{
                 nuspecs = $nuspecs;
-                proj = $proj;
+                proj    = $proj;
             }
         }
     }
@@ -270,7 +285,7 @@ foreach ($name in $packages.Keys) {
     $proj = $val.proj
 
     if ($proj -eq $null) {
-    Write-Host $package
+        Write-Host $package
         ProcessLastExitCode 1 "$name does not have project found"
     }
 
