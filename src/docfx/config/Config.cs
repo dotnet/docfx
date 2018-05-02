@@ -14,6 +14,13 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
+        private static class Constants
+        {
+            public const string Content = "content";
+            public const string Include = "include";
+            public const string Exclude = "exclude";
+        }
+
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
@@ -41,34 +48,60 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Load the config under <paramref name="docsetPath"/>
+        /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml
+            ValidateDocsetPath(docsetPath);
             var configPath = Path.Combine(docsetPath, "docfx.yml");
-            var exists = File.Exists(configPath);
-            var configObject = exists ? Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath))) : new JObject();
-
-            return configObject.ToObject<Config>(JsonUtililty.DefaultDeserializer);
-        }
-
-        public static bool TryLoad(string docsetPath, CommandLineOptions options, out Config config)
-        {
-            try
-            {
-                config = Load(docsetPath, options);
-            }
-            catch
+            if (!File.Exists(configPath))
             {
                 // TODO: error handling
-                config = null;
+                throw new Exception($"No config file found under '{docsetPath}'");
             }
+            return LoadCore(configPath, options);
+        }
 
-            return config != null;
+        /// <summary>
+        /// Load the config if it exists under <paramref name="docsetPath"/>
+        /// </summary>
+        /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config)
+        {
+            ValidateDocsetPath(docsetPath);
+            var configPath = Path.Combine(docsetPath, "docfx.yml");
+            config = File.Exists(configPath) ? LoadCore(configPath, options) : new Config();
+            return File.Exists(configPath);
+        }
+
+        private static void ValidateDocsetPath(string docsetPath)
+        {
+            if (PathUtility.FolderPathHasInvalidChars(docsetPath))
+            {
+                // TODO: error handling
+                throw new Exception("docset path contains invalid characters.");
+            }
+        }
+
+        private static Config LoadCore(string configPath, CommandLineOptions options)
+        {
+            // Options should be converted to config and overwrite the config parsed from docfx.yml
+            try
+            {
+                var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)));
+                return configObject.ToObject<Config>(JsonUtililty.DefaultDeserializer);
+            }
+            catch (Exception e)
+            {
+                // TODO: error handling
+                throw new Exception($"Error parsing docset config {configPath}: {e.Message}", e);
+            }
         }
 
         private static JObject Expand(JObject config)
         {
-            config[Constants.Config.Content] = ExpandFiles(config[Constants.Config.Content]);
+            config[Constants.Content] = ExpandFiles(config[Constants.Content]);
             return config;
         }
 
@@ -77,17 +110,17 @@ namespace Microsoft.Docs.Build
             if (file == null)
                 return null;
             if (file is JValue str)
-                file = new JArray { str };
+                file = new JArray(str);
             if (file is JArray arr)
-                file = new JObject { [Constants.Config.Include] = arr };
+                file = new JObject { [Constants.Include] = arr };
             return ExpandIncludeExclude((JObject)file);
         }
 
         private static JObject ExpandIncludeExclude(JObject item)
         {
             Debug.Assert(item != null);
-            item[Constants.Config.Include] = ExpandStringArray(item[Constants.Config.Include]);
-            item[Constants.Config.Exclude] = ExpandStringArray(item[Constants.Config.Exclude]);
+            item[Constants.Include] = ExpandStringArray(item[Constants.Include]);
+            item[Constants.Exclude] = ExpandStringArray(item[Constants.Exclude]);
             return item;
         }
 
