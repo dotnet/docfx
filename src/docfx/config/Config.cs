@@ -42,6 +42,9 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var configPath = Path.Combine(docsetPath, "docfx.yml");
 
+            if (!File.Exists(configPath))
+                throw new DocumentException("config-not-found", $"Cannot find docfx.yml at '{configPath}'");
+
             return YamlUtility.Deserialize<Config>(File.ReadAllText(configPath));
         }
 
