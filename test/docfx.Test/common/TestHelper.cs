@@ -36,15 +36,16 @@ namespace Microsoft.Docs.Build
             {
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
-                var spec = YamlUtility.Deserialize<TestSpec>(yaml);
 
-                spec.Path = Path.Combine(path.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header);
-
-                yield return spec;
+                yield return new TestSpec
+                {
+                    Yaml = yaml,
+                    Path = Path.Combine(path.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header),
+                };
             }
         }
 
-        public static string CreateDocset(this TestSpec spec)
+        public static (string docsetPath, TestSpecDefinition spec) CreateDocset(this TestSpec spec)
         {
             var docsetPath = Path.Combine("specs.drop", spec.Path);
 
@@ -53,14 +54,16 @@ namespace Microsoft.Docs.Build
                 Directory.Delete(docsetPath, recursive: true);
             }
 
-            foreach (var (file, content) in spec.Inputs)
+            var definition = YamlUtility.Deserialize<TestSpecDefinition>(spec.Yaml);
+
+            foreach (var (file, content) in definition.Inputs)
             {
                 var filePath = Path.Combine(docsetPath, file);
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                 File.WriteAllText(filePath, content);
             }
 
-            return docsetPath;
+            return (docsetPath, definition);
         }
 
         public static void VerifyJsonContainEquals(JToken expected, JToken actual)
