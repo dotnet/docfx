@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
             config = exists ? LoadCore(configPath, options) : new Config();
-            return File.Exists(configPath);
+            return exists;
         }
 
         private static void ValidateDocsetPath(string docsetPath)
