@@ -128,7 +128,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var enableSourceInfo = enabled == null || enabled.Value;
 
             return new MarkdownContext(
-                content,
                 _parameters.BasePath,
                 filePath,
                 isInline,

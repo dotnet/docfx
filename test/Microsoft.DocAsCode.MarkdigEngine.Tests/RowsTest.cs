@@ -194,18 +194,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     :::column-end::: 
 :::row-end:::
 ";
-            var expected = @"<section class=""row"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""14"">
-<div class=""column"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""7"">
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3""><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"" alt=""alt text"" /></p>
-<h3 id=""a-headline"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">A Headline</h3>
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""6"">This is where your content goes.
-<a href=""https://www.google.com"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">I'm an inline-style link</a></p>
+            var expected = @"<section class=""row"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+<div class=""column"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""3""><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" sourceFile=""Topic.md"" sourceStartLineNumber=""3"" alt=""alt text"" /></p>
+<h3 id=""a-headline"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"">A Headline</h3>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""5"">This is where your content goes.
+<a href=""https://www.google.com"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"">I'm an inline-style link</a></p>
 </div>
-<div class=""column span3"" sourceFile=""Topic.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""13"">
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""9""><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" sourceFile=""Topic.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""9"" alt=""alt text"" /></p>
-<h3 id=""another-headline"" sourceFile=""Topic.md"" sourceStartLineNumber=""10"" sourceEndLineNumber=""10"">Another Headline</h3>
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""11"" sourceEndLineNumber=""12"">This is where your content goes.
-<a href=""https://www.google.com"" sourceFile=""Topic.md"" sourceStartLineNumber=""12"" sourceEndLineNumber=""12"">I'm an inline-style link</a></p>
+<div class=""column span3"" sourceFile=""Topic.md"" sourceStartLineNumber=""8"">
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""9""><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" sourceFile=""Topic.md"" sourceStartLineNumber=""9"" alt=""alt text"" /></p>
+<h3 id=""another-headline"" sourceFile=""Topic.md"" sourceStartLineNumber=""10"">Another Headline</h3>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""11"">This is where your content goes.
+<a href=""https://www.google.com"" sourceFile=""Topic.md"" sourceStartLineNumber=""12"">I'm an inline-style link</a></p>
 </div>
 </section>
 ";
