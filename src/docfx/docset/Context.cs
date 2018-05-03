@@ -14,11 +14,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the logger to write logs, report diagnostics and progress.
         /// </summary>
-        public IReporter Log { get; }
+        public IReporter Reporter { get; }
 
-        public Context(IReporter log, string outputPath, bool stable)
+        public Context(IReporter reporter, string outputPath, bool stable)
         {
-            Log = log;
+            Reporter = reporter;
             _stable = stable;
             _outputPath = Path.GetFullPath(outputPath);
         }

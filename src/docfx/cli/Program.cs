@@ -11,15 +11,15 @@ namespace Microsoft.Docs.Build
         internal static async Task Main(string[] args)
         {
             var (command, docset, options) = ParseCommandLineOptions(args);
-            var log = new ConsoleReporter();
+            var reporter = new ConsoleReporter();
 
             switch (command)
             {
                 case "restore":
-                    await Restore.Run(docset, options, log);
+                    await Restore.Run(docset, options, reporter);
                     break;
                 case "build":
-                    await Build.Run(docset, options, log);
+                    await Build.Run(docset, options, reporter);
                     break;
             }
 
