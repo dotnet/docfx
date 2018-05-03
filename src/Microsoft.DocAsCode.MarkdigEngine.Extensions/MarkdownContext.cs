@@ -9,11 +9,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class MarkdownContext
     {
         /// <summary>
-        /// Content of current markdown file.
-        /// </summary>
-        public string Content { get; }
-
-        /// <summary>
         /// Absolute path of `~`, the directory contains docfx.json.
         /// </summary>
         public string BasePath { get; }
@@ -39,7 +34,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public IReadOnlyDictionary<string, string> Tokens { get; }
 
         public MarkdownContext(
-            string content,
             string basePath,
             string filePath,
             bool isInline,
@@ -49,7 +43,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb)
         {
-            Content = content;
             BasePath = basePath;
             FilePath = filePath;
             IsInline = isInline;

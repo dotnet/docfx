@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public const string EnableSourceInfo = "EnableSourceInfo";
 
-        public static ProcessDocumentDelegate GetProcessDocumentDelegate(LineNumberExtensionContext lineNumberContext)
+        public static ProcessDocumentDelegate GetProcessDocumentDelegate(string filePath)
         {
             return (MarkdownDocument document) =>
            {
-               AddSourceInfoInDataEntry(document, lineNumberContext);
+               AddSourceInfoInDataEntry(document, filePath);
            };
         }
 
@@ -25,16 +25,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         /// <param name="markdownObject"></param>
         /// <param name="context"></param>
-        private static void AddSourceInfoInDataEntry(MarkdownObject markdownObject, LineNumberExtensionContext lineNumberContext)
+        private static void AddSourceInfoInDataEntry(MarkdownObject markdownObject, string filePath)
         {
-            if (markdownObject == null || lineNumberContext == null) return;
+            if (markdownObject == null || filePath == null) return;
 
             // set linenumber for its children recursively
             if (markdownObject is ContainerBlock containerBlock)
             {
                 foreach (var subBlock in containerBlock)
                 {
-                    AddSourceInfoInDataEntry(subBlock, lineNumberContext);
+                    AddSourceInfoInDataEntry(subBlock, filePath);
                 }
             }
             else if (markdownObject is LeafBlock leafBlock)
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     foreach (var subInline in leafBlock.Inline)
                     {
-                        AddSourceInfoInDataEntry(subInline, lineNumberContext);
+                        AddSourceInfoInDataEntry(subInline, filePath);
                     }
                 }
             }
@@ -51,15 +51,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 foreach (var subInline in containerInline)
                 {
-                    AddSourceInfoInDataEntry(subInline, lineNumberContext);
+                    AddSourceInfoInDataEntry(subInline, filePath);
                 }
             }
 
             // set linenumber for this object
             var htmlAttributes = markdownObject.GetAttributes();
-            htmlAttributes.AddPropertyIfNotExist("sourceFile", lineNumberContext.FilePath);
+            htmlAttributes.AddPropertyIfNotExist("sourceFile", filePath);
             htmlAttributes.AddPropertyIfNotExist("sourceStartLineNumber", markdownObject.Line + 1);
-            htmlAttributes.AddPropertyIfNotExist("sourceEndLineNumber", lineNumberContext.GetLineNumber(markdownObject.Span.End, markdownObject.Line) + 1);
         }
     }
 }
