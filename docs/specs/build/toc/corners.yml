@@ -6,7 +6,7 @@
 
 inputs:
   docfx.yml: |
-    files:
+    content:
       include:
         - docs/**/*.md
         - docs/**/*.yml
