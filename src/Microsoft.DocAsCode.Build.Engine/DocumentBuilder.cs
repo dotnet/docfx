@@ -147,6 +147,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
                         code: WarningCodes.Build.EmptyInputFiles);
                 }
+
+                var noContentFound = true;
+                var emptyContentGroups = new List<string>();
                 foreach (var parameter in parameters)
                 {
                     if (parameter.CustomLinkResolver != null)
@@ -191,7 +194,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         transformDocument = true;
                     }
 
-                    var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
                     if (parameter.Files.Count == 0)
                     {
                         manifests.Add(new Manifest());
@@ -200,7 +202,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
                         {
-                            Logger.LogWarning($"No content file found{versionMessageSuffix}. Please make sure the content section of docfx.json is correctly configured.");
+                            if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
+                            {
+                                emptyContentGroups.Add(parameter.GroupInfo.Name);
+                            }
+                        }
+                        else
+                        {
+                            noContentFound = false;
                         }
 
                         parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
@@ -214,6 +223,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
                         }
                     }
+                }
+                if (noContentFound)
+                {
+                    Logger.LogWarning($"No content file found. Please make sure the content section of docfx.json is correctly configured.");
+                }
+                else if (emptyContentGroups.Count > 0)
+                {
+                    Logger.LogWarning($"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.");
                 }
 
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
