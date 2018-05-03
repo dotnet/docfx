@@ -14,13 +14,6 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
-        private static class Constants
-        {
-            public const string Content = "content";
-            public const string Include = "include";
-            public const string Exclude = "exclude";
-        }
-
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
@@ -71,7 +64,8 @@ namespace Microsoft.Docs.Build
         {
             ValidateDocsetPath(docsetPath);
             var configPath = Path.Combine(docsetPath, "docfx.yml");
-            config = File.Exists(configPath) ? LoadCore(configPath, options) : new Config();
+            var exists = File.Exists(configPath);
+            config = exists ? LoadCore(configPath, options) : new Config();
             return File.Exists(configPath);
         }
 
@@ -101,7 +95,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject Expand(JObject config)
         {
-            config[Constants.Content] = ExpandFiles(config[Constants.Content]);
+            config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             return config;
         }
 
@@ -112,15 +106,15 @@ namespace Microsoft.Docs.Build
             if (file is JValue str)
                 file = new JArray(str);
             if (file is JArray arr)
-                file = new JObject { [Constants.Include] = arr };
+                file = new JObject { [ConfigConstants.Include] = arr };
             return ExpandIncludeExclude((JObject)file);
         }
 
         private static JObject ExpandIncludeExclude(JObject item)
         {
             Debug.Assert(item != null);
-            item[Constants.Include] = ExpandStringArray(item[Constants.Include]);
-            item[Constants.Exclude] = ExpandStringArray(item[Constants.Exclude]);
+            item[ConfigConstants.Include] = ExpandStringArray(item[ConfigConstants.Include]);
+            item[ConfigConstants.Exclude] = ExpandStringArray(item[ConfigConstants.Exclude]);
             return item;
         }
 
