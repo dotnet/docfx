@@ -21,6 +21,8 @@ For `Logger`, there are 2 categories of logs:
 
 `CorrelationId` like `1.102.3.4` will be used to track the flow of the log.
 
+Technologies similar to [CallContext](http://www.cazzulino.com/callcontext-netstandard-netcore.html) will be leveraged to auto generate some properties of a log item, such as current `file`
+
 ## Receivers
 Tracing should support different kinds of receivers, such as files and console.
 
