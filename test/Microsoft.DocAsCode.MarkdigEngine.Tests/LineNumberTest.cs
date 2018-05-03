@@ -36,7 +36,7 @@ http://spec.commonmark.org/0.27/)";
 <li sourceFile=""Topic.md"" sourceStartLineNumber=""3"">list member 1</li>
 <li sourceFile=""Topic.md"" sourceStartLineNumber=""4"">list member 2</li>
 </ul>
-<hr sourceFile=""Topic.md"" sourceStartLineNumber=""5"">
+<hr sourceFile=""Topic.md"" sourceStartLineNumber=""5"" />
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""6""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"">Two Line Link</a></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
