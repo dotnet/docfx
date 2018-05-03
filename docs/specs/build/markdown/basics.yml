@@ -2,9 +2,7 @@
 # Hello World
 inputs:
   docfx.yml: |
-    files:
-      include:
-        - "**/*.*"
+    content: "**/*.*"
   hello.md: Hello `docfx`!
 outputs:
   hello.json: |
@@ -13,9 +11,7 @@ outputs:
 # Basic markdown syntax
 inputs:
   docfx.yml: |
-    files:
-      include:
-        - "**/*.*"
+    content: "**/*.*"
   inline.md: _this_ *is* an ***inline*** `markdown` **test**
 outputs:
   inline.json: |

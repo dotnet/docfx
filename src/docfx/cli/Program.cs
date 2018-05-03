@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
                     await Build.Run(docset, options, log);
                     break;
             }
+
+            // TODO: try catch all unhandled exception here with error handling
         }
 
         private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)

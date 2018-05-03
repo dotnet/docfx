@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -22,9 +23,13 @@ namespace Microsoft.Docs.Build
 
             await Program.Main(new[] { "build", docsetPath });
 
+            var docsetOutputPath = Path.Combine(docsetPath, "_site");
+            var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            Assert.Equal(spec.Outputs.Count, outputs.Count());
+
             foreach (var (file, content) in spec.Outputs)
             {
-                VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, "_site", file)), content);
+                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
             }
         }
 

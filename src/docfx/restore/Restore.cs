@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         {
             var childDir = await FetchOrCloneDependentRepo(href);
 
-            if (restoredDirs.Add(childDir) && Config.TryLoad(childDir, options, out var childConfig))
+            if (restoredDirs.Add(childDir) && Config.LoadIfExists(childDir, options, out var childConfig))
             {
                 foreach (var (key, childHref) in childConfig.Dependencies)
                 {
