@@ -3,7 +3,12 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class ConsoleLog : ILog
+    internal enum LogLevel
     {
+        Diagnostic = -1,
+        Verbose,
+        Info,
+        Warning,
+        Error,
     }
 }

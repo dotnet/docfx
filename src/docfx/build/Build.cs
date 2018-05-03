@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
+        public static async Task Run(string docsetPath, CommandLineOptions options, IReporter log)
         {
             var config = Config.Load(docsetPath, options);
             var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
