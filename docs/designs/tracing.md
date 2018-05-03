@@ -7,8 +7,9 @@ In summary, our tracing system should provide:
 
 ## Design
 ### Trace Type
-In general there are two types of traces, one is for end users and one is for developers. Static classes `Reporter` and `Logger` are used respectively.
-For `Reporter`, there are 3 levels: `Info`, `Warning`, `Error`.
+In general there are two types of traces, one is for end users and one is for developers. `Reporter` and `Logger` are used respectively.
+For `Reporter`, reporters are part of the build result so it is instance level reports. There are 3 levels: `Info`, `Warning`, `Error` and contains well-messaged messages and `code`s for end-users.
+
 For `Logger`, there are 2 categories of logs:
 1. Performance
     1. Duration in milliseconds
@@ -18,12 +19,12 @@ For `Logger`, there are 2 categories of logs:
     2. 5 levels: `Error`, `Warning`, `Info`, `Verbose`, `Diagnostic`
     3. Different `Code`s for different types of events
 
-`CorrelationId` like `1.102.3.4` is used to track the flow of the log.
+`CorrelationId` like `1.102.3.4` will be used to track the flow of the log.
 
 ## Receivers
 Tracing should support different kinds of receivers, such as files and console.
 
 ## Error handling
-In general, document errors should always be reported and should not throw exceptions. Cases are, for example, invalid file name or wrong metadata format. Such kind of errors are introduced in by end users and can be fixed by updating the input document, such errors should not prevent the program from building other documents.
+There are two kinds of exceptions in general. One is expected exceptions and docfx knows how to handle them, they are generally inherited from `DocFXException` abstract class. For example, bad-formated config file `docfx.yml` may possibly lead to an `InvalidConfigException`, invalid schema lead to an `InvalidSchemaException`, etc. Most document errors, in general, should always be reported and should not throw exceptions. Cases are, for example, invalid file name or wrong metadata format. Such kind of errors are introduced in by end users and can be fixed by updating the input document, such errors should not prevent the program from building other documents.
 
-Exceptions throws with internal errors, for example, when the schema is not well formated. Or with system errors which is generally a bug inside the program, for example, `ArgumentNullException` is a `SystemException` and it is fault to the program that the program terminates. Stacktrace should be dumped so that the developers can easily identify the root cause and fix the bug.
+There will also be unexpected exceptions, these system errors are generally indicating bugs inside the program, for example, `ArgumentNullException` is a `SystemException` and it is fault to the program that the program terminates. Stacktrace should be dumped so that the developers can easily identify the root cause and fix the bug.
