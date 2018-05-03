@@ -17,11 +17,11 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public string Code { get; }
+        public Code Code { get; }
 
         public DateTime ReportTimeUtc { get; }
 
-        public ReportItem(ReportLevel level, string message, string code, int line, int column)
+        public ReportItem(ReportLevel level, Code code, string message, int line, int column)
         {
             Level = level;
             Message = message;

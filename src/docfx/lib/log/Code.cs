@@ -3,7 +3,9 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal interface ILog
+    internal enum Code
     {
+        DuplicateUids = 10001,
+        UidNotFound = 10002,
     }
 }

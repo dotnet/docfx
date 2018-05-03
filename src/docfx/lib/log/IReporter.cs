@@ -5,11 +5,11 @@ namespace Microsoft.Docs.Build
 {
     internal interface IReporter
     {
-        void Error(string message, string code, string file = "", int line = 0, int column = 0);
+        void Error(Code code, string message, string file = "", int line = 0, int column = 0);
 
-        void Warn(string message, string code, string file = "", int line = 0, int column = 0);
+        void Warn(Code code, string message, string file = "", int line = 0, int column = 0);
 
-        void Info(string message, string code, string file = "", int line = 0, int column = 0);
+        void Info(Code code, string message, string file = "", int line = 0, int column = 0);
 
         void Report(ReportItem item);
     }

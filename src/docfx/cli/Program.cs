@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         internal static async Task Main(string[] args)
         {
             var (command, docset, options) = ParseCommandLineOptions(args);
-            var log = new ConsoleLog();
+            var log = new ConsoleReporter();
 
             switch (command)
             {
