@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap, bool watch = false)
+        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (!watch && ShouldBuildFile(item, references))
+                        if (ShouldBuildFile(item, references))
                         {
                             buildChild(item);
                         }

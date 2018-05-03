@@ -13,10 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static Task Build(Context context, Document file, Action<Document> buildChild)
         {
-            if (file.ContentType != ContentType.TableOfContents)
-            {
-                return Task.CompletedTask;
-            }
+            Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             var (tocModel, refArticles, refTocs) = Load(file);
 
@@ -25,10 +22,7 @@ namespace Microsoft.Docs.Build
                 buildChild(article);
             }
 
-            if (tocModel != null)
-            {
-                context.WriteJson(tocModel, file.OutputPath);
-            }
+            context.WriteJson(tocModel, file.OutputPath);
 
             return Task.CompletedTask;
         }
@@ -63,11 +57,6 @@ namespace Microsoft.Docs.Build
 
         private static (List<TableOfContentsModel> tocModel, List<Document> referencedDocument, List<Document> referencedTocs) Load(Document fileToBuild)
         {
-            if (fileToBuild == null)
-            {
-                return default;
-            }
-
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
             var tocViewModel = TableOfContentsParser.Load(
