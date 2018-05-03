@@ -11,9 +11,26 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task Build(Context context, Document file)
+        public static Task Build(Context context, Document file, Action<Document> buildChild)
         {
-            throw new NotImplementedException();
+            if (file.ContentType != ContentType.TableOfContents)
+            {
+                return Task.CompletedTask;
+            }
+
+            var (tocModel, refArticles, refTocs) = Load(file);
+
+            foreach (var article in refArticles)
+            {
+                buildChild(article);
+            }
+
+            if (tocModel != null)
+            {
+                context.WriteJson(tocModel, file.OutputPath);
+            }
+
+            return Task.CompletedTask;
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
@@ -44,9 +61,44 @@ namespace Microsoft.Docs.Build
             return Task.CompletedTask;
         }
 
-        private static (TableOfContentsModel tocModel, List<Document> referencedDocument, List<Document> referencedTocs) Load(Document fileToBuild)
+        private static (List<TableOfContentsModel> tocModel, List<Document> referencedDocument, List<Document> referencedTocs) Load(Document fileToBuild)
         {
-            throw new NotImplementedException();
+            if (fileToBuild == null)
+            {
+                return default;
+            }
+
+            var referencedDocuments = new List<Document>();
+            var referencedTocs = new List<Document>();
+            var tocViewModel = TableOfContentsParser.Load(
+                fileToBuild.ReadText(),
+                fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
+                fileToBuild,
+                fileToBuild,
+                (a, b) =>
+                {
+                    var (referencedTocContent, referencedTocPath) = a.TryResolveContent(b);
+                    if (referencedTocPath != null)
+                    {
+                        // add to referenced toc list
+                        referencedTocs.Add(referencedTocPath);
+                    }
+                    return (referencedTocContent, referencedTocPath);
+                },
+                (a, b, c) =>
+                {
+                    // add to referenced document list
+                    // only resolve href, no need to build
+                    var (link, buildItem) = Resolve.TryResolveHref(a, b, c);
+                    if (buildItem != null)
+                    {
+                        referencedDocuments.Add(buildItem);
+                    }
+
+                    return link;
+                });
+
+            return (tocViewModel, referencedDocuments, referencedTocs);
         }
     }
 }

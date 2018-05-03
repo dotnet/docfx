@@ -1,0 +1,28 @@
+---
+# Corner cases
+# 1. TODO: Encoded href, like #ctor.md
+# 2. Title with #
+# 3. End with #
+
+inputs:
+  docfx.yml: |
+    files:
+      include:
+        - docs/**/*.md
+        - docs/**/*.yml
+  docs/toc.md: |
+    # [Topic1](index.md) #
+    ## Topic1.1 Lanaguage C#
+    ### [Topic1.1.1](/href1.1.1) ##
+    ## [Topic1.2 Language Java]() ##
+    ### [Topic1.2.1](/href1.2.1) ##
+    # [Topic2](https://github.com/docfx) #
+  docs/index.md:
+  docs/#ctor.md:
+outputs:
+  docs/index.json: |
+    { "content": "" }
+  docs/#ctor.json: |
+    { "content": "" }
+  docs/toc.json: |
+    [{"children":[{"children":[{"toc_title":"Topic1.1.1","href":"/href1.1.1"}],"toc_title":"Topic1.1 Lanaguage C#"},{"children":[{"toc_title":"Topic1.2.1","href":"/href1.2.1"}],"toc_title":"Topic1.2 Language Java","href":""}],"toc_title":"Topic1","href":"."},{"toc_title":"Topic2","href":"https://github.com/docfx"}]

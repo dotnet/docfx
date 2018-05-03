@@ -100,6 +100,18 @@ namespace Microsoft.Docs.Build
             return Equals(obj as Document);
         }
 
+        /// <summary>
+        /// Resolves a new <see cref="Document"/> based on the <paramref name="relativePath"/>
+        /// relative to this <see cref="Document"/>.
+        /// </summary>
+        public Document TryResolveFile(string relativePath)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(relativePath));
+            Debug.Assert(!Path.IsPathRooted(relativePath));
+
+            return TryResolveFromPathToDocset(Docset, Path.Combine(Path.GetDirectoryName(FilePath), relativePath));
+        }
+
         internal static ContentType GetContentType(string path, string docsetPath)
         {
             var name = Path.GetFileName(path).ToLowerInvariant();
@@ -169,6 +181,31 @@ namespace Microsoft.Docs.Build
                 default:
                     return path;
             }
+        }
+
+        /// <summary>
+        /// Resolve a new <see cref="Document"/> based on the path relative to docset root
+        /// </summary>
+        /// <param name="docset">The current docset</param>
+        /// <param name="path">The path relative to docset root</param>
+        /// <returns>A new document</returns>
+        internal static Document TryResolveFromPathToDocset(Docset docset, string path)
+        {
+            Debug.Assert(docset != null);
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!PathUtility.FilePathHasInvalidChars(path));
+
+            path = PathUtility.NormalizeFile(path);
+
+            if (File.Exists(Path.Combine(docset.DocsetPath, path)))
+            {
+                return new Document(docset, path);
+            }
+
+            // todo: localization fallback logic
+            // todo: redirection files
+            // todo: resolve from dependencies
+            return default;
         }
     }
 }
