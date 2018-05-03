@@ -15,8 +15,10 @@ namespace Microsoft.DocAsCode.Common
     public static class PathUtility
     {
         private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
-        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
-        private static readonly char[] InvalidPathChars = Path.GetInvalidPathChars();
+
+        private static readonly char[] AdditionalInvalidChars = ":*".ToArray();
+        public static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars().Concat(AdditionalInvalidChars).ToArray();
+        public static readonly char[] InvalidPathChars = Path.GetInvalidPathChars().Concat(AdditionalInvalidChars).ToArray();         
         private static readonly string InvalidFileNameCharsRegexString = $"[{Regex.Escape(new string(InvalidFileNameChars))}]";
 
         // refers to http://index/?query=urlencode&rightProject=System&file=%5BRepoRoot%5D%5CNDP%5Cfx%5Csrc%5Cnet%5CSystem%5CNet%5Cwebclient.cs&rightSymbol=fptyy6owkva8
