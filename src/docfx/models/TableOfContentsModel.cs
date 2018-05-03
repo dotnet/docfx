@@ -8,18 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsModel
     {
-        [JsonProperty(PropertyName = "toc_title")]
-        public string TocTitle { get; set; }
-
-        [JsonProperty(PropertyName = "href")]
-        public string Href { get; set; }
-
-        [JsonProperty(PropertyName = "pdf_href")]
-        public string PdfHref { get; set; }
-
-        [JsonProperty(PropertyName = "pdf_name")]
-        public string PdfName { get; set; }
-
-        public List<TableOfContentsModel> Children;
+        [JsonProperty(PropertyName = "items")]
+        public List<TableOfContentsItem> Items { get; set; }
     }
 }

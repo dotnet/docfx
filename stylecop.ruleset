@@ -21,8 +21,6 @@
     <Rule Id="SA1311" Action="None" />
     <!-- SA1401FieldsMustBePrivate -->
     <Rule Id="SA1401" Action="None" />
-    <!-- SA1402FileMayOnlyContainASingleType -->
-    <Rule Id="SA1402" Action="None" />
     <!-- SA1405DebugAssertMustProvideMessageText -->
     <Rule Id="SA1405" Action="None" />
     <!-- SA1502ElementMustNotBeOnSingleLine -->

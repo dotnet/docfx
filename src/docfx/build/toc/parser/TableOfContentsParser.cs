@@ -11,18 +11,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
-        internal static List<TableOfContentsModel> Load(string tocContent, bool isYaml, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
+        internal static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
         {
-            var inputModels = isYaml ? LoadYamlTocModel(tocContent, filePath) : LoadMdTocModel(tocContent);
+            var models = isYaml ? LoadYamlTocModel(tocContent, filePath) : LoadMdTocModel(tocContent);
 
-            var outputModels = inputModels?.Select(t => TableOfContentsItem.ToTableOfContentsModel(t)).ToList();
-            if (outputModels != null && outputModels.Any())
+            if (models != null && models.Any())
             {
                 // todo: recursive loop check
-                ResolveTocModelItems(outputModels, filePath, rootPath, resolveContent, resolveLink);
+                ResolveTocModelItems(models, filePath, rootPath, resolveContent, resolveLink);
             }
 
-            return outputModels;
+            return models;
         }
 
         internal static List<TableOfContentsItem> LoadMdTocModel(string tocContent)
@@ -44,7 +43,7 @@ namespace Microsoft.Docs.Build
                 state = state.ApplyRules(rules, ref content, ref lineNumber);
             }
 
-            return state.Root;
+            return state.Root.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
         }
 
         internal static List<TableOfContentsItem> LoadYamlTocModel(string tocContent, Document filePath)
@@ -64,10 +63,11 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
             }
 
+            var tocInputModels = (List<TableOfContentsInputItem>)null;
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                return tocArray.ToObject<List<TableOfContentsItem>>();
+                tocInputModels = tocArray.ToObject<List<TableOfContentsInputItem>>();
             }
             else
             {
@@ -76,8 +76,13 @@ namespace Microsoft.Docs.Build
                     tocObject.TryGetValue("Items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
-                    return tocItemArray.ToObject<List<TableOfContentsItem>>();
+                    tocInputModels = tocItemArray.ToObject<List<TableOfContentsInputItem>>();
                 }
+            }
+
+            if (tocInputModels != null)
+            {
+                return tocInputModels.Select(TableOfContentsInputItem.ToTableOfContentsModel).ToList();
             }
 
             throw new NotSupportedException($"{filePath} is not a valid TOC file.");
@@ -85,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         // todo: resolve topic href to href
         // tod: uid support
-        private static void ResolveTocModelItems(List<TableOfContentsModel> tocModelItems, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
+        private static void ResolveTocModelItems(List<TableOfContentsItem> tocModelItems, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
         {
             foreach (var tocModelItem in tocModelItems)
             {

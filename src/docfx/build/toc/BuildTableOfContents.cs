@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                 buildChild(article);
             }
 
-            context.WriteJson(tocModel, file.OutputPath);
+            context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
             return Task.CompletedTask;
         }
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             return Task.CompletedTask;
         }
 
-        private static (List<TableOfContentsModel> tocModel, List<Document> referencedDocument, List<Document> referencedTocs) Load(Document fileToBuild)
+        private static (List<TableOfContentsItem> tocModel, List<Document> referencedDocuments, List<Document> referencedTocs) Load(Document fileToBuild)
         {
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();

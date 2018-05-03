@@ -67,45 +67,44 @@ namespace Microsoft.Docs.Build.build
 ## [External](http://www.microsoft.com)
 ");
             Assert.Equal(2, toc.Count);
-            Assert.Equal("Article1", toc[0].Name);
+            Assert.Equal("Article1", toc[0].TocTitle);
             Assert.Equal("article1.md", toc[0].Href);
             {
-                var toc0 = toc[0].Items;
+                var toc0 = toc[0].Children;
                 Assert.Equal(3, toc0.Count);
-                Assert.Equal("Container1", toc0[0].Name);
+                Assert.Equal("Container1", toc0[0].TocTitle);
                 Assert.Null(toc0[0].Href);
                 {
-                    var toc0_0 = toc0[0].Items;
+                    var toc0_0 = toc0[0].Children;
                     Assert.Equal(2, toc0_0.Count);
-                    Assert.Equal("Article2", toc0_0[0].Name);
-                    Assert.Equal("Article 2", toc0_0[0].DisplayName);
+                    Assert.Equal("Article 2", toc0_0[0].TocTitle);
                     Assert.Equal("article2.md", toc0_0[0].Href);
-                    Assert.Equal("Article3", toc0_0[1].Name);
+                    Assert.Equal("Article3", toc0_0[1].TocTitle);
                     Assert.Equal("article3.md", toc0_0[1].Href);
                 }
-                Assert.Equal("Container2", toc0[1].Name);
+                Assert.Equal("Container2", toc0[1].TocTitle);
                 Assert.Null(toc0[1].Href);
                 {
-                    var toc0_1 = toc0[1].Items;
+                    var toc0_1 = toc0[1].Children;
                     Assert.Single(toc0_1);
-                    Assert.Equal("Article4", toc0_1[0].Name);
+                    Assert.Equal("Article4", toc0_1[0].TocTitle);
                     Assert.Equal("article4.md", toc0_1[0].Href);
                     {
-                        var toc0_1_0 = toc0_1[0].Items;
+                        var toc0_1_0 = toc0_1[0].Children;
                         Assert.Single(toc0_1_0);
-                        Assert.Equal("Article5", toc0_1_0[0].Name);
+                        Assert.Equal("Article5", toc0_1_0[0].TocTitle);
                         Assert.Equal("article5.md", toc0_1_0[0].Href);
                     }
                 }
-                Assert.Equal("Article6", toc0[2].Name);
+                Assert.Equal("Article6", toc0[2].TocTitle);
                 Assert.Equal("article6.md", toc0[2].Href);
             }
-            Assert.Equal("Article7", toc[1].Name);
+            Assert.Equal("Article7", toc[1].TocTitle);
             Assert.Equal("article7.md", toc[1].Href);
             {
-                var toc1 = toc[1].Items;
+                var toc1 = toc[1].Children;
                 Assert.Single(toc1);
-                Assert.Equal("External", toc1[0].Name);
+                Assert.Equal("External", toc1[0].TocTitle);
                 Assert.Equal("http://www.microsoft.com", toc1[0].Href);
             }
         }

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.using System;
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsItem
+    internal class TableOfContentsInputItem
     {
         public string Name { get; set; }
 
@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; set; }
 
-        public List<TableOfContentsItem> Items { get; set; }
+        public List<TableOfContentsInputItem> Items { get; set; }
 
-        public static TableOfContentsModel ToTableOfContentsModel(TableOfContentsItem inputModel)
+        public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel)
         {
             if (inputModel == null)
             {
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             // todo: pdf name and pdf href
             var decodedHref = inputModel.Href == null ? null : HttpUtility.UrlDecode(inputModel.Href);
-            return new TableOfContentsModel
+            return new TableOfContentsItem
             {
                 TocTitle = inputModel.DisplayName ?? inputModel.Name,
                 Href = decodedHref?.ToLowerInvariant(),
