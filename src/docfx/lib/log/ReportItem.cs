@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Microsoft.Docs.Build
 {
     internal class ReportItem
@@ -17,16 +19,16 @@ namespace Microsoft.Docs.Build
 
         public string Code { get; }
 
-        public string CorrelationId { get; }
+        public DateTime ReportTimeUtc { get; }
 
-        public ReportItem(ReportLevel level, string message, string code, int line, int column, string correlationId)
+        public ReportItem(ReportLevel level, string message, string code, int line, int column)
         {
             Level = level;
             Message = message;
-            CorrelationId = correlationId;
             Code = code;
             Line = line;
             Column = column;
+            ReportTimeUtc = DateTime.UtcNow;
         }
     }
 }
