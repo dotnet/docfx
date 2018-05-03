@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,12 +19,13 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public Code Code { get; }
+        public string Code { get; }
 
         public DateTime ReportTimeUtc { get; }
 
-        public ReportItem(ReportLevel level, Code code, string message, int line, int column)
+        public ReportItem(ReportLevel level, string code, string message, string file, int line, int column)
         {
+            Debug.Assert(!Regex.IsMatch(code, "\\s"), "Code should not contain spaces!");
             Level = level;
             Message = message;
             Code = code;

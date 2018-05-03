@@ -5,19 +5,22 @@ namespace Microsoft.Docs.Build
 {
     internal class ConsoleReporter : IReporter
     {
-        public void Error(Code code, string message, string file = "", int line = 0, int column = 0)
+        public void Error(string code, string message, string file = "", int line = 0, int column = 0)
         {
+            Report(new ReportItem(ReportLevel.Error, code, message, file, line, column));
         }
 
-        public void Info(Code code, string message, string file = "", int line = 0, int column = 0)
+        public void Warn(string code, string message, string file = "", int line = 0, int column = 0)
         {
+            Report(new ReportItem(ReportLevel.Warning, code, message, file, line, column));
+        }
+
+        public void Info(string code, string message, string file = "", int line = 0, int column = 0)
+        {
+            Report(new ReportItem(ReportLevel.Info, code, message, file, line, column));
         }
 
         public void Report(ReportItem item)
-        {
-        }
-
-        public void Warn(Code code, string message, string file = "", int line = 0, int column = 0)
         {
         }
     }
