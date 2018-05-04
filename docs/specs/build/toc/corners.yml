@@ -1,11 +1,7 @@
 ---
 # Title with # or End with #
 inputs:
-  docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
-        - docs/**/*.yml
+  docfx.yml:
   docs/toc.md: |
     # [Topic1](index.md) #
     ## Topic1.1 Lanaguage C#
