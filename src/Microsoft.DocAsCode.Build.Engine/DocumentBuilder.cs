@@ -226,11 +226,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (noContentFound)
                 {
-                    Logger.LogWarning($"No content file found. Please make sure the content section of docfx.json is correctly configured.");
+                    Logger.LogWarning(
+                        $"No content file found. Please make sure the content section of docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputContents);
                 }
                 else if (emptyContentGroups.Count > 0)
                 {
-                    Logger.LogWarning($"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.");
+                    Logger.LogWarning(
+                        $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured."
+                        code: WarningCodes.Build.EmptyInputContents);
                 }
 
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))

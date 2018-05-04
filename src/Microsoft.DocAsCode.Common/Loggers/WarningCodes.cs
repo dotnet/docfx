@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Common
             public const string UnknownUriTemplatePipeline = "UnknownUriTemplatePipeline";
             public const string EmptyTocItemName = "EmptyTocItemName";
             public const string EmptyInputFiles = "EmptyInputFiles";
+            public const string EmptyInputContents = "EmptyInputContents";
             public const string EmptyOutputFiles = "EmptyOutputFiles";
             public const string InvalidTagParametersConfig = "InvalidTagParametersConfig";
             public const string InvalidTaggedPropertyType = "InvalidTaggedPropertyType";
