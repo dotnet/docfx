@@ -145,7 +145,7 @@ public class MyClass
         public void TestCode_ParentFolderNotExist()
         {
             var source = @"[!code-cs[not exist](not_exist_folder/file.cs)]";
-            var expected = "<!-- BEGIN ERROR CODESNIPPET: Unable to find not_exist_folder/file.cs -->[!code-cs[not exist](not_exist_folder/file.cs)]<!--END ERROR CODESNIPPET -->";
+            var expected = "[!code-cs[not exist](not_exist_folder/file.cs)]";
 
             var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
@@ -158,7 +158,7 @@ public class MyClass
             var source = @"  [!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc ""title test"" ) ]  ";
 
             var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            Assert.Equal(@"<!-- BEGIN ERROR CODESNIPPET: Unable to find test space in) link.cs -->[!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc &quot;title test&quot; ) ]<!--END ERROR CODESNIPPET -->", marked.Html);
+            Assert.Equal(@"[!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc &quot;title test&quot; ) ]", marked.Html);
         }
 
         [Fact]
@@ -429,8 +429,7 @@ public static void Foo()
 }
 }
 </code></pre>")]
-        [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&dedent=-4 ""Auto dedent if dedent < 0"")]", @"<!-- Dedent length -4 should be positive. Auto-dedent will be applied. -->
-<pre><code name=""Main"" title=""Auto dedent if dedent &lt; 0"">namespace ConsoleApplication1
+        [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&dedent=-4 ""Auto dedent if dedent < 0"")]", @"<pre><code name=""Main"" title=""Auto dedent if dedent &lt; 0"">namespace ConsoleApplication1
 {
     class Program
     #region Helper

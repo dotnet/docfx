@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static void UpdateLinks(MarkdownObject markdownObject, MarkdownContext context)
         {
-            if (markdownObject == null || context == null || string.IsNullOrEmpty(context.FilePath)) return;
+            if (markdownObject == null || context == null || context.File == null) return;
 
             if (markdownObject is ContainerBlock containerBlock)
             {
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     {
                         linkInline.GetDynamicUrl = () =>
                         {
-                            return ((RelativePath)context.FilePath + (RelativePath)originalUrl).GetPathFromWorkingFolder();
+                            return ((RelativePath)context.File + (RelativePath)originalUrl).GetPathFromWorkingFolder();
                         };
                     }
                 }
