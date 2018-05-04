@@ -16,5 +16,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public Func<string, CRefTarget> ResolveCRef { get; set; }
 
         public SourceDetail Source { get; set; }
+
+        public string CodeSourceBasePath { get; set; }
     }
 }
