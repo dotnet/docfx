@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
+        public static async Task Run(string docsetPath, CommandLineOptions options, IReporter log)
         {
             var config = Config.Load(docsetPath, options);
             var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
-            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Files.Include, docset.Config.Files.Exclude)
+            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
                            .Select(file => new Document(docset, Path.GetRelativePath(docset.DocsetPath, file)))
                            .ToList();
         }

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
 
-        public static Task Run(string docsetPath, CommandLineOptions options, ILog log)
+        public static Task Run(string docsetPath, CommandLineOptions options, IReporter reporter)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         {
             var childDir = await FetchOrCloneDependentRepo(href);
 
-            if (restoredDirs.Add(childDir) && Config.TryLoad(childDir, options, out var childConfig))
+            if (restoredDirs.Add(childDir) && Config.LoadIfExists(childDir, options, out var childConfig))
             {
                 foreach (var (key, childHref) in childConfig.Dependencies)
                 {

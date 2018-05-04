@@ -15,7 +15,8 @@ namespace Microsoft.Docs.Build
     {
         internal static async Task<int> Main(string[] args)
         {
-            var log = new ConsoleLog();
+            var (command, docset, options) = ParseCommandLineOptions(args);
+            var reporter = new ConsoleReporter();
 
             try
             {
@@ -88,7 +89,7 @@ Help us improve by creating an an issue at https://github.com/dotnet/docfx with 
 
 **Version**: {GetVersion()}
 
-**Steps to Reproduce**: 
+**Steps to Reproduce**:
 
 1. Run `docfx {commandLine}` in `{Directory.GetCurrentDirectory()}`
 

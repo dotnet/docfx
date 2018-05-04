@@ -3,10 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class ConsoleLog : ILog
+    internal enum ReportLevel
     {
-        public void ReportDiagnostics(string code, string message, string file = null)
-        {
-        }
+        Info,
+        Warning,
+        Error,
     }
 }
