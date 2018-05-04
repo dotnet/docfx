@@ -11,23 +11,33 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
-        internal static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
+        internal static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null, List<Document> parents = null)
         {
-            var models = isYaml ? LoadYamlTocModel(tocContent, filePath) : LoadMdTocModel(tocContent);
+            parents = parents ?? new List<Document>();
+
+            // add to parent path
+            if (parents.Contains(filePath))
+            {
+                // todo: error handling
+                throw new ApplicationException($"Circle toc reference was detected, {string.Join("-->", parents)}-->{filePath}");
+            }
+
+            parents.Add(filePath);
+            var models = isYaml ? LoadYamlTocModel(tocContent, filePath.FilePath) : LoadMdTocModel(tocContent, filePath.FilePath);
 
             if (models != null && models.Any())
             {
-                // todo: recursive loop check
-                ResolveTocModelItems(models, filePath, rootPath, resolveContent, resolveLink);
+                ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveLink);
+                parents.RemoveAt(parents.Count - 1);
             }
 
             return models;
         }
 
-        internal static List<TableOfContentsItem> LoadMdTocModel(string tocContent)
+        internal static List<TableOfContentsItem> LoadMdTocModel(string tocContent, string filePath)
         {
             var content = tocContent.Replace("\r\n", "\n", StringComparison.OrdinalIgnoreCase).Replace("\r", "\n", StringComparison.OrdinalIgnoreCase);
-            TableOfContentsParseState state = new InitialState();
+            TableOfContentsParseState state = new InitialState(filePath);
             var rules = new TableOfContentsParseRule[]
             {
                 new TopicTocParseRule(),
@@ -46,7 +56,7 @@ namespace Microsoft.Docs.Build
             return state.Root.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
         }
 
-        internal static List<TableOfContentsItem> LoadYamlTocModel(string tocContent, Document filePath)
+        internal static List<TableOfContentsItem> LoadYamlTocModel(string tocContent, string filePath)
         {
             if (string.IsNullOrEmpty(tocContent))
             {
@@ -90,13 +100,13 @@ namespace Microsoft.Docs.Build
 
         // todo: resolve topic href to href
         // tod: uid support
-        private static void ResolveTocModelItems(List<TableOfContentsItem> tocModelItems, Document filePath = default, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
+        private static void ResolveTocModelItems(List<TableOfContentsItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
         {
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Children != null && tocModelItem.Children.Any())
                 {
-                    ResolveTocModelItems(tocModelItem.Children, filePath, rootPath, resolveContent, resolveLink);
+                    ResolveTocModelItems(tocModelItem.Children, parents, filePath, rootPath, resolveContent, resolveLink);
                 }
 
                 var href = tocModelItem.Href;
@@ -116,7 +126,7 @@ namespace Microsoft.Docs.Build
                         var (referencedTocContent, referenceTocFilePath, isYamlToc) = ResolveTocHrefContent(hrefType, tocModelItem.Href, filePath, resolveContent);
                         if (referencedTocContent != null)
                         {
-                            tocModelItem.Children = Load(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveLink);
+                            tocModelItem.Children = Load(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveLink, parents);
                             tocModelItem.Href = null;
                         }
                     }
@@ -135,7 +145,7 @@ namespace Microsoft.Docs.Build
                 tocHrefType == TocHrefType.RelativeFolder;
         }
 
-        private static (string content, Document filePath, bool isYaml) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath = default, ResolveContent resolveContent = null)
+        private static (string content, Document filePath, bool isYaml) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent = null)
         {
             if (resolveContent == null)
             {
