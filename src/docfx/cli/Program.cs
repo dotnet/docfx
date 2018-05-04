@@ -4,8 +4,8 @@
 using System;
 using System.CommandLine;
 using System.IO;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -15,32 +15,32 @@ namespace Microsoft.Docs.Build
     {
         internal static async Task<int> Main(string[] args)
         {
-            var (command, docset, options) = ParseCommandLineOptions(args);
-            var reporter = new ConsoleReporter();
-
             try
             {
                 var (command, docset, options) = ParseCommandLineOptions(args);
+                var reporter = new ConsoleReporter();
 
                 switch (command)
                 {
                     case "restore":
-                        await Restore.Run(docset, options, log);
+                        await Restore.Run(docset, options, reporter);
                         break;
                     case "build":
-                        await Build.Run(docset, options, log);
+                        await Build.Run(docset, options, reporter);
                         break;
                 }
                 return 0;
             }
             catch (DocumentException ex)
             {
-                log.ReportDiagnostics(ex.Code, ex.Message, ex.File);
+                Logger.Error(ex.ToString());
+                Console.WriteLine(ex.Code, ex.Message, ex.File);
                 return 1;
             }
             catch (Exception ex)
             {
-                log.ReportDiagnostics("fatal", CreateFatalErrorMessage(ex, args));
+                Logger.Error(ex.ToString());
+                Console.WriteLine(CreateFatalErrorMessage(ex, args));
                 return 1;
             }
         }
