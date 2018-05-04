@@ -9,56 +9,56 @@ namespace Microsoft.Docs.Build
 {
     internal static class TestHelper
     {
-        public static TheoryData<string, string> FindTestSpecs(string path)
+        public static TheoryData<TestSpec> FindTestSpecs(string path)
         {
-            var result = new TheoryData<string, string>();
+            var result = new TheoryData<TestSpec>();
 
             Parallel.ForEach(
                 Directory.EnumerateFiles(Path.Combine("specs", path), "*.yml", SearchOption.AllDirectories),
                 file =>
                 {
-                    foreach (var (name, yaml) in FindTestSpecsInFile(file))
+                    foreach (var spec in FindTestSpecsInFile(file))
                     {
-                        result.Add(name, yaml);
+                        result.Add(spec);
                     }
                 });
 
             return result;
         }
 
-        public static IEnumerable<(string name, string yaml)> FindTestSpecsInFile(string path)
+        public static IEnumerable<TestSpec> FindTestSpecsInFile(string path)
         {
             var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var section in sections)
             {
-                var yaml = section.Trim('\r', '\n', '-', ' ');
+                var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
-                var name = Path.Combine(path.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header);
+                var spec = YamlUtility.Deserialize<TestSpec>(yaml);
 
-                yield return (name, yaml);
+                spec.Path = Path.Combine(path.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header);
+
+                yield return spec;
             }
         }
 
-        public static (string docsetPath, TestSpec spec) CreateDocset(string path, string yaml)
+        public static string CreateDocset(this TestSpec spec)
         {
-            var docsetPath = Path.Combine("specs.drop", path);
+            var docsetPath = Path.Combine("specs.drop", spec.Path);
 
             if (Directory.Exists(docsetPath))
             {
                 Directory.Delete(docsetPath, recursive: true);
             }
 
-            var definition = YamlUtility.Deserialize<TestSpec>(yaml);
-
-            foreach (var (file, content) in definition.Inputs)
+            foreach (var (file, content) in spec.Inputs)
             {
                 var filePath = Path.Combine(docsetPath, file);
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                 File.WriteAllText(filePath, content);
             }
 
-            return (docsetPath, definition);
+            return docsetPath;
         }
 
         public static void VerifyJsonContainEquals(JToken expected, JToken actual)

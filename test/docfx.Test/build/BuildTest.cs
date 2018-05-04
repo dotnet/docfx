@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,13 +11,13 @@ namespace Microsoft.Docs.Build
 {
     public static class BuildTest
     {
-        public static readonly TheoryData<string, string> Specs = TestHelper.FindTestSpecs("build");
+        public static readonly TheoryData<TestSpec> Specs = TestHelper.FindTestSpecs("build");
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string path, string yaml)
+        public static async Task BuildDocset(TestSpec spec)
         {
-            var (docsetPath, spec) = TestHelper.CreateDocset(path, yaml);
+            var docsetPath = spec.CreateDocset();
 
             await Program.Main(new[] { "build", docsetPath });
 

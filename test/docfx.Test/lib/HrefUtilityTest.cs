@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -18,6 +19,23 @@ namespace Microsoft.Docs.Build
             Assert.Equal(path, apath);
             Assert.Equal(fragment, afragment);
             Assert.Equal(query, aquery);
+        }
+
+        [Theory]
+        [InlineData("a", true)]
+        [InlineData("a/b", true)]
+        [InlineData("a\\b", true, true)]
+        [InlineData("/a", false)]
+        [InlineData("\\a", false, true)]
+        [InlineData("#a", false)]
+        [InlineData("http://a", false)]
+        [InlineData("https://a.com", false)]
+        [InlineData("c:/a", false, true)]
+        [InlineData("c:\\a", false, true)]
+        public static void IsRelativeHref(string href, bool expected, bool windowsSpecific = false)
+        {
+            if (windowsSpecific && (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))) return;
+            Assert.Equal(expected, HrefUtility.IsRelativeHref(href));
         }
     }
 }
