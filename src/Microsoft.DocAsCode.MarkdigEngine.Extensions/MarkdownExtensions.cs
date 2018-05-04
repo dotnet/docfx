@@ -160,11 +160,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return pipeline;
             }
 
-            var absoluteFilePath = Path.Combine(context.BasePath, context.FilePath);
-            var lineNumberContext = LineNumberExtensionContext.Create(context.Content, absoluteFilePath, context.FilePath);
-
             pipeline.PreciseSourceLocation = true;
-            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(lineNumberContext);
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context.FilePath);
 
             return pipeline;
         }

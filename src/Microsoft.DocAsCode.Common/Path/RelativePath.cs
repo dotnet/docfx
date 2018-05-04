@@ -19,12 +19,11 @@ namespace Microsoft.DocAsCode.Common
         private const string ParentDirectory = "../";
         public const char WorkingFolderChar = '~';
         public const string WorkingFolderString = "~";
-        public static readonly char[] InvalidChars = Path.GetInvalidPathChars().Concat(":*").ToArray();
         public static readonly string NormalizedWorkingFolder = "~/";
         public static readonly string AltWorkingFolder = "~\\";
         public static readonly RelativePath Empty = new RelativePath(false, 0, new string[] { string.Empty });
         public static readonly RelativePath WorkingFolder = new RelativePath(true, 0, new string[] { string.Empty });
-        public static readonly char[] InvalidPartChars = InvalidChars.Concat(@"\/?").ToArray();
+        public static readonly char[] InvalidPartChars = PathUtility.InvalidPathChars.Concat(@"\/?").ToArray();
         private static readonly string[] EncodedInvalidPartChars = Array.ConvertAll(InvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
         private static readonly char[] UnsafeInvalidPartChars = { '/' };
         private static readonly string[] EncodedUnsafeInvalidPartChars = Array.ConvertAll(UnsafeInvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
@@ -58,7 +57,7 @@ namespace Microsoft.DocAsCode.Common
                 path.Length > 0 &&
                 path[0] != '/' &&
                 path[0] != '\\' &&
-                path.IndexOfAny(InvalidChars) == -1;
+                path.IndexOfAny(PathUtility.InvalidPathChars) == -1;
         }
 
         public static RelativePath Parse(string path) => TryParseCore(path, true);
@@ -373,7 +372,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return Empty;
             }
-            if (path.IndexOfAny(InvalidChars) != -1)
+            if (path.IndexOfAny(PathUtility.InvalidPathChars) != -1)
             {
                 if (throwOnError)
                 {

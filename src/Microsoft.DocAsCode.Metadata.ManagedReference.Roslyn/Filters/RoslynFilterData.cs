@@ -107,6 +107,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (constant.Kind == TypedConstantKind.Array)
             {
+                if (constant.Values.IsDefaultOrEmpty)
+                {
+                    return "";
+                }
+
                 return string.Join(",", constant.Values.Select(GetLiteralString));
             }
 

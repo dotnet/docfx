@@ -75,6 +75,23 @@ items:
       init: "git clone https://github.com/roel4ez/docfx-lightbox-plugin.git docfx-lightbox-plugin"
       command: "-t default,docfx-lightbox-plugin/templates/bootstrap-modal"
       config: '"template":["default","docfx-lightbox-plugin/templates/bootstrap-modal"]'
+  - name: DocFx.Plugins.PlantUml
+    description: A template to render PlantUml diagrams from markdown code blocks.
+    type: External
+    author: KevReed
+    version: 1.0.13
+    engines:
+      docfx: ">=2.35.4"
+    thumbnail: ~/templates-and-plugins/images/docfx.plantuml.plugin.screenshot.png
+    homepage: https://github.com/KevReed/DocFx.Plugins.PlantUml
+    repository:
+      type: git
+      url: "https://github.com/KevReed/DocFx.Plugins.PlantUml.git"
+    license: MIT
+    usage:
+      init: "nuget install DocFx.Plugins.PlantUml -ExcludeVersion -OutputDirectory ."
+      command: "-t default,DocFx.Plugins.PlantUml/template"
+      config: '"template":["default","DocFx.Plugins.PlantUml/template"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!

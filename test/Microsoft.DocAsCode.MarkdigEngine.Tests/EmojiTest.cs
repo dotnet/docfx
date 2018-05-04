@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var marked = TestUtility.Markup(content, "fake.md");
 
             // assert
-            var expected = @"<p sourceFile=""fake.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1""><strong sourceFile=""fake.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">content :</strong> 😄</p>
+            var expected = @"<p sourceFile=""fake.md"" sourceStartLineNumber=""1""><strong sourceFile=""fake.md"" sourceStartLineNumber=""1"">content :</strong> 😄</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }

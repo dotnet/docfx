@@ -31,13 +31,13 @@ http://spec.commonmark.org/0.27/)";
             var marked = TestUtility.Markup(content, "Topic.md");
 
             // assert
-            var expected = @"<h1 id=""a-simple-test-for-line-number"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">a simple test for line number</h1>
-<ul sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""4"">
-<li sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">list member 1</li>
-<li sourceFile=""Topic.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">list member 2</li>
+            var expected = @"<h1 id=""a-simple-test-for-line-number"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">a simple test for line number</h1>
+<ul sourceFile=""Topic.md"" sourceStartLineNumber=""3"">
+<li sourceFile=""Topic.md"" sourceStartLineNumber=""3"">list member 1</li>
+<li sourceFile=""Topic.md"" sourceStartLineNumber=""4"">list member 2</li>
 </ul>
-<hr sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"" />
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""7""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""7"">Two Line Link</a></p>
+<hr sourceFile=""Topic.md"" sourceStartLineNumber=""5"" />
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""6""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"">Two Line Link</a></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
@@ -71,7 +71,7 @@ line1
             var marked = service.Markup(@"[!code[tag-test](LineNumber/Program.cs#Tag)]", "Topic.md");
 
             // assert
-            var expected = @"<pre><code sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"" name=""tag-test"">line1
+            var expected = @"<pre><code sourceFile=""Topic.md"" sourceStartLineNumber=""1"" name=""tag-test"">line1
 </code></pre>";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
@@ -101,9 +101,9 @@ http://spec.commonmark.org/0.27/)";
             File.WriteAllText("LineNumber/b.md", refb);
 
             var result = TestUtility.Markup(root, "LineNumber/root.md");
-            var expected = @"<h1 id=""root-content"" sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">Root content</h1>
-<p sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">This is inline <a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/a.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">inline</a> inclusion</p>
-<p sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""2"">block</a></p>
+            var expected = @"<h1 id=""root-content"" sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""2"">Root content</h1>
+<p sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""3"">This is inline <a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/a.md"" sourceStartLineNumber=""1"">inline</a> inclusion</p>
+<p sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1""><a href=""http://spec.commonmark.org/0.27/"" sourceFile=""LineNumber/b.md"" sourceStartLineNumber=""1"">block</a></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
         }
