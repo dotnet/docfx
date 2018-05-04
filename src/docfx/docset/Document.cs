@@ -102,7 +102,6 @@ namespace Microsoft.Docs.Build
 
         public override string ToString()
         {
-            // todo: add docset info
             return FilePath;
         }
 

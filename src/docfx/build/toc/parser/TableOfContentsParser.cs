@@ -11,23 +11,24 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
-        internal static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null, HashSet<Document> parents = null)
+        internal static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null, List<Document> parents = null)
         {
-            parents = parents ?? new HashSet<Document>();
+            parents = parents ?? new List<Document>();
 
             // add to parent path
-            if (!parents.Add(filePath))
+            if (parents.Contains(filePath))
             {
                 // todo: error handling
                 throw new ApplicationException($"Circle toc reference was detected, {string.Join("-->", parents)}-->{filePath}");
             }
 
+            parents.Add(filePath);
             var models = isYaml ? LoadYamlTocModel(tocContent, filePath.FilePath) : LoadMdTocModel(tocContent, filePath.FilePath);
 
             if (models != null && models.Any())
             {
                 ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveLink);
-                parents.Remove(filePath);
+                parents.RemoveAt(parents.Count - 1);
             }
 
             return models;
@@ -99,7 +100,7 @@ namespace Microsoft.Docs.Build
 
         // todo: resolve topic href to href
         // tod: uid support
-        private static void ResolveTocModelItems(List<TableOfContentsItem> tocModelItems, HashSet<Document> parents, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
+        private static void ResolveTocModelItems(List<TableOfContentsItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveLink resolveLink = null)
         {
             foreach (var tocModelItem in tocModelItems)
             {

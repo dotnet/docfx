@@ -57,8 +57,7 @@ inputs:
   docfx.yml: |
     content:
       include:
-        - docs/**/*.md
-        - docs/**/*.yml
+        - docs/toc.md
   docs/toc.md: |
     # [Topic1](index.md) #
     ## Refernce toc
@@ -67,22 +66,21 @@ inputs:
     ### [Reference TOC 2.1](f2/toc.md)
   docs/f1/toc.md: |
     # [Topic1](../index.md)
-    ## [Reference TOC 1.1.1](f2/toc.md)
+    ## [Reference TOC 1.1.1](../f2/toc.md)
   docs/f2/toc.md: |
     # [Topic1](../index.md)
     ## [Reference TOC back](../toc.md)
   docs/index.md:
 exceptions:
   system.applicationexception: |
-    Circle toc reference was detected, docs/toc.md-->docs/f2/toc.md-->docs/toc.md
+    Circle toc reference was detected, docs/toc.md-->docs/f1/toc.md-->docs/f2/toc.md-->docs/toc.md
 ---
 # Circle toc referenceing 2
 inputs:
   docfx.yml: |
     content:
       include:
-        - docs/**/*.md
-        - docs/**/*.yml
+        - docs/toc.md
   docs/toc.md: |
     # [Topic1](index.md) #
     ## [Reference itself](toc.md)
