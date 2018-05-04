@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,13 +13,14 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
 
-        public static Task Run(string docsetPath, CommandLineOptions options, ILog log)
+        public static Task Run(string docsetPath, CommandLineOptions options, IReporter reporter)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             var config = Config.Load(docsetPath, options);
 
-            return ParallelUtility.ForEach(config.Dependencies.Values, (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild));
+            var restoredDirs = new HashSet<string>();
+            return ParallelUtility.ForEach(config.Dependencies.Values, (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild, restoredDirs));
         }
 
         /// <summary>
@@ -30,21 +32,23 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
-            var uri = new Uri(remote);
-            var refSpec = (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment.Length <= 1) ? "master" : uri.Fragment.Substring(1);
+            var (path, fragment, _) = HrefUtility.SplitHref(remote);
+
+            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var uri = new Uri(path);
             var url = uri.GetLeftPart(UriPartial.Path);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(s_restoreDir, repo);
+            var dir = Path.Combine(s_restoreDir, repo, PathUtility.Encode(refSpec));
 
             return (PathUtility.NormalizeFolder(dir), url, refSpec);
         }
 
         // Recursively restore dependent repo including their children
-        private static async Task RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild)
+        private static async Task RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild, HashSet<string> restoredDirs)
         {
             var childDir = await FetchOrCloneDependentRepo(href);
 
-            if (Config.TryLoad(childDir, options, out var childConfig))
+            if (restoredDirs.Add(childDir) && Config.LoadIfExists(childDir, options, out var childConfig))
             {
                 foreach (var (key, childHref) in childConfig.Dependencies)
                 {
@@ -58,7 +62,9 @@ namespace Microsoft.Docs.Build
         {
             var (restoreDir, url, rev) = GetGitRestoreInfo(href);
 
+            var lockRelativePath = Path.Combine(Path.GetRelativePath(s_restoreDir, restoreDir), ".lock");
             await ProcessUtility.ProcessLock(
+                lockRelativePath,
                 async () =>
                 {
                     if (GitUtility.IsRepo(restoreDir))
@@ -71,8 +77,7 @@ namespace Microsoft.Docs.Build
                         // doesn't exist yet, clone this repo to a specified branch
                         await GitUtility.Clone(restoreDir, url, restoreDir, rev);
                     }
-                },
-                Path.Combine(restoreDir, ".lock"));
+                });
 
             return restoreDir;
         }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ILog log)
+        public static async Task Run(string docsetPath, CommandLineOptions options, IReporter log)
         {
             var config = Config.Load(docsetPath, options);
             var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
@@ -19,33 +20,54 @@ namespace Microsoft.Docs.Build
 
             var globbedFiles = GlobFiles(context, docset);
 
-            await BuildFiles(context, globbedFiles);
+            var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
+
+            await BuildFiles(context, globbedFiles, tocMap);
         }
 
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
-            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Files.Include, docset.Config.Files.Exclude)
+            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
                            .Select(file => new Document(docset, Path.GetRelativePath(docset.DocsetPath, file)))
                            .ToList();
         }
 
-        private static Task BuildFiles(Context context, List<Document> files)
+        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file));
+            var manifest = new ConcurrentDictionary<Document, byte>();
+            var references = new ConcurrentDictionary<Document, byte>();
+
+            return ParallelUtility.ForEach(
+                files,
+                (file, buildChild) =>
+                {
+                    if (!ShouldBuildFile(file, manifest))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    return BuildOneFile(context, file, tocMap, item =>
+                    {
+                        if (ShouldBuildFile(item, references))
+                        {
+                            buildChild(item);
+                        }
+                    });
+                });
         }
 
-        private static Task BuildOneFile(Context context, Document file)
+        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file);
+                    return BuildMarkdown.Build(context, file, tocMap);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file);
+                    return BuildSchemaDocument.Build(context, file, tocMap);
                 case ContentType.TableOfContents:
-                    return BuildTableOfContents.Build(context, file);
+                    return BuildTableOfContents.Build(context, file, buildChild);
                 default:
                     return Task.CompletedTask;
             }
@@ -55,6 +77,26 @@ namespace Microsoft.Docs.Build
         {
             context.Copy(file, file.FilePath);
             return Task.CompletedTask;
+        }
+
+        private static bool ShouldBuildFile(Document itemToBuild, ConcurrentDictionary<Document, byte> set)
+        {
+            if (itemToBuild.OutputPath == null)
+            {
+                return false;
+            }
+
+            if (itemToBuild.ContentType == ContentType.Unknown)
+            {
+                return false;
+            }
+
+            if (!set.TryAdd(itemToBuild, 0))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

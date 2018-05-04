@@ -1,0 +1,74 @@
+---
+# Specify include files
+inputs:
+  docfx.yml: |
+    content:
+      include:
+        - docs/**/*.md
+  ignore.md:
+  docs/index.md:
+outputs:
+  docs/index.json: |
+    { "content": "" }
+---
+# Specify include files by array
+inputs:
+  docfx.yml: |
+    content:
+      include: docs/**/*.md
+  ignore.md:
+  docs/index.md:
+outputs:
+  docs/index.json: |
+    { "content": "" }
+---
+# Content supports string form
+inputs:
+  docfx.yml: |
+    content: docs1/**/*.md
+  ignore.md:
+  docs1/index.md:
+outputs:
+  docs1/index.json: |
+    { "content": "" }
+---
+# Content supports array form
+inputs:
+  docfx.yml: |
+    content:
+    - docs1/**/*.md
+    - docs2/**/*.md
+  ignore.md:
+  docs1/index.md:
+  docs2/index.md:
+outputs:
+  docs1/index.json: |
+    { "content": "" }
+  docs2/index.json: |
+    { "content": "" }
+---
+# Content supports exclude file
+inputs:
+  docfx.yml: |
+    content:
+      include: docs/**/*.md
+      exclude: docs/**/ignore.md
+  docs/index.md:
+outputs:
+  docs/index.json: |
+    { "content": "" }
+---
+# Content supports exclude folder
+inputs:
+  docfx.yml: |
+    content:
+      include: docs/**/*.md
+      exclude:
+      - docs/ignore/**/*.md
+      - docs/codesnippet/**/*.md
+  docs/index.md:
+  docs/ignore/index.md:
+  docs/codesnippet/index.md:
+outputs:
+  docs/index.json: |
+    { "content": "" }

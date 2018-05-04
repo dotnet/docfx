@@ -3,7 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal interface ILog
+    internal enum ReportLevel
     {
+        Info,
+        Warning,
+        Error,
     }
 }
