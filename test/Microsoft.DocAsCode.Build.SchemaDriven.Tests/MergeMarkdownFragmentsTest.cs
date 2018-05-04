@@ -356,7 +356,7 @@ With [!include[invalid](invalid.md)]",
                 Assert.NotNull(rawModel["summary"]);
                 Assert.Contains("I add a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
                 List<string> lastMessages;
                 var messages = ClearLog(listener.Items);
 
@@ -378,7 +378,7 @@ With [!include[invalid](invalid.md)]",
                 Assert.NotNull(rawModel["summary"]);
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
                 lastMessages = messages;
                 messages = ClearLog(listener.Items);
                 Assert.True(messages.SequenceEqual(lastMessages));
@@ -393,7 +393,7 @@ With [!include[invalid](invalid.md)]",
                 Assert.NotNull(rawModel["summary"]);
                 Assert.Contains("I update a summary", rawModel["summary"].ToString());
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Can't find") && s.Message.EndsWith("/invalid.md.")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
                 lastMessages = messages;
                 messages = ClearLog(listener.Items);
                 Assert.True(messages.SequenceEqual(lastMessages));
