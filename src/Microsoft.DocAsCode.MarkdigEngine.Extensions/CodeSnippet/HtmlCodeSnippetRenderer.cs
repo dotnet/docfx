@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         // XML code snippet block: <!-- <[/]snippetname> -->
         private static readonly string MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
         private static readonly string MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
-        
+
         // Sql code snippet block: -- <[/]snippetname>
         private static readonly string SqlFamilyCodeSnippetCommentStartLineTemplate = "--<{tagname}>";
         private static readonly string SqlFamilyCodeSnippetCommentEndLineTemplate = "--</{tagname}>";
@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void BuildCodeLanguageExtractors()
         {
-            AddExtractorItems(new[] { "vb", "vbhtml" }, 
+            AddExtractorItems(new[] { "vb", "vbhtml" },
                 new CodeSnippetExtrator(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript" },
                 new CodeSnippetExtrator(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
@@ -145,10 +145,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             foreach (var language in languages)
             {
                 AddExtractorItem(language, extractor);
-                
-                if(LanguageAlias.ContainsKey(language))
+
+                if (LanguageAlias.ContainsKey(language))
                 {
-                    foreach(var alias in LanguageAlias[language])
+                    foreach (var alias in LanguageAlias[language])
                     {
                         AddExtractorItem(alias, extractor);
                     }
@@ -158,7 +158,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void AddExtractorItem(string language, CodeSnippetExtrator extractor)
         {
-            if(CodeLanguageExtractors.ContainsKey(language))
+            if (CodeLanguageExtractors.ContainsKey(language))
             {
                 CodeLanguageExtractors[language].Add(extractor);
             }
@@ -170,41 +170,32 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var refFileRelativePath = ((RelativePath)codeSnippet.CodePath).BasedOn((RelativePath)_context.FilePath);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, _context.File);
 
-            if (!EnvironmentContext.FileAbstractLayer.Exists(refFileRelativePath.RemoveWorkingFolder()))
+            if (content == null)
             {
-                string tag = "ERROR CODESNIPPET";
-                string message = $"Unable to find {refFileRelativePath}";
-                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, codeSnippet.Raw, codeSnippet.Line);
+                Logger.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{_context.File}'.");
+                renderer.WriteEscape(codeSnippet.Raw);
                 return;
             }
 
-            if (codeSnippet.DedentLength != null && codeSnippet.DedentLength < 0)
-            {
-                renderer.Write($"<!-- Dedent length {codeSnippet.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
-            }
+            _context.Dependencies.Add(codeSnippetPath);
 
             codeSnippet.SetAttributeString();
 
             renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-            renderer.WriteEscape(GetContent(codeSnippet));
+            renderer.WriteEscape(GetContent(content, codeSnippet));
             renderer.Write("</code></pre>");
         }
 
-        private string GetContent(CodeSnippet obj)
+        private string GetContent(string content, CodeSnippet obj)
         {
-            var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
-            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn(currentFilePath);
-            _context.Dependencies.Add(refFileRelativePath);
-
-            var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
-            var allLines = EnvironmentContext.FileAbstractLayer.ReadAllLines(refFileRelativePath.RemoveWorkingFolder());
+            var allLines = ReadAllLines(content).ToArray();
 
             // code range priority: tag > #L1 > start/end > range > default
             if (!string.IsNullOrEmpty(obj.TagName))
             {
-                var lang = obj.Language ?? Path.GetExtension(refPath);
+                var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
                 if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
                     Logger.LogError($"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
@@ -244,6 +235,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             return string.Empty;
+        }
+
+        private static IEnumerable<string> ReadAllLines(string content)
+        {
+            string line;
+            var reader = new StringReader(content);
+            while ((line = reader.ReadLine()) != null)
+            {
+                yield return line;
+            }
         }
 
         private string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)

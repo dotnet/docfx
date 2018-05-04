@@ -3,13 +3,13 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
@@ -25,55 +25,34 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            if (string.IsNullOrEmpty(inclusion.Context.IncludedFilePath))
+            var (content, includeFilePath) = _context.ReadFile(inclusion.Context.IncludedFilePath, _context.File);
+
+            if (content == null)
             {
-                Logger.LogError("file path can't be empty or null in IncludeFile");
+                Logger.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
                 renderer.Write(inclusion.Context.GetRaw());
-
                 return;
             }
 
-            if (!PathUtility.IsRelativePath(inclusion.Context.IncludedFilePath))
+            if (_context.RecursionDetector.Contains(includeFilePath))
             {
-                var tag = "ERROR INCLUDE";
-                var message = $"Unable to resolve {inclusion.Context.GetRaw()}: Absolute path \"{inclusion.Context.IncludedFilePath}\" is not supported.";
-                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, inclusion.Context.GetRaw(), inclusion.Line);
-
-                return;
-            }
-
-            var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
-            var includedFilePath = ((RelativePath)inclusion.Context.IncludedFilePath).BasedOn(currentFilePath);
-
-            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePath.RemoveWorkingFolder()))
-            {
-                Logger.LogWarning($"Can't find {includedFilePath}.");
+                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.RecursionDetector)} -> {includeFilePath}\"");
                 renderer.Write(inclusion.Context.GetRaw());
-
                 return;
             }
 
-            if (_context.InclusionSet.Contains(includedFilePath))
-            {
-                string tag = "ERROR INCLUDE";
-                string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
-                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, inclusion.Context.GetRaw(), inclusion.Line);
+            _context.Dependencies.Add(includeFilePath);
 
-                return;
-            }
-
-            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath.RemoveWorkingFolder());
             var context = new MarkdownContext(
-                _context.BasePath,
-                includedFilePath.RemoveWorkingFolder(),
+                includeFilePath,
                 _context.IsInline,
-                _context.InclusionSet.Add(currentFilePath),
-                _context.Dependencies,
                 _context.EnableSourceInfo,
                 _context.Tokens,
-                _context.Mvb);
-
-            _context.Dependencies.Add(includedFilePath);
+                _context.Mvb,
+                _context.ReadFile,
+                _context.GetFilePath,
+                _context.RecursionDetector,
+                _context.Dependencies);
 
             var pipeline = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(context)

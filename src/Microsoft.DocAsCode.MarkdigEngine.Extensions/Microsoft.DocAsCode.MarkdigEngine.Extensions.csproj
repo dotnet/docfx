@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.14.9" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>

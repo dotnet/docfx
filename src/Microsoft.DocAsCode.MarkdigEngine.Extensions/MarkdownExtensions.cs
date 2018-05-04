@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
 
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             pipeline.PreciseSourceLocation = true;
-            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context.FilePath);
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context.GetFilePath(context.File));
 
             return pipeline;
         }
@@ -164,7 +164,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context));
-            if (!context.InclusionSet.IsEmpty)
+            if (context.RecursionDetector.Count() > 1)
             {
                 pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             }
