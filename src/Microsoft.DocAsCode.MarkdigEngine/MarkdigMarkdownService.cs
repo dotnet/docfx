@@ -31,6 +31,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         public MarkupResult Markup(string content, string filePath)
         {
+            return Markup(content, filePath, false);
+        }
+
+        public MarkupResult Markup(string content, string filePath, bool enableValidation)
+        {
             if (content == null)
             {
                 throw new ArgumentNullException(nameof(content));
@@ -41,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(content, filePath, false);
+            var options = CreateOptions(content, filePath, false, enableValidation);
             var pipeline = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(options)
                 .Build();
@@ -119,7 +124,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        private MarkdownContext CreateOptions(string content, string filePath, bool isInline)
+        private MarkdownContext CreateOptions(string content, string filePath, bool isInline, bool enableValidation = false)
         {
             object enableSourceInfoObj = null;
             _parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfoObj);
@@ -136,7 +141,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 null,
                 enableSourceInfo,
                 _parameters.Tokens,
-                _mvb);
+                _mvb,
+                enableValidation);
         }
     }
 }

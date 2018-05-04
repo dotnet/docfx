@@ -42,6 +42,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public MarkupResult Markup(string src, string path)
             {
+                return Markup(src, path, false);
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
                 var dependency = new HashSet<string>();
                 var json = _builder.CreateDfmEngine(new DfmJsonTokenTreeRender()).Markup(src, path, dependency);
                 if (json.Length != 0 && json.EndsWith(","))

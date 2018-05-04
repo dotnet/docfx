@@ -129,18 +129,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public MarkupResult Markup(string markdown, FileAndType ft)
         {
-            if (markdown == null)
-            {
-                throw new ArgumentNullException(nameof(markdown));
-            }
-            if (ft == null)
-            {
-                throw new ArgumentNullException(nameof(ft));
-            }
-            return MarkupCore(markdown, ft, false);
+            return Markup(markdown, ft, false);
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse)
+        {
+            return Markup(markdown, ft, omitParse, false);
+        }
+
+        public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
         {
             if (markdown == null)
             {
@@ -150,7 +147,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(ft));
             }
-            return MarkupCore(markdown, ft, omitParse);
+            return MarkupCore(markdown, ft, omitParse, enableValidation);
         }
 
         public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
@@ -158,11 +155,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             return MarkupUtility.Parse(markupResult, ft.File, SourceFiles);
         }
 
-        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
+        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
         {
             try
             {
-                var mr = MarkdownService.Markup(markdown, ft.File);
+                var mr = MarkdownService.Markup(markdown, ft.File, enableValidation);
                 if (omitParse)
                 {
                     return mr;

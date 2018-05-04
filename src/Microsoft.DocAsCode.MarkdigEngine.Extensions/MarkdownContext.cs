@@ -28,6 +28,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public bool IsInline { get; }
 
+        public bool EnableValidation { get; }
+
         public ImmutableHashSet<string> InclusionSet { get; }
 
         public HashSet<string> Dependencies { get; } = new HashSet<string>();
@@ -47,12 +49,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             HashSet<string> dependencies,
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
-            MarkdownValidatorBuilder mvb)
+            MarkdownValidatorBuilder mvb,
+            bool enableValidation = false)
         {
             Content = content;
             BasePath = basePath;
             FilePath = filePath;
             IsInline = isInline;
+            EnableValidation = enableValidation;
             InclusionSet = inclusionSet ?? ImmutableHashSet<string>.Empty;
             Dependencies = dependencies ?? new HashSet<string>();
 

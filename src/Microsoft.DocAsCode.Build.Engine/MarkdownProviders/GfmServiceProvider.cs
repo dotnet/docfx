@@ -25,6 +25,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public MarkupResult Markup(string src, string path)
             {
+                return Markup(src, path, false);
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
                 var html = Builder.CreateEngine(Renderer).Markup(src, path);
                 return new MarkupResult
                 {

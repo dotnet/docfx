@@ -65,6 +65,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
+            if (!context.EnableValidation)
+            {
+                return pipeline;
+            }
+
             var tokenRewriter = context.Mvb.CreateRewriter();
             var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
