@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build.build
 ## [NoNoNo](NotExisted.md) -->
 # [Article7](article7.md)
 ## [External](http://www.microsoft.com)
-");
+", "toc.md");
             Assert.Equal(2, toc.Count);
             Assert.Equal("Article1", toc[0].TocTitle);
             Assert.Equal("article1.md", toc[0].Href);
@@ -119,8 +119,8 @@ namespace Microsoft.Docs.Build.build
 >_<
 >_<
 >_<
-"));
-            Assert.Equal(@"Invalid toc file, Details: Unknown syntax at line 3:
+", "toc.md"));
+            Assert.Equal(@"Invalid toc file, FilePath: toc.md, Details: Unknown syntax at line 3:
 [bad]()
 >_<
 >_<".Replace("\r\n", "\n"), ex.Message.Replace("\r\n", "\n"));

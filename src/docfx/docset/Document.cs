@@ -100,6 +100,12 @@ namespace Microsoft.Docs.Build
             return Equals(obj as Document);
         }
 
+        public override string ToString()
+        {
+            // todo: add docset info
+            return FilePath;
+        }
+
         /// <summary>
         /// Resolves a new <see cref="Document"/> based on the <paramref name="relativePath"/>
         /// relative to this <see cref="Document"/>.

@@ -7,10 +7,11 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class InitialState : TableOfContentsParseState
     {
-        public InitialState()
+        public InitialState(string filePath)
         {
             Parents = new Stack<TableOfContentsInputItem>();
             Root = new List<TableOfContentsInputItem>();
+            FilePath = filePath;
         }
 
         public override int Level => 0;

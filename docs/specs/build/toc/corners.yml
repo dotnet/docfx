@@ -1,9 +1,5 @@
 ---
-# Corner cases
-# 1. TODO: Encoded href, like #ctor.md
-# 2. Title with #
-# 3. End with #
-
+# Title with # or End with #
 inputs:
   docfx.yml: |
     content:
@@ -18,11 +14,8 @@ inputs:
     ### [Topic1.2.1](/href1.2.1) ##
     # [Topic2](https://github.com/docfx) #
   docs/index.md:
-  docs/#ctor.md:
 outputs:
   docs/index.json: |
-    { "content": "" }
-  docs/#ctor.json: |
     { "content": "" }
   docs/toc.json: |
     {  
@@ -58,3 +51,42 @@ outputs:
           }
       ]
     }
+---
+# Circle toc referenceing 1
+inputs:
+  docfx.yml: |
+    content:
+      include:
+        - docs/**/*.md
+        - docs/**/*.yml
+  docs/toc.md: |
+    # [Topic1](index.md) #
+    ## Refernce toc
+    ### [Reference TOC 1.1](f1/toc.md)
+    ### [Reference TOC 1.2](f1/toc.md)
+    ### [Reference TOC 2.1](f2/toc.md)
+  docs/f1/toc.md: |
+    # [Topic1](../index.md)
+    ## [Reference TOC 1.1.1](f2/toc.md)
+  docs/f2/toc.md: |
+    # [Topic1](../index.md)
+    ## [Reference TOC back](../toc.md)
+  docs/index.md:
+exceptions:
+  system.applicationexception: |
+    Circle toc reference was detected, docs/toc.md-->docs/f2/toc.md-->docs/toc.md
+---
+# Circle toc referenceing 2
+inputs:
+  docfx.yml: |
+    content:
+      include:
+        - docs/**/*.md
+        - docs/**/*.yml
+  docs/toc.md: |
+    # [Topic1](index.md) #
+    ## [Reference itself](toc.md)
+  docs/index.md:
+exceptions:
+  system.applicationexception: |
+    Circle toc reference was detected, docs/toc.md-->docs/toc.md

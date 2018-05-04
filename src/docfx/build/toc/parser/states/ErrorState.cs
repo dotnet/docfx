@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         public override TableOfContentsParseState ApplyRules(TableOfContentsParseRule[] rules, ref string input, ref int lineNumber)
         {
-            throw new FormatException($"Invalid toc file, Details: {Message}");
+            throw new FormatException($"Invalid toc file, FilePath: {FilePath}, Details: {Message}");
         }
     }
 }

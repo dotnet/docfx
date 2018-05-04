@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,16 +19,26 @@ namespace Microsoft.Docs.Build
         public static async Task BuildDocset(TestSpec spec)
         {
             var docsetPath = spec.CreateDocset();
-
-            await Program.Main(new[] { "build", docsetPath });
-
-            var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            Assert.Equal(spec.Outputs.Count, outputs.Count());
-
-            foreach (var (file, content) in spec.Outputs)
+            try
             {
-                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
+                await Program.Main(new[] { "build", docsetPath });
+
+                var docsetOutputPath = Path.Combine(docsetPath, "_site");
+                var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+                Assert.Equal(spec.Outputs.Count, outputs.Count());
+
+                foreach (var (file, content) in spec.Outputs)
+                {
+                    VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
+                }
+            }
+            catch (Exception e)
+            {
+                //todo: change the validation way when we have report output
+                Assert.NotNull(spec.Exceptions);
+                Assert.NotEmpty(spec.Exceptions);
+                Assert.True(spec.Exceptions.ContainsKey($"{e.GetType()}"));
+                Assert.Equal(spec.Exceptions[$"{e.GetType()}"], e.Message);
             }
         }
 
