@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
@@ -159,7 +160,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             try
             {
-                var mr = MarkdownService.Markup(markdown, ft.File, enableValidation);
+                var mr = MarkdownService is MarkdigMarkdownService
+                    ? MarkdownService.Markup(markdown, ft.File, enableValidation)
+                    : MarkdownService.Markup(markdown, ft.File);
                 if (omitParse)
                 {
                     return mr;

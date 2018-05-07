@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Composition;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -26,11 +27,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public MarkupResult Markup(string src, string path)
             {
-                return Markup(src, path, false);
-            }
-
-            public MarkupResult Markup(string src, string path, bool enableValidation)
-            {
                 var json = builder.CreateEngine(Renderer).Markup(src, path);
                 if (json.Length != 0 && json.EndsWith(","))
                 {
@@ -41,6 +37,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // TODO: rename
                     Html = $"{{\"name\":\"0>0>markdown\",\"children\":[{json}]}}",
                 };
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
     }

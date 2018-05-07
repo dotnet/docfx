@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Composition;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -25,16 +26,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public MarkupResult Markup(string src, string path)
             {
-                return Markup(src, path, false);
-            }
-
-            public MarkupResult Markup(string src, string path, bool enableValidation)
-            {
                 var html = Builder.CreateEngine(Renderer).Markup(src, path);
                 return new MarkupResult
                 {
                     Html = html,
                 };
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
     }
