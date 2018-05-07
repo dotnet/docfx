@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var source = @"![scenario image][scenario]
 ## Scenario
 [scenario]: ./scenario.png";
-            var expected = @"<p><img src=""./scenario.png"" alt=""scenario image"" /></p>
+            var expected = @"<p><img src=""scenario.png"" alt=""scenario image"" /></p>
 <h2 id=""scenario"">Scenario</h2>
 ";
 

@@ -15,9 +15,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static ProcessDocumentDelegate GetProcessDocumentDelegate(string filePath)
         {
             return (MarkdownDocument document) =>
-           {
-               AddSourceInfoInDataEntry(document, filePath);
-           };
+            {
+                AddSourceInfoInDataEntry(document, filePath);
+            };
         }
 
         /// <summary>
