@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null,
             Func<object, string> getFilePath = null,
-            ImmutableStack<object> recursionDetector = null,
+            ImmutableStack<object> circularReferenceDetector = null,
             HashSet<object> dependencies = null)
         {
             File = filePath;
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             GetLink = getLink ?? ((path, relativeTo) => path);
             GetFilePath = getFilePath ?? (file => file.ToString());
             Dependencies = dependencies ?? new HashSet<object>();
-            CircularReferenceDetector = (recursionDetector ?? ImmutableStack<object>.Empty).Push(filePath);
+            CircularReferenceDetector = (circularReferenceDetector ?? ImmutableStack<object>.Empty).Push(filePath);
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)
