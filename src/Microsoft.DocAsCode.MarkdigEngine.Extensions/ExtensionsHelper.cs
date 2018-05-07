@@ -11,8 +11,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     using Markdig.Helpers;
     using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Microsoft.DocAsCode.Common;
 
     public static class ExtensionsHelper
     {
@@ -132,16 +130,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 c = slice.NextChar();
             }
-        }
-
-        public static void GenerateNodeWithCommentWrapper(HtmlRenderer htmlRenderer, string tag, string message, string rawContent, int lineNumber)
-        {
-            Logger.LogWarning(message, code: WarningCodes.Markdown.InvalidCodeSnippet, line: lineNumber.ToString());
-            htmlRenderer.Write("<!-- BEGIN ");
-            htmlRenderer.WriteEscape(tag).Write(": ");
-            htmlRenderer.WriteEscape(message).Write(" -->");
-            htmlRenderer.WriteEscape(rawContent);
-            htmlRenderer.Write("<!--END ").WriteEscape(tag).Write(" -->");
         }
 
         public static string TryGetStringBeforeChars(IEnumerable<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)

@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
+        public string CodeSourceBasePath { get; set; }
+
         [JsonIgnore]
         public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
 
@@ -29,7 +31,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 check.BuildInfo.Options.PreserveRawInlineComments != PreserveRawInlineComments ||
                 check.BuildInfo.Options.FilterConfigFile != FilterConfigFile ||
                 check.IsFileModified(FilterConfigFile) ||
-                (careMSBuildProperties && check.MSBuildPropertiesUpdated(MSBuildProperties));
+                (careMSBuildProperties && check.MSBuildPropertiesUpdated(MSBuildProperties)) ||
+                check.BuildInfo.Options.CodeSourceBasePath != CodeSourceBasePath
+                ;
         }
     }
 }

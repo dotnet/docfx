@@ -7,12 +7,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
 
     using MarkdigEngine.Extensions;
 
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Syntax;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
 
@@ -52,7 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return new MarkupResult
             {
                 Html = Markdown.ToHtml(content, pipeline),
-                Dependency = options.Dependencies.ToImmutableArray()
+                Dependency = options.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
             };
         }
 
@@ -117,7 +119,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 return new MarkupResult
                 {
                     Html = writer.ToString(),
-                    Dependency = options.Dependencies.ToImmutableArray(),
+                    Dependency = options.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
                 };
             }
         }
@@ -131,15 +133,44 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var enableSourceInfo = enabled == null || enabled.Value;
 
             return new MarkdownContext(
-                content,
-                _parameters.BasePath,
-                filePath,
+                (RelativePath)filePath,
                 isInline,
-                null,
-                null,
                 enableSourceInfo,
                 _parameters.Tokens,
-                _mvb);
+                _mvb,
+                ReadFile,
+                GetLink,
+                file => ((RelativePath)file).RemoveWorkingFolder());
+        }
+
+        private static string GetLink(string path, object relativeTo)
+        {
+            if (RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
+            {
+                return ((RelativePath)relativeTo + (RelativePath)path).RemoveWorkingFolder();
+            }
+            return path;
+        }
+
+        private (string content, object file) ReadFile(string path, object relativeTo)
+        {
+            if (!PathUtility.IsRelativePath(path))
+            {
+                return (null, null);
+            }
+
+            var currentFilePath = ((RelativePath)relativeTo).GetPathFromWorkingFolder();
+            var includedFilePath = ((RelativePath)path).BasedOn(currentFilePath);
+            var includedFilePathWithoutWorkingFolder = includedFilePath.RemoveWorkingFolder();
+
+            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePathWithoutWorkingFolder))
+            {
+                return (null, null);
+            }
+
+            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePathWithoutWorkingFolder);
+
+            return (content, includedFilePath);
         }
     }
 }

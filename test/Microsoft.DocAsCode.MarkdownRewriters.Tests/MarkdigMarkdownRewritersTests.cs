@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
         [Trait("Related", "MarkdigMarkdownRewriters")]
         public void TestMarkdigMarkdownRewriters_InlineLink()
         {
-            var source = "[cool **text**](this is a link)";
+            var source = "[cool **text**](this%20is%20a%20link)";
             var expected = "[cool **text**](this%20is%20a%20link)\n\n";
 
             var result = Rewrite(source, "topic.md");

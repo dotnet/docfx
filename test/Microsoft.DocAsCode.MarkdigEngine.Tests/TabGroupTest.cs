@@ -26,23 +26,23 @@ content-a
 # [title-b](#tab/b/c)
 content-b
 - - -",
-                $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">Tab group test case</p>
-<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""6"">
+                $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"">Tab group test case</p>
+<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">title-a</a>
+<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">title-a</a>
 </li>
 <li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
-<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">title-b</a>
+<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"">title-b</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
 
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">content-a</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""3"">content-a</p>
 </section>
 <section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
 
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">content-b</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""5"">content-b</p>
 </section>
 </div>
 "
@@ -65,38 +65,38 @@ content-a
 # [title-b or c](#tab/b+c)
 content-b or c
 - - -",
-                $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
+                $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_a+b"" role=""tab"" aria-controls=""tabpanel_{groupId}_a+b"" data-tab=""a+b"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title-a or b</a>
+<a href=""#tabpanel_{groupId}_a+b"" role=""tab"" aria-controls=""tabpanel_{groupId}_a+b"" data-tab=""a+b"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title-a or b</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_c"" data-tab=""c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">title-c</a>
+<a href=""#tabpanel_{groupId}_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_c"" data-tab=""c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""3"">title-c</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}_a+b"" role=""tabpanel"" data-tab=""a+b"">
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">content-a or b</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""2"">content-a or b</p>
 </section>
 <section id=""tabpanel_{groupId}_c"" role=""tabpanel"" data-tab=""c"" aria-hidden=""true"" hidden=""hidden"">
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">content-c</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""4"">content-c</p>
 </section>
 </div>
-<div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""10"">
+<div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
+<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""6"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_b+c"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_b+c"" data-tab=""b+c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b or c</a>
+<a href=""#tabpanel_{groupId}-1_b+c"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_b+c"" data-tab=""b+c"" tabindex=""-1"" sourceFile=""Topic.md"" sourceStartLineNumber=""8"">title-b or c</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">
 
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""7"" sourceEndLineNumber=""7"">content-a</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""7"">content-a</p>
 </section>
 <section id=""tabpanel_{groupId}-1_b+c"" role=""tabpanel"" data-tab=""b+c"" aria-hidden=""true"" hidden=""hidden"">
 
-<p sourceFile=""Topic.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""9"">content-b or c</p>
+<p sourceFile=""Topic.md"" sourceStartLineNumber=""9"">content-b or c</p>
 </section>
 </div>
 "
@@ -112,25 +112,25 @@ content-b or c
 a | b
 - | -
 c | d",
-$@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
+$@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_id"" role=""tab"" aria-controls=""tabpanel_{groupId}_id"" data-tab=""id"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title</a>
+<a href=""#tabpanel_{groupId}_id"" role=""tab"" aria-controls=""tabpanel_{groupId}_id"" data-tab=""id"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}_id"" role=""tabpanel"" data-tab=""id"">
 
-<table sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""5"">
+<table sourceFile=""Topic.md"" sourceStartLineNumber=""3"">
 <thead>
 <tr>
-<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">a</th>
-<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">b</th>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"">a</th>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"">b</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">c</td>
-<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">d</td>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"">c</td>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"">d</td>
 </tr>
 </tbody>
 </table>

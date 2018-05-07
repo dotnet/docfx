@@ -488,6 +488,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
             public Func<string, CRefTarget> ResolveCRef { get; set; }
             public bool PreserveRawInlineComments { get; set; }
             public SourceDetail Source { get; set; }
+            public string CodeSourceBasePath { get; set; }
         }
 
         #endregion

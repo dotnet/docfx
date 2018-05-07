@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Renderers;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
-    using Microsoft.DocAsCode.Common;
 
     /// <summary>
     /// Extension to enable extension IncludeFile.
@@ -52,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static void UpdateLinks(MarkdownObject markdownObject, MarkdownContext context)
         {
-            if (markdownObject == null || context == null || string.IsNullOrEmpty(context.FilePath)) return;
+            if (markdownObject == null || context == null || context.File == null) return;
 
             if (markdownObject is ContainerBlock containerBlock)
             {
@@ -80,14 +79,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (markdownObject is LinkInline linkInline)
                 {
-                    var originalUrl = linkInline.Url;
-                    if (RelativePath.IsRelativePath(originalUrl) && PathUtility.IsRelativePath(originalUrl) && !RelativePath.IsPathFromWorkingFolder(originalUrl) && !originalUrl.StartsWith("#"))
-                    {
-                        linkInline.GetDynamicUrl = () =>
-                        {
-                            return ((RelativePath)context.FilePath + (RelativePath)originalUrl).GetPathFromWorkingFolder();
-                        };
-                    }
+                    linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, context.File);
                 }
             }
         }
