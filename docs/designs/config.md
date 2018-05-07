@@ -138,21 +138,21 @@ globalMetadata:
   apiPlatform: dotnet
 fileMetadata:
 - include: _csharplang/spec/**
-  values:
+  value:
     ms.prod: .net
     ms.topic: language-reference
     ms.date: 07/01/2017
     ms.technology: devlang-csharp
     ms.author: wiwagn
 - include: _vblang/spec/**
-  values:
+  value:
     ms.prod: .net
     ms.topic: language-reference
     ms.date: 07/21/2017
     ms.technology: devlang-visual-basic
     ms.author: wiwagn
 - includ: csharp/quick-starts/**
-  values:
+  value:
     ms.technology: csharp-interactive
 - include:
   - docs/core/**
@@ -161,7 +161,7 @@ fileMetadata:
   - docs/fsharp/**
   - docs/standard/**
   - docs/visual-basic/**
-  values:
+  value:
     dev_langs: vb
 ```
 * fileMetadata: *file level config* pattern.
@@ -176,7 +176,7 @@ globalMetadata:
   layout: Conceptual
   breadcrumb_path: /enterprise-mobility-security/toc.json
 fileMetadata:
-  ATPDocs:
+  ATPDocs/:
     extendBreadcrumb: true
 routes:
   ATADocs/: advanced-threat-analytics
@@ -255,10 +255,9 @@ routes:
   docs-ref-autogen/beta/toc.yml: /rest/api/toc/toc.json
 fragments:
   docs-ref-autogen: docs-ref-authored
-metadata:
-  values:
-    breadcrumb_path: /rest/breadcrumb/toc.json
-    extendBreadcrumb: true
+globalMetadata:
+  breadcrumb_path: /rest/breadcrumb/toc.json
+  extendBreadcrumb: true
 monikerRanges:
   docs-ref-autogen/1.0/: graph-rest-1.0
   docs-ref-autogen/beta/: graph-rest-beta

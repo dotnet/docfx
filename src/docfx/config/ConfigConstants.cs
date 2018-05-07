@@ -5,5 +5,7 @@ namespace Microsoft.Docs.Build
         internal const string Content = "content";
         internal const string Include = "include";
         internal const string Exclude = "exclude";
+        internal const string FileMetadata = "fileMetadata";
+        internal const string Value = "value";
     }
 }
