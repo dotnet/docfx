@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <summary>
         /// Used to detect circular references.
         /// </summary>
-        public ImmutableStack<object> RecursionDetector { get; }
+        public ImmutableStack<object> CircularReferenceDetector { get; }
 
         /// <summary>
         /// Gets all the dependencies referenced by the root markdown context.
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             GetLink = getLink ?? ((path, relativeTo) => path);
             GetFilePath = getFilePath ?? (file => file.ToString());
             Dependencies = dependencies ?? new HashSet<object>();
-            RecursionDetector = (recursionDetector ?? ImmutableStack<object>.Empty).Push(filePath);
+            CircularReferenceDetector = (recursionDetector ?? ImmutableStack<object>.Empty).Push(filePath);
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)
