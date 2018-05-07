@@ -28,7 +28,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public bool IsInline { get; }
 
-
         /// <summary>
         /// Whether validation is enabled during markup.
         /// </summary>
