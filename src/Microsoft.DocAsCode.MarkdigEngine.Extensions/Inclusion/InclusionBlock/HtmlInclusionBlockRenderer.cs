@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private MarkdownContext _context;
         private MarkdownPipeline _pipeline;
-        private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
@@ -59,15 +58,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseDocfxExtensions(context)
                 .Build();
 
-            var result = Markdown.ToHtml(content, pipeline);
-            result = SkipYamlHeader(result);
-
-            renderer.Write(result);
-        }
-
-        private string SkipYamlHeader(string content)
-        {
-            return YamlHeaderRegex.Replace(content, "");
+            renderer.Write(Markdown.ToHtml(content, pipeline));
         }
     }
 }
