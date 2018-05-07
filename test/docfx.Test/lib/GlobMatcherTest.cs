@@ -197,10 +197,6 @@ namespace Microsoft.Docs.Build
             "*.cs",
             new string[] { "acs" },
             false)]
-        [InlineData(
-            "\\{\\}\\,",
-            new string[] { "{},"},
-            true)]
         public void GlobMatchWithoutDotMatchShouldMatchNonDotFiles(string pattern, string[] files, bool expected)
         {
             var glob = new GlobMatcher(pattern);

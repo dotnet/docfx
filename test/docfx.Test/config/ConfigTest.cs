@@ -41,9 +41,9 @@ namespace Microsoft.Docs.Build
 
             var expected = new GlobConfig<JObject>[]
             {
-                new GlobConfig<JObject>(new []{ "folder/**"}, null, new JObject(){["key1"] = "value1"}),
-                new GlobConfig<JObject>(new []{ "file"}, null, new JObject(){["key2"] = "value2"}),
-                new GlobConfig<JObject>(new []{ "special/chars/allowed\\{\\,\\}"}, null, new JObject(){["key3"] = "value3"}),
+                new GlobConfig<JObject>(new []{ "folder/"}, null, new JObject(){["key1"] = "value1"}, false),
+                new GlobConfig<JObject>(new []{ "file"}, null, new JObject(){["key2"] = "value2"}, false),
+                new GlobConfig<JObject>(new []{ "special/chars/allowed{,}"}, null, new JObject(){["key3"] = "value3"}, false),
             };
             AssertObjectEqual(expected, config.FileMetadata);
         }

@@ -135,28 +135,17 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in obj)
             {
+                if (key.Contains("*"))
+                    throw new Exception($"Glob is not supported in config key: '{key}'");
                 result.Add(new JObject
                 {
-                    [ConfigConstants.Include] = ToGlob(key),
+                    [ConfigConstants.Include] = key,
                     [ConfigConstants.Value] = value,
+                    [ConfigConstants.GlobMode] = false,
                 });
             }
 
             return result;
-        }
-
-        private static string ToGlob(string fileOrFolder)
-        {
-            if (fileOrFolder.Contains("*"))
-                throw new Exception($"Glob is not supported in config key: '{fileOrFolder}'");
-            if (fileOrFolder.EndsWith('/') || fileOrFolder.EndsWith('\\'))
-            {
-                return GlobMatcher.Escape(fileOrFolder) + "**";
-            }
-            else
-            {
-                return GlobMatcher.Escape(fileOrFolder);
-            }
         }
 
         private static JObject ExpandFiles(JToken file)

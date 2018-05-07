@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -102,20 +101,6 @@ namespace Microsoft.Docs.Build
             }
 
             return negate;
-        }
-
-        internal static string Escape(string path)
-        {
-            Debug.Assert(path != null);
-
-            var builder = new StringBuilder();
-            foreach (var c in path)
-            {
-                if (c == ',' || c == '{' || c == '}')
-                    builder.Append('\\');
-                builder.Append(c);
-            }
-            return builder.ToString();
         }
 
         /// <summary>
