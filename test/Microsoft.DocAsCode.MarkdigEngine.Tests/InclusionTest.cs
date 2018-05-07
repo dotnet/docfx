@@ -298,9 +298,9 @@ Paragraph1
 			var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
 			var dependency = marked.Dependency;
             var expected = @"<p>Paragraph1
-<a href=""%7E/r/b/a.md"">link</a>
-<a href=""%7E/r/link/md/c.md"">link</a>
-<img src=""%7E/r/b/img/img.jpg"" alt=""Image"" />
+<a href=""r/b/a.md"">link</a>
+<a href=""r/link/md/c.md"">link</a>
+<img src=""r/b/img/img.jpg"" alt=""Image"" />
 [!include[root](../root.md)]</p>
 <p><strong>Hello</strong></p>
 <p><strong>Hello</strong></p>
@@ -354,11 +354,11 @@ Paragraph1
 			TestUtility.WriteToFile("r/b/token.md", token);
 			TestUtility.WriteToFile("r/c/d/d.md", d);
 			var marked = TestUtility.MarkupWithoutSourceInfo(a, "r/a/a.md");
-			var expected = @"<p><img src=""%7E/r/img/img.jpg"" alt="""" />
+			var expected = @"<p><img src=""r/img/img.jpg"" alt="""" />
 <a href=""#anchor""></a>
-<a href=""%7E/r/a/a.md"">a</a>
-<a href=""%7E/r/b/invalid.md""></a>
-<a href=""%7E/r/c/d/d.md#anchor"">d</a></p>".Replace("\r\n", "\n") + "\n";
+<a href=""r/a/a.md"">a</a>
+<a href=""r/b/invalid.md""></a>
+<a href=""r/c/d/d.md#anchor"">d</a></p>".Replace("\r\n", "\n") + "\n";
 			var dependency = marked.Dependency;
 			Assert.Equal(expected, marked.Html);
 			Assert.Equal(
@@ -665,7 +665,7 @@ Test Include File
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
-<p><img src=""%7E/r/include/media/refb.png"" alt=""img"" /></p>
+<p><img src=""r/include/media/refb.png"" alt=""img"" /></p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 

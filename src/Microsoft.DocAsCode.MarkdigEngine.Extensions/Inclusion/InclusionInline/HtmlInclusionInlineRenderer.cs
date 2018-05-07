@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.Tokens,
                 _context.Mvb,
                 _context.ReadFile,
+                _context.GetLink,
                 _context.GetFilePath,
                 _context.RecursionDetector,
                 _context.Dependencies);

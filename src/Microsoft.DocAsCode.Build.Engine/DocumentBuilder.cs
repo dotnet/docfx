@@ -233,7 +233,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 else if (emptyContentGroups.Count > 0)
                 {
                     Logger.LogWarning(
-                        $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured."
+                        $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
                         code: WarningCodes.Build.EmptyInputContents);
                 }
 
