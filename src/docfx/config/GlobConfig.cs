@@ -30,16 +30,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool GlobMode;
+        public bool IsGlob;
 
-        public GlobConfig(string[] include, string[] exclude, T value, bool globMode = true)
+        public GlobConfig(string[] include, string[] exclude, T value, bool isGlob = true)
         {
             Debug.Assert(value != null);
 
             Include = include ?? Array.Empty<string>();
             Exclude = exclude ?? Array.Empty<string>();
             Value = value;
-            GlobMode = globMode;
+            IsGlob = isGlob;
         }
     }
 }

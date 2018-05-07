@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                 {
                     [ConfigConstants.Include] = key,
                     [ConfigConstants.Value] = value,
-                    [ConfigConstants.GlobMode] = false,
+                    [ConfigConstants.IsGlob] = false,
                 });
             }
 

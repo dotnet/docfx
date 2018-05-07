@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
         internal const string Exclude = "exclude";
         internal const string FileMetadata = "fileMetadata";
         internal const string Value = "value";
-        internal const string GlobMode = "globMode";
+        internal const string IsGlob = "isGlob";
     }
 }
