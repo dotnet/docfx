@@ -142,7 +142,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 _mvb,
                 enableValidation,
                 ReadFile,
+                GetLink,
                 file => ((RelativePath)file).RemoveWorkingFolder());
+        }
+
+        private static string GetLink(string path, object relativeTo)
+        {
+            if (RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
+            {
+                return ((RelativePath)relativeTo + (RelativePath)path).RemoveWorkingFolder();
+            }
+            return path;
         }
 
         private (string content, object file) ReadFile(string path, object relativeTo)

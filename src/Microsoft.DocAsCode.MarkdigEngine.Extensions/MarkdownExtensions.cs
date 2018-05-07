@@ -169,10 +169,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context));
-            if (context.RecursionDetector.Count() > 1)
-            {
-                pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
-            }
+            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             return pipeline;
         }
 

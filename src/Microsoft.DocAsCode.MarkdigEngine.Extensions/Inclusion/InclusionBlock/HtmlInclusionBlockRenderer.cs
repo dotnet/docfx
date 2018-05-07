@@ -34,9 +34,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            if (_context.RecursionDetector.Contains(includeFilePath))
+            if (_context.CircularReferenceDetector.Contains(includeFilePath))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.RecursionDetector)} -> {includeFilePath}\"");
+                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
                 renderer.Write(inclusion.Context.GetRaw());
                 return;
             }
@@ -51,8 +51,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.Mvb,
                 _context.EnableValidation,
                 _context.ReadFile,
+                _context.GetLink,
                 _context.GetFilePath,
-                _context.RecursionDetector,
+                _context.CircularReferenceDetector,
                 _context.Dependencies);
 
             var pipeline = new MarkdownPipelineBuilder()
