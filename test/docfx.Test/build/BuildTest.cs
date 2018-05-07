@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,19 +16,32 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string path, string yaml)
+        public static async Task BuildDocset(string ymlFilePath, string headerName)
         {
-            var (docsetPath, spec) = TestHelper.CreateDocset(path, yaml);
+            var spec = TestHelper.FindTestSpecInFile(ymlFilePath, headerName);
+            Assert.NotNull(spec);
 
-            await Program.Main(new[] { "build", docsetPath });
-
-            var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            Assert.Equal(spec.Outputs.Count, outputs.Count());
-
-            foreach (var (file, content) in spec.Outputs)
+            var docsetPath = spec.CreateDocset();
+            try
             {
-                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
+                await Program.Main(new[] { "build", docsetPath });
+
+                var docsetOutputPath = Path.Combine(docsetPath, "_site");
+                var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+                Assert.Equal(spec.Outputs.Count, outputs.Count());
+
+                foreach (var (file, content) in spec.Outputs)
+                {
+                    VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
+                }
+            }
+            catch (Exception e)
+            {
+                //todo: change the validation way when we have report output
+                Assert.NotNull(spec.Exceptions);
+                Assert.NotEmpty(spec.Exceptions);
+                Assert.True(spec.Exceptions.ContainsKey($"{e.GetType()}"));
+                Assert.Equal(spec.Exceptions[$"{e.GetType()}"], e.Message);
             }
         }
 

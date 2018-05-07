@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.IO;
+
 namespace Microsoft.Docs.Build
 {
     internal static class HrefUtility
     {
-        private static char[] s_hrefSplitChars = { '#', '?' };
-
         /// <summary>
         /// Split href to path, fragement and query
         /// </summary>
@@ -49,6 +50,16 @@ namespace Microsoft.Docs.Build
             }
 
             return (path, fragment, query);
+        }
+
+        public static bool IsRelativeHref(string str)
+        {
+            return !(str.StartsWith('#')
+                || str.StartsWith('/')
+                || str.StartsWith('\\')
+                || string.IsNullOrWhiteSpace(str)
+                || !Uri.TryCreate(str, UriKind.Relative, out _)
+                || Path.IsPathRooted(str));
         }
     }
 }

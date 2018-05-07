@@ -48,5 +48,82 @@ namespace Microsoft.Docs.Build.build
             var tocMap = builder.Build();
             Assert.Equal(expectedTocPath, tocMap.FindTocRelativePath(document));
         }
+
+        [Fact]
+        public static void TocParserLoadMarkdownToc()
+        {
+            var toc = TableOfContentsParser.LoadMdTocModel(@"
+# [Article1](article1.md)
+## Container1 ##
+### [Article2](article2.md ""Article 2"") ## 
+### [Article3](article3.md)     
+## Container2
+### [Article4](article4.md)
+#### [Article5](article5.md)
+## [Article6](article6.md)
+<!-- this is comment.
+## [NoNoNo](NotExisted.md) -->
+# [Article7](article7.md)
+## [External](http://www.microsoft.com)
+", "toc.md");
+            Assert.Equal(2, toc.Count);
+            Assert.Equal("Article1", toc[0].TocTitle);
+            Assert.Equal("article1.md", toc[0].Href);
+            {
+                var toc0 = toc[0].Children;
+                Assert.Equal(3, toc0.Count);
+                Assert.Equal("Container1", toc0[0].TocTitle);
+                Assert.Null(toc0[0].Href);
+                {
+                    var toc0_0 = toc0[0].Children;
+                    Assert.Equal(2, toc0_0.Count);
+                    Assert.Equal("Article 2", toc0_0[0].TocTitle);
+                    Assert.Equal("article2.md", toc0_0[0].Href);
+                    Assert.Equal("Article3", toc0_0[1].TocTitle);
+                    Assert.Equal("article3.md", toc0_0[1].Href);
+                }
+                Assert.Equal("Container2", toc0[1].TocTitle);
+                Assert.Null(toc0[1].Href);
+                {
+                    var toc0_1 = toc0[1].Children;
+                    Assert.Single(toc0_1);
+                    Assert.Equal("Article4", toc0_1[0].TocTitle);
+                    Assert.Equal("article4.md", toc0_1[0].Href);
+                    {
+                        var toc0_1_0 = toc0_1[0].Children;
+                        Assert.Single(toc0_1_0);
+                        Assert.Equal("Article5", toc0_1_0[0].TocTitle);
+                        Assert.Equal("article5.md", toc0_1_0[0].Href);
+                    }
+                }
+                Assert.Equal("Article6", toc0[2].TocTitle);
+                Assert.Equal("article6.md", toc0[2].Href);
+            }
+            Assert.Equal("Article7", toc[1].TocTitle);
+            Assert.Equal("article7.md", toc[1].Href);
+            {
+                var toc1 = toc[1].Children;
+                Assert.Single(toc1);
+                Assert.Equal("External", toc1[0].TocTitle);
+                Assert.Equal("http://www.microsoft.com", toc1[0].Href);
+            }
+        }
+
+        [Fact]
+        public static void TocParserLoadBadMarkdownToc()
+        {
+            var ex = Assert.Throws<FormatException>(() =>
+                TableOfContentsParser.LoadMdTocModel(@"
+#[good](test.md)
+[bad]()
+>_<
+>_<
+>_<
+", "toc.md"));
+            Assert.Equal(@"Invalid toc file, FilePath: toc.md, Details: Unknown syntax at line 3:
+[bad]()
+>_<
+>_<".Replace("\r\n", "\n"), ex.Message.Replace("\r\n", "\n"));
+        }
     }
 }

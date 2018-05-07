@@ -37,10 +37,12 @@ namespace Microsoft.Docs.Test
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task RestoreDependencies(string path, string yaml)
+        public static async Task RestoreDependencies(string ymlFile, string headerName)
         {
-            var (docsetPath, spec) = TestHelper.CreateDocset(path, yaml);
+            var spec = TestHelper.FindTestSpecInFile(ymlFile, headerName);
+            Assert.NotNull(spec);
 
+            var docsetPath = spec.CreateDocset();
             await Program.Main(new[] { "restore", docsetPath });
 
             foreach (var (file, content) in spec.Restorations)

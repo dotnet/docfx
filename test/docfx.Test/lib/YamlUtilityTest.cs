@@ -261,6 +261,14 @@ ValueBasic:
             Assert.False(value.ValueBasic.D);
         }
 
+        [Fact]
+        public void TestStringEmpty()
+        {
+            var yaml = String.Empty;
+            var value = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
+            Assert.Null(value);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }

@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
-                var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)));
+                var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject());
                 return configObject.ToObject<Config>(JsonUtililty.DefaultDeserializer);
             }
             catch (Exception e)

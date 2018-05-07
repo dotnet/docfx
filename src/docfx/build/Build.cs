@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,10 +34,29 @@ namespace Microsoft.Docs.Build
 
         private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            return ParallelUtility.ForEach(files, file => BuildOneFile(context, file, tocMap));
+            var manifest = new ConcurrentDictionary<Document, byte>();
+            var references = new ConcurrentDictionary<Document, byte>();
+
+            return ParallelUtility.ForEach(
+                files,
+                (file, buildChild) =>
+                {
+                    if (!ShouldBuildFile(file, manifest))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    return BuildOneFile(context, file, tocMap, item =>
+                    {
+                        if (ShouldBuildFile(item, references))
+                        {
+                            buildChild(item);
+                        }
+                    });
+                });
         }
 
-        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap)
+        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
@@ -46,7 +67,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build(context, file, tocMap);
                 case ContentType.TableOfContents:
-                    return BuildTableOfContents.Build(context, file);
+                    return BuildTableOfContents.Build(context, file, buildChild);
                 default:
                     return Task.CompletedTask;
             }
@@ -56,6 +77,26 @@ namespace Microsoft.Docs.Build
         {
             context.Copy(file, file.FilePath);
             return Task.CompletedTask;
+        }
+
+        private static bool ShouldBuildFile(Document itemToBuild, ConcurrentDictionary<Document, byte> set)
+        {
+            if (itemToBuild.OutputPath == null)
+            {
+                return false;
+            }
+
+            if (itemToBuild.ContentType == ContentType.Unknown)
+            {
+                return false;
+            }
+
+            if (!set.TryAdd(itemToBuild, 0))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
