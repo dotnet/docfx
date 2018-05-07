@@ -15,9 +15,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
     {
+        private readonly MarkdownContext _context;
+
+        public YamlHeaderRenderer(MarkdownContext context)
+        {
+            _context = context;
+        }
+
         protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
         {
+            if (_context.IsInclude)
+            {
+                return;
+            }
+
             var content = obj.Lines.ToString();
+
             try
             {
                 using (StringReader reader = new StringReader(content))

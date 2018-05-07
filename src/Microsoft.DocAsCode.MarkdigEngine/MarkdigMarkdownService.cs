@@ -132,6 +132,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return new MarkdownContext(
                 (RelativePath)filePath,
                 isInline,
+                false, /* isInclude */
                 enableSourceInfo,
                 _parameters.Tokens,
                 _mvb,

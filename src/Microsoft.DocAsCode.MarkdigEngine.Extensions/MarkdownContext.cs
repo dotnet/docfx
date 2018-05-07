@@ -37,6 +37,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool IsInline { get; }
 
         /// <summary>
+        /// Whether the content is included by other markdown files.
+        /// </summary>
+        public bool IsInclude { get; }
+
+        /// <summary>
         /// Whether source info is enabled in output.
         /// </summary>
         public bool EnableSourceInfo { get; }
@@ -79,6 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public MarkdownContext(
             object filePath,
             bool isInline,
+            bool isInclude,
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb,
@@ -90,6 +96,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             File = filePath;
             IsInline = isInline;
+            IsInclude = isInclude;
             EnableSourceInfo = enableSourceInfo;
             Mvb = mvb;
 

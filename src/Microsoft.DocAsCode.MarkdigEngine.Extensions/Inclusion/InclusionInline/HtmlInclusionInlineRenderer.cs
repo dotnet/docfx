@@ -42,7 +42,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var context = new MarkdownContext(
                 includeFilePath,
-                true,
+                true, /* isInline */
+                true, /* isInclude */
                 _context.EnableSourceInfo,
                 _context.Tokens,
                 _context.Mvb,
