@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using MarkdigEngine.Extensions;
 
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -92,7 +93,7 @@ this is also warning</p>
                     { LineNumberExtension.EnableSourceInfo, false }
                 }
             };
-            var service = new MarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
             var marked = service.Markup(source, "Topic.md");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
@@ -363,7 +364,7 @@ no-note text 2-2</p>
             {
                 BasePath = "."
             };
-            var service = new MarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
             var content = service.Markup(source, "Topic.md");
 
             // assert

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
     using Xunit;
@@ -447,7 +448,7 @@ markdown token1.md content end.";
 			{
 				BasePath = "."
 			};
-			var service = new MarkdigMarkdownService(parameter);
+			var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
 			//var marked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md");
 			var marked = service.Markup("place", "holder");
 			var dependency = marked.Dependency;
@@ -535,9 +536,9 @@ markdown a.md a.md content end.";
 			{
 				BasePath = "."
 			};
-			var service = new MarkdigMarkdownService(parameter);
-			//var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
-			var rootMarked = service.Markup("place", "holder");
+			var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
+            //var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
+            var rootMarked = service.Markup("place", "holder");
 			var rootDependency = rootMarked.Dependency;
 			Assert.Equal(@"<p>markdown root.md main content start.</p>
 <p>mardown a content in root.md content start</p>

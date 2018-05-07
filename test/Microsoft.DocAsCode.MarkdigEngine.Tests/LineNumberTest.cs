@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using MarkdigEngine.Extensions;
 
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -67,7 +68,7 @@ line1
                     { LineNumberExtension.EnableSourceInfo, true }
                 }
             };
-            var service = new MarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
             var marked = service.Markup(@"[!code[tag-test](LineNumber/Program.cs#Tag)]", "Topic.md");
 
             // assert

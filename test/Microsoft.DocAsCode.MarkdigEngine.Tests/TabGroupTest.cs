@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using MarkdigEngine.Extensions;
 
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -154,7 +155,7 @@ $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sou
                     { LineNumberExtension.EnableSourceInfo, true }
                 }
             };
-            var service = new MarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
             return service.Markup(source, "Topic.md");
         }
     }

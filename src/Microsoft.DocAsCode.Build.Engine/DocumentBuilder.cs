@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);
-                _container = CompositionContainer.GetContainer(assemblyList);
+                _container = CompositionContainer.GetContainer(assemblyList.Distinct());
                 _container.SatisfyImports(this);
                 _assemblyList = assemblyList;
             }
@@ -369,15 +369,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
 
-            return new MarkdigMarkdownService(
-                new MarkdownServiceParameters
-                {
-                    BasePath = parameters.Files.DefaultBaseDir,
-                    TemplateDir = parameters.TemplateDir,
-                    Extensions = parameters.MarkdownEngineParameters,
-                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
-                },
-                new CompositionContainer(CompositionContainer.DefaultContainer));
+            return new MarkdigMarkdownServiceCreator(new CompositionContainer(CompositionContainer.DefaultContainer))
+                .CreateMarkdigMarkdownService(
+                    new MarkdownServiceParameters
+                    {
+                        BasePath = parameters.Files.DefaultBaseDir,
+                        TemplateDir = parameters.TemplateDir,
+                        Extensions = parameters.MarkdownEngineParameters,
+                        Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                    });
         }
 
         private void ClearCacheExcept(string subFolder)
