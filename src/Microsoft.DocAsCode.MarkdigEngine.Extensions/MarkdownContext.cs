@@ -27,21 +27,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public delegate string GetLinkDelegate(string path, object relativeTo);
 
         /// <summary>
-        /// Identifies the file that owns this content.
-        /// </summary>
-        public object File { get; }
-
-        /// <summary>
-        /// Whether the content is parsed as inline only.
-        /// </summary>
-        public bool IsInline { get; }
-
-        /// <summary>
-        /// Whether the content is included by other markdown files.
-        /// </summary>
-        public bool IsInclude { get; }
-
-        /// <summary>
         /// Whether source info is enabled in output.
         /// </summary>
         public bool EnableSourceInfo { get; }
@@ -71,32 +56,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public Func<object, string> GetFilePath { get; }
 
-        /// <summary>
-        /// Used to detect circular references.
-        /// </summary>
-        public ImmutableStack<object> CircularReferenceDetector { get; }
-
-        /// <summary>
-        /// Gets all the dependencies referenced by the root markdown context.
-        /// </summary>
-        public HashSet<object> Dependencies { get; }
-
         public MarkdownContext(
-            object filePath,
-            bool isInline,
-            bool isInclude,
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null,
-            Func<object, string> getFilePath = null,
-            ImmutableStack<object> circularReferenceDetector = null,
-            HashSet<object> dependencies = null)
+            Func<object, string> getFilePath = null)
         {
-            File = filePath;
-            IsInline = isInline;
-            IsInclude = isInclude;
             EnableSourceInfo = enableSourceInfo;
             Mvb = mvb;
 
@@ -104,17 +71,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             ReadFile = readFile ?? ReadFileDefault;
             GetLink = getLink ?? ((path, relativeTo) => path);
             GetFilePath = getFilePath ?? (file => file.ToString());
-            Dependencies = dependencies ?? new HashSet<object>();
-            CircularReferenceDetector = (circularReferenceDetector ?? ImmutableStack<object>.Empty).Push(filePath);
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)
         {
             var target = relativeTo != null ? path : Path.Combine(relativeTo.ToString(), path);
 
-            if (System.IO.File.Exists(target))
+            if (File.Exists(target))
             {
-                return (System.IO.File.ReadAllText(target), target);
+                return (File.ReadAllText(target), target);
             }
 
             return (null, null);

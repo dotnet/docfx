@@ -11,13 +11,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class YamlHeaderExtension : IMarkdownExtension
     {
-        private readonly MarkdownContext _context;
-
-        public YamlHeaderExtension(MarkdownContext context)
-        {
-            _context = context;
-        }
-
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             if (!pipeline.BlockParsers.Contains<YamlFrontMatterParser>())
@@ -31,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if (!renderer.ObjectRenderers.Contains<YamlHeaderRenderer>())
             {
-                renderer.ObjectRenderers.InsertBefore<CodeBlockRenderer>(new YamlHeaderRenderer(_context));
+                renderer.ObjectRenderers.InsertBefore<CodeBlockRenderer>(new YamlHeaderRenderer());
             }
         }
     }

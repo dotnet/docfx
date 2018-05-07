@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
-
     using Microsoft.DocAsCode.Common;
 
     using Markdig;
@@ -51,9 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseValidators(context)
                 .UseInteractiveCode()
                 .UseRow()
-                .UseNestedColumn()
-                // Do not add extension after the InineParser
-                .UseInineParserOnly(context);
+                .UseNestedColumn();
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -72,22 +68,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 visitor.Visit(document);
             };
-
-            return pipeline;
-        }
-
-        /// <summary>
-        /// This extension removes all the block parser except paragragh. Please use this extension in the last.
-        /// </summary>
-        /// <param name="pipeline"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static MarkdownPipelineBuilder UseInineParserOnly(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
-        {
-            if (context.IsInline)
-            {
-                pipeline.Extensions.Add(new InlineOnlyExtentsion());
-            }
 
             return pipeline;
         }
@@ -156,7 +136,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             pipeline.PreciseSourceLocation = true;
-            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context.GetFilePath(context.File));
+            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context);
 
             return pipeline;
         }
@@ -206,7 +186,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new YamlHeaderExtension(context));
+            pipeline.Extensions.Insert(0, new YamlHeaderExtension());
             return pipeline;
         }
 

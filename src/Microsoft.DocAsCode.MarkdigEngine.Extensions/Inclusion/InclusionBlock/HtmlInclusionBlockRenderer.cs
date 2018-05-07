@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     using Markdig;
     using Markdig.Renderers;
@@ -24,42 +23,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.Context.IncludedFilePath, _context.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
-                renderer.Write(inclusion.Context.GetRaw());
+                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            if (_context.CircularReferenceDetector.Contains(includeFilePath))
+            if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
-                renderer.Write(inclusion.Context.GetRaw());
+                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            _context.Dependencies.Add(includeFilePath);
-
-            var context = new MarkdownContext(
-                includeFilePath,
-                _context.IsInline,
-                true, /* isInclude */
-                _context.EnableSourceInfo,
-                _context.Tokens,
-                _context.Mvb,
-                _context.ReadFile,
-                _context.GetLink,
-                _context.GetFilePath,
-                _context.CircularReferenceDetector,
-                _context.Dependencies);
-
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
-                .Build();
-
-            renderer.Write(Markdown.ToHtml(content, pipeline));
+            using (InclusionContext.PushFile(includeFilePath))
+            {
+                renderer.Write(Markdown.ToHtml(content, _pipeline));
+            }
         }
     }
 }

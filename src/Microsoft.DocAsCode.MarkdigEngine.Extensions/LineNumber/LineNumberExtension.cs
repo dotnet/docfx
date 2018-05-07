@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public const string EnableSourceInfo = "EnableSourceInfo";
 
-        public static ProcessDocumentDelegate GetProcessDocumentDelegate(string filePath)
+        public static ProcessDocumentDelegate GetProcessDocumentDelegate(MarkdownContext context)
         {
             return (MarkdownDocument document) =>
             {
-                AddSourceInfoInDataEntry(document, filePath);
+                AddSourceInfoInDataEntry(document, context.GetFilePath(InclusionContext.File));
             };
         }
 
