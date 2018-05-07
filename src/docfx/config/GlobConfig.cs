@@ -25,6 +25,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public T Value;
 
+        /// <summary>
+        /// Gets whether the value of <see cref="Include"/> and <see cref="Exclude"/> is glob pattern.
+        /// </summary>
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool GlobMode;
