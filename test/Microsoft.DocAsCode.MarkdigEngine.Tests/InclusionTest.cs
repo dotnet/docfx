@@ -165,7 +165,7 @@ This is a file A included by another file.
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
 <p>This is a file A included by another file.</p>
 <h1 id=""hello-include-file-b"">Hello Include File B</h1>
-<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[refa](a.md)]: Circular dependency found in &quot;r/b.md&quot; -->[!include[refa](a.md)]<!--END ERROR INCLUDE -->";
+[!include[refa](a.md)]";
 
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
         }
@@ -215,7 +215,7 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
-<p>Test Inline Included File: This is a <strong>included</strong> token with <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](~/r/root.md)]: Circular dependency found in &quot;r/a.md&quot; -->[!include[root](~/r/root.md)]<!--END ERROR INCLUDE -->.</p>
+<p>Test Inline Included File: This is a <strong>included</strong> token with [!include[root](~/r/root.md)].</p>
 ";
 
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
@@ -301,10 +301,10 @@ Paragraph1
 <a href=""%7E/r/b/a.md"">link</a>
 <a href=""%7E/r/link/md/c.md"">link</a>
 <img src=""%7E/r/b/img/img.jpg"" alt=""Image"" />
-<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>
+[!include[root](../root.md)]</p>
 <p><strong>Hello</strong></p>
 <p><strong>Hello</strong></p>
-<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[external](http://microsoft.com/a.md)]: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n");
+[!include[external](http://microsoft.com/a.md)]".Replace("\r\n", "\n");
 
             Assert.Equal(expected, marked.Html);
 			Assert.Equal(
@@ -596,7 +596,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
 			var marked = TestUtility.MarkupWithoutSourceInfo(root, "root.md");
 			var dependency = marked.Dependency;
-            var expected = "<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md)]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n";
+            var expected = "<p>Inline ## Inline inclusion do not parse header [!include[root](root.md)]\nInline <strong>Hello</strong></p>\n";
 
             Assert.Equal(expected, marked.Html);
 			Assert.Equal(
