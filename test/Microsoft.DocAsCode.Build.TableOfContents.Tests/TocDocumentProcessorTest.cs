@@ -564,6 +564,34 @@ items:
         }
 
         [Fact]
+        public void ProcessMarkdownTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/toc.yml";
+            var toc = _fileCreator.CreateFile($@"
+#Topic
+##[ReferencedToc]({pathToReferencedToc})
+", FileType.MarkdownToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/TOC.md";
+            var toc = _fileCreator.CreateFile($@"
+- name: Topic
+  href: {pathToReferencedToc}
+", FileType.YamlToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+        }
+
+        [Fact]
         public void ProcessYamlTocWithTocHrefShouldSucceed()
         {
             var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
