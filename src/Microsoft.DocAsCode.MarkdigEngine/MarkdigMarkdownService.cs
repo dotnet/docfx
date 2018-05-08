@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -15,7 +14,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using Markdig.Renderers;
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
 
     public class MarkdigMarkdownService : IMarkdownService
@@ -27,11 +25,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
-            List<IMarkdownObjectValidatorProvider> validatorProviders,
-            IEnumerable<MarkdownTagValidationRule> enabledTagRules)
+            ICompositionContainer container = null)
         {
             _parameters = parameters;
-            _mvb = new MarkdownValidatorBuilder(validatorProviders, enabledTagRules);
+            _mvb = new MarkdownValidatorBuilderCreator(parameters, container).CreateMarkdownValidatorBuilder();
         }
 
         public MarkupResult Markup(string content, string filePath)

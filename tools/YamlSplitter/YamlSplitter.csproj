@@ -12,7 +12,6 @@
     <PackageReference Include="YamlDotNet.Signed" Version="4.2.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.SchemaDriven\Microsoft.DocAsCode.Build.SchemaDriven.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />

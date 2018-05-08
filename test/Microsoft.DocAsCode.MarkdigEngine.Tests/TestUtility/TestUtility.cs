@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using MarkdigEngine.Extensions;
 
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -33,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             {
                 BasePath = "."
             };
-            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownService(parameter);
 
             return service.Markup(content, filePath ?? string.Empty);
         }
@@ -48,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                     { LineNumberExtension.EnableSourceInfo, false }
                 }
             };
-            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownService(parameter);
 
             return service.Markup(content, filePath ?? string.Empty);
         }
@@ -75,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 }
             };
 
-            return new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
+            return new MarkdigMarkdownService(parameter);
         }
     }
 }

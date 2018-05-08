@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.MarkdigEngine
 {
     using System.Composition;
 
@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new MarkdigMarkdownServiceCreator(Container).CreateMarkdigMarkdownService(parameters);
+            return new MarkdigMarkdownService(parameters, Container);
         }
     }
 }

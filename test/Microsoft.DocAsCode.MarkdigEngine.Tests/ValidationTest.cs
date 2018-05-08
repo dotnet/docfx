@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using Markdig;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
@@ -38,13 +37,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 <script>alert(1);</script>";
 
-            var serviceCreator = new MarkdigMarkdownServiceCreator(new CompositionContainer(
+            var creator = new MarkdownValidatorBuilderCreator(
+                null,
+                new CompositionContainer(
                     new ContainerConfiguration()
                         .WithAssembly(typeof(ValidationTest).Assembly)
                         .CreateContainer()));
-            serviceCreator.LoadValidators(null);
 
-            serviceCreator.AddTagValidators(new[]
+            creator.AddTagValidators(new[]
             {
                 new MarkdownTagValidationRule
                 {
@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 }
             });
 
-            serviceCreator.AddValidators(new[]
+            creator.AddValidators(new[]
             {
                 new MarkdownValidationRule
                 {
@@ -82,9 +82,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 }
             });
 
-            serviceCreator.LoadEnabledRulesProvider();
+            creator.LoadEnabledRulesProvider();
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, serviceCreator, listener);
+            var html = Markup(content, creator, listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -129,10 +129,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 <script>alert(1);</script>";
 
-            var serviceCreator = new MarkdigMarkdownServiceCreator(null);
-            serviceCreator.LoadValidators(null);
+            var creator = new MarkdownValidatorBuilderCreator(null, null);
 
-            serviceCreator.AddTagValidators(new[]
+            creator.AddTagValidators(new[]
             {
                 new MarkdownTagValidationRule
                 {
@@ -145,7 +144,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             });
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, serviceCreator, listener);
+            var html = Markup(content, creator, listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -176,14 +175,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
 <script>alert(1);</script> end.";
 
-            var serviceCreator = new MarkdigMarkdownServiceCreator(
+            var creator = new MarkdownValidatorBuilderCreator(
+                null,
                 new CompositionContainer(
                     new ContainerConfiguration()
                         .WithAssembly(typeof(ValidationTest).Assembly)
                         .CreateContainer()));
-            serviceCreator.LoadValidators(null);
 
-            serviceCreator.AddTagValidators(new[]
+            creator.AddTagValidators(new[]
             {
                 new MarkdownTagValidationRule
                 {
@@ -214,7 +213,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             });
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, serviceCreator, listener);
+            var html = Markup(content, creator, listener);
 
             Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
 <script>alert(1);</script> end.
@@ -331,10 +330,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.Equal(expectedMessage, message);
         }
 
-        private string Markup(string content, MarkdigMarkdownServiceCreator serviceCreator, TestLoggerListener listener = null)
+        private string Markup(string content, MarkdownValidatorBuilderCreator creator, TestLoggerListener listener = null)
         {
-            var mvb = new MarkdownValidatorBuilder(serviceCreator.ValidatorProviders, serviceCreator.GetEnabledTagRules());
-            return Markup(content, mvb.CreateRewriter(), listener);
+            return Markup(content, creator.CreateMarkdownValidatorBuilder().CreateRewriter(), listener);
         }
 
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)

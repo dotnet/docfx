@@ -390,15 +390,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
 
-            return new MarkdigMarkdownServiceCreator(new CompositionContainer(CompositionContainer.DefaultContainer))
-                .CreateMarkdigMarkdownService(
-                    new MarkdownServiceParameters
-                    {
-                        BasePath = parameters.Files.DefaultBaseDir,
-                        TemplateDir = parameters.TemplateDir,
-                        Extensions = parameters.MarkdownEngineParameters,
-                        Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
-                    });
+            return new MarkdigMarkdownService(
+                new MarkdownServiceParameters
+                {
+                    BasePath = parameters.Files.DefaultBaseDir,
+                    TemplateDir = parameters.TemplateDir,
+                    Extensions = parameters.MarkdownEngineParameters,
+                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                },
+                new CompositionContainer(CompositionContainer.DefaultContainer));
         }
 
         private void ClearCacheExcept(string subFolder)

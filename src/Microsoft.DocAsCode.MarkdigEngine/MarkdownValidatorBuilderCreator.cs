@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.MarkdigEngine
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine;
+    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MarkdigMarkdownServiceCreator
+    public class MarkdownValidatorBuilderCreator
     {
         public const string DefaultValidatorName = "default";
         public List<IMarkdownObjectValidatorProvider> ValidatorProviders { get; private set; } = new List<IMarkdownObjectValidatorProvider>();
@@ -27,16 +27,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             new List<MarkdownValidationSetting>();
         private ICompositionContainer Container;
 
-        public MarkdigMarkdownServiceCreator(ICompositionContainer container = null)
+        public MarkdownValidatorBuilderCreator(MarkdownServiceParameters parameters, ICompositionContainer container = null)
         {
             Container = container;
+            LoadValidators(parameters);
         }
 
-        public MarkdigMarkdownService CreateMarkdigMarkdownService(MarkdownServiceParameters parameters)
+        public MarkdownValidatorBuilder CreateMarkdownValidatorBuilder()
         {
-            LoadValidators(parameters);
-
-            return new MarkdigMarkdownService(parameters, ValidatorProviders, GetEnabledTagRules());
+            return new MarkdownValidatorBuilder(ValidatorProviders, GetEnabledTagRules());
         }
 
         public void LoadValidators(MarkdownServiceParameters parameters)

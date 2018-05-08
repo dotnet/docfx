@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
@@ -15,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             {
                 BasePath = "."
             };
-            var service = new MarkdigMarkdownServiceCreator().CreateMarkdigMarkdownService(parameter);
+            var service = new MarkdigMarkdownService(parameter);
             return service.Markup(source, "Topic.md");
         }
 
