@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseYamlHeader(context)
+                .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(context)
                 .UseXref()
@@ -138,7 +138,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new YamlHeaderExtension());
             return pipeline;
