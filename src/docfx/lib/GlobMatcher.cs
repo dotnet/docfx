@@ -671,8 +671,10 @@ namespace Microsoft.Docs.Build
 
                 public override List<StringBuilder> Flatten()
                 {
-                    List<StringBuilder> result = new List<StringBuilder>(1);
-                    result.Add(_builder);
+                    List<StringBuilder> result = new List<StringBuilder>(1)
+                    {
+                        _builder
+                    };
                     return result;
                 }
             }
@@ -762,8 +764,10 @@ namespace Microsoft.Docs.Build
 
                 public override List<StringBuilder> Flatten()
                 {
-                    List<StringBuilder> result = new List<StringBuilder>();
-                    result.Add(new StringBuilder());
+                    List<StringBuilder> result = new List<StringBuilder>
+                    {
+                        new StringBuilder(),
+                    };
                     foreach (GlobNode node in _nodes)
                     {
                         List<StringBuilder> tmp = new List<StringBuilder>();

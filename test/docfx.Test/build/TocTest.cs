@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace Microsoft.Docs.Build.build
+namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
