@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithStringProperty(string input)
         {
             var sw = new StringWriter();
-            JsonUtililty.Serialize(sw, new BasicClass { C = input });
+            JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
-            var value = JsonUtililty.Deserialize<BasicClass>(new StringReader(json));
+            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
         }
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestBasicClass()
         {
-            var json = JsonUtililty.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, formatting: Formatting.Indented);
+            var json = JsonUtility.Serialize(new BasicClass { B = 1, C = "Good!", D = true }, formatting: Formatting.Indented);
             Assert.Equal(
                 @"{
   ""c"": ""Good!"",
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var value = JsonUtililty.Deserialize<BasicClass>(new StringReader(json));
+            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -57,9 +57,9 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestBasicClassWithNullCharactor()
         {
-            var json = JsonUtililty.Serialize(new BasicClass { C = null, });
+            var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
-            var value = JsonUtililty.Deserialize<BasicClass>(new StringReader(json));
+            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(0, value.B);
             Assert.Null(value.C);
@@ -70,10 +70,10 @@ namespace Microsoft.Docs.Build
         public void TestBoolean()
         {
             var sw = new StringWriter();
-            JsonUtililty.Serialize(sw, new object[] { true, false });
+            JsonUtility.Serialize(sw, new object[] { true, false });
             var json = sw.ToString();
             Assert.Equal("[true,false]", json);
-            var value = JsonUtililty.Deserialize<object[]>(new StringReader(json));
+            var value = JsonUtility.Deserialize<object[]>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
             Assert.True((bool)value[0]);
@@ -83,10 +83,10 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestListOfBasicClass()
         {
-            var json = JsonUtililty.Serialize(
+            var json = JsonUtility.Serialize(
                 (from i in Enumerable.Range(0, 10)
                  select new BasicClass { B = i, C = $"Good{i}!", D = (i % 2 == 0) ? true : false }).ToList());
-            var values = JsonUtililty.Deserialize<List<BasicClass>>(new StringReader(json));
+            var values = JsonUtility.Deserialize<List<BasicClass>>(new StringReader(json));
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
             for (int i = 0; i < values.Count; i++)
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 {
     ""b"": ""test""
 }";
-            var value = JsonUtililty.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            var value = JsonUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
         }
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
         public void TestClassWithMoreMembersByUnstableSerializeThenDeserialize()
         {
             var sw = new StringWriter();
-            JsonUtililty.Serialize(
+            JsonUtility.Serialize(
                 sw,
                 new ClassWithMoreMembers
                 {
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var value = JsonUtililty.Deserialize<ClassWithMoreMembers>(new StringReader(json));
+            var value = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
         public void TestClassWithMoreMembersByStableSerializeThenDeserialize()
         {
             var sw = new StringWriter();
-            JsonUtililty.Serialize(
+            JsonUtility.Serialize(
                 sw,
                 new ClassWithMoreMembers
                 {
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
   ]
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var value = JsonUtililty.Deserialize<ClassWithMoreMembers>(new StringReader(json));
+            var value = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);

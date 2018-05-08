@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject());
-                return configObject.ToObject<Config>(JsonUtililty.DefaultDeserializer);
+                return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
             {
