@@ -2,6 +2,9 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
+    <None Update="TestData\CatLibrary2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\filterconfig.yml;TestData\filterconfig_attribute.yml;TestData\System.Console.csyml;TestData\System.ConsoleColor.csyml;TestData\CatLibrary.dll;TestData\BaseClassForTestClass1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
