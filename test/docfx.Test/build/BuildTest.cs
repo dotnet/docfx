@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             {
                 case ".json":
                     TestHelper.VerifyJsonContainEquals(
-                        JToken.Parse(content),
+                        JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
 

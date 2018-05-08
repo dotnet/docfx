@@ -789,98 +789,67 @@ outputs:
        ]
     }
 ---
-# 5. Topic href
+# 5. Topic href for normal reference
+# just ignore it
 inputs:
   docfx.yml: |
-    content:
-      include:
-        - docs/f1/toc.yml
+    content: docs/f1/toc.yml
   docs/f1/n1.md:
-  docs/f1/index.md:
   docs/f1/toc.yml: |
-    - name: Normal File Reference 1
-      href: n1.md
-    - name: Normal File Reference 2
+    - name: normal file reference
       href: ~/docs/f1/n1.md
-      topichref: ~/docs/f1/index.md
-      items:
-      - name: Toc References
-        topichref: n1.md
-        items:
-        - name: Toc Reference 1
-          href: f11/toc.md
-          topichref: f11/n1.md
-        - name: Toc Reference 2
-          href: f11/
-  docs/f1/f11/toc.md: |
-    # [Index Reference](index.md)
-    ## [Reference Normal File 1](n1.md)
-    ## [Reference Normal File 2](../n1.md) 
-  docs/f1/f11/index.md:
-  docs/f1/f11/n1.md:
+      topicHref: ~/docs/f1/index.md
 outputs:
-  docs/f1/n1.json: |
-    { "content": "" }
-  docs/f1/f11/n1.json: |
-    { "content": "" }
-  docs/f1/f11/index.json: |
-    { "content": "" }
+  docs/f1/n1.json:
   docs/f1/toc.json: |
     {  
        "items":[  
           {  
-             "toc_title":"Normal File Reference 1",
-             "href":"n1"
-          },
-          {  
-             "toc_title":"Normal File Reference 2",
+             "toc_title":"normal file reference",
              "href":"n1",
+          }
+       ]
+    }
+---
+# 6. Topic href for toc reference
+# replace href finally
+inputs:
+  docfx.yml: |
+    content: docs/f1/toc.yml
+  docs/f1/toc.yml: |
+    - name: Toc Reference 1
+      href: f11/toc.md
+      topicHref: f11/n1.md
+    - name: Toc Reference 2
+      href: f11/
+  docs/f1/f11/toc.md: |
+    # [Index Reference](index.md)
+  docs/f1/f11/index.md:
+  docs/f1/f11/n1.md:
+outputs:
+  docs/f1/f11/n1.json:
+  docs/f1/f11/index.json:
+  docs/f1/toc.json: |
+    {  
+       "items":[  
+          {  
              "children":[  
                 {  
-                   "children":[  
-                      {  
-                         "children":[  
-                            {  
-                               "children":[  
-                                  {  
-                                     "toc_title":"Reference Normal File 1",
-                                     "href":"f11/n1"
-                                  },
-                                  {  
-                                     "toc_title":"Reference Normal File 2",
-                                     "href":"n1"
-                                  }
-                               ],
-                               "toc_title":"Index Reference",
-                               "href":"f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference 1",
-                         "href":"f11/n1"
-                      },
-                      {  
-                         "children":[  
-                            {  
-                               "children":[  
-                                  {  
-                                     "toc_title":"Reference Normal File 1",
-                                     "href":"f11/n1"
-                                  },
-                                  {  
-                                     "toc_title":"Reference Normal File 2",
-                                     "href":"n1"
-                                  }
-                               ],
-                               "toc_title":"Index Reference",
-                               "href":"f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference 2"
-                      }
-                   ],
-                   "toc_title":"Toc References"
+                   "toc_title":"Index Reference",
+                   "href":"f11/"
                 }
-             ]
+             ],
+             "toc_title":"Toc Reference 1",
+             "href":"f11/n1"
+          },
+          {  
+             "children":[  
+                {  
+                   "toc_title":"Index Reference",
+                   "href":"f11/"
+                }
+             ],
+             "toc_title":"Toc Reference 2"
           }
        ]
     }
