@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
         private static void AssertObjectEqual(object expected, object actual)
         {
-            Assert.Equal(JsonUtililty.Serialize(expected), JsonUtililty.Serialize(actual));
+            Assert.Equal(JsonUtility.Serialize(expected), JsonUtility.Serialize(actual));
         }
     }
 }

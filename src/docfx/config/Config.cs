@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         private static void ExpandGlobConfig(JToken item)
         {
             if (!(item is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtililty.Serialize(item)}");
+                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(item)}");
             ExpandIncludeExclude(obj);
         }
 
