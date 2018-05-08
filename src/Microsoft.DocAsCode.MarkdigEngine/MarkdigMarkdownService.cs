@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        public MarkdownDocument Parse(string content, string filePath)
+        public MarkdownDocument Parse(string content, string filePath, bool isInline = false)
         {
             if (content == null)
             {
@@ -71,13 +71,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(_context)
-                .Build();
+            var builder = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(_context);
+            
+            if (isInline)
+            {
+                builder.UseInlineOnly();
+            }
 
             using (InclusionContext.PushFile((RelativePath)filePath))
             {
-                var document = Markdown.Parse(content, pipeline);
+                var document = Markdown.Parse(content, builder.Build());
                 document.SetData("filePath", filePath);
 
                 return document;

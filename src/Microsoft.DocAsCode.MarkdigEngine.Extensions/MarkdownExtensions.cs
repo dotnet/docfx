@@ -63,6 +63,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.Add(new ValidationExtension(context));
             return pipeline;
         }
+	
+        /// <summary>	
+        /// This extension removes all the block parser except paragragh. Please use this extension in the last.	
+        /// </summary>
+        public static MarkdownPipelineBuilder UseInlineOnly(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            return pipeline;
+        }
 
         public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
         {

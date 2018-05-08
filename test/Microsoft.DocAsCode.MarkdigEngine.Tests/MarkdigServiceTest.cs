@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    
+
     using MarkdigEngine.Extensions;
 
     using Markdig.Syntax;
@@ -63,6 +63,20 @@ key: value
 
             var expectedDependency = new List<string> { "~/x/b/linkAndRefRoot.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), mr.Dependency);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigService")]
+        public void MarkdigServiceTest_ParseInline()
+        {
+            var content = @"# I am a heading";
+            var service = TestUtility.CreateMarkdownService();
+            var document = service.Parse(content, "topic.md", true);
+            var result = service.Render(document).Html;
+
+            Assert.Single(document);
+            Assert.IsType<ParagraphBlock>(document[0]);
+            Assert.Equal(content, result);
         }
     }
 }

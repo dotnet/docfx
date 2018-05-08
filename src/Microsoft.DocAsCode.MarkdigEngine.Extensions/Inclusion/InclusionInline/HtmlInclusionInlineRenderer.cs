@@ -14,13 +14,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
         private readonly MarkdownContext _context;
-        private readonly MarkdownPipeline _pipeline;
         private readonly MarkdownPipeline _inlinePipeline;
 
         public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
             _context = context;
-            _pipeline = pipeline;
             _inlinePipeline = CreateInlineOnlyPipeline(pipeline);
         }
 
@@ -44,45 +42,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             using (InclusionContext.PushFile(includeFilePath))
             {
-                renderer.Write(RenderInline(content));
+                renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
             }
         }
 
         private static MarkdownPipeline CreateInlineOnlyPipeline(MarkdownPipeline pipeline)
         {
             var builder = new MarkdownPipelineBuilder();
-
+            
             foreach (var extension in pipeline.Extensions)
             {
-                extension.Setup(builder);
+                builder.Extensions.Add(extension);
             }
 
-            // Force it into a single paragragh
-            var paragraphBlockParser = builder.BlockParsers.FindExact<ParagraphBlockParser>() ?? new ParagraphBlockParser();
-            builder.BlockParsers.Clear();
-            builder.BlockParsers.Add(paragraphBlockParser);
+            builder.UseInlineOnly();
 
             return builder.Build();
-        }
-
-        private string RenderInline(string content)
-        {
-            var document = Markdown.Parse(content, _inlinePipeline);
-            var result = new StringBuilder();
-
-            using (var writer = new StringWriter(result))
-            {
-                var renderer = new HtmlRenderer(writer);
-
-                _pipeline.Setup(renderer);
-
-                // Render with no <p></p>
-                renderer.ImplicitParagraph = true;
-
-                renderer.Render(document);
-            }
-
-            return result.ToString();
         }
     }
 }
