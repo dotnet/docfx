@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
+        private readonly MarkdownContext _context;
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
@@ -29,6 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             _parameters = parameters;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
+            _context = CreateMarkdownContext();
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -43,24 +45,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(content, filePath, false);
             var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options)
+                .UseDocfxExtensions(_context)
                 .Build();
 
-            return new MarkupResult
+            using (InclusionContext.PushFile((RelativePath)filePath))
             {
-                Html = Markdown.ToHtml(content, pipeline),
-                Dependency = options.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
-            };
+                return new MarkupResult
+                {
+                    Html = Markdown.ToHtml(content, pipeline),
+                    Dependency = InclusionContext.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
+                };
+            }
         }
 
-        public MarkdownDocument Parse(string content, string filePath)
-        {
-            return Parse(content, filePath, false);
-        }
-
-        public MarkdownDocument Parse(string content, string filePath, bool isInline)
+        public MarkdownDocument Parse(string content, string filePath, bool isInline = false)
         {
             if (content == null)
             {
@@ -72,23 +71,24 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(content, filePath, isInline);
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options)
-                .Build();
+            var builder = new MarkdownPipelineBuilder()
+                .UseDocfxExtensions(_context);
+            
+            if (isInline)
+            {
+                builder.UseInlineOnly();
+            }
 
-            var document = Markdown.Parse(content, pipeline);
-            document.SetData("filePath", filePath);
+            using (InclusionContext.PushFile((RelativePath)filePath))
+            {
+                var document = Markdown.Parse(content, builder.Build());
+                document.SetData("filePath", filePath);
 
-            return document;
+                return document;
+            }
         }
 
         public MarkupResult Render(MarkdownDocument document)
-        {
-            return Render(document, false);
-        }
-
-        public MarkupResult Render(MarkdownDocument document, bool isInline)
         {
             if (document == null)
             {
@@ -101,11 +101,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var options = CreateOptions(null, filePath, isInline);
             var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options)
+                .UseDocfxExtensions(_context)
                 .Build();
 
+            using (InclusionContext.PushFile((RelativePath)filePath))
             using (var writer = new StringWriter())
             {
                 var renderer = new HtmlRenderer(writer);
@@ -116,12 +116,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 return new MarkupResult
                 {
                     Html = writer.ToString(),
-                    Dependency = options.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
+                    Dependency = InclusionContext.Dependencies.Select(file => (string)(RelativePath)file).ToImmutableArray()
                 };
             }
         }
 
-        private MarkdownContext CreateOptions(string content, string filePath, bool isInline)
+        private MarkdownContext CreateMarkdownContext()
         {
             object enableSourceInfoObj = null;
             _parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfoObj);
@@ -130,8 +130,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var enableSourceInfo = enabled == null || enabled.Value;
 
             return new MarkdownContext(
-                (RelativePath)filePath,
-                isInline,
                 enableSourceInfo,
                 _parameters.Tokens,
                 _mvb,

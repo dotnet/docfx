@@ -7,6 +7,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class InclusionInline : LeafInline
     {
-        public InclusionContext Context { get; set; }
+        public string Title { get; set; }
+
+        public string IncludedFilePath { get; set; }
+
+        public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
     }
 }

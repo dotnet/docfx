@@ -3,21 +3,32 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
+    using Markdig;
+    using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
 
-    public class LineNumberExtension
+    public class LineNumberExtension : IMarkdownExtension
     {
         public const string EnableSourceInfo = "EnableSourceInfo";
 
-        public static ProcessDocumentDelegate GetProcessDocumentDelegate(string filePath)
+        private readonly MarkdownContext _context;
+
+        public LineNumberExtension(MarkdownContext context) => _context = context;
+
+        public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            return (MarkdownDocument document) =>
+            pipeline.PreciseSourceLocation = true;
+            pipeline.DocumentProcessed += document =>
             {
-                AddSourceInfoInDataEntry(document, filePath);
+                AddSourceInfoInDataEntry(document, _context.GetFilePath(InclusionContext.File));
             };
+        }
+
+        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+        {
+
         }
 
         /// <summary>

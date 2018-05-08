@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    
+
     using MarkdigEngine.Extensions;
 
     using Markdig.Syntax;
@@ -72,7 +72,7 @@ key: value
             var content = @"# I am a heading";
             var service = TestUtility.CreateMarkdownService();
             var document = service.Parse(content, "topic.md", true);
-            var result = service.Render(document, true).Html;
+            var result = service.Render(document).Html;
 
             Assert.Single(document);
             Assert.IsType<ParagraphBlock>(document[0]);
