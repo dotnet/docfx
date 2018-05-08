@@ -1,7 +1,8 @@
 # Build your docs with DocFX
 
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/dotnet/docfx?svg=true&branch=v3)](https://ci.appveyor.com/project/DocFXService/docfx)
-[![Linux Build Status](https://travis-ci.org/dotnet/docfx.svg?branch=v3)](https://travis-ci.org/dotnet/docfx)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/dotnet/docfx?svg=true&branch=v3)](https://ci.appveyor.com/project/DocFXService/docfx "Windows Build Status")
+[![Linux Build Status](https://travis-ci.org/dotnet/docfx.svg?branch=v3)](https://travis-ci.org/dotnet/docfx "Linux Build Status")
+[![Mac Build Status](https://mseng.visualstudio.com/_apis/public/build/definitions/dfe297d9-5f61-4d42-b4bb-03f8b8646944/6945/badge)](https://mseng.visualstudio.com/VSChina/_build/index?definitionId=6945 "Mac Build Status")
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
