@@ -63,7 +63,7 @@ Property Name                    | Type                       | Description
 *name*                           | string                     | Specifies the title of the *TOC Item*.
 *href*                           | string                     | Specifies the hyperlink of the *TOC Item*. When its value is another TOC file, it is a TOC include, and all the items inside the included toc are considered as the child of current *TOC Item*
 *items*                          | array of *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
-*topicHref*<sub>*advanced*</sub> | string                     | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or *tocHref* is used.
+*topicHref*<sub>*advanced*</sub> | string                     | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or linking to a toc.
 *topicUid*<sub>*advanced*</sub>  | string                     | Specifies the `uid` of the *topicHref* file. If the value is set, it overwrites the value of *topicHref*.
 
 > [!Note]
