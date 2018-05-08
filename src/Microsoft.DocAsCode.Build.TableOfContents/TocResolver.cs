@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System;
     using System.Collections.Generic;
-
+    using System.IO;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -264,7 +264,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             else
             {
                 // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
+                TocItemViewModel referencedTocItemViewModel;
+                try
+                {
+                    referencedTocItemViewModel = TocHelper.LoadSingleToc(tocFile.FullPath);
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    throw new DocumentException($"Referenced TOC file {tocFile.FullPath} does not exist.", fnfe);
+                }
+
+                referencedTocFileModel = new TocItemInfo(tocFile, referencedTocItemViewModel);
 
                 referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
                 _notInProjectTocCache[tocFile] = referencedTocFileModel;
