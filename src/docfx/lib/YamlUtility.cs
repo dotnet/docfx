@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(TextReader reader)
         {
             var json = Deserialize(reader);
-            return json.ToObject<T>(JsonUtililty.DefaultDeserializer);
+            return json.ToObject<T>(JsonUtility.DefaultDeserializer);
         }
 
         /// <summary>

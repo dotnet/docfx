@@ -4,11 +4,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Docs.Build;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public static class RestoreTest
     {

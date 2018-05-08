@@ -53,5 +53,4 @@ namespace Microsoft.Docs.Build
             return new NodeState(state, level);
         }
     }
-
 }

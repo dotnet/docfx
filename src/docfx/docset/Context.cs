@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         {
             using (var writer = new StreamWriter(WriteStream(destRelativePath)))
             {
-                JsonUtililty.Serialize(writer, graph, _stable);
+                JsonUtility.Serialize(writer, graph, _stable);
             }
         }
 
