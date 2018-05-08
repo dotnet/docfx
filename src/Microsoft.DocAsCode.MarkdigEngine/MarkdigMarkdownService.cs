@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
+        private readonly MarkdownContext _context;
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
@@ -29,6 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             _parameters = parameters;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
+            _context = CreateMarkdownContext();
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -43,9 +45,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateMarkdownContext(content, filePath);
             var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options)
+                .UseDocfxExtensions(_context)
                 .Build();
 
             using (InclusionContext.PushFile((RelativePath)filePath))
@@ -70,9 +71,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var context = CreateMarkdownContext(content, filePath);
             var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
+                .UseDocfxExtensions(_context)
                 .Build();
 
             using (InclusionContext.PushFile((RelativePath)filePath))
@@ -97,9 +97,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var context = CreateMarkdownContext(null, filePath);
             var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
+                .UseDocfxExtensions(_context)
                 .Build();
 
             using (InclusionContext.PushFile((RelativePath)filePath))
@@ -118,7 +117,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        private MarkdownContext CreateMarkdownContext(string content, string filePath)
+        private MarkdownContext CreateMarkdownContext()
         {
             object enableSourceInfoObj = null;
             _parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfoObj);

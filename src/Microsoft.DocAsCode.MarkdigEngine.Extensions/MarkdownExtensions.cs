@@ -55,55 +55,24 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
-
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            var tokenRewriter = context.Mvb.CreateRewriter();
-            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
-
-            pipeline.DocumentProcessed += document =>
-            {
-                visitor.Visit(document);
-            };
-
+            pipeline.Extensions.Add(new ValidationExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
         {
-            var tabGroupAggregator = new TabGroupAggregator();
-            var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
-
-            var tagGroupIdRewriter = new TabGroupIdRewriter();
-            var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
-
-            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter();
-            var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
-
-            pipeline.DocumentProcessed += document =>
-            {
-                aggregateVisitor.Visit(document);
-                tagGroupIdVisitor.Visit(document);
-                activeAndVisibleVisitor.Visit(document);
-            };
-
             pipeline.Extensions.Add(new TabGroupExtension());
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseHeadingIdRewriter(this MarkdownPipelineBuilder pipeline)
         {
-            var tokenRewriter = new HeadingIdRewriter();
-            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
-
-            pipeline.DocumentProcessed += document =>
-            {
-                visitor.Visit(document);
-            };
-
+            pipeline.Extensions.Add(new HeadingIdExtension());
             return pipeline;
         }
 
@@ -135,40 +104,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return pipeline;
             }
 
-            pipeline.PreciseSourceLocation = true;
-            pipeline.DocumentProcessed += LineNumberExtension.GetProcessDocumentDelegate(context);
-
+            pipeline.Extensions.Add(new LineNumberExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new InclusionExtension(context));
-            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(context);
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(context));
-
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseInteractiveCode(this MarkdownPipelineBuilder pipeline)
         {
-            var codeSnippetInteractiveRewriter = new CodeSnippetInteractiveRewriter();
-            var fencedCodeInteractiveRewrtier = new FencedCodeInteractiveRewriter();
-
-            var codeSnippetVisitor = new MarkdownDocumentVisitor(codeSnippetInteractiveRewriter);
-            var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewrtier);
-
-            pipeline.DocumentProcessed += document =>
-            {
-                codeSnippetVisitor.Visit(document);
-                fencedCodeVisitor.Visit(document);
-            };
-
+            pipeline.Extensions.Add(new InteractiveCodeExtension());
             return pipeline;
         }
 
