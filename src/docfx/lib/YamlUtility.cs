@@ -94,6 +94,12 @@ namespace Microsoft.Docs.Build
             var stream = new YamlStream();
 
             stream.Load(reader);
+
+            if (stream.Documents.Count == 0)
+            {
+                return JValue.CreateNull();
+            }
+
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
