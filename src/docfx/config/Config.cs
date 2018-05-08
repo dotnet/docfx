@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -32,7 +33,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public readonly JObject Metadata = new JObject();
+        public readonly JObject GlobalMetadata = new JObject();
+
+        /// <summary>
+        /// Gets the file metadata added to each document.
+        /// </summary>
+        public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
 
         /// <summary>
         /// Gets the map from dependency name to git url
@@ -96,7 +102,50 @@ namespace Microsoft.Docs.Build
         private static JObject Expand(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
+            config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             return config;
+        }
+
+        private static JToken ExpandGlobConfigs(JToken token)
+        {
+            if (token == null)
+                return null;
+            if (token is JObject obj)
+                token = ToGlobConfigs(obj);
+            if (token is JArray arr)
+            {
+                foreach (var item in arr)
+                {
+                    ExpandGlobConfig(item);
+                }
+            }
+            return token;
+        }
+
+        private static void ExpandGlobConfig(JToken item)
+        {
+            if (!(item is JObject obj))
+                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(item)}");
+            ExpandIncludeExclude(obj);
+        }
+
+        private static JArray ToGlobConfigs(JObject obj)
+        {
+            var result = new JArray();
+
+            foreach (var (key, value) in obj)
+            {
+                if (key.Contains("*"))
+                    throw new Exception($"Glob is not supported in config key: '{key}'");
+                result.Add(new JObject
+                {
+                    [ConfigConstants.Include] = key,
+                    [ConfigConstants.Value] = value,
+                    [ConfigConstants.IsGlob] = false,
+                });
+            }
+
+            return result;
         }
 
         private static JObject ExpandFiles(JToken file)
