@@ -20,6 +20,11 @@ namespace Microsoft.Docs.Build
     {
         public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new JsonContractResolver() };
 
+        public static readonly JsonMergeSettings DefaultMergeSettings = new JsonMergeSettings
+        {
+            MergeArrayHandling = MergeArrayHandling.Replace,
+        };
+
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -89,6 +94,23 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(string json)
         {
             return Deserialize<T>(new StringReader(json));
+        }
+
+        /// <summary>
+        /// Merge multiple JSON objects.
+        /// The latter value overwrites the former value for a given key.
+        /// </summary>
+        public static JObject Merge(params JObject[] objs)
+        {
+            var result = new JObject();
+            foreach (var obj in objs)
+            {
+                if (obj != null)
+                {
+                    result.Merge(obj, DefaultMergeSettings);
+                }
+            }
+            return result;
         }
 
         private static JToken Stablize(JToken token)
