@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                     {
                         var name = $"{++i:D2}. {header}";
                         var folder = Path.Combine(
-                            file.Replace("\\", "/").Replace($"specs/{path}/", "").Replace(".yml", ""),
+                            file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
                             name).Replace("\\", "/");
 
                         result.Add(folder, yaml);
