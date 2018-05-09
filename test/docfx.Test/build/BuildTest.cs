@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
                     VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (!(e is XunitException))
             {
                 //todo: change the validation way when we have report output
                 Assert.NotNull(spec.Exceptions);
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
             {
                 case ".json":
                     TestHelper.VerifyJsonContainEquals(
-                        JToken.Parse(content),
+                        JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
 
