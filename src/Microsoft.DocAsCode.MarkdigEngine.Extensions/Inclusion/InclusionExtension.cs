@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             pipeline.BlockParsers.AddIfNotAlready<InclusionBlockParser>();
             pipeline.InlineParsers.InsertBefore<LinkInlineParser>(new InclusionInlineParser());
+
+            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(_context);
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
