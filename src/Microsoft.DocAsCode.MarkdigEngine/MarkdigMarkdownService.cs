@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(isInline);
+            var options = CreateOptions(false);
             var builder = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(options);
 
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var options = CreateOptions(isInline);
+            var options = CreateOptions(false);
             var builder = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(options);
 
