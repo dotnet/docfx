@@ -17,12 +17,10 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string ymlFilePath, string headerName)
+        public static async Task BuildDocset(string name, string specYaml)
         {
-            var spec = TestHelper.FindTestSpecInFile(ymlFilePath, headerName);
-            Assert.NotNull(spec);
+            var (docsetPath, spec) = TestHelper.CreateDocset(name, specYaml);
 
-            var docsetPath = spec.CreateDocset();
             try
             {
                 await Program.Main(new[] { "build", docsetPath });
@@ -31,9 +29,9 @@ namespace Microsoft.Docs.Build
                 var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
                 Assert.Equal(spec.Outputs.Count, outputs.Count());
 
-                foreach (var (file, content) in spec.Outputs)
+                foreach (var (filename, content) in spec.Outputs)
                 {
-                    VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, file)), content);
+                    VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
                 }
             }
             catch (Exception e) when (!(e is XunitException))

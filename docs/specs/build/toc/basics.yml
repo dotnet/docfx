@@ -1,5 +1,5 @@
 ---
-# 1. Normal file reference
+# Normal file reference
 inputs:
   docfx.yml: |
     content:
@@ -59,7 +59,7 @@ outputs:
       ]
     }
 ---
-# 2. No-existing file reference
+# No-existing file reference
 inputs:
   docfx.yml: |
     content:
@@ -110,7 +110,7 @@ outputs:
       ]
     }
 ---
-# 3. Absolute file reference
+# Absolute file reference
 inputs:
   docfx.yml: |
     content:
@@ -151,7 +151,7 @@ outputs:
       ]
     }
 ---
-# 4. Nested TOC file reference
+# Nested TOC file reference
 # TODO: filter out referenced toc outputs
 inputs:
   docfx.yml: |
@@ -789,7 +789,7 @@ outputs:
        ]
     }
 ---
-# 5. Topic href for normal reference
+# Topic href for normal reference
 # just ignore it
 inputs:
   docfx.yml: |
@@ -811,7 +811,7 @@ outputs:
        ]
     }
 ---
-# 6. Topic href for toc reference
+# Topic href for toc reference
 # replace href finally
 inputs:
   docfx.yml: |
