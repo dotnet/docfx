@@ -30,14 +30,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var includeFile = new InclusionInline();
-            var context = new InclusionContext();
+            string title = null, path = null;
 
-            if (!ExtensionsHelper.MatchLink(ref slice, ref context))
+            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path))
             {
                 return false;
             }
 
-            includeFile.Context = context;
+            includeFile.Title = title;
+            includeFile.IncludedFilePath = path;
             processor.Inline = includeFile;
 
             return true;
