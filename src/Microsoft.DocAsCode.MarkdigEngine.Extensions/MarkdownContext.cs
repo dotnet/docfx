@@ -37,6 +37,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool IsInline { get; }
 
         /// <summary>
+        /// Whether validation is enabled during markup.
+        /// </summary>
+        public bool EnableValidation { get; }
+
+        /// <summary>
         /// Whether source info is enabled in output.
         /// </summary>
         public bool EnableSourceInfo { get; }
@@ -82,6 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb,
+            bool enableValidation = false,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null,
             Func<object, string> getFilePath = null,
@@ -91,6 +97,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             File = filePath;
             IsInline = isInline;
             EnableSourceInfo = enableSourceInfo;
+            EnableValidation = enableValidation;
             Mvb = mvb;
 
             Tokens = tokens ?? ImmutableDictionary<string, string>.Empty;

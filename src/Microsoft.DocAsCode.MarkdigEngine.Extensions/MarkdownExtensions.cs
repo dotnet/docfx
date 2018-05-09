@@ -62,7 +62,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new ValidationExtension(context));
+            if (context.EnableValidation)
+            {
+                pipeline.Extensions.Add(new ValidationExtension(context));
+            }
             return pipeline;
         }
 

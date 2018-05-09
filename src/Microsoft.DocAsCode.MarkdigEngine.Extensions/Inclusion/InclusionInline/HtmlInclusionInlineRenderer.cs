@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.EnableSourceInfo,
                 _context.Tokens,
                 _context.Mvb,
+                _context.EnableValidation,
                 _context.ReadFile,
                 _context.GetLink,
                 _context.GetFilePath,
