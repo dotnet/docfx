@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 BasePath = ".",
                 Extensions = new Dictionary<string, object>
                     {
-                        { LineNumberExtension.EnableSourceInfo, false }
+                        { "EnableSourceInfo", false }
                     }
             });
 

@@ -8,16 +8,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class ValidationExtension : IMarkdownExtension
     {
-        private readonly MarkdownContext _context;
+        private readonly MarkdownValidatorBuilder _mvb;
 
-        public ValidationExtension(MarkdownContext context)
+        public ValidationExtension(MarkdownValidatorBuilder validationBuilder)
         {
-            _context = context;
+            _mvb = validationBuilder;
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            var tokenRewriter = _context.Mvb.CreateRewriter();
+            var tokenRewriter = _mvb.CreateRewriter();
             var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
             pipeline.DocumentProcessed += document =>

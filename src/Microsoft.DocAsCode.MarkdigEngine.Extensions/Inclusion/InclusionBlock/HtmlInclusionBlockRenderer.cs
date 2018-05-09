@@ -3,9 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
-    using System.Text.RegularExpressions;
-
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
@@ -15,7 +12,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private MarkdownContext _context;
         private MarkdownPipeline _pipeline;
-        private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
@@ -42,16 +38,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             using (InclusionContext.PushFile(includeFilePath))
             {
-                var result = Markdown.ToHtml(content, _pipeline);
-                result = SkipYamlHeader(result);
-
-                renderer.Write(result);
+                renderer.Write(Markdown.ToHtml(content, _pipeline));
             }
-        }
-
-        private string SkipYamlHeader(string content)
-        {
-            return YamlHeaderRegex.Replace(content, "");
         }
     }
 }

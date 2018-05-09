@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
+        private readonly MarkdownContext _context;
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
@@ -29,6 +30,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             _parameters = parameters;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
+            _context = new MarkdownContext(
+                _parameters.Tokens,
+                ReadFile,
+                GetLink);
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -48,10 +53,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(enableValidation);
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options)
-                .Build();
+            var pipeline = CreateMarkdownPipeline(isInline: false, enableValidation: enableValidation);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
             {
@@ -80,18 +82,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var options = CreateOptions(isInline);
-            var builder = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options);
-
-            if (isInline)
-            {
-                builder.UseInlineOnly();
-            }
+            var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
             {
-                var document = Markdown.Parse(content, builder.Build());
+                var document = Markdown.Parse(content, pipeline);
                 document.SetData("filePath", filePath);
 
                 return document;
@@ -116,20 +111,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
 
-            var options = CreateOptions(isInline);
-            var builder = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(options);
-
-            if (isInline)
-            {
-                builder.UseInlineOnly();
-            }
+            var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
             using (var writer = new StringWriter())
             {
                 var renderer = new HtmlRenderer(writer);
-                builder.Build().Setup(renderer);
+                pipeline.Setup(renderer);
                 renderer.Render(document);
                 writer.Flush();
 
@@ -141,22 +129,35 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        private MarkdownContext CreateOptions(bool enableValidation)
+        private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool enableValidation)
         {
             object enableSourceInfoObj = null;
-            _parameters?.Extensions?.TryGetValue(LineNumberExtension.EnableSourceInfo, out enableSourceInfoObj);
+            _parameters?.Extensions?.TryGetValue("EnableSourceInfo", out enableSourceInfoObj);
 
             var enabled = enableSourceInfoObj as bool?;
             var enableSourceInfo = enabled == null || enabled.Value;
 
-            return new MarkdownContext(
-                enableSourceInfo,
-                _parameters.Tokens,
-                _mvb,
-                enableValidation,
-                ReadFile,
-                GetLink,
-                file => ((RelativePath)file).RemoveWorkingFolder());
+            var builder = new MarkdownPipelineBuilder();
+
+            builder.UseDocfxExtensions(_context);
+            builder.Extensions.Insert(0, new YamlHeaderExtension());
+
+            if (enableSourceInfo)
+            {
+                builder.UseLineNumber(file => ((RelativePath)file).RemoveWorkingFolder());
+            }
+
+            if (enableValidation)
+            {
+                builder.UseValidation(_mvb);
+            }
+
+            if (isInline)
+            {
+                builder.UseInlineOnly();
+            }
+
+            return builder.Build();
         }
 
         private static string GetLink(string path, object relativeTo)
