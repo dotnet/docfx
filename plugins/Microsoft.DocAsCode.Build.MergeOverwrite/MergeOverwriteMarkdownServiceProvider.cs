@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.MergeOverwrite
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -74,6 +75,11 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
                     result.Dependency = dependency.ToImmutableArray();
                 }
                 return result;
+            }
+
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
             }
         }
 
