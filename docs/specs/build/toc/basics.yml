@@ -151,640 +151,106 @@ outputs:
       ]
     }
 ---
-# Nested TOC file reference
-# TODO: filter out referenced toc outputs
+# Nested TOC reference 1
+# reference toc
 inputs:
-  docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
-        - docs/**/*.yml
+  docfx.yml:
   docs/toc.md: |
-    # [Index Reference](index.md)
-    ## TOC Reference
-    ## [Reference TOC File 1](f1/toc.md)
-    ## [Reference TOC File 2](../docs/f1/toc.md)
-    ## [Reference TOC File 3](~/docs/f1/toc.md)
-    ## [Reference TOC File 4](~/docs/f2/toc.yml)
-  docs/index.md:
-  docs/n1.md:
+    # [Reference TOC File 1](f1/toc.md)
+    # [Reference TOC File 2](../docs/f1/toc.md)
+    # [Reference TOC File 3](~/docs/f1/toc.md)
   docs/f1/toc.md: |
     # [Index Reference](index.md)
-    ## [Reference Normal File 1](n1.md)
-    ## [Reference Normal File 2](../n1.md)  
-
-    ## [Reference No-Existing File 1](no-existing.md)
-
-    ## [Reference TOC File 1](../f2/)
-    ## [Reference TOC File 2](../f1/f11/)
-  docs/f1/n1.md:
   docs/f1/index.md:
-  docs/f2/toc.yml: |
-    - name: Normal File Reference 1
-      href: n1.md
-    - name: Normal File Reference 2
-      href: ~/docs/n1.md
-    - name: Normal File Reference 3
-      href: ../n1.md
-      items:
-      - name: Toc References
-        items:
-        - name: Toc Reference 1
-          href: ../f1/f11/toc.md
-        - name: Toc Reference 2
-          href: ../f1/f11/
-  docs/f2/n1.md:
-  docs/f1/f11/toc.md: |
-    # [Index Reference](index.md)
-    ## [Reference Normal File 1](n1.md)
-    ## [Reference Normal File 2](../n1.md) 
-  docs/f1/f11/index.md:
-  docs/f1/f11/n1.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
-  docs/n1.json: |
-    { "content": "" }
-  docs/f1/n1.json: |
-    { "content": "" }
-  docs/f1/index.json: |
-    { "content": "" }
-  docs/f1/f11/index.json: |
-    { "content": "" }
-  docs/f1/f11/n1.json: |
-    { "content": "" }
-  docs/f2/n1.json: |
-    { "content": "" }
+  docs/f1/index.json:
   docs/toc.json: |
     {  
-      "items":[  
-          {  
-            "children":[  
-                {  
-                  "toc_title":"TOC Reference"
-                },
-                {  
-                  "children":[  
-                      {  
-                        "children":[  
-                            {  
-                              "toc_title":"Reference Normal File 1",
-                              "href":"f1/n1"
-                            },
-                            {  
-                              "toc_title":"Reference Normal File 2",
-                              "href":"n1"
-                            },
-                            {  
-                              "toc_title":"Reference No-Existing File 1",
-                              "href":"no-existing.md"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "toc_title":"Normal File Reference 1",
-                                    "href":"f2/n1"
-                                  },
-                                  {  
-                                    "toc_title":"Normal File Reference 2",
-                                    "href":"n1"
-                                  },
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "children":[  
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 1"
-                                              },
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 2"
-                                              }
-                                          ],
-                                          "toc_title":"Toc References"
-                                        }
-                                    ],
-                                    "toc_title":"Normal File Reference 3",
-                                    "href":"n1"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 1"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "toc_title":"Reference Normal File 1",
-                                          "href":"f1/f11/n1"
-                                        },
-                                        {  
-                                          "toc_title":"Reference Normal File 2",
-                                          "href":"f1/n1"
-                                        }
-                                    ],
-                                    "toc_title":"Index Reference",
-                                    "href":"f1/f11/"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 2"
-                            }
-                        ],
-                        "toc_title":"Index Reference",
-                        "href":"f1/"
-                      }
-                  ],
-                  "toc_title":"Reference TOC File 1"
-                },
-                {  
-                  "children":[  
-                      {  
-                        "children":[  
-                            {  
-                              "toc_title":"Reference Normal File 1",
-                              "href":"f1/n1"
-                            },
-                            {  
-                              "toc_title":"Reference Normal File 2",
-                              "href":"n1"
-                            },
-                            {  
-                              "toc_title":"Reference No-Existing File 1",
-                              "href":"no-existing.md"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "toc_title":"Normal File Reference 1",
-                                    "href":"f2/n1"
-                                  },
-                                  {  
-                                    "toc_title":"Normal File Reference 2",
-                                    "href":"n1"
-                                  },
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "children":[  
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 1"
-                                              },
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 2"
-                                              }
-                                          ],
-                                          "toc_title":"Toc References"
-                                        }
-                                    ],
-                                    "toc_title":"Normal File Reference 3",
-                                    "href":"n1"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 1"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "toc_title":"Reference Normal File 1",
-                                          "href":"f1/f11/n1"
-                                        },
-                                        {  
-                                          "toc_title":"Reference Normal File 2",
-                                          "href":"f1/n1"
-                                        }
-                                    ],
-                                    "toc_title":"Index Reference",
-                                    "href":"f1/f11/"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 2"
-                            }
-                        ],
-                        "toc_title":"Index Reference",
-                        "href":"f1/"
-                      }
-                  ],
-                  "toc_title":"Reference TOC File 2"
-                },
-                {  
-                  "children":[  
-                      {  
-                        "children":[  
-                            {  
-                              "toc_title":"Reference Normal File 1",
-                              "href":"f1/n1"
-                            },
-                            {  
-                              "toc_title":"Reference Normal File 2",
-                              "href":"n1"
-                            },
-                            {  
-                              "toc_title":"Reference No-Existing File 1",
-                              "href":"no-existing.md"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "toc_title":"Normal File Reference 1",
-                                    "href":"f2/n1"
-                                  },
-                                  {  
-                                    "toc_title":"Normal File Reference 2",
-                                    "href":"n1"
-                                  },
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "children":[  
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 1"
-                                              },
-                                              {  
-                                                "children":[  
-                                                    {  
-                                                      "children":[  
-                                                          {  
-                                                            "toc_title":"Reference Normal File 1",
-                                                            "href":"f1/f11/n1"
-                                                          },
-                                                          {  
-                                                            "toc_title":"Reference Normal File 2",
-                                                            "href":"f1/n1"
-                                                          }
-                                                      ],
-                                                      "toc_title":"Index Reference",
-                                                      "href":"f1/f11/"
-                                                    }
-                                                ],
-                                                "toc_title":"Toc Reference 2"
-                                              }
-                                          ],
-                                          "toc_title":"Toc References"
-                                        }
-                                    ],
-                                    "toc_title":"Normal File Reference 3",
-                                    "href":"n1"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 1"
-                            },
-                            {  
-                              "children":[  
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "toc_title":"Reference Normal File 1",
-                                          "href":"f1/f11/n1"
-                                        },
-                                        {  
-                                          "toc_title":"Reference Normal File 2",
-                                          "href":"f1/n1"
-                                        }
-                                    ],
-                                    "toc_title":"Index Reference",
-                                    "href":"f1/f11/"
-                                  }
-                              ],
-                              "toc_title":"Reference TOC File 2"
-                            }
-                        ],
-                        "toc_title":"Index Reference",
-                        "href":"f1/"
-                      }
-                  ],
-                  "toc_title":"Reference TOC File 3"
-                },
-                {  
-                  "children":[  
-                      {  
-                        "toc_title":"Normal File Reference 1",
-                        "href":"f2/n1"
-                      },
-                      {  
-                        "toc_title":"Normal File Reference 2",
-                        "href":"n1"
-                      },
-                      {  
-                        "children":[  
-                            {  
-                              "children":[  
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "children":[  
-                                              {  
-                                                "toc_title":"Reference Normal File 1",
-                                                "href":"f1/f11/n1"
-                                              },
-                                              {  
-                                                "toc_title":"Reference Normal File 2",
-                                                "href":"f1/n1"
-                                              }
-                                          ],
-                                          "toc_title":"Index Reference",
-                                          "href":"f1/f11/"
-                                        }
-                                    ],
-                                    "toc_title":"Toc Reference 1"
-                                  },
-                                  {  
-                                    "children":[  
-                                        {  
-                                          "children":[  
-                                              {  
-                                                "toc_title":"Reference Normal File 1",
-                                                "href":"f1/f11/n1"
-                                              },
-                                              {  
-                                                "toc_title":"Reference Normal File 2",
-                                                "href":"f1/n1"
-                                              }
-                                          ],
-                                          "toc_title":"Index Reference",
-                                          "href":"f1/f11/"
-                                        }
-                                    ],
-                                    "toc_title":"Toc Reference 2"
-                                  }
-                              ],
-                              "toc_title":"Toc References"
-                            }
-                        ],
-                        "toc_title":"Normal File Reference 3",
-                        "href":"n1"
-                      }
-                  ],
-                  "toc_title":"Reference TOC File 4"
-                }
-            ],
-            "toc_title":"Index Reference",
-            "href":"."
-          }
-      ]
-    }
-  docs/f1/toc.json: |
-    {  
        "items":[  
           {  
              "children":[  
                 {  
-                   "toc_title":"Reference Normal File 1",
-                   "href":"n1"
-                },
+                   "toc_title":"Index Reference",
+                   "href":"f1/"
+                }
+             ],
+             "toc_title":"Reference TOC File 1"
+          },
+          {  
+             "children":[  
                 {  
-                   "toc_title":"Reference Normal File 2",
-                   "href":"../n1"
-                },
+                   "toc_title":"Index Reference",
+                   "href":"f1/"
+                }
+             ],
+             "toc_title":"Reference TOC File 2"
+          },
+          {  
+             "children":[  
                 {  
-                   "toc_title":"Reference No-Existing File 1",
-                   "href":"no-existing.md"
-                },
+                   "toc_title":"Index Reference",
+                   "href":"f1/"
+                }
+             ],
+             "toc_title":"Reference TOC File 3"
+          }
+       ]
+    }
+---
+# Nested TOC reference 2
+# multiple level
+# docs/toc.md -> docs/f1/toc.md  -> docs/f2/toc.md
+#             -> docs/f2/toc.md --> docs/f1/f11/toc.md
+inputs:
+  docfx.yml:
+  docs/toc.md: |
+    # [Reference TOC File 1](f1/toc.md)
+    # [Reference TOC File 2](~/docs/f2/toc.yml)
+  docs/f1/toc.md: |
+    # [Reference TOC File](../f2/)
+  docs/f2/toc.yml: |
+    - name: Toc Reference
+      href: ../f1/f11/toc.md
+  docs/f1/f11/toc.md: |
+    # [Index Reference](index.md)
+  docs/f1/f11/index.md:
+outputs:
+  docs/f1/f11/index.json:
+  docs/toc.json: |
+   {  
+       "items":[  
+          {  
+             "children":[  
                 {  
                    "children":[  
                       {  
-                         "toc_title":"Normal File Reference 1",
-                         "href":"../f2/n1"
-                      },
-                      {  
-                         "toc_title":"Normal File Reference 2",
-                         "href":"../n1"
-                      },
-                      {  
                          "children":[  
                             {  
-                               "children":[  
-                                  {  
-                                     "children":[  
-                                        {  
-                                           "children":[  
-                                              {  
-                                                 "toc_title":"Reference Normal File 1",
-                                                 "href":"f11/n1"
-                                              },
-                                              {  
-                                                 "toc_title":"Reference Normal File 2",
-                                                 "href":"n1"
-                                              }
-                                           ],
-                                           "toc_title":"Index Reference",
-                                           "href":"f11/"
-                                        }
-                                     ],
-                                     "toc_title":"Toc Reference 1"
-                                  },
-                                  {  
-                                     "children":[  
-                                        {  
-                                           "children":[  
-                                              {  
-                                                 "toc_title":"Reference Normal File 1",
-                                                 "href":"f11/n1"
-                                              },
-                                              {  
-                                                 "toc_title":"Reference Normal File 2",
-                                                 "href":"n1"
-                                              }
-                                           ],
-                                           "toc_title":"Index Reference",
-                                           "href":"f11/"
-                                        }
-                                     ],
-                                     "toc_title":"Toc Reference 2"
-                                  }
-                               ],
-                               "toc_title":"Toc References"
+                               "toc_title":"Index Reference",
+                               "href":"f1/f11/"
                             }
                          ],
-                         "toc_title":"Normal File Reference 3",
-                         "href":"../n1"
+                         "toc_title":"Toc Reference"
                       }
                    ],
-                   "toc_title":"Reference TOC File 1"
-                },
+                   "toc_title":"Reference TOC File"
+                }
+             ],
+             "toc_title":"Reference TOC File 1"
+          },
+          {  
+             "children":[  
                 {  
                    "children":[  
                       {  
-                         "children":[  
-                            {  
-                               "toc_title":"Reference Normal File 1",
-                               "href":"f11/n1"
-                            },
-                            {  
-                               "toc_title":"Reference Normal File 2",
-                               "href":"n1"
-                            }
-                         ],
                          "toc_title":"Index Reference",
-                         "href":"f11/"
+                         "href":"f1/f11/"
                       }
                    ],
-                   "toc_title":"Reference TOC File 2"
+                   "toc_title":"Toc Reference"
                 }
              ],
-             "toc_title":"Index Reference",
-             "href":"."
-          }
-       ]
-    }
-  docs/f2/toc.json: |
-    {  
-       "items":[  
-          {  
-             "toc_title":"Normal File Reference 1",
-             "href":"n1"
-          },
-          {  
-             "toc_title":"Normal File Reference 2",
-             "href":"../n1"
-          },
-          {  
-             "children":[  
-                {  
-                   "children":[  
-                      {  
-                         "children":[  
-                            {  
-                               "children":[  
-                                  {  
-                                     "toc_title":"Reference Normal File 1",
-                                     "href":"../f1/f11/n1"
-                                  },
-                                  {  
-                                     "toc_title":"Reference Normal File 2",
-                                     "href":"../f1/n1"
-                                  }
-                               ],
-                               "toc_title":"Index Reference",
-                               "href":"../f1/f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference 1"
-                      },
-                      {  
-                         "children":[  
-                            {  
-                               "children":[  
-                                  {  
-                                     "toc_title":"Reference Normal File 1",
-                                     "href":"../f1/f11/n1"
-                                  },
-                                  {  
-                                     "toc_title":"Reference Normal File 2",
-                                     "href":"../f1/n1"
-                                  }
-                               ],
-                               "toc_title":"Index Reference",
-                               "href":"../f1/f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference 2"
-                      }
-                   ],
-                   "toc_title":"Toc References"
-                }
-             ],
-             "toc_title":"Normal File Reference 3",
-             "href":"../n1"
-          }
-       ]
-    }
-  docs/f1/f11/toc.json: |
-    {  
-       "items":[  
-          {  
-             "children":[  
-                {  
-                   "toc_title":"Reference Normal File 1",
-                   "href":"n1"
-                },
-                {  
-                   "toc_title":"Reference Normal File 2",
-                   "href":"../n1"
-                }
-             ],
-             "toc_title":"Index Reference",
-             "href":"."
+             "toc_title":"Reference TOC File 2"
           }
        ]
     }
