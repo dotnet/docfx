@@ -107,14 +107,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return index == startString.Length;
         }
 
-        public static bool MatchLink(ref StringSlice slice, ref InclusionContext context)
+        public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
         {
             if (IsEscaped(slice))
             {
                 return false;
             }
 
-            if (MatchTitle(ref slice, ref context) && MatchPath(ref slice, ref context))
+            if (MatchTitle(ref slice, ref title) && MatchPath(ref slice, ref path))
             {
                 slice.NextChar();
                 return true;
@@ -194,7 +194,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return isCaseSensitive ? ch1 == ch2 : Char.ToLower(ch1) == Char.ToLower(ch2);
         }
 
-        private static bool MatchTitle(ref StringSlice slice, ref InclusionContext context)
+        private static bool MatchTitle(ref StringSlice slice, ref string title)
         {
             if (IsEscaped(slice))
             {
@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var c = slice.NextChar();
-            var title = StringBuilderCache.Local();
+            var str = StringBuilderCache.Local();
             var hasExcape = false;
 
             while (c != '\0' && (c != ']' || hasExcape))
@@ -223,7 +223,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else
                 {
-                    title.Append(c);
+                    str.Append(c);
                     hasExcape = false;
                 }
                 c = slice.NextChar();
@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c == ']')
             {
-                context.Title = title.ToString().Trim();
+                title = str.ToString().Trim();
                 slice.NextChar();
 
                 return true;
@@ -245,7 +245,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return slice.PeekCharExtra(-1) == '\\';
         }
 
-        private static bool MatchPath(ref StringSlice slice, ref InclusionContext context)
+        private static bool MatchPath(ref StringSlice slice, ref string path)
         {
             if (slice.CurrentChar != '(')
             {
@@ -277,7 +277,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (slice.CurrentChar == ')')
             {
-                context.IncludedFilePath = includedFilePath;
+                path = includedFilePath;
                 slice.NextChar();
                 return true;
             }
@@ -298,7 +298,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     {
                         title = title.Substring(1, title.Length - 2).Trim();
                     }
-                    context.IncludedFilePath = includedFilePath;
+                    path = includedFilePath;
                     slice.NextChar();
                     return true;
                 }
