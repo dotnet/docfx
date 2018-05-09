@@ -41,14 +41,14 @@ namespace Microsoft.Docs.Build
                 files,
                 (file, buildChild) =>
                 {
-                    if (!ShouldBuildFile(file, manifest))
+                    if (!ShouldBuildFile(file, manifest, tocMap))
                     {
                         return Task.CompletedTask;
                     }
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (ShouldBuildFile(item, references))
+                        if (ShouldBuildFile(item, references, tocMap))
                         {
                             buildChild(item);
                         }
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             return Task.CompletedTask;
         }
 
-        private static bool ShouldBuildFile(Document itemToBuild, ConcurrentDictionary<Document, byte> set)
+        private static bool ShouldBuildFile(Document itemToBuild, ConcurrentDictionary<Document, byte> set, TableOfContentsMap tocMap)
         {
             if (itemToBuild.OutputPath == null)
             {
@@ -92,6 +92,12 @@ namespace Microsoft.Docs.Build
             }
 
             if (!set.TryAdd(itemToBuild, 0))
+            {
+                return false;
+            }
+
+            if (itemToBuild.ContentType == ContentType.TableOfContents &&
+                !tocMap.Contains(itemToBuild))
             {
                 return false;
             }
