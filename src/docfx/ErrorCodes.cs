@@ -7,5 +7,6 @@ namespace Microsoft.Docs.Build
     {
         public const string ConfigNotFound = "config-not-found";
         public const string InvalidConfig = "invalid-config";
+        public const string CircularReference = "circular-reference";
     }
 }

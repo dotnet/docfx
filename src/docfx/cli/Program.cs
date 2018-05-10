@@ -17,30 +17,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (var reporter = new Reporter())
-                {
-                    try
-                    {
-                        var (command, docset, options) = ParseCommandLineOptions(args);
-
-                        switch (command)
-                        {
-                            case "restore":
-                                await Restore.Run(docset, options, reporter);
-                                break;
-                            case "build":
-                                await Build.Run(docset, options, reporter);
-                                break;
-                        }
-                        return 0;
-                    }
-                    catch (DocfxException ex)
-                    {
-                        Logger.Error(ex.ToString());
-                        reporter?.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
-                        return 1;
-                    }
-                }
+                return await Run(args);
             }
             catch (Exception ex)
             {
@@ -53,6 +30,34 @@ namespace Microsoft.Docs.Build
                 {
                 }
                 return 1;
+            }
+        }
+
+        internal static async Task<int> Run(string[] args)
+        {
+            using (var reporter = new Reporter())
+            {
+                try
+                {
+                    var (command, docset, options) = ParseCommandLineOptions(args);
+
+                    switch (command)
+                    {
+                        case "restore":
+                            await Restore.Run(docset, options, reporter);
+                            break;
+                        case "build":
+                            await Build.Run(docset, options, reporter);
+                            break;
+                    }
+                    return 0;
+                }
+                catch (DocfxException ex)
+                {
+                    Logger.Error(ex.ToString());
+                    reporter?.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
+                    return 1;
+                }
             }
         }
 

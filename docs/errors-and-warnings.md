@@ -2,9 +2,9 @@
 
 These are the errors and warnings grouped by category to help you understand their purpose.
 
-❌ This is an error
-⚠️ This is a warning
-💡 Guide to help you troubleshoot
+> ❌ This is an error  
+> ⚠️ This is a warning  
+> 💡 Guide to help you troubleshoot  
 
 ## General Errors
 
@@ -13,6 +13,12 @@ These are the errors and warnings grouped by category to help you understand the
 ❌ An unexpected fatal error has occurred.
 
 💡 To help us improve, search for an existing issue or create a new issue at https://github.com/dotnet/docfx with the provided error description.
+
+### circular-reference
+
+❌ A series of document references creates a closed loop.
+
+💡 Check the error message to find which files caused the reference loop, then update the affected documents to break the loop.
 
 ## Config
 

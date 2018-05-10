@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal sealed class Reporter : IDisposable
     {
         private readonly object _lock = new object();
-        private TextWriter _output;
+        private Lazy<TextWriter> _output;
         private bool _stable;
 
         public void OutputToFile(string outputFilePath, bool stable = false)
@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
-            _output = File.CreateText(outputFilePath);
+            _output = new Lazy<TextWriter>(() => File.CreateText(outputFilePath));
             _stable = stable;
         }
 
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_output != null)
                 {
-                    _output.WriteLine(outputMessage);
+                    _output.Value.WriteLine(outputMessage);
                 }
 
                 Console.ForegroundColor = GetColor(level);
@@ -84,7 +84,13 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            _output?.Dispose();
+            lock (_lock)
+            {
+                if (_output != null && _output.IsValueCreated)
+                {
+                    _output.Value.Dispose();
+                }
+            }
         }
     }
 }

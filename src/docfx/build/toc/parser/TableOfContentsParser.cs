@@ -21,8 +21,10 @@ namespace Microsoft.Docs.Build
             // add to parent path
             if (parents.Contains(filePath))
             {
-                // todo: error handling
-                throw new ApplicationException($"Circle toc reference was detected, {string.Join("-->", parents)}-->{filePath}");
+                throw new DocfxException(
+                    ErrorCodes.CircularReference,
+                    $"Found circular reference: {string.Join(" --> ", parents)} --> {filePath}",
+                    filePath.ToString());
             }
 
             parents.Add(filePath);
