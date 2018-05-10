@@ -88,6 +88,13 @@ inputs:
     # [Topic1](index.md) #
     ## [Reference itself](toc.md)
   docs/index.md:
-exceptions:
-  system.applicationexception: |
-    Circle toc reference was detected, docs/toc.md-->docs/toc.md
+outputs:
+  build.log: |
+    [
+      {
+        "message": "Found circular reference: docs/toc.md --> docs/toc.md",
+        "message_severity": "Error",
+        "type": "circular-reference",
+        "file": "docs/toc.md"
+      }
+    ]
