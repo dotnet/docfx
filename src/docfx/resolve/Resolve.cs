@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal delegate (string content, Document path) ResolveContent(Document relativeTo, string href);
 
-    internal delegate string ResolveLink(Document relativeTo, string href, Document resultRelativeTo);
+    internal delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
     internal static class Resolve
     {

@@ -11,15 +11,22 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class TableOfContentsMap
     {
-        private readonly List<Document> _tocs;
+        private readonly HashSet<Document> _tocs;
 
         private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
 
         public TableOfContentsMap(List<Document> tocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
-            _tocs = tocs ?? throw new ArgumentNullException(nameof(tocs));
+            _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
         }
+
+        /// <summary>
+        /// Contains toc or not
+        /// </summary>
+        /// <param name="toc">The toc to build</param>
+        /// <returns>Whether contains toc or not</returns>
+        public bool Contains(Document toc) => _tocs.Contains(toc);
 
         /// <summary>
         /// Find the toc relative path to document

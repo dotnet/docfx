@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,38 +20,31 @@ namespace Microsoft.Docs.Build
                 Directory.EnumerateFiles(Path.Combine("specs", path), "*.yml", SearchOption.AllDirectories),
                 file =>
                 {
-                    foreach (var spec in FindTestSpecHeadersInFile(file))
+                    var i = 0;
+                    foreach (var (header, yaml) in FindTestSpecHeadersInFile(file))
                     {
-                        result.Add(file, spec);
+                        var name = $"{++i:D2}. {header}";
+                        var folder = Path.Combine(
+                            file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
+                            name).Replace("\\", "/");
+
+                        result.Add(folder, yaml);
                     }
                 });
 
             return result;
         }
 
-        public static TestSpec FindTestSpecInFile(string ymlPath, string header)
+        public static (string docsetPath, TestSpec spec) CreateDocset(string specPath, string specYaml)
         {
-            var sections = File.ReadAllText(ymlPath).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+            var spec = YamlUtility.Deserialize<TestSpec>(specYaml);
 
-            foreach (var section in sections)
+            foreach (var ch in Path.GetInvalidPathChars())
             {
-                var yaml = section.Trim('\r', '\n', '-');
-                if (string.Equals(header, YamlUtility.ReadHeader(yaml) ?? "", StringComparison.OrdinalIgnoreCase))
-                {
-                    var spec = YamlUtility.Deserialize<TestSpec>(yaml);
-
-                    spec.Path = Path.Combine(ymlPath.Replace("\\", "/").Replace("specs/", "").Replace(".yml", ""), header);
-
-                    return spec;
-                }
+                specPath = specPath.Replace(ch, ' ');
             }
 
-            return null;
-        }
-
-        public static string CreateDocset(this TestSpec spec)
-        {
-            var docsetPath = Path.Combine("specs.drop", spec.Path);
+            var docsetPath = Path.Combine("specs.drop", specPath);
 
             if (Directory.Exists(docsetPath))
             {
@@ -62,7 +58,7 @@ namespace Microsoft.Docs.Build
                 File.WriteAllText(filePath, content);
             }
 
-            return docsetPath;
+            return (docsetPath, spec);
         }
 
         public static void VerifyJsonContainEquals(JToken expected, JToken actual)
@@ -93,7 +89,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<string> FindTestSpecHeadersInFile(string path)
+        private static IEnumerable<(string header, string yaml)> FindTestSpecHeadersInFile(string path)
         {
             var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
 
@@ -102,7 +98,7 @@ namespace Microsoft.Docs.Build
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
 
-                yield return header;
+                yield return (header, yaml);
             }
         }
     }

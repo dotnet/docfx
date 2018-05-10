@@ -4,11 +4,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Docs.Build;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Microsoft.Docs.Test
+namespace Microsoft.Docs.Build
 {
     public static class RestoreTest
     {
@@ -37,12 +36,10 @@ namespace Microsoft.Docs.Test
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task RestoreDependencies(string ymlFile, string headerName)
+        public static async Task BuildDocset(string name, string specYaml)
         {
-            var spec = TestHelper.FindTestSpecInFile(ymlFile, headerName);
-            Assert.NotNull(spec);
+            var (docsetPath, spec) = TestHelper.CreateDocset(name, specYaml);
 
-            var docsetPath = spec.CreateDocset();
             await Program.Main(new[] { "restore", docsetPath });
 
             foreach (var (file, content) in spec.Restorations)
