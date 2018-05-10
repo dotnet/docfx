@@ -56,8 +56,7 @@ namespace Microsoft.Docs.Build
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             if (!File.Exists(configPath))
             {
-                // TODO: error handling
-                throw new Exception($"No config file found under '{docsetPath}'");
+                throw new DocfxException(ErrorCodes.ConfigNotFound, $"Cannot find docfx.yml at '{docsetPath}'");
             }
             return LoadCore(configPath, options);
         }
@@ -71,9 +70,6 @@ namespace Microsoft.Docs.Build
             ValidateDocsetPath(docsetPath);
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
-            if (!exists)
-                throw new DocumentException("config-not-found", $"Cannot find docfx.yml at '{configPath}'");
-
             config = exists ? LoadCore(configPath, options) : new Config();
             return exists;
         }
@@ -82,8 +78,7 @@ namespace Microsoft.Docs.Build
         {
             if (PathUtility.FolderPathHasInvalidChars(docsetPath))
             {
-                // TODO: error handling
-                throw new Exception("docset path contains invalid characters.");
+                throw new DocfxException(ErrorCodes.ConfigNotFound, $"Docset path contains invalid characters:'{docsetPath}'");
             }
         }
 
@@ -97,8 +92,11 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                // TODO: error handling
-                throw new Exception($"Error parsing docset config {configPath}: {e.Message}", e);
+                throw new DocfxException(
+                    ErrorCodes.InvalidConfig,
+                    $"Error parsing docset config: {e.Message}",
+                    configPath,
+                    innerException: e);
             }
         }
 

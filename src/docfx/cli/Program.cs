@@ -17,30 +17,41 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var (command, docset, options) = ParseCommandLineOptions(args);
-                var reporter = new ConsoleReporter();
-
-                switch (command)
+                using (var reporter = new Reporter())
                 {
-                    case "restore":
-                        await Restore.Run(docset, options, reporter);
-                        break;
-                    case "build":
-                        await Build.Run(docset, options, reporter);
-                        break;
+                    try
+                    {
+                        var (command, docset, options) = ParseCommandLineOptions(args);
+
+                        switch (command)
+                        {
+                            case "restore":
+                                await Restore.Run(docset, options, reporter);
+                                break;
+                            case "build":
+                                await Build.Run(docset, options, reporter);
+                                break;
+                        }
+                        return 0;
+                    }
+                    catch (DocfxException ex)
+                    {
+                        Logger.Error(ex.ToString());
+                        reporter?.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
+                        return 1;
+                    }
                 }
-                return 0;
-            }
-            catch (DocumentException ex)
-            {
-                Logger.Error(ex.ToString());
-                Console.WriteLine(ex.Code, ex.Message, ex.File);
-                return 1;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.ToString());
-                Console.WriteLine(CreateFatalErrorMessage(ex, args));
+                try
+                {
+                    Logger.Error(ex.ToString());
+                    PrintFatalErrorMessage(ex, args);
+                }
+                catch
+                {
+                }
                 return 1;
             }
         }
@@ -75,18 +86,25 @@ namespace Microsoft.Docs.Build
             return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         }
 
-        private static string CreateFatalErrorMessage(Exception exception, string[] args)
+        private static void PrintFatalErrorMessage(Exception exception, string[] args)
         {
+            Console.ResetColor();
+
             var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
 
             // windows command line does not have good emoji support
             var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            if (showEmoji)
+                Console.Write("🚘💥🚗 ");
+            Console.Write("docfx has crashed");
+            if (showEmoji)
+                Console.Write(" 🚘💥🚗");
 
-            return
-$@"{(showEmoji ? "🚘💥🚗" : "")} docfx has crashed {(showEmoji ? "🚔💥🚙" : "")}
-Help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:
-
-
+            Console.WriteLine();
+            Console.WriteLine("Help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine($@"
 **Version**: {GetVersion()}
 
 **Steps to Reproduce**:
@@ -103,8 +121,7 @@ Help us improve by creating an an issue at https://github.com/dotnet/docfx with 
 
 ```
 {exception}
-```
-";
+```");
         }
     }
 }

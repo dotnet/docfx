@@ -10,17 +10,37 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _stable;
         private readonly string _outputPath;
+        private readonly Reporter _reporter;
+
+        public Context(Reporter reporter, string outputPath, bool stable)
+        {
+            _stable = stable;
+            _reporter = reporter;
+            _outputPath = Path.GetFullPath(outputPath);
+        }
 
         /// <summary>
-        /// Gets the logger to write logs, report diagnostics and progress.
+        /// Creates an error message to build report.
         /// </summary>
-        public IReporter Reporter { get; }
-
-        public Context(IReporter reporter, string outputPath, bool stable)
+        public void ReportError(string code, string message, string file = null, int line = 0, int column = 0)
         {
-            Reporter = reporter;
-            _stable = stable;
-            _outputPath = Path.GetFullPath(outputPath);
+            _reporter.Report(ReportLevel.Error, code, message, file, line, column);
+        }
+
+        /// <summary>
+        /// Creates a warning message to build report.
+        /// </summary>
+        public void ReportWarning(string code, string message, string file = null, int line = 0, int column = 0)
+        {
+            _reporter.Report(ReportLevel.Warning, code, message, file, line, column);
+        }
+
+        /// <summary>
+        /// Creates an important informational message to build report.
+        /// </summary>
+        public void ReportInfo(string code, string message, string file = null, int line = 0, int column = 0)
+        {
+            _reporter.Report(ReportLevel.Info, code, message, file, line, column);
         }
 
         /// <summary>
