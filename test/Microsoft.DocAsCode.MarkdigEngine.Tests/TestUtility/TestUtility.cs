@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 BasePath = ".",
                 Extensions = new Dictionary<string, object>
                 {
-                    { LineNumberExtension.EnableSourceInfo, false }
+                    { "EnableSourceInfo", false }
                 }
             };
             var service = new MarkdigMarkdownService(parameter);
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 BasePath = ".",
                 Extensions = new Dictionary<string, object>
                 {
-                    { LineNumberExtension.EnableSourceInfo, false }
+                    { "EnableSourceInfo", false }
                 }
             };
 

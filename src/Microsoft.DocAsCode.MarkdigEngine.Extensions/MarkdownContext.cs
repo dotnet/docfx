@@ -27,31 +27,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public delegate string GetLinkDelegate(string path, object relativeTo);
 
         /// <summary>
-        /// Identifies the file that owns this content.
-        /// </summary>
-        public object File { get; }
-
-        /// <summary>
-        /// Whether the content is parsed as inline only.
-        /// </summary>
-        public bool IsInline { get; }
-
-        /// <summary>
-        /// Whether validation is enabled during markup.
-        /// </summary>
-        public bool EnableValidation { get; }
-
-        /// <summary>
-        /// Whether source info is enabled in output.
-        /// </summary>
-        public bool EnableSourceInfo { get; }
-
-        /// <summary>
-        /// Validation rules.
-        /// </summary>
-        public MarkdownValidatorBuilder Mvb { get; }
-
-        /// <summary>
         /// Localizable text tokens used for rendering notes.
         /// </summary>
         public IReadOnlyDictionary<string, string> Tokens { get; }
@@ -66,55 +41,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public GetLinkDelegate GetLink { get; }
 
-        /// <summary>
-        /// Converts <see cref="File"/> to a string to access file system.
-        /// </summary>
-        public Func<object, string> GetFilePath { get; }
-
-        /// <summary>
-        /// Used to detect circular references.
-        /// </summary>
-        public ImmutableStack<object> CircularReferenceDetector { get; }
-
-        /// <summary>
-        /// Gets all the dependencies referenced by the root markdown context.
-        /// </summary>
-        public HashSet<object> Dependencies { get; }
-
         public MarkdownContext(
-            object filePath,
-            bool isInline,
-            bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
-            MarkdownValidatorBuilder mvb,
-            bool enableValidation = false,
             ReadFileDelegate readFile = null,
-            GetLinkDelegate getLink = null,
-            Func<object, string> getFilePath = null,
-            ImmutableStack<object> circularReferenceDetector = null,
-            HashSet<object> dependencies = null)
+            GetLinkDelegate getLink = null)
         {
-            File = filePath;
-            IsInline = isInline;
-            EnableSourceInfo = enableSourceInfo;
-            EnableValidation = enableValidation;
-            Mvb = mvb;
-
             Tokens = tokens ?? ImmutableDictionary<string, string>.Empty;
             ReadFile = readFile ?? ReadFileDefault;
             GetLink = getLink ?? ((path, relativeTo) => path);
-            GetFilePath = getFilePath ?? (file => file.ToString());
-            Dependencies = dependencies ?? new HashSet<object>();
-            CircularReferenceDetector = (circularReferenceDetector ?? ImmutableStack<object>.Empty).Push(filePath);
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)
         {
             var target = relativeTo != null ? path : Path.Combine(relativeTo.ToString(), path);
 
-            if (System.IO.File.Exists(target))
+            if (File.Exists(target))
             {
-                return (System.IO.File.ReadAllText(target), target);
+                return (File.ReadAllText(target), target);
             }
 
             return (null, null);

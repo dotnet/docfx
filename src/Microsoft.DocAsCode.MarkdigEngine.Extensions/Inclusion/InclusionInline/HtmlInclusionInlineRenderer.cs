@@ -3,8 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
+    using System.IO;
+    using System.Text;
+
     using Markdig;
+    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
@@ -12,54 +15,50 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
         private readonly MarkdownContext _context;
-        private readonly MarkdownPipeline _pipeline;
+        private readonly MarkdownPipeline _inlinePipeline;
 
         public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
             _context = context;
-            _pipeline = pipeline;
+            _inlinePipeline = CreateInlineOnlyPipeline(pipeline);
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, _context.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{_context.File}'.");
+                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            if (_context.CircularReferenceDetector.Contains(includeFilePath))
+            if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
+                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            _context.Dependencies.Add(includeFilePath);
+            using (InclusionContext.PushFile(includeFilePath))
+            {
+                renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
+            }
+        }
 
-            var context = new MarkdownContext(
-                includeFilePath,
-                true,
-                _context.EnableSourceInfo,
-                _context.Tokens,
-                _context.Mvb,
-                _context.EnableValidation,
-                _context.ReadFile,
-                _context.GetLink,
-                _context.GetFilePath,
-                _context.CircularReferenceDetector,
-                _context.Dependencies);
+        private static MarkdownPipeline CreateInlineOnlyPipeline(MarkdownPipeline pipeline)
+        {
+            var builder = new MarkdownPipelineBuilder();
+            
+            foreach (var extension in pipeline.Extensions)
+            {
+                builder.Extensions.Add(extension);
+            }
 
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
-                .Build();
+            builder.UseInlineOnly();
 
-            // Do not need to check if content is a single paragragh
-            // context.IsInline = true will force it into a single paragragh and render with no <p></p>
-            renderer.Write(Markdown.ToHtml(content, pipeline));
+            return builder.Build();
         }
     }
 }

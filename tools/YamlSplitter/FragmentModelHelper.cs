@@ -15,14 +15,14 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
     public static class FragmentModelHelper
     {
         public static MarkdigMarkdownService MDService = new MarkdigMarkdownService(
-                new MarkdownServiceParameters
-                {
-                    BasePath = ".",
-                    Extensions = new Dictionary<string, object>
-                            {
-                                { LineNumberExtension.EnableSourceInfo, false }
-                            }
-                });
+            new MarkdownServiceParameters
+            {
+                BasePath = ".",
+                Extensions = new Dictionary<string, object>
+                    {
+                        { "EnableSourceInfo", false }
+                    }
+            });
 
         public static Dictionary<string, MarkdownFragment> LoadMarkdownFragment(string fileName)
         {

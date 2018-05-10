@@ -89,7 +89,7 @@ this is also warning</p>
                 }.ToImmutableDictionary(),
                 Extensions = new Dictionary<string, object>
                 {
-                    { LineNumberExtension.EnableSourceInfo, false }
+                    { "EnableSourceInfo", false }
                 }
             };
             var service = new MarkdigMarkdownService(parameter);
