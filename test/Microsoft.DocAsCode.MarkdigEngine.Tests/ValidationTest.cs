@@ -20,6 +20,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     {
         public const string MarkdownValidatePhaseName = "Markdown style";
 
+        private readonly MarkdownContext DefaultContext = 
+            new MarkdownContext(
+                null,
+                false,
+                false,
+                null,
+                null,
+                Logger.LogWarning,
+                Logger.LogError,
+                scope => { return new LoggerPhaseScope(scope); });
+
         [Fact]
         [Trait("Related", "Validation")]
         public void TestHtmlBlockTagValidation()
@@ -84,7 +95,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             builder.LoadEnabledRulesProvider();
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -143,7 +154,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             });
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
             Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -212,7 +223,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             });
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
             Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
 <script>alert(1);</script> end.

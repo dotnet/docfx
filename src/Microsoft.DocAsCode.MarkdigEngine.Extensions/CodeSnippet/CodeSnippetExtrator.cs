@@ -5,11 +5,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
     using Markdig.Helpers;
-    using Microsoft.DocAsCode.Common;
 
     public class CodeSnippetExtrator
     {
@@ -18,11 +15,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private readonly bool IsEndLineContainsTagName;
         public const string TagNamePlaceHolder = "{tagname}";
 
-        public CodeSnippetExtrator(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
+        private MarkdownContext _context;
+
+        public CodeSnippetExtrator(string startLineTemplate, string endLineTemplate, MarkdownContext context, bool isEndLineContainsTagName = true)
         {
             this.StartLineTemplate = startLineTemplate;
             this.EndLineTemplate = endLineTemplate;
             this.IsEndLineContainsTagName = isEndLineContainsTagName;
+
+            _context = context;
         }
 
         public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)
@@ -46,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                     if(!result.ContainsKey(tagName))
                     {
-                        Logger.LogWarning($"Can't find startTag {tagName}");
+                        _context.LogWarning($"Can't find startTag {tagName}");
                     }
                     else
                     {

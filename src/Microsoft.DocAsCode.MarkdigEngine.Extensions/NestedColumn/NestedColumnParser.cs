@@ -6,16 +6,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class NestedColumnParser : BlockParser
     {
         private const string StartString = "column";
         private const string EndString = "column-end:::";
         private const char Colon = ':';
-        public NestedColumnParser()
+
+        private MarkdownContext _context;
+
+        public NestedColumnParser(MarkdownContext context)
         {
             OpeningCharacters = new[] { ':' };
+            _context = context;
         }
 
         public override BlockState TryOpen(BlockProcessor processor)
@@ -127,7 +130,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"NestedColumn have some invalid chars in the ending.");
+                _context.LogWarning($"NestedColumn have some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);

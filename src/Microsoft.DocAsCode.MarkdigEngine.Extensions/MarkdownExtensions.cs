@@ -3,10 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
-
-    using Microsoft.DocAsCode.Common;
-
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
@@ -40,18 +36,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseYamlHeader()
-                .UseDFMCodeInfoPrefix()
+                .UseYamlHeader(context)
+                .UseDFMCodeInfoPrefix(context)
                 .UseQuoteSectionNote(context)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
-                .UseTabGroup()
+                .UseTabGroup(context)
                 .UseLineNumber(context)
-                .UseMonikerRange()
+                .UseMonikerRange(context)
                 .UseValidators(context)
                 .UseInteractiveCode()
-                .UseRow()
-                .UseNestedColumn()
+                .UseRow(context)
+                .UseNestedColumn(context)
                 // Do not add extension after the InineParser
                 .UseInineParserOnly(context);
         }
@@ -70,7 +66,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return pipeline;
             }
 
-            var tokenRewriter = context.Mvb.CreateRewriter();
+            var tokenRewriter = context.Mvb.CreateRewriter(context);
             var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
             pipeline.DocumentProcessed += document =>
@@ -97,7 +93,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             var tabGroupAggregator = new TabGroupAggregator();
             var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
@@ -105,7 +101,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var tagGroupIdRewriter = new TabGroupIdRewriter();
             var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
 
-            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter();
+            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(context);
             var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
 
             pipeline.DocumentProcessed += document =>
@@ -132,7 +128,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
             if (fencedCodeBlockParser != null)
@@ -141,7 +137,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                Logger.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
+                context.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
                 pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
@@ -203,27 +199,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready<MonikerRangeExtension>();
+            pipeline.Extensions.AddIfNotAlready(new MonikerRangeExtension(context));
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new YamlHeaderExtension());
+            pipeline.Extensions.Insert(0, new YamlHeaderExtension(context));
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready<RowExtension>();
+            pipeline.Extensions.AddIfNotAlready(new RowExtension(context));
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready<NestedColumnExtension>();
+            pipeline.Extensions.AddIfNotAlready(new NestedColumnExtension(context));
             return pipeline;
         }
     }

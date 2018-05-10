@@ -9,15 +9,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class RowExtension : IMarkdownExtension
     {
+        private MarkdownContext _context;
+
+        public RowExtension(MarkdownContext context)
+        {
+            _context = context;
+        }
+
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             if (pipeline.BlockParsers.Contains<CustomContainerParser>())
             {
-                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new RowParser());
+                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new RowParser(_context));
             }
             else
             {
-                pipeline.BlockParsers.AddIfNotAlready<RowParser>();
+                pipeline.BlockParsers.AddIfNotAlready(new RowParser(_context));
             }
         }
 

@@ -11,6 +11,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class MarkdownContext
     {
         /// <summary>
+        /// Log delegate
+        /// </summary>
+        public delegate void LogActionDelegate(string message, string phase = null, string file = null, string line = null, string code = null);
+
+        /// <summary>
         /// Reads a file as text based on path relative to an existing file.
         /// </summary>
         /// <param name="path">Path to the file being opened.</param>
@@ -81,12 +86,30 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public HashSet<object> Dependencies { get; }
 
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        public LogActionDelegate LogWarning { get; }
+
+        /// <summary>
+        /// Log error
+        /// </summary>
+        public LogActionDelegate LogError { get; }
+
+        /// <summary>
+        /// Set logger scope function
+        /// </summary>
+        public Func<string, IDisposable> SetLoggerScope { get; }
+
         public MarkdownContext(
             object filePath,
             bool isInline,
             bool enableSourceInfo,
             IReadOnlyDictionary<string, string> tokens,
             MarkdownValidatorBuilder mvb,
+            LogActionDelegate logWarning,
+            LogActionDelegate logError,
+            Func<string, IDisposable> setLoggerScope,
             bool enableValidation = false,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null,
@@ -99,6 +122,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             EnableSourceInfo = enableSourceInfo;
             EnableValidation = enableValidation;
             Mvb = mvb;
+            LogWarning = logWarning;
+            LogError = logError;
+            SetLoggerScope = setLoggerScope;
 
             Tokens = tokens ?? ImmutableDictionary<string, string>.Empty;
             ReadFile = readFile ?? ReadFileDefault;

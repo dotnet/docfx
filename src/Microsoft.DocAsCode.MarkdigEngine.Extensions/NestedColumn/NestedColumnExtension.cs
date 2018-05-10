@@ -9,15 +9,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class NestedColumnExtension : IMarkdownExtension
     {
+        private MarkdownContext _context;
+
+        public NestedColumnExtension(MarkdownContext context)
+        {
+            _context = context;
+        }
+
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             if (pipeline.BlockParsers.Contains<CustomContainerParser>())
             {
-                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new NestedColumnParser());
+                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new NestedColumnParser(_context));
             }
             else
             {
-                pipeline.BlockParsers.AddIfNotAlready<NestedColumnParser>();
+                pipeline.BlockParsers.AddIfNotAlready(new NestedColumnParser(_context));
             }            
         }
 

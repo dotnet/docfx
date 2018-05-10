@@ -6,21 +6,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class QuoteSectionNoteParser : BlockParser
     {
         private List<string> _noteTypes = new List<string>{ "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
+        private MarkdownContext _context;
 
-        public QuoteSectionNoteParser()
+        public QuoteSectionNoteParser(MarkdownContext context)
         {
             OpeningCharacters = new[] { '>' };
+            _context = context;
         }
 
         public override BlockState TryOpen(BlockProcessor processor)
@@ -147,7 +146,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                                      IsNoteType(infoString);
                 if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
-                    Logger.LogWarning("Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
+                    _context.LogWarning("Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
                     processor.GoToColumn(originalColumn);
                     return false;
                 }

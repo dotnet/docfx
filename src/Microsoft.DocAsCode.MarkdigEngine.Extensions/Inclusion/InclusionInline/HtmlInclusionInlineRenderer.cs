@@ -7,11 +7,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
-    using Microsoft.DocAsCode.Common;
 
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
-        private readonly MarkdownContext _context;
+        private MarkdownContext _context;
+
         private readonly MarkdownPipeline _pipeline;
 
         public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline pipeline)
@@ -26,14 +26,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
+                _context.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
                 renderer.Write(inclusion.Context.GetRaw());
                 return;
             }
 
             if (_context.CircularReferenceDetector.Contains(includeFilePath))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
+                _context.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
                 renderer.Write(inclusion.Context.GetRaw());
                 return;
             }
@@ -46,6 +46,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.EnableSourceInfo,
                 _context.Tokens,
                 _context.Mvb,
+                _context.LogWarning,
+                _context.LogError,
+                _context.SetLoggerScope,
                 _context.EnableValidation,
                 _context.ReadFile,
                 _context.GetLink,
