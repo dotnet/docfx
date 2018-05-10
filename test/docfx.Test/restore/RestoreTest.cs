@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     public static class RestoreTest
     {
-        public static readonly TheoryData<string, string> Specs = TestHelper.FindTestSpecs("restore");
+        public static readonly TheoryData<string, int> Specs = TestHelper.FindTestSpecs("restore");
 
         [Theory]
         [InlineData("https://github.com/dotnet/docfx", "github.com/dotnet/docfx/master", "https://github.com/dotnet/docfx", "master")]
@@ -36,9 +36,9 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string name, string specYaml)
+        public static async Task BuildDocset(string name, int ordinal)
         {
-            var (docsetPath, spec) = TestHelper.CreateDocset(name, specYaml);
+            var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
             await Program.Run(new[] { "restore", docsetPath, "--stable" });
 
