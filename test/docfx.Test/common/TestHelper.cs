@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
         public static (string docsetPath, TestSpec spec) CreateDocset(string specName, int ordinal)
         {
             var i = specName.LastIndexOf('/');
-            var specPath = Path.Combine("specs", specName.Substring(0, i) + ".yml");
-            var sections = File.ReadAllText(specPath).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+            var specPath = specName.Substring(0, i) + ".yml";
+            var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var spec = YamlUtility.Deserialize<TestSpec>(yaml);
             var docsetPath = Path.Combine("specs.drop", specPath);
