@@ -119,6 +119,7 @@ All links in `subfolder\toc.md` are relative to the `subfolder\toc.md` itself, e
 ### The other ways to link to a locale resource
 
 #### Relative path starts with `~`
+
 Sometimes you may find it's complicated to calculate relative path between two files.
 DocFX also supports path starts with `~` to represent path relative to the root directory of your project (i.e. where `docfx.yml` is located).
 This kind of path will also be validated and resolved during build.
@@ -160,7 +161,7 @@ For example you have a dependent repository defined in config:
 
 ```config
 dependencies:
-  dependent-repo-alias: https://github.com/dotnet/docfx-dependent#master
+  dependent-name: https://github.com/dotnet/docfx-dependent#master
 ```
 
 The folder structure in dependent repo is like below:
@@ -175,8 +176,8 @@ The folder structure in dependent repo is like below:
 You can link a resource stored in dependent repo:
 
 ```markdown
-[dependency file1](dependent-repo-alias\file1.md)
-[dependency file2](dependent-repo-alias\subfolder\file2.md)
+[dependency file1](dependent-name/file1.md)
+[!include[file2](dependent-name/subfolder/file2.md)]
 ```
 [//]: # (what's the resolved href?)
 
