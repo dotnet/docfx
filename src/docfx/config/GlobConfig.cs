@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -40,6 +41,36 @@ namespace Microsoft.Docs.Build
             Exclude = exclude ?? Array.Empty<string>();
             Value = value;
             IsGlob = isGlob;
+        }
+
+        public bool Match(string filePath)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(filePath));
+
+            if (Exclude.Any(e => MatchItem(filePath, e)))
+                return false;
+            if (Include.Any(i => MatchItem(filePath, i)))
+                return true;
+
+            return false;
+        }
+
+        private bool MatchItem(string filePath, string pattern)
+        {
+            if (pattern == null)
+                return false;
+
+            if (IsGlob)
+            {
+                var glob = new GlobMatcher(pattern);
+                return glob.Match(filePath);
+            }
+            else
+            {
+                return pattern.EndsWith('/') ?
+                    filePath.StartsWith(pattern, StringComparison.Ordinal) :
+                    filePath == pattern;
+            }
         }
     }
 }

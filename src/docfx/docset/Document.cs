@@ -38,6 +38,15 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
+        /// Gets the metadata output file path relative to output directory that is:
+        ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
+        ///  - Does not start with '/'
+        ///  - Does not end with '/'
+        /// </summary>
+        public string MetaOutputPath { get; }
+
+        /// <summary>
         /// Gets the Url relative to site root that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -55,6 +64,7 @@ namespace Microsoft.Docs.Build
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath, docset.DocsetPath);
             OutputPath = GetOutputPath(FilePath, ContentType);
+            MetaOutputPath = Path.ChangeExtension(FilePath, ".mta.json");
             SiteUrl = GetSiteUrl(FilePath, ContentType);
         }
 
