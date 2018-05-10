@@ -10,6 +10,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
+            var tabGroupAggregator = new TabGroupAggregator();
+            var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+
+            var tagGroupIdRewriter = new TabGroupIdRewriter();
+            var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
+
+            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter();
+            var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
+
+            pipeline.DocumentProcessed += document =>
+            {
+                aggregateVisitor.Visit(document);
+                tagGroupIdVisitor.Visit(document);
+                activeAndVisibleVisitor.Visit(document);
+            };
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

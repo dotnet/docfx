@@ -25,19 +25,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.Context.IncludedFilePath, _context.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, _context.File);
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
-                renderer.Write(inclusion.Context.GetRaw());
+                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{_context.File}'.");
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
             if (_context.CircularReferenceDetector.Contains(includeFilePath))
             {
                 Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
-                renderer.Write(inclusion.Context.GetRaw());
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.EnableSourceInfo,
                 _context.Tokens,
                 _context.Mvb,
+                _context.EnableValidation,
                 _context.ReadFile,
                 _context.GetLink,
                 _context.GetFilePath,

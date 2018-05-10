@@ -171,6 +171,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return result;
             }
 
+            public MarkupResult Markup(string src, string path, bool enableValidation)
+            {
+                throw new NotImplementedException();
+            }
+
             public string GetIncrementalContextHash() => _incrementalContextHash;
 
             public void Dispose()
