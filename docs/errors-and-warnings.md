@@ -8,12 +8,6 @@ These are the errors and warnings grouped by category to help you understand the
 
 ## General Errors
 
-### fatal
-
-❌ An unexpected fatal error has occurred.
-
-💡 To help us improve, search for an existing issue or create a new issue at https://github.com/dotnet/docfx with the provided error description.
-
 ### circular-reference
 
 ❌ A series of document references creates a closed loop.
