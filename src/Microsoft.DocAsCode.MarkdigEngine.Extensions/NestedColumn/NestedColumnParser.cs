@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private const string EndString = "column-end:::";
         private const char Colon = ':';
 
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public NestedColumnParser(MarkdownContext context)
         {

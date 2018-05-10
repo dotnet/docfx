@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class NestedColumnExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public NestedColumnExtension(MarkdownContext context)
         {

@@ -24,6 +24,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
         {
+            if (InclusionContext.IsInclude)
+            {
+                return;
+            }
+
             var content = obj.Lines.ToString();
             try
             {

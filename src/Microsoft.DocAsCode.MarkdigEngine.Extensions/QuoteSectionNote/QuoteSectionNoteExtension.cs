@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public QuoteSectionNoteExtension(MarkdownContext context)
         {

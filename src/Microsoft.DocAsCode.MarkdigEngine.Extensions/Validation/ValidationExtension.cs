@@ -6,28 +6,32 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig;
     using Markdig.Renderers;
 
-    public class CodeSnippetExtension : IMarkdownExtension
+    public class ValidationExtension : IMarkdownExtension
     {
+        private readonly MarkdownValidatorBuilder _mvb;
+
         private readonly MarkdownContext _context;
 
-        public CodeSnippetExtension(MarkdownContext context)
+        public ValidationExtension(MarkdownValidatorBuilder validationBuilder, MarkdownContext context)
         {
+            _mvb = validationBuilder;
             _context = context;
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            pipeline.BlockParsers.AddIfNotAlready<CodeSnippetParser>();
+            var tokenRewriter = _mvb.CreateRewriter(_context);
+            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
+
+            pipeline.DocumentProcessed += document =>
+            {
+                visitor.Visit(document);
+            };
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            var htmlRenderer = renderer as HtmlRenderer;
-            if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlCodeSnippetRenderer>())
-            {
-                // Must be inserted before CodeBlockRenderer
-                htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_context));
-            }
+
         }
     }
 }

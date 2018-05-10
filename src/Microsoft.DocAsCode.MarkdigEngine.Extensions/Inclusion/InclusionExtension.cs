@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     /// </summary>
     public class InclusionExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public InclusionExtension(MarkdownContext context)
         {
@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             pipeline.BlockParsers.AddIfNotAlready<InclusionBlockParser>();
             pipeline.InlineParsers.InsertBefore<LinkInlineParser>(new InclusionInlineParser());
+
+            pipeline.DocumentProcessed += InclusionExtension.GetProcessDocumentDelegate(_context);
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
@@ -51,7 +53,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static void UpdateLinks(MarkdownObject markdownObject, MarkdownContext context)
         {
-            if (markdownObject == null || context == null || context.File == null) return;
+            if (markdownObject == null || context == null) return;
 
             if (markdownObject is ContainerBlock containerBlock)
             {
@@ -79,7 +81,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (markdownObject is LinkInline linkInline)
                 {
-                    linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, context.File);
+                    linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, InclusionContext.File);
                 }
             }
         }

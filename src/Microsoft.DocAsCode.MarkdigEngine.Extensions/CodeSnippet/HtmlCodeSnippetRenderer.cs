@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
         private const string tagPrefix = "snippet";
 
         private static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
@@ -168,22 +168,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, _context.File);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File);
 
             if (content == null)
             {
-                _context.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{_context.File}'.");
+                _context.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
                 renderer.WriteEscape(codeSnippet.Raw);
                 return;
             }
 
-            _context.Dependencies.Add(codeSnippetPath);
+            using (InclusionContext.PushFile(codeSnippetPath))
+            {
+                codeSnippet.SetAttributeString();
 
-            codeSnippet.SetAttributeString();
-
-            renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-            renderer.WriteEscape(GetContent(content, codeSnippet));
-            renderer.Write("</code></pre>");
+                renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
+                renderer.WriteEscape(GetContent(content, codeSnippet));
+                renderer.Write("</code></pre>");
+            }
         }
 
         private string GetContent(string content, CodeSnippet obj)

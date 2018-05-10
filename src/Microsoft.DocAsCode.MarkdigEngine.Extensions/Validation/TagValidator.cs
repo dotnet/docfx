@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public TagValidator(ImmutableList<MarkdownTagValidationRule> validators, MarkdownContext context)
         {

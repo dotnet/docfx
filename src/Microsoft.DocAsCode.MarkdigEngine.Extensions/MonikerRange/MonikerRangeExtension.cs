@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class MonikerRangeExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public MonikerRangeExtension(MarkdownContext context)
         {

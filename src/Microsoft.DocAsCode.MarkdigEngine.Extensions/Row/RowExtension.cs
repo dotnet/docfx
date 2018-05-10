@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class RowExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public RowExtension(MarkdownContext context)
         {

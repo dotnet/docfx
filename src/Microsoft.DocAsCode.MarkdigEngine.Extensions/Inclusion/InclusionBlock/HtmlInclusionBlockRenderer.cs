@@ -3,18 +3,14 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
-    using System.Text.RegularExpressions;
-
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
         private MarkdownPipeline _pipeline;
-        private Regex YamlHeaderRegex = new Regex(@"^<yamlheader[^>]*?>[\s\S]*?<\/yamlheader>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
@@ -24,53 +20,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.Context.IncludedFilePath, _context.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
 
             if (content == null)
             {
-                _context.LogWarning($"Cannot resolve '{inclusion.Context.IncludedFilePath}' relative to '{_context.File}'.");
-                renderer.Write(inclusion.Context.GetRaw());
+                _context.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            if (_context.CircularReferenceDetector.Contains(includeFilePath))
+            if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                _context.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
-                renderer.Write(inclusion.Context.GetRaw());
+
+                _context.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
+                renderer.Write(inclusion.GetRawToken());
                 return;
             }
-
-            _context.Dependencies.Add(includeFilePath);
-
-            var context = new MarkdownContext(
-                includeFilePath,
-                _context.IsInline,
-                _context.EnableSourceInfo,
-                _context.Tokens,
-                _context.Mvb,
-                _context.LogWarning,
-                _context.LogError,
-                _context.SetLoggerScope,
-                _context.EnableValidation,
-                _context.ReadFile,
-                _context.GetLink,
-                _context.GetFilePath,
-                _context.CircularReferenceDetector,
-                _context.Dependencies);
-
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
-                .Build();
-
-            var result = Markdown.ToHtml(content, pipeline);
-            result = SkipYamlHeader(result);
-
-            renderer.Write(result);
-        }
-
-        private string SkipYamlHeader(string content)
-        {
-            return YamlHeaderRegex.Replace(content, "");
+            using (InclusionContext.PushFile(includeFilePath))
+            {
+                renderer.Write(Markdown.ToHtml(content, _pipeline));
+            }
         }
     }
 }

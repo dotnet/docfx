@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);
-                _container = CompositionContainer.GetContainer(assemblyList);
+                _container = CompositionContainer.GetContainer(assemblyList.Distinct());
                 _container.SatisfyImports(this);
                 _assemblyList = assemblyList;
             }

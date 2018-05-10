@@ -103,7 +103,7 @@ The information of incremental build and post processing is saved in `incrementa
 		"processors": {
 			"TocDocumentProcessor": {
 				"can_incremental": false,
-				"details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+				"details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
 				"incrementalPhase": "build"
 			},
 			"ManagedReferenceDocumentProcessor": {

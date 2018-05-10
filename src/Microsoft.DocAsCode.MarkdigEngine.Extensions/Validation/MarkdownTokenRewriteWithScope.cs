@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public IMarkdownObjectRewriter Inner { get; }
         public string Scope { get; }
 
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public MarkdownTokenRewriteWithScope(IMarkdownObjectRewriter inner, string scope, MarkdownContext context)
         {
