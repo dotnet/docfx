@@ -72,3 +72,93 @@ inputs:
 outputs:
   docs/index.json: |
     { "content": "" }
+---
+# Global metadata
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key: value
+  docs/a.md:
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "" }
+  docs/a.mta.json: |
+    { "key": "value" }
+  docs/b.json: |
+    { "content": "" }
+  docs/b.mta.json: |
+    { "key": "value" }
+---
+# File metadata of object form
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      docs/:
+        key: value
+      docs/index.md:
+        key: another value
+  docs/a.md:
+  docs/b.md:
+  docs/index.md:
+outputs:
+  docs/a.json: |
+    { "content": "" }
+  docs/a.mta.json: |
+    { "key": "value" }
+  docs/b.json: |
+    { "content": "" }
+  docs/b.mta.json: |
+    { "key": "value" }
+  docs/index.json: |
+    { "content": "" }
+  docs/index.mta.json: |
+    { "key": "another value" }
+---
+# File metadata of array form
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key: general
+    fileMetadata:
+    - include: docs/**
+      exclude:
+      - docs/index.md
+      - docs/b.md
+      value:
+        key: exclude b
+    - include:
+      - docs/index.md
+      value:
+        key: index
+  docs/a.md:
+  docs/b.md:
+  docs/index.md:
+outputs:
+  docs/a.json: |
+    { "content": "" }
+  docs/a.mta.json: |
+    { "key": "exclude b" }
+  docs/b.json: |
+    { "content": "" }
+  docs/b.mta.json: |
+    { "key": "general" }
+  docs/index.json: |
+    { "content": "" }
+  docs/index.mta.json: |
+    { "key": "index" }
+---
+# File metadata overwrite global metadata
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key: value
+    fileMetadata:
+      docs/:
+        key: another value
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content": "" }
+  docs/a.mta.json: |
+    { "key": "another value" }
