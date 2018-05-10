@@ -699,7 +699,6 @@ body";
             var result = TestUtility.MarkupWithoutSourceInfo(root, rootPath);
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
-
 <p>body</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);

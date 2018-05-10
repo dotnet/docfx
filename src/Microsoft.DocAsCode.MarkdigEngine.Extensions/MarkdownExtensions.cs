@@ -3,25 +3,17 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Microsoft.DocAsCode.Common;
-
+    using System;
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Extensions.EmphasisExtras;
     using Markdig.Parsers;
+    using Microsoft.DocAsCode.Common;
 
     public static class MarkdownExtensions
     {
         public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
-        {
-            return pipeline
-                .UseMarkdigAdvancedExtensions()
-                .UseDfmExtensions(context)
-                .RemoveUnusedExtensions();
-        }
-
-        public static MarkdownPipelineBuilder UseMarkdigAdvancedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             return pipeline
                 //.UseMathematics()
@@ -29,41 +21,31 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
-                .UseAutoLinks();
-        }
-
-        public static MarkdownPipelineBuilder UseDfmExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
-        {
-            return pipeline
+                .UseAutoLinks()
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(context)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
                 .UseTabGroup()
-                .UseLineNumber(context)
                 .UseMonikerRange()
-                .UseValidators(context)
                 .UseInteractiveCode()
                 .UseRow()
-                .UseNestedColumn();
+                .UseNestedColumn()
+                .RemoveUnusedExtensions();
         }
 
-        public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
+        private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseValidators(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseValidation(this MarkdownPipelineBuilder pipeline, MarkdownValidatorBuilder validator)
         {
-            if (context.EnableValidation)
-            {
-                pipeline.Extensions.Add(new ValidationExtension(context));
-            }
+            pipeline.Extensions.Add(new ValidationExtension(validator));
             return pipeline;
         }
 	
@@ -109,14 +91,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, Func<object, string> getFilePath = null)
         {
-            if (!context.EnableSourceInfo)
-            {
-                return pipeline;
-            }
-
-            pipeline.Extensions.Add(new LineNumberExtension(context));
+            pipeline.Extensions.Add(new LineNumberExtension(getFilePath));
             return pipeline;
         }
 
@@ -147,12 +124,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.AddIfNotAlready<MonikerRangeExtension>();
-            return pipeline;
-        }
-
-        public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
-        {
-            pipeline.Extensions.Insert(0, new YamlHeaderExtension());
             return pipeline;
         }
 
