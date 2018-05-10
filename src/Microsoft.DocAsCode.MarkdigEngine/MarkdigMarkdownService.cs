@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             using (var writer = new StringWriter())
             {
                 var renderer = new HtmlRenderer(writer);
-                pipeline.Setup(renderer);
+                builder.Build().Setup(renderer);
                 renderer.Render(document);
                 writer.Flush();
 
