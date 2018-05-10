@@ -1,6 +1,8 @@
 [\\]: # (TODO: correct the links once the corresponding docs have been added)
+[\\]: # (TODO: support encoded link)
+
 # Reference Link
-As we know, markdown provides a [syntax](https://daringfireball.net/projects/markdown/syntax#link) to create hyperlinks.
+Markdown provides a [syntax](https://spec.commonmark.org/0.28/#inline-link) to create hyperlinks.
 For example, the following syntax:
 
 ```markdown
@@ -12,7 +14,7 @@ or
 ```
 
 Here the link could be either absolute url pointing to external resource(`www.bing.com` in the above example),
-or a relative path pointing to a local resource on the same server (for example, `about.html`).
+or a relative path pointing to a local resource on the same machine (for example, `about.html`).
 
 DocFX also provide ways to link documents together, and we need follow some rules to make it easy to switch between platforms without friction.
   - The relative path pointing to a local resource should be **case sensitive**.
@@ -21,23 +23,24 @@ DocFX also provide ways to link documents together, and we need follow some rule
 
 ## Link to a local resource
 
-In DocFX, you can link to a locale resource to:
+In DocFX, you can link to a local resource to:
   - Create a hyperlink, like `[docfx](docs/design/tableofcontent.md)`
-  - Include a token, like `[!include[file name](subfolder/token.md)]`
-  - Include a [nested toc](table-of-contents.md#link-to-another-toc-file), like `#[child](subfolder/toc.md)` or `#[child](subfolder/)`
+  - Include a token or code snippet, like `[!include[file name](subfolder/token.md)]`
+  - Include a [nested toc](table-of-contents.md#link-to-another-toc-file), like `# [child](subfolder/toc.md)` or `# [child](subfolder/)`
   
 Below are the details of each case and all of them use below folder structure example for detail explanation.
 
 ```
 /
 |- subfolder/
+|  \- program.cs
 |  \- file2.md
 |  \- toc.md
 \- file1.md
 \- toc.md
 ```
 
-### Link to a locale resource to create a hyperlink using relative path
+### Link to a local resource to create a hyperlink using relative path
 
 In DocFX, you can create a hyperlink using its relative path in the source directory.
 
@@ -50,7 +53,7 @@ For example, you can use relative path to reference `subfolder\file2.md` in `fil
 or you can use relative path to reference `subfolder\file2.md` in `toc.md`:
 
 ```toc
-#[file2 title](subfolder/file2.md)
+# [file2 title](subfolder/file2.md)
 ```
 
 DocFX converts it to a relative path in output folder structure:
@@ -77,21 +80,22 @@ The resolved hyper link is the output path for file2.md, so you can see the sour
 > [!Note]
 > The referenced files will be automatically built even it's not in the [content scope](config.md)
 
-### Include a token using relative path
+### Include a token/codesnippet using relative path
 
 The [file include](../spec/docfx_flavored_markdown.md#file-inclusion) syntax is using relative path to include a token file.
 
-For example, if `file1.md` includes `subfolder\file2.md`:
+For example, if `file1.md` includes `subfolder\file2.md` and `subfolder\program.cs`
 
 ```markdown
 [!include[file2](subfolder/file2.md)]
+[!code-csharp[Main](subfolder/program.cs)]
 ```
 
 All links in `file2.md` are relative to the `file2.md` itself, even when it's included by `file1.md`.
 
 > [!Note]
 > Please note that the file path in include syntax is handled differently than Markdown link.
-> You can only use relative path to specify location of the included file.
+> You can only use **relative path** to specify location of the included file.
 > And DocFX doesn't require included file to be included in `docfx.yml`.
 >
 > [!Tip]
@@ -105,18 +109,18 @@ The [toc](table-of-contents.md) syntax support to reference a nested toc using r
 For example, if `toc.md` reference `subfolder\toc.md`:
 
 ```markdown
-#[child](subfolder\toc.md)
+# [child](subfolder\toc.md)
 ```
 
 or 
 
 ```markdown
-#[child](subfolder\)
+# [child](subfolder\)
 ```
 
 All links in `subfolder\toc.md` are relative to the `subfolder\toc.md` itself, even when it's included by `toc.md`.
 
-### The other ways to link to a locale resource
+### The other ways to link to a local resource
 
 #### Relative path starts with `~`
 
@@ -192,3 +196,31 @@ For example, you can link DocFX spec page:
 ```
 
 But please notice that DocFX won't check its correctness for you and will keep it as-is in the output page.
+
+## Fragment and query string
+
+### To create a hyperlink
+
+When the link is used to create a hyperlink in the built/published page, DocFX support fragment and query string in the link.
+
+For example, you can add query string and fragment when referencing local resource using relative path or external resource using absolute url:
+
+```markdown
+[file1](file1.md?branch=master#row=4)
+[docfx spec](https://github.com/dotnet/docfx/spec/index.html?branch=master#row=4)
+``` 
+
+DocFX will convert them to output paths with fragment and query string
+
+```html
+<a href="file1.html?branch=master#row=4">file1</a>
+<a href="https://github.com/dotnet/docfx/spec/index.html?branch=master#row=4">docfx spec</a>
+```
+
+### To locate a resource for build
+
+When the link is just used for locating a resource for build like including token, codesnippet or nested toc, it dependents on the corresponding syntax:
+  - Including a token or nested toc is not supporting fragment and query string.
+  - Including a codesnippet is supporting fragment and query string, like `[!code[Main](program.cs?start=5&end=9#testsnippet)]`.
+  - We way have other syntax to use link for localting a resource, you need check the corresponding syntax detailly.
+
