@@ -111,6 +111,12 @@ namespace Microsoft.Docs.Build
                     ResolveTocModelItems(tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref);
                 }
 
+                var topicHref = tocModelItem.TopicHref;
+                if (!string.IsNullOrEmpty(topicHref))
+                {
+                    topicHref = resolveHref?.Invoke(filePath, topicHref, rootPath) ?? topicHref;
+                }
+
                 var href = tocModelItem.Href;
                 if (!string.IsNullOrEmpty(href))
                 {
@@ -128,18 +134,14 @@ namespace Microsoft.Docs.Build
                         if (referencedTocContent != null)
                         {
                             tocModelItem.Items = LoadInputModelItems(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
-                            tocModelItem.Href = null;
-                        }
-
-                        if (!string.IsNullOrEmpty(tocModelItem.TopicHref))
-                        {
-                            // only useful when the href is referencing a toc item or folder
-                            tocModelItem.Href = resolveHref?.Invoke(filePath, tocModelItem.TopicHref, rootPath) ?? tocModelItem.TopicHref;
+                            tocModelItem.Href = topicHref;
                         }
                     }
                     else
                     {
-                        tocModelItem.Href = resolveHref?.Invoke(filePath, href, rootPath) ?? tocModelItem.Href;
+                        tocModelItem.Href = string.IsNullOrEmpty(topicHref)
+                            ? resolveHref?.Invoke(filePath, href, rootPath) ?? tocModelItem.Href
+                            : topicHref;
                     }
                 }
             }
