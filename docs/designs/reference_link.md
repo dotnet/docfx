@@ -44,13 +44,13 @@ Below are the details of each case and all of them use below folder structure ex
 
 In DocFX, you can create a hyperlink using its relative path in the source directory.
 
-For example, you can use relative path to reference `subfolder\file2.md` in `file1.md`:
+For example, you can use relative path to reference `subfolder/file2.md` in `file1.md`:
 
 ```markdown
 [file2](subfolder/file2.md)
 ```
 
-or you can use relative path to reference `subfolder\file2.md` in `toc.md`:
+or you can use relative path to reference `subfolder/file2.md` in `toc.md`:
 
 ```toc
 # [file2 title](subfolder/file2.md)
@@ -84,7 +84,7 @@ The resolved hyper link is the output path for file2.md, so you can see the sour
 
 The [file include](../spec/docfx_flavored_markdown.md#file-inclusion) syntax is using relative path to include a token file.
 
-For example, if `file1.md` includes `subfolder\file2.md` and `subfolder\program.cs`
+For example, if `file1.md` includes `subfolder/file2.md` and `subfolder/program.cs`
 
 ```markdown
 [!include[file2](subfolder/file2.md)]
@@ -106,19 +106,19 @@ All links in `file2.md` are relative to the `file2.md` itself, even when it's in
 
 The [toc](table-of-contents.md) syntax support to reference a nested toc using relative path or relative folder.
 
-For example, if `toc.md` reference `subfolder\toc.md`:
+For example, if `toc.md` reference `subfolder/toc.md`:
 
 ```markdown
-# [child](subfolder\toc.md)
+# [child](subfolder/toc.md)
 ```
 
 or 
 
 ```markdown
-# [child](subfolder\)
+# [child](subfolder/)
 ```
 
-All links in `subfolder\toc.md` are relative to the `subfolder\toc.md` itself, even when it's included by `toc.md`.
+All links in `subfolder/toc.md` are relative to the `subfolder/toc.md` itself, even when it's included by `toc.md`.
 
 ### The other ways to link to a local resource
 
@@ -128,7 +128,7 @@ Sometimes you may find it's complicated to calculate relative path between two f
 DocFX also supports path starts with `~` to represent path relative to the root directory of your project (i.e. where `docfx.yml` is located).
 This kind of path will also be validated and resolved during build.
 
-For example, you can write the following links in `subfolder\file2.md` to reference `file1.md`:
+For example, you can write the following links in `subfolder/file2.md` to reference `file1.md`:
  
 ```markdown
 [file1](~/file1.md)
