@@ -256,23 +256,24 @@ outputs:
     }
 ---
 # Topic href for normal reference
-# just ignore it
+# topic href has higher priority
 inputs:
   docfx.yml: |
     content: docs/f1/toc.yml
   docs/f1/n1.md:
+  docs/f1/n2.md:
   docs/f1/toc.yml: |
     - name: normal file reference
       href: ~/docs/f1/n1.md
-      topicHref: ~/docs/f1/index.md
+      topicHref: ~/docs/f1/n2.md
 outputs:
-  docs/f1/n1.json:
+  docs/f1/n2.json:
   docs/f1/toc.json: |
     {  
        "items":[  
           {  
              "toc_title":"normal file reference",
-             "href":"n1",
+             "href":"n2",
           }
        ]
     }

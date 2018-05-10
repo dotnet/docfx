@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -231,6 +231,28 @@ namespace Microsoft.Docs.Build
             Assert.Equal((long)10, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);
             Assert.Equal("a", value.ValueList[1]);
+        }
+
+        [Theory]
+        [InlineData(
+            "{\"key\":\"original\"}",
+            "{\"key\":\"overwrite\"}",
+            "{\"key\":\"overwrite\"}")]
+        [InlineData(
+            "{\"key\":[1,2,3]}",
+            "{\"key\":[4,5,6]}",
+            "{\"key\":[4,5,6]}")]
+        [InlineData(
+            "{\"key1\":\"value1\"}",
+            "{\"key2\":\"value2\"}",
+            "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
+        public void TestMerge(string target, string source, string result)
+        {
+            var targetJson = JsonUtility.Deserialize<JObject>(target);
+            var sourceJson = JsonUtility.Deserialize<JObject>(source);
+            var resultJson = JsonUtility.Merge(targetJson, sourceJson);
+            var resultJsonString = JsonUtility.Serialize(resultJson);
+            Assert.Equal(result, resultJsonString);
         }
 
         public class BasicClass
