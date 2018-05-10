@@ -49,9 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseValidators(context)
                 .UseInteractiveCode()
                 .UseRow()
-                .UseNestedColumn()
-                // Do not add extension after the InineParser
-                .UseInlineParserOnly(context);
+                .UseNestedColumn();
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -68,17 +66,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             return pipeline;
         }
-
-        /// <summary>
-        /// This extension removes all the block parser except paragragh. Please use this extension in the last.
+	
+        /// <summary>	
+        /// This extension removes all the block parser except paragragh. Please use this extension in the last.	
         /// </summary>
-        public static MarkdownPipelineBuilder UseInlineParserOnly(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseInlineOnly(this MarkdownPipelineBuilder pipeline)
         {
-            if (context.IsInline)
-            {
-                pipeline.Extensions.Add(new InlineOnlyExtentsion());
-            }
-
+            pipeline.Extensions.Add(new InlineOnlyExtentsion());
             return pipeline;
         }
 

@@ -170,22 +170,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, _context.File);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File);
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{_context.File}'.");
+                Logger.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
                 renderer.WriteEscape(codeSnippet.Raw);
                 return;
             }
 
-            _context.Dependencies.Add(codeSnippetPath);
+            using (InclusionContext.PushFile(codeSnippetPath))
+            {
+                codeSnippet.SetAttributeString();
 
-            codeSnippet.SetAttributeString();
-
-            renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-            renderer.WriteEscape(GetContent(content, codeSnippet));
-            renderer.Write("</code></pre>");
+                renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
+                renderer.WriteEscape(GetContent(content, codeSnippet));
+                renderer.Write("</code></pre>");
+            }
         }
 
         private string GetContent(string content, CodeSnippet obj)

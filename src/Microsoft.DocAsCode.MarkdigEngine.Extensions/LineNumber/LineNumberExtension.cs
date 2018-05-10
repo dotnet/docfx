@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.PreciseSourceLocation = true;
             pipeline.DocumentProcessed += document =>
             {
-                AddSourceInfoInDataEntry(document, _context.GetFilePath(_context.File));
+                AddSourceInfoInDataEntry(document, _context.GetFilePath(InclusionContext.File));
             };
         }
 

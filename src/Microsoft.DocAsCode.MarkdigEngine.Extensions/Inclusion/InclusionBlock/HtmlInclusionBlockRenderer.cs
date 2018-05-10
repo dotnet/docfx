@@ -25,45 +25,28 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, _context.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{_context.File}'.");
+                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
-            if (_context.CircularReferenceDetector.Contains(includeFilePath))
+            if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", _context.CircularReferenceDetector)} -> {includeFilePath}\"");
+                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
+            using (InclusionContext.PushFile(includeFilePath))
+            {
+                var result = Markdown.ToHtml(content, _pipeline);
+                result = SkipYamlHeader(result);
 
-            _context.Dependencies.Add(includeFilePath);
-
-            var context = new MarkdownContext(
-                includeFilePath,
-                _context.IsInline,
-                _context.EnableSourceInfo,
-                _context.Tokens,
-                _context.Mvb,
-                _context.EnableValidation,
-                _context.ReadFile,
-                _context.GetLink,
-                _context.GetFilePath,
-                _context.CircularReferenceDetector,
-                _context.Dependencies);
-
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(context)
-                .Build();
-
-            var result = Markdown.ToHtml(content, pipeline);
-            result = SkipYamlHeader(result);
-
-            renderer.Write(result);
+                renderer.Write(result);
+            }
         }
 
         private string SkipYamlHeader(string content)
