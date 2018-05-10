@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
 {
     public static class BuildTest
     {
-        public static readonly TheoryData<string, string> Specs = TestHelper.FindTestSpecs("build");
+        public static readonly TheoryData<string, int> Specs = TestHelper.FindTestSpecs("build");
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string name, string specYaml)
+        public static async Task BuildDocset(string name, int ordinal)
         {
-            var (docsetPath, spec) = TestHelper.CreateDocset(name, specYaml);
+            var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
             try
             {
