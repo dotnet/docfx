@@ -15,6 +15,10 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(model, file.OutputPath);
 
+            var metadata = Metadata.FetchFromConfig(file);
+            if (metadata.HasValues)
+                context.WriteJson(metadata, file.MetaOutputPath);
+
             return Task.CompletedTask;
         }
 

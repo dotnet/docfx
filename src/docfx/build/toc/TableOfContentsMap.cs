@@ -56,11 +56,11 @@ namespace Microsoft.Docs.Build
             var nearestParentDirCount = 0;
             foreach (var toc in filteredTocFiles)
             {
-                var relativePath = PathUtility.GetRelativePathToFile(toc.FilePath, file.FilePath);
+                var relativePath = PathUtility.GetRelativePathToFile(toc.OutputPath, file.OutputPath);
                 var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
                 var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
                 if (nearstToc == null || distance > 0 ||
-                    (distance == 0 && string.Compare(nearstToc.FilePath, toc.FilePath, StringComparison.OrdinalIgnoreCase) > 0))
+                    (distance == 0 && string.Compare(nearstToc.OutputPath, toc.OutputPath, StringComparison.OrdinalIgnoreCase) > 0))
                 {
                     nearstToc = toc;
                     nearestSubDirCount = subDirCount;
