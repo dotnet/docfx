@@ -75,7 +75,12 @@ namespace Microsoft.Docs.Build
 
             for (var i = 0; i < expectedLogs.Count; i++)
             {
-                Assert.Equal(expectedLogs[i].ToString(), actualLogs[i].ToString());
+                Assert.Equal(
+                    expectedLogs[i].ToString(),
+                    actualLogs[i].ToString(),
+                    ignoreCase: false,
+                    ignoreLineEndingDifferences: true,
+                    ignoreWhiteSpaceDifferences: true);
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private Lazy<TextWriter> _output;
         private bool _stable;
 
-        public void OutputToFile(string outputFilePath, bool stable = false)
+        public void OutputToFile(string outputFilePath, bool stable)
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
