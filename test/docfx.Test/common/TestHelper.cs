@@ -12,38 +12,36 @@ namespace Microsoft.Docs.Build
 {
     internal static class TestHelper
     {
-        public static TheoryData<string, string> FindTestSpecs(string path)
+        public static TheoryData<string, int> FindTestSpecs(string path)
         {
-            var result = new TheoryData<string, string>();
+            var result = new TheoryData<string, int>();
 
             Parallel.ForEach(
                 Directory.EnumerateFiles(Path.Combine("specs", path), "*.yml", SearchOption.AllDirectories),
                 file =>
                 {
                     var i = 0;
-                    foreach (var (header, yaml) in FindTestSpecHeadersInFile(file))
+                    foreach (var header in FindTestSpecHeadersInFile(file))
                     {
-                        var name = $"{++i:D2}. {header}";
+                        var name = $"{i + 1:D2}. {header}";
                         var folder = Path.Combine(
                             file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
                             name).Replace("\\", "/");
 
-                        result.Add(folder, yaml);
+                        result.Add(folder, i++);
                     }
                 });
 
             return result;
         }
 
-        public static (string docsetPath, TestSpec spec) CreateDocset(string specPath, string specYaml)
+        public static (string docsetPath, TestSpec spec) CreateDocset(string specName, int ordinal)
         {
-            var spec = YamlUtility.Deserialize<TestSpec>(specYaml);
-
-            foreach (var ch in Path.GetInvalidPathChars())
-            {
-                specPath = specPath.Replace(ch, ' ');
-            }
-
+            var i = specName.LastIndexOf('/');
+            var specPath = specName.Substring(0, i) + ".yml";
+            var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+            var yaml = sections[ordinal].Trim('\r', '\n', '-');
+            var spec = YamlUtility.Deserialize<TestSpec>(yaml);
             var docsetPath = Path.Combine("specs.drop", specPath);
 
             if (Directory.Exists(docsetPath))
@@ -89,7 +87,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<(string header, string yaml)> FindTestSpecHeadersInFile(string path)
+        private static IEnumerable<string> FindTestSpecHeadersInFile(string path)
         {
             var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
 
@@ -98,7 +96,12 @@ namespace Microsoft.Docs.Build
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
 
-                yield return (header, yaml);
+                foreach (var ch in Path.GetInvalidPathChars())
+                {
+                    header = header.Replace(ch, ' ');
+                }
+
+                yield return header.Replace('/', ' ').Replace('\\', ' ');
             }
         }
     }
