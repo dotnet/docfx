@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
+            // TODO: errors and warnings before config loaded are lost, need a way to report them back to host
             _stable = config.Output.Stable;
             _output = new Lazy<TextWriter>(() =>
             {
