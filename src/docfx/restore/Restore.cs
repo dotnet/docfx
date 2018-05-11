@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             // because Docset assumes the repo to physically exist on disk.
             var config = Config.Load(docsetPath, options);
 
-            reporter.OutputToFile(Path.Combine(docsetPath, config.Output.Path, config.Output.LogPath), config.Output.Stable);
+            reporter.Configure(docsetPath, config);
 
             var restoredDirs = new HashSet<string>();
             return ParallelUtility.ForEach(config.Dependencies.Values, (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild, restoredDirs));

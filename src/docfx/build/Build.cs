@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         {
             var config = Config.Load(docsetPath, options);
 
-            reporter.OutputToFile(Path.Combine(docsetPath, config.Output.Path, config.Output.LogPath), config.Output.Stable);
+            reporter.Configure(docsetPath, config);
 
             var context = new Context(reporter, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
             var docset = new Docset(docsetPath, options);

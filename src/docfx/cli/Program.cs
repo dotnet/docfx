@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 catch (DocfxException ex)
                 {
                     Logger.Error(ex.ToString());
-                    reporter?.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
+                    reporter.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
                     return 1;
                 }
             }
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 Console.Write(" 🚘💥🚗");
 
             Console.WriteLine();
-            Console.WriteLine("Help us improve by creating an an issue at https://github.com/dotnet/docfx with the following content:");
+            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx with the following content:");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine($@"

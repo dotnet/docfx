@@ -18,15 +18,15 @@ These are the errors and warnings grouped by category to help you understand the
 
 ### config-not-found
 
-❌ `docfx.yaml` does not exist in the current working directory or the docset directory specified in command line arguments.
+❌ `docfx.yml` does not exist in the current working directory or the directory specified in command line arguments.
 
-💡 Specify the correct docset directory if you are building an existing docset, or create a new docset with `docfx new`
+💡 Specify the correct directory, or create a new docset with `docfx new`
 
 ### invalid-config
 
-❌ `docfx.yaml` is either an invalid yaml or does not confirm to our config schema.
+❌ `docfx.yml` is either an invalid yaml or does not confirm to our config schema.
 
-💡 Try check your `docfx.yaml` content with a [YAML linter](http://www.yamllint.com/).
+💡 Try check your `docfx.yml` content with a [YAML linter](http://www.yamllint.com/).
 
 ## Markdown
 

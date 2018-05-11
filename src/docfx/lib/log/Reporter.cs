@@ -16,14 +16,19 @@ namespace Microsoft.Docs.Build
         private Lazy<TextWriter> _output;
         private bool _stable;
 
-        public void OutputToFile(string outputFilePath, bool stable)
+        public void Configure(string docsetPath, Config config)
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            _stable = config.Output.Stable;
+            _output = new Lazy<TextWriter>(() =>
+            {
+                var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, config.Output.LogPath));
 
-            _output = new Lazy<TextWriter>(() => File.CreateText(outputFilePath));
-            _stable = stable;
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+
+                return File.CreateText(outputFilePath);
+            });
         }
 
         public void Report(ReportLevel level, string code, string message, string file = "", int line = 0, int column = 0)
