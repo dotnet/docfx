@@ -162,3 +162,28 @@ outputs:
     { "content": "" }
   docs/a.mta.json: |
     { "key": "another value" }
+---
+# routes
+inputs:
+  docfx.yml: |
+    routes:
+      docs/a.md: output
+      docs/b/: output
+  docs/a.md:
+  docs/b/b.md:
+outputs:
+  output/a.json: |
+    { "content": "" }
+  output/b.json: |
+    { "content": "" }
+---
+# latter routes rule takes precedence
+inputs:
+  docfx.yml: |
+    routes:
+      docs/a/: output
+      docs/a/b.md: outputB
+    docs/a/b.md:
+output:
+  outputB/b.json: |
+    { "content": "" }

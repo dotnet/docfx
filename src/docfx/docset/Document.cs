@@ -63,7 +63,9 @@ namespace Microsoft.Docs.Build
 
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath, docset.DocsetPath);
-            OutputPath = GetOutputPath(FilePath, ContentType);
+            OutputPath = GetOutputPath(
+                ApplyRoutes(FilePath, Docset.Config.Routes),
+                ContentType);
             MetaOutputPath = Path.ChangeExtension(FilePath, ".mta.json");
             SiteUrl = GetSiteUrl(FilePath, ContentType);
         }
@@ -221,6 +223,18 @@ namespace Microsoft.Docs.Build
             // todo: redirection files
             // todo: resolve from dependencies
             return default;
+        }
+
+        private static string ApplyRoutes(string path, RouteConfig[] routes)
+        {
+            // the latter rule takes precedence of the former rule
+            for (var i = routes.Length - 1; i >= 0; i--)
+            {
+                var result = routes[i].GetOutputPath(path);
+                if (result != null)
+                    return result;
+            }
+            return path;
         }
     }
 }
