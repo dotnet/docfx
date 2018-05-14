@@ -8,33 +8,35 @@
     <MetadataOutputFolder Condition=" '$(MetadataOutputFolder)' == '' ">$(OutputFolder)</MetadataOutputFolder>
     <LogFile Condition=" '$(LogFile)' == '' ">log.txt</LogFile>
     <LogLevel Condition=" '$(LogLevel)' == '' ">Verbose</LogLevel>
+    <BuildDocFx Condition=" '$(BuildDocFx)' == '' ">true</BuildDocFx>
+    <BuildDocFx Condition=" '$(BuildingForLiveUnitTesting)' == 'true' ">false</BuildDocFx>
 
     <!-- Website project's output directory is current folder, disable it as a temp workaround until a better way is found-->
     <CopyToOutput>False</CopyToOutput>
     <RebuildDoc Condition=" '$(RebuildDoc)' == '' ">False</RebuildDoc>
   </PropertyGroup>
-  <Target Name="DocRebuild" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocRebuild" Condition="'$BuildDocFx' == 'true'">
     <CallTarget Targets="DocClean"/>
     <CallTarget Targets="DocBuild"/>
   </Target>
-  <Target Name="DocBuild" AfterTargets="Build" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocBuild" AfterTargets="Build" Condition="'$BuildDocFx' == 'true'">
     <CallTarget Targets="DocValidation"/>
     <CallTarget Targets="DocGenerateMetadata"/>
   </Target>
-  <Target Name="DocValidation" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocValidation" Condition="'$BuildDocFx' == 'true'">
     <Error Condition="!Exists($(BuildDocToolPath))" Text="docfx.exe is not found! Please check docfx.exe exists in tools folder of the package!"/>
   </Target>
-  <Target Name="DocClean" DependsOnTargets="DocSetRebuildXDocParameter" AfterTargets="Clean" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocClean" DependsOnTargets="DocSetRebuildXDocParameter" AfterTargets="Clean" Condition="'$BuildDocFx' == 'true'">
   </Target>
-  <Target Name="DocSetRebuildXDocParameter" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocSetRebuildXDocParameter" Condition="'$BuildDocFx' == 'true'">
     <PropertyGroup>
       <RebuildDoc>True</RebuildDoc>
     </PropertyGroup>
   </Target>
-  <Target Name="DocServe" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocServe" Condition="'$BuildDocFx' == 'true'">
     <Exec Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; serve &quot;$(PreviewOutputFolder)&quot;" />
   </Target>
-  <Target Name="DocPreview" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocPreview" Condition="'$BuildDocFx' == 'true'">
     <Exec Condition="$(IsServing)" Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; --serve -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;&quot;" />
     <Exec Condition="!$(IsServing)" Command="&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
   </Target>
@@ -42,7 +44,7 @@
   <!-- ************************************************************************* -->
   <!-- *************************** GenerateMetadata Phase ********************** -->
   <!-- ************************************************************************* -->
-  <Target Name="DocGenerateMetadata" Condition="'$(BuildingForLiveUnitTesting)' != 'true'">
+  <Target Name="DocGenerateMetadata" Condition="'$BuildDocFx' == 'true'">
     <PropertyGroup>
       <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(MetadataOutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
       <DocGenerateCommand Condition="$(RebuildDoc)">$(DocGenerateCommand) -f</DocGenerateCommand>
