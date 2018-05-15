@@ -183,7 +183,7 @@ inputs:
     routes:
       docs/a/: output
       docs/a/b.md: outputB
-    docs/a/b.md:
-output:
+  docs/a/b.md:
+outputs:
   outputB/b.json: |
     { "content": "" }
