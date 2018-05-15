@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var spec = YamlUtility.Deserialize<TestSpec>(yaml);
-            var docsetPath = Path.Combine("specs.drop", specPath);
+            var docsetPath = Path.Combine("specs.drop", specName);
 
             if (Directory.Exists(docsetPath))
             {
