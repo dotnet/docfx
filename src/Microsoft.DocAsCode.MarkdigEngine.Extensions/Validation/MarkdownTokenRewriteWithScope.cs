@@ -4,22 +4,25 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class MarkdownTokenRewriteWithScope : IMarkdownObjectRewriter
     {
         public IMarkdownObjectRewriter Inner { get; }
         public string Scope { get; }
 
-        public MarkdownTokenRewriteWithScope(IMarkdownObjectRewriter inner, string scope)
+        private readonly MarkdownContext _context;
+
+        public MarkdownTokenRewriteWithScope(IMarkdownObjectRewriter inner, string scope, MarkdownContext context)
         {
             Inner = inner;
             Scope = scope;
+
+            _context = context;
         }
 
         public void PostProcess(IMarkdownObject markdownObject)
         {
-            using (string.IsNullOrEmpty(Scope) ? null : new LoggerPhaseScope(Scope))
+            using (string.IsNullOrEmpty(Scope) ? null : _context.SetLoggerScope(Scope))
             {
                 Inner.PostProcess(markdownObject);
             }
@@ -27,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void PreProcess(IMarkdownObject markdownObject)
         {
-            using (string.IsNullOrEmpty(Scope) ? null : new LoggerPhaseScope(Scope))
+            using (string.IsNullOrEmpty(Scope) ? null : _context.SetLoggerScope(Scope))
             {
                 Inner.PreProcess(markdownObject);
             }
@@ -35,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
         {
-            using (string.IsNullOrEmpty(Scope) ? null : new LoggerPhaseScope(Scope))
+            using (string.IsNullOrEmpty(Scope) ? null : _context.SetLoggerScope(Scope))
             {
                 return Inner.Rewrite(markdownObject);
             }

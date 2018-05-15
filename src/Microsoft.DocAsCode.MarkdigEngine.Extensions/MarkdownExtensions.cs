@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Extensions.CustomContainers;
     using Markdig.Extensions.EmphasisExtras;
     using Markdig.Parsers;
-    using Microsoft.DocAsCode.Common;
 
     public static class MarkdownExtensions
     {
@@ -25,15 +24,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseDFMCodeInfoPrefix()
+                .UseDFMCodeInfoPrefix(context)
                 .UseQuoteSectionNote(context)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
-                .UseTabGroup()
-                .UseMonikerRange()
+                .UseTabGroup(context)
+                .UseMonikerRange(context)
                 .UseInteractiveCode()
-                .UseRow()
-                .UseNestedColumn()
+                .UseRow(context)
+                .UseNestedColumn(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -43,9 +42,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseValidation(this MarkdownPipelineBuilder pipeline, MarkdownValidatorBuilder validator)
+        public static MarkdownPipelineBuilder UseValidation(this MarkdownPipelineBuilder pipeline, MarkdownValidatorBuilder validator, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new ValidationExtension(validator));
+            pipeline.Extensions.Add(new ValidationExtension(validator, context));
             return pipeline;
         }
 	
@@ -58,9 +57,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new TabGroupExtension());
+            pipeline.Extensions.Add(new TabGroupExtension(context));
             return pipeline;
         }
 
@@ -70,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
             if (fencedCodeBlockParser != null)
@@ -79,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                Logger.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
+                context.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
                 pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
@@ -121,21 +120,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseMonikerRange(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready<MonikerRangeExtension>();
+            pipeline.Extensions.AddIfNotAlready(new MonikerRangeExtension(context));
+            return pipeline;
+        }
+        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        {
+            pipeline.Extensions.AddIfNotAlready(new RowExtension(context));
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready<RowExtension>();
-            return pipeline;
-        }
-
-        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline)
-        {
-            pipeline.Extensions.AddIfNotAlready<NestedColumnExtension>();
+            pipeline.Extensions.AddIfNotAlready(new NestedColumnExtension(context));
             return pipeline;
         }
     }

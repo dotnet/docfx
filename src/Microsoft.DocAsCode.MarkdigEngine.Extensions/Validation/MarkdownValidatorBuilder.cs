@@ -24,9 +24,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _enabledTagRules = enabledTagRules;
         }
 
-        public IMarkdownObjectRewriter CreateRewriter()
+        public IMarkdownObjectRewriter CreateRewriter(MarkdownContext context)
         {
-            var tagValidator = new TagValidator(_enabledTagRules.ToImmutableList());
+            var tagValidator = new TagValidator(_enabledTagRules.ToImmutableList(), context);
             var validators = from vp in _validatorProviders
                              from p in vp.GetValidators()
                              select p;
@@ -38,7 +38,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         {
                             MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
                         })),
-                MarkdownValidatePhaseName);
+                MarkdownValidatePhaseName,
+                context);
         }
     }
 }

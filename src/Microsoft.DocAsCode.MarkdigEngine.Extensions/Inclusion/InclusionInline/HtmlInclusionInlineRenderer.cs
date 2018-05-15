@@ -3,14 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.IO;
-    using System.Text;
-
     using Markdig;
-    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
-    using Microsoft.DocAsCode.Common;
 
     public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
     {
@@ -29,14 +24,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
+                _context.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }

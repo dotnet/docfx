@@ -11,6 +11,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class MarkdownContext
     {
         /// <summary>
+        /// Log delegate
+        /// </summary>
+        public delegate void LogActionDelegate(string message, string phase = null, string file = null, string line = null, string code = null);
+
+        /// <summary>
         /// Reads a file as text based on path relative to an existing file.
         /// </summary>
         /// <param name="path">Path to the file being opened.</param>
@@ -41,14 +46,36 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public GetLinkDelegate GetLink { get; }
 
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        public LogActionDelegate LogWarning { get; }
+
+        /// <summary>
+        /// Log error
+        /// </summary>
+        public LogActionDelegate LogError { get; }
+
+        /// <summary>
+        /// Set logger scope function
+        /// </summary>
+        public Func<string, IDisposable> SetLoggerScope { get; }
+
         public MarkdownContext(
             IReadOnlyDictionary<string, string> tokens,
+            LogActionDelegate logWarning,
+            LogActionDelegate logError,
+            Func<string, IDisposable> setLoggerScope,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null)
         {
             Tokens = tokens ?? ImmutableDictionary<string, string>.Empty;
             ReadFile = readFile ?? ReadFileDefault;
             GetLink = getLink ?? ((path, relativeTo) => path);
+
+            LogWarning = logWarning;
+            LogError = logError;
+            SetLoggerScope = setLoggerScope;
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)

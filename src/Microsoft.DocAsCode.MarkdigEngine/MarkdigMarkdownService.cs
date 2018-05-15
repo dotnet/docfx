@@ -32,6 +32,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             _mvb = new MarkdownValidatorBuilderCreator(parameters, container).CreateMarkdownValidatorBuilder();
             _context = new MarkdownContext(
                 _parameters.Tokens,
+                Logger.LogWarning,
+                Logger.LogError,
+                scope => { return new LoggerPhaseScope(scope); },
                 ReadFile,
                 GetLink);
         }
@@ -140,7 +143,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var builder = new MarkdownPipelineBuilder();
 
             builder.UseDocfxExtensions(_context);
-            builder.Extensions.Insert(0, new YamlHeaderExtension());
+            builder.Extensions.Insert(0, new YamlHeaderExtension(_context));
 
             if (enableSourceInfo)
             {
@@ -149,7 +152,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
             if (enableValidation)
             {
-                builder.UseValidation(_mvb);
+                builder.UseValidation(_mvb, _context);
             }
 
             if (isInline)

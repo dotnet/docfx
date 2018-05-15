@@ -6,11 +6,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
-    using Microsoft.DocAsCode.Common;
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
         private MarkdownPipeline _pipeline;
 
         public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
@@ -25,14 +24,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (content == null)
             {
-                Logger.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning($"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                Logger.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
+
+                _context.LogWarning($"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }

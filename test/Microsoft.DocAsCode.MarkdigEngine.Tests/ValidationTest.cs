@@ -20,6 +20,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     {
         public const string MarkdownValidatePhaseName = "Markdown style";
 
+        private readonly MarkdownContext DefaultContext = 
+            new MarkdownContext(
+                null,
+                Logger.LogWarning,
+                Logger.LogError,
+                scope => { return new LoggerPhaseScope(scope); });
+
         [Fact]
         [Trait("Related", "Validation")]
         public void TestHtmlBlockTagValidation()
@@ -332,7 +339,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
         private string Markup(string content, MarkdownValidatorBuilderCreator creator, TestLoggerListener listener = null)
         {
-            return Markup(content, creator.CreateMarkdownValidatorBuilder().CreateRewriter(), listener);
+            return Markup(content, creator.CreateMarkdownValidatorBuilder().CreateRewriter(DefaultContext), listener);
         }
 
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)

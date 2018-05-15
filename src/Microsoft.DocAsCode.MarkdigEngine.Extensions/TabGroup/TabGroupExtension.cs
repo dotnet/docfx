@@ -8,6 +8,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class TabGroupExtension : IMarkdownExtension
     {
+        private readonly MarkdownContext _context;
+
+        public TabGroupExtension(MarkdownContext context)
+        {
+            _context = context;
+        }
+
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             var tabGroupAggregator = new TabGroupAggregator();
@@ -16,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var tagGroupIdRewriter = new TabGroupIdRewriter();
             var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
 
-            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter();
+            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(_context);
             var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
 
             pipeline.DocumentProcessed += document =>
