@@ -41,6 +41,11 @@ namespace Microsoft.Docs.Build
         public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
 
         /// <summary>
+        /// Gets the input and output path mapping configuration of documents.
+        /// </summary>
+        public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
+
+        /// <summary>
         /// Gets the map from dependency name to git url
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
@@ -101,7 +106,32 @@ namespace Microsoft.Docs.Build
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
+            config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
             return config;
+        }
+
+        private static JToken ExpandRouteConfigs(JToken jToken)
+        {
+            if (jToken == null)
+                return null;
+            if (!(jToken is JObject obj))
+                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(jToken)}");
+
+            var result = new JArray();
+            foreach (var (key, value) in obj)
+            {
+                if (!(value is JValue strValue))
+                    throw new Exception($"Expect to be a string: {JsonUtility.Serialize(jToken)}");
+
+                result.Add(new JObject
+                {
+                    [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\') ?
+                        PathUtility.NormalizeFolder(key) :
+                        PathUtility.NormalizeFile(key),
+                    [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
+                });
+            }
+            return result;
         }
 
         private static JToken ExpandGlobConfigs(JToken token)
