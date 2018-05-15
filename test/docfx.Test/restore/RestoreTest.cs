@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
-            await Program.Main(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "restore", docsetPath });
 
             foreach (var (file, content) in spec.Restorations)
             {

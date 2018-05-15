@@ -12,10 +12,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, IReporter log)
+        public static async Task Run(string docsetPath, CommandLineOptions options, Reporter reporter)
         {
             var config = Config.Load(docsetPath, options);
-            var context = new Context(log, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
+
+            reporter.Configure(docsetPath, config);
+
+            var context = new Context(reporter, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
             var docset = new Docset(docsetPath, options);
 
             var globbedFiles = GlobFiles(context, docset);

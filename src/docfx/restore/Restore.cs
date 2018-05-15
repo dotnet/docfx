@@ -13,11 +13,13 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
 
-        public static Task Run(string docsetPath, CommandLineOptions options, IReporter reporter)
+        public static Task Run(string docsetPath, CommandLineOptions options, Reporter reporter)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             var config = Config.Load(docsetPath, options);
+
+            reporter.Configure(docsetPath, config);
 
             var restoredDirs = new HashSet<string>();
             return ParallelUtility.ForEach(config.Dependencies.Values, (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild, restoredDirs));

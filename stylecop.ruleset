@@ -53,6 +53,8 @@
     <Rule Id="CA1060" Action="Warning" />
     <Rule Id="CA1061" Action="Warning" />
     <Rule Id="CA1063" Action="Warning" />
+    <!-- CA1064: Make exception public -->
+    <Rule Id="CA1064" Action="None" />
     <Rule Id="CA1065" Action="Warning" />
     <Rule Id="CA1301" Action="Warning" />
     <!-- CA1308: Normalize strings to uppercase -->
