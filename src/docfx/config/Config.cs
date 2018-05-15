@@ -125,7 +125,9 @@ namespace Microsoft.Docs.Build
 
                 result.Add(new JObject
                 {
-                    [ConfigConstants.Source] = PathUtility.NormalizeFile(key),
+                    [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\') ?
+                        PathUtility.NormalizeFolder(key) :
+                        PathUtility.NormalizeFile(key),
                     [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
                 });
             }

@@ -63,9 +63,9 @@ namespace Microsoft.Docs.Build
 
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath, docset.DocsetPath);
-            OutputPath = GetOutputPath(
+            OutputPath = PathUtility.NormalizeFile(GetOutputPath(
                 ApplyRoutes(FilePath, Docset.Config.Routes),
-                ContentType);
+                ContentType));
             MetaOutputPath = Path.ChangeExtension(OutputPath, ".mta.json");
             SiteUrl = GetSiteUrl(FilePath, ContentType);
 
