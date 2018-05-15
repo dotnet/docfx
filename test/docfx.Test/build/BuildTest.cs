@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,26 +20,15 @@ namespace Microsoft.Docs.Build
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
-            try
-            {
-                await Program.Main(new[] { "build", docsetPath });
+            await Program.Run(new[] { "build", docsetPath, "--stable" });
 
-                var docsetOutputPath = Path.Combine(docsetPath, "_site");
-                var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-                Assert.Equal(spec.Outputs.Count, outputs.Count());
+            var docsetOutputPath = Path.Combine(docsetPath, "_site");
+            var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            Assert.Equal(spec.Outputs.Count, outputs.Count());
 
-                foreach (var (filename, content) in spec.Outputs)
-                {
-                    VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
-                }
-            }
-            catch (Exception e) when (!(e is XunitException))
+            foreach (var (filename, content) in spec.Outputs)
             {
-                //todo: change the validation way when we have report output
-                Assert.NotNull(spec.Exceptions);
-                Assert.NotEmpty(spec.Exceptions);
-                Assert.True(spec.Exceptions.ContainsKey($"{e.GetType()}"));
-                Assert.Equal(spec.Exceptions[$"{e.GetType()}"], e.Message);
+                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
         }
 
@@ -50,6 +38,10 @@ namespace Microsoft.Docs.Build
 
             switch (Path.GetExtension(file.ToLower()))
             {
+                case ".log":
+                    VerifyLogEquals(content, File.ReadAllText(file));
+                    break;
+
                 case ".json":
                     TestHelper.VerifyJsonContainEquals(
                         JToken.Parse(content ?? "{}"),
@@ -64,6 +56,31 @@ namespace Microsoft.Docs.Build
                         ignoreLineEndingDifferences: true,
                         ignoreWhiteSpaceDifferences: true);
                     break;
+            }
+        }
+
+        private static void VerifyLogEquals(string expectedLogText, string actualLogText)
+        {
+            var actualLogs = actualLogText
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => JObject.Parse(line))
+                .OrderBy(log => log.Value<string>("message"))
+                .ToList();
+
+            var expectedLogs = JArray.Parse(expectedLogText)
+                .OrderBy(log => log.Value<string>("message"))
+                .ToList();
+
+            Assert.Equal(expectedLogs.Count, actualLogs.Count);
+
+            for (var i = 0; i < expectedLogs.Count; i++)
+            {
+                Assert.Equal(
+                    expectedLogs[i].ToString(),
+                    actualLogs[i].ToString(),
+                    ignoreCase: false,
+                    ignoreLineEndingDifferences: true,
+                    ignoreWhiteSpaceDifferences: true);
             }
         }
     }

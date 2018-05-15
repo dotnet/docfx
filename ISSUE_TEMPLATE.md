@@ -1,6 +1,4 @@
-**DocFX Version Used**: 
-
-**Template used**: (`default` or `statictoc` or contain custom template)
+**Version**: 
 
 **Steps to Reproduce**:
 
