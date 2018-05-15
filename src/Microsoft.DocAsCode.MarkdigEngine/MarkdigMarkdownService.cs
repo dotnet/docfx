@@ -34,7 +34,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 _parameters.Tokens,
                 Logger.LogWarning,
                 Logger.LogError,
-                scope => { return new LoggerPhaseScope(scope); },
                 ReadFile,
                 GetLink);
         }

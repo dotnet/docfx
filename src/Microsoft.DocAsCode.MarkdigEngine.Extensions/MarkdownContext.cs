@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -56,16 +55,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public LogActionDelegate LogError { get; }
 
-        /// <summary>
-        /// Set logger scope function
-        /// </summary>
-        public Func<string, IDisposable> SetLoggerScope { get; }
-
         public MarkdownContext(
             IReadOnlyDictionary<string, string> tokens,
             LogActionDelegate logWarning,
             LogActionDelegate logError,
-            Func<string, IDisposable> setLoggerScope,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null)
         {
@@ -75,7 +68,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             LogWarning = logWarning;
             LogError = logError;
-            SetLoggerScope = setLoggerScope;
         }
 
         private static (string content, object file) ReadFileDefault(string path, object relativeTo)
