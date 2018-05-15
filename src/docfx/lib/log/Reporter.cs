@@ -67,6 +67,15 @@ namespace Microsoft.Docs.Build
                     _output.Value.WriteLine(outputMessage);
                 }
 
+                if (!string.IsNullOrEmpty(file))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write(file);
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+
                 Console.ForegroundColor = GetColor(level);
                 Console.Write(code + " ");
                 Console.ForegroundColor = ConsoleColor.Gray;
