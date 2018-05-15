@@ -66,8 +66,12 @@ namespace Microsoft.Docs.Build
             OutputPath = GetOutputPath(
                 ApplyRoutes(FilePath, Docset.Config.Routes),
                 ContentType);
-            MetaOutputPath = Path.ChangeExtension(FilePath, ".mta.json");
+            MetaOutputPath = Path.ChangeExtension(OutputPath, ".mta.json");
             SiteUrl = GetSiteUrl(FilePath, ContentType);
+
+            Debug.Assert(IsValidRelativePath(FilePath));
+            Debug.Assert(IsValidRelativePath(OutputPath));
+            Debug.Assert(IsValidRelativePath(MetaOutputPath));
         }
 
         /// <summary>
@@ -235,6 +239,14 @@ namespace Microsoft.Docs.Build
                     return result;
             }
             return path;
+        }
+
+        private static bool IsValidRelativePath(string path)
+        {
+            return path != null &&
+                path.IndexOf('\\') == -1 &&
+                !path.StartsWith('/') &&
+                !PathUtility.FilePathHasInvalidChars(path);
         }
     }
 }

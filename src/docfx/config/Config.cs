@@ -117,15 +117,18 @@ namespace Microsoft.Docs.Build
             if (jToken == null)
                 return null;
             if (!(jToken is JObject obj))
-                throw new Exception($"Expect to be an array: {JsonUtility.Serialize(jToken)}");
+                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(jToken)}");
 
             var result = new JArray();
             foreach (var (key, value) in obj)
             {
+                if (!(value is JValue strValue))
+                    throw new Exception($"Expect to be a string: {JsonUtility.Serialize(jToken)}");
+
                 result.Add(new JObject
                 {
-                    [ConfigConstants.Source] = key,
-                    [ConfigConstants.Destination] = value,
+                    [ConfigConstants.Source] = PathUtility.NormalizeFile(key),
+                    [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
                 });
             }
             return result;

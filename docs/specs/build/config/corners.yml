@@ -1,0 +1,15 @@
+---
+# `/` and `\` in path will be normalized
+inputs:
+  docfx.yml: |
+    routes:
+      docs\a.md: output
+      .\docs/b\: output
+  docs/a.md:
+  docs/b/b.md:
+outputs:
+  output/a.json: |
+    { "content": "" }
+  output/b.json: |
+    { "content": "" }
+---
