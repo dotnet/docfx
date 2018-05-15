@@ -38,8 +38,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (idAndCountList.Any(g => g.Item2 > 1))
                 {
                     _context.LogWarning(
-                        $"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.",
-                        code: Constants.WarningCodes.InvalidTabGroup);
+                        "invalid-tab-group",
+                        $"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.");
                 }
                 var active = GetTabActive(block, tabSelectionInfo, items, firstVisibleTab, idAndCountList);
                 block.ActiveTabIndex = active;
@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (hasDifferentSet)
             {
-                _context.LogWarning("Tab group with different tab id set.", code: Constants.WarningCodes.InvalidTabGroup);
+                _context.LogWarning("invalid-tab-group", "Tab group with different tab id set.");
             }
 
             if (active == -1)
@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 else
                 {
                     active = 0;
-                    _context.LogWarning("All tabs are hidden in the tab group.", code: Constants.WarningCodes.InvalidTabGroup);
+                    _context.LogWarning("invalid-tab-group", "All tabs are hidden in the tab group.");
                 }
             }
 

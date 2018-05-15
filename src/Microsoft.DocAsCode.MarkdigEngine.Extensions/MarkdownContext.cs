@@ -10,9 +10,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class MarkdownContext
     {
         /// <summary>
-        /// Log delegate
+        /// Logs an error or warning message.
         /// </summary>
-        public delegate void LogActionDelegate(string message, string phase = null, string file = null, string line = null, string code = null);
+        public delegate void LogActionDelegate(string code, string message, string file = null, int line = 0);
 
         /// <summary>
         /// Reads a file as text based on path relative to an existing file.

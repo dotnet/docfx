@@ -32,8 +32,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             _mvb = new MarkdownValidatorBuilderCreator(parameters, container).CreateMarkdownValidatorBuilder();
             _context = new MarkdownContext(
                 _parameters.Tokens,
-                Logger.LogWarning,
-                Logger.LogError,
+                (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
+                (code, message, file, line) => Logger.LogError(message, null, file, line.ToString(), code),
                 ReadFile,
                 GetLink);
         }

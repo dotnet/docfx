@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c != '"')
             {
-                _context.LogWarning("MonikerRange does not have ending charactor (\").");
+                _context.LogWarning("invalid-moniker-range", "MonikerRange does not have ending charactor (\").");
                 return BlockState.None;
             }
 
@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning($"MonikerRange have some invalid chars in the starting.");
+                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the starting.");
             }
 
             processor.NewBlocks.Push(new MonikerRangeBlock(this)
@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning($"MonikerRange have some invalid chars in the ending.");
+                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var monikerRange = (MonikerRangeBlock)block;
             if (monikerRange != null && monikerRange.Closed == false)
             {
-                _context.LogWarning($"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.");
+                _context.LogWarning("invalid-moniker-range", $"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.");
             }
             return true;
         }

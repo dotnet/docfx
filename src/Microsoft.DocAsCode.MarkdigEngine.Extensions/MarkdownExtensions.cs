@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
-                .UseDFMCodeInfoPrefix(context)
+                .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(context)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this MarkdownPipelineBuilder pipeline)
         {
             var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
             if (fencedCodeBlockParser != null)
@@ -78,7 +78,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                context.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
                 pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
