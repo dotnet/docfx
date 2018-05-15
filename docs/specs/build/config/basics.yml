@@ -177,7 +177,7 @@ outputs:
   output/b.json: |
     { "content": "" }
 ---
-# latter routes rule takes precedence
+# latter routes rule takes precedence - 1
 inputs:
   docfx.yml: |
     routes:
@@ -186,4 +186,15 @@ inputs:
   docs/a/b.md:
 outputs:
   outputB/b.json: |
+    { "content": "" }
+---
+# latter routes rule takes precedence - 2
+inputs:
+  docfx.yml: |
+    routes:
+      docs/a/b.md: outputB
+      docs/a/: output
+  docs/a/b.md:
+outputs:
+  output/b.json: |
     { "content": "" }
