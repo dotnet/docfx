@@ -87,13 +87,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Config LoadCore(string configPath, CommandLineOptions options)
+        private static Config LoadCore(string configPath, CommandLineOptions options = null)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
                 var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject());
-                configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
+
+                if (options != null)
+                {
+                    configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
+                }
+
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
