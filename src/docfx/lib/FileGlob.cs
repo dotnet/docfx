@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Provide Utilities of File glob
     /// </summary>
-    public static class FileGlob
+    internal static class FileGlob
     {
         /// <summary>
         /// Get files with patterns
