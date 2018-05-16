@@ -172,7 +172,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (content == null)
             {
-                _context.LogWarning($"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning("codesnippet-not-found", $"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.");
                 renderer.WriteEscape(codeSnippet.Raw);
                 return;
             }
@@ -197,7 +197,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
                 if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
-                    _context.LogError($"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
+                    _context.LogError("unknown-language-code", $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
                 }
 
                 if (extrators != null)

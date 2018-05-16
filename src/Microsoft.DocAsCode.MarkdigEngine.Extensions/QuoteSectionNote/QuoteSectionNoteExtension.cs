@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
             {
-                _context.LogWarning($"Can't find QuoteBlockParser to replace, insert QuoteSectionNoteParser directly.");
                 pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
             }
         }
@@ -35,7 +34,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
                 {
-                    _context.LogWarning($"Can't find QuoteBlockRenderer to replace, insert QuoteSectionNoteRender directly.");
                     renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
                 }
             }

@@ -56,10 +56,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             switch (validator.Behavior)
             {
                 case TagValidationBehavior.Warning:
-                    _context.LogWarning(string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line.ToString());
+                    _context.LogWarning("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line);
                     return;
                 case TagValidationBehavior.Error:
-                    _context.LogError(string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line.ToString());
+                    _context.LogError("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line);
                     return;
                 case TagValidationBehavior.None:
                 default:

@@ -23,8 +23,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         private readonly MarkdownContext DefaultContext = 
             new MarkdownContext(
                 null,
-                Logger.LogWarning,
-                Logger.LogError);
+                (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
+                (code, message, file, line) => Logger.LogError(message, null, file, line.ToString(), code));
 
         [Fact]
         [Trait("Related", "Validation")]

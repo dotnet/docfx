@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                                      IsNoteType(infoString);
                 if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
-                    _context.LogWarning("Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
+                    _context.LogWarning("invalid-note-section", "Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
                     processor.GoToColumn(originalColumn);
                     return false;
                 }
