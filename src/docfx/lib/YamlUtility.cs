@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 using Newtonsoft.Json.Linq;
@@ -15,7 +14,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Provide Utilities of Yaml
     /// </summary>
-    public static class YamlUtility
+    internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
 

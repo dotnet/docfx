@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Provide Utilities of Json
     /// </summary>
-    public static class JsonUtility
+    internal static class JsonUtility
     {
         public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new JsonContractResolver() };
 
