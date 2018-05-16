@@ -16,8 +16,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private List<IMarkdownObjectValidatorProvider> _validatorProviders;
         private IEnumerable<MarkdownTagValidationRule> _enabledTagRules;
 
-        public const string MarkdownValidatePhaseName = "Markdown style";
-
         public MarkdownValidatorBuilder(List<IMarkdownObjectValidatorProvider> validatorProviders, IEnumerable<MarkdownTagValidationRule> enabledTagRules)
         {
             _validatorProviders = validatorProviders;
@@ -31,15 +29,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                              from p in vp.GetValidators()
                              select p;
 
-            return new MarkdownTokenRewriteWithScope(
-                MarkdownObjectRewriterFactory.FromValidators(
+            return MarkdownObjectRewriterFactory.FromValidators(
                     validators.Concat(
                         new[]
                         {
                             MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
-                        })),
-                MarkdownValidatePhaseName,
-                context);
+                        }));
         }
     }
 }
