@@ -198,3 +198,43 @@ inputs:
 outputs:
   output/b.json: |
     { "content": "" }
+---
+# extend
+inputs:
+  docfx.yml: |
+    extend: shared/extend.yml
+  shared/extend.yml: |
+    extend: ../extendAgain.yml
+  extendAgain.yml: |
+    content: a.md
+  a.md:
+outputs:
+  a.json: |
+    { "content": ""}
+---
+# current config takes precedence over extend config
+inputs:
+  docfx.yml: |
+    content: a.md
+    extend: extend.yml
+  extend.yml: |
+    content: invalid.md
+  a.md:
+outputs:
+  a.json: |
+    { "content": ""}
+---
+# former extend config takes precedence over latter extend config
+inputs:
+  docfx.yml: |
+    extend:
+    - extendA.yml
+    - extendB.yml
+  extendA.yml: |
+    content: a.md
+  extendB.yml: |
+    content: invalid.md
+  a.md:
+outputs:
+  a.json: |
+    { "content": ""}

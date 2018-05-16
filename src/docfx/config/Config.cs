@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
             ValidateDocsetPath(docsetPath);
-            var configPath = Path.Combine(docsetPath, "docfx.yml");
+            var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
                 throw Errors.ConfigNotFound(docsetPath);
@@ -92,19 +92,60 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
-                var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject());
-
-                if (options != null)
-                {
-                    configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
-                }
-
+                var configObject = Expand(LoadOriginalConfigObject(configPath, new List<string>()));
+                configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
             {
                 throw Errors.InvalidConfig(configPath, e);
             }
+        }
+
+        private static JObject LoadOriginalConfigObject(string configPath, List<string> parents)
+        {
+            var result = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject();
+            if (!result.TryGetValue(ConfigConstants.Extend, out var objExtend))
+                return result;
+
+            if (parents.Contains(configPath))
+                throw Errors.CircularReference(configPath, parents);
+
+            parents.Add(configPath);
+            foreach (var path in GetExtendConfigPaths(objExtend))
+            {
+                var extendConfigPath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(configPath), path));
+                if (PathUtility.FilePathHasInvalidChars(extendConfigPath))
+                    throw new Exception($"Invalid extend config path: {extendConfigPath}");
+                var extendConfig = LoadOriginalConfigObject(extendConfigPath, parents);
+                extendConfig.Merge(result);
+                result = extendConfig;
+            }
+            parents.RemoveAt(parents.Count - 1);
+
+            return result;
+        }
+
+        private static IEnumerable<string> GetExtendConfigPaths(JToken objExtend)
+        {
+            if (objExtend == null)
+                yield break;
+            if (objExtend is JValue strExtend)
+            {
+                yield return strExtend.Value.ToString();
+                yield break;
+            }
+            if (objExtend is JArray arrExtend)
+            {
+                foreach (var path in arrExtend)
+                {
+                    if (!(path is JValue strPath))
+                        throw new Exception($"Expect to be string: {JsonUtility.Serialize(path)}");
+                    yield return strPath.Value.ToString();
+                }
+                yield break;
+            }
+            throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(objExtend)}");
         }
 
         private static JObject Expand(JObject config)

@@ -59,7 +59,7 @@
 
 ``` yml
 name: Azure.azure-documents
-default: msdocs.yml
+extend: msdocs.yml
 basePath: azure
 content:
   include:
