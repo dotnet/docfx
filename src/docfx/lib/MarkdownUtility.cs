@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+
 using Markdig;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Newtonsoft.Json.Linq;
@@ -19,15 +20,19 @@ namespace Microsoft.Docs.Build
         {
             using (InclusionContext.PushFile(file))
             {
-                var pipeline = CreateMarkdownPipeline(file);
+                var pipeline = CreateMarkdownPipeline();
                 var html = Markdown.ToHtml(markdown, pipeline);
                 return (html, null);
             }
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline(Document file)
+        private static MarkdownPipeline CreateMarkdownPipeline(Context context)
         {
-            var markdownContext = new MarkdownContext(null, null, null, null, null);
+            var markdownContext = new MarkdownContext(
+                null,
+                context.ReportWarning,
+                context.ReportError,
+                null, null, null);
 
             return new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(markdownContext)
