@@ -96,8 +96,7 @@ namespace Microsoft.Docs.Build
         public override int GetHashCode()
         {
             // todo: add docset for calculation
-            // todo: case senstive or not?
-            return StringComparer.OrdinalIgnoreCase.GetHashCode(FilePath);
+            return StringComparer.Ordinal.GetHashCode(FilePath);
         }
 
         public bool Equals(Document other)
@@ -108,7 +107,7 @@ namespace Microsoft.Docs.Build
             }
 
             // todo: add docset for comparing
-            return string.Equals(other.FilePath, FilePath, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(other.FilePath, FilePath, StringComparison.Ordinal);
         }
 
         public override bool Equals(object obj)
@@ -218,6 +217,7 @@ namespace Microsoft.Docs.Build
 
             path = PathUtility.NormalizeFile(path);
 
+            // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, path)))
             {
                 return new Document(docset, path);
@@ -225,7 +225,28 @@ namespace Microsoft.Docs.Build
 
             // todo: localization fallback logic
             // todo: redirection files
-            // todo: resolve from dependencies
+
+            // resolve from dependent docsets
+            foreach (var (dependencyName, url) in docset.Config.Dependencies)
+            {
+                if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    // the file stored in the dependent docset should start with dependency name
+                    continue;
+                }
+
+                var (docsetPath, _, _) = Restore.GetGitRestoreInfo(url);
+                var dependentDocset = docset.DependentDocset[dependencyName];
+                var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
+
+                var buildItem = TryResolveFromPathToDocset(dependentDocset, relativePathToDependentDocset);
+
+                if (buildItem != null)
+                {
+                    return buildItem;
+                }
+            }
+
             return default;
         }
 
