@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
             if (enableValidation)
             {
-                builder.UseValidation(_mvb, _context);
+                builder.Extensions.Add(new ValidationExtension(_mvb, _context));
             }
 
             if (isInline)

@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public IMarkdownObjectRewriter CreateRewriter(MarkdownContext context)
         {
-            var tagValidator = new TagValidator(GetEnabledTagRules().ToImmutableList());
+            var tagValidator = new TagValidator(GetEnabledTagRules().ToImmutableList(), context);
             var validators = from vp in _validatorProviders
                              from p in vp.GetValidators()
                              select p;
@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        internal void AddTagValidators(MarkdownTagValidationRule[] validators)
+        public void AddTagValidators(MarkdownTagValidationRule[] validators)
         {
             if (validators == null)
             {

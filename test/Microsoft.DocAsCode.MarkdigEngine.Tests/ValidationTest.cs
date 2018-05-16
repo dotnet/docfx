@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             using (new LoggerPhaseScope(MarkdownValidatePhaseName))
             {
-                var html = Markup(content, creator, listener);
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
                 Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             using (new LoggerPhaseScope(MarkdownValidatePhaseName))
             {
-                var html = Markup(content, creator, listener);
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
                 Assert.Equal(@"<div class='a'>
     <i>x</i>
@@ -226,7 +226,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
             using (new LoggerPhaseScope(MarkdownValidatePhaseName))
             {
-                var html = Markup(content, builder.CreateRewriter(), listener);
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
                 Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
 <script>alert(1);</script> end.
