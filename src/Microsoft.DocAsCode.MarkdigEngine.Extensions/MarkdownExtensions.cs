@@ -41,12 +41,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
         }
-
-        public static MarkdownPipelineBuilder UseValidation(this MarkdownPipelineBuilder pipeline, MarkdownValidatorBuilder validator, MarkdownContext context)
-        {
-            pipeline.Extensions.Add(new ValidationExtension(validator, context));
-            return pipeline;
-        }
 	
         /// <summary>	
         /// This extension removes all the block parser except paragragh. Please use this extension in the last.	

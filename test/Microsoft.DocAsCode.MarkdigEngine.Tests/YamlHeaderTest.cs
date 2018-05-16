@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using MarkdigEngine;
+
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 

@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common;
 
     public class MarkdigMarkdownService : IMarkdownService
     {
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             ICompositionContainer container = null)
         {
             _parameters = parameters;
-            _mvb = new MarkdownValidatorBuilderCreator(parameters, container).CreateMarkdownValidatorBuilder();
+            _mvb = MarkdownValidatorBuilder.Create(parameters, container);
             _context = new MarkdownContext(
                 _parameters.Tokens,
                 (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
             if (enableValidation)
             {
-                builder.UseValidation(_mvb, _context);
+                builder.Extensions.Add(new ValidationExtension(_mvb, _context));
             }
 
             if (isInline)

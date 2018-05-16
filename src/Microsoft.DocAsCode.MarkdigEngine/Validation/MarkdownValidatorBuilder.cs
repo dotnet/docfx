@@ -1,22 +1,20 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
+    using Markdig.Syntax;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using Microsoft.DocAsCode.MarkdigEngine.Validators;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MarkdownValidatorBuilderCreator
+    public class MarkdownValidatorBuilder
     {
-        public const string DefaultValidatorName = "default";
-        public List<IMarkdownObjectValidatorProvider> ValidatorProviders { get; private set; } = new List<IMarkdownObjectValidatorProvider>();
-
         private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
             new List<RuleWithId<MarkdownValidationRule>>();
         private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators =
@@ -25,30 +23,50 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             new Dictionary<string, MarkdownValidationRule>();
         private readonly List<MarkdownValidationSetting> _settings =
             new List<MarkdownValidationSetting>();
-        private ICompositionContainer Container;
+        private List<IMarkdownObjectValidatorProvider> _validatorProviders =
+            new List<IMarkdownObjectValidatorProvider>();
 
-        public MarkdownValidatorBuilderCreator(MarkdownServiceParameters parameters, ICompositionContainer container = null)
+        public const string DefaultValidatorName = "default";
+        public const string MarkdownValidatePhaseName = "Markdown style";
+
+        private ICompositionContainer Container { get; }
+
+        public MarkdownValidatorBuilder(ICompositionContainer container)
         {
             Container = container;
-            LoadValidators(parameters);
         }
 
-        public MarkdownValidatorBuilder CreateMarkdownValidatorBuilder()
+        public static MarkdownValidatorBuilder Create(
+            MarkdownServiceParameters parameters,
+            ICompositionContainer container)
         {
-            return new MarkdownValidatorBuilder(ValidatorProviders, GetEnabledTagRules());
-        }
-
-        public void LoadValidators(MarkdownServiceParameters parameters)
-        {
+            var builder = new MarkdownValidatorBuilder(container);
             if (parameters != null)
             {
-                LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir);
+                LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
             }
 
-            if (Container != null)
+            if (container != null)
             {
-                LoadEnabledRulesProvider();
+                builder.LoadEnabledRulesProvider();
             }
+
+            return builder;
+        }
+
+        public IMarkdownObjectRewriter CreateRewriter(MarkdownContext context)
+        {
+            var tagValidator = new TagValidator(GetEnabledTagRules().ToImmutableList(), context);
+            var validators = from vp in _validatorProviders
+                             from p in vp.GetValidators()
+                             select p;
+
+            return MarkdownObjectRewriterFactory.FromValidators(
+                    validators.Concat(
+                        new[]
+                        {
+                            MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
+                        }));
         }
 
         public void AddValidators(MarkdownValidationRule[] rules)
@@ -106,7 +124,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        public void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
+        internal void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
         {
             if (validators == null)
             {
@@ -124,15 +142,68 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        public IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()
+        internal void AddSettings(MarkdownValidationSetting[] settings)
         {
-            foreach (var item in _tagValidators)
+            if (settings == null)
             {
-                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
+                return;
+            }
+            foreach (var setting in settings)
+            {
+                _settings.Add(setting);
+            }
+        }
+
+        private void EnsureDefaultValidator()
+        {
+            if (!_globalValidators.ContainsKey(DefaultValidatorName))
+            {
+                _globalValidators[DefaultValidatorName] = new MarkdownValidationRule
                 {
-                    continue;
+                    ContractName = DefaultValidatorName
+                };
+            }
+        }
+
+        private static void LoadValidatorConfig(string baseDir, string templateDir, MarkdownValidatorBuilder builder)
+        {
+            if (string.IsNullOrEmpty(baseDir))
+            {
+                return;
+            }
+
+            if (templateDir != null)
+            {
+                var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
+                if (Directory.Exists(configFolder))
+                {
+                    LoadValidatorDefinition(configFolder, builder);
                 }
-                yield return item.Rule;
+            }
+
+            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
+            if (EnvironmentContext.FileAbstractLayer.Exists(configFile))
+            {
+                var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+                builder.AddValidators(config.Rules);
+                builder.AddTagValidators(config.TagRules);
+                builder.AddSettings(config.Settings);
+            }
+            builder.EnsureDefaultValidator();
+        }
+
+        private static void LoadValidatorDefinition(string mdStyleDefPath, MarkdownValidatorBuilder builder)
+        {
+            if (Directory.Exists(mdStyleDefPath))
+            {
+                foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
+                {
+                    var fileName = Path.GetFileName(configFile);
+                    var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
+                    var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
+                    builder.AddTagValidators(category, config.TagRules);
+                    builder.AddValidators(category, config.Rules);
+                }
             }
         }
 
@@ -161,73 +232,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                     enabledContractName.Add(pair.Value.ContractName);
                 }
             }
-            ValidatorProviders = (from name in enabledContractName
-                                  from vp in Container?.GetExports<IMarkdownObjectValidatorProvider>(name)
-                                  select vp).ToList();
+            _validatorProviders = (from name in enabledContractName
+                                   from vp in Container?.GetExports<IMarkdownObjectValidatorProvider>(name)
+                                   select vp).ToList();
         }
 
-        private void LoadValidatorConfig(string baseDir, string templateDir)
+        private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()
         {
-            if (string.IsNullOrEmpty(baseDir))
+            foreach (var item in _tagValidators)
             {
-                return;
-            }
-
-            if (templateDir != null)
-            {
-                var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
-                if (Directory.Exists(configFolder))
+                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
                 {
-                    LoadValidatorDefinition(configFolder);
+                    continue;
                 }
-            }
-
-            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-            if (EnvironmentContext.FileAbstractLayer.Exists(configFile))
-            {
-                var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
-                AddValidators(config.Rules);
-                AddTagValidators(config.TagRules);
-                AddSettings(config.Settings);
-            }
-            EnsureDefaultValidator();
-        }
-
-        private void LoadValidatorDefinition(string mdStyleDefPath)
-        {
-            if (Directory.Exists(mdStyleDefPath))
-            {
-                foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
-                {
-                    var fileName = Path.GetFileName(configFile);
-                    var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
-                    var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
-                    AddTagValidators(category, config.TagRules);
-                    AddValidators(category, config.Rules);
-                }
-            }
-        }
-
-        private void AddSettings(MarkdownValidationSetting[] settings)
-        {
-            if (settings == null)
-            {
-                return;
-            }
-            foreach (var setting in settings)
-            {
-                _settings.Add(setting);
-            }
-        }
-
-        private void EnsureDefaultValidator()
-        {
-            if (!_globalValidators.ContainsKey(DefaultValidatorName))
-            {
-                _globalValidators[DefaultValidatorName] = new MarkdownValidationRule
-                {
-                    ContractName = DefaultValidatorName
-                };
+                yield return item.Rule;
             }
         }
 
@@ -255,11 +273,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return idDisable ?? categoryDisable;
         }
 
+        #region Nested Classes
         private sealed class RuleWithId<T>
         {
             public T Rule { get; set; }
             public string Category { get; set; }
             public string Id { get; set; }
         }
+        #endregion
     }
 }

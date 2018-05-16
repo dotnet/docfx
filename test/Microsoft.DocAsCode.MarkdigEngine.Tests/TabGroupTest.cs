@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
+
     public class TabGroupTest
     {
         [Fact]
