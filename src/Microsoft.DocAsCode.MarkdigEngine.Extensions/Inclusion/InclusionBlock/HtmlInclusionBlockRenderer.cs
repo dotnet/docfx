@@ -31,8 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-
-                _context.LogWarning("circular-reference", $"Found circular reference: {string.Join(" -> ", dependencyChain)}\"");
+                _context.LogWarning("circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain)} --> {includeFilePath}");
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }

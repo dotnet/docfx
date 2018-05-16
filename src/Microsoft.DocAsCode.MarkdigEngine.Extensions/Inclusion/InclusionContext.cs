@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (t_files.Contains(file))
             {
-                dependencyChain = t_files.Concat(new[] { file });
+                dependencyChain = t_files.Reverse();
                 return true;
             }
 
