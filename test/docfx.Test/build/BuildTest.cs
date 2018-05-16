@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
 
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
             Assert.True(Directory.Exists(docsetPath));
+
             var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             Assert.Equal(spec.Outputs.Count, outputs.Count());
 

@@ -8,13 +8,19 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
-        public static Exception ConfigNotFound(string docsetPath)
+        public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException("config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 
-        public static Exception InvalidConfig(string configPath, Exception e)
+        public static DocfxException InvalidConfig(string configPath, Exception e)
             => new DocfxException("invalid-config", $"Error parsing docset config: {e.Message}", configPath, innerException: e);
 
-        public static Exception CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
+        public static DocfxException CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new DocfxException("circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain)} --> {filePath}", filePath.ToString());
+
+        public static DocfxException YamlHeaderNotObject(object filePath, bool isArray)
+            => new DocfxException("yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
+
+        public static DocfxException InvalidYamlHeader(Document file, Exception ex)
+            => new DocfxException("invalid-yaml-header", ex.Message, file.ToString());
     }
 }
