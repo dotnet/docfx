@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace Microsoft.Docs.Build
 {
     [Flags]
-    public enum GlobMatcherOptions
+    internal enum GlobMatcherOptions
     {
         None = 0x0,
         IgnoreCase = 0x1,
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Matcher of glob
     /// </summary>
-    public class GlobMatcher
+    internal class GlobMatcher
     {
         public GlobMatcherOptions Options { get; }
 
