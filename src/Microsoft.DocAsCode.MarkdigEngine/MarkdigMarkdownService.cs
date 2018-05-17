@@ -164,9 +164,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         private static string GetLink(string path, object relativeTo)
         {
-            if (RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
+            if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
             {
-                return ((RelativePath)relativeTo + (RelativePath)path).RemoveWorkingFolder();
+                return ((RelativePath)relativeTo + (RelativePath)path).GetPathFromWorkingFolder();
             }
             return path;
         }
