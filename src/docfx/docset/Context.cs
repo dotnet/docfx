@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 
-            return File.OpenWrite(destinationPath);
+            return File.Create(destinationPath);
         }
 
         /// <summary>

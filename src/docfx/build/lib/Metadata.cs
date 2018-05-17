@@ -14,13 +14,12 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file != null);
 
             var config = file.Docset.Config;
-            var result = config.GlobalMetadata;
-            foreach (var fileMeta in config.FileMetadata.Where(c => c.Match(file.FilePath)))
-            {
-                result = JsonUtility.Merge(result, fileMeta.Value);
-            }
+            var fileMetadata =
+                from item in config.FileMetadata
+                where item.Match(file.FilePath)
+                select item.Value;
 
-            return result;
+            return JsonUtility.Merge(config.GlobalMetadata, fileMetadata);
         }
     }
 }
