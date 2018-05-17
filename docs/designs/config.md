@@ -121,7 +121,7 @@ Configs is grouped by scenario:
 Extension config is supported to share default config for all OPS repos, by `extend: msdocs.yml`. Current config has higher priority than extension config when conflicts. Extension config also supports array, whose latter item has higher priority.
 > [!NOTE]
 >
-> `dependencies` doesn't support `extend`, as we may import extending configs from dependent repos.
+> `extend` only applies to `build` command. That's to say, `dependencies` in extended config doesn't take effect.
 Some configs:
 * `name`: It's equivalent to `{docset_product}.{docset_name}` in docfx v2. `product` is no long needed as a separate config in v3.
 * `include`/`exclude`: can be `string` or `string array`, indicate which file/folder to include or exclude. All contents/resources/TOCs is defined here. Document type is inferred by extension or YAMLMime. Extra config will be provided if the default inference is wrong. The latter one will overwrite the former one if matched multiple times.
