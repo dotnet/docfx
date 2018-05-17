@@ -92,12 +92,9 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
-                var configObject = Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject());
-
-                if (options != null)
-                {
-                    configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
-                }
+                var configObject = JsonUtility.Merge(
+                    Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject()),
+                    options?.ToJObject());
 
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }

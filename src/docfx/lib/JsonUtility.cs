@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,9 +19,13 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
-        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new JsonContractResolver() };
+        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new JsonContractResolver(),
+        };
 
-        public static readonly JsonMergeSettings DefaultMergeSettings = new JsonMergeSettings
+        private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
@@ -107,7 +112,21 @@ namespace Microsoft.Docs.Build
             {
                 if (obj != null)
                 {
-                    result.Merge(obj, DefaultMergeSettings);
+                    result.Merge(obj, s_defaultMergeSettings);
+                }
+            }
+            return result;
+        }
+
+        public static JObject Merge(JObject first, IEnumerable<JObject> objs)
+        {
+            var result = new JObject();
+            result.Merge(first);
+            foreach (var obj in objs)
+            {
+                if (obj != null)
+                {
+                    result.Merge(obj, s_defaultMergeSettings);
                 }
             }
             return result;

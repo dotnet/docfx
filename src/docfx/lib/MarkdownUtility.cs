@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                             }
                             else
                             {
-                                metadata.Merge(yamlHeaderObj, JsonUtility.DefaultMergeSettings);
+                                metadata.Merge(yamlHeaderObj);
                             }
                         }
                         catch (Exception ex)
