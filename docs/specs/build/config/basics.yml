@@ -202,10 +202,8 @@ outputs:
 # extend
 inputs:
   docfx.yml: |
-    extend: shared/extend.yml
-  shared/extend.yml: |
-    extend: ../extendAgain.yml
-  extendAgain.yml: |
+    extend: _shared/extend.yml
+  _shared/extend.yml: |
     content: a.md
   a.md:
 outputs:
@@ -224,12 +222,12 @@ outputs:
   a.json: |
     { "content": ""}
 ---
-# former extend config takes precedence over latter extend config
+# latter extend config takes precedence over former extend config
 inputs:
   docfx.yml: |
     extend:
-    - extendA.yml
     - extendB.yml
+    - extendA.yml
   extendA.yml: |
     content: a.md
   extendB.yml: |

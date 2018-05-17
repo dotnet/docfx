@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
-                var configObject = Expand(LoadOriginalConfigObject(configPath, new List<string>()));
+                var configObject = Expand(LoadOriginalConfigObject(configPath, new List<string>(), true));
                 configObject.Merge(options.ToJObject(), JsonUtility.DefaultMergeSettings);
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
@@ -102,28 +102,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JObject LoadOriginalConfigObject(string configPath, List<string> parents)
+        private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
         {
-            var result = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject();
-            if (!result.TryGetValue(ConfigConstants.Extend, out var objExtend))
-                return result;
+            // TODO: support URL
+            var config = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject();
+            if (!expand || !config.TryGetValue(ConfigConstants.Extend, out var objExtend))
+                return config;
 
             if (parents.Contains(configPath))
                 throw Errors.CircularReference(configPath, parents);
 
             parents.Add(configPath);
+            var extendedConfig = new JObject();
             foreach (var path in GetExtendConfigPaths(objExtend))
             {
                 var extendConfigPath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(configPath), path));
                 if (PathUtility.FilePathHasInvalidChars(extendConfigPath))
                     throw new Exception($"Invalid extend config path: {extendConfigPath}");
-                var extendConfig = LoadOriginalConfigObject(extendConfigPath, parents);
-                extendConfig.Merge(result);
-                result = extendConfig;
+                extendedConfig.Merge(LoadOriginalConfigObject(extendConfigPath, parents, false));
             }
+            extendedConfig.Merge(config);
             parents.RemoveAt(parents.Count - 1);
 
-            return result;
+            return extendedConfig;
         }
 
         private static IEnumerable<string> GetExtendConfigPaths(JToken objExtend)
