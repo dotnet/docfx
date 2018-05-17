@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
             ValidateDocsetPath(docsetPath);
-            var configPath = Path.Combine(docsetPath, "docfx.yml");
+            var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
                 throw Errors.ConfigNotFound(docsetPath);
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var configObject = JsonUtility.Merge(
-                    Expand(YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject()),
+                    Expand(LoadOriginalConfigObject(configPath, new List<string>(), true)),
                     options?.ToJObject());
 
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
@@ -102,6 +102,53 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.InvalidConfig(configPath, e);
             }
+        }
+
+        private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
+        {
+            // TODO: support URL
+            var config = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath)) ?? new JObject();
+            if (!expand || !config.TryGetValue(ConfigConstants.Extend, out var objExtend))
+                return config;
+
+            if (parents.Contains(configPath))
+                throw Errors.CircularReference(configPath, parents);
+
+            parents.Add(configPath);
+            var extendedConfig = new JObject();
+            foreach (var path in GetExtendConfigPaths(objExtend))
+            {
+                var extendConfigPath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(configPath), path));
+                if (PathUtility.FilePathHasInvalidChars(extendConfigPath))
+                    throw new Exception($"Invalid extend config path: {extendConfigPath}");
+                extendedConfig.Merge(LoadOriginalConfigObject(extendConfigPath, parents, false));
+            }
+            extendedConfig.Merge(config);
+            parents.RemoveAt(parents.Count - 1);
+
+            return extendedConfig;
+        }
+
+        private static IEnumerable<string> GetExtendConfigPaths(JToken objExtend)
+        {
+            if (objExtend == null)
+                yield break;
+            if (objExtend is JValue strExtend)
+            {
+                yield return strExtend.Value.ToString();
+                yield break;
+            }
+            if (objExtend is JArray arrExtend)
+            {
+                foreach (var path in arrExtend)
+                {
+                    if (!(path is JValue strPath))
+                        throw new Exception($"Expect to be string: {JsonUtility.Serialize(path)}");
+                    yield return strPath.Value.ToString();
+                }
+                yield break;
+            }
+            throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(objExtend)}");
         }
 
         private static JObject Expand(JObject config)
