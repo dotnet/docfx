@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public string Log;
         public bool Stable;
-        public bool OutputOpsModel;
+        public bool OutputLegacyModel;
 
         public JObject ToJObject() => new JObject
         {

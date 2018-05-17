@@ -49,8 +49,8 @@ namespace Microsoft.Docs.Build
                         case "build":
                             await Build.Run(docset, options, reporter);
 
-                            if (options.OutputOpsModel)
-                                Legacy.ConvertToOpsModel();
+                            if (options.OutputLegacyModel)
+                                Legacy.ConvertToLegacyModel();
                             break;
                     }
                     return 0;
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             });
 
             // Don't show it in help
-            options.OutputOpsModel = args.Contains("--ops");
+            options.OutputLegacyModel = args.Contains("--legacy");
 
             return (command, docset, options);
         }

@@ -5,7 +5,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToOpsModel()
+        public static void ConvertToLegacyModel()
         {
 
         }
