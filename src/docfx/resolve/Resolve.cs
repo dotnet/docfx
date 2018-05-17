@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
     internal static class Resolve
     {
-        internal static (string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
             var buildItem = TryResolveHref(relativeTo, href);
             if (buildItem == null)
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             return (buildItem.ReadText(), buildItem);
         }
 
-        internal static (string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
+        public static (string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
         {
             var file = TryResolveHref(relativeTo, href);
             if (file == null)
