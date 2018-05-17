@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Metadata
     {
-        public static JObject FetchFromConfig(Document file)
+        public static JObject GetFromConfig(Document file)
         {
             Debug.Assert(file != null);
 

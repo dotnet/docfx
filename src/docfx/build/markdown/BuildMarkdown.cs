@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(model, file.OutputPath);
 
-            var metadata = Metadata.FetchFromConfig(file);
+            var metadata = Metadata.GetFromConfig(file);
             metadata.Merge(yamlHeader, JsonUtility.DefaultMergeSettings);
 
             if (metadata.HasValues)
