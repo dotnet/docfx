@@ -1,18 +1,52 @@
 ---
 # Hello World
 inputs:
-  docfx.yml: |
-    content: "**/*.*"
-  hello.md: Hello `docfx`!
+  docfx.yml:
+  docs/a.md: Hello `docfx`!
 outputs:
-  hello.json: |
-    { "content": "Hello `docfx`!" }
+  docs/a.json: |
+    { "content": "<div><p>Hello <code>docfx</code>!</p></div>" }
 ---
 # Basic markdown syntax
 inputs:
-  docfx.yml: |
-    content: "**/*.*"
-  inline.md: _this_ *is* an ***inline*** `markdown` **test**
+  docfx.yml:
+  docs/a.md: _this_ *is* an ***inline*** `markdown` **test**
 outputs:
-  inline.json: |
-    { "content": "_this_ *is* an ***inline*** `markdown` **test**" }
+  docs/a.json: |
+    { "content": "<div><p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p></div>" }
+---
+# Yaml header
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: me
+    ---
+    hello
+outputs:
+  docs/a.json: |
+    { "content": "<div><p>hello</p></div>" }
+  docs/a.mta.json: |
+    { "title": "me" }
+---
+# include another file
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md: b
+outputs:
+  docs/a.json: |
+    { "content": "<div><p>a b</p></div>" }
+  docs/b.json: |
+    { "content": "<div><p>b</p></div>" }
+---
+# note
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    >[!NOTE]
+    >note
+outputs:
+  docs/a.json: |
+    { "content": "<div><div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>note</p>\n</div></div>" }
+

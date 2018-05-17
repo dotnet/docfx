@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Assert.Equal(expected, actual);
+                Assert.Equal(((JValue)expected).Value, ((JValue)actual).Value);
             }
         }
 
