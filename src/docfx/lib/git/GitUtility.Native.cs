@@ -98,13 +98,15 @@ namespace Microsoft.Docs.Build
             while (true)
             {
                 var error = NativeMethods.GitRevwalkNext(out var commitId, walk);
+                if (error == -31 /* GIT_ITEROVER */)
+                    break;
 
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error == -3 /* GIT_ENOTFOUND */)
                     throw new NotSupportedException($"Does not support git shallow clone");
 
                 if (error != 0)
-                    break;
+                    throw new InvalidOperationException($"Unknown error calling git_revwalk_next: {error}");
 
                 NativeMethods.GitObjectLookup(out var commit, repo, &commitId, NativeMethods.GitObjectType.Commit);
                 var author = NativeMethods.GitCommitAuthor(commit);
