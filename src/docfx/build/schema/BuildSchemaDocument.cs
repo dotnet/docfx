@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public static Task Build(Context context, Document file, TableOfContentsMap tocMap)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

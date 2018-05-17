@@ -48,6 +48,9 @@ namespace Microsoft.Docs.Build
                             break;
                         case "build":
                             await Build.Run(docset, options, reporter);
+
+                            if (options.OutputOpsModel)
+                                Legacy.ConvertToOpsModel();
                             break;
                     }
                     return 0;
@@ -82,6 +85,9 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("stable", ref options.Stable, "produces stable output for comparison in a diff tool");
                 syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
             });
+
+            // Don't show it in help
+            options.OutputOpsModel = args.Contains("--ops");
 
             return (command, docset, options);
         }
