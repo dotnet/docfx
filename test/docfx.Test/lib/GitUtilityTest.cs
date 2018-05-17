@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,17 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(repo);
 
             var pathToRepo = PathUtility.NormalizeFile(file);
-            var exe = await GitUtility.GetCommits(repo, pathToRepo);
-            var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
-            Assert.Equal(JsonConvert.SerializeObject(exe), JsonConvert.SerializeObject(lib));
+
+            try
+            {
+                var exe = await GitUtility.GetCommits(repo, pathToRepo);
+                var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
+                Assert.Equal(JsonConvert.SerializeObject(exe), JsonConvert.SerializeObject(lib));
+            }
+            catch (NotSupportedException ex)
+            {
+                Assert.Equal("Does not support git shallow clone", ex.Message);
+            }
         }
 
         [Fact]

@@ -95,8 +95,17 @@ namespace Microsoft.Docs.Build
             NativeMethods.GitRevwalkSorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
             NativeMethods.GitRevwalkPushHead(walk);
 
-            while (NativeMethods.GitRevwalkNext(out var commitId, walk) == 0)
+            while (true)
             {
+                var error = NativeMethods.GitRevwalkNext(out var commitId, walk);
+
+                // https://github.com/libgit2/libgit2sharp/issues/1351
+                if (error == -3 /* GIT_ENOTFOUND */)
+                    throw new NotSupportedException($"Does not support git shallow clone");
+
+                if (error != 0)
+                    break;
+
                 NativeMethods.GitObjectLookup(out var commit, repo, &commitId, NativeMethods.GitObjectType.Commit);
                 var author = NativeMethods.GitCommitAuthor(commit);
                 var committer = NativeMethods.GitCommitCommitter(commit);
@@ -219,6 +228,9 @@ namespace Microsoft.Docs.Build
             const int MaxParentBlob = 32;
 
             var contributors = new List<GitCommit>();
+            if (commits.Count <= 0)
+                return contributors;
+
             var commitsToFollow = new List<(Commit commit, long blob)> { (commits[0], GetBlob(trees, pathToParent, commits[0].Tree.A, file)) };
             var parentBlobs = stackalloc long[MaxParentBlob];
 
