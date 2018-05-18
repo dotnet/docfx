@@ -36,6 +36,8 @@ For *static rendering*, `docfx` produces an output for static file servers using
 https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string/#Instantiation
 ```
 
+> This document uses pretty url format that ends with `/`. We also supports ugly url format that ends with `.html`.
+
 > `?` means optional.
 > When a docset is not localized, we will not create the `{locale}` folder.
 > This allows static websites with minimal url when localized and verioning is not needed.
@@ -104,7 +106,7 @@ These are called *browser navigation properties* and are stored in manifest.
 ```javascript
 {
     "files": [{
-        "url": "/en-us/dotnet/api/system.string",
+        "url": "/dotnet/api/system.string",
         "path": "en-us/netstandard-2.0/dotnet/api/system.string.json",
         "locale": "en-us",
         "moniker": "netstandard-2.0",
