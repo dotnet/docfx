@@ -41,6 +41,11 @@ namespace Microsoft.Docs.Build
         public readonly string SiteBasePath = string.Empty;
 
         /// <summary>
+        /// Just for backward compatibility, the source base folder
+        /// </summary>
+        public readonly string SourceBaseFolder = string.Empty;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// </summary>
         public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
