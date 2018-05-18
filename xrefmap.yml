@@ -4601,6 +4601,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup(System.String,System.String)
   fullName: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup(System.String, System.String)
   nameWithType: DfmServiceProvider.DfmService.Markup(String, String)
+- uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup(System.String,System.String,System.Boolean)
+  name: Markup(String, String, Boolean)
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.html#Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmService_Markup_System_String_System_String_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup(System.String,System.String,System.Boolean)
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup(System.String, System.String, System.Boolean)
+  nameWithType: DfmServiceProvider.DfmService.Markup(String, String, Boolean)
 - uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.Markup*
   name: Markup
   href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmService.html#Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmService_Markup_
@@ -35964,6 +35970,19 @@ references:
   commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel
   nameWithType: ExtractMetadataInputModel
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_CodeSourceBasePath
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
+  nameWithType: ExtractMetadataInputModel.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath*
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_CodeSourceBasePath_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
+  nameWithType: ExtractMetadataInputModel.CodeSourceBasePath
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.Files
   name: Files
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_Files
@@ -36100,6 +36119,19 @@ references:
   commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions
   nameWithType: ExtractMetadataOptions
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_CodeSourceBasePath
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
+  nameWithType: ExtractMetadataOptions.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath*
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_CodeSourceBasePath_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
+  nameWithType: ExtractMetadataOptions.CodeSourceBasePath
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.FilterConfigFile
   name: FilterConfigFile
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_FilterConfigFile
@@ -36581,6 +36613,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.AddReferenceDelegate
   nameWithType: ITripleSlashCommentParserContext.AddReferenceDelegate
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_ITripleSlashCommentParserContext_CodeSourceBasePath
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath
+  nameWithType: ITripleSlashCommentParserContext.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath*
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_ITripleSlashCommentParserContext_CodeSourceBasePath_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.CodeSourceBasePath
+  nameWithType: ITripleSlashCommentParserContext.CodeSourceBasePath
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.PreserveRawInlineComments
   name: PreserveRawInlineComments
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ITripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_ITripleSlashCommentParserContext_PreserveRawInlineComments
@@ -38628,15 +38673,15 @@ references:
   commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter
   nameWithType: SymbolVisitorAdapter
-- uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}})
-  name: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>)
-  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_System_Boolean_System_String_System_Collections_Generic_IReadOnlyDictionary_Microsoft_CodeAnalysis_Compilation_System_Collections_Generic_IEnumerable_Microsoft_CodeAnalysis_IMethodSymbol___
-  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}})
-  name.vb: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)))
-  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary<Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable<Microsoft.CodeAnalysis.IMethodSymbol>>)
-  fullName.vb: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary(Of Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable(Of Microsoft.CodeAnalysis.IMethodSymbol)))
-  nameWithType: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>)
-  nameWithType.vb: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)))
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}},System.String)
+  name: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>, String)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_System_Boolean_System_String_System_Collections_Generic_IReadOnlyDictionary_Microsoft_CodeAnalysis_Compilation_System_Collections_Generic_IEnumerable_Microsoft_CodeAnalysis_IMethodSymbol___System_String_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}},System.String)
+  name.vb: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)), String)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary<Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable<Microsoft.CodeAnalysis.IMethodSymbol>>, System.String)
+  fullName.vb: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary(Of Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable(Of Microsoft.CodeAnalysis.IMethodSymbol)), System.String)
+  nameWithType: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>, String)
+  nameWithType.vb: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)), String)
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor*
   name: SymbolVisitorAdapter
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_
@@ -39100,6 +39145,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.AddReferenceDelegate
   nameWithType: TripleSlashCommentParserContext.AddReferenceDelegate
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_TripleSlashCommentParserContext_CodeSourceBasePath
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath
+  nameWithType: TripleSlashCommentParserContext.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath*
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_TripleSlashCommentParserContext_CodeSourceBasePath_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.CodeSourceBasePath
+  nameWithType: TripleSlashCommentParserContext.CodeSourceBasePath
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.PreserveRawInlineComments
   name: PreserveRawInlineComments
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.TripleSlashCommentParserContext.html#Microsoft_DocAsCode_Metadata_ManagedReference_TripleSlashCommentParserContext_PreserveRawInlineComments
@@ -39843,22 +39901,6 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToPageViewModel
   nameWithType: YamlViewModelExtensions.ToPageViewModel
-- uid: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItem})
-  name: ToReferenceViewModel(KeyValuePair<String, ReferenceItem>)
-  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToReferenceViewModel_System_Collections_Generic_KeyValuePair_System_String_Microsoft_DocAsCode_Metadata_ManagedReference_ReferenceItem__
-  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItem})
-  name.vb: ToReferenceViewModel(KeyValuePair(Of String, ReferenceItem))
-  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItem>)
-  fullName.vb: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.Metadata.ManagedReference.ReferenceItem))
-  nameWithType: YamlViewModelExtensions.ToReferenceViewModel(KeyValuePair<String, ReferenceItem>)
-  nameWithType.vb: YamlViewModelExtensions.ToReferenceViewModel(KeyValuePair(Of String, ReferenceItem))
-- uid: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel*
-  name: ToReferenceViewModel
-  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToReferenceViewModel_
-  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel
-  isSpec: "True"
-  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToReferenceViewModel
-  nameWithType: YamlViewModelExtensions.ToReferenceViewModel
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToSpecViewModel(Microsoft.DocAsCode.Metadata.ManagedReference.LinkItem)
   name: ToSpecViewModel(LinkItem)
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToSpecViewModel_Microsoft_DocAsCode_Metadata_ManagedReference_LinkItem_
@@ -39948,6 +39990,19 @@ references:
   commentId: T:Microsoft.DocAsCode.MetadataJsonItemConfig
   fullName: Microsoft.DocAsCode.MetadataJsonItemConfig
   nameWithType: MetadataJsonItemConfig
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_CodeSourceBasePath
+  commentId: P:Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath
+  nameWithType: MetadataJsonItemConfig.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath*
+  name: CodeSourceBasePath
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_CodeSourceBasePath_
+  commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.CodeSourceBasePath
+  nameWithType: MetadataJsonItemConfig.CodeSourceBasePath
 - uid: Microsoft.DocAsCode.MetadataJsonItemConfig.Destination
   name: Destination
   href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_Destination
