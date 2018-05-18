@@ -48,9 +48,6 @@ namespace Microsoft.Docs.Build
                             break;
                         case "build":
                             await Build.Run(docset, options, reporter);
-
-                            if (options.OutputLegacyModel)
-                                Legacy.ConvertToLegacyModel();
                             break;
                     }
                     return 0;
@@ -78,16 +75,14 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
 
                 // Build command
-                // usage: docfx build [docset] [-o/--out output] [-l/--log log] [--stable]
+                // usage: docfx build [docset] [-o/--out output] [-l/--log log] [--stable] [--legacy]
                 syntax.DefineCommand("build", ref command, "builds a folder containing docfx.yml");
                 syntax.DefineOption("o|out", ref options.Output, "output folder");
                 syntax.DefineOption("l|log", ref options.Log, "path to log file");
                 syntax.DefineOption("stable", ref options.Stable, "produces stable output for comparison in a diff tool");
+                syntax.DefineOption("legacy", ref options.OutputLegacyModel, "output legacy model for backward compatibility");
                 syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
             });
-
-            // Don't show it in help
-            options.OutputLegacyModel = args.Contains("--legacy");
 
             return (command, docset, options);
         }

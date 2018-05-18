@@ -14,12 +14,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
-        [JsonProperty(PropertyName = "pdf_href")]
-        public string PdfHref { get; set; }
-
-        [JsonProperty(PropertyName = "pdf_name")]
-        public string PdfName { get; set; }
-
         public List<TableOfContentsItem> Children;
     }
 }

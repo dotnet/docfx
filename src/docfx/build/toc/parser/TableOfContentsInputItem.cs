@@ -26,7 +26,6 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            // todo: pdf name and pdf href
             var decodedHref = inputModel.Href == null ? null : HttpUtility.UrlDecode(inputModel.Href);
             return new TableOfContentsItem
             {
