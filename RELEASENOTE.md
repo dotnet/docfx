@@ -1,7 +1,7 @@
 Version Notes (Current Version: v2.36)
 =======================================
 
-v2.36 (Pre-release)
+v2.36
 -----------
 1. Allow setting the base path for code sources. (#2131)
 2. Bug fix:
