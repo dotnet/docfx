@@ -21,10 +21,10 @@ export class Myget {
         if (releaseNotePath) {
             // Ignore to publish myget package if RELEASENOTE.md hasn't been modified.
             let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
-            // if (!isUpdated) {
-            //    console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to myget.org.`);
-            //    return Promise.resolve();
-            // }
+            if (!isUpdated) {
+                console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to myget.org.`);
+                return Promise.resolve();
+            }
         }
 
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
