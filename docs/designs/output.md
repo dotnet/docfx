@@ -52,7 +52,7 @@ Each input file transforms to zero or more output files depending on its content
 _site/en-us/netstandard-2.0/dotnet/api/system.string/index.html
 ```
 
-> Different files can share the same `{site-url}` or `{site-path}` due to versioning and localization.
+Different files can share the same `{site-url}` or `{site-path}` due to versioning and localization.
 
 `{site-path}` can be computed from `{site-url}` and vice visa depending on content type:
 
@@ -115,11 +115,11 @@ These are called *browser navigation properties* and are stored in manifest.
 }
 ```
 
-> We only save *browser navigation properties* for images in `build.manifest`. Other image metadata are discarded.
+We only save *browser navigation properties* for images in `build.manifest`. Other image metadata are discarded.
 
-> Different verions of the same document, or difference locales of the same document may have the same output content.
-> It is nessesary to duplicate them for static rendering. To save space for dynamic rendering, set the `path`
-> property to the same location.
+Different verions of the same document, or difference locales of the same document may have the same output content.
+It is nessesary to duplicate them for static rendering. To save space for dynamic rendering, set the `path`
+property to the same location.
 
 ## Report
 
