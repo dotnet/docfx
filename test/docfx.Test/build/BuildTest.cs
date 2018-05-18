@@ -40,10 +40,6 @@ namespace Microsoft.Docs.Build
 
             switch (Path.GetExtension(file.ToLower()))
             {
-                case ".log":
-                    VerifyLogEquals(content, File.ReadAllText(file));
-                    break;
-
                 case ".json":
                     TestHelper.VerifyJsonContainEquals(
                         JToken.Parse(content ?? "{}"),
@@ -58,31 +54,6 @@ namespace Microsoft.Docs.Build
                         ignoreLineEndingDifferences: true,
                         ignoreWhiteSpaceDifferences: true);
                     break;
-            }
-        }
-
-        private static void VerifyLogEquals(string expectedLogText, string actualLogText)
-        {
-            var actualLogs = actualLogText
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                .Select(line => JObject.Parse(line))
-                .OrderBy(log => log.Value<string>("message"))
-                .ToList();
-
-            var expectedLogs = JArray.Parse(expectedLogText)
-                .OrderBy(log => log.Value<string>("message"))
-                .ToList();
-
-            Assert.Equal(expectedLogs.Count, actualLogs.Count);
-
-            for (var i = 0; i < expectedLogs.Count; i++)
-            {
-                Assert.Equal(
-                    expectedLogs[i].ToString(),
-                    actualLogs[i].ToString(),
-                    ignoreCase: false,
-                    ignoreLineEndingDifferences: true,
-                    ignoreWhiteSpaceDifferences: true);
             }
         }
     }

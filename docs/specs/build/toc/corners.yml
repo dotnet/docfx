@@ -11,8 +11,7 @@ inputs:
     # [Topic2](https://github.com/docfx) #
   docs/index.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
   docs/toc.json: |
     {  
       "items":[  
@@ -69,14 +68,7 @@ inputs:
   docs/index.md:
 outputs:
   build.log: |
-    [
-      {
-        "message": "Found circular reference: docs/toc.md --> docs/f1/toc.md --> docs/f2/toc.md --> docs/toc.md",
-        "message_severity": "Error",
-        "type": "circular-reference",
-        "file": "docs/toc.md"
-      }
-    ]
+    ["error","circular-reference","Found circular reference: docs/toc.md --> docs/f1/toc.md --> docs/f2/toc.md --> docs/toc.md","docs/toc.md"]
 ---
 # Circle toc referenceing 2
 inputs:
@@ -90,11 +82,4 @@ inputs:
   docs/index.md:
 outputs:
   build.log: |
-    [
-      {
-        "message": "Found circular reference: docs/toc.md --> docs/toc.md",
-        "message_severity": "Error",
-        "type": "circular-reference",
-        "file": "docs/toc.md"
-      }
-    ]
+    ["error","circular-reference","Found circular reference: docs/toc.md --> docs/toc.md","docs/toc.md"]

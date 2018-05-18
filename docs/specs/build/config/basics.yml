@@ -8,8 +8,7 @@ inputs:
   ignore.md:
   docs/index.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
 ---
 # Specify include files by array
 inputs:
@@ -19,8 +18,7 @@ inputs:
   ignore.md:
   docs/index.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
 ---
 # Content supports string form
 inputs:
@@ -29,8 +27,7 @@ inputs:
   ignore.md:
   docs1/index.md:
 outputs:
-  docs1/index.json: |
-    { "content": "" }
+  docs1/index.json:
 ---
 # Content supports array form
 inputs:
@@ -42,10 +39,8 @@ inputs:
   docs1/index.md:
   docs2/index.md:
 outputs:
-  docs1/index.json: |
-    { "content": "" }
-  docs2/index.json: |
-    { "content": "" }
+  docs1/index.json:
+  docs2/index.json:
 ---
 # Content supports exclude file
 inputs:
@@ -55,8 +50,7 @@ inputs:
       exclude: docs/**/ignore.md
   docs/index.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
 ---
 # Content supports exclude folder
 inputs:
@@ -70,8 +64,7 @@ inputs:
   docs/ignore/index.md:
   docs/codesnippet/index.md:
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
 ---
 # Global metadata
 inputs:
@@ -82,13 +75,9 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "" }
-  docs/a.mta.json: |
-    { "key": "value" }
+    { "metadata": { "key": "value" } }
   docs/b.json: |
-    { "content": "" }
-  docs/b.mta.json: |
-    { "key": "value" }
+    { "metadata": { "key": "value" } }
 ---
 # File metadata of object form
 inputs:
@@ -103,17 +92,11 @@ inputs:
   docs/index.md:
 outputs:
   docs/a.json: |
-    { "content": "" }
-  docs/a.mta.json: |
-    { "key": "value" }
+    { "metadata": { "key": "value" } }
   docs/b.json: |
-    { "content": "" }
-  docs/b.mta.json: |
-    { "key": "value" }
+    { "metadata": { "key": "value" } }
   docs/index.json: |
-    { "content": "" }
-  docs/index.mta.json: |
-    { "key": "another value" }
+    { "metadata": { "key": "another value" } }
 ---
 # File metadata of array form
 inputs:
@@ -136,17 +119,11 @@ inputs:
   docs/index.md:
 outputs:
   docs/a.json: |
-    { "content": "" }
-  docs/a.mta.json: |
-    { "key": "exclude b" }
+    { "metadata": { "key": "exclude b" } }
   docs/b.json: |
-    { "content": "" }
-  docs/b.mta.json: |
-    { "key": "general" }
+    { "metadata": { "key": "general" } }
   docs/index.json: |
-    { "content": "" }
-  docs/index.mta.json: |
-    { "key": "index" }
+    { "metadata": { "key": "index" } }
 ---
 # File metadata overwrite global metadata
 inputs:
@@ -159,9 +136,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.json: |
-    { "content": "" }
-  docs/a.mta.json: |
-    { "key": "another value" }
+    { "metadata": { "key": "another value" } }
 ---
 # routes
 inputs:
@@ -172,10 +147,8 @@ inputs:
   docs/a.md:
   docs/b/b.md:
 outputs:
-  output/a.json: |
-    { "content": "" }
-  output/b.json: |
-    { "content": "" }
+  output/a.json:
+  output/b.json:
 ---
 # latter routes rule takes precedence - 1
 inputs:
@@ -185,8 +158,7 @@ inputs:
       docs/a/b.md: outputB
   docs/a/b.md:
 outputs:
-  outputB/b.json: |
-    { "content": "" }
+  outputB/b.json:
 ---
 # latter routes rule takes precedence - 2
 inputs:
@@ -196,8 +168,7 @@ inputs:
       docs/a/: output
   docs/a/b.md:
 outputs:
-  output/b.json: |
-    { "content": "" }
+  output/b.json:
 ---
 # extend
 inputs:
@@ -207,8 +178,7 @@ inputs:
     content: a.md
   a.md:
 outputs:
-  a.json: |
-    { "content": ""}
+  a.json:
 ---
 # current config takes precedence over extend config
 inputs:
@@ -219,8 +189,7 @@ inputs:
     content: invalid.md
   a.md:
 outputs:
-  a.json: |
-    { "content": ""}
+  a.json:
 ---
 # latter extend config takes precedence over former extend config
 inputs:
@@ -234,5 +203,4 @@ inputs:
     content: invalid.md
   a.md:
 outputs:
-  a.json: |
-    { "content": ""}
+  a.json:

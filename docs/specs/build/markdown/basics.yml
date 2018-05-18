@@ -25,9 +25,10 @@ inputs:
     hello
 outputs:
   docs/a.json: |
-    { "content": "<div><p>hello</p></div>" }
-  docs/a.mta.json: |
-    { "title": "me" }
+    {
+      "content": "<div><p>hello</p></div>",
+      "metadata": { "title": "me" }
+    }
 ---
 # include another file
 inputs:

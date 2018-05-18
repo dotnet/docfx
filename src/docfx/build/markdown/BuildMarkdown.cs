@@ -10,16 +10,18 @@ namespace Microsoft.Docs.Build
         public static Task Build(Context context, Document file, TableOfContentsMap tocMap)
         {
             var markdown = file.ReadText();
+
             var (html, yamlHeader) = MarkdownUtility.Markup(markdown, file, context);
+
             var content = !string.IsNullOrEmpty(html) ? $"<div>{html.Trim()}</div>" : "";
-            var model = new PageModel<string> { Content = content };
+
+            var model = new PageModel
+            {
+                Content = content,
+                Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader),
+            };
 
             context.WriteJson(model, file.OutputPath);
-
-            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader);
-            if (metadata.HasValues)
-                context.WriteJson(metadata, file.MetaOutputPath);
-
             return Task.CompletedTask;
         }
     }
