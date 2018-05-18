@@ -42,7 +42,7 @@ https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string/#Insta
 
 ## File Outputs
 
-Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory. Regardless of static rendering or dynamic rendering, output path shares the same schema:
+Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory. **Regardless of static rendering or dynamic rendering, output path shares the same schema**:
 
 `{output-dir}/{locale?}/{moniker?}/{site-path}`
 
