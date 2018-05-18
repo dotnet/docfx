@@ -4,6 +4,14 @@ Version Notes (Current Version: v2.36)
 v2.36 (Pre-release)
 -----------
 
+v2.35.3
+-----------
+1. Bug fix: Tabbed content always enables second tab. (#2706)
+
+v2.35.1
+-----------
+1. Bug fix: codesnippet tagname is not recognized when the tag starts with \t in Markdig.
+
 v2.35
 -----------
 1. Bug fix:
