@@ -18,7 +18,8 @@ namespace Microsoft.Docs.Build
 
             reporter.Configure(docsetPath, config);
 
-            var context = new Context(reporter, Path.Combine(docsetPath, config.Output.Path), config.Output.Stable);
+            var outputPath = Path.Combine(docsetPath, config.Output.Path);
+            var context = new Context(reporter, outputPath, config.Output.Stable);
             var docset = new Docset(docsetPath, options);
 
             var globbedFiles = GlobFiles(context, docset);
@@ -26,6 +27,11 @@ namespace Microsoft.Docs.Build
             var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
 
             await BuildFiles(context, globbedFiles, tocMap);
+
+            if (options.OutputLegacyModel)
+            {
+                Legacy.ConvertToLegacyModel(docset, context, outputPath);
+            }
         }
 
         private static List<Document> GlobFiles(Context context, Docset docset)

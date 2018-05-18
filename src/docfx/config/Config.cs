@@ -36,6 +36,11 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
+        /// Just for backward compatible, the output site path prefix
+        /// </summary>
+        public readonly string SiteBasePath = string.Empty;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// </summary>
         public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
