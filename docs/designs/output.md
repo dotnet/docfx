@@ -28,7 +28,7 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#I
 
 For *static rendering*, `docfx` produces an output for static file servers using the following URL schema:
 
-`https://{host}/{locale?}/{moniker?}/{site-url}/`
+`https://{host}/{locale?}/{moniker?}/{site-url}`
 
 ```
              host          locale    moniker            site-url
