@@ -57,7 +57,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 `{site-path}` can be computed from `{site-url}` and vice visa depending on content type:
 
 
-- Dynamic Content
+- Content for dynamic rendering
 
     | | |
     |------ |----|
@@ -66,7 +66,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-path` | dotnet/api/system.string.json |
     | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string.json |
 
-- Static Content
+- Content for static rendering
 
     | | |
     |------ |----|
