@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             string expectedSitePath,
             string expectedSiteUrl)
         {
-            Assert.Equal(expectedContentType, Document.GetContentType(path, "."));
+            Assert.Equal(expectedContentType, Document.GetContentType(path));
             Assert.Equal(expectedSiteUrl, Document.GetSiteUrl(path, expectedContentType, new Config()));
             Assert.Equal(expectedSitePath, Document.GetSitePath(expectedSiteUrl, expectedContentType));
         }

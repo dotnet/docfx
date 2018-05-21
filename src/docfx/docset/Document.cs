@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             Docset = docset;
 
             FilePath = PathUtility.NormalizeFile(filePath);
-            ContentType = GetContentType(filePath, docset.DocsetPath);
+            ContentType = GetContentType(filePath);
             SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
             SitePath = GetSitePath(SiteUrl, ContentType);
             OutputPath = SitePath;
@@ -96,7 +96,6 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            // todo: add docset for calculation
             return StringComparer.Ordinal.GetHashCode(FilePath);
         }
 
@@ -107,8 +106,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            // todo: add docset for comparing
-            return string.Equals(other.FilePath, FilePath, StringComparison.Ordinal);
+            return FilePath == other.FilePath && Docset == other.Docset;
         }
 
         public override bool Equals(object obj)
@@ -133,7 +131,7 @@ namespace Microsoft.Docs.Build
             return TryResolveFromPathToDocset(Docset, Path.Combine(Path.GetDirectoryName(FilePath), relativePath));
         }
 
-        internal static ContentType GetContentType(string path, string docsetPath)
+        internal static ContentType GetContentType(string path)
         {
             var name = Path.GetFileName(path).ToLowerInvariant();
             var extension = Path.GetExtension(name);
