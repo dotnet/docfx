@@ -28,21 +28,13 @@ namespace Microsoft.Docs.Build
                 var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
                 if (fileItem != null)
                 {
-                    fileMapItems.Add((Path.GetRelativePath(docset.Config.SourceBaseFolder, document.FilePath), fileItem));
+                    fileMapItems.Add((Path.GetRelativePath(docset.Config.SourceBasePath, document.FilePath), fileItem));
                 }
 
+                var content = File.ReadAllText(absoluteOutputFilePath);
                 if (document.ContentType == ContentType.TableOfContents)
                 {
-                    var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(absoluteOutputFilePath));
-
-                    var tocItemWithPath = toc?.Items?.FirstOrDefault();
-                    if (tocItemWithPath != null)
-                    {
-                        tocItemWithPath.PdfAbsolutePath = PathUtility.NormalizeFile($"/{docset.Config.SiteBasePath}/opbuildpdf/{legacyOutputFilePathRelativeToSiteBasePath.ChangeExtension(".pdf")}");
-                        tocItemWithPath.PdfName = PathUtility.NormalizeFile($"/{Path.GetDirectoryName(legacyOutputFilePathRelativeToSiteBasePath)}.pdf");
-                    }
-
-                    context.WriteJson(toc, relativeOutputFilePath);
+                    OutputTocModel(docset, context, content, relativeOutputFilePath, legacyOutputFilePathRelativeToSiteBasePath);
                 }
             }
 
@@ -59,6 +51,19 @@ namespace Microsoft.Docs.Build
             return path.Substring(0, path.LastIndexOf('.'));
         }
 
+        private static void OutputTocModel(Docset docset, Context context, string content, string relativeOutputFilePath, string legacyOutputFilePathRelativeToSiteBasePath)
+        {
+            var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(content);
+            var tocItemWithPath = toc?.Items?.FirstOrDefault();
+            if (tocItemWithPath != null)
+            {
+                tocItemWithPath.PdfAbsolutePath = PathUtility.NormalizeFile($"/{docset.Config.SiteBasePath}/opbuildpdf/{legacyOutputFilePathRelativeToSiteBasePath.ChangeExtension(".pdf")}");
+                tocItemWithPath.PdfName = PathUtility.NormalizeFile($"/{Path.GetDirectoryName(legacyOutputFilePathRelativeToSiteBasePath)}.pdf");
+            }
+
+            context.WriteJson(toc, relativeOutputFilePath);
+        }
+
         private static void OutputFileMap(Docset docset, Context context, IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items)
         {
             context.WriteJson(
@@ -66,7 +71,7 @@ namespace Microsoft.Docs.Build
                 {
                     locale = docset.Config.Locale,
                     base_path = $"/{docset.Config.SiteBasePath}",
-                    source_base_path = docset.Config.SourceBaseFolder,
+                    source_base_path = docset.Config.SourceBasePath,
                     version_info = new { },
                     file_mapping = items.ToDictionary(
                         key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),
