@@ -63,10 +63,9 @@ namespace Microsoft.Docs.Build
 
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath, docset.DocsetPath);
-            OutputPath = PathUtility.NormalizeFile(GetOutputPath(
-                ApplyRoutes(FilePath, Docset.Config.Routes),
-                ContentType));
-            SiteUrl = GetSiteUrl(FilePath, ContentType);
+            SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
+            SitePath = GetSitePath(SiteUrl, ContentType);
+            OutputPath = SitePath;
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
@@ -154,11 +153,6 @@ namespace Microsoft.Docs.Build
                     }
                     if (name == "toc.yml")
                     {
-                        if (File.Exists(Path.Combine(docsetPath, Path.ChangeExtension(path, ".md"))))
-                        {
-                            // TODO: warn 'toc.md' is picked instead
-                            return ContentType.Unknown;
-                        }
                         return ContentType.TableOfContents;
                     }
                     return ContentType.SchemaDocument;
@@ -167,22 +161,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string GetOutputPath(string path, ContentType contentType)
+        internal static string GetSiteUrl(string path, ContentType contentType, Config config)
         {
-            switch (contentType)
-            {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
-                case ContentType.TableOfContents:
-                    return Path.ChangeExtension(path, ".json");
-                default:
-                    return path;
-            }
-        }
-
-        internal static string GetSiteUrl(string path, ContentType contentType)
-        {
-            path = '/' + path;
+            path = '/' + ApplyRoutes(path, config.Routes);
 
             switch (contentType)
             {
@@ -200,6 +181,23 @@ namespace Microsoft.Docs.Build
                     return path;
                 case ContentType.TableOfContents:
                     return Path.ChangeExtension(path, ".json");
+                default:
+                    return path;
+            }
+        }
+
+        internal static string GetSitePath(string url, ContentType contentType)
+        {
+            Debug.Assert(url.StartsWith('/'));
+
+            var path = url.Substring(1);
+            switch (contentType)
+            {
+                case ContentType.Markdown:
+                case ContentType.SchemaDocument:
+                    if (path.Length == 0 || path.EndsWith('/'))
+                        return path + "index.json";
+                    return path + ".json";
                 default:
                     return path;
             }

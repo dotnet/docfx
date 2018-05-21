@@ -13,10 +13,10 @@ namespace Microsoft.Docs.Build
         [InlineData("a/b.md", ContentType.Markdown, "a/b.json", "/a/b")]
         [InlineData("index.md", ContentType.Markdown, "index.json", "/")]
         [InlineData("a/index.md", ContentType.Markdown, "a/index.json", "/a/")]
-        [InlineData("a/INDEX.md", ContentType.Markdown, "a/INDEX.json", "/a/")]
+        [InlineData("a/INDEX.md", ContentType.Markdown, "a/index.json", "/a/")]
         [InlineData("a.yml", ContentType.SchemaDocument, "a.json", "/a")]
         [InlineData("a/index.yml", ContentType.SchemaDocument, "a/index.json", "/a/")]
-        [InlineData("a/INDEX.yml", ContentType.SchemaDocument, "a/INDEX.json", "/a/")]
+        [InlineData("a/INDEX.yml", ContentType.SchemaDocument, "a/index.json", "/a/")]
         [InlineData("toc.md", ContentType.TableOfContents, "toc.json", "/toc.json")]
         [InlineData("TOC.md", ContentType.TableOfContents, "TOC.json", "/TOC.json")]
         [InlineData("toc.yml", ContentType.TableOfContents, "toc.json", "/toc.json")]
@@ -25,12 +25,12 @@ namespace Microsoft.Docs.Build
         internal static void GetDocumentTypeAndPath(
             string path,
             ContentType expectedContentType,
-            string expectedOutputPath,
+            string expectedSitePath,
             string expectedSiteUrl)
         {
             Assert.Equal(expectedContentType, Document.GetContentType(path, "."));
-            Assert.Equal(expectedOutputPath, Document.GetOutputPath(path, expectedContentType));
-            Assert.Equal(expectedSiteUrl, Document.GetSiteUrl(path, expectedContentType));
+            Assert.Equal(expectedSiteUrl, Document.GetSiteUrl(path, expectedContentType, new Config()));
+            Assert.Equal(expectedSitePath, Document.GetSitePath(expectedSiteUrl, expectedContentType));
         }
     }
 }

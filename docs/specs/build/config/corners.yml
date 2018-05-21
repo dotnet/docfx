@@ -8,5 +8,5 @@ inputs:
   docs/a.md:
   docs/b/b.md:
 outputs:
-  output/a.json:
+  output.json:
   output/b.json:

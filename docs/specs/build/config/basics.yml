@@ -147,7 +147,7 @@ inputs:
   docs/a.md:
   docs/b/b.md:
 outputs:
-  output/a.json:
+  output.json:
   output/b.json:
 ---
 # latter routes rule takes precedence - 1
@@ -158,7 +158,7 @@ inputs:
       docs/a/b.md: outputB
   docs/a/b.md:
 outputs:
-  outputB/b.json:
+  outputB.json:
 ---
 # latter routes rule takes precedence - 2
 inputs:

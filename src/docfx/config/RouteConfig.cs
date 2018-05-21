@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         public readonly string Source = string.Empty;
 
         /// <summary>
-        /// The destination file name or folder name.
+        /// The destination URL.
         /// </summary>
         public readonly string Destination = string.Empty;
 
@@ -31,12 +31,12 @@ namespace Microsoft.Docs.Build
             if (Source.EndsWith('/'))
             {
                 if (path.StartsWith(Source, StringComparison.Ordinal))
-                    return Path.Combine(Destination, path.Substring(Source.Length));
+                    return Path.Combine(Destination, path.Substring(Source.Length)).Replace('\\', '/');
             }
             else
             {
                 if (path == Source)
-                    return Path.Combine(Destination, Path.GetFileName(path));
+                    return Destination;
             }
 
             return null;
