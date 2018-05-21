@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
                     fileMapItems.Add((Path.GetRelativePath(docset.Config.SourceBasePath, document.FilePath), fileItem));
                 }
 
-                var content = File.ReadAllText(absoluteOutputFilePath);
                 if (document.ContentType == ContentType.TableOfContents)
                 {
+                    var content = File.ReadAllText(absoluteOutputFilePath);
                     OutputTocModel(docset, context, content, relativeOutputFilePath, legacyOutputFilePathRelativeToSiteBasePath);
                 }
             }
