@@ -29,6 +29,15 @@ namespace Microsoft.Docs.Build
         public string FilePath { get; }
 
         /// <summary>
+        /// Gets file path relative to site root that is:
+        ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
+        ///  - Docs not start with '/'
+        ///  - Does not end with '/'
+        /// </summary>
+        public string SitePath { get; }
+
+        /// <summary>
         /// Gets the Url relative to site root that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -61,6 +70,10 @@ namespace Microsoft.Docs.Build
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
+            Debug.Assert(IsValidRelativePath(SitePath));
+
+            Debug.Assert(SiteUrl.StartsWith('/'));
+            Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
         /// <summary>
