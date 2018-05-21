@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,17 +14,15 @@ namespace Microsoft.Docs.Build
     {
         private readonly object _lock = new object();
         private Lazy<TextWriter> _output;
-        private bool _stable;
 
         public void Configure(string docsetPath, Config config)
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
             // TODO: errors and warnings before config loaded are lost, need a way to report them back to host
-            _stable = config.Output.Stable;
             _output = new Lazy<TextWriter>(() =>
             {
-                var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, config.Output.LogPath));
+                var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
 
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
@@ -42,22 +40,15 @@ namespace Microsoft.Docs.Build
 
             if (_output != null)
             {
-                var payload = new JObject
+                var payload = new List<object> { level, code, message, file, line, column };
+                for (var i = payload.Count - 1; i >= 0; i--)
                 {
-                    ["message"] = message,
-                    ["message_severity"] = level.ToString(),
-                };
-
-                payload["type"] = code;
-
-                if (!string.IsNullOrEmpty(file))
-                    payload["file"] = file;
-                if (line != 0)
-                    payload["line"] = line;
-                if (!_stable)
-                    payload["date_time"] = DateTime.UtcNow;
-
-                outputMessage = payload.ToString(Formatting.None);
+                    if (payload[i] == null || Equals(payload[i], "") || Equals(payload[i], 0))
+                        payload.RemoveAt(i);
+                    else
+                        break;
+                }
+                outputMessage = JsonUtility.Serialize(payload);
             }
 
             lock (_lock)

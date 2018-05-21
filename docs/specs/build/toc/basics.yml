@@ -18,14 +18,10 @@ inputs:
   docs/n1.md:
   docs/f1/n1.md:
 outputs:
-  index.json: |
-    { "content": "" }
-  docs/index.json: |
-    { "content": "" }
-  docs/n1.json: |
-    { "content": "" }
-  docs/f1/n1.json: |
-    { "content": "" }
+  index.json:
+  docs/index.json:
+  docs/n1.json:
+  docs/f1/n1.json:
   docs/toc.json: |
     {  
       "items":[  
@@ -75,8 +71,7 @@ inputs:
     ### [Reference No-Existing File 3](../no-existing.md)
     ### [Reference No-Existing File 4](~/docs/no-existing.md)
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
   docs/toc.json: |
     {  
       "items":[  
@@ -124,8 +119,7 @@ inputs:
     ### [Reference Absolute path 1](https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906)
     ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=/help/breadcrumb/toc.json)
 outputs:
-  docs/index.json: |
-    { "content": "" }
+  docs/index.json:
   docs/toc.json: |
     {  
       "items":[  

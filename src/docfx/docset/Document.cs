@@ -29,24 +29,6 @@ namespace Microsoft.Docs.Build
         public string FilePath { get; }
 
         /// <summary>
-        /// Gets the output file path relative to output directory that is:
-        ///
-        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Does not start with '/'
-        ///  - Does not end with '/'
-        /// </summary>
-        public string OutputPath { get; }
-
-        /// <summary>
-        /// Gets the metadata output file path relative to output directory that is:
-        ///
-        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Does not start with '/'
-        ///  - Does not end with '/'
-        /// </summary>
-        public string MetaOutputPath { get; }
-
-        /// <summary>
         /// Gets the Url relative to site root that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -54,6 +36,15 @@ namespace Microsoft.Docs.Build
         ///  - May end with '/' if it is index.html
         /// </summary>
         public string SiteUrl { get; }
+
+        /// <summary>
+        /// Gets the output file path relative to output directory that is:
+        ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
+        ///  - Does not start with '/'
+        ///  - Does not end with '/'
+        /// </summary>
+        public string OutputPath { get; }
 
         public Document(Docset docset, string filePath)
         {
@@ -66,12 +57,10 @@ namespace Microsoft.Docs.Build
             OutputPath = PathUtility.NormalizeFile(GetOutputPath(
                 ApplyRoutes(FilePath, Docset.Config.Routes),
                 ContentType));
-            MetaOutputPath = Path.ChangeExtension(OutputPath, ".mta.json");
             SiteUrl = GetSiteUrl(FilePath, ContentType);
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
-            Debug.Assert(IsValidRelativePath(MetaOutputPath));
         }
 
         /// <summary>
