@@ -1,5 +1,6 @@
-branches:
-  only:
-  - v3
 build_script:
   - ps: ./build.ps1
+artifacts:
+  - path: drop/**/*.nupkg
+nuget:
+  disable_publish_on_pr: true

@@ -3,6 +3,3 @@ dotnet: 2.1.101
 mono: none
 script:
   - ./build.sh
-branches:
-  only:
-  - v3
