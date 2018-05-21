@@ -26,11 +26,11 @@ namespace Microsoft.Docs.Build
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
 
-            await BuildFiles(context, globbedFiles, tocMap);
+            var documents = await BuildFiles(context, globbedFiles, tocMap);
 
             if (options.OutputLegacyModel)
             {
-                Legacy.ConvertToLegacyModel(docset, context, outputPath);
+                Legacy.ConvertToLegacyModel(docset, context, documents);
             }
         }
 
@@ -41,12 +41,12 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static Task BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<IEnumerable<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
 
-            return ParallelUtility.ForEach(
+            await ParallelUtility.ForEach(
                 files,
                 (file, buildChild) =>
                 {
@@ -63,6 +63,8 @@ namespace Microsoft.Docs.Build
                         }
                     });
                 });
+
+            return manifest.Keys;
         }
 
         private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
@@ -100,13 +102,12 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (!set.TryAdd(itemToBuild, 0))
+            if (itemToBuild.ContentType == ContentType.TableOfContents && !tocMap.Contains(itemToBuild))
             {
                 return false;
             }
 
-            if (itemToBuild.ContentType == ContentType.TableOfContents &&
-                !tocMap.Contains(itemToBuild))
+            if (!set.TryAdd(itemToBuild, 0))
             {
                 return false;
             }
