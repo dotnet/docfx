@@ -16,7 +16,7 @@ This document specifies docfx output file layout. It is designed to satisfy thes
 
 An **URL** is an universal identifier that confirms to [URL Standard](https://url.spec.whatwg.org/).
 
-For *dynamic rendering*, `docfx` produces an output for lookup by the following URL schema:
+### Dynamic rendering URL schema
 
 `https://{host}/{locale?}/{site-url}/?view={moniker?}`
 
@@ -26,9 +26,11 @@ For *dynamic rendering*, `docfx` produces an output for lookup by the following 
 https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#Instantiation
 ```
 
-For *static rendering*, `docfx` produces an output for static file servers using the following URL schema:
+### Static rendering URL schema
 
 `https://{host}/{locale?}/{moniker?}/{site-url}`
+
+#### Static rendering with pretty URL
 
 ```
              host          locale    moniker            site-url
@@ -36,7 +38,15 @@ For *static rendering*, `docfx` produces an output for static file servers using
 https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string/#Instantiation
 ```
 
-> This document uses pretty url format that ends with `/`. We also supports ugly url format that ends with `.html`.
+#### Static rendering with ugly URL
+
+`https://{host}/{locale?}/{moniker?}/{site-url}`
+
+```
+             host          locale    moniker            site-url         
+        |------^---------| |-^-| |------^------||----------^-----------------|
+https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html#Instantiation
+```
 
 > `?` means optional.
 > When a docset is not localized, we will not create the `{locale}` folder.
@@ -68,7 +78,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-path` | dotnet/api/system.string.json |
     | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string.json |
 
-- Content for static rendering
+- Content for static rendering using pretty url
 
     | | |
     |------ |----|
@@ -76,6 +86,15 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-url` | /dotnet/api/system.string/ |
     | `site-path` | dotnet/api/system.string/index.html |
     | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string/index.html |
+
+- Content for static rendering using ugly url
+
+    | | |
+    |------ |----|
+    | `url` | https://docs.microsoft.com/en-us/netstandard-2.0/dotnet/api/system.string.html |
+    | `site-url` | /dotnet/api/system.string.html |
+    | `site-path` | dotnet/api/system.string.html |
+    | `output-path` | en-us/netstandard-2.0/dotnet/api/system.string.html |
 
 - Table of Contents
 
