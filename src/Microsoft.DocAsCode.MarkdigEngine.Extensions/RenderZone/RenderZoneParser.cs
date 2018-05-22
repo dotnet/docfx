@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "zone", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 return BlockState.None;
             }
@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c != '"')
             {
-                _context.LogWarning("invalid-render-zone", "MonikerRange does not have ending charactor (\").");
+                _context.LogWarning("invalid-render-zone", "Zone render does not have ending character (\").");
                 return BlockState.None;
             }
 
@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-render-zone", $"MonikerRange have some invalid chars in the starting.");
+                _context.LogWarning("invalid-render-zone", $"Zone render has some invalid chars in the beginning.");
             }
 
             processor.NewBlocks.Push(new RenderZoneBlock(this)
@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, "zone-end", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
                 return BlockState.Continue;
             }
@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-render-zone", $"MonikerRange have some invalid chars in the ending.");
+                _context.LogWarning("invalid-render-zone", $"Zone render has some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var renderZone = (RenderZoneBlock)block;
             if (renderZone != null && renderZone.Closed == false)
             {
-                _context.LogWarning("invalid-render-zone", $"No \"::: {EndString}\" found for \"{renderZone.Target}\", MonikerRange does not end explictly.");
+                _context.LogWarning("invalid-render-zone", $"No \"::: {EndString}\" found for \"{renderZone.Target}\", zone does not end explictly.");
             }
             return true;
         }

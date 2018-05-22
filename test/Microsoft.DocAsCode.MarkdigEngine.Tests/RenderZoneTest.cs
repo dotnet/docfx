@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     public class RenderZoneTest
     {
-        static public string LoggerPhase = "MonikerRange";
+        static public string LoggerPhase = "RenderZone";
 
         [Fact]
         public void RenderZoneTestGeneral()
@@ -45,7 +45,7 @@ Shared content.
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"">Shared content.</p>
-<div sourceFile=""fake.md"" sourceStartLineNumber=""9"" zone=""chromeless"">
+<div sourceFile=""fake.md"" sourceStartLineNumber=""9"" data-zone=""chromeless"">
 <h2 id=""section-for-chromeless-only"" sourceFile=""fake.md"" sourceStartLineNumber=""10"">Section for chromeless only</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""12"">Some chromeless-specific content here...</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""14"">::: nested moniker zone is not allowed. So this line is in plain text.
@@ -56,5 +56,56 @@ Inline ::: should not end moniker zone.</p>
 ".Replace("\r\n", "\n");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
-    }
+
+		[Fact]
+		public void MonikerRangeTestInvalid()
+		{
+			//arange
+			var source = @"::: zone render=""chromeless";
+
+			// assert
+			var expected = @"<p>::: zone render=&quot;chromeless</p>
+";
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+			}
+			Logger.UnregisterListener(listener);
+
+			Assert.Single(listener.Items);
+			Assert.Equal("Zone render does not have ending character (\").", listener.Items[0].Message);
+		}
+
+		[Fact]
+		public void MonikerRangeTestNotClosed()
+		{
+			//arange
+			var source1 = @"::: zone render=""chromeless""";
+			var source2 = @"::: zone render=""chromeless""
+::: zone-end";
+
+			// assert
+			var expected = @"<div data-zone=""chromeless"">
+</div>
+";
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.AssertEqual(expected, source2, TestUtility.MarkupWithoutSourceInfo);
+
+				Assert.Empty(listener.Items);
+
+				TestUtility.AssertEqual(expected, source1, TestUtility.MarkupWithoutSourceInfo);
+			}
+			Logger.UnregisterListener(listener);
+
+			Assert.Single(listener.Items);
+			Assert.Equal("No \"::: zone-end\" found for \"chromeless\", zone does not end explictly.", listener.Items[0].Message);
+		}
+	}
 }

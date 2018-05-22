@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, RenderZoneBlock obj)
         {
-            renderer.Write("<div").WriteAttributes(obj).Write($" zone=\"{obj.Target}\"").WriteLine(">");
+            renderer.Write("<div").WriteAttributes(obj).Write($" data-zone=\"{obj.Target}\"").WriteLine(">");
             renderer.WriteChildren(obj);
             renderer.WriteLine("</div>");
         }
