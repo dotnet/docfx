@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             var nearestToc = GetNearestToc(file);
 
-            return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.OutputPath, nearestToc.OutputPath)) : null;
+            return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
         }
 
         /// <summary>
@@ -56,11 +56,11 @@ namespace Microsoft.Docs.Build
             var nearestParentDirCount = 0;
             foreach (var toc in filteredTocFiles)
             {
-                var relativePath = PathUtility.GetRelativePathToFile(toc.OutputPath, file.OutputPath);
+                var relativePath = PathUtility.GetRelativePathToFile(toc.SitePath, file.SitePath);
                 var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
                 var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
                 if (nearstToc == null || distance > 0 ||
-                    (distance == 0 && string.Compare(nearstToc.OutputPath, toc.OutputPath, StringComparison.OrdinalIgnoreCase) > 0))
+                    (distance == 0 && string.Compare(nearstToc.SitePath, toc.SitePath, StringComparison.OrdinalIgnoreCase) > 0))
                 {
                     nearstToc = toc;
                     nearestSubDirCount = subDirCount;

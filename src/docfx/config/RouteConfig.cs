@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         public readonly string Source = string.Empty;
 
         /// <summary>
-        /// The destination file name or folder name.
+        /// The destination URL.
         /// </summary>
         public readonly string Destination = string.Empty;
 
