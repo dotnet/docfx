@@ -31,12 +31,12 @@ namespace Microsoft.Docs.Build
             if (Source.EndsWith('/'))
             {
                 if (path.StartsWith(Source, StringComparison.Ordinal))
-                    return Path.Combine(Destination, path.Substring(Source.Length)).Replace('\\', '/');
+                    return Path.Combine(Destination, path.Substring(Source.Length));
             }
             else
             {
                 if (path == Source)
-                    return Destination;
+                    return Path.Combine(Destination, Path.GetFileName(path));
             }
 
             return null;

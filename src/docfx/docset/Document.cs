@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
             {
                 var result = routes[i].GetOutputPath(path);
                 if (result != null)
-                    return result;
+                    return result.Replace('\\', '/');
             }
             return path;
         }
