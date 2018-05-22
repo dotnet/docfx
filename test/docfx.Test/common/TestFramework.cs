@@ -39,5 +39,11 @@ namespace Microsoft.Docs.Build
                 Assert.True(false, $"Debug.Assert failed: {message} {detailMessage}\n{stackTrace}");
             }
         }
+
+        [Fact]
+        public static void DebugAssertThrowsException()
+        {
+            Assert.Throws<Exception>(() => Debug.Assert(false));
+        }
     }
 }
