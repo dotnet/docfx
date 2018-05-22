@@ -28,6 +28,8 @@ namespace Microsoft.Docs.Build
 
             var documents = await BuildFiles(context, globbedFiles, tocMap);
 
+            Manifest.BuildManifest(context, documents);
+
             if (options.OutputLegacyModel)
             {
                 Legacy.ConvertToLegacyModel(docset, context, documents);
