@@ -46,7 +46,9 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void DebugAssertThrowsException()
         {
+#if DEBUG
             Assert.ThrowsAny<Exception>(() => Debug.Assert(false));
+#endif
         }
     }
 }
