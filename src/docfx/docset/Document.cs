@@ -29,6 +29,15 @@ namespace Microsoft.Docs.Build
         public string FilePath { get; }
 
         /// <summary>
+        /// Gets file path relative to site root that is:
+        ///
+        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
+        ///  - Docs not start with '/'
+        ///  - Does not end with '/'
+        /// </summary>
+        public string SitePath { get; }
+
+        /// <summary>
         /// Gets the Url relative to site root that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -53,14 +62,17 @@ namespace Microsoft.Docs.Build
             Docset = docset;
 
             FilePath = PathUtility.NormalizeFile(filePath);
-            ContentType = GetContentType(filePath, docset.DocsetPath);
-            OutputPath = PathUtility.NormalizeFile(GetOutputPath(
-                ApplyRoutes(FilePath, Docset.Config.Routes),
-                ContentType));
-            SiteUrl = GetSiteUrl(FilePath, ContentType);
+            ContentType = GetContentType(filePath);
+            SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
+            SitePath = GetSitePath(SiteUrl, ContentType);
+            OutputPath = SitePath;
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
+            Debug.Assert(IsValidRelativePath(SitePath));
+
+            Debug.Assert(SiteUrl.StartsWith('/'));
+            Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
         /// <summary>
@@ -84,7 +96,6 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            // todo: add docset for calculation
             return StringComparer.Ordinal.GetHashCode(FilePath);
         }
 
@@ -95,8 +106,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            // todo: add docset for comparing
-            return string.Equals(other.FilePath, FilePath, StringComparison.Ordinal);
+            return FilePath == other.FilePath && Docset == other.Docset;
         }
 
         public override bool Equals(object obj)
@@ -121,7 +131,7 @@ namespace Microsoft.Docs.Build
             return TryResolveFromPathToDocset(Docset, Path.Combine(Path.GetDirectoryName(FilePath), relativePath));
         }
 
-        internal static ContentType GetContentType(string path, string docsetPath)
+        internal static ContentType GetContentType(string path)
         {
             var name = Path.GetFileName(path).ToLowerInvariant();
             var extension = Path.GetExtension(name);
@@ -141,11 +151,6 @@ namespace Microsoft.Docs.Build
                     }
                     if (name == "toc.yml")
                     {
-                        if (File.Exists(Path.Combine(docsetPath, Path.ChangeExtension(path, ".md"))))
-                        {
-                            // TODO: warn 'toc.md' is picked instead
-                            return ContentType.Unknown;
-                        }
                         return ContentType.TableOfContents;
                     }
                     return ContentType.SchemaDocument;
@@ -154,22 +159,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string GetOutputPath(string path, ContentType contentType)
+        internal static string GetSiteUrl(string path, ContentType contentType, Config config)
         {
-            switch (contentType)
-            {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
-                case ContentType.TableOfContents:
-                    return Path.ChangeExtension(path, ".json");
-                default:
-                    return path;
-            }
-        }
-
-        internal static string GetSiteUrl(string path, ContentType contentType)
-        {
-            path = '/' + path;
+            path = '/' + ApplyRoutes(path, config.Routes);
 
             switch (contentType)
             {
@@ -187,6 +179,23 @@ namespace Microsoft.Docs.Build
                     return path;
                 case ContentType.TableOfContents:
                     return Path.ChangeExtension(path, ".json");
+                default:
+                    return path;
+            }
+        }
+
+        internal static string GetSitePath(string url, ContentType contentType)
+        {
+            Debug.Assert(url.StartsWith('/'));
+
+            var path = url.Substring(1);
+            switch (contentType)
+            {
+                case ContentType.Markdown:
+                case ContentType.SchemaDocument:
+                    if (path.Length == 0 || path.EndsWith('/'))
+                        return path + "index.json";
+                    return path + ".json";
                 default:
                     return path;
             }
@@ -246,7 +255,7 @@ namespace Microsoft.Docs.Build
             {
                 var result = routes[i].GetOutputPath(path);
                 if (result != null)
-                    return result;
+                    return result.Replace('\\', '/');
             }
             return path;
         }
