@@ -87,7 +87,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 _context.LogWarning("invalid-render-zone", $"Zone render has some invalid chars in the beginning.");
             }
 
-            processor.NewBlocks.Push(new RenderZoneBlock(this)
+			// Check the blockprocessor context to see if we are already inside of a zone
+			// container. If so, break.
+			var containerBlock = processor.CurrentContainer;
+			do
+			{
+				if (processor.CurrentContainer.GetType() == typeof(RenderZoneBlock))
+				{
+					_context.LogError("invalid-render-zone", "Zone render cannot be nested.");
+					return BlockState.None;
+				}
+				containerBlock = containerBlock.Parent;
+			} while (containerBlock != null);
+
+			processor.NewBlocks.Push(new RenderZoneBlock(this)
             {
                 Closed = false,
                 ColonCount = colonCount,
@@ -138,7 +151,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Close(BlockProcessor processor, Block block)
         {
-            var renderZone = (RenderZoneBlock)block;
+			if (processor.CurrentContainer != block)
+			{
+				_context.LogError("invalid-render-zone", "Invalid stack order. A render zone cannot end before other nested blocks have ended.");
+				return true;
+			}
+			var renderZone = (RenderZoneBlock)block;
             if (renderZone != null && renderZone.Closed == false)
             {
                 _context.LogWarning("invalid-render-zone", $"No \"::: {EndString}\" found for \"{renderZone.Target}\", zone does not end explictly.");

@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
+	using System.Linq;
 
     public class RenderZoneTest
     {
@@ -58,7 +59,7 @@ Inline ::: should not end moniker zone.</p>
         }
 
 		[Fact]
-		public void MonikerRangeTestInvalid()
+		public void RenderZoneTestInvalid()
 		{
 			//arange
 			var source = @"::: zone render=""chromeless";
@@ -80,7 +81,7 @@ Inline ::: should not end moniker zone.</p>
 		}
 
 		[Fact]
-		public void MonikerRangeTestNotClosed()
+		public void RenderZoneTestNotClosed()
 		{
 			//arange
 			var source1 = @"::: zone render=""chromeless""";
@@ -106,6 +107,51 @@ Inline ::: should not end moniker zone.</p>
 
 			Assert.Single(listener.Items);
 			Assert.Equal("No \"::: zone-end\" found for \"chromeless\", zone does not end explictly.", listener.Items[0].Message);
+		}
+
+		[Fact]
+		public void RenderZoneTestNotNested()
+		{
+			//arange
+			var content = @"::: zone render=""chromeless""
+::: zone render=""pdf""
+::: zone-end
+::: zone-end
+";
+
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.MarkupWithoutSourceInfo(content);
+			}
+			Logger.UnregisterListener(listener);
+
+			Assert.Single(listener.Items);
+			Assert.Equal("Zone render cannot be nested.", listener.Items[0].Message);
+		}
+
+		[Fact]
+		public void RenderZoneTestNoOverlap()
+		{
+			//arange
+			var content = @"::: zone render=""chromeless""
+::: moniker range=""start""
+::: zone-end
+::: moniker-end
+";
+
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.MarkupWithoutSourceInfo(content);
+			}
+			Logger.UnregisterListener(listener);
+
+			Assert.Equal("Invalid stack order. A render zone cannot end before other nested blocks have ended.", listener.Items.First(x => x.Code == "invalid-render-zone").Message);
 		}
 	}
 }
