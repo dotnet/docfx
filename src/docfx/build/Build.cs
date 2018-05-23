@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
         private static async Task<List<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
+            var reference = new ConcurrentDictionary<Document, byte>();
 
             await ParallelUtility.ForEach(
                 files,
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (ShouldBuildFile(item, manifest, tocMap))
+                        if (ShouldBuildFile(item, reference, tocMap))
                         {
                             buildChild(item);
                         }
