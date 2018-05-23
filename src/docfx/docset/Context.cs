@@ -8,13 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal class Context
     {
-        private readonly bool _stable;
         private readonly string _outputPath;
         private readonly Reporter _reporter;
 
-        public Context(Reporter reporter, string outputPath, bool stable)
+        public Context(Reporter reporter, string outputPath)
         {
-            _stable = stable;
             _reporter = reporter;
             _outputPath = Path.GetFullPath(outputPath);
         }
@@ -72,7 +70,7 @@ namespace Microsoft.Docs.Build
         {
             using (var writer = new StreamWriter(WriteStream(destRelativePath)))
             {
-                JsonUtility.Serialize(writer, graph, _stable);
+                JsonUtility.Serialize(writer, graph);
             }
         }
 

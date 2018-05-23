@@ -9,7 +9,6 @@ namespace Microsoft.Docs.Build
     {
         public string Output;
         public string Log;
-        public bool Stable;
         public bool OutputLegacyModel;
 
         public JObject ToJObject() => new JObject
@@ -18,7 +17,6 @@ namespace Microsoft.Docs.Build
             {
                 ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                 ["logPath"] = Log != null ? (JValue)Log : JValue.CreateNull(),
-                ["stable"] = (JValue)Stable,
             },
         };
     }

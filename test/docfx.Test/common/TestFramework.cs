@@ -30,9 +30,7 @@ namespace Microsoft.Docs.Build
             // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Diagnostics/Debug.cs
             // https://github.com/dotnet/corefx/blob/8dbeee99ce48a46c3cee9d1b765c3b31af94e172/src/System.Diagnostics.Debug/tests/DebugTests.cs
             var showDialogHook = typeof(Debug).GetField("s_ShowAssertDialog", BindingFlags.Static | BindingFlags.NonPublic);
-
-            // First use our test logger to verify the output
-            showDialogHook.SetValue(null, new Action<string, string, string>(Throw));
+            showDialogHook?.SetValue(null, new Action<string, string, string>(Throw));
 
             void Throw(string stackTrace, string message, string detailMessage)
             {
@@ -46,7 +44,9 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void DebugAssertThrowsException()
         {
+#if DEBUG
             Assert.ThrowsAny<Exception>(() => Debug.Assert(false));
+#endif
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
-            await Program.Run(new[] { "build", docsetPath, "--stable" });
+            await Program.Run(new[] { "build", docsetPath });
 
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
             Assert.True(Directory.Exists(docsetPath));
