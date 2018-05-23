@@ -11,9 +11,6 @@ using Markdig.Syntax.Inlines;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Converts markdown to html
-    /// </summary>
     internal static class MarkdigUtility
     {
         /// <summary>
