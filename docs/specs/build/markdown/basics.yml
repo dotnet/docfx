@@ -55,6 +55,9 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
+    ---
+    author: me
+    ---
     # Title
     
     body
@@ -62,6 +65,10 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>body</p>",
-      "metadata": { "title": "Title" }
+      "metadata":
+      {
+        "title": "Title",
+        "author": "me"
+      }
     }
 
