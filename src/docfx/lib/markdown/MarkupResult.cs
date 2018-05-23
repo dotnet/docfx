@@ -5,10 +5,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PageModel
+    internal struct MarkupResult
     {
-        public string Content { get; set; }
+        public string Title;
 
-        public PageMetadata Metadata { get; set; }
+        public JObject Metadata;
     }
 }
