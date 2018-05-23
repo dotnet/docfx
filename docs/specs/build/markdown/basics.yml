@@ -49,5 +49,5 @@ inputs:
     >note
 outputs:
   docs/a.json: |
-    { "content": "<div><div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>note</p>\n</div></div>" }
+    { "content": "<div><div class=\"NOTE\"><h5>NOTE</h5><p>note</p></div></div>" }
 
