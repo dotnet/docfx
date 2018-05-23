@@ -6,6 +6,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<div><p>Hello <code>docfx</code>!</p></div>" }
+  build.manifest:
 ---
 # Basic markdown syntax
 inputs:
@@ -14,6 +15,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<div><p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p></div>" }
+  build.manifest:
 ---
 # Yaml header
 inputs:
@@ -29,6 +31,7 @@ outputs:
       "content": "<div><p>hello</p></div>",
       "metadata": { "title": "me" }
     }
+  build.manifest:
 ---
 # include another file
 inputs:
@@ -40,6 +43,7 @@ outputs:
     { "content": "<div><p>a b</p></div>" }
   docs/b.json: |
     { "content": "<div><p>b</p></div>" }
+  build.manifest:
 ---
 # note
 inputs:
@@ -50,4 +54,5 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<div><div class=\"NOTE\"><h5>NOTE</h5><p>note</p></div></div>" }
+  build.manifest:
 

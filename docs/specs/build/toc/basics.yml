@@ -1,11 +1,7 @@
 ---
 # Normal file reference
 inputs:
-  docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
-        - docs/**/*.yml
+  docfx.yml:
   index.md:
   docs/toc.md: |
     # [Index Reference](index.md)
@@ -54,14 +50,11 @@ outputs:
           }
       ]
     }
+  build.manifest:
 ---
 # No-existing file reference
 inputs:
-  docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
-        - docs/**/*.yml
+  docfx.yml:
   docs/index.md:
   docs/toc.md: |
     # [Index Reference](index.md)
@@ -104,14 +97,11 @@ outputs:
           }
       ]
     }
+  build.manifest:
 ---
 # Absolute file reference
 inputs:
-  docfx.yml: |
-    content:
-      include:
-        - docs/**/*.md
-        - docs/**/*.yml
+  docfx.yml:
   docs/index.md:
   docs/toc.md: |
     # [Index Reference](index.md)
@@ -144,6 +134,7 @@ outputs:
           }
       ]
     }
+  build.manifest:
 ---
 # Nested TOC reference 1
 # reference toc
@@ -190,6 +181,7 @@ outputs:
           }
        ]
     }
+  build.manifest:
 ---
 # Nested TOC reference 2
 # multiple level
@@ -248,6 +240,7 @@ outputs:
           }
        ]
     }
+  build.manifest:
 ---
 # Topic href for normal reference
 # topic href has higher priority
@@ -271,6 +264,7 @@ outputs:
           }
        ]
     }
+  build.manifest:
 ---
 # Topic href for toc reference
 # replace href finally
@@ -288,7 +282,7 @@ inputs:
   docs/f1/f11/index.md:
   docs/f1/f11/n1.md:
 outputs:
-  docs/f1/f11/n1.json:
+  docs/f1/f11/n1.json:	
   docs/f1/f11/index.json:
   docs/f1/toc.json: |
     {  
@@ -314,3 +308,4 @@ outputs:
           }
        ]
     }
+  build.manifest:

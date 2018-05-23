@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToLegacyModel(Docset docset, Context context, IEnumerable<Document> documents)
+        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents)
         {
             var fileMapItems = new List<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
             foreach (var document in documents)

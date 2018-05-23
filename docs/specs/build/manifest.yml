@@ -1,0 +1,29 @@
+---
+# `build.manifest` contains files to publish
+inputs:
+  docfx.yml:
+  docs/a.md:
+  docs/TOC.md:
+  docs/folder/b.md:
+outputs:
+  docs/a.json:
+  docs/TOC.json:
+  docs/folder/b.json:
+  build.manifest: |
+    {
+      "files":
+      [
+        {
+          "url": "/docs/a",
+          "path": "docs/a.json"
+        },
+        {
+          "url": "/docs/folder/b",
+          "path": "docs/folder/b.json"
+        },
+        {
+          "url": "/docs/TOC.json",
+          "path": "docs/TOC.json"
+        }
+      ]
+    }
