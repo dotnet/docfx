@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             reporter.Configure(docsetPath, config);
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
-            var context = new Context(reporter, outputPath, config.Output.Stable);
+            var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
             var globbedFiles = GlobFiles(context, docset);

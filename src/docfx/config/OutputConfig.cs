@@ -9,10 +9,5 @@ namespace Microsoft.Docs.Build
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
         public readonly string Path = "_site";
-
-        /// <summary>
-        /// Gets a value indicating whether build produces stable output for comparison in a diff tool.
-        /// </summary>
-        public readonly bool Stable;
     }
 }

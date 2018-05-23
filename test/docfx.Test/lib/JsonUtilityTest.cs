@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestClassWithMoreMembersByUnstableSerializeThenDeserialize()
+        public void TestClassWithMoreMembersBySerializeThenDeserialize()
         {
             var sw = new StringWriter();
             JsonUtility.Serialize(
@@ -154,68 +154,6 @@ namespace Microsoft.Docs.Build
   ""c"": ""Good!"",
   ""b"": 1,
   ""d"": true
-}".Replace("\r\n", "\n"),
-                json.Replace("\r\n", "\n"));
-            var value = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
-            Assert.NotNull(value);
-            Assert.Equal(1, value.B);
-            Assert.Equal("Good!", value.C);
-            Assert.True(value.D);
-            Assert.Equal(5, value.ValueBasic.B);
-            Assert.Equal("Amazing!", value.ValueBasic.C);
-            Assert.False(value.ValueBasic.D);
-            Assert.True((bool)value.ValueDict["a"]);
-            Assert.Equal("valueA", value.ValueDict["b"]);
-            Assert.Equal((long)10, value.ValueDict["c"]);
-            Assert.Equal("b", value.ValueList[0]);
-            Assert.Equal("a", value.ValueList[1]);
-        }
-
-        [Fact]
-        public void TestClassWithMoreMembersByStableSerializeThenDeserialize()
-        {
-            var sw = new StringWriter();
-            JsonUtility.Serialize(
-                sw,
-                new ClassWithMoreMembers
-                {
-                    D = true,
-                    B = 1,
-                    C = "Good!",
-                    ValueDict = new Dictionary<string, object>
-                    {
-                        { "b", "valueA" },
-                        { "c", 10 },
-                        { "a", true }
-                    },
-                    ValueList = new List<string> { "b", "a", },
-                    ValueBasic = new BasicClass
-                    {
-                        D = false,
-                        B = 5,
-                        C = "Amazing!",
-                    }
-                }, true);
-            var json = sw.ToString();
-            Assert.Equal(
-                @"{
-  ""b"": 1,
-  ""c"": ""Good!"",
-  ""d"": true,
-  ""valueBasic"": {
-    ""b"": 5,
-    ""c"": ""Amazing!"",
-    ""d"": false
-  },
-  ""valueDict"": {
-    ""a"": true,
-    ""b"": ""valueA"",
-    ""c"": 10
-  },
-  ""valueList"": [
-    ""b"",
-    ""a""
-  ]
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var value = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
