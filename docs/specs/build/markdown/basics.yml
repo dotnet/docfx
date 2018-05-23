@@ -5,7 +5,7 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs:
   docs/a.json: |
-    { "content": "<div><p>Hello <code>docfx</code>!</p></div>" }
+    { "content": "<p>Hello <code>docfx</code>!</p>" }
 ---
 # Basic markdown syntax
 inputs:
@@ -13,7 +13,7 @@ inputs:
   docs/a.md: _this_ *is* an ***inline*** `markdown` **test**
 outputs:
   docs/a.json: |
-    { "content": "<div><p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p></div>" }
+    { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
 ---
 # Yaml header
 inputs:
@@ -26,7 +26,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "content": "<div><p>hello</p></div>",
+      "content": "<p>hello</p>",
       "metadata": { "title": "me" }
     }
 ---
@@ -37,9 +37,9 @@ inputs:
   docs/b.md: b
 outputs:
   docs/a.json: |
-    { "content": "<div><p>a b</p></div>" }
+    { "content": "<p>a b</p>" }
   docs/b.json: |
-    { "content": "<div><p>b</p></div>" }
+    { "content": "<p>b</p>" }
 ---
 # note
 inputs:
@@ -49,5 +49,5 @@ inputs:
     >note
 outputs:
   docs/a.json: |
-    { "content": "<div><div class=\"NOTE\"><h5>NOTE</h5><p>note</p></div></div>" }
+    { "content": "<div class=\"NOTE\"><h5>NOTE</h5><p>note</p></div>" }
 
