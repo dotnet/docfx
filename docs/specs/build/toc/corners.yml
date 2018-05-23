@@ -46,6 +46,7 @@ outputs:
           }
       ]
     }
+  build.manifest:
 ---
 # Circle toc referenceing 1
 inputs:

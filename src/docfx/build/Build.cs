@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             var documents = await BuildFiles(context, globbedFiles, tocMap);
 
-            Manifest.BuildManifest(context, documents);
+            BuildManifest.Build(context, documents);
 
             if (options.OutputLegacyModel)
             {
@@ -43,10 +43,9 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static async Task<IEnumerable<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<List<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
-            var references = new ConcurrentDictionary<Document, byte>();
 
             await ParallelUtility.ForEach(
                 files,
@@ -59,14 +58,14 @@ namespace Microsoft.Docs.Build
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (ShouldBuildFile(item, references, tocMap))
+                        if (ShouldBuildFile(item, manifest, tocMap))
                         {
                             buildChild(item);
                         }
                     });
                 });
 
-            return manifest.Keys;
+            return manifest.Keys.OrderBy(doc => doc.OutputPath).ToList();
         }
 
         private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)

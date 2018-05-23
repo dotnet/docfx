@@ -25,8 +25,10 @@ namespace Microsoft.Docs.Build
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
             Assert.True(Directory.Exists(docsetPath));
 
-            var outputs = Directory.EnumerateFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            Assert.Equal(spec.Outputs.Count, outputs.Count());
+            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
+
+            Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
             {
@@ -36,11 +38,10 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyFile(string file, string content)
         {
-            Assert.True(File.Exists(file), $"File should exist: '{file}'");
-
             switch (Path.GetExtension(file.ToLower()))
             {
                 case ".json":
+                case ".manifest":
                     TestHelper.VerifyJsonContainEquals(
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
