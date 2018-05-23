@@ -46,10 +46,5 @@ namespace Microsoft.Docs.Build
 
             LegacyFileMap.Convert(docset, context, fileMapItems);
         }
-
-        private static void ConvertMarkdownModel(Docset docset, Context context, string absoluteOutputFilePath)
-        {
-
-        }
     }
 }
