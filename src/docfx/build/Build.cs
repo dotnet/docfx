@@ -28,6 +28,8 @@ namespace Microsoft.Docs.Build
 
             var documents = await BuildFiles(context, globbedFiles, tocMap);
 
+            BuildManifest.Build(context, documents);
+
             if (options.OutputLegacyModel)
             {
                 Legacy.ConvertToLegacyModel(docset, context, documents);
@@ -41,7 +43,7 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static async Task<IEnumerable<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<List<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
@@ -64,7 +66,7 @@ namespace Microsoft.Docs.Build
                     });
                 });
 
-            return manifest.Keys;
+            return manifest.Keys.OrderBy(doc => doc.OutputPath).ToList();
         }
 
         private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)

@@ -9,6 +9,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
+  build.manifest:
 ---
 # Specify include files by array
 inputs:
@@ -19,6 +20,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
+  build.manifest:
 ---
 # Content supports string form
 inputs:
@@ -28,6 +30,7 @@ inputs:
   docs1/index.md:
 outputs:
   docs1/index.json:
+  build.manifest:
 ---
 # Content supports array form
 inputs:
@@ -41,6 +44,7 @@ inputs:
 outputs:
   docs1/index.json:
   docs2/index.json:
+  build.manifest:
 ---
 # Content supports exclude file
 inputs:
@@ -51,6 +55,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
+  build.manifest:
 ---
 # Content supports exclude folder
 inputs:
@@ -65,6 +70,7 @@ inputs:
   docs/codesnippet/index.md:
 outputs:
   docs/index.json:
+  build.manifest:
 ---
 # Global metadata
 inputs:
@@ -78,6 +84,7 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/b.json: |
     { "metadata": { "key": "value" } }
+  build.manifest:
 ---
 # File metadata of object form
 inputs:
@@ -97,6 +104,7 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/index.json: |
     { "metadata": { "key": "another value" } }
+  build.manifest:
 ---
 # File metadata of array form
 inputs:
@@ -124,6 +132,7 @@ outputs:
     { "metadata": { "key": "general" } }
   docs/index.json: |
     { "metadata": { "key": "index" } }
+  build.manifest:
 ---
 # File metadata overwrite global metadata
 inputs:
@@ -137,6 +146,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "another value" } }
+  build.manifest:
 ---
 # routes
 inputs:
@@ -149,6 +159,7 @@ inputs:
 outputs:
   output/a.json:
   output/b.json:
+  build.manifest:
 ---
 # latter routes rule takes precedence - 1
 inputs:
@@ -159,6 +170,7 @@ inputs:
   docs/a/b.md:
 outputs:
   outputB/b.json:
+  build.manifest:
 ---
 # latter routes rule takes precedence - 2
 inputs:
@@ -169,6 +181,7 @@ inputs:
   docs/a/b.md:
 outputs:
   output/b.json:
+  build.manifest:
 ---
 # extend
 inputs:
@@ -179,6 +192,7 @@ inputs:
   a.md:
 outputs:
   a.json:
+  build.manifest:
 ---
 # current config takes precedence over extend config
 inputs:
@@ -190,6 +204,7 @@ inputs:
   a.md:
 outputs:
   a.json:
+  build.manifest:
 ---
 # latter extend config takes precedence over former extend config
 inputs:
@@ -204,3 +219,4 @@ inputs:
   a.md:
 outputs:
   a.json:
+  build.manifest:

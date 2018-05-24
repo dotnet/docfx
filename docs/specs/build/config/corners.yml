@@ -10,3 +10,4 @@ inputs:
 outputs:
   output/a.json:
   output/b.json:
+  build.manifest:
