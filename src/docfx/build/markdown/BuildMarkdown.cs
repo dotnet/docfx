@@ -11,14 +11,18 @@ namespace Microsoft.Docs.Build
         {
             var markdown = file.ReadText();
 
-            var (html, yamlHeader) = MarkdownUtility.Markup(markdown, file, context);
+            var (html, markup) = MarkdownUtility.Markup(markdown, file, context);
 
-            var content = !string.IsNullOrEmpty(html) ? $"<div>{html}</div>" : "";
+            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
             var model = new PageModel
             {
-                Content = content,
-                Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader),
+                Content = html,
+                Metadata = new PageMetadata
+                {
+                    Title = markup.Title,
+                    Metadata = metadata,
+                },
             };
 
             context.WriteJson(model, file.OutputPath);
