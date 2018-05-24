@@ -65,6 +65,7 @@ inputs:
     # Title
     
     body
+  build.manifest:
 outputs:
   docs/a.json: |
     {
