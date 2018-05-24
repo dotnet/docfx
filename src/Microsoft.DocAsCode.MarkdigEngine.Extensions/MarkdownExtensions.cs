@@ -14,26 +14,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-			return pipeline
-				//.UseMathematics()
-				.UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
-				.UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
-				.UseMediaLinks()
-				.UsePipeTables()
-				.UseAutoLinks()
-				.UseHeadingIdRewriter()
-				.UseIncludeFile(context)
-				.UseCodeSnippet(context)
-				.UseDFMCodeInfoPrefix()
-				.UseQuoteSectionNote(context)
-				.UseXref()
-				.UseEmojiAndSmiley(false)
-				.UseTabGroup(context)
-				.UseMonikerRange(context)
-				.UseInteractiveCode()
-				.UseRow(context)
-				.UseNestedColumn(context)
-				.UseRenderZone(context)
+            return pipeline
+                //.UseMathematics()
+                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
+                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
+                .UseMediaLinks()
+                .UsePipeTables()
+                .UseAutoLinks()
+                .UseHeadingIdRewriter()
+                .UseIncludeFile(context)
+                .UseCodeSnippet(context)
+                .UseDFMCodeInfoPrefix()
+                .UseQuoteSectionNote(context)
+                .UseXref()
+                .UseEmojiAndSmiley(false)
+                .UseTabGroup(context)
+                .UseMonikerRange(context)
+                .UseInteractiveCode()
+                .UseRow(context)
+                .UseNestedColumn(context)
+                .UseRenderZone(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
         }
-	
+    
         /// <summary>	
         /// This extension removes all the block parser except paragragh. Please use this extension in the last.	
         /// </summary>
@@ -131,10 +131,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-		public static MarkdownPipelineBuilder UseRenderZone(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
-		{
-			pipeline.Extensions.Insert(0, new RenderZoneExtension(context));
-			return pipeline;
-		}
-	}
+        public static MarkdownPipelineBuilder UseRenderZone(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        {
+            pipeline.Extensions.Insert(0, new RenderZoneExtension(context));
+            return pipeline;
+        }
+    }
 }
