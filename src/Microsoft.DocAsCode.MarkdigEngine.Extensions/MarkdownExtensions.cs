@@ -33,6 +33,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseInteractiveCode()
                 .UseRow(context)
                 .UseNestedColumn(context)
+                .UseRenderZone(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -41,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
         }
-	
+    
         /// <summary>	
         /// This extension removes all the block parser except paragragh. Please use this extension in the last.	
         /// </summary>
@@ -127,6 +128,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.AddIfNotAlready(new NestedColumnExtension(context));
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseRenderZone(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        {
+            pipeline.Extensions.Insert(0, new RenderZoneExtension(context));
             return pipeline;
         }
     }
