@@ -116,6 +116,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
 ## Manifest
 
+### Files
+
 To efficiently look up a file from URL for dynamic rendering, 
 `docfx` produces a manifest file at `_site/build.manifest` that lists all the output files and properties needed for lookup.
 
@@ -126,9 +128,9 @@ These are called *browser navigation properties* and are stored in manifest.
 {
     "files": [{
         "url": "/dotnet/api/system.string",
-        "path": "en-us/netstandard-2.0/dotnet/api/system.string.json",
+        "site-path": "en-us/netstandard-2.0/dotnet/api/system.string.json",
         "locale": "en-us",
-        "moniker": "netstandard-2.0",
+        "moniker": "netstandard-2.0", 
 
         // other browser navigation properties...
         // other properties needed for backward compatibility
@@ -141,6 +143,44 @@ We only save *browser navigation properties* for images in `build.manifest`. Oth
 Different verions of the same document, or difference locales of the same document may have the same output content.
 It is nessesary to duplicate them for static rendering. To save space for dynamic rendering, set the `path`
 property to the same location.
+
+### Dependencies
+
+To efficiently look up the impacted files for a given file,
+`docfx` produces a dependency list at `_site/build.manifest` that lists all the relationships between different files.
+
+*Dependency impacts* means the impacts(build/publish) to the referenced file causing by one or more file changes:
+
+  - **Content impact** means the changing file content has impact to the referenced file(s), like token/codesnippet, overwrite markdown.
+    - Inclusion(token/codesnippet) reference, like `![include](token file path)`.
+    - Overwrite markdown reference(TODO).
+  - **URL impact** means the changing file output URL has impact to the referenced file(s), like file link, UID reference.
+    - File link reference, like `[link title](file path)`.
+    - UID reference, like `<xref:System.Char>`.
+    - Metadata reference, like `toc_rel: ../TOC.json`.
+
+```json
+{  
+   "dependencies":[  
+      {  
+         "source":"dotnet/azure/service-less-app.md",
+         "site-path":"en-us/dotnet/azure/service-less-app.json",
+         "dependencies":[  
+            {  
+               "source":"dotnet/azure/service-less-app-dependent.md",
+               "site-path":"dotnet/azure/service-less-app-dependent.json",
+               "type":"link"
+            },
+            {  
+               "source":"dotnet/azure/service-less-app-token.md",
+               "site-path":"dotnet/azure/service-less-app-token.json",
+               "type":"inclusion"
+            }
+         ]
+      }
+   ]
+}
+```
 
 ## Report
 
