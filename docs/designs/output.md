@@ -127,8 +127,9 @@ These are called *browser navigation properties* and are stored in manifest.
 ```javascript
 {
     "files": [{
-        "url": "/dotnet/api/system.string",
-        "site-path": "en-us/netstandard-2.0/dotnet/api/system.string.json",
+        "source": "dotnet/api/system.string",
+        "siteUrl": "/dotnet/api/system.string",
+        "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
         "locale": "en-us",
         "moniker": "netstandard-2.0", 
 
@@ -164,16 +165,13 @@ To efficiently look up the impacted files for a given file,
    "dependencies":[  
       {  
          "source":"dotnet/azure/service-less-app.md",
-         "site-path":"en-us/dotnet/azure/service-less-app.json",
          "dependencies":[  
             {  
                "source":"dotnet/azure/service-less-app-dependent.md",
-               "site-path":"dotnet/azure/service-less-app-dependent.json",
                "type":"link"
             },
             {  
                "source":"dotnet/azure/service-less-app-token.md",
-               "site-path":"dotnet/azure/service-less-app-token.json",
                "type":"inclusion"
             }
          ]
