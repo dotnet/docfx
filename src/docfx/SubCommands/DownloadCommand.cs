@@ -25,6 +25,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
+            if (string.IsNullOrWhiteSpace(_options.ArchiveFile))
+            {
+                Logger.LogError("Please provide output file.");
+                return;
+            }
             var builder = new XRefArchiveBuilder();
             if (Uri.TryCreate(_options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
             {
