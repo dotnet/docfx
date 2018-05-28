@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
                 from item in config.FileMetadata
                 where item.Match(file.FilePath)
                 select item.Value;
+                
 
             return JsonUtility.Merge(config.GlobalMetadata, fileMetadata);
         }
