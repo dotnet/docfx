@@ -105,12 +105,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             catch (AggregateException e)
             {
-                throw new ExtractMetadataException($"Error extracting metadata for {GetPrintableFileList(_files.SelectMany(s => s.Value))}: {e.GetBaseException()?.Message}", e);
+                throw new ExtractMetadataException($"Error extracting metadata for {GetPrintableFileList(_files.SelectMany(s => s.Value))}: {e}", e);
             }
             catch (Exception e)
             {
                 var files = GetPrintableFileList(_files.SelectMany(s => s.Value));
-                throw new ExtractMetadataException($"Error extracting metadata for {files}: {e.Message}", e);
+                throw new ExtractMetadataException($"Error extracting metadata for {files}: {e}", e);
             }
         }
 
@@ -438,7 +438,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         sb.AppendLine();
                     }
-                    sb.Append($"Error extracting metadata for project \"{project.Key}\": {e.Message}");
+                    sb.Append($"Error extracting metadata for project \"{project.Key}\": {e}");
                 }
             }
             if (sb.Length > 0)
