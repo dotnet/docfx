@@ -47,19 +47,20 @@ namespace Microsoft.Docs.Build
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
+            var globbelFiles = new HashSet<Document>(files);
 
             await ParallelUtility.ForEach(
                 files,
                 (file, buildChild) =>
                 {
-                    if (!ShouldBuildFile(file, manifest, tocMap))
+                    if (!ShouldBuildFile(context, file, tocMap, globbelFiles) || !manifest.TryAdd(file, 0))
                     {
                         return Task.CompletedTask;
                     }
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (ShouldBuildFile(item, references, tocMap))
+                        if (references.TryAdd(item, 0) && ShouldBuildFile(context, item, tocMap, globbelFiles))
                         {
                             buildChild(item);
                         }
@@ -76,9 +77,9 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap);
+                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file, tocMap);
+                    return BuildSchemaDocument.Build(context, file, tocMap, buildChild);
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
@@ -92,26 +93,36 @@ namespace Microsoft.Docs.Build
             return Task.CompletedTask;
         }
 
-        private static bool ShouldBuildFile(Document itemToBuild, ConcurrentDictionary<Document, byte> set, TableOfContentsMap tocMap)
+        /// <summary>
+        /// All children will be built through this gate
+        /// We control all the inclusion login here:
+        /// https://github.com/dotnet/docfx/issues/2755
+        /// </summary>
+        private static bool ShouldBuildFile(Context context, Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> globbedFiles)
         {
-            if (itemToBuild.OutputPath == null)
+            if (childToBuild.OutputPath == null)
             {
                 return false;
             }
 
-            if (itemToBuild.ContentType == ContentType.Unknown)
+            if (childToBuild.ContentType == ContentType.Unknown)
             {
                 return false;
             }
 
-            if (itemToBuild.ContentType == ContentType.TableOfContents && !tocMap.Contains(itemToBuild))
+            if (childToBuild.ContentType == ContentType.TableOfContents && !tocMap.Contains(childToBuild))
             {
                 return false;
             }
 
-            if (!set.TryAdd(itemToBuild, 0))
+            // the `content` scope is fix, all the `content` children out of our glob scope will be treated as warnings
+            if (childToBuild.ContentType == ContentType.Markdown || childToBuild.ContentType == ContentType.SchemaDocument)
             {
-                return false;
+                if (!globbedFiles.Contains(childToBuild))
+                {
+                    context.ReportWarning(Errors.ReferencedContentOutofScope(childToBuild));
+                    return false;
+                }
             }
 
             return true;
