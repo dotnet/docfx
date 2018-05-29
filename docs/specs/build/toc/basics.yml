@@ -50,8 +50,6 @@ outputs:
       ]
     }
   build.manifest:
-  build.log: |
-    ["warning","referenced-content-outof-scope","the referenced content file index.md is outof config's scope"]
 ---
 # No-existing file reference
 inputs:
@@ -265,8 +263,6 @@ outputs:
        ]
     }
   build.manifest:
-  build.log: |
-    ["warning","referenced-content-outof-scope","the referenced content file docs/f1/n2.md is outof config's scope"]
 
 ---
 # Topic href for toc reference
@@ -309,6 +305,4 @@ outputs:
        ]
     }
   build.manifest:
-  build.log: |
-    ["warning","referenced-content-outof-scope","the referenced content file docs/f1/f11/n1.md is outof config's scope"]
 

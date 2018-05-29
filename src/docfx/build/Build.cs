@@ -47,13 +47,13 @@ namespace Microsoft.Docs.Build
         {
             var manifest = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
-            var globbelFiles = new HashSet<Document>(files);
+            var buildScope = new HashSet<Document>(files);
 
             await ParallelUtility.ForEach(
                 files,
                 (file, buildChild) =>
                 {
-                    if (!ShouldBuildFile(context, file, tocMap, globbelFiles) || !manifest.TryAdd(file, 0))
+                    if (!ShouldBuildFile(context, file, tocMap, buildScope) || !manifest.TryAdd(file, 0))
                     {
                         return Task.CompletedTask;
                     }
@@ -95,10 +95,10 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// All children will be built through this gate
-        /// We control all the inclusion login here:
+        /// We control all the inclusion logic here:
         /// https://github.com/dotnet/docfx/issues/2755
         /// </summary>
-        private static bool ShouldBuildFile(Context context, Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> globbedFiles)
+        private static bool ShouldBuildFile(Context context, Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
         {
             if (childToBuild.OutputPath == null)
             {
@@ -118,9 +118,9 @@ namespace Microsoft.Docs.Build
             // the `content` scope is fix, all the `content` children out of our glob scope will be treated as warnings
             if (childToBuild.ContentType == ContentType.Markdown || childToBuild.ContentType == ContentType.SchemaDocument)
             {
-                if (!globbedFiles.Contains(childToBuild))
+                if (!buildScope.Contains(childToBuild))
                 {
-                    context.ReportWarning(Errors.ReferencedContentOutofScope(childToBuild));
+                    // todo: report warnings
                     return false;
                 }
             }

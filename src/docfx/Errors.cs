@@ -22,8 +22,5 @@ namespace Microsoft.Docs.Build
 
         public static DocfxException InvalidYamlHeader(Document file, Exception ex)
             => new DocfxException("invalid-yaml-header", ex.Message, file.ToString());
-
-        public static DocfxException ReferencedContentOutofScope(Document file)
-            => new DocfxException("referenced-content-outof-scope", $"the referenced content file {file} is outof config's scope");
     }
 }
