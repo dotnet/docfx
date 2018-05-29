@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         public string OPath { get; set; }
         public string Content { get; set; }
         public Dictionary<string, object> Metadata { get; set; }
-
+        public bool Touched { get; set; }
         public void SerializeTo(StringBuilder sb)
         {
             string wrapper = OverwriteUtility.GetUidWrapper(OPath);
