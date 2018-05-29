@@ -14,7 +14,6 @@ inputs:
   docs/n1.md:
   docs/f1/n1.md:
 outputs:
-  index.json:
   docs/index.json:
   docs/n1.json:
   docs/f1/n1.json:
@@ -254,7 +253,6 @@ inputs:
       href: ~/docs/f1/n1.md
       topicHref: ~/docs/f1/n2.md
 outputs:
-  docs/f1/n2.json:
   docs/f1/toc.json: |
     {  
        "items":[  
@@ -265,6 +263,7 @@ outputs:
        ]
     }
   build.manifest:
+
 ---
 # Topic href for toc reference
 # replace href finally
@@ -278,12 +277,9 @@ inputs:
     - name: Toc Reference 2
       href: f11/
   docs/f1/f11/toc.md: |
-    # [Index Reference](index.md)
-  docs/f1/f11/index.md:
+    # [Index Reference](n1.md)
   docs/f1/f11/n1.md:
 outputs:
-  docs/f1/f11/n1.json:	
-  docs/f1/f11/index.json:
   docs/f1/toc.json: |
     {  
        "items":[  
@@ -291,7 +287,7 @@ outputs:
              "children":[  
                 {  
                    "toc_title":"Index Reference",
-                   "href":"f11/"
+                   "href":"f11/n1"
                 }
              ],
              "toc_title":"Toc Reference 1",
@@ -301,7 +297,7 @@ outputs:
              "children":[  
                 {  
                    "toc_title":"Index Reference",
-                   "href":"f11/"
+                   "href":"f11/n1"
                 }
              ],
              "toc_title":"Toc Reference 2"
@@ -309,3 +305,4 @@ outputs:
        ]
     }
   build.manifest:
+

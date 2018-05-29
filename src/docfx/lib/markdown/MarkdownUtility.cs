@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             { "Caution", "Caution" },
         };
 
-        public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context)
+        public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context, ResolveHref resolveHref)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -75,9 +75,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (link, _) = ((Document)relativeTo).TryResolveHref(path, file);
-
-                return link;
+                return resolveHref((Document)relativeTo, path, file);
             }
         }
     }
