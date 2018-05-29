@@ -281,8 +281,7 @@ inputs:
     - name: Toc Reference 2
       href: f11/
   docs/f1/f11/toc.md: |
-    # [Index Reference](index.md)
-  docs/f1/f11/index.md:
+    # [Index Reference](n1.md)
   docs/f1/f11/n1.md:
 outputs:
   docs/f1/toc.json: |
@@ -292,7 +291,7 @@ outputs:
              "children":[  
                 {  
                    "toc_title":"Index Reference",
-                   "href":"f11/"
+                   "href":"f11/n1"
                 }
              ],
              "toc_title":"Toc Reference 1",
@@ -302,7 +301,7 @@ outputs:
              "children":[  
                 {  
                    "toc_title":"Index Reference",
-                   "href":"f11/"
+                   "href":"f11/n1"
                 }
              ],
              "toc_title":"Toc Reference 2"
@@ -312,5 +311,4 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","referenced-content-outof-scope","the referenced content file docs/f1/f11/n1.md is outof config's scope"]
-    ["warning","referenced-content-outof-scope","the referenced content file docs/f1/f11/index.md is outof config's scope"]
 

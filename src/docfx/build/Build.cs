@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
                     return BuildOneFile(context, file, tocMap, item =>
                     {
-                        if (references.TryAdd(item, 0) && ShouldBuildFile(context, item, tocMap, globbelFiles))
+                        if (references.TryAdd(item, 0))
                         {
                             buildChild(item);
                         }
