@@ -112,7 +112,7 @@ Allows you to insert code with code language specified. The content of specified
 ```
 
 * __`<language>`__ can be made up of any number of character and '-'. However, the recommended value should follow [Highlight.js language names and aliases](http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases).
-* __`<codepath>`__ is the relative path in file system which indicates the code snippet file that you want to expand.
+* __`<codepath>`__ is the path relative to the file contianing this markdown content in file system, which indicates the code snippet file that you want to expand.
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
 
 
@@ -126,7 +126,7 @@ Allows you to insert code with code language specified. The content of specified
 
 * In `?` query string, the whole file will be included if none of the first three option is specified.
 * If `dedent` isn't specified, the maximum common indent will be trimmed automatically.
-* __`<title>`__ can be omitted.
+* __`<title>`__ can be omitted as it doesn't affect the DocFX markup result, but it can beautify the result of other Markdown engine, like GitHub Preview.
 
 ### Code Snippet Sample
 ```md
