@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
         [InlineData("<div><link href='a'></div>", "<div></div>")]

@@ -78,4 +78,20 @@ outputs:
       }
     }
   build.manifest:
+---
+# do not allow custom js, styles and css
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <script>alert(0);</script>
+    <link rel="stylesheet" href="https://a.com/b.css" />
+    <div style="display:hidden"></div>
+    <style>h1 {color:red;}</style>
+
+    body
+  build.manifest:
+outputs:
+  docs/a.json: |
+    { "content": "<div></div><p>body</p>" }
+  build.manifest:
 

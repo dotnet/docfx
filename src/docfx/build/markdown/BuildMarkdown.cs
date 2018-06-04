@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
-                Content = html,
+                Content = HtmlUtility.ProcessHtml(html),
                 Metadata = new PageMetadata
                 {
                     Title = markup.Title,

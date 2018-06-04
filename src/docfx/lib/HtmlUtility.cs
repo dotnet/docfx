@@ -10,6 +10,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        public static string ProcessHtml(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            StripTags(doc.DocumentNode);
+            return doc.DocumentNode.OuterHtml;
+        }
+
         public static void AddLinkType(HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);
