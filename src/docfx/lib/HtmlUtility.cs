@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "external");
                     continue;
                 }
-                if (href[0] == '/')
+                if (href[0] == '/' || href[0] == '\\')
                 {
                     node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     var urlLocale = href.Substring(1, pos - 1);
                     if (urlLocale.Contains("-"))
                     {
-                        CultureInfo.GetCultureInfo(href.Substring(1, pos - 1));
+                        CultureInfo.GetCultureInfo(urlLocale);
                         return href;
                     }
                 }
