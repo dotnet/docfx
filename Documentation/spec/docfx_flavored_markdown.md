@@ -112,7 +112,7 @@ Allows you to insert code with code language specified. The content of specified
 ```
 
 * __`<language>`__ can be made up of any number of character and '-'. However, the recommended value should follow [Highlight.js language names and aliases](http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases).
-* __`<codepath>`__ is the relative path in file system which indicates the code snippet file that you want to expand.
+* __`<codepath>`__ is the path relative to the file contianing this markdown content in file system, which indicates the code snippet file that you want to expand.
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
 
 
