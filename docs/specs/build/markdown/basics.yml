@@ -53,7 +53,7 @@ inputs:
     >note
 outputs:
   docs/a.json: |
-    { "content": "<div class=\"NOTE\"><h5>NOTE</h5><p>note</p></div>" }
+    { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
   build.manifest:
 ---
 # title
