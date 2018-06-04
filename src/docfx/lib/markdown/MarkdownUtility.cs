@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -23,13 +24,13 @@ namespace Microsoft.Docs.Build
         // does not depend on template, thus these tokens are managed by us.
         //
         // TODO: add localized tokens
-        private static readonly IReadOnlyDictionary<string, string> s_markdownTokens = new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> s_markdownTokens = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            { "Note", "Note" },
-            { "Tip", "Tip" },
-            { "Warning", "Warning" },
-            { "Important", "Important" },
-            { "Caution", "Caution" },
+            { "Note", "<p>Note</p>" },
+            { "Tip", "<p>Tip</p>" },
+            { "Warning", "<p>Warning</p>" },
+            { "Important", "<p>Important</p>" },
+            { "Caution", "<p>Caution</p>" },
         };
 
         public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context, ResolveHref resolveHref)
