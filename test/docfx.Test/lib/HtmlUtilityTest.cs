@@ -15,17 +15,18 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/zh-cn/alink#fraGMENT' data-linktype='absolute-path' />")]
         [InlineData("<a href='/Alink?quERY' />", "<a href='/zh-cn/alink?quERY' data-linktype='absolute-path' />")]
         [InlineData("<a href='/a#x' />", "<a href='/zh-cn/a#x' data-linktype='absolute-path' />")]
+        [InlineData("<a href='\\a#x' />", "<a href='/zh-cn\\a#x' data-linktype='absolute-path' />")]
         [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
         public void AddLinkType(string input, string output)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml(input.Replace('\'', '\"'));
+            doc.LoadHtml(input);
             HtmlUtility.AddLinkType(doc.DocumentNode, "zh-cn");
 
             Assert.Equal(
-                TestHelper.NormalizeHtml(output.Replace('\'', '\"')),
+                TestHelper.NormalizeHtml(output),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
 
@@ -37,11 +38,11 @@ namespace Microsoft.Docs.Build
         public void StripTags(string input, string output)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml(input.Replace('\'', '\"'));
+            doc.LoadHtml(input);
             HtmlUtility.StripTags(doc.DocumentNode);
 
             Assert.Equal(
-                TestHelper.NormalizeHtml(output.Replace('\'', '\"')),
+                TestHelper.NormalizeHtml(output),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
     }
