@@ -126,7 +126,7 @@ Allows you to insert code with code language specified. The content of specified
 
 * In `?` query string, the whole file will be included if none of the first three option is specified.
 * If `dedent` isn't specified, the maximum common indent will be trimmed automatically.
-* __`<title>`__ can be omitted.
+* __`<title>`__ can be omitted as it doesn't affect the DocFX markup result, but it can beautify the result of other Markdown engine, like GitHub Preview.
 
 ### Code Snippet Sample
 ```md
