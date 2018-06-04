@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
         {
             CommandLine.Parser.Default.ParseArguments<InitOptions, UpdateOptions>(args)
                 .MapResult(
-                (InitOptions opts) => { Console.WriteLine("init mode is not supported right now."); return 0; },
+                (InitOptions opts) => RunUpdate(opts),
                 (UpdateOptions opts) => RunUpdate(opts),
                 errs => -1);
             foreach (var key in missingMergeKey)
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             }
         }
 
-        private static int RunUpdate(UpdateOptions opt)
+        private static int RunUpdate(CommonOptions opt)
         {
             opt.InputYamlFolder = Path.GetFullPath(opt.InputYamlFolder);
             if (!string.IsNullOrEmpty(opt.OutputYamlFolder))
@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 var relativeYmlPath = PathUtility.MakeRelativePath(opt.InputYamlFolder, ymlFile);
                 var ymlOutputFile = Path.Combine(opt.OutputYamlFolder, relativeYmlPath);
                 var mdFile = Path.Combine(opt.MDFolder, relativeYmlPath + ".md");
-                ProcessFilePair(ymlFile, ymlOutputFile, mdFile, schemas);
+                ProcessFilePair(ymlFile, ymlOutputFile, mdFile, schemas, opt is InitOptions);
             }
             return 0;
         }
@@ -87,7 +87,12 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             return schemas;
         }
 
-        private static void ProcessFilePair(string ymlInputFile, string ymlOutputFile, string mdFile, Dictionary<string, DocumentSchema> schemas)
+        private static void ProcessFilePair(
+            string ymlInputFile,
+            string ymlOutputFile,
+            string mdFile,
+            Dictionary<string, DocumentSchema> schemas,
+            bool initMode = false)
         {
             var yamlStream = new YamlStream();
             using (var sr = new StreamReader(ymlInputFile))
@@ -113,11 +118,15 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             }
             var schema = schemas[schemaName];
 
-            var mdFragments = FragmentModelHelper.LoadMarkdownFragment(mdFile);
+            var mdFragments = initMode ? new Dictionary<string, MarkdownFragment>() : FragmentModelHelper.LoadMarkdownFragment(mdFile);
 
             _iterator.Traverse(yamlStream.Documents[0].RootNode, mdFragments, schema);
 
-            var validFragments = mdFragments.Values.Where(v => v.Properties?.Count > 0).ToList();
+            foreach (var fragment in mdFragments.Values)
+            {
+                fragment.Properties = fragment.Properties?.Where(pair => pair.Value.Touched)?.ToDictionary(pair => pair.Key, pair => pair.Value);
+            }
+            var validFragments = mdFragments.Values.Where(v => v.Properties?.Count > 0 && v.Touched).ToList();
 
             if (validFragments.Count > 0)
             {
