@@ -122,7 +122,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
 
             _iterator.Traverse(yamlStream.Documents[0].RootNode, mdFragments, schema);
 
-            foreach(var fragment in mdFragments.Values)
+            foreach (var fragment in mdFragments.Values)
             {
                 fragment.Properties = fragment.Properties?.Where(pair => pair.Value.Touched)?.ToDictionary(pair => pair.Key, pair => pair.Value);
             }
