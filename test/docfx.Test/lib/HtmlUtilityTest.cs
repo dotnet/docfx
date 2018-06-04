@@ -29,5 +29,20 @@ namespace Microsoft.Docs.Build
                 TestHelper.NormalizeHtml(output),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
+
+        [Theory]
+        [InlineData("<div></div>", "<div></div>")]
+        [InlineData("<iframe></iframe>", "<iframe></iframe>")]
+        [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
+        public void RemoveRerunCodepenIframes(string input, string output)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
+
+            Assert.Equal(
+                TestHelper.NormalizeHtml(output),
+                TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
+        }
     }
 }

@@ -71,5 +71,19 @@ namespace Microsoft.Docs.Build
                 return '/' + locale + href;
             }
         }
+
+        public static void RemoveRerunCodepenIframes(HtmlNode html)
+        {
+            // the rerun button on codepen iframes isn't accessibile.
+	        // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
+            foreach (var node in html.Descendants("iframe"))
+            {
+                var src = node.Attributes["src"];
+                if (src != null && src.Value.Contains("codepen.io"))
+                {
+                    src.Value += "&rerun-position=hidden&";
+                }
+            }
+        }
     }
 }
