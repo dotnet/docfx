@@ -21,11 +21,11 @@ namespace Microsoft.Docs.Build
         public void AddLinkType(string input, string output)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml(input.Replace('"', '\"'));
+            doc.LoadHtml(input);
             HtmlUtility.AddLinkType(doc.DocumentNode, "zh-cn");
 
             Assert.Equal(
-                TestHelper.NormalizeHtml(output.Replace('"', '\"')),
+                TestHelper.NormalizeHtml(output),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
     }
