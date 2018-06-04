@@ -21,11 +21,27 @@ namespace Microsoft.Docs.Build
         public void AddLinkType(string input, string output)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml(input.Replace('"', '\"'));
+            doc.LoadHtml(input.Replace('\'', '\"'));
             HtmlUtility.AddLinkType(doc.DocumentNode, "zh-cn");
 
             Assert.Equal(
-                TestHelper.NormalizeHtml(output.Replace('"', '\"')),
+                TestHelper.NormalizeHtml(output.Replace('\'', '\"')),
+                TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
+        }
+
+        [Theory]
+        [InlineData("<div style='a'></div>", "<div></div>")]
+        [InlineData("<div><style href='a'></div>", "<div></div>")]
+        [InlineData("<div><link href='a'></div>", "<div></div>")]
+        [InlineData("<div><script></script></div>", "<div></div>")]
+        public void StripTags(string input, string output)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input.Replace('\'', '\"'));
+            HtmlUtility.StripTags(doc.DocumentNode);
+
+            Assert.Equal(
+                TestHelper.NormalizeHtml(output.Replace('\'', '\"')),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
     }

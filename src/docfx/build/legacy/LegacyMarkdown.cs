@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(content);
             HtmlUtility.AddLinkType(doc.DocumentNode, locale);
+            HtmlUtility.StripTags(doc.DocumentNode);
             return doc.DocumentNode.OuterHtml;
         }
     }
