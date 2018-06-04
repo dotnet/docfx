@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string NormalizeHtml(string html)
+        public static string NormalizeHtml(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
