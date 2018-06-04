@@ -752,6 +752,18 @@ items:
             Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context..", ex.Message);
         }
 
+        [Fact]
+        public void LoadTocYamlWithEmptyNodeShouldSucceed()
+        {
+            var content = @"
+- name: x
+  href: a.md
+-";
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { _fileCreator.CreateFile(content, FileType.YamlToc) });
+            BuildDocument(files);
+        }
+
         #region Helper methods
 
         private enum FileType
