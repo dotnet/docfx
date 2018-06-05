@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using HtmlAgilityPack;
 
@@ -8,6 +10,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        public static string ProcessHtml(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            StripTags(doc.DocumentNode);
+            return doc.DocumentNode.OuterHtml;
+        }
+
         public static void AddLinkType(HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);
@@ -69,6 +79,30 @@ namespace Microsoft.Docs.Build
             catch (CultureNotFoundException)
             {
                 return '/' + locale + href;
+            }
+        }
+
+        public static void StripTags(HtmlNode html)
+        {
+            var nodesToRemove = new List<HtmlNode>();
+
+            foreach (var node in html.DescendantsAndSelf())
+            {
+                if (node.Name.Equals("script", StringComparison.OrdinalIgnoreCase) ||
+                    node.Name.Equals("link", StringComparison.OrdinalIgnoreCase) ||
+                    node.Name.Equals("style", StringComparison.OrdinalIgnoreCase))
+                {
+                    nodesToRemove.Add(node);
+                }
+                else
+                {
+                    node.Attributes.Remove("style");
+                }
+            }
+
+            foreach (var node in nodesToRemove)
+            {
+                node.Remove();
             }
         }
     }

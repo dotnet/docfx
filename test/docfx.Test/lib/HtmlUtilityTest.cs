@@ -29,5 +29,22 @@ namespace Microsoft.Docs.Build
                 TestHelper.NormalizeHtml(output),
                 TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
         }
+
+        [Theory]
+        [InlineData("<style href='a'>", "")]
+        [InlineData("<div style='a'></div>", "<div></div>")]
+        [InlineData("<div><style href='a'></div>", "<div></div>")]
+        [InlineData("<div><link href='a'></div>", "<div></div>")]
+        [InlineData("<div><script></script></div>", "<div></div>")]
+        public void StripTags(string input, string output)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            HtmlUtility.StripTags(doc.DocumentNode);
+
+            Assert.Equal(
+                TestHelper.NormalizeHtml(output),
+                TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
+        }
     }
 }
