@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,6 +19,23 @@ namespace Microsoft.Docs.Build
             var metaOutputPath = Path.ChangeExtension(absoluteOutputFilePath, ".mta.json");
 
             File.Move(absoluteOutputFilePath, rawPageOutputPath);
+
+            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(rawPageOutputPath));
+            if (!string.IsNullOrEmpty(pageModel.Content))
+            {
+                pageModel.Content = PostProcessHtml(pageModel.Content, docset.Config.Locale);
+            }
+
+            context.WriteJson(pageModel, rawPageOutputPath);
+        }
+
+        private static string PostProcessHtml(string content, string locale)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(content);
+            HtmlUtility.AddLinkType(doc.DocumentNode, locale);
+            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
+            return doc.DocumentNode.OuterHtml;
         }
     }
 }
