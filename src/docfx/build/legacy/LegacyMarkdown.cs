@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(content);
             HtmlUtility.AddLinkType(doc.DocumentNode, locale);
+            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
             return doc.DocumentNode.OuterHtml;
         }
     }
