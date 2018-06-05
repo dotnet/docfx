@@ -31,6 +31,16 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("<div></div>", "<div></div>")]
+        [InlineData("<iframe></iframe>", "<iframe></iframe>")]
+        [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
+        public void RemoveRerunCodepenIframes(string input, string output)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
+        }
+
         [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
