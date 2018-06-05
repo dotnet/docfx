@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(Specs))]
         public static async Task BuildDocset(string name, int ordinal)
         {
+            if (!name.Contains("tags embe")) { return; }
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
             await Program.Run(new[] { "build", docsetPath });

@@ -63,40 +63,24 @@ namespace Microsoft.Docs.Build
 
         public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)
         {
-            builder.Extensions.Add(new DelegatingExtension(setupPipeline: pipeline => pipeline.DocumentProcessed += documentProcessed));
-            return builder;
-        }
-
-        public static MarkdownPipelineBuilder Use<T>(this MarkdownPipelineBuilder builder, Action<HtmlRenderer, T> render)
-             where T : MarkdownObject
-        {
-            builder.Extensions.Add(new DelegatingExtension(setupRenderer: renderer => renderer.ObjectRenderers.Add(new DelegatingRenderer<T>(render))));
+            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
             return builder;
         }
 
         private class DelegatingExtension : IMarkdownExtension
         {
             private readonly Action<MarkdownPipelineBuilder> _setupPipeline;
-            private readonly Action<IMarkdownRenderer> _setupRenderer;
 
-            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline = null, Action<IMarkdownRenderer> setupRenderer = null)
+            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline)
             {
                 _setupPipeline = setupPipeline;
-                _setupRenderer = setupRenderer;
             }
 
             public void Setup(MarkdownPipelineBuilder pipeline) => _setupPipeline?.Invoke(pipeline);
 
-            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer) => _setupRenderer?.Invoke(renderer);
-        }
-
-        private class DelegatingRenderer<T> : HtmlObjectRenderer<T> where T : MarkdownObject
-        {
-            private readonly Action<HtmlRenderer, T> _render;
-
-            public DelegatingRenderer(Action<HtmlRenderer, T> render) => _render = render;
-
-            protected override void Write(HtmlRenderer renderer, T obj) => _render(renderer, obj);
+            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+            {
+            }
         }
     }
 }

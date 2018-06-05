@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     .UseDocfxExtensions(markdownContext)
                     .UseExtractYamlHeader(context, file, metadata)
                     .UseExtractTitle(title)
-                    .UseResolveHtmlLink(context)
+                    .UseResolveHtmlLinks(markdownContext)
                     .Build();
 
                 var html = Markdown.ToHtml(markdown, pipeline);

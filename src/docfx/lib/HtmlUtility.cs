@@ -82,16 +82,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static HtmlNode TransformLink(this HtmlNode html, Func<string, string> transform)
+        {
+            foreach (var node in html.Descendants("a"))
+            {
+                var href = node.GetAttributeValue("href", null);
+                if (href != null)
+                {
+                    node.SetAttributeValue("href", transform(href));
+                }
+            }
+
+            foreach (var node in html.Descendants("img"))
+            {
+                var href = node.GetAttributeValue("src", null);
+                if (href != null)
+                {
+                    node.SetAttributeValue("src", transform(href));
+                }
+            }
+
+            return html;
+        }
+
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
-	          // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
+            // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
             foreach (var node in html.Descendants("iframe"))
             {
-                var src = node.Attributes["src"];
-                if (src != null && src.Value.Contains("codepen.io"))
+                var src = node.GetAttributeValue("src", null);
+                if (src != null && src.Contains("codepen.io"))
                 {
-                    src.Value += "&rerun-position=hidden&";
+                    node.SetAttributeValue("src", src + "&rerun-position=hidden&");
                 }
             }
             return html;

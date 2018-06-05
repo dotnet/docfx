@@ -36,8 +36,7 @@ inputs:
   docs/b.md: <div>Link to <img src="~/c.png" /></div>
   docs/c.png:
 outputs:
-  docs/a.json: '{ "content": "<p>Link to <a href=\"b\" target="_blank">b</a></p>" }'
+  docs/a.json: '{ "content": "<p>Link to <a href=\"b\" target=\"_blank\">b</a></p>" }'
   docs/b.json: '{ "content": "<div>Link to <img src=\"../c.png\" /></div>" }'
-  c.png:
   build.manifest:
 
