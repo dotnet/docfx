@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (null, null);
+                return default;
             }
 
             var (path, fragment, query) = HrefUtility.SplitHref(href);
@@ -65,13 +65,13 @@ namespace Microsoft.Docs.Build
             if (Path.IsPathRooted(path))
             {
                 // TODO: report warnings
-                return (null, null);
+                return default;
             }
 
             // Leave invalid file path as is
             if (PathUtility.FilePathHasInvalidChars(path))
             {
-                return (null, null);
+                return default;
             }
 
             // Resolve path relative to docset
