@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                return resolveHref((Document)relativeTo, path, file);
+                return resolveHref((Document)relativeTo, path);
             }
         }
     }

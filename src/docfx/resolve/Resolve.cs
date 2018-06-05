@@ -2,82 +2,88 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal delegate (string content, Document path) ResolveContent(Document relativeTo, string href);
-
-    internal delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
-
     internal static class Resolve
     {
         public static (string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var buildItem = TryResolveHref(relativeTo, href);
-            if (buildItem == null)
-            {
-                return default;
-            }
+            var (file, _) = TryResolveFile(relativeTo, href);
 
-            return (buildItem.ReadText(), buildItem);
+            return file != null ? (file.ReadText(), file) : default;
         }
 
         public static (string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
         {
-            var file = TryResolveHref(relativeTo, href);
+            var (file, fragmentQuery) = TryResolveFile(relativeTo, href);
+
+            // Cannot resolve the file, leave href as is
             if (file == null)
             {
                 return (href, null);
             }
 
-            var (_, fragment, query) = HrefUtility.SplitHref(href);
-
-            var resolvedHref = Uri.EscapeUriString(file.SiteUrl) + fragment + query;
-            if (href[0] == '/')
-            {
-                return (resolvedHref, file);
-            }
+            var resolvedHref = file.SiteUrl + fragmentQuery;
 
             if (resultRelativeTo == null)
             {
                 return (resolvedHref, file);
             }
 
+            // Make result relative to `resultRelativeTo`
             resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
 
-            return (Uri.EscapeUriString(resolvedHref) + fragment + query, file);
+            return (resolvedHref + fragmentQuery, file);
         }
 
-        private static Document TryResolveHref(this Document relativeTo, string href)
+        private static (Document file, string fragmentQuery) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return default;
+                return (null, null);
             }
 
-            if (!HrefUtility.IsRelativeHref(href))
+            var (path, fragment, query) = HrefUtility.SplitHref(href);
+            var fragmentQuery = fragment + query;
+
+            // Self bookmark link
+            if (string.IsNullOrEmpty(path))
             {
                 return default;
             }
 
-            var (hrefPath, _, _) = HrefUtility.SplitHref(href);
-            var docset = relativeTo.Docset;
-
-            var path = hrefPath;
-            if (hrefPath[0] == '~')
+            // Leave absolute URL path as is
+            if (path.StartsWith('/') || path.StartsWith('\\'))
             {
-                if (hrefPath.Length <= 1 || (hrefPath[1] != '/' && hrefPath[1] != '\\'))
-                {
-                    return default;
-                }
-                path = hrefPath.Substring(2);
-
-                var relativePath = Path.GetRelativePath(Path.GetDirectoryName(relativeTo.FilePath), path);
-                return relativeTo.TryResolveFile(relativePath);
+                return default;
             }
 
-            return relativeTo.TryResolveFile(path);
+            // Leave absolute file path as is
+            if (Path.IsPathRooted(path))
+            {
+                // TODO: report warnings
+                return (null, null);
+            }
+
+            // Leave invalid file path as is
+            if (PathUtility.FilePathHasInvalidChars(path))
+            {
+                return (null, null);
+            }
+
+            // Resolve path relative to docset
+            if (path.StartsWith("~\\") || path.StartsWith("~/"))
+            {
+                return (Document.TryCreate(relativeTo.Docset, path.Substring(2)), fragmentQuery);
+            }
+
+            // Resolve path relative to input file
+            var pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
+
+            return (Document.TryCreate(relativeTo.Docset, pathToDocset), fragmentQuery);
         }
     }
 }
