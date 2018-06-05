@@ -10,21 +10,21 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        public static string ProcessHtml(string html)
+        public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            StripTags(doc.DocumentNode);
-            return doc.DocumentNode.OuterHtml;
+            return transform(doc.DocumentNode).OuterHtml;
         }
 
-        public static void AddLinkType(HtmlNode html, string locale)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);
             AddLinkType(html, "img", "src", locale);
+            return html;
         }
 
-        private static void AddLinkType(HtmlNode html, string tag, string attribute, string locale)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
         {
             foreach (var node in html.Descendants(tag))
             {
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void RemoveRerunCodepenIframes(HtmlNode html)
+        public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
 	          // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
@@ -94,9 +94,10 @@ namespace Microsoft.Docs.Build
                     src.Value += "&rerun-position=hidden&";
                 }
             }
+            return html;
         }
 
-        public static void StripTags(HtmlNode html)
+        public static HtmlNode StripTags(this HtmlNode html)
         {
             var nodesToRemove = new List<HtmlNode>();
 
@@ -118,6 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 node.Remove();
             }
+            return html;
         }
     }
 }

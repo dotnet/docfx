@@ -63,17 +63,14 @@ namespace Microsoft.Docs.Build
 
         public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)
         {
-            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
+            builder.Extensions.Add(new DelegatingExtension(setupPipeline: pipeline => pipeline.DocumentProcessed += documentProcessed));
             return builder;
         }
 
-        public static MarkdownPipelineBuilder Use<T>(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed, Action<HtmlRenderer, T> render)
+        public static MarkdownPipelineBuilder Use<T>(this MarkdownPipelineBuilder builder, Action<HtmlRenderer, T> render)
              where T : MarkdownObject
         {
-            builder.Extensions.Add(
-                new DelegatingExtension(
-                    pipeline => pipeline.DocumentProcessed += documentProcessed,
-                    renderer => renderer.ObjectRenderers.Add(new DelegatingRenderer<T>(render))));
+            builder.Extensions.Add(new DelegatingExtension(setupRenderer: renderer => renderer.ObjectRenderers.Add(new DelegatingRenderer<T>(render))));
             return builder;
         }
 

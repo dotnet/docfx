@@ -16,9 +16,11 @@ namespace Microsoft.Docs.Build
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
+            var content = HtmlUtility.TransformHtml(html, node => node.StripTags());
+
             var model = new PageModel
             {
-                Content = HtmlUtility.ProcessHtml(html),
+                Content = content,
                 Metadata = new PageMetadata
                 {
                     Title = markup.Title,

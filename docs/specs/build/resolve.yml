@@ -28,4 +28,16 @@ outputs:
   docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
   docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }'
   build.manifest:
+---
+# Resolve <a> and <img> tags embeded inside markdown
+inputs:
+  docfx.yml:
+  docs/a.md: Link to <a href="b.md" target="_blank">b</a>
+  docs/b.md: <div>Link to <img src="~/c.png" /></div>
+  docs/c.png:
+outputs:
+  docs/a.json: '{ "content": "<p>Link to <a href=\"b\" target="_blank">b</a></p>" }'
+  docs/b.json: '{ "content": "<div>Link to <img src=\"../c.png\" /></div>" }'
+  c.png:
+  build.manifest:
 
