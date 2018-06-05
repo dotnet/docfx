@@ -755,13 +755,23 @@ items:
         [Fact]
         public void LoadTocYamlWithEmptyNodeShouldSucceed()
         {
+            // Arrange
             var content = @"
 - name: x
   href: a.md
 -";
             var files = new FileCollection(_inputFolder);
-            files.Add(DocumentType.Article, new[] { _fileCreator.CreateFile(content, FileType.YamlToc) });
+            var file = _fileCreator.CreateFile(content, FileType.YamlToc);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // Act
             BuildDocument(files);
+
+            // Assert
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
+            Assert.Single(model.Items); // empty node is removed
         }
 
         #region Helper methods
