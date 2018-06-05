@@ -16,6 +16,16 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
         /// <summary>
+        /// Docset name.
+        /// </summary>
+        public readonly string DocsetName = string.Empty;
+
+        /// <summary>
+        /// Product name. _(ops `DepotName` = `<Product>.<DocsetName>`)_
+        /// </summary>
+        public readonly string Product = string.Empty;
+
+        /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
         public readonly string Locale = "en-us";

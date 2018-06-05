@@ -28,7 +28,10 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
-            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
+            var metadata = JsonUtility.Merge(
+                Metadata.GenerateRawMetadata(context, file, tocMap, html),
+                Metadata.GetFromConfig(file),
+                markup.Metadata);
 
             var model = new PageModel
             {
