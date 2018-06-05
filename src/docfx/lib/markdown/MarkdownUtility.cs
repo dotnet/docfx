@@ -69,14 +69,20 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                return ((Document)relativeTo).TryResolveContent(path);
+                var (error, content, file) = ((Document)relativeTo).TryResolveContent(path);
+                if (error != null)
+                {
+                    context.ReportWarning(error);
+                }
+
+                return (content, file);
             }
 
             string GetLink(string path, object relativeTo)
             {
                 Debug.Assert(relativeTo is Document);
 
-                return resolveHref((Document)relativeTo, path, file);
+                return resolveHref((Document)relativeTo, path);
             }
         }
     }

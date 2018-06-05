@@ -22,5 +22,14 @@ namespace Microsoft.Docs.Build
 
         public static DocfxException InvalidYamlHeader(Document file, Exception ex)
             => new DocfxException("invalid-yaml-header", ex.Message, file.ToString());
+
+        public static DocfxException LinkIsEmpty(Document file)
+            => new DocfxException("link-is-empty", "File has an empty link", file.ToString());
+
+        public static DocfxException LinkIsAbsolute(Document file, string link)
+            => new DocfxException("link-is-aboslute", $"Cannot resolve link to absolute file path '{link}'", file.ToString());
+
+        public static DocfxException LinkNotFound(Document file, string link)
+            => new DocfxException("link-not-found", $"Cannot find link to file '{link}'", file.ToString());
     }
 }

@@ -1,0 +1,31 @@
+---
+# Links to files are solved to relative url
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b.md)
+  docs/b.md: Link to [a](./a.md)
+outputs:
+  docs/a.json: '{ "content": "<p>Link to <a href=\"b\">b</a></p>" }'
+  docs/b.json: '{ "content": "<p>Link to <a href=\"a\">a</a></p>" }'
+  build.manifest:
+---
+# Support both / and \ as directory seperator
+inputs:
+  docfx.yml:
+  docs/dir-a/a.md: Link to [b](..\dir-b/b.md)
+  docs/dir-b/b.md: Link to [a](../dir-a\a.md)
+outputs:
+  docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
+  docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }'
+  build.manifest:
+---
+# Path starting with ~ resolves from docset root directory
+inputs:
+  docfx.yml:
+  docs/dir-a/a.md: Link to [b](~/docs/dir-b/b.md)
+  docs/dir-b/b.md: Link to [a](~docs/dir-a/a.md)
+outputs:
+  docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
+  docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }'
+  build.manifest:
+
