@@ -73,11 +73,11 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedTocPath);
                 },
-                (file, href) =>
+                (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (link, buildItem) = file.TryResolveHref(href, fileToBuild);
+                    var (link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);

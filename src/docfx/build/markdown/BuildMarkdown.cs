@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
             context.WriteJson(model, file.OutputPath);
             return Task.CompletedTask;
 
-            string ResolveHref(Document relativeTo, string href)
+            string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
             {
-                var (link, buildItem) = relativeTo.TryResolveHref(href, file);
+                var (link, buildItem) = relativeTo.TryResolveHref(href, resultRelativeTo);
                 if (buildItem != null)
                 {
                     buildChild(buildItem);
