@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             var path = file.ToString();
 
-            foreach (var error in exceptions.Take(Errors.MaxCountPerDocument))
+            foreach (var error in exceptions)
             {
                 Report(path == error.File || !string.IsNullOrEmpty(error.File)
                     ? error

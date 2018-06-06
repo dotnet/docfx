@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         {
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(markdown, file, ResolveHref);
+            var (html, markup) = MarkdownUtility.Markup(markdown, file, buildChild);
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
@@ -32,16 +32,6 @@ namespace Microsoft.Docs.Build
             context.WriteJson(model, file.OutputPath);
 
             return Task.CompletedTask;
-
-            string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
-            {
-                var (error, link, buildItem) = relativeTo.TryResolveHref(href, resultRelativeTo);
-                if (buildItem != null)
-                {
-                    buildChild(buildItem);
-                }
-                return link;
-            }
         }
     }
 }

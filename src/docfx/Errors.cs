@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
-        public const int MaxCountPerDocument = 50;
-
         public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException(ReportLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 

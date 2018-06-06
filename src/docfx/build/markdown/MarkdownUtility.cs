@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        public static (string html, MarkupResult result) Markup(string markdown, Document file, ResolveHref resolveHref)
+        public static (string html, MarkupResult result) Markup(string markdown, Document file, Action<Document> buildChild)
         {
             var errors = new List<DocfxException>();
             var metadata = new StrongBox<JObject>();
@@ -66,18 +66,12 @@ namespace Microsoft.Docs.Build
 
             void LogError(string code, string message, string doc, int line)
             {
-                if (errors.Count < Errors.MaxCountPerDocument)
-                {
-                    errors.Add(new DocfxException(ReportLevel.Error, code, message, doc, line));
-                }
+                errors.Add(new DocfxException(ReportLevel.Error, code, message, doc, line));
             }
 
             void LogWarning(string code, string message, string doc, int line)
             {
-                if (errors.Count < Errors.MaxCountPerDocument)
-                {
-                    errors.Add(new DocfxException(ReportLevel.Warning, code, message, doc, line));
-                }
+                errors.Add(new DocfxException(ReportLevel.Warning, code, message, doc, line));
             }
 
             (string content, object file) ReadFile(string path, object relativeTo)
@@ -85,7 +79,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(relativeTo is Document);
 
                 var (error, content, _) = ((Document)relativeTo).TryResolveContent(path);
-                if (error != null && errors.Count < Errors.MaxCountPerDocument)
+                if (error != null)
                 {
                     errors.Add(error);
                 }
@@ -97,7 +91,12 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                return resolveHref((Document)relativeTo, path, file);
+                var (error, link, buildItem) = ((Document)relativeTo).TryResolveHref(path, file);
+                if (buildItem != null)
+                {
+                    buildChild(buildItem);
+                }
+                return link;
             }
         }
     }
