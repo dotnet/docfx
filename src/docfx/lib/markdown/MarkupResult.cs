@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
     {
         public string Title;
 
+        public bool HasHtml;
+
         public JObject Metadata;
     }
 }
