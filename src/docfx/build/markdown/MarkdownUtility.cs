@@ -79,6 +79,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(relativeTo is Document);
 
                 var (error, content, _) = ((Document)relativeTo).TryResolveContent(path);
+
                 if (error != null)
                 {
                     errors.Add(error);
@@ -91,11 +92,13 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (error, link, buildItem) = ((Document)relativeTo).TryResolveHref(path, file);
-                if (buildItem != null)
+                var (error, link, child) = ((Document)relativeTo).TryResolveHref(path, file);
+
+                if (child != null)
                 {
-                    buildChild(buildItem);
+                    buildChild(child);
                 }
+
                 return link;
             }
         }

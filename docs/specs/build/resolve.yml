@@ -5,8 +5,10 @@ inputs:
   docs/a.md: Link to [b](b.md)
   docs/b.md: Link to [a](./a.md)
 outputs:
-  docs/a.json: '{ "content": "<p>Link to <a href=\"b\">b</a></p>" }'
-  docs/b.json: '{ "content": "<p>Link to <a href=\"a\">a</a></p>" }'
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"a\">a</a></p>" }
   build.manifest:
 ---
 # Support both / and \ as directory seperator
@@ -15,8 +17,10 @@ inputs:
   docs/dir-a/a.md: Link to [b](..\dir-b/b.md)
   docs/dir-b/b.md: Link to [a](../dir-a\a.md)
 outputs:
-  docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
-  docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }'
+  docs/dir-a/a.json: |
+    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
+  docs/dir-b/b.json: |
+    { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
   build.manifest:
 ---
 # Path starting with ~ resolves from docset root directory
@@ -25,8 +29,10 @@ inputs:
   docs/dir-a/a.md: Link to [b](~/docs/dir-b/b.md)
   docs/dir-b/b.md: Link to [a](~docs/dir-a/a.md)
 outputs:
-  docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
-  docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }'
+  docs/dir-a/a.json: |
+    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
+  docs/dir-b/b.json: |
+    { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
   build.manifest:
 ---
 # Links in include files are resolved relative to the include file
@@ -36,8 +42,10 @@ inputs:
   docs/dir/b.md: '[c](c.md)'
   docs/dir/c.md:
 outputs:
-  docs/a.json: '{ "content": "<p>Link to <a href=\"dir/c\">c</a></p>" }'
-  docs/dir/b.json: '{ "content": "<p><a href=\"c\">c</a></p>" }'
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"dir/c\">c</a></p>" }
+  docs/dir/b.json: |
+    { "content": "<p><a href=\"c\">c</a></p>" }
   docs/dir/c.json:
   build.manifest:
 ---
@@ -48,8 +56,10 @@ inputs:
   docs/b.md: <div>Link to <img src="~/docs/c.png" /></div>
   docs/c.png:
 outputs:
-  docs/a.json: '{ "content": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }'
-  docs/b.json: '{ "content": "<div>Link to <img src=\"c.png\" /></div>" }'
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
+  docs/b.json: |
+    { "content": "<div>Link to <img src=\"c.png\" /></div>" }
   docs/c.png:
   build.manifest:
 ---
@@ -60,7 +70,9 @@ inputs:
   docs/dir/b.md: '<a target="_blank" href="c.md">c</a>'
   docs/dir/c.md:
 outputs:
-  docs/a.json: '{ "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }'
-  docs/dir/b.json: '{ "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }'
+  docs/a.json: |
+    { "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }
+  docs/dir/b.json: |
+    { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
   build.manifest:
