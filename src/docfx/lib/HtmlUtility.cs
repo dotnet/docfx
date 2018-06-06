@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in html.Descendants("iframe"))
             {
                 var src = node.GetAttributeValue("src", null);
-                if (src != null && src.Contains("codepen.io"))
+                if (src != null && src.Contains("codepen.io", StringComparison.OrdinalIgnoreCase))
                 {
                     node.SetAttributeValue("src", src + "&rerun-position=hidden&");
                 }
@@ -126,8 +126,8 @@ namespace Microsoft.Docs.Build
         public static string TransformLinks(this string html, Func<string, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
-            if (!((html.Contains("<a") && html.Contains("href")) ||
-                  (html.Contains("<img") && html.Contains("src"))))
+            if (!((html.Contains("<a", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)) ||
+                  (html.Contains("<img", StringComparison.OrdinalIgnoreCase) && html.Contains("src", StringComparison.OrdinalIgnoreCase))))
             {
                 return html;
             }
