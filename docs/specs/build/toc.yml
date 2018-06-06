@@ -207,17 +207,7 @@ outputs:
           {  
              "children":[  
                 {  
-                   "children":[  
-                      {  
-                         "children":[  
-                            {  
-                               "toc_title":"Index Reference",
-                               "href":"f1/f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference"
-                      }
-                   ],
+                   "href": "f1/f11/",
                    "toc_title":"Reference TOC File"
                 }
              ],
@@ -294,12 +284,7 @@ outputs:
              "href":"f11/n1"
           },
           {  
-             "children":[  
-                {  
-                   "toc_title":"Index Reference",
-                   "href":"f11/n1"
-                }
-             ],
+             "href":"f11/n1",
              "toc_title":"Toc Reference 2"
           }
        ]
@@ -391,3 +376,52 @@ inputs:
 outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: docs/toc.md --> docs/toc.md","docs/toc.md"]
+---
+# Reference to a folder
+inputs:
+  docfx.yml:
+  docs/toc.md: |
+    # [Reference TOC File 1](f1/toc.yml)
+  docs/f1/toc.yml: |
+    - name: Toc Reference
+      href: f11/toc.md
+    - name: Folder Reference1
+      href: f11/
+    - name: Folder Reference2
+      href: f11/
+      topicHref: f11/a.md
+  docs/f1/f11/toc.md: |
+    # [Index Reference](index.md)
+  docs/f1/f11/index.md:
+  docs/f1/f11/a.md:
+outputs:
+  docs/f1/f11/a.json:
+  docs/f1/f11/index.json:
+  docs/toc.json: |
+   {  
+       "items":[  
+          {  
+             "children":[  
+                {  
+                   "children":[  
+                      {  
+                         "href":"f1/f11/",
+                         "toc_title":"Index Reference"
+                      }
+                   ],
+                   "toc_title":"Toc Reference"
+                },
+                {  
+                   "href":"f1/f11/",
+                   "toc_title":"Folder Reference1"
+                },
+                {  
+                   "href":"f1/f11/a",
+                   "toc_title":"Folder Reference2"
+                }
+             ],
+             "toc_title":"Reference TOC File 1"
+          }
+       ]
+    }
+  build.manifest:

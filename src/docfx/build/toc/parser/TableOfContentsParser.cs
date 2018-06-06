@@ -14,28 +14,6 @@ namespace Microsoft.Docs.Build
         public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
             => LoadInputModelItems(tocContent, isYaml, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
 
-        private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
-        {
-            parents = parents ?? new List<Document>();
-
-            // add to parent path
-            if (parents.Contains(filePath))
-            {
-                throw Errors.CircularReference(filePath, parents);
-            }
-
-            parents.Add(filePath);
-            var models = isYaml ? LoadYamlTocModel(tocContent, filePath.FilePath) : LoadMdTocModel(tocContent, filePath.FilePath);
-
-            if (models != null && models.Any())
-            {
-                ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref);
-                parents.RemoveAt(parents.Count - 1);
-            }
-
-            return models;
-        }
-
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
         {
             var content = tocContent.Replace("\r\n", "\n", StringComparison.OrdinalIgnoreCase).Replace("\r", "\n", StringComparison.OrdinalIgnoreCase);
@@ -100,6 +78,28 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is not a valid TOC file.");
         }
 
+        private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+        {
+            parents = parents ?? new List<Document>();
+
+            // add to parent path
+            if (parents.Contains(filePath))
+            {
+                throw Errors.CircularReference(filePath, parents);
+            }
+
+            parents.Add(filePath);
+            var models = isYaml ? LoadYamlTocModel(tocContent, filePath.FilePath) : LoadMdTocModel(tocContent, filePath.FilePath);
+
+            if (models != null && models.Any())
+            {
+                ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref);
+                parents.RemoveAt(parents.Count - 1);
+            }
+
+            return models;
+        }
+
         // tod: uid support
         private static void ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null)
         {
@@ -132,8 +132,16 @@ namespace Microsoft.Docs.Build
                         var (referencedTocContent, referenceTocFilePath, isYamlToc) = ResolveTocHrefContent(hrefType, tocModelItem.Href, filePath, resolveContent);
                         if (referencedTocContent != null)
                         {
-                            tocModelItem.Items = LoadInputModelItems(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
-                            tocModelItem.Href = topicHref;
+                            var nestedTocItems = LoadInputModelItems(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                            if (hrefType == TocHrefType.RelativeFolder)
+                            {
+                                tocModelItem.Href = string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref;
+                            }
+                            else
+                            {
+                                tocModelItem.Items = nestedTocItems;
+                                tocModelItem.Href = topicHref;
+                            }
                         }
                     }
                     else
@@ -144,6 +152,34 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private static string GetFirstHref(List<TableOfContentsInputItem> nestedTocItems)
+        {
+            if (nestedTocItems == null || !nestedTocItems.Any())
+            {
+                return null;
+            }
+
+            foreach (var nestedTocItem in nestedTocItems)
+            {
+                if (!string.IsNullOrEmpty(nestedTocItem.Href))
+                {
+                    return nestedTocItem.Href;
+                }
+            }
+
+            foreach (var nestedTocItem in nestedTocItems)
+            {
+                var href = GetFirstHref(nestedTocItem.Items);
+
+                if (!string.IsNullOrEmpty(href))
+                {
+                    return href;
+                }
+            }
+
+            return null;
         }
 
         private static bool IsIncludeHref(TocHrefType tocHrefType)
