@@ -20,11 +20,6 @@ namespace Microsoft.Docs.Build
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
 
-            if (spec.Skip)
-            {
-                return;
-            }
-
             await Program.Run(new[] { "build", docsetPath });
 
             var docsetOutputPath = Path.Combine(docsetPath, "_site");

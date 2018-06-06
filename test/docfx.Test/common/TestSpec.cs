@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     public class TestSpec
     {
-        public readonly bool Skip;
-
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
