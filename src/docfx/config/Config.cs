@@ -26,11 +26,6 @@ namespace Microsoft.Docs.Build
         public readonly FileConfig Content = new FileConfig(s_defaultContentInclude, s_defaultContentExclude);
 
         /// <summary>
-        /// Gets the output config.
-        /// </summary>
-        public readonly OutputConfig Output = new OutputConfig();
-
-        /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
         public readonly JObject GlobalMetadata = new JObject();

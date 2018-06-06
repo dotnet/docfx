@@ -16,9 +16,7 @@ namespace Microsoft.Docs.Build
         {
             var config = Config.Load(docsetPath, options);
 
-            reporter.Configure(docsetPath, config);
-
-            var outputPath = Path.Combine(docsetPath, config.Output.Path);
+            var outputPath = Path.Combine(docsetPath, options.Output);
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
@@ -30,9 +28,9 @@ namespace Microsoft.Docs.Build
 
             BuildManifest.Build(context, documents);
 
-            if (options.OutputLegacyModel)
+            if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, documents);
+                Legacy.ConvertToLegacyModel(options, docset, context, documents);
             }
         }
 

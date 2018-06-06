@@ -15,14 +15,11 @@ namespace Microsoft.Docs.Build
         private readonly object _lock = new object();
         private Lazy<TextWriter> _output;
 
-        public void Configure(string docsetPath, Config config)
+        public Reporter(string outputPath)
         {
-            Debug.Assert(_output == null, "Cannot change report output path");
-
-            // TODO: errors and warnings before config loaded are lost, need a way to report them back to host
             _output = new Lazy<TextWriter>(() =>
             {
-                var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
+                var outputFilePath = Path.GetFullPath(Path.Combine(outputPath, "build.log"));
 
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
