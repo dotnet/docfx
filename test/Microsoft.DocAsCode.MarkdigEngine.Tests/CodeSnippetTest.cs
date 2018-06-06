@@ -481,6 +481,52 @@ public static void Foo()
         }
 
         [Fact]
+        public void TestIssue2830()
+        {
+            // arrange
+            var content = @"namespace KORM.Test.Performance.Doc
+{
+    internal class IQueryExample
+    {
+        public void SelectExample()
+        {
+            using (var database = new Database(new SqlConnection()))
+            {
+                #region Select
+                var people = database.Query<Person>()
+                    .Select(""p.Id"", ""FirstName"", ""LastName"", ""PostCode"")
+                    .From(""Person JOIN Address ON (Person.AddressId = Address.Id)"")
+                    .Where(""Age > @1"", 18);
+
+                foreach (var person in people)
+                {
+                    Console.WriteLine(person.FirstName);
+                }
+                #endregion
+            }
+        }
+    }
+}";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var marked = SimpleMarkup(@"[!code[Issue2830](Program.cs?name=Select)]");
+
+            // assert
+            Assert.Equal(@"<pre><code name=""Issue2830"">var people = database.Query&lt;Person&gt;()
+    .Select(&quot;p.Id&quot;, &quot;FirstName&quot;, &quot;LastName&quot;, &quot;PostCode&quot;)
+    .From(&quot;Person JOIN Address ON (Person.AddressId = Address.Id)&quot;)
+    .Where(&quot;Age &gt; @1&quot;, 18);
+
+foreach (var person in people)
+{
+    Console.WriteLine(person.FirstName);
+}
+</code></pre>".Replace("\r\n", "\n"), marked.Html);
+        }
+
+
+        [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmFencesBlockLevelWithWhitespaceLeading()
         {
