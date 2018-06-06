@@ -54,6 +54,7 @@ namespace Microsoft.Docs.Build
         [InlineData("", "")]
         [InlineData("</a>", "</a>")]
         [InlineData("<a href='hello'>", "<a href='666'>")]
+        [InlineData("<a href=''>", "<a href='666'>")]
         [InlineData("<a href = 'hello'>", "<a href = '666'>")]
         [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
         [InlineData("<img src='a/b.png' />", "<img src='666' />")]
