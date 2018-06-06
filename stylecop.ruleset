@@ -39,6 +39,8 @@
     <Rule Id="SA1615" Action="None" />
     <!-- SA1618GenericTypeParametersMustBeDocumented -->
     <Rule Id="SA1618" Action="None" />
+    <!-- SA1642ConstructorSummaryDocumentationMustBeginWithStandardText -->
+    <Rule Id="SA1642" Action="None" />
     <!-- SA1649FileNameMustMatchTypeName -->
     <Rule Id="SA1649" Action="None" />
     <!-- SA1652EnableXMLDocumentOutput -->

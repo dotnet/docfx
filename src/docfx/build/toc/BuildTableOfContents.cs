@@ -63,10 +63,9 @@ namespace Microsoft.Docs.Build
                 fileToBuild.ReadText(),
                 fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
                 fileToBuild,
-                fileToBuild,
-                (a, b) =>
+                (file, href) =>
                 {
-                    var (referencedTocContent, referencedTocPath) = a.TryResolveContent(b);
+                    var (referencedTocContent, referencedTocPath) = file.TryResolveContent(href);
                     if (referencedTocPath != null)
                     {
                         // add to referenced toc list
@@ -74,16 +73,15 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedTocPath);
                 },
-                (a, b, c) =>
+                (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (link, buildItem) = Resolve.TryResolveHref(a, b, c);
+                    var (link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
                     }
-
                     return link;
                 });
 

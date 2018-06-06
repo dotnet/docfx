@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => new Document(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
                            .ToList();
         }
 

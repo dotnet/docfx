@@ -55,7 +55,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string OutputPath { get; }
 
-        public Document(Docset docset, string filePath)
+        /// <summary>
+        /// Intentionally left as private. Use <see cref="Document.TryCreate(Docset, string)"/> instead.
+        /// </summary>
+        internal Document(Docset docset, string filePath)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
@@ -63,6 +66,8 @@ namespace Microsoft.Docs.Build
 
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath);
+
+            // TODO: handle URL escape
             SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
             SitePath = GetSitePath(SiteUrl, ContentType);
             OutputPath = SitePath;
@@ -120,15 +125,50 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Resolves a new <see cref="Document"/> based on the <paramref name="relativePath"/>
-        /// relative to this <see cref="Document"/>.
+        /// Opens a new <see cref="Document"/> based on the path relative to docset.
         /// </summary>
-        public Document TryResolveFile(string relativePath)
+        /// <param name="docset">The current docset</param>
+        /// <param name="path">The path relative to docset root</param>
+        /// <returns>A new document, or null if not found</returns>
+        public static Document TryCreate(Docset docset, string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(relativePath));
-            Debug.Assert(!Path.IsPathRooted(relativePath));
+            Debug.Assert(docset != null);
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!PathUtility.FilePathHasInvalidChars(path));
+            Debug.Assert(!Path.IsPathRooted(path));
 
-            return TryResolveFromPathToDocset(Docset, Path.Combine(Path.GetDirectoryName(FilePath), relativePath));
+            path = PathUtility.NormalizeFile(path);
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, path)))
+            {
+                return new Document(docset, path);
+            }
+
+            // todo: localization fallback logic
+            // todo: redirection files
+
+            // resolve from dependent docsets
+            foreach (var (dependencyName, url) in docset.Config.Dependencies)
+            {
+                if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    // the file stored in the dependent docset should start with dependency name
+                    continue;
+                }
+
+                var (docsetPath, _, _) = Restore.GetGitRestoreInfo(url);
+                var dependentDocset = docset.DependentDocset[dependencyName];
+                var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
+
+                var dependencyFile = TryCreate(dependentDocset, relativePathToDependentDocset);
+                if (dependencyFile != null)
+                {
+                    return dependencyFile;
+                }
+            }
+
+            return default;
         }
 
         internal static ContentType GetContentType(string path)
@@ -199,53 +239,6 @@ namespace Microsoft.Docs.Build
                 default:
                     return path;
             }
-        }
-
-        /// <summary>
-        /// Resolve a new <see cref="Document"/> based on the path relative to docset root
-        /// </summary>
-        /// <param name="docset">The current docset</param>
-        /// <param name="path">The path relative to docset root</param>
-        /// <returns>A new document</returns>
-        internal static Document TryResolveFromPathToDocset(Docset docset, string path)
-        {
-            Debug.Assert(docset != null);
-            Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(!PathUtility.FilePathHasInvalidChars(path));
-
-            path = PathUtility.NormalizeFile(path);
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, path)))
-            {
-                return new Document(docset, path);
-            }
-
-            // todo: localization fallback logic
-            // todo: redirection files
-
-            // resolve from dependent docsets
-            foreach (var (dependencyName, url) in docset.Config.Dependencies)
-            {
-                if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
-                {
-                    // the file stored in the dependent docset should start with dependency name
-                    continue;
-                }
-
-                var (docsetPath, _, _) = Restore.GetGitRestoreInfo(url);
-                var dependentDocset = docset.DependentDocset[dependencyName];
-                var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
-
-                var buildItem = TryResolveFromPathToDocset(dependentDocset, relativePathToDependentDocset);
-
-                if (buildItem != null)
-                {
-                    return buildItem;
-                }
-            }
-
-            return default;
         }
 
         private static string ApplyRoutes(string path, RouteConfig[] routes)
