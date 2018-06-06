@@ -6,5 +6,5 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal delegate string ResolveHref(Document relativeTo, string href);
+    internal delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 }

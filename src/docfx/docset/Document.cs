@@ -66,6 +66,8 @@ namespace Microsoft.Docs.Build
 
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath);
+
+            // TODO: handle URL escape
             SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
             SitePath = GetSitePath(SiteUrl, ContentType);
             OutputPath = SitePath;

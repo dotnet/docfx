@@ -23,18 +23,13 @@ namespace Microsoft.Docs.Build
             var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(rawPageOutputPath));
             if (!string.IsNullOrEmpty(pageModel.Content))
             {
-                pageModel.Content = PostProcessHtml(pageModel.Content, docset.Config.Locale);
+                pageModel.Content = HtmlUtility.TransformHtml(
+                    pageModel.Content,
+                    node => node.AddLinkType(docset.Config.Locale)
+                                .RemoveRerunCodepenIframes());
             }
 
             context.WriteJson(pageModel, rawPageOutputPath);
-        }
-
-        private static string PostProcessHtml(string content, string locale)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(content);
-            HtmlUtility.AddLinkType(doc.DocumentNode, locale);
-            return doc.DocumentNode.OuterHtml;
         }
     }
 }

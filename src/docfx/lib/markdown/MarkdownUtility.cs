@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Markdig;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Newtonsoft.Json.Linq;
@@ -33,46 +32,62 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context, ResolveHref resolveHref)
+        public static (string html, MarkupResult result) Markup(string markdown, Document file, ResolveHref resolveHref)
         {
+            var errors = new List<DocfxException>();
+            var metadata = new StrongBox<JObject>();
+            var title = new StrongBox<string>();
+            var hasHtml = new StrongBox<bool>();
+
+            var markdownContext = new MarkdownContext(s_markdownTokens, LogWarning, LogError, ReadFile, GetLink);
+
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader(file, errors, metadata)
+                .UseExtractTitle(title)
+                .UseResolveHtmlLinks(markdownContext, hasHtml)
+                .Build();
+
             using (InclusionContext.PushFile(file))
             {
-                var metadata = new StrongBox<JObject>();
-                var title = new StrongBox<string>();
-
-                var markdownContext = new MarkdownContext(
-                    s_markdownTokens,
-                    context.ReportWarning,
-                    context.ReportError,
-                    ReadFile,
-                    GetLink);
-
-                var pipeline = new MarkdownPipelineBuilder()
-                    .UseYamlFrontMatter()
-                    .UseDocfxExtensions(markdownContext)
-                    .UseExtractYamlHeader(context, file, metadata)
-                    .UseExtractTitle(title)
-                    .Build();
-
                 var html = Markdown.ToHtml(markdown, pipeline);
 
                 var result = new MarkupResult
                 {
                     Title = title.Value,
+                    HasHtml = hasHtml.Value,
                     Metadata = metadata.Value,
+                    Errors = errors,
                 };
 
                 return (html, result);
+            }
+
+            void LogError(string code, string message, string doc, int line)
+            {
+                if (errors.Count < Errors.MaxCountPerDocument)
+                {
+                    errors.Add(new DocfxException(ReportLevel.Error, code, message, doc, line));
+                }
+            }
+
+            void LogWarning(string code, string message, string doc, int line)
+            {
+                if (errors.Count < Errors.MaxCountPerDocument)
+                {
+                    errors.Add(new DocfxException(ReportLevel.Warning, code, message, doc, line));
+                }
             }
 
             (string content, object file) ReadFile(string path, object relativeTo)
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (error, content, file) = ((Document)relativeTo).TryResolveContent(path);
+                var (error, content, _) = ((Document)relativeTo).TryResolveContent(path);
                 if (error != null)
                 {
-                    context.ReportWarning(error);
+                    errors.Add(error);
                 }
 
                 return (content, file);
@@ -82,7 +97,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                return resolveHref((Document)relativeTo, path);
+                return resolveHref((Document)relativeTo, path, file);
             }
         }
     }

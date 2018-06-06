@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,34 +19,27 @@ namespace Microsoft.Docs.Build
             _outputPath = Path.GetFullPath(outputPath);
         }
 
-        public void ReportError(string code, string message, string file = null, int line = 0)
+        /// <summary>
+        /// Reports errors and warnings defined in <see cref="Errors"/>.
+        /// </summary>
+        public void Report(Document file, IEnumerable<DocfxException> exceptions)
         {
-            _reporter.Report(ReportLevel.Error, code, message, file, line);
+            var path = file.ToString();
+
+            foreach (var error in exceptions.Take(Errors.MaxCountPerDocument))
+            {
+                Report(path == error.File || !string.IsNullOrEmpty(error.File)
+                    ? error
+                    : new DocfxException(error.Level, error.Code, error.Message, path, error.Line, error.Column, error.InnerException));
+            }
         }
 
-        public void ReportError(DocfxException exception)
+        /// <summary>
+        /// Reports an error or warning defined in <see cref="Errors"/>.
+        /// </summary>
+        public void Report(DocfxException exception)
         {
-            _reporter.Report(ReportLevel.Error, exception.Code, exception.Message, exception.File, exception.Line, exception.Column);
-        }
-
-        public void ReportWarning(string code, string message, string file = null, int line = 0)
-        {
-            _reporter.Report(ReportLevel.Warning, code, message, file, line);
-        }
-
-        public void ReportWarning(DocfxException exception)
-        {
-            _reporter.Report(ReportLevel.Warning, exception.Code, exception.Message, exception.File, exception.Line, exception.Column);
-        }
-
-        public void ReportInfo(string code, string message, string file = null, int line = 0)
-        {
-            _reporter.Report(ReportLevel.Info, code, message, file, line);
-        }
-
-        public void ReportInfo(DocfxException exception)
-        {
-            _reporter.Report(ReportLevel.Info, exception.Code, exception.Message, exception.File, exception.Line, exception.Column);
+            _reporter.Report(exception.Level, exception.Code, exception.Message, exception.File, exception.Line, exception.Column);
         }
 
         /// <summary>

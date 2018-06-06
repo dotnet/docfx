@@ -12,13 +12,15 @@ namespace Microsoft.Docs.Build
         {
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(markdown, file, context, ResolveHref);
+            var (html, markup) = MarkdownUtility.Markup(markdown, file, ResolveHref);
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
+            var content = markup.HasHtml ? HtmlUtility.TransformHtml(html, node => node.StripTags()) : html;
+
             var model = new PageModel
             {
-                Content = HtmlUtility.ProcessHtml(html),
+                Content = content,
                 Metadata = new PageMetadata
                 {
                     Title = markup.Title,
@@ -26,12 +28,14 @@ namespace Microsoft.Docs.Build
                 },
             };
 
+            context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
+
             return Task.CompletedTask;
 
-            string ResolveHref(Document relativeTo, string href)
+            string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
             {
-                var (error, link, buildItem) = relativeTo.TryResolveHref(href, file);
+                var (error, link, buildItem) = relativeTo.TryResolveHref(href, resultRelativeTo);
                 if (buildItem != null)
                 {
                     buildChild(buildItem);

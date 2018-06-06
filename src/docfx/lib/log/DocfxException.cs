@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class DocfxException : Exception
     {
+        public ReportLevel Level { get; }
+
         public string Code { get; }
 
         public string File { get; }
@@ -20,6 +22,7 @@ namespace Microsoft.Docs.Build
         public int Column { get; }
 
         public DocfxException(
+            ReportLevel level,
             string code,
             string message,
             string file = null,

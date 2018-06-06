@@ -15,13 +15,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
-            var (tocModel, refArticles, refTocs) = Load(file);
+            var (errors, tocModel, refArticles, refTocs) = Load(file);
 
             foreach (var article in refArticles)
             {
                 buildChild(article);
             }
 
+            context.Report(file, errors);
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
             return Task.CompletedTask;
@@ -48,15 +49,22 @@ namespace Microsoft.Docs.Build
             Debug.Assert(tocMapBuilder != null);
             Debug.Assert(fileToBuild != null);
 
-            var (tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+            var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
             tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
 
             return Task.CompletedTask;
         }
 
-        private static (List<TableOfContentsItem> tocModel, List<Document> referencedDocuments, List<Document> referencedTocs) Load(Document fileToBuild)
+        private static (
+            List<DocfxException> errors,
+            List<TableOfContentsItem> tocModel,
+            List<Document> referencedDocuments,
+            List<Document> referencedTocs)
+
+            Load(Document fileToBuild)
         {
+            var errors = new List<DocfxException>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
             var tocViewModel = TableOfContentsParser.Load(
@@ -73,11 +81,11 @@ namespace Microsoft.Docs.Build
                     }
                     return (referencedTocContent, referencedTocPath);
                 },
-                (file, href) =>
+                (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, buildItem) = file.TryResolveHref(href, fileToBuild);
+                    var (error, link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
@@ -85,7 +93,7 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
-            return (tocViewModel, referencedDocuments, referencedTocs);
+            return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }
 }
