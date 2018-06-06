@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents)
+        public static void ConvertToLegacyModel(CommandLineOptions options, Docset docset, Context context, List<Document> documents)
         {
             var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             {
                 var outputFileName = Path.GetFileName(document.OutputPath);
                 var relativeOutputFilePath = document.OutputPath;
-                var absoluteOutputFilePath = Path.Combine(docset.Config.Output.Path, relativeOutputFilePath);
+                var absoluteOutputFilePath = Path.Combine(docset.DocsetPath, options.Output, relativeOutputFilePath);
                 var legacyOutputFilePathRelativeToSiteBasePath = relativeOutputFilePath;
                 if (relativeOutputFilePath.StartsWith(docset.Config.SiteBasePath, StringComparison.Ordinal))
                 {

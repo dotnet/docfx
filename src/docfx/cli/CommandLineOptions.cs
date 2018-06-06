@@ -7,17 +7,10 @@ namespace Microsoft.Docs.Build
 {
     internal class CommandLineOptions
     {
-        public string Output;
-        public string Log;
-        public bool OutputLegacyModel;
+        public string Output = "_site";
 
-        public JObject ToJObject() => new JObject
-        {
-            ["output"] = new JObject
-            {
-                ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-                ["logPath"] = Log != null ? (JValue)Log : JValue.CreateNull(),
-            },
-        };
+        public bool Legacy;
+
+        public JObject ToJObject() => new JObject();
     }
 }

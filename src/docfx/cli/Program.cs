@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Program
+    internal static class Program
     {
         internal static async Task<int> Main(string[] args)
         {
@@ -35,12 +35,18 @@ namespace Microsoft.Docs.Build
 
         internal static async Task<int> Run(string[] args)
         {
-            using (var reporter = new Reporter())
+            if (args.Length == 1 && args[0] == "--version")
+            {
+                Console.WriteLine(GetVersion());
+                return 0;
+            }
+
+            var (command, docset, options) = ParseCommandLineOptions(args);
+
+            using (var reporter = new Reporter(Path.Combine(docset, options.Output)))
             {
                 try
                 {
-                    var (command, docset, options) = ParseCommandLineOptions(args);
-
                     switch (command)
                     {
                         case "restore":
@@ -67,20 +73,25 @@ namespace Microsoft.Docs.Build
             var docset = ".";
             var options = new CommandLineOptions();
 
+            if (args.Length == 0)
+            {
+                // Show usage when just running `docfx`
+                args = new [] { "--help" };
+            }
+
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
                 // usage: docfx restore [docset]
-                syntax.DefineCommand("restore", ref command, "restores dependencies before build");
-                syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
+                syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
+                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command
                 // usage: docfx build [docset] [-o/--out output] [-l/--log log] [--legacy]
-                syntax.DefineCommand("build", ref command, "builds a folder containing docfx.yml");
-                syntax.DefineOption("o|out", ref options.Output, "output folder");
-                syntax.DefineOption("l|log", ref options.Log, "path to log file");
-                syntax.DefineOption("legacy", ref options.OutputLegacyModel, "output legacy model for backward compatibility");
-                syntax.DefineParameter("docset", ref docset, "docset path that contains docfx.yml");
+                syntax.DefineCommand("build", ref command, "Builds a docset.");
+                syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });
 
             return (command, docset, options);
