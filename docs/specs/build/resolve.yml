@@ -54,15 +54,13 @@ outputs:
   build.manifest:
 ---
 # Html links in include files are resolved relative to the include file
-# TODO: Markdig currently write include files as raw. 
-skip: true
 inputs:
   docfx.yml:
   docs/a.md: Link to [!INCLUDE[](dir/b.md)]
-  docs/dir/b.md: '<a target=\"_blank\" href="c.md">c</a>'
+  docs/dir/b.md: '<a target="_blank" href="c.md">c</a>'
   docs/dir/c.md:
 outputs:
   docs/a.json: '{ "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }'
-  docs/dir/b.json: '{ "content": "<p>Link to <a target=\"_blank\" href=\"c\">c</a></p>" }'
+  docs/dir/b.json: '{ "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }'
   docs/dir/c.json:
   build.manifest:
