@@ -446,19 +446,12 @@ outputs:
           }
        ]
     }
-  docs/f1/toc.json: |
-   {  
-       "items":[  
-          {  
-             "href": ".",
-             "toc_title":"Index Reference"
-          }
-       ]
-    }
+  docs/f1/toc.json:
   build.manifest:
 ---
 # Reference to a folder3
 # The href should be the first child with href in referenced toc
+# Horizontal traversal first
 inputs:
   docfx.yml:
   docs/toc.md: |
@@ -470,9 +463,8 @@ inputs:
   docs/f2/toc.md: |
     # Title1
     ## Child Title1
-    ## Child Title2
-    # Title2
-    ## [File Reference](a.md)
+    ## [File Reference](b.md)
+    # [File Reference](a.md)
   docs/f1/b.md:
   docs/f2/a.md:
 outputs:
@@ -491,41 +483,6 @@ outputs:
           }
        ]
     }
-  docs/f1/toc.json: |
-   {  
-       "items":[  
-          {  
-             "toc_title":"Title"
-          },
-          {  
-             "href":"b",
-             "toc_title":"File Reference"
-          }
-       ]
-    }
-  docs/f2/toc.json: |
-   {  
-       "items":[  
-          {  
-             "toc_title":"Title1",
-             "children":[  
-                {  
-                   "toc_title":"Child Title1"
-                },
-                {  
-                   "toc_title":"Child Title2"
-                }
-             ]
-          },
-          {  
-             "children":[  
-                {  
-                   "toc_title":"File Reference",
-                   "href":"a"
-                }
-             ],
-             "toc_title":"Title2"
-          }
-       ]
-    }
+  docs/f1/toc.json:
+  docs/f2/toc.json:
   build.manifest:
