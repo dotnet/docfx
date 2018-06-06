@@ -1,5 +1,5 @@
 ---
-# Links to files are solved to relative url
+# Links to files are resolved to relative url
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b.md)
@@ -28,4 +28,39 @@ outputs:
   docs/dir-a/a.json: '{ "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }'
   docs/dir-b/b.json: '{ "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }'
   build.manifest:
-
+---
+# Links in include files are resolved relative to the include file
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [!INCLUDE[](dir/b.md)]
+  docs/dir/b.md: '[c](c.md)'
+  docs/dir/c.md:
+outputs:
+  docs/a.json: '{ "content": "<p>Link to <a href=\"dir/c\">c</a></p>" }'
+  docs/dir/b.json: '{ "content": "<p><a href=\"c\">c</a></p>" }'
+  docs/dir/c.json:
+  build.manifest:
+---
+# Resolve <a> and <img> tags embeded inside markdown
+inputs:
+  docfx.yml:
+  docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
+  docs/b.md: <div>Link to <img src="~/docs/c.png" /></div>
+  docs/c.png:
+outputs:
+  docs/a.json: '{ "content": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }'
+  docs/b.json: '{ "content": "<div>Link to <img src=\"c.png\" /></div>" }'
+  docs/c.png:
+  build.manifest:
+---
+# Html links in include files are resolved relative to the include file
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [!INCLUDE[](dir/b.md)]
+  docs/dir/b.md: '<a target="_blank" href="c.md">c</a>'
+  docs/dir/c.md:
+outputs:
+  docs/a.json: '{ "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }'
+  docs/dir/b.json: '{ "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }'
+  docs/dir/c.json:
+  build.manifest:

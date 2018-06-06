@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
                 default:
                     Assert.Equal(
-                        content.Trim(),
+                        content?.Trim() ?? "",
                         File.ReadAllText(file).Trim(),
                         ignoreCase: false,
                         ignoreLineEndingDifferences: true,
