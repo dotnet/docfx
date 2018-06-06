@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                             var nestedTocItems = LoadInputModelItems(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                             if (hrefType == TocHrefType.RelativeFolder)
                             {
-                                tocModelItem.Href = string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref;
+                                tocModelItem.Href = (string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref) ?? href;
                             }
                             else
                             {
