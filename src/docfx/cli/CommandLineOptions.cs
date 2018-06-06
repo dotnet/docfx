@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public string Output;
         public string Log;
-        public bool OutputLegacyModel;
+        public bool Legacy;
 
         public JObject ToJObject() => new JObject
         {

@@ -29,10 +29,10 @@ namespace Microsoft.Docs.Build
             // This only works for .NET core
             // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Diagnostics/Debug.cs
             // https://github.com/dotnet/corefx/blob/8dbeee99ce48a46c3cee9d1b765c3b31af94e172/src/System.Diagnostics.Debug/tests/DebugTests.cs
-            var showDialogHook = typeof(Debug).GetField("s_ShowAssertDialog", BindingFlags.Static | BindingFlags.NonPublic);
-            showDialogHook?.SetValue(null, new Action<string, string, string>(Throw));
+            var showDialogHook = typeof(Debug).GetField("s_ShowDialog", BindingFlags.Static | BindingFlags.NonPublic);
+            showDialogHook?.SetValue(null, new Action<string, string, string, string>(Throw));
 
-            void Throw(string stackTrace, string message, string detailMessage)
+            void Throw(string stackTrace, string message, string detailMessage, string info)
             {
                 Assert.True(false, $"Debug.Assert failed: {message} {detailMessage}\n{stackTrace}");
             }

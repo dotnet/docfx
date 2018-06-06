@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
             BuildManifest.Build(context, documents);
 
-            if (options.OutputLegacyModel)
+            if (options.Legacy)
             {
                 Legacy.ConvertToLegacyModel(docset, context, documents);
             }
