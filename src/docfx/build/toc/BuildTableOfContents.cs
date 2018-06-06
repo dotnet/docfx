@@ -63,10 +63,10 @@ namespace Microsoft.Docs.Build
                 fileToBuild.ReadText(),
                 fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
                 fileToBuild,
-                (file, href) =>
+                (file, href, isInclude) =>
                 {
                     var (referencedTocContent, referencedTocPath) = file.TryResolveContent(href);
-                    if (referencedTocPath != null)
+                    if (referencedTocPath != null && isInclude)
                     {
                         // add to referenced toc list
                         referencedTocs.Add(referencedTocPath);

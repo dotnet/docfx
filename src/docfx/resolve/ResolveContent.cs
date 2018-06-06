@@ -6,5 +6,6 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal delegate (string content, Document file) ResolveContent(Document relativeTo, string href);
+    // todo: insert to markdown pipleline to generate inclusion mappings
+    internal delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclude = false);
 }

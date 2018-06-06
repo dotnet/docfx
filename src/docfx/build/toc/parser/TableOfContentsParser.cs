@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                 tocHrefType == TocHrefType.RelativeFolder;
         }
 
-        private static (string content, Document filePath, bool isYaml) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent = null)
+        private static (string content, Document filePath, bool isYaml) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent)
         {
             if (resolveContent == null)
             {
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
                     // First, try finding toc.yml under the relative folder
                     // Second, try finding toc.md under the relative folder
                     var ymlTocHref = Path.Combine(href, "toc.yml");
-                    var (ymlTocContent, ymlTocPath) = resolveContent(filePath, ymlTocHref);
+                    var (ymlTocContent, ymlTocPath) = resolveContent(filePath, ymlTocHref, false);
 
                     if (ymlTocPath != null)
                     {
@@ -210,13 +210,13 @@ namespace Microsoft.Docs.Build
                     }
 
                     var mdTocHref = Path.Combine(href, "toc.md");
-                    var (mdTocContent, mdTocPath) = resolveContent(filePath, mdTocHref);
+                    var (mdTocContent, mdTocPath) = resolveContent(filePath, mdTocHref, false);
                     return (mdTocContent, mdTocPath, false);
                 case TocHrefType.MarkdownTocFile:
-                    var (mc, mp) = resolveContent(filePath, href);
+                    var (mc, mp) = resolveContent(filePath, href, true);
                     return (mc, mp, false);
                 case TocHrefType.YamlTocFile:
-                    var (yc, yp) = resolveContent(filePath, href);
+                    var (yc, yp) = resolveContent(filePath, href, true);
                     return (yc, yp, true);
                 default:
                     // do nothing
