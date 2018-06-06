@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(relativeTo is Document);
 
                 var (error, content, _) = ((Document)relativeTo).TryResolveContent(path);
-                if (error != null)
+                if (error != null && errors.Count < Errors.MaxCountPerDocument)
                 {
                     errors.Add(error);
                 }

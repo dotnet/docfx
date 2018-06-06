@@ -74,6 +74,10 @@ namespace Microsoft.Docs.Build
                 (file, href) =>
                 {
                     var (error, referencedTocContent, referencedTocPath) = file.TryResolveContent(href);
+                    if (error != null && errors.Count < Errors.MaxCountPerDocument)
+                    {
+                        errors.Add(error);
+                    }
                     if (referencedTocPath != null)
                     {
                         // add to referenced toc list
@@ -86,6 +90,10 @@ namespace Microsoft.Docs.Build
                     // add to referenced document list
                     // only resolve href, no need to build
                     var (error, link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    if (error != null && errors.Count < Errors.MaxCountPerDocument)
+                    {
+                        errors.Add(error);
+                    }
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
