@@ -21,13 +21,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
         public void AddLinkType(string input, string output)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(input);
-            HtmlUtility.AddLinkType(doc.DocumentNode, "zh-cn");
+            var actual = HtmlUtility.TransformHtml(input, node => node.AddLinkType("zh-cn"));
 
-            Assert.Equal(
-                TestHelper.NormalizeHtml(output),
-                TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
+            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -36,11 +32,12 @@ namespace Microsoft.Docs.Build
         [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
         public void RemoveRerunCodepenIframes(string input, string output)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(input);
-            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
+            var actual = HtmlUtility.TransformHtml(input, node => node.RemoveRerunCodepenIframes());
+
+            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
         }
 
+        [Theory]
         [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
@@ -48,13 +45,23 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void StripTags(string input, string output)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(input);
-            HtmlUtility.StripTags(doc.DocumentNode);
+            var actual = HtmlUtility.TransformHtml(input, node => node.StripTags());
 
-            Assert.Equal(
-                TestHelper.NormalizeHtml(output),
-                TestHelper.NormalizeHtml(doc.DocumentNode.OuterHtml));
+            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("</a>", "</a>")]
+        [InlineData("<a href='hello'>", "<a href='666'>")]
+        [InlineData("<a href = 'hello'>", "<a href = '666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
+        [InlineData("<img src='a/b.png' />", "<img src='666' />")]
+        [InlineData("<img src = 'a/b.png' />", "<img src = '666' />")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "<div><a href='666'><img src='666' /></div>")]
+        public void TransformLinks(string input, string output)
+        {
+            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));
         }
     }
 }

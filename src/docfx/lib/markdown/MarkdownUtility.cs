@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
             {
                 var metadata = new StrongBox<JObject>();
                 var title = new StrongBox<string>();
+                var hasHtml = new StrongBox<bool>();
 
                 var markdownContext = new MarkdownContext(
                     s_markdownTokens,
@@ -52,6 +53,7 @@ namespace Microsoft.Docs.Build
                     .UseDocfxExtensions(markdownContext)
                     .UseExtractYamlHeader(context, file, metadata)
                     .UseExtractTitle(title)
+                    .UseResolveHtmlLinks(markdownContext, hasHtml)
                     .Build();
 
                 var html = Markdown.ToHtml(markdown, pipeline);
@@ -59,6 +61,7 @@ namespace Microsoft.Docs.Build
                 var result = new MarkupResult
                 {
                     Title = title.Value,
+                    HasHtml = hasHtml.Value,
                     Metadata = metadata.Value,
                 };
 
