@@ -87,9 +87,10 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command
-                // usage: docfx build [docset] [-o/--out output] [-l/--log log] [--legacy]
+                // usage: docfx build [docset] [-o/--output output] [--log log] [--legacy]
                 syntax.DefineCommand("build", ref command, "Builds a docset.");
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                syntax.DefineOption("log", ref options.Log, "Output build log path.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });
