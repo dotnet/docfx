@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
@@ -82,29 +83,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static HtmlNode TransformLink(this HtmlNode html, Func<string, string> transform)
-        {
-            foreach (var node in html.Descendants("a"))
-            {
-                var href = node.GetAttributeValue("href", null);
-                if (href != null)
-                {
-                    node.SetAttributeValue("href", transform(href));
-                }
-            }
-
-            foreach (var node in html.Descendants("img"))
-            {
-                var href = node.GetAttributeValue("src", null);
-                if (href != null)
-                {
-                    node.SetAttributeValue("src", transform(href));
-                }
-            }
-
-            return html;
-        }
-
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
@@ -143,6 +121,60 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return html;
+        }
+
+        public static string TransformLinks(this string html, Func<string, string> transform)
+        {
+            // Fast pass it does not have <a> tag or <img> tag
+            if (!((html.Contains("<a") && html.Contains("href")) ||
+                  (html.Contains("<img") && html.Contains("src"))))
+            {
+                return html;
+            }
+
+            // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
+            // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
+            // The following code ensures we preserve the original html when changing links.
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var links = new List<HtmlAttribute>();
+            foreach (var node in doc.DocumentNode.Descendants("a"))
+            {
+                var href = node.Attributes["href"];
+                if (href != null)
+                {
+                    links.Add(href);
+                }
+            }
+
+            foreach (var node in doc.DocumentNode.Descendants("img"))
+            {
+                var href = node.Attributes["src"];
+                if (href != null)
+                {
+                    links.Add(href);
+                }
+            }
+
+            var pos = 0;
+            var result = new StringBuilder(html.Length + links.Count * 16);
+
+            foreach (var link in links)
+            {
+                if (link.ValueStartIndex > pos)
+                {
+                    result.Append(html, pos, link.ValueStartIndex - pos);
+                }
+                result.Append(transform(link.Value));
+                pos = link.ValueStartIndex + link.ValueLength;
+            }
+
+            if (html.Length > pos)
+            {
+                result.Append(html, pos, html.Length - pos);
+            }
+            return result.ToString();
         }
     }
 }

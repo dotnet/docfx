@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveHtmlLinks
     {
-        public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context, StrongBox<bool> hasHtml)
         {
             return builder.Use(document =>
             {
@@ -24,10 +24,12 @@ namespace Microsoft.Docs.Build
                     if (node is HtmlBlock block)
                     {
                         block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString()));
+                        hasHtml.Value = true;
                     }
                     else if (node is HtmlInline inline)
                     {
                         inline.Tag = ResolveLinks(inline.Tag);
+                        hasHtml.Value = true;
                     }
                     return false;
                 });
@@ -35,9 +37,7 @@ namespace Microsoft.Docs.Build
 
             string ResolveLinks(string html)
             {
-                return HtmlUtility.TransformHtml(
-                    html,
-                    node => node.TransformLink(href => context.GetLink(href, InclusionContext.File)));
+                return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File));
             }
         }
     }

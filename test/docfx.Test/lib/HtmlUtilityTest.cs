@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
         }
 
+        [Theory]
         [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
@@ -47,6 +48,20 @@ namespace Microsoft.Docs.Build
             var actual = HtmlUtility.TransformHtml(input, node => node.StripTags());
 
             Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("</a>", "</a>")]
+        [InlineData("<a href='hello'>", "<a href='666'>")]
+        [InlineData("<a href = 'hello'>", "<a href = '666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
+        [InlineData("<img src='a/b.png' />", "<img src='666' />")]
+        [InlineData("<img src = 'a/b.png' />", "<img src = '666' />")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "<div><a href='666'><img src='666' /></div>")]
+        public void TransformLinks(string input, string output)
+        {
+            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));
         }
     }
 }

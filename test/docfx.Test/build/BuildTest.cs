@@ -18,8 +18,12 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(Specs))]
         public static async Task BuildDocset(string name, int ordinal)
         {
-            if (!name.Contains("tags embe")) { return; }
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
+
+            if (spec.Skip)
+            {
+                return;
+            }
 
             await Program.Run(new[] { "build", docsetPath });
 
@@ -50,7 +54,7 @@ namespace Microsoft.Docs.Build
 
                 default:
                     Assert.Equal(
-                        content.Trim(),
+                        content?.Trim() ?? "",
                         File.ReadAllText(file).Trim(),
                         ignoreCase: false,
                         ignoreLineEndingDifferences: true,
