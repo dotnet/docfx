@@ -138,30 +138,19 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            var links = new List<HtmlAttribute>();
-            foreach (var node in doc.DocumentNode.Descendants("a"))
-            {
-                var href = node.Attributes["href"];
-                if (href != null)
-                {
-                    links.Add(href);
-                }
-            }
-
-            foreach (var node in doc.DocumentNode.Descendants("img"))
-            {
-                var href = node.Attributes["src"];
-                if (href != null)
-                {
-                    links.Add(href);
-                }
-            }
-
             var pos = 0;
-            var result = new StringBuilder(html.Length + links.Count * 16);
+            var result = new StringBuilder(html.Length + 64);
 
-            foreach (var link in links)
+            foreach (var node in doc.DocumentNode.Descendants())
             {
+                var link = node.Name == "a" ? node.Attributes["href"]
+                         : node.Name == "img" ? node.Attributes["src"]
+                         : null;
+
+                if (link == null)
+                {
+                    continue;
+                }
                 if (link.ValueStartIndex > pos)
                 {
                     result.Append(html, pos, link.ValueStartIndex - pos);
