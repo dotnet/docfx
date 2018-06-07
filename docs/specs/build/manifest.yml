@@ -146,7 +146,6 @@ outputs:
       ]
     }
 ---
----
 # `build.manifest` contains nested(toc) dependencies
 inputs:
   docfx.yml:
