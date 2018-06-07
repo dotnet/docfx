@@ -74,13 +74,13 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (referencedTocContent, referencedTocPath) = file.TryResolveContent(href);
-                    if (referencedTocPath != null && isInclude)
+                    var (referencedTocContent, referencedToc) = file.TryResolveContent(href);
+                    if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add((referencedTocPath, file));
+                        referencedTocs.Add((referencedToc, file));
                     }
-                    return (referencedTocContent, referencedTocPath);
+                    return (referencedTocContent, referencedToc);
                 },
                 (file, href, resultRelativeTo) =>
                 {

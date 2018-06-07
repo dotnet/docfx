@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -50,8 +48,10 @@ namespace Microsoft.Docs.Build
             {
                 var (str, buildItem) = relativeTo.TryResolveContent(href);
 
-                dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.Inclusion);
-
+                if (buildItem != null)
+                {
+                    dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.Inclusion);
+                }
                 return (str, buildItem);
             }
         }
