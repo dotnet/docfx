@@ -26,12 +26,13 @@ namespace Microsoft.Docs.Build
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
 
-            var documents = await BuildFiles(context, globbedFiles, tocMap);
+            var documentWithDependencies = await BuildFiles(context, globbedFiles, tocMap);
 
-            BuildManifest.Build(context, documents);
+            BuildManifest.Build(context, documentWithDependencies);
 
             if (options.Legacy)
             {
+                var documents = documentWithDependencies.Keys.ToList();
                 Legacy.ConvertToLegacyModel(docset, context, documents);
             }
         }
@@ -43,34 +44,37 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static async Task<List<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<Dictionary<Document, IEnumerable<DependencyItem>>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            var manifest = new ConcurrentDictionary<Document, byte>();
+            var builtDocs = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
+            var dependencies = new ConcurrentDictionary<Document, IEnumerable<DependencyItem>>();
             var buildScope = new HashSet<Document>(files);
 
             await ParallelUtility.ForEach(
                 files,
-                (file, buildChild) =>
+                async (file, buildChild) =>
                 {
-                    if (!ShouldBuildFile(context, file, tocMap, buildScope) || !manifest.TryAdd(file, 0))
+                    if (!ShouldBuildFile(context, file, tocMap, buildScope) || !builtDocs.TryAdd(file, 0))
                     {
-                        return Task.CompletedTask;
+                        return;
                     }
 
-                    return BuildOneFile(context, file, tocMap, item =>
+                    var dependencyItems = await BuildOneFile(context, file, tocMap, item =>
                     {
                         if (references.TryAdd(item, 0))
                         {
                             buildChild(item);
                         }
                     });
+
+                    dependencies.TryAdd(file, dependencyItems);
                 });
 
-            return manifest.Keys.OrderBy(doc => doc.OutputPath).ToList();
+            return dependencies.OrderBy(d => d.Key.OutputPath).ToDictionary(k => k.Key, v => v.Value);
         }
 
-        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<IEnumerable<DependencyItem>> BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
@@ -83,14 +87,14 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
-                    return Task.CompletedTask;
+                    return Task.FromResult(Enumerable.Empty<DependencyItem>());
             }
         }
 
-        private static Task BuildAsset(Context context, Document file)
+        private static Task<IEnumerable<DependencyItem>> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
-            return Task.CompletedTask;
+            return Task.FromResult(Enumerable.Empty<DependencyItem>());
         }
 
         /// <summary>

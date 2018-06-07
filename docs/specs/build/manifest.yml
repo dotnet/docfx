@@ -14,16 +14,92 @@ outputs:
       "files":
       [
         {
-          "url": "/docs/a",
-          "path": "docs/a.json"
+          "siteUrl": "/docs/a",
+          "outputPath": "docs/a.json"
         },
         {
-          "url": "/docs/folder/b",
-          "path": "docs/folder/b.json"
+          "siteUrl": "/docs/folder/b",
+          "outputPath": "docs/folder/b.json"
         },
         {
-          "url": "/docs/TOC.json",
-          "path": "docs/TOC.json"
+          "siteUrl": "/docs/TOC.json",
+          "outputPath": "docs/TOC.json"
+        }
+      ]
+    }
+---
+# `build.manifest` contains Toc dependencies
+inputs:
+  docfx.yml:
+  docs/a.md:
+  docs/TOC.md: |
+    # [file reference](a.md)
+outputs:
+  docs/a.json:
+  docs/TOC.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "Toc"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains Inclusion dependencies
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md:
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "Inclusion"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains File(Link) dependencies
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b.md)
+  docs/b.md:
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "File"
+            }
+          ]
         }
       ]
     }
