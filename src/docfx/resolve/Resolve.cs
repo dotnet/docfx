@@ -53,8 +53,8 @@ namespace Microsoft.Docs.Build
                 return (null, relativeTo, fragmentQuery);
             }
 
-            // Leave absolute URL path as is
-            if (path.StartsWith('/') || path.StartsWith('\\') || Uri.TryCreate(path, UriKind.Absolute, out _))
+            // Leave absolute URL as is
+            if (path.StartsWith('/') || path.StartsWith('\\'))
             {
                 return default;
             }
@@ -63,6 +63,12 @@ namespace Microsoft.Docs.Build
             if (Path.IsPathRooted(path))
             {
                 return (Errors.LinkIsAbsolute(relativeTo, path), null, null);
+            }
+
+            // Leave absolute URL path as is
+            if (Uri.TryCreate(path, UriKind.Absolute, out _))
+            {
+                return default;
             }
 
             // Resolve path relative to docset

@@ -62,7 +62,7 @@
     <Rule Id="CA1065" Action="Warning" />
     <Rule Id="CA1301" Action="Warning" />
     <!-- CA1308: Specify StringComparison -->
-    <Rule Id="CA1307" Action="Warning" />
+    <Rule Id="CA1307" Action="None" />
     <!-- CA1308: Normalize strings to uppercase -->
     <Rule Id="CA1308" Action="None" />
     <Rule Id="CA1400" Action="Warning" />

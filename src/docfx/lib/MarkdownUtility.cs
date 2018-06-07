@@ -94,6 +94,11 @@ namespace Microsoft.Docs.Build
 
                 var (error, link, child) = ((Document)relativeTo).TryResolveHref(path, file);
 
+                if (error != null)
+                {
+                    errors.Add(error);
+                }
+
                 if (child != null)
                 {
                     buildChild(child);

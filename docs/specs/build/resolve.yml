@@ -54,6 +54,8 @@ outputs:
   docs/dir-b/b.json: |
     { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
   build.manifest:
+  build.log: |
+    ["warning","link-not-found","Cannot resolve link '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
 ---
 # Links in include files are resolved relative to the include file
 inputs:
@@ -106,6 +108,8 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"b.md\">Missing</a><a href=\"C:/a.md\">Absolute</a></p>" }
   build.manifest:
-build.log: |
-  ["warning","link-is-empty","Link is empty","docs/a.md"]
-  ["warning","link-is-empty","Link is empty","docs/a.md"]
+  build.log: |
+    ["warning","link-is-empty","Link is empty","docs/a.md"]
+    ["warning","link-not-found","Cannot resolve link 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["warning","link-not-found","Cannot resolve link 'b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["warning","link-is-absolute","Link to file cannot be an absolute path: 'C:/a.md'","docs/a.md"]
