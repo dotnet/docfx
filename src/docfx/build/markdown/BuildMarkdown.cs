@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task<IEnumerable<DependencyItem>> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             var dependencyItems = new ConcurrentBag<DependencyItem>();
             var markdown = file.ReadText();
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             };
 
             context.WriteJson(model, file.OutputPath);
-            return Task.FromResult<IEnumerable<DependencyItem>>(dependencyItems);
+            return Task.FromResult(new DependencyMap(dependencyItems));
 
             string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
             {

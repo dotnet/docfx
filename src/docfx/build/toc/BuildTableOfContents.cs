@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task<IEnumerable<DependencyItem>> Build(Context context, Document file, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
-            return Task.FromResult(refArticles.Select(a => new DependencyItem(a, DependencyType.Toc)));
+            return Task.FromResult(new DependencyMap(refArticles.Select(a => new DependencyItem(a, DependencyType.Toc))));
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)

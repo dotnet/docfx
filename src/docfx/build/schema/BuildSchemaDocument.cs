@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildSchemaDocument
     {
-        public static Task<IEnumerable<DependencyItem>> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
-            return Task.FromResult(Enumerable.Empty<DependencyItem>());
+            return Task.FromResult<DependencyMap>(null);
         }
     }
 }

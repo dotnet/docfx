@@ -8,17 +8,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, Dictionary<Document, IEnumerable<DependencyItem>> documentWithDependencies)
+        public static void Build(Context context, IEnumerable<Document> builtDocs, Dictionary<Document, IEnumerable<DependencyItem>> sourceDependencies)
         {
-            if (documentWithDependencies == null || !documentWithDependencies.Any())
+            if (sourceDependencies == null || !sourceDependencies.Any())
             {
                 return;
             }
 
             var manifest = new Manifest
             {
-                Files = documentWithDependencies.Keys.Select(ToManifestFile).ToArray(),
-                Dependencies = documentWithDependencies.Where(d => d.Value.Any()).Select(ToManifestDependency).ToArray(),
+                Files = builtDocs.Select(ToManifestFile).ToArray(),
+                Dependencies = sourceDependencies.Where(d => d.Value.Any()).Select(ToManifestDependency).ToArray(),
             };
 
             context.WriteJson(manifest, "build.manifest");
