@@ -104,18 +104,18 @@ outputs:
       ]
     }
 ---
----
 # `build.manifest` contains nested dependencies
 inputs:
   docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)
   docs/b.md: |
     Link to [c](c.md)
-    b [!INCLUDE](c.md)
+    b [!INCLUDE[](c.md)
   docs/c.md:
 outputs:
   docs/a.json:
   docs/b.json:
+  docs/c.json:
   build.manifest: |
     {
       "dependencies":

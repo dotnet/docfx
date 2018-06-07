@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             return Equals(obj as DependencyItem);
         }
 
-        public bool Equasl(DependencyItem other)
+        public bool Equals(DependencyItem other)
         {
             if (other == null)
             {

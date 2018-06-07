@@ -63,7 +63,6 @@ namespace Microsoft.Docs.Build
                     if (relativeTo.Equals(file))
                     {
                         dependencyItems.Add(new DependencyItem(buildItem, type));
-                        buildChild(buildItem);
                     }
                     else
                     {
