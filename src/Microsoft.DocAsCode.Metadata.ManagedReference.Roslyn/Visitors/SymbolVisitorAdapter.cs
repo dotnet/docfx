@@ -35,17 +35,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods = null, string codeSourceBasePath = null)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, ExtractMetadataOptions options)
         {
             _generator = generator;
             Language = language;
             _currentCompilation = compilation;
             _currentCompilationRef = compilation.ToMetadataReference();
-            _preserveRawInlineComments = preserveRawInlineComments;
-            var configFilterRule = ConfigFilterRule.LoadWithDefaults(filterConfigFile);
-            FilterVisitor = new DefaultFilterVisitor().WithConfig(configFilterRule).WithCache();
-            _extensionMethods = extensionMethods != null ? extensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
-            _codeSourceBasePath = codeSourceBasePath;
+            _preserveRawInlineComments = options.PreserveRawInlineComments;
+            var configFilterRule = ConfigFilterRule.LoadWithDefaults(options.FilterConfigFile);
+            var filterVisitor = options.DisableDefaultFilter ? (IFilterVisitor)new AllMemberFilterVisitor() : new DefaultFilterVisitor();
+            FilterVisitor = filterVisitor.WithConfig(configFilterRule).WithCache();
+            _extensionMethods = options.RoslynExtensionMethods != null ? options.RoslynExtensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
+            _codeSourceBasePath = options.CodeSourceBasePath;
         }
 
         #endregion

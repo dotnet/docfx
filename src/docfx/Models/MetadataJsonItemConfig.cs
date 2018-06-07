@@ -46,5 +46,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("codeSourceBasePath")]
         public string CodeSourceBasePath { get; set; }
+
+        [JsonProperty("disableDefaultFilter")]
+        public bool DisableDefaultFilter { get; set; }
     }
 }

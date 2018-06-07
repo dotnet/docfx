@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
-    public class DefaultFilterVisitor : IFilterVisitor
+    public class AllMemberFilterVisitor : IFilterVisitor
     {
         public bool CanVisitApi(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
@@ -109,108 +109,29 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (symbol.ContainingType != null)
             {
-                switch (symbol.DeclaredAccessibility)
-                {
-                    case Accessibility.Public:
-                        return visitFunc(symbol.ContainingType, wantProtectedMember, outer);
-                    case Accessibility.Protected:
-                    case Accessibility.ProtectedOrInternal:
-                        return wantProtectedMember && visitFunc(symbol.ContainingType, wantProtectedMember, outer);
-                    default:
-                        return false;
-                }
+                return visitFunc(symbol.ContainingType, wantProtectedMember, outer);
             }
-            return symbol.DeclaredAccessibility == Accessibility.Public;
+            return true;
         }
 
         private static bool CanVisitCore(IMethodSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
-            switch (symbol.DeclaredAccessibility)
-            {
-                case Accessibility.Public:
-                    return true;
-                case Accessibility.Protected:
-                case Accessibility.ProtectedOrInternal:
-                    return wantProtectedMember;
-                default:
-                    break;
-            }
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
-            {
-                for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
-                {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return true;
         }
 
         private static bool CanVisitCore(IPropertySymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
-            switch (symbol.DeclaredAccessibility)
-            {
-                case Accessibility.Public:
-                    return true;
-                case Accessibility.Protected:
-                case Accessibility.ProtectedOrInternal:
-                    return wantProtectedMember;
-                default:
-                    break;
-            }
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
-            {
-                for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
-                {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return true;
         }
 
         private static bool CanVisitCore(IEventSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
         {
-            switch (symbol.DeclaredAccessibility)
-            {
-                case Accessibility.Public:
-                    return true;
-                case Accessibility.Protected:
-                case Accessibility.ProtectedOrInternal:
-                    return wantProtectedMember;
-                default:
-                    break;
-            }
-            if (symbol.ExplicitInterfaceImplementations.Length > 0)
-            {
-                for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
-                {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return true;
         }
 
         private static bool CanVisitCore(IFieldSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtected, IFilterVisitor outer)
         {
-            switch (symbol.DeclaredAccessibility)
-            {
-                case Accessibility.Public:
-                    return true;
-                case Accessibility.Protected:
-                case Accessibility.ProtectedOrInternal:
-                    return wantProtected;
-                default:
-                    break;
-            }
-            return false;
+            return true;
         }
     }
 }

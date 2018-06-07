@@ -66,7 +66,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 PreserveRawInlineComments = input.PreserveRawInlineComments,
                 FilterConfigFile = input.FilterConfigFile != null ? new FileInformation(input.FilterConfigFile).NormalizedPath : null,
                 MSBuildProperties = msbuildProperties,
-                CodeSourceBasePath = input.CodeSourceBasePath
+                CodeSourceBasePath = input.CodeSourceBasePath,
+                DisableDefaultFilter = input.DisableDefaultFilter,
             };
 
             _useCompatibilityFileName = input.UseCompatibilityFileName;

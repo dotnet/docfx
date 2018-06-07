@@ -31,11 +31,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SymbolVisitorAdapter visitor;
             if (_compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, _compilation, preserveRawInlineComments, filterConfigFile, extensionMethods, options.CodeSourceBasePath);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, _compilation, options);
             }
             else if (_compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, _compilation, preserveRawInlineComments, filterConfigFile, extensionMethods, options.CodeSourceBasePath);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, _compilation, options);
             }
             else
             {
