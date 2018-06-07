@@ -15,16 +15,25 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
+            var dependencyMapBuilder = new DependencyMapBuilder();
             var (tocModel, refArticles, refTocs) = Load(file);
 
-            foreach (var article in refArticles)
+            foreach (var (article, parent) in refArticles)
             {
                 buildChild(article);
+
+                dependencyMapBuilder.AddDependencyItem(file, parent, article, DependencyType.Toc);
+            }
+
+            foreach (var (toc, parent) in refTocs)
+            {
+                // todo: handle folder referencing
+                dependencyMapBuilder.AddDependencyItem(file, parent, toc, DependencyType.Toc);
             }
 
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
-            return Task.FromResult(new DependencyMap(new HashSet<DependencyItem>(refArticles.Select(a => new DependencyItem(a, DependencyType.Toc)))));
+            return Task.FromResult(dependencyMapBuilder.Build());
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
@@ -50,15 +59,15 @@ namespace Microsoft.Docs.Build
 
             var (tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
-            tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+            tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs.Select(r => r.toc));
 
             return Task.CompletedTask;
         }
 
-        private static (List<TableOfContentsItem> tocModel, List<Document> referencedDocuments, List<Document> referencedTocs) Load(Document fileToBuild)
+        private static (List<TableOfContentsItem> tocModel, List<(Document doc, Document parent)> referencedDocuments, List<(Document toc, Document parent)> referencedTocs) Load(Document fileToBuild)
         {
-            var referencedDocuments = new List<Document>();
-            var referencedTocs = new List<Document>();
+            var referencedDocuments = new List<(Document doc, Document parent)>();
+            var referencedTocs = new List<(Document toc, Document parent)>();
             var tocViewModel = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
@@ -69,7 +78,7 @@ namespace Microsoft.Docs.Build
                     if (referencedTocPath != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add(referencedTocPath);
+                        referencedTocs.Add((referencedTocPath, file));
                     }
                     return (referencedTocContent, referencedTocPath);
                 },
@@ -80,7 +89,7 @@ namespace Microsoft.Docs.Build
                     var (link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, file));
                     }
                     return link;
                 });

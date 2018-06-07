@@ -12,8 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
-            var dependencyItems = new HashSet<DependencyItem>();
-            var inclusionDependency = new Dictionary<Document, HashSet<DependencyItem>>();
+            var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
             var (html, markup) = MarkdownUtility.Markup(markdown, file, context, ResolveHref, ResolveContent);
@@ -33,7 +32,7 @@ namespace Microsoft.Docs.Build
             };
 
             context.WriteJson(model, file.OutputPath);
-            return Task.FromResult(new DependencyMap(dependencyItems));
+            return Task.FromResult(dependencyMapBuilder.Build());
 
             string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
             {
@@ -42,7 +41,7 @@ namespace Microsoft.Docs.Build
                 {
                     buildChild(buildItem);
 
-                    AddDependenyItem(relativeTo, buildItem, DependencyType.File);
+                    dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.File);
                 }
                 return link;
             }
@@ -51,30 +50,9 @@ namespace Microsoft.Docs.Build
             {
                 var (str, buildItem) = relativeTo.TryResolveContent(href);
 
-                AddDependenyItem(relativeTo, buildItem, DependencyType.Inclusion);
+                dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.Inclusion);
 
                 return (str, buildItem);
-            }
-
-            void AddDependenyItem(Document relativeTo, Document buildItem, DependencyType type)
-            {
-                if (buildItem != null)
-                {
-                    if (relativeTo.Equals(file))
-                    {
-                        dependencyItems.Add(new DependencyItem(buildItem, type));
-                    }
-                    else
-                    {
-                        if (!inclusionDependency.TryGetValue(relativeTo, out var inclusionDependencyItems))
-                        {
-                            inclusionDependencyItems = inclusionDependency[relativeTo] = new HashSet<DependencyItem>();
-                        }
-
-                        inclusionDependencyItems.Add(new DependencyItem(buildItem, type));
-                    }
-                }
-
             }
         }
     }

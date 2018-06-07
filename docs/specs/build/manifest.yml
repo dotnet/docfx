@@ -104,9 +104,10 @@ outputs:
       ]
     }
 ---
-# `build.manifest` contains nested dependencies
+# `build.manifest` contains nested(token/codesnippet) dependencies
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    content: docs/a.md
   docs/a.md: a [!INCLUDE[](b.md)
   docs/b.md: |
     Link to [c](c.md)
@@ -114,8 +115,6 @@ inputs:
   docs/c.md:
 outputs:
   docs/a.json:
-  docs/b.json:
-  docs/c.json:
   build.manifest: |
     {
       "dependencies":
@@ -141,6 +140,45 @@ outputs:
             {
               "source": "docs/c.md",
               "type": "Inclusion"
+            }
+          ]
+        }
+      ]
+    }
+---
+---
+# `build.manifest` contains nested(toc) dependencies
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # [a](a/TOC.md)
+  docs/a/TOC.md: |
+    # [b](b.md)
+  docs/a/b.md:
+outputs:
+  docs/TOC.json:
+  docs/a/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a/b.md",
+              "type": "Toc"
+            }
+          ]
+        },
+        {
+          "source": "docs/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a/TOC.md",
+              "type": "Toc"
             }
           ]
         }
