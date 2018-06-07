@@ -40,8 +40,6 @@ namespace Microsoft.Docs.Build
         /// <returns>The normalized folder path</returns>
         public static string NormalizeFolder(string path)
         {
-            Debug.Assert(!FolderPathHasInvalidChars(path));
-
             var str = Normalize(path);
             if (str.Length == 0 || str == "/")
             {
@@ -74,44 +72,7 @@ namespace Microsoft.Docs.Build
         /// <returns>The normalized file path</returns>
         public static string NormalizeFile(string path)
         {
-            Debug.Assert(!FilePathHasInvalidChars(path));
-
             return Normalize(path);
-        }
-
-        /// <summary>
-        /// Check if the folder path has invalid chars
-        /// </summary>
-        /// <param name="path">The folder path</param>
-        /// <returns>Has invalid chars or not</returns>
-        public static bool FolderPathHasInvalidChars(string path)
-        {
-            path = !path.EndsWith('\\') && !path.EndsWith('/') ? path + "/" : path;
-
-            return FilePathHasInvalidChars(path);
-        }
-
-        /// <summary>
-        /// Check if the file path has invalid chars
-        /// </summary>
-        /// <param name="path">The file chars</param>
-        /// <returns>Has invalid chars or not</returns>
-        public static bool FilePathHasInvalidChars(string path)
-        {
-            bool ret = false;
-            if (!string.IsNullOrEmpty(path))
-            {
-                try
-                {
-                    var fileName = Path.GetFileName(path);
-                    var fileDirectory = Path.GetDirectoryName(path);
-                }
-                catch (ArgumentException)
-                {
-                    ret = true;
-                }
-            }
-            return ret;
         }
 
         private static string Normalize(string path)
