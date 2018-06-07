@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -15,22 +16,19 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
+        public static (DocfxException error, string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
+            Debug.Assert(resultRelativeTo != null);
+
             var (error, file, fragmentQuery) = TryResolveFile(relativeTo, href);
 
             // Cannot resolve the file, leave href as is
-            if (file == null)
+            if (file == null || file == relativeTo)
             {
                 return (error, href, null);
             }
 
             var resolvedHref = file.SiteUrl + fragmentQuery;
-
-            if (resultRelativeTo == null)
-            {
-                return (error, resolvedHref, file);
-            }
 
             // Make result relative to `resultRelativeTo`
             resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
@@ -65,12 +63,6 @@ namespace Microsoft.Docs.Build
             if (Path.IsPathRooted(path))
             {
                 return (Errors.LinkIsAbsolute(relativeTo, path), null, null);
-            }
-
-            // Leave invalid file path as is
-            if (PathUtility.FilePathHasInvalidChars(path))
-            {
-                return (Errors.LinkNotFound(relativeTo, path), null, null);
             }
 
             // Resolve path relative to docset

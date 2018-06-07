@@ -20,6 +20,17 @@ outputs:
     { "content": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
   build.manifest:
 ---
+# Links to bookmarks in the same article
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ## Hello World
+    Link to [bookmark](#hello-world)
+outputs:
+  docs/a.json: |
+    { "content": "<h2 id=\"hello-world\">Hello World</h2><p>Link to <a href=\"#hello-world\">bookmark</a></p>" }
+  build.manifest:
+---
 # Support both / and \ as directory seperator
 inputs:
   docfx.yml:
@@ -85,3 +96,16 @@ outputs:
     { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
   build.manifest:
+---
+# Show warning if the link is empty, missing or points to absolute file path
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    [Empty]() [Invalid](a<>b.md) [Missing](b.md) [Absolute](C:/a.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"b.md\">Missing</a><a href=\"C:/a.md\">Absolute</a></p>" }
+  build.manifest:
+build.log: |
+  ["warning","link-is-empty","Link is empty","docs/a.md"]
+  ["warning","link-is-empty","Link is empty","docs/a.md"]

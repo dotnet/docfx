@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
         public static DocfxException LinkIsEmpty(Document file)
-            => new DocfxException(ReportLevel.Warning, "link-is-empty", "File has an empty link", file.ToString());
+            => new DocfxException(ReportLevel.Warning, "link-is-empty", "Link is empty", file.ToString());
 
         public static DocfxException LinkIsAbsolute(Document file, string link)
             => new DocfxException(ReportLevel.Warning, "link-is-aboslute", $"Link to file cannot be an absolute path: '{link}'", file.ToString());
