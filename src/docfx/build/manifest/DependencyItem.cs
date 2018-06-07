@@ -18,5 +18,25 @@ namespace Microsoft.Docs.Build
             Document = referencedDoc;
             Type = type;
         }
+
+        public override int GetHashCode()
+        {
+            return Document.GetHashCode() + Type.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as DependencyItem);
+        }
+
+        public bool Equasl(DependencyItem other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Document.Equals(other.Document) && Type == other.Type;
+        }
     }
 }

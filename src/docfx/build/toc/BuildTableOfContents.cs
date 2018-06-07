@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
-            return Task.FromResult(new DependencyMap(refArticles.Select(a => new DependencyItem(a, DependencyType.Toc))));
+            return Task.FromResult(new DependencyMap(new HashSet<DependencyItem>(refArticles.Select(a => new DependencyItem(a, DependencyType.Toc)))));
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
@@ -38,12 +38,12 @@ namespace Microsoft.Docs.Build
                 return builder.Build();
             }
 
-            await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder));
+            await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder));
 
             return builder.Build();
         }
 
-        private static Task BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static Task BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
             Debug.Assert(tocMapBuilder != null);
             Debug.Assert(fileToBuild != null);

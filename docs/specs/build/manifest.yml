@@ -103,3 +103,46 @@ outputs:
         }
       ]
     }
+---
+---
+# `build.manifest` contains nested dependencies
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)
+  docs/b.md: |
+    Link to [c](c.md)
+    b [!INCLUDE](c.md)
+  docs/c.md:
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "Inclusion"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/c.md",
+              "type": "File"
+            },
+            {
+              "source": "docs/c.md",
+              "type": "Inclusion"
+            }
+          ]
+        }
+      ]
+    }
