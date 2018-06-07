@@ -64,8 +64,8 @@ namespace Microsoft.Docs.Build
         {
             Directory.CreateDirectory(cwd);
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}"
-                : $"clone -b {branch} --single-branch {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}";
+                ? $"clone {remote} \"{path.Replace("\\", "/")}\""
+                : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
         }
