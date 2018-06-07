@@ -54,12 +54,13 @@ namespace Microsoft.Docs.Build
         [InlineData("", "")]
         [InlineData("</a>", "</a>")]
         [InlineData("<a href='hello'>", "<a href='666'>")]
-        [InlineData("<A href=''>", "<A href='666'>")]
+        [InlineData("<A hrEf=''>", "<A hrEf='666'>")]
         [InlineData("<a href = 'hello'>", "<a href = '666'>")]
         [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
         [InlineData("<img src='a/b.png' />", "<img src='666' />")]
-        [InlineData("<iMg src = 'a/b.png' />", "<iMg src = '666' />")]
+        [InlineData("<iMg sRc = 'a/b.png' />", "<iMg sRc = '666' />")]
         [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "<div><a href='666'><img src='666' /></div>")]
+        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "<div><img src='666' /><a href='666'></div>")]
         public void TransformLinks(string input, string output)
         {
             Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));

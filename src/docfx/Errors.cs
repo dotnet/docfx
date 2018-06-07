@@ -27,9 +27,9 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Warning, "link-is-empty", "File has an empty link", file.ToString());
 
         public static DocfxException LinkIsAbsolute(Document file, string link)
-            => new DocfxException(ReportLevel.Warning, "link-is-aboslute", $"Cannot resolve link to absolute file path '{link}'", file.ToString());
+            => new DocfxException(ReportLevel.Warning, "link-is-aboslute", $"Link to file cannot be an absolute path: '{link}'", file.ToString());
 
         public static DocfxException LinkNotFound(Document file, string link)
-            => new DocfxException(ReportLevel.Warning, "link-not-found", $"Cannot find link to file '{link}'", file.ToString());
+            => new DocfxException(ReportLevel.Warning, "link-not-found", $"Cannot find file '{link}' relative to '{file}'", file.ToString());
     }
 }

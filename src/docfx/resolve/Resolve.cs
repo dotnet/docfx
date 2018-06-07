@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -48,6 +46,7 @@ namespace Microsoft.Docs.Build
 
             var (path, fragment, query) = HrefUtility.SplitHref(href);
             var fragmentQuery = fragment + query;
+            var pathToDocset = "";
 
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
@@ -76,13 +75,17 @@ namespace Microsoft.Docs.Build
             // Resolve path relative to docset
             if (path.StartsWith("~\\") || path.StartsWith("~/"))
             {
-                return (null, Document.TryCreate(relativeTo.Docset, path.Substring(2)), fragmentQuery);
+                pathToDocset = path.Substring(2);
+            }
+            else
+            {
+                // Resolve path relative to input file
+                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
             }
 
-            // Resolve path relative to input file
-            var pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
+            var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
 
-            return (null, Document.TryCreate(relativeTo.Docset, pathToDocset), fragmentQuery);
+            return (file != null ? null : Errors.LinkNotFound(relativeTo, path), file, fragmentQuery);
         }
     }
 }

@@ -78,14 +78,14 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (error, content, _) = ((Document)relativeTo).TryResolveContent(path);
+                var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
 
                 if (error != null)
                 {
                     errors.Add(error);
                 }
 
-                return (content, file);
+                return (content, child);
             }
 
             string GetLink(string path, object relativeTo)
