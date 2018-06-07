@@ -377,56 +377,50 @@ outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: docs/toc.md --> docs/toc.md","docs/toc.md"]
 ---
-# Reference to a folder1
+# Reference to a folder, basic usages
+# Reference to a folder behavior is not same with reference to a toc file
 inputs:
   docfx.yml:
-  docs/toc.md: |
-    # [Reference TOC File 1](f1/toc.yml)
-  docs/f1/toc.yml: |
+  docs/toc.yml: |
     - name: Toc Reference
-      href: f11/toc.md
+      href: f1/toc.md
     - name: Folder Reference1
-      href: f11/
+      href: f1/
     - name: Folder Reference2
-      href: f11/
-      topicHref: f11/a.md
-  docs/f1/f11/toc.md: |
+      href: f1/
+      topicHref: f1/a.md
+  docs/f1/toc.md: |
     # [Index Reference](index.md)
-  docs/f1/f11/index.md:
-  docs/f1/f11/a.md:
+  docs/f1/index.md:
+  docs/f1/a.md:
 outputs:
-  docs/f1/f11/a.json:
-  docs/f1/f11/index.json:
+  docs/f1/a.json:
+  docs/f1/index.json:
   docs/toc.json: |
-   {  
+    {  
        "items":[  
           {  
+             "toc_title":"Toc Reference",
              "children":[  
                 {  
-                   "children":[  
-                      {  
-                         "href":"f1/f11/",
-                         "toc_title":"Index Reference"
-                      }
-                   ],
-                   "toc_title":"Toc Reference"
-                },
-                {  
-                   "href":"f1/f11/",
-                   "toc_title":"Folder Reference1"
-                },
-                {  
-                   "href":"f1/f11/a",
-                   "toc_title":"Folder Reference2"
+                   "toc_title":"Index Reference",
+                   "href":"f1/"
                 }
-             ],
-             "toc_title":"Reference TOC File 1"
+             ]
+          },
+          {  
+             "toc_title":"Folder Reference1",
+             "href":"f1/"
+          },
+          {  
+             "toc_title":"Folder Reference2",
+             "href":"f1/a"
           }
        ]
     }
   build.manifest:
 ---
-# Reference to a folder2
+# Reference to a folder, nested toc
 # Folder referenced toc doesn't belong to nested toc
 inputs:
   docfx.yml:
@@ -441,15 +435,15 @@ outputs:
    {  
        "items":[  
           {  
-             "href": "f1/",
-             "toc_title":"Folder Reference"
+             "toc_title":"Folder Reference",
+             "href": "f1/"
           }
        ]
     }
   docs/f1/toc.json:
   build.manifest:
 ---
-# Reference to a folder3
+# Reference to a folder, first child
 # The href should be the first child with href in referenced toc
 # Horizontal traversal first
 inputs:
@@ -474,12 +468,12 @@ outputs:
    {  
        "items":[  
           {  
-             "href":"f1/b",
-             "toc_title":"Folder Reference1"
+             "toc_title":"Folder Reference1",
+             "href":"f1/b"
           },
           {  
-             "href":"f2/a",
-             "toc_title":"Folder Reference2"
+             "toc_title":"Folder Reference2",
+             "href":"f2/a"
           }
        ]
     }

@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
+        public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
+
         public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
             => LoadInputModelItems(tocContent, isYaml, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
 
