@@ -103,13 +103,25 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    [Empty]() [Invalid](a<>b.md) [Missing](b.md) [Absolute](C:/a.md)
+    [Empty]() [Invalid](a<>b.md) [Missing](b.md)
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"b.md\">Missing</a><a href=\"C:/a.md\">Absolute</a></p>" }
+    { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"b.md\">Missing</a></p>" }
   build.manifest:
   build.log: |
     ["warning","link-is-empty","Link is empty","docs/a.md"]
     ["warning","link-not-found","Cannot resolve link 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
     ["warning","link-not-found","Cannot resolve link 'b.md' relative to 'docs/a.md'","docs/a.md"]
+---
+# Show warning if the link points to absolute file path
+os: windows
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    [Absolute](C:/a.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
+  build.manifest:
+  build.log: |
     ["warning","link-is-absolute","Link to file cannot be an absolute path: 'C:/a.md'","docs/a.md"]

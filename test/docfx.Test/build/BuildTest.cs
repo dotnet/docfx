@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -19,6 +20,12 @@ namespace Microsoft.Docs.Build
         public static async Task BuildDocset(string name, int ordinal)
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
+
+            if (!string.IsNullOrEmpty(spec.OS) &&
+                !spec.OS.Split(',').Any(os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim()))))
+            {
+                return;
+            }
 
             await Program.Run(new[] { "build", docsetPath });
 
