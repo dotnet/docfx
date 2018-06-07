@@ -68,12 +68,6 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            // Leave invalid file path as is
-            if (PathUtility.FilePathHasInvalidChars(path))
-            {
-                return default;
-            }
-
             // Resolve path relative to docset
             if (path.StartsWith("~\\") || path.StartsWith("~/"))
             {

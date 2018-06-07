@@ -67,7 +67,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options)
         {
-            ValidateDocsetPath(docsetPath);
             var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
@@ -82,19 +81,10 @@ namespace Microsoft.Docs.Build
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
         public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config)
         {
-            ValidateDocsetPath(docsetPath);
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
             config = exists ? LoadCore(configPath, options) : new Config();
             return exists;
-        }
-
-        private static void ValidateDocsetPath(string docsetPath)
-        {
-            if (PathUtility.FolderPathHasInvalidChars(docsetPath))
-            {
-                throw Errors.ConfigNotFound(docsetPath);
-            }
         }
 
         private static Config LoadCore(string configPath, CommandLineOptions options = null)
@@ -129,8 +119,6 @@ namespace Microsoft.Docs.Build
             foreach (var path in GetExtendConfigPaths(objExtend))
             {
                 var extendConfigPath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(configPath), path));
-                if (PathUtility.FilePathHasInvalidChars(extendConfigPath))
-                    throw new Exception($"Invalid extend config path: {extendConfigPath}");
                 extendedConfig.Merge(LoadOriginalConfigObject(extendConfigPath, parents, false));
             }
             extendedConfig.Merge(config);

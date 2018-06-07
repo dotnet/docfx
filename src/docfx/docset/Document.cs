@@ -134,7 +134,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(!PathUtility.FilePathHasInvalidChars(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
             path = PathUtility.NormalizeFile(path);
@@ -257,8 +256,7 @@ namespace Microsoft.Docs.Build
         {
             return path != null &&
                 path.IndexOf('\\') == -1 &&
-                !path.StartsWith('/') &&
-                !PathUtility.FilePathHasInvalidChars(path);
+                !path.StartsWith('/');
         }
     }
 }
