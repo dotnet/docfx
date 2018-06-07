@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file == null || file == relativeTo)
             {
-                return (error, href, null);
+                return (error, href, file);
             }
 
             var resolvedHref = file.SiteUrl + fragmentQuery;
