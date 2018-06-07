@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -47,7 +46,7 @@ namespace Microsoft.Docs.Build
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var spec = YamlUtility.Deserialize<TestSpec>(yaml);
-            var docsetPath = Path.Combine("specs.drop", HttpUtility.UrlEncode(specName));
+            var docsetPath = Path.Combine("specs.drop", specName.Replace("<", "").Replace(">", ""));
 
             if (Directory.Exists(docsetPath))
             {

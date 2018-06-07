@@ -11,6 +11,15 @@ outputs:
     { "content": "<p>Link to <a href=\"a\">a</a></p>" }
   build.manifest:
 ---
+# Links to URLs are preserved as is
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [docs](https://docs.microsoft.com)
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
+  build.manifest:
+---
 # Support both / and \ as directory seperator
 inputs:
   docfx.yml:

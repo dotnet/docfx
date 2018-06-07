@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
             Exception innerException = null)
             : base(message, innerException)
         {
+            Level = level;
             Code = code;
             File = file;
             Line = line;

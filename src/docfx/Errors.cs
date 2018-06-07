@@ -30,6 +30,6 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Warning, "link-is-aboslute", $"Link to file cannot be an absolute path: '{link}'", file.ToString());
 
         public static DocfxException LinkNotFound(Document file, string link)
-            => new DocfxException(ReportLevel.Warning, "link-not-found", $"Cannot find file '{link}' relative to '{file}'", file.ToString());
+            => new DocfxException(ReportLevel.Warning, "link-not-found", $"Cannot resolve link '{link}' relative to '{file}'", file.ToString());
     }
 }
