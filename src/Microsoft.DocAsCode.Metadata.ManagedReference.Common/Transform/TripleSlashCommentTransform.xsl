@@ -40,8 +40,8 @@
   </xsl:template>
 
   <xsl:template match="code">
-    <pre>
-      <code>
+    <xsl:element name="pre">
+      <xsl:element name="code">
         <xsl:if test="normalize-space(@language)">
           <xsl:attribute name="class">
             <xsl:value-of select="@language" />
@@ -49,8 +49,8 @@
         </xsl:if>
         <xsl:copy-of select="@source|@region"/>
         <xsl:apply-templates />
-      </code>
-    </pre>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="value">
@@ -114,12 +114,12 @@
 
   <xsl:template match="note">
     <xsl:variable name="type">
-       <xsl:choose>
-          <xsl:when test="not(normalize-space(@type) = '')">
-            <xsl:value-of select="@type"/>
-          </xsl:when>
-          <xsl:otherwise>note</xsl:otherwise>
-       </xsl:choose>    
+      <xsl:choose>
+        <xsl:when test="not(normalize-space(@type) = '')">
+          <xsl:value-of select="@type"/>
+        </xsl:when>
+        <xsl:otherwise>note</xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <div>
       <xsl:attribute name="class">
@@ -129,13 +129,17 @@
           <xsl:when test="$type = 'caution'">CAUTION</xsl:when>
           <xsl:when test="$type = 'important'">IMPORTANT</xsl:when>
           <xsl:otherwise>NOTE</xsl:otherwise>
-        </xsl:choose>    
+        </xsl:choose>
       </xsl:attribute>
-      <h5><xsl:value-of select="$type"/></h5>
-      <p><xsl:apply-templates select="node()"/></p>
+      <h5>
+        <xsl:value-of select="$type"/>
+      </h5>
+      <p>
+        <xsl:apply-templates select="node()"/>
+      </p>
     </div>
   </xsl:template>
-  
+
   <xsl:template match="list">
     <xsl:variable name="listtype">
       <xsl:value-of select="normalize-space(@type)"/>
