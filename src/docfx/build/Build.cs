@@ -44,11 +44,11 @@ namespace Microsoft.Docs.Build
                            .ToList();
         }
 
-        private static async Task<(IEnumerable<Document> builtDocs, Dictionary<Document, IEnumerable<DependencyItem>> sourceDependencies)> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> builtDocs, DependencyMap sourceDependencies)> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
             var builtDocs = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
-            var sourceDependencies = new ConcurrentDictionary<Document, IEnumerable<DependencyItem>>();
+            var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var buildScope = new HashSet<Document>(files);
 
             await ParallelUtility.ForEach(
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                     }
                 });
 
-            return (builtDocs.Keys.OrderBy(d => d.OutputPath), sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value));
+            return (builtDocs.Keys.OrderBy(d => d.OutputPath).ToList(), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
         }
 
         private static Task<DependencyMap> BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)

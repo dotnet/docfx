@@ -32,9 +32,9 @@ namespace Microsoft.Docs.Build
                 .GroupBy(k => k.Source)
                 .ToDictionary(
                     k => k.Key,
-                    v => (IEnumerable<DependencyItem>)from r in v.Distinct()
-                                                      orderby r.Dest.FilePath, r.Type
-                                                      select r));
+                    v => (from r in v.Distinct()
+                         orderby r.Dest.FilePath, r.Type
+                         select r).ToList()));
         }
     }
 }

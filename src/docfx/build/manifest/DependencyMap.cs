@@ -6,11 +6,11 @@ using System.Collections.ObjectModel;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyMap : ReadOnlyDictionary<Document, IEnumerable<DependencyItem>>
+    internal class DependencyMap : ReadOnlyDictionary<Document, List<DependencyItem>>
     {
-        public static readonly DependencyMap Empty = new DependencyMap(new Dictionary<Document, IEnumerable<DependencyItem>>());
+        public static readonly DependencyMap Empty = new DependencyMap(new Dictionary<Document, List<DependencyItem>>());
 
-        public DependencyMap(Dictionary<Document, IEnumerable<DependencyItem>> map)
+        public DependencyMap(Dictionary<Document, List<DependencyItem>> map)
             : base(map)
         {
         }

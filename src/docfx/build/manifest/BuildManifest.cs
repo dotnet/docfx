@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, IEnumerable<Document> builtDocs, Dictionary<Document, IEnumerable<DependencyItem>> sourceDependencies)
+        public static void Build(Context context, IEnumerable<Document> builtDocs, DependencyMap sourceDependencies)
         {
             var manifest = new Manifest
             {
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static ManifestDependency ToManifestDependency(KeyValuePair<Document, IEnumerable<DependencyItem>> dependency)
+        private static ManifestDependency ToManifestDependency(KeyValuePair<Document, List<DependencyItem>> dependency)
         {
             return new ManifestDependency
             {
