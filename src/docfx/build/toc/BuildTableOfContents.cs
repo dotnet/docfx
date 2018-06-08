@@ -22,13 +22,13 @@ namespace Microsoft.Docs.Build
             {
                 buildChild(article);
 
-                dependencyMapBuilder.AddDependencyItem(file, parent, article, DependencyType.Toc);
+                dependencyMapBuilder.AddDependencyItem(file, parent, article, DependencyType.TocFile);
             }
 
             foreach (var (toc, parent) in refTocs)
             {
                 // todo: handle folder referencing
-                dependencyMapBuilder.AddDependencyItem(file, parent, toc, DependencyType.Toc);
+                dependencyMapBuilder.AddDependencyItem(file, parent, toc, DependencyType.TocInclusion);
             }
 
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);

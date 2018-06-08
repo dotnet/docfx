@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             return new ManifestDependency
             {
                 Source = dependency.Key.FilePath,
-                Dependencies = dependency.Value.Select(v => new ManifestDependencyItem { Source = v.Document.FilePath, Type = v.Type.ToString() }).ToArray(),
+                Dependencies = dependency.Value.Select(v => new ManifestDependencyItem { Source = v.Document.FilePath, Type = v.Type }).ToArray(),
             };
         }
     }

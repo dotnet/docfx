@@ -47,7 +47,7 @@ outputs:
           [
             {
               "source": "docs/a.md",
-              "type": "Toc"
+              "type": "tocFile"
             }
           ]
         }
@@ -72,7 +72,7 @@ outputs:
           [
             {
               "source": "docs/b.md",
-              "type": "Inclusion"
+              "type": "inclusion"
             }
           ]
         }
@@ -97,7 +97,7 @@ outputs:
           [
             {
               "source": "docs/b.md",
-              "type": "File"
+              "type": "file"
             }
           ]
         }
@@ -125,7 +125,7 @@ outputs:
           [
             {
               "source": "docs/b.md",
-              "type": "Inclusion"
+              "type": "inclusion"
             }
           ]
         },
@@ -135,11 +135,11 @@ outputs:
           [
             {
               "source": "docs/c.md",
-              "type": "File"
+              "type": "file"
             },
             {
               "source": "docs/c.md",
-              "type": "Inclusion"
+              "type": "inclusion"
             }
           ]
         }
@@ -167,7 +167,7 @@ outputs:
           [
             {
               "source": "docs/a/b.md",
-              "type": "Toc"
+              "type": "tocFile"
             }
           ]
         },
@@ -177,7 +177,7 @@ outputs:
           [
             {
               "source": "docs/a/TOC.md",
-              "type": "Toc"
+              "type": "tocInclusion"
             }
           ]
         }

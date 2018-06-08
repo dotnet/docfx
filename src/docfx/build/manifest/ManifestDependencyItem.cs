@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
     {
         public string Source { get; set; }
 
-        public string Type { get; set; }
+        public DependencyType Type { get; set; }
     }
 }

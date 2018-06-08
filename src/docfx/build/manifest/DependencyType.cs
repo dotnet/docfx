@@ -7,28 +7,9 @@ namespace Microsoft.Docs.Build
     {
         File = 1, // file reference
         Uid = 2, // uid reference
-        Toc = 3, // toc reference
+        TocFile = 3, // toc reference article
         Inclusion = 4, // token or codesnippet
         Overwrite = 5, // overwrite markdown reference
+        TocInclusion = 6, // toc reference toc
     }
-
-    public enum ImpactType
-    {
-        Content, // the changing file content has impact to the referenced file(s), like token/codesnippet, overwrite markdown
-        URL, // the changing file output URL has impact to the referenced file(s), like file link, UID reference
-    }
-
-    public static class DependencyTypeExtensions
-    {
-        public static ImpactType ToImpact(this DependencyType dependencyType)
-        {
-            if ((int)dependencyType <= 3)
-            {
-                return ImpactType.URL;
-            }
-
-            return ImpactType.Content;
-        }
-    }
-
 }
