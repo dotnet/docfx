@@ -2,7 +2,8 @@
   "docfx": {
     "home": "../../",
     "repoUrl": "git@github.com-ci:dotnet/docfx.git",
-    "docfxSeedHome": "../../../docfx-seed/",
+    "docfxSeedRepoUrl": "https://github.com/docascode/docfx-seed.git",
+    "docfxSeedHome": "../../test/docfx-seed/",
     "e2eTestsHome": "../../test/docfx.E2E.Tests/",
     "targetFolder": "../../target/",
     "artifactsFolder": "../../artifacts/",
