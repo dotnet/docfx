@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.LinkIsAbsolute(relativeTo, path), null, null);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null);
             }
 
             // Leave absolute URL path as is
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
 
             var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.LinkNotFound(relativeTo, path), file, fragmentQuery);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, fragmentQuery);
         }
     }
 }
