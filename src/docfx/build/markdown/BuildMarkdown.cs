@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(markdown, file, dependencyMapBuilder, buildChild);
+            var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 

@@ -11,12 +11,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal delegate (string content, Document file) ResolveContent(Document relativeTo, string href);
-
     /// <summary>
     /// Converts markdown to html
     /// </summary>
-    internal static class MarkdownUtility
+    internal static class Markup
     {
         // In docfx 2, a localized text is prepended to quotes beginning with
         // [!NOTE], [!TIP], [!WARNING], [!IMPORTANT], [!CAUTION].
@@ -34,7 +32,7 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        public static (string html, MarkupResult result) Markup(
+        public static (string html, MarkupResult result) ToHtml(
             string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
         {
             var errors = new List<DocfxException>();
