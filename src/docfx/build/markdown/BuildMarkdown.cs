@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
                 },
             };
 
+            // TODO: make build pure by not output using `context.Report/Write/Copy` here
             context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
 
