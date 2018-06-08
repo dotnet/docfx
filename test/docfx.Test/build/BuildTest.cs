@@ -53,7 +53,11 @@ namespace Microsoft.Docs.Build
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
-
+                case ".log":
+                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _);
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
+                    Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    break;
                 default:
                     Assert.Equal(
                         content?.Trim() ?? "",

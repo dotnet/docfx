@@ -14,16 +14,275 @@ outputs:
       "files":
       [
         {
-          "url": "/docs/a",
-          "path": "docs/a.json"
+          "siteUrl": "/docs/a",
+          "outputPath": "docs/a.json"
         },
         {
-          "url": "/docs/folder/b",
-          "path": "docs/folder/b.json"
+          "siteUrl": "/docs/folder/b",
+          "outputPath": "docs/folder/b.json"
         },
         {
-          "url": "/docs/TOC.json",
-          "path": "docs/TOC.json"
+          "siteUrl": "/docs/TOC.json",
+          "outputPath": "docs/TOC.json"
+        }
+      ]
+    }
+---
+# `build.manifest` contains Toc dependencies
+inputs:
+  docfx.yml:
+  docs/a.md:
+  docs/TOC.md: |
+    # [file reference](a.md)
+outputs:
+  docs/a.json:
+  docs/TOC.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "tocLink"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains Inclusion dependencies
+inputs:
+  docfx.yml:
+  docs/a.md: a [!INCLUDE[](b.md)]
+  docs/b.md:
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "inclusion"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains File(Link) dependencies
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b.md)
+  docs/b.md:
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "link"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains nested(token/codesnippet) dependencies
+inputs:
+  docfx.yml: |
+    content: docs/a.md
+  docs/a.md: a [!INCLUDE[](b.md)
+  docs/b.md: |
+    Link to [c](c.md)
+    b [!INCLUDE[](c.md)
+  docs/c.md:
+outputs:
+  docs/a.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "inclusion"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/c.md",
+              "type": "link"
+            },
+            {
+              "source": "docs/c.md",
+              "type": "inclusion"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` contains nested(toc) dependencies
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # [a](a/TOC.md)
+  docs/a/TOC.md: |
+    # [b](b.md)
+  docs/a/b.md:
+outputs:
+  docs/TOC.json:
+  docs/a/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a/b.md",
+              "type": "tocLink"
+            }
+          ]
+        },
+        {
+          "source": "docs/TOC.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a/TOC.md",
+              "type": "tocInclusion"
+            }
+          ]
+        }
+      ]
+    }
+---
+# `build.manifest` inclusion circular reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    a [!INCLUDE[](b.md)
+  docs/b.md: |
+    b [!INCLUDE[](a.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "inclusion"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "inclusion"
+            }
+          ]
+        }
+      ]
+    }
+  build.log: |
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
+
+---
+# `build.manifest` link circular reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [b](b.md)
+  docs/b.md: |
+    Link to [a](a.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "link"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "link"
+            }
+          ]
+        }
+      ]
+    }
+
+---
+# `build.manifest` bookmark generates self dependency 
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [bookmark](#bookmark)
+outputs:
+  docs/a.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "link"
+            }
+          ]
         }
       ]
     }

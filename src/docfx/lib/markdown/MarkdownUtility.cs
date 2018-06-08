@@ -11,6 +11,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    internal delegate (string content, Document file) ResolveContent(Document relativeTo, string href);
+
     /// <summary>
     /// Converts markdown to html
     /// </summary>
@@ -32,7 +34,8 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        public static (string html, MarkupResult result) Markup(string markdown, Document file, Action<Document> buildChild)
+        public static (string html, MarkupResult result) Markup(
+            string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
         {
             var errors = new List<DocfxException>();
             var metadata = new StrongBox<JObject>();
@@ -85,6 +88,8 @@ namespace Microsoft.Docs.Build
                     errors.Add(error);
                 }
 
+                dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+
                 return (content, child);
             }
 
@@ -102,6 +107,7 @@ namespace Microsoft.Docs.Build
                 if (child != null)
                 {
                     buildChild(child);
+                    dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Link);
                 }
 
                 return link;

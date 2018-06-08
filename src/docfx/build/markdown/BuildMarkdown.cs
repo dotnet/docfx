@@ -8,11 +8,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
+            var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(markdown, file, buildChild);
+            var (html, markup) = MarkdownUtility.Markup(markdown, file, dependencyMapBuilder, buildChild);
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
@@ -31,7 +32,7 @@ namespace Microsoft.Docs.Build
             context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
 
-            return Task.CompletedTask;
+            return Task.FromResult(dependencyMapBuilder.Build());
         }
     }
 }
