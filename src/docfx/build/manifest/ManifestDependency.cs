@@ -1,13 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-
 namespace Microsoft.Docs.Build
 {
-    internal class Manifest
+    internal class ManifestDependency
     {
-        public ManifestFile[] Files { get; set; }
+        public string Source { get; set; }
 
-        public ManifestDependency[] Dependencies { get; set; }
+        public ManifestDependencyItem[] Dependencies { get; set; }
     }
 }

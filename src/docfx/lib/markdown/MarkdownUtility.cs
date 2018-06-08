@@ -12,6 +12,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    internal delegate (string content, Document file) ResolveContent(Document relativeTo, string href);
+
     /// <summary>
     /// Converts markdown to html
     /// </summary>
@@ -33,7 +35,7 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context, ResolveHref resolveHref)
+        public static (string html, MarkupResult result) Markup(string markdown, Document file, Context context, ResolveHref resolveHref, ResolveContent resolveContent)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -72,7 +74,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                return ((Document)relativeTo).TryResolveContent(path);
+                return resolveContent((Document)relativeTo, path);
             }
 
             string GetLink(string path, object relativeTo)

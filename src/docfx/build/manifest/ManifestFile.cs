@@ -5,8 +5,8 @@ namespace Microsoft.Docs.Build
 {
     internal class ManifestFile
     {
-        public string Url { get; set; }
+        public string SiteUrl { get; set; }
 
-        public string Path { get; set; }
+        public string OutputPath { get; set; }
     }
 }

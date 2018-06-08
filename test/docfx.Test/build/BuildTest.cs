@@ -46,7 +46,9 @@ namespace Microsoft.Docs.Build
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
-
+                case ".log":
+                    Assert.Equal(File.ReadAllLines(file).OrderBy(_ => _), content.Split(new char[] { '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _));
+                    break;
                 default:
                     Assert.Equal(
                         content?.Trim() ?? "",
