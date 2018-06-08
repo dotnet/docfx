@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                    foreach (var (souce, dependencies) in dependencyMap.Map)
+                    foreach (var (souce, dependencies) in dependencyMap)
                     {
                         sourceDependencies.TryAdd(souce, dependencies);
                     }
