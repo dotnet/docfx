@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -13,8 +14,8 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseExtractYamlHeader(
             this MarkdownPipelineBuilder builder,
-            Context context,
             Document file,
+            List<DocfxException> errors,
             StrongBox<JObject> result)
         {
             return builder.Use(document =>
@@ -33,12 +34,12 @@ namespace Microsoft.Docs.Build
                             }
                             else
                             {
-                                context.ReportWarning(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
+                                errors.Add(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
                             }
                         }
                         catch (Exception ex)
                         {
-                            context.ReportWarning(Errors.InvalidYamlHeader(file, ex));
+                            errors.Add(Errors.InvalidYamlHeader(file, ex));
                         }
                         return true;
                     }

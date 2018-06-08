@@ -9,53 +9,51 @@ namespace Microsoft.Docs.Build
 {
     internal static class Resolve
     {
-        public static (string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var (file, _) = TryResolveFile(relativeTo, href);
+            var (error, file, _) = TryResolveFile(relativeTo, href);
 
-            return file != null ? (file.ReadText(), file) : default;
+            return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
+        public static (DocfxException error, string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
-            var (file, fragmentQuery) = TryResolveFile(relativeTo, href);
+            Debug.Assert(resultRelativeTo != null);
+
+            var (error, file, fragmentQuery) = TryResolveFile(relativeTo, href);
 
             // Cannot resolve the file, leave href as is
-            if (file == null)
+            if (file == null || file == relativeTo)
             {
-                return (href, null);
+                return (error, href, file);
             }
 
             var resolvedHref = file.SiteUrl + fragmentQuery;
 
-            if (resultRelativeTo == null)
-            {
-                return (resolvedHref, file);
-            }
-
             // Make result relative to `resultRelativeTo`
             resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
 
-            return (resolvedHref + fragmentQuery, file);
+            return (error, resolvedHref + fragmentQuery, file);
         }
 
-        private static (Document file, string fragmentQuery) TryResolveFile(this Document relativeTo, string href)
+        private static (DocfxException error, Document file, string fragmentQuery) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return default;
+                return (Errors.LinkIsEmpty(relativeTo), null, null);
             }
 
             var (path, fragment, query) = HrefUtility.SplitHref(href);
             var fragmentQuery = fragment + query;
+            var pathToDocset = "";
 
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return default;
+                return (null, relativeTo, fragmentQuery);
             }
 
-            // Leave absolute URL path as is
+            // Leave absolute URL as is
             if (path.StartsWith('/') || path.StartsWith('\\'))
             {
                 return default;
@@ -64,20 +62,29 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                // TODO: report warnings
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null);
+            }
+
+            // Leave absolute URL path as is
+            if (Uri.TryCreate(path, UriKind.Absolute, out _))
+            {
                 return default;
             }
 
             // Resolve path relative to docset
             if (path.StartsWith("~\\") || path.StartsWith("~/"))
             {
-                return (Document.TryCreate(relativeTo.Docset, path.Substring(2)), fragmentQuery);
+                pathToDocset = path.Substring(2);
+            }
+            else
+            {
+                // Resolve path relative to input file
+                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
             }
 
-            // Resolve path relative to input file
-            var pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
+            var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
 
-            return (Document.TryCreate(relativeTo.Docset, pathToDocset), fragmentQuery);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, fragmentQuery);
         }
     }
 }

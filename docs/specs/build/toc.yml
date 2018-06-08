@@ -97,6 +97,11 @@ outputs:
       ]
     }
   build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
 ---
 # Absolute file reference
 inputs:
@@ -480,3 +485,6 @@ outputs:
   docs/f1/toc.json:
   docs/f2/toc.json:
   build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
+    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]

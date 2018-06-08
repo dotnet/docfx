@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -14,7 +13,7 @@ namespace Microsoft.Docs.Build
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(markdown, file, context, ResolveHref, ResolveContent);
+            var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
@@ -30,31 +29,11 @@ namespace Microsoft.Docs.Build
                 },
             };
 
+            // TODO: make build pure by not output using `context.Report/Write/Copy` here
+            context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
+
             return Task.FromResult(dependencyMapBuilder.Build());
-
-            string ResolveHref(Document relativeTo, string href, Document resultRelativeTo)
-            {
-                var (link, buildItem) = relativeTo.TryResolveHref(href, resultRelativeTo);
-                if (buildItem != null)
-                {
-                    buildChild(buildItem);
-
-                    dependencyMapBuilder.AddDependencyItem(relativeTo, buildItem, DependencyType.Link);
-                }
-                return link;
-            }
-
-            (string str, Document include) ResolveContent(Document relativeTo, string href)
-            {
-                var (str, buildItem) = relativeTo.TryResolveContent(href);
-
-                if (buildItem != null)
-                {
-                    dependencyMapBuilder.AddDependencyItem(relativeTo, buildItem, DependencyType.Inclusion);
-                }
-                return (str, buildItem);
-            }
         }
     }
 }

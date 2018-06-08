@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (tocModel, refArticles, refTocs) = Load(file);
+            var (errors, tocModel, refArticles, refTocs) = Load(file);
 
             foreach (var (article, parent) in refArticles)
             {
@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
                 dependencyMapBuilder.AddDependencyItem(parent, toc, DependencyType.TocInclusion);
             }
 
+            context.Report(file, errors);
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
@@ -57,15 +58,22 @@ namespace Microsoft.Docs.Build
             Debug.Assert(tocMapBuilder != null);
             Debug.Assert(fileToBuild != null);
 
-            var (tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+            var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
             tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs.Select(r => r.toc));
 
             return Task.CompletedTask;
         }
 
-        private static (List<TableOfContentsItem> tocModel, List<(Document doc, Document parent)> referencedDocuments, List<(Document toc, Document parent)> referencedTocs) Load(Document fileToBuild)
+        private static (
+            List<DocfxException> errors,
+            List<TableOfContentsItem> tocModel,
+            List<(Document doc, Document parent)> referencedDocuments,
+            List<(Document toc, Document parent)> referencedTocs)
+
+            Load(Document fileToBuild)
         {
+            var errors = new List<DocfxException>();
             var referencedDocuments = new List<(Document doc, Document parent)>();
             var referencedTocs = new List<(Document toc, Document parent)>();
             var tocViewModel = TableOfContentsParser.Load(
@@ -74,7 +82,11 @@ namespace Microsoft.Docs.Build
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
-                    var (referencedTocContent, referencedToc) = file.TryResolveContent(href);
+                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
@@ -86,7 +98,11 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    var (error, link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
                     if (buildItem != null)
                     {
                         referencedDocuments.Add((buildItem, file));
@@ -94,7 +110,7 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
-            return (tocViewModel, referencedDocuments, referencedTocs);
+            return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }
 }

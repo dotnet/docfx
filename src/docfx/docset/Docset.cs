@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 var (dir, _, _) = Restore.GetGitRestoreInfo(url);
 
                 // get dependent docset config or default config
-                // todo: what parent config should be pass on its children 
+                // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var config);
                 result.Add(name, new Docset(dir, config, _options));
             }

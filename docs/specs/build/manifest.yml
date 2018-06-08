@@ -184,7 +184,7 @@ outputs:
       ]
     }
 ---
-# `build.manifest` invlusion circular reference
+# `build.manifest` inclusion circular reference
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -221,8 +221,8 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md"]
-    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md"]
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
 
 ---
 # `build.manifest` link circular reference
@@ -251,6 +251,31 @@ outputs:
         },
         {
           "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "link"
+            }
+          ]
+        }
+      ]
+    }
+
+---
+# `build.manifest` bookmark generates self dependency 
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [bookmark](#bookmark)
+outputs:
+  docs/a.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
           "dependencies": 
           [
             {

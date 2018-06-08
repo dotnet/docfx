@@ -50,6 +50,8 @@
     <Rule Id="CA1001" Action="Warning" />
     <Rule Id="CA1009" Action="Warning" />
     <Rule Id="CA1016" Action="Warning" />
+    <!-- CA1064: Implement standard exception constructors -->
+    <Rule Id="CA1032" Action="None" />
     <Rule Id="CA1033" Action="Warning" />
     <Rule Id="CA1049" Action="Warning" />
     <Rule Id="CA1060" Action="Warning" />
@@ -60,7 +62,7 @@
     <Rule Id="CA1065" Action="Warning" />
     <Rule Id="CA1301" Action="Warning" />
     <!-- CA1308: Specify StringComparison -->
-    <Rule Id="CA1307" Action="Warning" />
+    <Rule Id="CA1307" Action="None" />
     <!-- CA1308: Normalize strings to uppercase -->
     <Rule Id="CA1308" Action="None" />
     <Rule Id="CA1400" Action="Warning" />
