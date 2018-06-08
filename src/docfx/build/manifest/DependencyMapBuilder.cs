@@ -26,9 +26,15 @@ namespace Microsoft.Docs.Build
             _dependencyItems.Add(new DependencyItem(relativeTo, dependencyDoc, type));
         }
 
-        public Dictionary<Document, IEnumerable<DependencyItem>> Build()
+        public DependencyMap Build()
         {
-            return _dependencyItems.GroupBy(k => k.Source).ToDictionary(k => k.Key, v => new HashSet<DependencyItem>(v).OrderBy(r => r.Dest.FilePath).Select(r => r));
+            return new DependencyMap(_dependencyItems
+                .GroupBy(k => k.Source)
+                .ToDictionary(
+                    k => k.Key,
+                    v => (IEnumerable<DependencyItem>)from r in v.Distinct()
+                                                      orderby r.Dest.FilePath, r.Type
+                                                      select r));
         }
     }
 }

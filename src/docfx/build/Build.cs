@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                         return;
                     }
 
-                    var dependencyMaps = await BuildOneFile(context, file, tocMap, item =>
+                    var dependencyMap = await BuildOneFile(context, file, tocMap, item =>
                     {
                         if (references.TryAdd(item, 0))
                         {
@@ -68,19 +68,16 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                    if (dependencyMaps != null)
+                    foreach (var (souce, dependencies) in dependencyMap.Map)
                     {
-                        foreach (var (souce, dependencies) in dependencyMaps)
-                        {
-                            sourceDependencies.TryAdd(souce, dependencies);
-                        }
+                        sourceDependencies.TryAdd(souce, dependencies);
                     }
                 });
 
             return (builtDocs.Keys.OrderBy(d => d.OutputPath), sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value));
         }
 
-        private static Task<Dictionary<Document, IEnumerable<DependencyItem>>> BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<DependencyMap> BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
@@ -93,14 +90,14 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
-                    return Task.FromResult<Dictionary<Document, IEnumerable<DependencyItem>>>(null);
+                    return Task.FromResult(DependencyMap.Empty);
             }
         }
 
-        private static Task<Dictionary<Document, IEnumerable<DependencyItem>>> BuildAsset(Context context, Document file)
+        private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
-            return Task.FromResult<Dictionary<Document, IEnumerable<DependencyItem>>>(null);
+            return Task.FromResult(DependencyMap.Empty);
         }
 
         /// <summary>

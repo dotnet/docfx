@@ -183,3 +183,81 @@ outputs:
         }
       ]
     }
+---
+# `build.manifest` invlusion circular reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    a [!INCLUDE[](b.md)
+  docs/b.md: |
+    b [!INCLUDE[](a.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "inclusion"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "inclusion"
+            }
+          ]
+        }
+      ]
+    }
+  build.log: |
+    ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md"]
+    ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md"]
+
+---
+# `build.manifest` link circular reference
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [b](b.md)
+  docs/b.md: |
+    Link to [a](a.md)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/b.md",
+              "type": "link"
+            }
+          ]
+        },
+        {
+          "source": "docs/b.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "link"
+            }
+          ]
+        }
+      ]
+    }

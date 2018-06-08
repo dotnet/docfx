@@ -5,11 +5,11 @@ namespace Microsoft.Docs.Build
 {
     public enum DependencyType
     {
-        Link = 1, // file reference
-        Uid = 2, // uid reference
-        TocLink = 3, // toc reference article
-        Inclusion = 4, // token or codesnippet
-        Overwrite = 5, // overwrite markdown reference
-        TocInclusion = 6, // toc reference toc
+        Link, // file reference
+        Uid, // uid reference
+        TocLink, // toc reference article
+        Inclusion, // token or codesnippet
+        Overwrite, // overwrite markdown reference
+        TocInclusion, // toc reference toc
     }
 }

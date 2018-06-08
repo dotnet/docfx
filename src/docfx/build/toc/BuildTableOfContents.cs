@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task<Dictionary<Document, IEnumerable<DependencyItem>>> Build(Context context, Document file, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 

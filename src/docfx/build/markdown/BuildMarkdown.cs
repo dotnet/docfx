@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task<Dictionary<Document, IEnumerable<DependencyItem>>> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
