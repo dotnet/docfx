@@ -98,10 +98,10 @@ outputs:
     }
   build.manifest:
   build.log: |
-    ["warning","link-not-found","Cannot resolve link 'no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
-    ["warning","link-not-found","Cannot resolve link 'no-existing.system.md' relative to 'docs/toc.md'","docs/toc.md"]
-    ["warning","link-not-found","Cannot resolve link '../no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
-    ["warning","link-not-found","Cannot resolve link '~/docs/no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["error","link-not-found","Cannot resolve link 'no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["error","link-not-found","Cannot resolve link 'no-existing.system.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["error","link-not-found","Cannot resolve link '../no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["error","link-not-found","Cannot resolve link '~/docs/no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
 ---
 # Absolute file reference
 inputs:
@@ -486,5 +486,5 @@ outputs:
   docs/f2/toc.json:
   build.manifest:
   build.log: |
-    ["warning","link-not-found","Cannot resolve link 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
-    ["warning","link-not-found","Cannot resolve link 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
+    ["error","link-not-found","Cannot resolve link 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
+    ["error","link-not-found","Cannot resolve link 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]

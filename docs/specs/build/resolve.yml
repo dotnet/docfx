@@ -55,7 +55,7 @@ outputs:
     { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
   build.manifest:
   build.log: |
-    ["warning","link-not-found","Cannot resolve link '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
+    ["error","link-not-found","Cannot resolve link '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
 ---
 # Links in include files are resolved relative to the include file
 inputs:
@@ -112,8 +112,8 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","link-is-empty","Link is empty","docs/a.md"]
-    ["warning","link-not-found","Cannot resolve link 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
-    ["warning","link-not-found","Cannot resolve link 'c.md' relative to 'b.md'","b.md"]
+    ["error","link-not-found","Cannot resolve link 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["error","link-not-found","Cannot resolve link 'c.md' relative to 'b.md'","b.md"]
 ---
 # Show warning if the link points to absolute file path
 os: windows
@@ -126,4 +126,4 @@ outputs:
     { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
   build.manifest:
   build.log: |
-    ["warning","link-is-absolute","Link to file cannot be an absolute path: 'C:/a.md'","docs/a.md"]
+    ["error","link-is-absolute","Link to file cannot be an absolute path: 'C:/a.md'","docs/a.md"]
