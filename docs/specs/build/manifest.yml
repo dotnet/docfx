@@ -47,7 +47,7 @@ outputs:
           [
             {
               "source": "docs/a.md",
-              "type": "tocFile"
+              "type": "tocLink"
             }
           ]
         }
@@ -97,7 +97,7 @@ outputs:
           [
             {
               "source": "docs/b.md",
-              "type": "file"
+              "type": "link"
             }
           ]
         }
@@ -135,7 +135,7 @@ outputs:
           [
             {
               "source": "docs/c.md",
-              "type": "file"
+              "type": "link"
             },
             {
               "source": "docs/c.md",
@@ -167,7 +167,7 @@ outputs:
           [
             {
               "source": "docs/a/b.md",
-              "type": "tocFile"
+              "type": "tocLink"
             }
           ]
         },

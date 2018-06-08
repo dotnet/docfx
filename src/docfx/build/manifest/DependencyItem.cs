@@ -7,21 +7,25 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyItem
     {
-        public Document Document { get; private set; }
+        public Document Source { get; private set; }
+
+        public Document Dest { get; private set; }
 
         public DependencyType Type { get; private set; }
 
-        public DependencyItem(Document referencedDoc, DependencyType type)
+        public DependencyItem(Document source, Document dest, DependencyType type)
         {
-            Debug.Assert(referencedDoc != null);
+            Debug.Assert(source != null);
+            Debug.Assert(dest != null);
 
-            Document = referencedDoc;
+            Source = source;
+            Dest = dest;
             Type = type;
         }
 
         public override int GetHashCode()
         {
-            return Document.GetHashCode() + Type.GetHashCode();
+            return Dest.GetHashCode() + Source.GetHashCode() + Type.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -36,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return Document.Equals(other.Document) && Type == other.Type;
+            return Source.Equals(other.Source) && Dest.Equals(other.Dest) && Type == other.Type;
         }
     }
 }

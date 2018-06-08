@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task<DependencyMap> Build(Context context, Document file, Action<Document> buildChild)
+        public static Task<Dictionary<Document, IEnumerable<DependencyItem>>> Build(Context context, Document file, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -22,13 +22,13 @@ namespace Microsoft.Docs.Build
             {
                 buildChild(article);
 
-                dependencyMapBuilder.AddDependencyItem(file, parent, article, DependencyType.TocFile);
+                dependencyMapBuilder.AddDependencyItem(parent, article, DependencyType.TocLink);
             }
 
             foreach (var (toc, parent) in refTocs)
             {
                 // todo: handle folder referencing
-                dependencyMapBuilder.AddDependencyItem(file, parent, toc, DependencyType.TocInclusion);
+                dependencyMapBuilder.AddDependencyItem(parent, toc, DependencyType.TocInclusion);
             }
 
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);

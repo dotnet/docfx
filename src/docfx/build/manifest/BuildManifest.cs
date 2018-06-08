@@ -10,15 +10,10 @@ namespace Microsoft.Docs.Build
     {
         public static void Build(Context context, IEnumerable<Document> builtDocs, Dictionary<Document, IEnumerable<DependencyItem>> sourceDependencies)
         {
-            if (sourceDependencies == null || !sourceDependencies.Any())
-            {
-                return;
-            }
-
             var manifest = new Manifest
             {
-                Files = builtDocs.Select(ToManifestFile).ToArray(),
-                Dependencies = sourceDependencies.Where(d => d.Value.Any()).Select(ToManifestDependency).ToArray(),
+                Files = builtDocs?.Select(ToManifestFile).ToArray(),
+                Dependencies = sourceDependencies?.Where(d => d.Value.Any()).Select(ToManifestDependency).ToArray(),
             };
 
             context.WriteJson(manifest, "build.manifest");
@@ -38,7 +33,7 @@ namespace Microsoft.Docs.Build
             return new ManifestDependency
             {
                 Source = dependency.Key.FilePath,
-                Dependencies = dependency.Value.Select(v => new ManifestDependencyItem { Source = v.Document.FilePath, Type = v.Type }).ToArray(),
+                Dependencies = dependency.Value.Select(v => new ManifestDependencyItem { Source = v.Dest.FilePath, Type = v.Type }).ToArray(),
             };
         }
     }

@@ -2,13 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<Dictionary<Document, IEnumerable<DependencyItem>>> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
                 {
                     buildChild(buildItem);
 
-                    dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.File);
+                    dependencyMapBuilder.AddDependencyItem(relativeTo, buildItem, DependencyType.Link);
                 }
                 return link;
             }
@@ -50,7 +51,7 @@ namespace Microsoft.Docs.Build
 
                 if (buildItem != null)
                 {
-                    dependencyMapBuilder.AddDependencyItem(file, relativeTo, buildItem, DependencyType.Inclusion);
+                    dependencyMapBuilder.AddDependencyItem(relativeTo, buildItem, DependencyType.Inclusion);
                 }
                 return (str, buildItem);
             }

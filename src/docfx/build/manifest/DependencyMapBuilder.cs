@@ -10,11 +10,9 @@ namespace Microsoft.Docs.Build
     internal class DependencyMapBuilder
     {
         private readonly HashSet<DependencyItem> _dependencyItems = new HashSet<DependencyItem>();
-        private readonly Dictionary<Document, HashSet<DependencyItem>> _inclusionDependencyItems = new Dictionary<Document, HashSet<DependencyItem>>();
 
-        public void AddDependencyItem(Document root, Document relativeTo, Document dependencyDoc, DependencyType type)
+        public void AddDependencyItem(Document relativeTo, Document dependencyDoc, DependencyType type)
         {
-            Debug.Assert(root != null);
             Debug.Assert(relativeTo != null);
 
             if (dependencyDoc == null)
@@ -22,24 +20,12 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (relativeTo.Equals(root))
-            {
-                _dependencyItems.Add(new DependencyItem(dependencyDoc, type));
-            }
-            else
-            {
-                if (!_inclusionDependencyItems.TryGetValue(relativeTo, out var inclusionDependencyItems))
-                {
-                    inclusionDependencyItems = _inclusionDependencyItems[relativeTo] = new HashSet<DependencyItem>();
-                }
-
-                inclusionDependencyItems.Add(new DependencyItem(dependencyDoc, type));
-            }
+            _dependencyItems.Add(new DependencyItem(relativeTo, dependencyDoc, type));
         }
 
-        public DependencyMap Build()
+        public Dictionary<Document, IEnumerable<DependencyItem>> Build()
         {
-            return new DependencyMap(_dependencyItems, _inclusionDependencyItems.ToDictionary(k => k.Key, v => (IEnumerable<DependencyItem>)v.Value));
+            return _dependencyItems.GroupBy(k => k.Source).ToDictionary(k => k.Key, v => (IEnumerable<DependencyItem>)new HashSet<DependencyItem>(v));
         }
     }
 }
