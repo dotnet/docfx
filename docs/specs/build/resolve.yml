@@ -1,0 +1,129 @@
+---
+# Links to files are resolved to relative url
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b.md)
+  docs/b.md: Link to [a](./a.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"a\">a</a></p>" }
+  build.manifest:
+---
+# Links to URLs are preserved as is
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [docs](https://docs.microsoft.com)
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
+  build.manifest:
+---
+# Links to bookmarks in the same article
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ## Hello World
+    Link to [bookmark](#hello-world)
+outputs:
+  docs/a.json: |
+    { "content": "<h2 id=\"hello-world\">Hello World</h2><p>Link to <a href=\"#hello-world\">bookmark</a></p>" }
+  build.manifest:
+---
+# Support both / and \ as directory seperator
+inputs:
+  docfx.yml:
+  docs/dir-a/a.md: Link to [b](..\dir-b/b.md)
+  docs/dir-b/b.md: Link to [a](../dir-a\a.md)
+outputs:
+  docs/dir-a/a.json: |
+    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
+  docs/dir-b/b.json: |
+    { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
+  build.manifest:
+---
+# Path starting with ~ resolves from docset root directory
+inputs:
+  docfx.yml:
+  docs/dir-a/a.md: Link to [b](~/docs/dir-b/b.md)
+  docs/dir-b/b.md: Link to [a](~docs/dir-a/a.md)
+outputs:
+  docs/dir-a/a.json: |
+    { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
+  docs/dir-b/b.json: |
+    { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
+  build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
+---
+# Links in include files are resolved relative to the include file
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [!INCLUDE[](dir/b.md)]
+  docs/dir/b.md: '[c](c.md)'
+  docs/dir/c.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"dir/c\">c</a></p>" }
+  docs/dir/b.json: |
+    { "content": "<p><a href=\"c\">c</a></p>" }
+  docs/dir/c.json:
+  build.manifest:
+---
+# Resolve <a> and <img> tags embeded inside markdown
+inputs:
+  docfx.yml:
+  docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
+  docs/b.md: <div>Link to <img src="~/docs/c.png" /></div>
+  docs/c.png:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
+  docs/b.json: |
+    { "content": "<div>Link to <img src=\"c.png\" /></div>" }
+  docs/c.png:
+  build.manifest:
+---
+# Html links in include files are resolved relative to the include file
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [!INCLUDE[](dir/b.md)]
+  docs/dir/b.md: '<a target="_blank" href="c.md">c</a>'
+  docs/dir/c.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a target=\"_blank\" href=\"dir/c\">c</a></p>" }
+  docs/dir/b.json: |
+    { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
+  docs/dir/c.json:
+  build.manifest:
+---
+# Show warning if the link is empty, missing or points to absolute file path
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    [Empty]() [Invalid](a<>b.md) [!INCLUDE[](../b.md)]
+  b.md: |
+    [Missing](c.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
+  build.manifest:
+  build.log: |
+    ["warning","link-is-empty","Link is empty","docs/a.md"]
+    ["warning","file-not-found","Cannot find file 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
+    ["warning","file-not-found","Cannot find file 'c.md' relative to 'b.md'","b.md"]
+---
+# Show warning if the link points to absolute file path
+os: windows
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    [Absolute](C:/a.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
+  build.manifest:
+  build.log: |
+    ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]

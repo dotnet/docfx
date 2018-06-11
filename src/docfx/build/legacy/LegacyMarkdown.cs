@@ -25,7 +25,10 @@ namespace Microsoft.Docs.Build
             var legacyRawMetadata = new LegacyRawMetadata();
             if (!string.IsNullOrEmpty(pageModel.Content))
             {
-                legacyRawMetadata.Content = PostProcessHtml(pageModel.Content, docset.Config.Locale);
+                legacyRawMetadata.Content = HtmlUtility.TransformHtml(
+                    pageModel.Content,
+                    node => node.AddLinkType(docset.Config.Locale)
+                                .RemoveRerunCodepenIframes());
             }
 
             legacyRawMetadata.RawMetadata = pageModel.Metadata;
@@ -34,15 +37,6 @@ namespace Microsoft.Docs.Build
             legacyRawMetadata.RawMetadata.Metadata["word_count"] = pageModel.WordCount;
             legacyRawMetadata.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{pageModel.Metadata.Title}</h1>";
             context.WriteJson(legacyRawMetadata, rawPageOutputPath);
-        }
-
-        private static string PostProcessHtml(string content, string locale)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(content);
-            HtmlUtility.AddLinkType(doc.DocumentNode, locale);
-            HtmlUtility.RemoveRerunCodepenIframes(doc.DocumentNode);
-            return doc.DocumentNode.OuterHtml;
         }
     }
 }

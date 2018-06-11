@@ -10,25 +10,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
+            var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
-            var (html, markup) = MarkdownUtility.Markup(
-                markdown,
-                file,
-                context,
-                (a, b, c) =>
-                {
-                    // resolve href link
-                    var (link, buildItem) = Resolve.TryResolveHref(a, b, c);
-                    if (buildItem != null)
-                    {
-                        buildChild(buildItem);
-                    }
-
-                    return link;
-                });
+            var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
@@ -41,9 +28,11 @@ namespace Microsoft.Docs.Build
                 Metadata.GetFromConfig(file),
                 markup.Metadata);
 
+            var content = markup.HasHtml ? HtmlUtility.TransformHtml(html, node => node.StripTags()) : html;
+
             var model = new PageModel
             {
-                Content = HtmlUtility.ProcessHtml(html),
+                Content = content,
                 Metadata = new PageMetadata
                 {
                     Title = markup.Title,
@@ -54,8 +43,11 @@ namespace Microsoft.Docs.Build
                 TocRelativePath = tocMap.FindTocRelativePath(file),
             };
 
+            // TODO: make build pure by not output using `context.Report/Write/Copy` here
+            context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
-            return Task.CompletedTask;
+
+            return Task.FromResult(dependencyMapBuilder.Build());
         }
     }
 }

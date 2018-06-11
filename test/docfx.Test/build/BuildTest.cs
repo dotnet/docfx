@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -19,6 +20,12 @@ namespace Microsoft.Docs.Build
         public static async Task BuildDocset(string name, int ordinal)
         {
             var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
+
+            if (!string.IsNullOrEmpty(spec.OS) &&
+                !spec.OS.Split(',').Any(os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim()))))
+            {
+                return;
+            }
 
             await Program.Run(new[] { "build", docsetPath });
 
@@ -46,10 +53,14 @@ namespace Microsoft.Docs.Build
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
-
+                case ".log":
+                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _);
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
+                    Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    break;
                 default:
                     Assert.Equal(
-                        content.Trim(),
+                        content?.Trim() ?? "",
                         File.ReadAllText(file).Trim(),
                         ignoreCase: false,
                         ignoreLineEndingDifferences: true,

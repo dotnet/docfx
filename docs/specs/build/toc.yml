@@ -97,6 +97,11 @@ outputs:
       ]
     }
   build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file '../no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
+    ["warning","file-not-found","Cannot find file '~/docs/no-existing.md' relative to 'docs/toc.md'","docs/toc.md"]
 ---
 # Absolute file reference
 inputs:
@@ -207,17 +212,7 @@ outputs:
           {  
              "children":[  
                 {  
-                   "children":[  
-                      {  
-                         "children":[  
-                            {  
-                               "toc_title":"Index Reference",
-                               "href":"f1/f11/"
-                            }
-                         ],
-                         "toc_title":"Toc Reference"
-                      }
-                   ],
+                   "href": "f1/f11/",
                    "toc_title":"Reference TOC File"
                 }
              ],
@@ -294,12 +289,7 @@ outputs:
              "href":"f11/n1"
           },
           {  
-             "children":[  
-                {  
-                   "toc_title":"Index Reference",
-                   "href":"f11/n1"
-                }
-             ],
+             "href":"f11/n1",
              "toc_title":"Toc Reference 2"
           }
        ]
@@ -391,3 +381,110 @@ inputs:
 outputs:
   build.log: |
     ["error","circular-reference","Found circular reference: docs/toc.md --> docs/toc.md","docs/toc.md"]
+---
+# Reference to a folder, basic usages
+# Reference to a folder behavior is not same with reference to a toc file
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: Toc Reference
+      href: f1/toc.md
+    - name: Folder Reference1
+      href: f1/
+    - name: Folder Reference2
+      href: f1/
+      topicHref: f1/a.md
+  docs/f1/toc.md: |
+    # [Index Reference](index.md)
+  docs/f1/index.md:
+  docs/f1/a.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/index.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"Toc Reference",
+             "children":[  
+                {  
+                   "toc_title":"Index Reference",
+                   "href":"f1/"
+                }
+             ]
+          },
+          {  
+             "toc_title":"Folder Reference1",
+             "href":"f1/"
+          },
+          {  
+             "toc_title":"Folder Reference2",
+             "href":"f1/a"
+          }
+       ]
+    }
+  build.manifest:
+---
+# Reference to a folder, nested toc
+# Folder referenced toc doesn't belong to nested toc
+inputs:
+  docfx.yml:
+  docs/toc.md: |
+    # [Folder Reference](f1/)
+  docs/f1/toc.md: |
+    # [Index Reference](index.md)
+  docs/f1/index.md:
+outputs:
+  docs/f1/index.json:
+  docs/toc.json: |
+   {  
+       "items":[  
+          {  
+             "toc_title":"Folder Reference",
+             "href": "f1/"
+          }
+       ]
+    }
+  docs/f1/toc.json:
+  build.manifest:
+---
+# Reference to a folder, first child
+# The href should be the first child with href in referenced toc
+# Horizontal traversal first
+inputs:
+  docfx.yml:
+  docs/toc.md: |
+    # [Folder Reference1](f1/)
+    # [Folder Reference2](f2/)
+  docs/f1/toc.md: |
+    # Title
+    # [File Reference](b.md)
+  docs/f2/toc.md: |
+    # Title1
+    ## Child Title1
+    ## [File Reference](b.md)
+    # [File Reference](a.md)
+  docs/f1/b.md:
+  docs/f2/a.md:
+outputs:
+  docs/f2/a.json:
+  docs/f1/b.json:
+  docs/toc.json: |
+   {  
+       "items":[  
+          {  
+             "toc_title":"Folder Reference1",
+             "href":"f1/b"
+          },
+          {  
+             "toc_title":"Folder Reference2",
+             "href":"f2/a"
+          }
+       ]
+    }
+  docs/f1/toc.json:
+  docs/f2/toc.json:
+  build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
+    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]

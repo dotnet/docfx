@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
@@ -15,18 +16,18 @@ namespace Microsoft.Docs.Build
         private static readonly char[] s_delimChars = { ' ', '\t', '\n' };
         private static readonly string[] ExcludeNodeXPaths = { "//title" };
 
-        public static string ProcessHtml(string html)
+        public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            StripTags(doc.DocumentNode);
-            return doc.DocumentNode.OuterHtml;
+            return transform(doc.DocumentNode).OuterHtml;
         }
 
-        public static void AddLinkType(HtmlNode html, string locale)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
         {
             AddLinkType(html, "a", "href", locale);
             AddLinkType(html, "img", "src", locale);
+            return html;
         }
 
         public static long CountWord(HtmlNode html)
@@ -49,7 +50,7 @@ namespace Microsoft.Docs.Build
             return wordCount;
         }
 
-        private static void AddLinkType(HtmlNode html, string tag, string attribute, string locale)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
         {
             foreach (var node in html.Descendants(tag))
             {
@@ -118,21 +119,22 @@ namespace Microsoft.Docs.Build
             return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
         }
 
-        public static void RemoveRerunCodepenIframes(HtmlNode html)
+        public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
-	          // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
+            // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
             foreach (var node in html.Descendants("iframe"))
             {
-                var src = node.Attributes["src"];
-                if (src != null && src.Value.Contains("codepen.io"))
+                var src = node.GetAttributeValue("src", null);
+                if (src != null && src.Contains("codepen.io", StringComparison.OrdinalIgnoreCase))
                 {
-                    src.Value += "&rerun-position=hidden&";
+                    node.SetAttributeValue("src", src + "&rerun-position=hidden&");
                 }
             }
+            return html;
         }
 
-        public static void StripTags(HtmlNode html)
+        public static HtmlNode StripTags(this HtmlNode html)
         {
             var nodesToRemove = new List<HtmlNode>();
 
@@ -154,6 +156,50 @@ namespace Microsoft.Docs.Build
             {
                 node.Remove();
             }
+            return html;
+        }
+
+        public static string TransformLinks(this string html, Func<string, string> transform)
+        {
+            // Fast pass it does not have <a> tag or <img> tag
+            if (!((html.Contains("<a", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)) ||
+                  (html.Contains("<img", StringComparison.OrdinalIgnoreCase) && html.Contains("src", StringComparison.OrdinalIgnoreCase))))
+            {
+                return html;
+            }
+
+            // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
+            // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
+            // The following code ensures we preserve the original html when changing links.
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var pos = 0;
+            var result = new StringBuilder(html.Length + 64);
+
+            foreach (var node in doc.DocumentNode.Descendants())
+            {
+                var link = node.Name == "a" ? node.Attributes["href"]
+                         : node.Name == "img" ? node.Attributes["src"]
+                         : null;
+
+                if (link == null)
+                {
+                    continue;
+                }
+                if (link.ValueStartIndex > pos)
+                {
+                    result.Append(html, pos, link.ValueStartIndex - pos);
+                }
+                result.Append(transform(link.Value));
+                pos = link.ValueStartIndex + link.ValueLength;
+            }
+
+            if (html.Length > pos)
+            {
+                result.Append(html, pos, html.Length - pos);
+            }
+            return result.ToString();
         }
     }
 }

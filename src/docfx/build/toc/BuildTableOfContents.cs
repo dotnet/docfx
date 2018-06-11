@@ -11,20 +11,30 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task Build(Context context, Document file, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
-            var (tocModel, refArticles, refTocs) = Load(file);
+            var dependencyMapBuilder = new DependencyMapBuilder();
+            var (errors, tocModel, refArticles, refTocs) = Load(file);
 
-            foreach (var article in refArticles)
+            foreach (var (article, parent) in refArticles)
             {
                 buildChild(article);
+
+                dependencyMapBuilder.AddDependencyItem(parent, article, DependencyType.TocLink);
             }
 
+            foreach (var (toc, parent) in refTocs)
+            {
+                // todo: handle folder referencing
+                dependencyMapBuilder.AddDependencyItem(parent, toc, DependencyType.TocInclusion);
+            }
+
+            context.Report(file, errors);
             context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
 
-            return Task.CompletedTask;
+            return Task.FromResult(dependencyMapBuilder.Build());
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
@@ -38,56 +48,69 @@ namespace Microsoft.Docs.Build
                 return builder.Build();
             }
 
-            await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder));
+            await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder));
 
             return builder.Build();
         }
 
-        private static Task BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static Task BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
             Debug.Assert(tocMapBuilder != null);
             Debug.Assert(fileToBuild != null);
 
-            var (tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+            var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
-            tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+            tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs.Select(r => r.toc));
 
             return Task.CompletedTask;
         }
 
-        private static (List<TableOfContentsItem> tocModel, List<Document> referencedDocuments, List<Document> referencedTocs) Load(Document fileToBuild)
+        private static (
+            List<DocfxException> errors,
+            List<TableOfContentsItem> tocModel,
+            List<(Document doc, Document parent)> referencedDocuments,
+            List<(Document toc, Document parent)> referencedTocs)
+
+            Load(Document fileToBuild)
         {
-            var referencedDocuments = new List<Document>();
-            var referencedTocs = new List<Document>();
+            var errors = new List<DocfxException>();
+            var referencedDocuments = new List<(Document doc, Document parent)>();
+            var referencedTocs = new List<(Document toc, Document parent)>();
             var tocViewModel = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
                 fileToBuild,
-                fileToBuild,
-                (a, b) =>
+                (file, href, isInclude) =>
                 {
-                    var (referencedTocContent, referencedTocPath) = a.TryResolveContent(b);
-                    if (referencedTocPath != null)
+                    var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add(referencedTocPath);
+                        referencedTocs.Add((referencedToc, file));
                     }
-                    return (referencedTocContent, referencedTocPath);
+                    return (referencedTocContent, referencedToc);
                 },
-                (a, b, c) =>
+                (file, href, resultRelativeTo) =>
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (link, buildItem) = Resolve.TryResolveHref(a, b, c);
+                    var (error, link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add(buildItem);
+                        referencedDocuments.Add((buildItem, file));
                     }
-
                     return link;
                 });
 
-            return (tocViewModel, referencedDocuments, referencedTocs);
+            return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }
 }

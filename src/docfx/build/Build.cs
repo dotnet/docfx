@@ -26,12 +26,13 @@ namespace Microsoft.Docs.Build
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
 
-            var documents = await BuildFiles(context, globbedFiles, tocMap);
+            var (builtDocs, sourceDependencies) = await BuildFiles(context, globbedFiles, tocMap);
 
-            BuildManifest.Build(context, documents);
+            BuildManifest.Build(context, builtDocs, sourceDependencies);
 
-            if (options.OutputLegacyModel)
+            if (options.Legacy)
             {
+                var documents = builtDocs.ToList();
                 Legacy.ConvertToLegacyModel(docset, context, documents);
             }
         }
@@ -39,38 +40,44 @@ namespace Microsoft.Docs.Build
         private static List<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => new Document(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
                            .ToList();
         }
 
-        private static async Task<List<Document>> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> builtDocs, DependencyMap sourceDependencies)> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
         {
-            var manifest = new ConcurrentDictionary<Document, byte>();
+            var builtDocs = new ConcurrentDictionary<Document, byte>();
             var references = new ConcurrentDictionary<Document, byte>();
+            var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var buildScope = new HashSet<Document>(files);
 
             await ParallelUtility.ForEach(
                 files,
-                (file, buildChild) =>
+                async (file, buildChild) =>
                 {
-                    if (!ShouldBuildFile(context, file, tocMap, buildScope) || !manifest.TryAdd(file, 0))
+                    if (!ShouldBuildFile(context, file, tocMap, buildScope) || !builtDocs.TryAdd(file, 0))
                     {
-                        return Task.CompletedTask;
+                        return;
                     }
 
-                    return BuildOneFile(context, file, tocMap, item =>
+                    var dependencyMap = await BuildOneFile(context, file, tocMap, item =>
                     {
                         if (references.TryAdd(item, 0))
                         {
                             buildChild(item);
                         }
                     });
+
+                    foreach (var (souce, dependencies) in dependencyMap)
+                    {
+                        sourceDependencies.TryAdd(souce, dependencies);
+                    }
                 });
 
-            return manifest.Keys.OrderBy(doc => doc.OutputPath).ToList();
+            return (builtDocs.Keys.OrderBy(d => d.OutputPath).ToList(), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
         }
 
-        private static Task BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<DependencyMap> BuildOneFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
@@ -83,14 +90,14 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
-                    return Task.CompletedTask;
+                    return Task.FromResult(DependencyMap.Empty);
             }
         }
 
-        private static Task BuildAsset(Context context, Document file)
+        private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
-            return Task.CompletedTask;
+            return Task.FromResult(DependencyMap.Empty);
         }
 
         /// <summary>

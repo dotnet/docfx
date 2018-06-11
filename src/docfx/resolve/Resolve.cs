@@ -2,82 +2,89 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal delegate (string content, Document path) ResolveContent(Document relativeTo, string href);
-
-    internal delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
-
     internal static class Resolve
     {
-        public static (string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var buildItem = TryResolveHref(relativeTo, href);
-            if (buildItem == null)
-            {
-                return default;
-            }
+            var (error, file, _) = TryResolveFile(relativeTo, href);
 
-            return (buildItem.ReadText(), buildItem);
+            return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo = null)
+        public static (DocfxException error, string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
-            var file = TryResolveHref(relativeTo, href);
-            if (file == null)
+            Debug.Assert(resultRelativeTo != null);
+
+            var (error, file, fragmentQuery) = TryResolveFile(relativeTo, href);
+
+            // Cannot resolve the file, leave href as is
+            if (file == null || file == relativeTo)
             {
-                return (href, null);
+                return (error, href, file);
             }
 
-            var (_, fragment, query) = HrefUtility.SplitHref(href);
+            var resolvedHref = file.SiteUrl + fragmentQuery;
 
-            var resolvedHref = Uri.EscapeUriString(file.SiteUrl) + fragment + query;
-            if (href[0] == '/')
-            {
-                return (resolvedHref, file);
-            }
-
-            if (resultRelativeTo == null)
-            {
-                return (resolvedHref, file);
-            }
-
+            // Make result relative to `resultRelativeTo`
             resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
 
-            return (Uri.EscapeUriString(resolvedHref) + fragment + query, file);
+            return (error, resolvedHref + fragmentQuery, file);
         }
 
-        private static Document TryResolveHref(this Document relativeTo, string href)
+        private static (DocfxException error, Document file, string fragmentQuery) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return default;
+                return (Errors.LinkIsEmpty(relativeTo), null, null);
             }
 
-            if (!HrefUtility.IsRelativeHref(href))
+            var (path, fragment, query) = HrefUtility.SplitHref(href);
+            var fragmentQuery = fragment + query;
+            var pathToDocset = "";
+
+            // Self bookmark link
+            if (string.IsNullOrEmpty(path))
+            {
+                return (null, relativeTo, fragmentQuery);
+            }
+
+            // Leave absolute URL as is
+            if (path.StartsWith('/') || path.StartsWith('\\'))
             {
                 return default;
             }
 
-            var (hrefPath, _, _) = HrefUtility.SplitHref(href);
-            var docset = relativeTo.Docset;
-
-            var path = hrefPath;
-            if (hrefPath[0] == '~')
+            // Leave absolute file path as is
+            if (Path.IsPathRooted(path))
             {
-                if (hrefPath.Length <= 1 || (hrefPath[1] != '/' && hrefPath[1] != '\\'))
-                {
-                    return default;
-                }
-                path = hrefPath.Substring(2);
-
-                var relativePath = Path.GetRelativePath(Path.GetDirectoryName(relativeTo.FilePath), path);
-                return relativeTo.TryResolveFile(relativePath);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null);
             }
 
-            return relativeTo.TryResolveFile(path);
+            // Leave absolute URL path as is
+            if (Uri.TryCreate(path, UriKind.Absolute, out _))
+            {
+                return default;
+            }
+
+            // Resolve path relative to docset
+            if (path.StartsWith("~\\") || path.StartsWith("~/"))
+            {
+                pathToDocset = path.Substring(2);
+            }
+            else
+            {
+                // Resolve path relative to input file
+                pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
+            }
+
+            var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
+
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, fragmentQuery);
         }
     }
 }

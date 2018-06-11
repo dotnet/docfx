@@ -122,7 +122,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
             Debug.Assert(!Path.IsPathRooted(lockRelativePath));
-            Debug.Assert(!PathUtility.FilePathHasInvalidChars(lockRelativePath));
 
             var lockPath = Path.Combine(s_lockDir, lockRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));

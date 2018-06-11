@@ -25,8 +25,6 @@ namespace Microsoft.Docs.Build
         /// <returns>The git repo root path. null if the repo root is not found</returns>
         public static string FindRepo(string path)
         {
-            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
-
             var repo = path;
             while (!string.IsNullOrEmpty(repo))
             {
@@ -49,7 +47,6 @@ namespace Microsoft.Docs.Build
         public static bool IsRepo(string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
 
             var gitPath = Path.Combine(path, ".git");
 
@@ -65,12 +62,10 @@ namespace Microsoft.Docs.Build
         /// <returns>Task status</returns>
         public static Task Clone(string cwd, string remote, string path, string branch = null)
         {
-            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(path));
-
             Directory.CreateDirectory(cwd);
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}"
-                : $"clone -b {branch} --single-branch {remote} {path.Replace("\\", "/", StringComparison.Ordinal)}";
+                ? $"clone {remote} \"{path.Replace("\\", "/")}\""
+                : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
         }
@@ -165,7 +160,6 @@ namespace Microsoft.Docs.Build
         private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
-            Debug.Assert(!PathUtility.FolderPathHasInvalidChars(cwd));
 
             // todo: check git exist or not
             var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);

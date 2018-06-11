@@ -28,8 +28,6 @@ namespace Microsoft.Docs.Build
         /// <returns>A collection of git commits</returns>
         public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files, Action<int, int> progress = null)
         {
-            Debug.Assert(files.All(file => !PathUtility.FilePathHasInvalidChars(file)));
-
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);

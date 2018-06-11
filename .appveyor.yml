@@ -3,4 +3,5 @@ build_script:
 artifacts:
   - path: drop/**/*.nupkg
 nuget:
+  project_feed: true
   disable_publish_on_pr: true
