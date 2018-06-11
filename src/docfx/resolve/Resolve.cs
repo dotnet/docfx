@@ -16,24 +16,28 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (DocfxException error, string href, string fragmentQuery, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             var (error, file, fragmentQuery) = TryResolveFile(relativeTo, href);
 
             // Cannot resolve the file, leave href as is
-            if (file == null || file == relativeTo)
+            if (file == null)
             {
-                return (error, href, file);
+                return (error, href, string.Empty, file);
             }
 
-            var resolvedHref = file.SiteUrl + fragmentQuery;
+            // self bookmark
+            if (file == relativeTo)
+            {
+                return (error, string.Empty, fragmentQuery, file);
+            }
 
             // Make result relative to `resultRelativeTo`
-            resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
+            var resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
 
-            return (error, resolvedHref + fragmentQuery, file);
+            return (error, resolvedHref, fragmentQuery, file);
         }
 
         private static (DocfxException error, Document file, string fragmentQuery) TryResolveFile(this Document relativeTo, string href)

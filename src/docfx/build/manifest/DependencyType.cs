@@ -12,4 +12,22 @@ namespace Microsoft.Docs.Build
         Overwrite, // overwrite markdown reference
         TocInclusion, // toc reference toc
     }
+
+    internal static class DependencyTypeExtensions
+    {
+        public static DependencyType ToLink(this string fragmentQuery)
+        {
+            if (string.IsNullOrEmpty(fragmentQuery))
+            {
+                return DependencyType.Link;
+            }
+
+            if (fragmentQuery.Contains('#'))
+            {
+                return DependencyType.LinkWithBookmark;
+            }
+
+            return DependencyType.Link;
+        }
+    }
 }

@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (error, link, child) = ((Document)relativeTo).TryResolveHref(path, file);
+                var (error, link, fragmentQuery, child) = ((Document)relativeTo).TryResolveHref(path, file);
 
                 if (error != null)
                 {
@@ -105,10 +105,10 @@ namespace Microsoft.Docs.Build
                 if (child != null)
                 {
                     buildChild(child);
-                    dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Link);
+                    dependencyMap.AddDependencyItem((Document)relativeTo, child, fragmentQuery.ToLink());
                 }
 
-                return link;
+                return link + fragmentQuery;
             }
         }
     }
