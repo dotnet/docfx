@@ -21,12 +21,19 @@ namespace Microsoft.Docs.Build
             File.Move(absoluteOutputFilePath, rawPageOutputPath);
 
             var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(rawPageOutputPath));
+
+            var legacyRawMetadata = new LegacyRawMetadata();
             if (!string.IsNullOrEmpty(pageModel.Content))
             {
-                pageModel.Content = PostProcessHtml(pageModel.Content, docset.Config.Locale);
+                legacyRawMetadata.Content = PostProcessHtml(pageModel.Content, docset.Config.Locale);
             }
 
-            context.WriteJson(pageModel, rawPageOutputPath);
+            legacyRawMetadata.RawMetadata = pageModel.Metadata;
+            legacyRawMetadata.RawMetadata.Metadata["toc_rel"] = pageModel.TocRelativePath;
+            legacyRawMetadata.RawMetadata.Metadata["locale"] = pageModel.Locale;
+            legacyRawMetadata.RawMetadata.Metadata["word_count"] = pageModel.WordCount;
+            legacyRawMetadata.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{pageModel.Metadata.Title}</h1>";
+            context.WriteJson(legacyRawMetadata, rawPageOutputPath);
         }
 
         private static string PostProcessHtml(string content, string locale)

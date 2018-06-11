@@ -16,14 +16,9 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
         /// <summary>
-        /// Docset name.
+        /// Depot name. = _(ops `DepotName` = `<ProductName>.<DocsetName>`)_
         /// </summary>
-        public readonly string DocsetName = string.Empty;
-
-        /// <summary>
-        /// Product name. _(ops `DepotName` = `<Product>.<DocsetName>`)_
-        /// </summary>
-        public readonly string Product = string.Empty;
+        public readonly string Name = string.Empty;
 
         /// <summary>
         /// Gets the default locale of this docset.
@@ -54,6 +49,11 @@ namespace Microsoft.Docs.Build
         /// Just for backward compatibility, the source path prefix
         /// </summary>
         public readonly string SourceBasePath = string.Empty;
+
+        /// <summary>
+        /// The hostname
+        /// </summary>
+        public readonly string HostName = "docs.microsoft.com";
 
         /// <summary>
         /// Gets the file metadata added to each document.

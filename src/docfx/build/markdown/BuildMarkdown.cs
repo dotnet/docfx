@@ -4,6 +4,8 @@
 using System;
 using System.Threading.Tasks;
 
+using HtmlAgilityPack;
+
 namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
@@ -28,8 +30,14 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(html);
+
+            var wordCount = HtmlUtility.CountWord(document.DocumentNode);
+            var locale = file.Docset.Config.Locale;
+
             var metadata = JsonUtility.Merge(
-                Metadata.GenerateRawMetadata(context, file, tocMap, html),
+                Metadata.GenerateRawMetadata(file, document.DocumentNode, locale, wordCount),
                 Metadata.GetFromConfig(file),
                 markup.Metadata);
 
@@ -41,6 +49,9 @@ namespace Microsoft.Docs.Build
                     Title = markup.Title,
                     Metadata = metadata,
                 },
+                WordCount = wordCount,
+                Locale = locale,
+                TocRelativePath = tocMap.FindTocRelativePath(file),
             };
 
             context.WriteJson(model, file.OutputPath);

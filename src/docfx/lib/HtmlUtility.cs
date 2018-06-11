@@ -4,12 +4,17 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        private const string SpecialChars = ".?!;:,()[]";
+        private static readonly char[] s_delimChars = { ' ', '\t', '\n' };
+        private static readonly string[] ExcludeNodeXPaths = { "//title" };
+
         public static string ProcessHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -22,6 +27,26 @@ namespace Microsoft.Docs.Build
         {
             AddLinkType(html, "a", "href", locale);
             AddLinkType(html, "img", "src", locale);
+        }
+
+        public static long CountWord(HtmlNode html)
+        {
+            // TODO: word count does not work for CJK locales...
+            long wordCount = CountWordInText(html.InnerText);
+
+            foreach (var excludeNodeXPath in ExcludeNodeXPaths)
+            {
+                HtmlNodeCollection excludeNodes = html.SelectNodes(excludeNodeXPath);
+                if (excludeNodes != null)
+                {
+                    foreach (var excludeNode in excludeNodes)
+                    {
+                        wordCount -= CountWordInText(excludeNode.InnerText);
+                    }
+                }
+            }
+
+            return wordCount;
         }
 
         private static void AddLinkType(HtmlNode html, string tag, string attribute, string locale)
@@ -80,6 +105,17 @@ namespace Microsoft.Docs.Build
             {
                 return '/' + locale + href;
             }
+        }
+
+        private static int CountWordInText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return 0;
+            }
+
+            string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
+            return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
         }
 
         public static void RemoveRerunCodepenIframes(HtmlNode html)
