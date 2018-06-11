@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                     return LegacyDependencyMapType.File;
                 case DependencyType.Inclusion:
                     return LegacyDependencyMapType.Include;
-                case DependencyType.LinkWithBookmark:
+                case DependencyType.Bookmark:
                     return LegacyDependencyMapType.Bookmark;
                 default:
                     return LegacyDependencyMapType.None;

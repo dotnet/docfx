@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, fragmentQuery, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (error != null)
                     {
                         errors.Add(error);
@@ -99,9 +99,9 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
-                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, fragmentQuery.ToLink());
+                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, DependencyTypeExtensions.ToLink(fragment));
                     }
-                    return link + fragmentQuery;
+                    return link;
                 });
 
             return (errors, tocViewModel, referencedDocuments, referencedTocs);

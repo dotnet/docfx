@@ -231,7 +231,7 @@ inputs:
   docs/a.md: |
     Link to [b](b.md)
   docs/b.md: |
-    Link to [a](a.md)
+    Link to [a](a.md#bookmark)
 outputs:
   docs/a.json:
   docs/b.json:
@@ -255,7 +255,7 @@ outputs:
           [
             {
               "source": "docs/a.md",
-              "type": "link"
+              "type": "bookmark"
             }
           ]
         }
@@ -280,7 +280,7 @@ outputs:
           [
             {
               "source": "docs/a.md",
-              "type": "linkWithBookmark"
+              "type": "bookmark"
             }
           ]
         }
