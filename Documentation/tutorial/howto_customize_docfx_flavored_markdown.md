@@ -1,5 +1,8 @@
-How-to: Customize DocFX Flavored Markdown
+How-to: Customize DFM Engine
 =========================================
+
+> [!WARNING]
+> Currently, there're two markdown engines in DocFX: **dfm engine** and **markdig engine**. This tutorial is about how to customize dfm engine, so it doesn't work with markdig engine.
 
 Customize Renderer
 ------------------
