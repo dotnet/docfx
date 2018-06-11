@@ -20,7 +20,7 @@ We use [typedoc](http://typedoc.org/) tool and [type2docfx](https://www.npmjs.co
 
 First, let's install the tools globally.
 ```
-npm intall -g typedoc type2docfx
+npm install -g typedoc type2docfx
 ```
 
 #### 2.2.1 TypeDoc to parse source code into a JSON format output
