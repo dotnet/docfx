@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             if (options.Legacy)
             {
                 var documents = builtDocs.ToList();
-                Legacy.ConvertToLegacyModel(docset, context, documents);
+                Legacy.ConvertToLegacyModel(docset, context, documents, sourceDependencies, tocMap);
             }
         }
 

@@ -6,10 +6,23 @@ namespace Microsoft.Docs.Build
     public enum DependencyType
     {
         Link, // file reference
+        Bookmark, // file reference with fragment
         Uid, // uid reference
-        TocLink, // toc reference article
         Inclusion, // token or codesnippet
         Overwrite, // overwrite markdown reference
         TocInclusion, // toc reference toc
+    }
+
+    internal static class DependencyTypeExtensions
+    {
+        public static DependencyType ToLink(string fragment)
+        {
+            if (string.IsNullOrEmpty(fragment))
+            {
+                return DependencyType.Link;
+            }
+
+            return DependencyType.Bookmark;
+        }
     }
 }

@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// when subdirectory counts are same, "near" means less parent directory count
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
         /// </summary>
-        private Document GetNearestToc(Document file)
+        public Document GetNearestToc(Document file)
         {
             // fallback to all tocs if no toc files reference this file
             var filteredTocFiles = _documentToTocs.TryGetValue(file, out var referencedTocFiles) ? (IEnumerable<Document>)referencedTocFiles : _tocs;
