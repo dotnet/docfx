@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class LegacyRawMetadata
+    internal class LegacyPageModel
     {
         public string Content { get; set; }
 
