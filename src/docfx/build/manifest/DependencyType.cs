@@ -6,8 +6,8 @@ namespace Microsoft.Docs.Build
     public enum DependencyType
     {
         Link, // file reference
+        LinkWithBookmark,
         Uid, // uid reference
-        TocLink, // toc reference article
         Inclusion, // token or codesnippet
         Overwrite, // overwrite markdown reference
         TocInclusion, // toc reference toc

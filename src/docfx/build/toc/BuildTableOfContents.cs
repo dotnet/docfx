@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             {
                 buildChild(article);
 
-                dependencyMapBuilder.AddDependencyItem(parent, article, DependencyType.TocLink);
+                dependencyMapBuilder.AddDependencyItem(parent, article, DependencyType.Link);
             }
 
             foreach (var (toc, parent) in refTocs)
