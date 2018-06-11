@@ -18,9 +18,14 @@ namespace Microsoft.Docs.Build
 
         public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return transform(doc.DocumentNode).OuterHtml;
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(html);
+            return TransformHtml(document.DocumentNode, transform);
+        }
+
+        public static string TransformHtml(HtmlNode html, Func<HtmlNode, HtmlNode> transform)
+        {
+            return transform(html).OuterHtml;
         }
 
         public static HtmlNode AddLinkType(this HtmlNode html, string locale)
@@ -33,6 +38,9 @@ namespace Microsoft.Docs.Build
         public static long CountWord(HtmlNode html)
         {
             // TODO: word count does not work for CJK locales...
+
+            // To improve the performance, we just load html once, but the innerText will connect two element's innerText directly and will miss one.
+            // For example: <h1>test header</h2><p>test paragraph</p> => InnerText: test headertest paragraph
             long wordCount = CountWordInText(html.InnerText);
 
             foreach (var excludeNodeXPath in ExcludeNodeXPaths)
@@ -43,11 +51,13 @@ namespace Microsoft.Docs.Build
                     foreach (var excludeNode in excludeNodes)
                     {
                         wordCount -= CountWordInText(excludeNode.InnerText);
+                        wordCount++;
                     }
                 }
             }
 
-            return wordCount;
+            var fixCount = (html.SelectNodes("//h1|//h2|//h3|//h4|//h5|//h6|//p")?.Count() ?? 1) - 1;
+            return wordCount + fixCount;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
