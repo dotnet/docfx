@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,6 +15,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var (legacyFilePathRelativeToBaseFolder, fileMapItem) in items)
             {
+                if (fileMapItem.Type == "Resource")
+                {
+                    continue;
+                }
+
                 var aggregatedFileMapItem = new
                 {
                     aggregated_monikers = Array.Empty<string>(), // todo
@@ -22,10 +28,22 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add(legacyFilePathRelativeToBaseFolder, aggregatedFileMapItem);
+                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
             }
 
-            context.WriteJson(new { aggregated_file_map_items = aggregatedFileMapItems }, "op_aggregated_file_map_info.json");
+            context.WriteJson(
+                new
+                {
+                    aggregated_file_map_items = aggregatedFileMapItems,
+                    docset_infos = new Dictionary<string, object>
+                    {
+                        [docset.Name] = new
+                        {
+                            docset_name = docset.Name,
+                            docset_path_to_root = docset.Config.SourceBasePath,
+                        },
+                    },
+                }, "op_aggregated_file_map_info.json");
         }
     }
 }
