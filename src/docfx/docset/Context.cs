@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -83,6 +82,15 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 
             File.Copy(sourcePath, destinationPath, overwrite: true);
+        }
+
+        public void Delete(string destRelativePath)
+        {
+            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+
+            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+
+            File.Delete(destinationPath);
         }
     }
 }

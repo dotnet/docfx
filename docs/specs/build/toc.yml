@@ -366,7 +366,7 @@ inputs:
   docs/index.md:
 outputs:
   build.log: |
-    ["error","circular-reference","Found circular reference: docs/toc.md --> docs/f1/toc.md --> docs/f2/toc.md --> docs/toc.md","docs/toc.md"]
+    ["error","circular-reference","Found circular reference: 'docs/toc.md' --> 'docs/f1/toc.md' --> 'docs/f2/toc.md' --> 'docs/toc.md'","docs/toc.md"]
 ---
 # Circle toc referenceing 2
 inputs:
@@ -380,7 +380,7 @@ inputs:
   docs/index.md:
 outputs:
   build.log: |
-    ["error","circular-reference","Found circular reference: docs/toc.md --> docs/toc.md","docs/toc.md"]
+    ["error","circular-reference","Found circular reference: 'docs/toc.md' --> 'docs/toc.md'","docs/toc.md"]
 ---
 # Reference to a folder, basic usages
 # Reference to a folder behavior is not same with reference to a toc file
