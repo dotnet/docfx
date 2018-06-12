@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="path">The folder path want to be normalized</param>
         /// <returns>The normalized folder path</returns>
-        public static string NormalizeFolder(string path)
+        public static string NormalizeFolder(string path, bool ensureEndingSlash = true)
         {
             var str = Normalize(path);
             if (str.Length == 0 || str == "/")
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 return "./";
             }
 
-            if (!str.EndsWith('/'))
+            if (ensureEndingSlash && !str.EndsWith('/'))
             {
                 str += '/';
             }

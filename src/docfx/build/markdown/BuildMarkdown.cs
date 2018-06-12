@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var wordCount = HtmlUtility.CountWord(html);
             var locale = file.Docset.Config.Locale;
 
-            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
+            var metadata = JsonUtility.Merge(Metadata.GetCommon(file), markup.Metadata);
 
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
 
