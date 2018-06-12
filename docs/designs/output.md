@@ -116,7 +116,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
 ## Manifest
 
-### files
+### Files
 
 To efficiently look up a file from URL for dynamic rendering, 
 `docfx` produces a manifest file at `_site/build.manifest` that lists all the output files and properties needed for lookup.
