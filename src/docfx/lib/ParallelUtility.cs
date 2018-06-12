@@ -55,13 +55,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        /// <typeparam name="T">The source type</typeparam>
-        /// <param name="source">The source</param>
-        /// <param name="action">The action need to be run</param>
-        /// <param name="progress">The progress total running actions</param>
-        /// <param name="error">The error handler</param>
-        /// <returns>The task status</returns>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Action<int, int> progress = null, Action<Exception, T> error = null)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null, Action<Exception, T> error = null)
         {
             ActionBlock<T> queue = null;
 
@@ -106,6 +100,10 @@ namespace Microsoft.Docs.Build
             void Enqueue(T item)
             {
                 if (item == null)
+                {
+                    return;
+                }
+                if (predicate != null && !predicate(item))
                 {
                     return;
                 }

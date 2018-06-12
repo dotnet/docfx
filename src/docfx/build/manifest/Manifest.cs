@@ -6,8 +6,8 @@ namespace Microsoft.Docs.Build
 {
     internal class Manifest
     {
-        public ManifestFile[] Files { get; set; }
+        public PublishManifest[] Publish { get; set; }
 
-        public ManifestDependency[] Dependencies { get; set; }
+        public DependencyManifest[] Dependencies { get; set; }
     }
 }

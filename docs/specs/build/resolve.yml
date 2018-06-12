@@ -127,3 +127,13 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]
+---
+# Show warning if two files share the same site url
+inputs:
+  docfx.yml:
+  docs/a.png.md: '![](a.png)'
+  docs/a.png:
+outputs:
+  build.manifest:
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents uses the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]

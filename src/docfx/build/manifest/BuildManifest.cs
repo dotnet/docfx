@@ -8,32 +8,32 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, IEnumerable<Document> builtDocs, DependencyMap sourceDependencies)
+        public static void Build(Context context, List<Document> publishedFiles, DependencyMap sourceDependencies)
         {
             var manifest = new Manifest
             {
-                Files = builtDocs?.Select(ToManifestFile).ToArray(),
-                Dependencies = sourceDependencies?.Where(d => d.Value.Any()).Select(ToManifestDependency).ToArray(),
+                Publish = publishedFiles.Select(ToPublishManifest).ToArray(),
+                Dependencies = sourceDependencies?.Where(d => d.Value.Any()).Select(ToDependencyManifest).ToArray(),
             };
 
             context.WriteJson(manifest, "build.manifest");
         }
 
-        private static ManifestFile ToManifestFile(Document doc)
+        private static PublishManifest ToPublishManifest(Document doc)
         {
-            return new ManifestFile
+            return new PublishManifest
             {
                 SiteUrl = doc.SiteUrl,
                 OutputPath = doc.OutputPath,
             };
         }
 
-        private static ManifestDependency ToManifestDependency(KeyValuePair<Document, List<DependencyItem>> dependency)
+        private static DependencyManifest ToDependencyManifest(KeyValuePair<Document, List<DependencyItem>> dependency)
         {
-            return new ManifestDependency
+            return new DependencyManifest
             {
                 Source = dependency.Key.FilePath,
-                Dependencies = dependency.Value.Select(v => new ManifestDependencyItem { Source = v.Dest.FilePath, Type = v.Type }).ToArray(),
+                Dependencies = dependency.Value.Select(v => new DependencyManifestItem { Source = v.Dest.FilePath, Type = v.Type }).ToArray(),
             };
         }
     }

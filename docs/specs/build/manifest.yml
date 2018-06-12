@@ -11,7 +11,7 @@ outputs:
   docs/folder/b.json:
   build.manifest: |
     {
-      "files":
+      "publish":
       [
         {
           "siteUrl": "/docs/a",
