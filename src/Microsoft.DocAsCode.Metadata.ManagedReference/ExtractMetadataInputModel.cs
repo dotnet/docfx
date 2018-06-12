@@ -28,6 +28,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string CodeSourceBasePath { get; set; }
 
+        public bool DisableDefaultFilter { get; set; }
+
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
         public override string ToString()
