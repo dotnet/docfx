@@ -57,6 +57,8 @@ namespace Microsoft.Docs.Build
 
             var total = 0;
             var done = 0;
+            var running = 0;
+
             queue = new ActionBlock<T>(Run, s_dataflowOptions);
 
             foreach (var item in source)
@@ -64,7 +66,7 @@ namespace Microsoft.Docs.Build
                 Enqueue(item);
             }
 
-            if (total == 0)
+            if (Volatile.Read(ref running) == 0)
             {
                 queue.Complete();
             }
@@ -74,13 +76,13 @@ namespace Microsoft.Docs.Build
             async Task Run(T item)
             {
                 await action(item, Enqueue);
-                var completed = Interlocked.Increment(ref done) == Volatile.Read(ref total);
-                if (completed)
+
+                if (Interlocked.Decrement(ref running) == 0)
                 {
                     queue.Complete();
                 }
 
-                progress?.Invoke(done, total);
+                progress?.Invoke(Interlocked.Increment(ref done), total);
             }
 
             void Enqueue(T item)
@@ -94,11 +96,12 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                var count = Interlocked.Increment(ref total);
+                Interlocked.Increment(ref running);
+
                 var posted = queue.Post(item);
                 Debug.Assert(posted || queue.Completion.IsFaulted);
 
-                progress?.Invoke(done, count);
+                progress?.Invoke(done, Interlocked.Increment(ref total));
             }
         }
     }

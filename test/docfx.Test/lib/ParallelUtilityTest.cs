@@ -17,5 +17,20 @@ namespace Microsoft.Docs.Build
 
             Task Run(int _) => throw new Exception();
         }
+
+        [Fact]
+        public static async Task PostToActionBlockAlwaysSucceed()
+        {
+            await ParallelUtility.ForEach(Enumerable.Range(0, 10), Run);
+
+            Task Run(int n, Action<int> queue)
+            {
+                for (var i = 0; i < n; i++)
+                {
+                    queue(i);
+                }
+                return Task.CompletedTask;
+            }
+        }
     }
 }
