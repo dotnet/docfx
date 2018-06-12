@@ -6,6 +6,7 @@ v2.36.2
 1. Bug fix:
     1. Improve download command error message. (#2805)
     2. Fix code indent issue. (#2830)
+    3. Fix error when generating metadata. (#2852)
 
 v2.36.1
 -----------
