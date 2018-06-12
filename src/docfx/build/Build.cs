@@ -22,41 +22,39 @@ namespace Microsoft.Docs.Build
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
-            var globbedFiles = GlobFiles(context, docset);
+            var buildScope = GlobFiles(context, docset);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(context, globbedFiles);
+            var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
 
-            var (publishedFiles, sourceDependencies) = await BuildFiles(context, globbedFiles, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
 
-            BuildManifest.Build(context, publishedFiles, sourceDependencies);
+            BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, publishedFiles, sourceDependencies, tocMap);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
         }
 
-        private static List<Document> GlobFiles(Context context, Docset docset)
+        private static HashSet<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
                            .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToList();
+                           .ToHashSet();
         }
 
-        private static async Task<(List<Document> publishedFiles, DependencyMap sourceDependencies)> BuildFiles(Context context, List<Document> files, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(Context context, HashSet<Document> buildScope, TableOfContentsMap tocMap)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
-            var buildScope = new HashSet<Document>(files);
-
             var publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
-            var publishedFiles = new ConcurrentDictionary<string, Document>();
+            var filesByUrl = new ConcurrentDictionary<string, Document>();
 
-            await ParallelUtility.ForEach(files, BuildTheFile, ShouldBuildTheFile);
+            await ParallelUtility.ForEach(buildScope, BuildTheFile, ShouldBuildTheFile);
 
             HandlePublishConflicts();
 
             return (
-                publishedFiles.Values.OrderBy(d => d.OutputPath).ToList(),
+                filesByUrl.Values.OrderBy(d => d.OutputPath).ToList(),
                 new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
@@ -77,9 +75,9 @@ namespace Microsoft.Docs.Build
                 }
 
                 // Find publish URL conflicts
-                if (!publishedFiles.TryAdd(file.SiteUrl, file))
+                if (!filesByUrl.TryAdd(file.SiteUrl, file))
                 {
-                    if (publishedFiles.TryGetValue(file.SiteUrl, out var publishedFile) && publishedFile != file)
+                    if (filesByUrl.TryGetValue(file.SiteUrl, out var publishedFile) && publishedFile != file)
                     {
                         publishConflicts.GetOrAdd(file.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
                     }
@@ -100,7 +98,7 @@ namespace Microsoft.Docs.Build
                         conflictingFiles.Add(conflictingFile);
                     }
 
-                    if (publishedFiles.TryRemove(siteUrl, out var removed))
+                    if (filesByUrl.TryRemove(siteUrl, out var removed))
                     {
                         conflictingFiles.Add(removed);
                     }

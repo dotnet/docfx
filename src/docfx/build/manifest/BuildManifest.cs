@@ -8,20 +8,20 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, List<Document> publishedFiles, DependencyMap sourceDependencies)
+        public static void Build(Context context, List<Document> files, DependencyMap dependencies)
         {
             var manifest = new Manifest
             {
-                Publish = publishedFiles.Select(ToPublishManifest).ToArray(),
-                Dependencies = sourceDependencies?.Where(d => d.Value.Any()).Select(ToDependencyManifest).ToArray(),
+                Files = files.Select(ToPublishManifest).ToArray(),
+                Dependencies = dependencies.Select(ToDependencyManifest).ToArray(),
             };
 
             context.WriteJson(manifest, "build.manifest");
         }
 
-        private static PublishManifest ToPublishManifest(Document doc)
+        private static FileManifest ToPublishManifest(Document doc)
         {
-            return new PublishManifest
+            return new FileManifest
             {
                 SiteUrl = doc.SiteUrl,
                 OutputPath = doc.OutputPath,

@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishManifest
+    internal class FileManifest
     {
         public string SiteUrl { get; set; }
 

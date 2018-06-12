@@ -116,7 +116,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
 ## Manifest
 
-### Published Files
+### files
 
 To efficiently look up a file from URL for dynamic rendering, 
 `docfx` produces a manifest file at `_site/build.manifest` that lists all the output files and properties needed for lookup.
@@ -126,7 +126,7 @@ These are called *browser navigation properties* and are stored in manifest.
 
 ```javascript
 {
-    "publish": [{
+    "files": [{
         "source": "dotnet/api/system.string",
         "siteUrl": "/dotnet/api/system.string",
         "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
