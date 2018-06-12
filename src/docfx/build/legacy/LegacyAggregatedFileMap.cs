@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 var aggregatedFileMapItem = new
                 {
                     aggregated_monikers = Array.Empty<string>(), // todo
-                    docset_names = new[] { docset.Name },
+                    docset_names = new[] { docset.Config.Name },
                     has_non_moniker_url = true, // todo
                     type = fileMapItem.Type,
                 };
@@ -37,9 +37,9 @@ namespace Microsoft.Docs.Build
                     aggregated_file_map_items = aggregatedFileMapItems,
                     docset_infos = new Dictionary<string, object>
                     {
-                        [docset.Name] = new
+                        [docset.Config.Name] = new
                         {
-                            docset_name = docset.Name,
+                            docset_name = docset.Config.Name,
                             docset_path_to_root = docset.Config.SourceBasePath,
                         },
                     },

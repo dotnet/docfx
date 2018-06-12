@@ -28,11 +28,6 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         /// <summary>
-        /// Gets the docset name
-        /// </summary>
-        public string Name => Config.Name;
-
-        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
