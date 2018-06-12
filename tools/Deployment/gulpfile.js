@@ -71,7 +71,15 @@ gulp.task("clean", () => {
 gulp.task("e2eTest:installFirefox", () => {
     Guard.argumentNotNullOrEmpty(config.firefox.version, "config.firefox.version", "Can't find firefox version in configuration.");
 
-    return Common.execAsync("choco", ["install", "firefox", "--version=" + config.firefox.version, "-y"]);
+    process.env.Path += ";C:/Program Files/Mozilla Firefox";
+    return Common.execAsync("choco", ["install", "firefox", "--version=" + config.firefox.version, "-y", "--force"]);
+});
+
+gulp.task("e2eTest:restoreSeed", async () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedRepoUrl, "config.docfx.docfxSeedRepoUrl", "Can't find docfx-seed repo url in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedHome, "config.docfx.docfxSeedHome", "Can't find docfx-seed in configuration.");
+
+    return await Common.execAsync("git", ["clone", config.docfx.docfxSeedRepoUrl, config.docfx.docfxSeedHome]);
 });
 
 gulp.task("e2eTest:buildSeed", () => {
@@ -93,7 +101,7 @@ gulp.task("e2eTest:test", () => {
     return Common.execAsync("dotnet", ["test"], config.docfx.e2eTestsHome);
 });
 
-gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
+gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
 
 gulp.task("publish:myget-dev", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
@@ -209,9 +217,9 @@ gulp.task("syncBranchCore", () => {
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
-gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "packAssetZip", "updateGhPage"));
 
-gulp.task("master", gulp.series("master:build", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
+gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
 
 gulp.task("syncBranch", gulp.series("syncBranchCore"));
 gulp.task("default", gulp.series("dev"));
