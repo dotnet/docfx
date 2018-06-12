@@ -17,10 +17,7 @@ namespace Microsoft.Docs.Build.build
         [Theory]
         public static void TestWordCounter(string html, long expectedCount)
         {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-
-            Assert.Equal(expectedCount, HtmlUtility.CountWord(document.DocumentNode));
+            Assert.Equal(expectedCount, HtmlUtility.CountWord(html));
         }
     }
 }

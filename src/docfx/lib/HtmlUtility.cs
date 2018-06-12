@@ -35,29 +35,34 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        public static long CountWord(HtmlNode html)
+        public static long CountWord(string html)
         {
             // TODO: word count does not work for CJK locales...
+            if (html == null)
+            {
+                throw new ArgumentNullException(nameof(html));
+            }
 
-            // To improve the performance, we just load html once, but the innerText will connect two element's innerText directly and will miss one.
-            // For example: <h1>test header</h2><p>test paragraph</p> => InnerText: test headertest paragraph
-            long wordCount = CountWordInText(html.InnerText);
+            // TODO: try to load html just once
+            HtmlDocument document = new HtmlDocument();
+
+            // Append a space before each end bracket so that InnerText inside different child nodes can separate itself from each other.
+            document.LoadHtml(html.Replace("</", " </", StringComparison.OrdinalIgnoreCase));
+            long wordCount = CountWordInText(document.DocumentNode.InnerText);
 
             foreach (var excludeNodeXPath in ExcludeNodeXPaths)
             {
-                HtmlNodeCollection excludeNodes = html.SelectNodes(excludeNodeXPath);
+                HtmlNodeCollection excludeNodes = document.DocumentNode.SelectNodes(excludeNodeXPath);
                 if (excludeNodes != null)
                 {
                     foreach (var excludeNode in excludeNodes)
                     {
                         wordCount -= CountWordInText(excludeNode.InnerText);
-                        wordCount++;
                     }
                 }
             }
 
-            var fixCount = (html.SelectNodes("//h1|//h2|//h3|//h4|//h5|//h6|//p")?.Count() ?? 1) - 1;
-            return wordCount + fixCount;
+            return wordCount;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)

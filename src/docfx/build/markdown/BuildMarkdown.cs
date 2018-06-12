@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
-            var wordCount = HtmlUtility.CountWord(document.DocumentNode);
+            var wordCount = HtmlUtility.CountWord(html);
             var locale = file.Docset.Config.Locale;
 
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
