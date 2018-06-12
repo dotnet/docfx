@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
+        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
         {
             Debug.Assert(files != null);
 

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
         /// <summary>
-        /// Depot name. = _(ops `DepotName` = `<ProductName>.<DocsetName>`)_
+        /// Gets the default docset name
         /// </summary>
         public readonly string Name = string.Empty;
 
