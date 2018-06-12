@@ -6,16 +6,16 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LegacyCrrInfo
+    internal static class LegacyCrossRepoReferenceInfo
     {
         public static void Convert(Docset docset, Context context)
         {
-            var legacyCrrInfoItems = new List<LegacyCrrInfoItem>();
+            var legacyCrrInfoItems = new List<LegacyCrossRepoReferenceInfoItem>();
 
             foreach (var dependentRepo in docset.Config.Dependencies)
             {
                 var (_, url, branch) = Restore.GetGitRestoreInfo(dependentRepo.Value);
-                legacyCrrInfoItems.Add(new LegacyCrrInfoItem
+                legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
                 {
                     PathToRoot = dependentRepo.Key,
                     Url = url,

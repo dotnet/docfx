@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LegacyCrrInfoItem
+    internal class LegacyCrossRepoReferenceInfoItem
     {
         [JsonProperty("path_to_root")]
         public string PathToRoot { get; set; }
