@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             });
 
             LegacyFileMap.Convert(docset, context, fileMapItems);
+            LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);
             LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
             LegacyCrossRepoReferenceInfo.Convert(docset, context);
         }
