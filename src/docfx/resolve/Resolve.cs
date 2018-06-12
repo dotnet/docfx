@@ -28,10 +28,8 @@ namespace Microsoft.Docs.Build
                 return (error, href, file);
             }
 
-            var resolvedHref = file.SiteUrl + fragmentQuery;
-
             // Make result relative to `resultRelativeTo`
-            resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
+            var resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath).Replace('\\', '/');
 
             return (error, resolvedHref + fragmentQuery, file);
         }
