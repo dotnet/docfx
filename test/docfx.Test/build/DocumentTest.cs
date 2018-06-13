@@ -18,9 +18,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a/index.yml", ContentType.SchemaDocument, "a/index.json", "/a/", "a/")]
         [InlineData("a/INDEX.yml", ContentType.SchemaDocument, "a/index.json", "/a/", "a/")]
         [InlineData("toc.md", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
-        [InlineData("TOC.md", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
+        [InlineData("TOC.md", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("toc.yml", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
-        [InlineData("TOC.yml", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
+        [InlineData("TOC.yml", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("image.png", ContentType.Asset, "image.png", "/image.png", "image.png")]
         internal static void FilePathToUrl(
             string path,

@@ -222,7 +222,7 @@ namespace Microsoft.Docs.Build
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
-                    return Path.Combine(Path.GetDirectoryName(path), "toc.json").Replace('\\', '/');
+                    return Path.ChangeExtension(path, ".json");
                 default:
                     return path;
             }
@@ -236,6 +236,8 @@ namespace Microsoft.Docs.Build
 
         internal static string PathToRelativeUrl(string path, ContentType contentType)
         {
+            path = path.Replace('\\', '/');
+
             switch (contentType)
             {
                 case ContentType.Markdown:

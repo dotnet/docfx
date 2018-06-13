@@ -138,6 +138,7 @@ outputs:
     { "content": "<p>Link to <a href=\"../a\">a</a></p>" }
   docs/a.json:
   build.manifest:
+---
 # Show warning if two files share the same site url
 inputs:
   docfx.yml:
