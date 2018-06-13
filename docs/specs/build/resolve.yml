@@ -144,7 +144,7 @@ inputs:
   docs/a/index.md: Link to [a](../a.md)
   docs/a.md: Link to [index](a/index.md)
 outputs:
-  docs/a/b.json: |
+  docs/a/index.json: |
     { "content": "<p>Link to <a href=\"../a\">a</a></p>" }
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
