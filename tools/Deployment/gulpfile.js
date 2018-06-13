@@ -142,18 +142,19 @@ gulp.task("publish:myget-master", () => {
 });
 
 gulp.task("updateGhPage", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.httpsRepoUrl, "config.docfx.httpsRepoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.siteFolder, "config.docfx.siteFolder", "Can't find docfx site folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.exe, "config.docfx.exe", "Can't find docfx exe in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.docfxJson, "config.docfx.docfxJson", "Can't find docfx.json in configuration.");
     Guard.argumentNotNullOrEmpty(config.git.name, "config.git.name", "Can't find git user name in configuration");
     Guard.argumentNotNullOrEmpty(config.git.email, "config.git.email", "Can't find git user email in configuration");
     Guard.argumentNotNullOrEmpty(config.git.message, "config.git.message", "Can't find git commit message in configuration");
+    Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let docfxExe = path.resolve(config.docfx.exe);
     let docfxJson = path.resolve(config.docfx.docfxJson);
 
-    return Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message);
+    return Github.updateGhPagesAsync(config.docfx.httpsRepoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message, process.env.TOKEN);
 });
 
 gulp.task("packAssetZip", () => {
@@ -177,7 +178,7 @@ gulp.task("publish:gh-release", () => {
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    return Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, assetZipPath, githubToken);
+    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, releaseNotePath, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
@@ -201,7 +202,7 @@ gulp.task("publish:chocolatey", () => {
 });
 
 gulp.task("syncBranchCore", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.sshRepoUrl, "config.docfx.sshRepoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.fromBranch, "config.sync.fromBranch", "Can't find source branch in sync configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.targetBranch, "config.sync.targetBranch", "Can't find target branch in sync configuration.");
@@ -212,7 +213,7 @@ gulp.task("syncBranchCore", () => {
     }
 
     let docfxHome = path.resolve(config.docfx.home);
-    return SyncBranch.runAsync(config.docfx.repoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
+    return SyncBranch.runAsync(config.docfx.sshRepoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));

@@ -1,7 +1,8 @@
 {
   "docfx": {
     "home": "../../",
-    "repoUrl": "git@github.com-ci:dotnet/docfx.git",
+    "httpsRepoUrl": "https://github.com/dotnet/docfx.git",
+    "sshRepoUrl": "git@github.com-ci:dotnet/docfx.git",
     "docfxSeedRepoUrl": "https://github.com/docascode/docfx-seed.git",
     "docfxSeedHome": "../../test/docfx-seed/",
     "e2eTestsHome": "../../test/docfx.E2E.Tests/",
