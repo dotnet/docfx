@@ -149,3 +149,14 @@ outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
   build.manifest:
+---
+# Escape special charactors in path
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b&/c~.md)
+  docs/b&/c~.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b%26/c%7E\">b</a></p>" }
+  docs/b&/c~.json:
+  build.manifest:

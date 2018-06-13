@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         [InlineData("toc.yml", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
         [InlineData("TOC.yml", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("image.png", ContentType.Asset, "image.png", "/image.png", "image.png")]
+        [InlineData("a&#/b\\.* d.png", ContentType.Asset, "a&#/b\\.* d.png", "/a%26%23/b/.%2A%20d.png", "a%26%23/b/.%2A%20d.png")]
         internal static void FilePathToUrl(
             string path,
             ContentType expectedContentType,

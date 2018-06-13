@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -236,28 +237,28 @@ namespace Microsoft.Docs.Build
 
         internal static string PathToRelativeUrl(string path, ContentType contentType)
         {
-            path = path.Replace('\\', '/');
+            var url = string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
 
             switch (contentType)
             {
                 case ContentType.Markdown:
                 case ContentType.SchemaDocument:
-                    var extensionIndex = path.LastIndexOf('.');
+                    var extensionIndex = url.LastIndexOf('.');
                     if (extensionIndex >= 0)
                     {
-                        path = path.Substring(0, extensionIndex);
+                        url = url.Substring(0, extensionIndex);
                     }
-                    if (path.Equals("index", StringComparison.OrdinalIgnoreCase))
+                    if (url.Equals("index", StringComparison.OrdinalIgnoreCase))
                     {
                         return ".";
                     }
-                    if (path.EndsWith("/index", StringComparison.OrdinalIgnoreCase))
+                    if (url.EndsWith("/index", StringComparison.OrdinalIgnoreCase))
                     {
-                        return path.Substring(0, path.Length - 5);
+                        return url.Substring(0, url.Length - 5);
                     }
-                    return path;
+                    return url;
                 default:
-                    return path;
+                    return url;
             }
         }
 
