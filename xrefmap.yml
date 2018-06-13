@@ -14614,6 +14614,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.ToString
   nameWithType: MarkdownFragment.ToString
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched
+  name: Touched
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Touched
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched
+  nameWithType: MarkdownFragment.Touched
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched*
+  name: Touched
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Touched_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Touched
+  nameWithType: MarkdownFragment.Touched
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.Uid
   name: Uid
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownFragment.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownFragment_Uid
@@ -14844,6 +14857,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.SerializeTo
   nameWithType: MarkdownProperty.SerializeTo
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched
+  name: Touched
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Touched
+  commentId: P:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched
+  nameWithType: MarkdownProperty.Touched
+- uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched*
+  name: Touched
+  href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.html#Microsoft_DocAsCode_Build_OverwriteDocuments_MarkdownProperty_Touched_
+  commentId: Overload:Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownProperty.Touched
+  nameWithType: MarkdownProperty.Touched
 - uid: Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel
   name: MarkdownPropertyModel
   href: api/Microsoft.DocAsCode.Build.OverwriteDocuments.MarkdownPropertyModel.html

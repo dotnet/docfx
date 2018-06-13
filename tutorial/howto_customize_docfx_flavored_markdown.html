@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>How-to: Customize DocFX Flavored Markdown | DocFX website </title>
+    <title>How-to: Customize DFM Engine | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="How-to: Customize DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.36.1.0">
+    <meta name="title" content="How-to: Customize DFM Engine | DocFX website ">
+    <meta name="generator" content="docfx 2.36.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -77,8 +77,13 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="how-to-customize-docfx-flavored-markdown">How-to: Customize DocFX Flavored Markdown</h1>
+<h1 id="how-to-customize-dfm-engine">How-to: Customize DFM Engine</h1>
 
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Currently, there're two markdown engines in DocFX: <strong>dfm engine</strong> and <strong>markdig engine</strong>. This tutorial is about how to customize dfm engine, so it doesn't work with markdig engine.
+<strong>markdig engine</strong> will be enabled only when <code>docfx.json</code> contains <code>markdownEngineName: markdig</code> in build configuration part, otherwise <strong>dfm engine</strong> will be enabled.</p>
+</div>
 <h2 id="customize-renderer">Customize Renderer</h2>
 <p>DocFX Flavored Markdown introduced <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider.html">IDfmCustomizedRendererPartProvider</a> from v2.17.
 In older version, you need to define a new markdown renderer and export a new <a href="xref:Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider">markdown service</a>.</p>
