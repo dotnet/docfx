@@ -51,6 +51,11 @@ namespace Microsoft.Docs.Build
         public readonly string SourceBasePath = string.Empty;
 
         /// <summary>
+        /// The hostname
+        /// </summary>
+        public readonly string HostName = "docs.microsoft.com";
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// </summary>
         public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
