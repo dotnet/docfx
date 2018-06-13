@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var dependencyItem in dependencies)
                 {
-                    if(source.Equals(dependencyItem.Dest))
+                    if (source.Equals(dependencyItem.Dest))
                     {
                         continue;
                     }
@@ -50,6 +50,45 @@ namespace Microsoft.Docs.Build
             }
 
             context.WriteJson(legacyDependencyMap, Path.Combine(docset.Config.SiteBasePath, ".dependency-map.json"));
+        }
+
+        private static LegacyDependencyMapType ToLegacyDependencyMapType(this DependencyType dependencyType)
+        {
+            switch (dependencyType)
+            {
+                case DependencyType.Link:
+                    return LegacyDependencyMapType.File;
+                case DependencyType.Inclusion:
+                    return LegacyDependencyMapType.Include;
+                case DependencyType.Bookmark:
+                    return LegacyDependencyMapType.Bookmark;
+                default:
+                    return LegacyDependencyMapType.None;
+            }
+        }
+
+        private class LegacyDependencyMapItem
+        {
+            [JsonProperty("from")]
+            public string From { get; set; }
+
+            [JsonProperty("to")]
+            public string To { get; set; }
+
+            [JsonProperty("type")]
+            public LegacyDependencyMapType Type { get; set; }
+        }
+
+        private enum LegacyDependencyMapType
+        {
+            None,
+            Uid,
+            Include,
+            File,
+            Overwrite,
+            OverwriteFragments,
+            Bookmark,
+            Metadata,
         }
     }
 }
