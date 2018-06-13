@@ -16,19 +16,11 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (errors, tocModel, refArticles, refTocs) = Load(file);
+            var (errors, tocModel, refArticles, refTocs) = Load(file, dependencyMapBuilder);
 
-            foreach (var (article, parent) in refArticles)
+            foreach (var article in refArticles)
             {
                 buildChild(article);
-
-                dependencyMapBuilder.AddDependencyItem(parent, article, DependencyType.TocLink);
-            }
-
-            foreach (var (toc, parent) in refTocs)
-            {
-                // todo: handle folder referencing
-                dependencyMapBuilder.AddDependencyItem(parent, toc, DependencyType.TocInclusion);
             }
 
             context.Report(file, errors);
@@ -37,7 +29,7 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(Context context, List<Document> files)
+        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
         {
             Debug.Assert(files != null);
 
@@ -60,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
-            tocMapBuilder.Add(fileToBuild, referencedDocuments.Select(r => r.doc), referencedTocs.Select(r => r.toc));
+            tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
 
             return Task.CompletedTask;
         }
@@ -68,14 +60,14 @@ namespace Microsoft.Docs.Build
         private static (
             List<DocfxException> errors,
             List<TableOfContentsItem> tocModel,
-            List<(Document doc, Document parent)> referencedDocuments,
-            List<(Document toc, Document parent)> referencedTocs)
+            List<Document> referencedDocuments,
+            List<Document> referencedTocs)
 
-            Load(Document fileToBuild)
+            Load(Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
         {
             var errors = new List<DocfxException>();
-            var referencedDocuments = new List<(Document doc, Document parent)>();
-            var referencedTocs = new List<(Document toc, Document parent)>();
+            var referencedDocuments = new List<Document>();
+            var referencedTocs = new List<Document>();
             var tocViewModel = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
@@ -90,7 +82,8 @@ namespace Microsoft.Docs.Build
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
-                        referencedTocs.Add((referencedToc, file));
+                        referencedTocs.Add(referencedToc);
+                        dependencyMapBuilder?.AddDependencyItem(file, referencedToc, DependencyType.TocInclusion);
                     }
                     return (referencedTocContent, referencedToc);
                 },
@@ -98,14 +91,15 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, buildItem) = file.TryResolveHref(href, resultRelativeTo);
+                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (error != null)
                     {
                         errors.Add(error);
                     }
                     if (buildItem != null)
                     {
-                        referencedDocuments.Add((buildItem, file));
+                        referencedDocuments.Add(buildItem);
+                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, DependencyTypeExtensions.ToLink(fragment));
                     }
                     return link;
                 });

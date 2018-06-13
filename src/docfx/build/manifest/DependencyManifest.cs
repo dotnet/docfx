@@ -3,10 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class Manifest
+    internal class DependencyManifest
     {
-        public FileManifest[] Files { get; set; }
+        public string Source { get; set; }
 
-        public DependencyManifest[] Dependencies { get; set; }
+        public DependencyManifestItem[] Dependencies { get; set; }
     }
 }

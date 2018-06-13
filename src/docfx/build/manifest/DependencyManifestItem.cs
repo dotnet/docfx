@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class ManifestDependencyItem
+    internal class DependencyManifestItem
     {
         public string Source { get; set; }
 

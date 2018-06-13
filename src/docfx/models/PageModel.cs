@@ -10,5 +10,11 @@ namespace Microsoft.Docs.Build
         public string Content { get; set; }
 
         public PageMetadata Metadata { get; set; }
+
+        public long WordCount { get; set; }
+
+        public string Locale { get; set; }
+
+        public string TocRelativePath { get; set; }
     }
 }

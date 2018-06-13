@@ -124,6 +124,16 @@ namespace Microsoft.Docs.Build
             return FilePath;
         }
 
+        public static bool operator ==(Document obj1, Document obj2)
+        {
+            return Equals(obj1, obj2);
+        }
+
+        public static bool operator !=(Document obj1, Document obj2)
+        {
+            return !Equals(obj1, obj2);
+        }
+
         /// <summary>
         /// Opens a new <see cref="Document"/> based on the path relative to docset.
         /// </summary>
@@ -233,7 +243,9 @@ namespace Microsoft.Docs.Build
                 case ContentType.Markdown:
                 case ContentType.SchemaDocument:
                     if (path.Length == 0 || path.EndsWith('/'))
+                    {
                         return path + "index.json";
+                    }
                     return path + ".json";
                 default:
                     return path;
@@ -247,16 +259,16 @@ namespace Microsoft.Docs.Build
             {
                 var result = routes[i].GetOutputPath(path);
                 if (result != null)
+                {
                     return result.Replace('\\', '/');
+                }
             }
             return path;
         }
 
         private static bool IsValidRelativePath(string path)
         {
-            return path != null &&
-                path.IndexOf('\\') == -1 &&
-                !path.StartsWith('/');
+            return path != null && path.IndexOf('\\') == -1 && !path.StartsWith('/');
         }
     }
 }

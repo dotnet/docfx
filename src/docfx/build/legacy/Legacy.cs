@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents)
+        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents, DependencyMap dependencyMap, TableOfContentsMap tocMap)
         {
             var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
                 if (fileItem != null)
                 {
-                    fileMapItems.Add((Path.GetRelativePath(docset.Config.SourceBasePath, document.FilePath), fileItem));
+                    fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
                 }
 
                 switch (document.ContentType)
@@ -45,6 +45,9 @@ namespace Microsoft.Docs.Build
             });
 
             LegacyFileMap.Convert(docset, context, fileMapItems);
+            LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);
+            LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
+            LegacyCrossRepoReferenceInfo.Convert(docset, context);
         }
     }
 }

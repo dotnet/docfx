@@ -3,10 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class ManifestFile
+    internal class LegacyPageModel
     {
-        public string SiteUrl { get; set; }
+        public string Content { get; set; }
 
-        public string OutputPath { get; set; }
+        public PageMetadata RawMetadata { get; set; }
     }
 }
