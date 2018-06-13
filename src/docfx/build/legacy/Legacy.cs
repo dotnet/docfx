@@ -11,7 +11,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static void ConvertToLegacyModel(
+            Docset docset,
+            Context context,
+            List<Document> documents,
+            DependencyMap dependencyMap,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo)
         {
             var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
@@ -39,7 +45,7 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case ContentType.Markdown:
-                        LegacyMarkdown.Convert(docset, context, absoluteOutputFilePath, relativeOutputFilePath, legacyOutputFilePathRelativeToSiteBasePath);
+                        LegacyMarkdown.Convert(docset, context, document, repo, absoluteOutputFilePath, relativeOutputFilePath, legacyOutputFilePathRelativeToSiteBasePath);
                         break;
                 }
             });

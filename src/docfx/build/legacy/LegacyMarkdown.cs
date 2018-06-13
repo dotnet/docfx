@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
         public static void Convert(
             Docset docset,
             Context context,
+            Document file,
+            GitRepoInfoProvider repo,
             string absoluteOutputFilePath,
             string relativeOutputFilePath,
             string legacyOutputFilePathRelativeToSiteBasePath)
@@ -33,11 +35,11 @@ namespace Microsoft.Docs.Build
                                 .RemoveRerunCodepenIframes());
             }
 
-            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset);
+            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset, file, repo);
             context.WriteJson(legacyPageModel, rawPageOutputPath);
         }
 
-        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset)
+        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
             legacyPageModel.RawMetadata = pageModel.Metadata;
             legacyPageModel.RawMetadata.Metadata["toc_rel"] = pageModel.TocRelativePath;
@@ -57,8 +59,14 @@ namespace Microsoft.Docs.Build
             legacyPageModel.RawMetadata.Metadata["site_name"] = "Docs";
             legacyPageModel.RawMetadata.Metadata["version"] = 0;
 
-            legacyPageModel.RawMetadata.Metadata["gitcommit"] = pageModel.Gitcommit;
-            legacyPageModel.RawMetadata.Metadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
+            var repoInfo = repo.GetGitRepoInfo(file);
+            if (repoInfo != null)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                legacyPageModel.RawMetadata.Metadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
+                legacyPageModel.RawMetadata.Metadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
+            }
         }
     }
 }

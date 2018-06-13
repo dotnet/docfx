@@ -16,9 +16,5 @@ namespace Microsoft.Docs.Build
         public string Locale { get; set; }
 
         public string TocRelativePath { get; set; }
-
-        public string Gitcommit { get; set; }
-
-        public string OriginalContentGitUrl { get; set; }
     }
 }

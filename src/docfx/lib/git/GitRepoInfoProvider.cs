@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(folder));
             Debug.Assert(Directory.Exists(folder));
 
-            folder = PathUtility.NormalizeFolder(folder, false);
+            folder = PathUtility.NormalizeFile(folder);
             return s_cache.GetOrAdd(folder, GetFolderGitRepoInfoCore);
         }
 

@@ -44,15 +44,6 @@ namespace Microsoft.Docs.Build
                 TocRelativePath = tocMap.FindTocRelativePath(file),
             };
 
-            var repoInfo = repo.GetGitRepoInfo(file);
-            if (repoInfo != null)
-            {
-                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
-                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
-                model.Gitcommit = repoInfo.GetGitPermaLink(relPath);
-                model.OriginalContentGitUrl = repoInfo.GetGitLink(relPath);
-            }
-
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
             context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
