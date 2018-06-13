@@ -136,7 +136,7 @@ inputs:
 outputs:
   build.manifest:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents uses the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:
