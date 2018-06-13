@@ -4,6 +4,8 @@
 using System;
 using System.Threading.Tasks;
 
+using HtmlAgilityPack;
+
 namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
@@ -15,9 +17,15 @@ namespace Microsoft.Docs.Build
 
             var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(html);
+
+            var wordCount = HtmlUtility.CountWord(html);
+            var locale = file.Docset.Config.Locale;
+
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
 
-            var content = markup.HasHtml ? HtmlUtility.TransformHtml(html, node => node.StripTags()) : html;
+            var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
 
             var model = new PageModel
             {
@@ -27,6 +35,9 @@ namespace Microsoft.Docs.Build
                     Title = markup.Title,
                     Metadata = metadata,
                 },
+                WordCount = wordCount,
+                Locale = locale,
+                TocRelativePath = tocMap.FindTocRelativePath(file),
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here

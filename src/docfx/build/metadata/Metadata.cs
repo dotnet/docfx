@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Linq;
+
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build

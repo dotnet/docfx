@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 
@@ -11,11 +12,20 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        private const string SpecialChars = ".?!;:,()[]";
+        private static readonly char[] s_delimChars = { ' ', '\t', '\n' };
+        private static readonly string[] ExcludeNodeXPaths = { "//title" };
+
         public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return transform(doc.DocumentNode).OuterHtml;
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(html);
+            return TransformHtml(document.DocumentNode, transform);
+        }
+
+        public static string TransformHtml(HtmlNode html, Func<HtmlNode, HtmlNode> transform)
+        {
+            return transform(html).OuterHtml;
         }
 
         public static HtmlNode AddLinkType(this HtmlNode html, string locale)
@@ -23,6 +33,36 @@ namespace Microsoft.Docs.Build
             AddLinkType(html, "a", "href", locale);
             AddLinkType(html, "img", "src", locale);
             return html;
+        }
+
+        public static long CountWord(string html)
+        {
+            // TODO: word count does not work for CJK locales...
+            if (html == null)
+            {
+                throw new ArgumentNullException(nameof(html));
+            }
+
+            // TODO: try to load html just once
+            HtmlDocument document = new HtmlDocument();
+
+            // Append a space before each end bracket so that InnerText inside different child nodes can separate itself from each other.
+            document.LoadHtml(html.Replace("</", " </", StringComparison.OrdinalIgnoreCase));
+            long wordCount = CountWordInText(document.DocumentNode.InnerText);
+
+            foreach (var excludeNodeXPath in ExcludeNodeXPaths)
+            {
+                HtmlNodeCollection excludeNodes = document.DocumentNode.SelectNodes(excludeNodeXPath);
+                if (excludeNodes != null)
+                {
+                    foreach (var excludeNode in excludeNodes)
+                    {
+                        wordCount -= CountWordInText(excludeNode.InnerText);
+                    }
+                }
+            }
+
+            return wordCount;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
@@ -81,6 +121,17 @@ namespace Microsoft.Docs.Build
             {
                 return '/' + locale + href;
             }
+        }
+
+        private static int CountWordInText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return 0;
+            }
+
+            string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
+            return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
         }
 
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
