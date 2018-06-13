@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -12,19 +13,31 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.SourceBasePath ?? string.Empty, doc.FilePath));
         }
 
-        public static LegacyDependencyMapType ToLegacyDependencyMapType(this DependencyType dependencyType)
+        public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
         {
-            switch (dependencyType)
+            var legacyOutputFilePathRelativeToSiteBasePath = doc.OutputPath;
+            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.Config.SiteBasePath, StringComparison.Ordinal))
             {
-                case DependencyType.Link:
-                    return LegacyDependencyMapType.File;
-                case DependencyType.Inclusion:
-                    return LegacyDependencyMapType.Include;
-                case DependencyType.Bookmark:
-                    return LegacyDependencyMapType.Bookmark;
-                default:
-                    return LegacyDependencyMapType.None;
+                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.OutputPath);
             }
+
+            return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+        }
+
+        public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
+        {
+            var legacyOutputFilePathRelativeToSiteBasePath = doc.SiteUrl;
+            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith($"/{docset.Config.SiteBasePath}", StringComparison.Ordinal))
+            {
+                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.SiteUrl.Substring(1));
+            }
+
+            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", StringComparison.OrdinalIgnoreCase) ? $"{legacyOutputFilePathRelativeToSiteBasePath}index" : legacyOutputFilePathRelativeToSiteBasePath);
+        }
+
+        public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
+        {
+            return Path.Combine(docset.Config.SiteBasePath ?? string.Empty, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
         }
     }
 }

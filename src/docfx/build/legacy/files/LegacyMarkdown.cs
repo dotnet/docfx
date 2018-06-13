@@ -13,16 +13,13 @@ namespace Microsoft.Docs.Build
         public static void Convert(
             Docset docset,
             Context context,
-            string absoluteOutputFilePath,
-            string relativeOutputFilePath,
-            string legacyOutputFilePathRelativeToSiteBasePath)
+            Document doc,
+            LegacyManifestOutput legacyManifestOutput)
         {
-            var rawPageOutputPath = Path.ChangeExtension(absoluteOutputFilePath, ".raw.page.json");
-            var metaOutputPath = Path.ChangeExtension(absoluteOutputFilePath, ".mta.json");
+            var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
+            File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
 
-            File.Move(absoluteOutputFilePath, rawPageOutputPath);
-
-            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(rawPageOutputPath));
+            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, rawPageOutputPath)));
 
             var legacyPageModel = new LegacyPageModel();
             if (!string.IsNullOrEmpty(pageModel.Content))
