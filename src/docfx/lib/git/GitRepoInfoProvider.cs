@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class GitRepoInfoProvider
     {
-        private readonly ConcurrentDictionary<string, GitRepoInfo> s_cache
+        private readonly ConcurrentDictionary<string, GitRepoInfo> _cache
             = new ConcurrentDictionary<string, GitRepoInfo>();
 
         public GitRepoInfo GetGitRepoInfo(Document document)
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(Directory.Exists(folder));
 
             folder = PathUtility.NormalizeFile(folder);
-            return s_cache.GetOrAdd(folder, GetFolderGitRepoInfoCore);
+            return _cache.GetOrAdd(folder, GetFolderGitRepoInfoCore);
         }
 
         private GitRepoInfo GetFolderGitRepoInfoCore(string folder)
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             var parent = folder.Substring(0, folder.LastIndexOf("/", System.StringComparison.Ordinal));
             return Directory.Exists(parent)
-                ? s_cache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
+                ? _cache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
                 : null;
         }
     }
