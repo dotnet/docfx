@@ -13,8 +13,8 @@ namespace Microsoft.Docs.Build
     {
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
-            => LoadInputModelItems(tocContent, isYaml, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
+        public static List<TableOfContentsItem> Load(string tocContent, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+            => LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
         {
@@ -38,28 +38,48 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        public static List<TableOfContentsInputItem> LoadYamlTocModel(string tocContent, string filePath)
+        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath)
         {
-            if (string.IsNullOrEmpty(tocContent))
+            if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentNullException(nameof(tocContent));
+                JToken tocToken;
+                try
+                {
+                    tocToken = YamlUtility.Deserialize(content);
+                }
+                catch (Exception ex)
+                {
+                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
+                }
+                return LoadTocModel(tocToken, filePath);
+            }
+            else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                JToken tocToken;
+                try
+                {
+                    tocToken = JToken.Parse(content);
+                }
+                catch (Exception ex)
+                {
+                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
+                }
+                return LoadTocModel(tocToken, filePath);
+            }
+            else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                return LoadMdTocModel(content, filePath);
             }
 
-            JToken tocToken;
-            try
-            {
-                tocToken = YamlUtility.Deserialize(tocContent);
-            }
-            catch (Exception ex)
-            {
-                throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
-            }
+            throw new NotSupportedException($"{filePath} is an unknown TOC file");
+        }
 
-            var tocInputModels = (List<TableOfContentsInputItem>)null;
+        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken, string filePath)
+        {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                tocInputModels = tocArray.ToObject<List<TableOfContentsInputItem>>();
+                return tocArray.ToObject<List<TableOfContentsInputItem>>();
             }
             else
             {
@@ -68,19 +88,14 @@ namespace Microsoft.Docs.Build
                     tocObject.TryGetValue("Items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
-                    tocInputModels = tocItemArray.ToObject<List<TableOfContentsInputItem>>();
+                    return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
                 }
-            }
-
-            if (tocInputModels != null)
-            {
-                return tocInputModels;
             }
 
             throw new NotSupportedException($"{filePath} is not a valid TOC file.");
         }
 
-        private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+        private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
         {
             parents = parents ?? new List<Document>();
 
@@ -91,7 +106,8 @@ namespace Microsoft.Docs.Build
             }
 
             parents.Add(filePath);
-            var models = isYaml ? LoadYamlTocModel(tocContent, filePath.FilePath) : LoadMdTocModel(tocContent, filePath.FilePath);
+
+            var models = LoadTocModel(tocContent, filePath.FilePath);
 
             if (models != null && models.Any())
             {
@@ -131,10 +147,10 @@ namespace Microsoft.Docs.Build
 
                     if (IsIncludeHref(hrefType))
                     {
-                        var (referencedTocContent, referenceTocFilePath, isYamlToc) = ResolveTocHrefContent(hrefType, tocModelItem.Href, filePath, resolveContent);
+                        var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(hrefType, tocModelItem.Href, filePath, resolveContent);
                         if (referencedTocContent != null)
                         {
-                            var nestedTocItems = LoadInputModelItems(referencedTocContent, isYamlToc, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                            var nestedTocItems = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                             if (hrefType == TocHrefType.RelativeFolder)
                             {
                                 tocModelItem.Href = (string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref) ?? href;
@@ -191,7 +207,7 @@ namespace Microsoft.Docs.Build
                 tocHrefType == TocHrefType.RelativeFolder;
         }
 
-        private static (string content, Document filePath, bool isYaml) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent)
+        private static (string content, Document filePath) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent)
         {
             if (resolveContent == null)
             {
@@ -208,18 +224,18 @@ namespace Microsoft.Docs.Build
 
                     if (ymlTocPath != null)
                     {
-                        return (ymlTocContent, ymlTocPath, true);
+                        return (ymlTocContent, ymlTocPath);
                     }
 
                     var mdTocHref = Path.Combine(href, "toc.md");
                     var (mdTocContent, mdTocPath) = resolveContent(filePath, mdTocHref, false);
-                    return (mdTocContent, mdTocPath, false);
+                    return (mdTocContent, mdTocPath);
                 case TocHrefType.MarkdownTocFile:
                     var (mc, mp) = resolveContent(filePath, href, true);
-                    return (mc, mp, false);
+                    return (mc, mp);
                 case TocHrefType.YamlTocFile:
                     var (yc, yp) = resolveContent(filePath, href, true);
-                    return (yc, yp, true);
+                    return (yc, yp);
                 default:
                     // do nothing
                     break;

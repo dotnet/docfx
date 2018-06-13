@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
             var referencedTocs = new List<Document>();
             var tocViewModel = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
-                fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
                 fileToBuild,
                 (file, href, isInclude) =>
                 {

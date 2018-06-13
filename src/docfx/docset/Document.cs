@@ -182,30 +182,32 @@ namespace Microsoft.Docs.Build
 
         internal static ContentType GetContentType(string path)
         {
-            var name = Path.GetFileName(path).ToLowerInvariant();
-            var extension = Path.GetExtension(name);
+            var name = Path.GetFileNameWithoutExtension(path);
 
-            switch (extension)
+            if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
-                case ".md":
-                    if (name == "toc.md")
-                    {
-                        return ContentType.TableOfContents;
-                    }
-                    return ContentType.Markdown;
-                case ".yml":
-                    if (name == "docfx.yml")
-                    {
-                        return ContentType.Unknown;
-                    }
-                    if (name == "toc.yml")
-                    {
-                        return ContentType.TableOfContents;
-                    }
-                    return ContentType.SchemaDocument;
-                default:
-                    return ContentType.Asset;
+                if (name.Equals("toc", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ContentType.TableOfContents;
+                }
+                return ContentType.Markdown;
             }
+
+            if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) ||
+                path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                if (name.Equals("toc", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ContentType.TableOfContents;
+                }
+                if (name.Equals("docfx", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ContentType.Unknown;
+                }
+                return ContentType.SchemaDocument;
+            }
+
+            return ContentType.Asset;
         }
 
         internal static string GetSiteUrl(string path, ContentType contentType, Config config)

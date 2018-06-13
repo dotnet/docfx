@@ -9,6 +9,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("docfx.yml", ContentType.Unknown, "docfx.yml", "/docfx.yml")]
+        [InlineData("docfx.json", ContentType.Unknown, "docfx.json", "/docfx.json")]
         [InlineData("a.md", ContentType.Markdown, "a.json", "/a")]
         [InlineData("a/b.md", ContentType.Markdown, "a/b.json", "/a/b")]
         [InlineData("index.md", ContentType.Markdown, "index.json", "/")]
@@ -17,10 +18,12 @@ namespace Microsoft.Docs.Build
         [InlineData("a.yml", ContentType.SchemaDocument, "a.json", "/a")]
         [InlineData("a/index.yml", ContentType.SchemaDocument, "a/index.json", "/a/")]
         [InlineData("a/INDEX.yml", ContentType.SchemaDocument, "a/index.json", "/a/")]
+        [InlineData("a.json", ContentType.SchemaDocument, "a.json", "/a")]
         [InlineData("toc.md", ContentType.TableOfContents, "toc.json", "/toc.json")]
         [InlineData("TOC.md", ContentType.TableOfContents, "TOC.json", "/TOC.json")]
         [InlineData("toc.yml", ContentType.TableOfContents, "toc.json", "/toc.json")]
         [InlineData("TOC.yml", ContentType.TableOfContents, "TOC.json", "/TOC.json")]
+        [InlineData("toc.json", ContentType.TableOfContents, "toc.json", "/toc.json")]
         [InlineData("image.png", ContentType.Asset, "image.png", "/image.png")]
         internal static void GetDocumentTypeAndPath(
             string path,
