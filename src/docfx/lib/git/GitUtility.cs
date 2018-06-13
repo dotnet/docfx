@@ -112,51 +112,32 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Retrieve git head version
+        /// TODO: use libgit2sharp
         /// </summary>
         /// <param name="cwd">The working directory</param>
-        /// <returns>The git head version</returns>
         public static Task<string> HeadRevision(string cwd)
            => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
         /// <summary>
         /// Retrieve original URL
+        /// TODO: use libgit2sharp
         /// </summary>
         public static Task<string> GetOriginalUrl(string cwd)
             => ExecuteQuery(cwd, $"config --get remote.origin.url", TimeSpan.FromMinutes(1));
 
         /// <summary>
         /// Retrieve local branch name
+        /// TODO: use libgit2sharp
         /// </summary>
         public static Task<string> GetLocalBranch(string cwd)
             => ExecuteQuery(cwd, $"rev-parse --abbrev-ref HEAD", TimeSpan.FromMinutes(1));
 
         /// <summary>
         /// Retrieve head commit id for local branch
+        /// TODO: use libgit2sharp
         /// </summary>
         public static Task<string> GetLocalBranchCommitId(string cwd)
             => ExecuteQuery(cwd, $"rev-parse HEAD", TimeSpan.FromMinutes(1));
-
-        /// <summary>
-        /// Retrieve permanent git URL
-        /// </summary>
-        /// <param name="repo">Git repo info</param>
-        /// <param name="path">Path relative to root path of <paramref name="repo"/></param>
-        public static string GetGitPermaLink(GitRepoInfo repo, string path)
-        {
-            Debug.Assert(repo != null);
-            return $"https://github.com/{repo.Account}/{repo.Name}/blob/{repo.HeadCommitId}/{path}";
-        }
-
-        /// <summary>
-        /// Retrieve git URL
-        /// </summary>
-        /// <param name="repo">Git repo info</param>
-        /// <param name="path">Path relative to root path of <paramref name="repo"/></param>
-        public static string GetGitLink(GitRepoInfo repo, string path)
-        {
-            Debug.Assert(repo != null);
-            return $"https://github.com/{repo.Account}/{repo.Name}/blob/{repo.Branch}/{path}";
-        }
 
         /// <summary>
         /// Get commits (per file)

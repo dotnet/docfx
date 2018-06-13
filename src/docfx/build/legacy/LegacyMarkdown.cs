@@ -56,6 +56,9 @@ namespace Microsoft.Docs.Build
 
             legacyPageModel.RawMetadata.Metadata["site_name"] = "Docs";
             legacyPageModel.RawMetadata.Metadata["version"] = 0;
+
+            legacyPageModel.RawMetadata.Metadata["gitcommit"] = pageModel.Gitcommit;
+            legacyPageModel.RawMetadata.Metadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
         }
     }
 }

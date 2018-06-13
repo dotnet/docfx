@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(GitUtility.IsRepo(cwd));
             Debug.Assert(Path.IsPathRooted(cwd));
 
-            var url = GitUtility.GetOriginalUrl(cwd).Result;
+            var url = await GitUtility.GetOriginalUrl(cwd);
 
             // TODO: support VSTS, or others
             var match = GitHubRepoUrlRegex.Match(url);
@@ -44,10 +44,30 @@ namespace Microsoft.Docs.Build
                 Host = GitHost.GitHub,
                 Account = match.Groups["account"].Value,
                 Name = match.Groups["repository"].Value,
-                Branch = await GitUtility.GetLocalBranch(cwd), // TODO: handle detached HEAD
+                Branch = await GitUtility.GetLocalBranch(cwd), // TODO: handle detached HEAD/submodule/sourceBranchName
                 HeadCommitId = await GitUtility.GetLocalBranchCommitId(cwd),
                 RootPath = cwd,
             };
+        }
+
+        /// <summary>
+        /// Retrieve permanent git URL
+        /// </summary>
+        /// <param name="path">Path relative to <see cref="RootPath"/> </param>
+        public string GetGitPermaLink(string path)
+        {
+            Debug.Assert(Host == GitHost.GitHub);
+            return $"https://github.com/{Account}/{Name}/blob/{HeadCommitId}/{path}";
+        }
+
+        /// <summary>
+        /// Retrieve git URL
+        /// </summary>
+        /// <param name="path">Path relative to <see cref="RootPath"/> </param>
+        public string GetGitLink(string path)
+        {
+            Debug.Assert(Host == GitHost.GitHub);
+            return $"https://github.com/{Account}/{Name}/blob/{Branch}/{path}";
         }
     }
 }

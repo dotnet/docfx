@@ -25,8 +25,9 @@ namespace Microsoft.Docs.Build
             var buildScope = GlobFiles(context, docset);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
+            var repo = new GitRepoInfoProvider();
 
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap, repo);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -43,7 +44,11 @@ namespace Microsoft.Docs.Build
                            .ToHashSet();
         }
 
-        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(Context context, HashSet<Document> buildScope, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
+            Context context,
+            HashSet<Document> buildScope,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
@@ -59,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, repo, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -113,14 +118,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task<DependencyMap> BuildFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<DependencyMap> BuildFile(
+            Context context,
+            Document file,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo,
+            Action<Document> buildChild)
         {
             switch (file.ContentType)
             {
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, repo, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build(context, file, tocMap, buildChild);
                 case ContentType.TableOfContents:
