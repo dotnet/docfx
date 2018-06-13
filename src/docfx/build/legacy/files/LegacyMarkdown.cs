@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
 
-            var pageModel = JsonUtility.Deserialize<PageModel>(Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
+            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, rawPageOutputPath)));
 
             var legacyPageModel = new LegacyPageModel();
             if (!string.IsNullOrEmpty(pageModel.Content))
