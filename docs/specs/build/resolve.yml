@@ -128,6 +128,16 @@ outputs:
   build.log: |
     ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]
 ---
+# Show warning if the link points to absolute file path
+inputs:
+  docfx.yml:
+  docs/a/b.md: Link to [a](../a.md)
+  docs/a.md:
+outputs:
+  docs/a/b.json: |
+    { "content": "<p>Link to <a href=\"../a\">a</a></p>" }
+  docs/a.json:
+  build.manifest:
 # Show warning if two files share the same site url
 inputs:
   docfx.yml:

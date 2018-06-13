@@ -67,9 +67,11 @@ namespace Microsoft.Docs.Build
             FilePath = PathUtility.NormalizeFile(filePath);
             ContentType = GetContentType(filePath);
 
+            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
+
             // TODO: handle URL escape
-            SiteUrl = GetSiteUrl(FilePath, ContentType, Docset.Config);
-            SitePath = GetSitePath(SiteUrl, ContentType);
+            SitePath = FilePathToSitePath(routedFilePath, ContentType);
+            SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
             OutputPath = SitePath;
 
             Debug.Assert(IsValidRelativePath(FilePath));
@@ -208,10 +210,32 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string GetSiteUrl(string path, ContentType contentType, Config config)
+        internal static string FilePathToSitePath(string path, ContentType contentType)
         {
-            path = '/' + ApplyRoutes(path, config.Routes);
+            switch (contentType)
+            {
+                case ContentType.Markdown:
+                case ContentType.SchemaDocument:
+                    if (Path.GetFileNameWithoutExtension(path).Equals("index", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
+                    }
+                    return Path.ChangeExtension(path, ".json");
+                case ContentType.TableOfContents:
+                    return Path.Combine(Path.GetDirectoryName(path), "toc.json").Replace('\\', '/');
+                default:
+                    return path;
+            }
+        }
 
+        internal static string PathToAbsoluteUrl(string path, ContentType contentType)
+        {
+            var url = PathToRelativeUrl(path, contentType);
+            return url == "." ? "/" : "/" + url;
+        }
+
+        internal static string PathToRelativeUrl(string path, ContentType contentType)
+        {
             switch (contentType)
             {
                 case ContentType.Markdown:
@@ -221,32 +245,15 @@ namespace Microsoft.Docs.Build
                     {
                         path = path.Substring(0, extensionIndex);
                     }
+                    if (path.Equals("index", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ".";
+                    }
                     if (path.EndsWith("/index", StringComparison.OrdinalIgnoreCase))
                     {
-                        path = path.Substring(0, path.Length - 5);
+                        return path.Substring(0, path.Length - 5);
                     }
                     return path;
-                case ContentType.TableOfContents:
-                    return Path.ChangeExtension(path, ".json");
-                default:
-                    return path;
-            }
-        }
-
-        internal static string GetSitePath(string url, ContentType contentType)
-        {
-            Debug.Assert(url.StartsWith('/'));
-
-            var path = url.Substring(1);
-            switch (contentType)
-            {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
-                    if (path.Length == 0 || path.EndsWith('/'))
-                    {
-                        return path + "index.json";
-                    }
-                    return path + ".json";
                 default:
                     return path;
             }
