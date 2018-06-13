@@ -148,6 +148,6 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n","metadata":{},"wordCount":1,"locale":"en-us"}
+    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n"}
   docs/redirect.json: |
-    {"content":"<p></p>","metadata":{"redirectionUrl":"/absolute/path"},"wordCount":0,"locale":"en-us"}
+    {"content":"<p></p>","metadata":{"redirectionUrl":"/absolute/path"}}
