@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,6 +24,11 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
+        /// Gets the redirection mappings
+        /// </summary>
+        public IReadOnlyDictionary<string, string> Redirections => _redirections.Value;
+
+        /// <summary>
         /// Gets the owning repostiroy if this docset is managed by git, otherwise returns null.
         /// </summary>
         public Repository Repository { get; }
@@ -34,11 +40,13 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private Lazy<Dictionary<string, Docset>> _dependentDocsets;
+        private Lazy<Dictionary<string, string>> _redirections;
 
         public Docset(string docsetPath, CommandLineOptions options)
             : this(docsetPath, Config.Load(docsetPath, options), options)
         {
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
+            _redirections = new Lazy<Dictionary<string, string>>(() => LoadRedirectionMappings(docsetPath, "docfx-redirect.yml"));
         }
 
         public Docset(string docsetPath, Config config, CommandLineOptions options)
@@ -63,6 +71,14 @@ namespace Microsoft.Docs.Build
                 result.Add(name, new Docset(dir, config, _options));
             }
             return result;
+        }
+
+        private Dictionary<string, string> LoadRedirectionMappings(string docset, string fileName)
+        {
+            var filePath = Path.Join(docset, fileName);
+            var mappings = File.Exists(filePath) ? YamlUtility.Deserialize<Dictionary<string, string>>(File.ReadAllText(filePath)) : new Dictionary<string, string>();
+
+            return mappings.ToDictionary(k => PathUtility.NormalizeFile(k.Key), v => v.Value, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

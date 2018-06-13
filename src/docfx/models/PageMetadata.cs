@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public string Title { get; set; }
 
+        public string RedirectionUrl { get; set; }
+
         [JsonExtensionData]
         public JObject Metadata { get; set; }
     }

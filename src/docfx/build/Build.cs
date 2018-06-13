@@ -30,6 +30,8 @@ namespace Microsoft.Docs.Build
 
             BuildManifest.Build(context, files, sourceDependencies);
 
+            BuildRedirections(docset, context);
+
             if (options.Legacy)
             {
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
@@ -134,6 +136,25 @@ namespace Microsoft.Docs.Build
         {
             context.Copy(file, file.FilePath);
             return Task.FromResult(DependencyMap.Empty);
+        }
+
+        private static void BuildRedirections(Docset docset, Context context)
+        {
+            Parallel.ForEach(docset.Redirections, redirection =>
+            {
+                var model = new PageModel
+                {
+                    Content = "<p></p>",
+                    Metadata = new PageMetadata
+                    {
+                        RedirectionUrl = redirection.Value,
+                    },
+                    Locale = docset.Config.Locale,
+                };
+
+                var contentType = Document.GetContentType(redirection.Key);
+                context.WriteJson(model, Document.GetSitePath(Document.GetSiteUrl(redirection.Key, contentType, docset.Config), contentType));
+            });
         }
 
         /// <summary>

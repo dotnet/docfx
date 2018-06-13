@@ -137,3 +137,17 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents uses the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+---
+# Reference to a redirection file
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    [redirect](redirect.md)
+  docfx-redirect.yml: |
+    docs/redirect.md: /absolute/path
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n","metadata":{},"wordCount":1,"locale":"en-us"}
+  docs/redirect.json: |
+    {"content":"<p></p>","metadata":{"redirectionUrl":"/absolute/path"},"wordCount":0,"locale":"en-us"}

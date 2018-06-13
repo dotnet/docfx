@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var (error, file, _, _) = TryResolveFile(relativeTo, href);
+            var (error, file, _, _, _) = TryResolveFile(relativeTo, href);
 
             return file != null ? (error, file.ReadText(), file) : default;
         }
@@ -20,7 +20,13 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            var (error, file, fragment, query) = TryResolveFile(relativeTo, href);
+            var (error, file, redirectTo, fragment, query) = TryResolveFile(relativeTo, href);
+
+            // Redirection
+            if (!string.IsNullOrEmpty(redirectTo))
+            {
+                return (error, redirectTo, fragment, file);
+            }
 
             // Cannot resolve the file, leave href as is
             // Or self bookmark
@@ -35,11 +41,11 @@ namespace Microsoft.Docs.Build
             return (error, resolvedHref + fragment + query, fragment, file);
         }
 
-        private static (DocfxException error, Document file, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
+        private static (DocfxException error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null);
             }
 
             var (path, fragment, query) = HrefUtility.SplitHref(href);
@@ -48,7 +54,7 @@ namespace Microsoft.Docs.Build
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return (null, relativeTo, fragment, query);
+                return (null, relativeTo, null, fragment, query);
             }
 
             // Leave absolute URL as is
@@ -60,7 +66,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null);
             }
 
             // Leave absolute URL path as is
@@ -80,9 +86,17 @@ namespace Microsoft.Docs.Build
                 pathToDocset = Path.Combine(Path.GetDirectoryName(relativeTo.FilePath), path);
             }
 
+            // resolve from redirection files
+            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
+            if (relativeTo.Docset.Redirections.ContainsKey(pathToDocset))
+            {
+                // redirectTo always is absolute href
+                return (null, null, relativeTo.Docset.Redirections[pathToDocset], null, null);
+            }
+
             var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, fragment, query);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, fragment, query);
         }
     }
 }
