@@ -23,11 +23,6 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the owning repostiroy if this docset is managed by git, otherwise returns null.
-        /// </summary>
-        public Repository Repository { get; }
-
-        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;

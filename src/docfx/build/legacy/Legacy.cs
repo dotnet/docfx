@@ -7,11 +7,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class Legacy
     {
-        public static void ConvertToLegacyModel(Docset docset, Context context, List<Document> documents, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static void ConvertToLegacyModel(
+            Docset docset,
+            Context context,
+            List<Document> documents,
+            DependencyMap dependencyMap,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo)
         {
             // generate manifest and corresponding files
             var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-            LegacyOutput.Convert(docset, context, legacyManifestItems);
+            LegacyOutput.Convert(docset, context, repo, legacyManifestItems);
 
             // generate mappings
             LegacyFileMap.Convert(docset, context, documents);
