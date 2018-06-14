@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
             var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
             var repo = new GitRepoInfoProvider();
 
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap, repo);
+            var (files, sourceDependencies) = await BuildFiles(context, new HashSet<Document>(buildScope.Concat(docset.Redirections.Keys)), tocMap, repo);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -37,11 +38,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static HashSet<Document> GlobFiles(Context context, Docset docset)
+        private static List<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToHashSet();
+                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
@@ -85,6 +86,11 @@ namespace Microsoft.Docs.Build
             GitRepoInfoProvider repo,
             Action<Document> buildChild)
         {
+            if (file.IsRedirection)
+            {
+                return BuildRedirectionItem(context, file);
+            }
+
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -103,6 +109,22 @@ namespace Microsoft.Docs.Build
         private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
+            return Task.FromResult(DependencyMap.Empty);
+        }
+
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        {
+            Debug.Assert(file.IsRedirection);
+
+            var model = new PageModel
+            {
+                Content = "<p></p>",
+                RedirectionUrl = file.Docset.Redirections[file],
+                Locale = file.Docset.Config.Locale,
+            };
+
+            context.WriteJson(model, file.OutputPath);
+
             return Task.FromResult(DependencyMap.Empty);
         }
 

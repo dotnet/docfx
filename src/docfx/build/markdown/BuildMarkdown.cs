@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,11 +35,8 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = content,
-                Metadata = new PageMetadata
-                {
-                    Title = markup.Title,
-                    Metadata = metadata,
-                },
+                Metadata = metadata,
+                Title = markup.Title,
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
