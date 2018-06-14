@@ -1,0 +1,11 @@
+---
+# Unknown xrefs are output as is with a warning
+inputs:
+  docfx.yml:
+  docs/a.md: Link to @xref
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to @xref</p>" }
+  build.log: |
+    ["warning","xref-not-found","Cannot find uid 'xref' using xref '@xref'","docs/a.md"]
+  build.manifest:
