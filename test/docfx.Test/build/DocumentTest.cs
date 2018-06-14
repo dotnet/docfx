@@ -9,6 +9,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("docfx.yml", ContentType.Unknown, "docfx.yml", "/docfx.yml", "docfx.yml")]
+        [InlineData("docfx.json", ContentType.Unknown, "docfx.json", "/docfx.json", "docfx.json")]
         [InlineData("a.md", ContentType.Markdown, "a.json", "/a", "a")]
         [InlineData("a/b.md", ContentType.Markdown, "a/b.json", "/a/b", "a/b")]
         [InlineData("index.md", ContentType.Markdown, "index.json", "/", ".")]
@@ -21,6 +22,7 @@ namespace Microsoft.Docs.Build
         [InlineData("TOC.md", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("toc.yml", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
         [InlineData("TOC.yml", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
+        [InlineData("toc.json", ContentType.TableOfContents, "toc.json", "/toc.json", "toc.json")]
         [InlineData("image.png", ContentType.Asset, "image.png", "/image.png", "image.png")]
         [InlineData("a&#/b\\.* d.png", ContentType.Asset, "a&#/b\\.* d.png", "/a%26%23/b/.%2A%20d.png", "a%26%23/b/.%2A%20d.png")]
         internal static void FilePathToUrl(
