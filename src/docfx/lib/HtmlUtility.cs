@@ -65,75 +65,6 @@ namespace Microsoft.Docs.Build
             return wordCount;
         }
 
-        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
-        {
-            foreach (var node in html.Descendants(tag))
-            {
-                var href = node.GetAttributeValue(attribute, null);
-                if (string.IsNullOrEmpty(href))
-                {
-                    continue;
-                }
-                if (href[0] == '#')
-                {
-                    node.SetAttributeValue("data-linktype", "self-bookmark");
-                    continue;
-                }
-                if (href.Contains(":"))
-                {
-                    node.SetAttributeValue("data-linktype", "external");
-                    continue;
-                }
-                if (href[0] == '/' || href[0] == '\\')
-                {
-                    node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
-                    node.SetAttributeValue("data-linktype", "absolute-path");
-                    continue;
-                }
-                node.SetAttributeValue(attribute, HrefToLower(href));
-                node.SetAttributeValue("data-linktype", "relative-path");
-            }
-        }
-
-        private static string HrefToLower(string href)
-        {
-            var i = href.IndexOfAny(new[] { '#', '?' });
-            return i >= 0 ? href.Substring(0, i).ToLowerInvariant() + href.Substring(i) : href.ToLowerInvariant();
-        }
-
-        private static string AddLocaleIfMissing(string href, string locale)
-        {
-            try
-            {
-                var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
-                if (pos >= 1)
-                {
-                    var urlLocale = href.Substring(1, pos - 1);
-                    if (urlLocale.Contains("-"))
-                    {
-                        CultureInfo.GetCultureInfo(urlLocale);
-                        return href;
-                    }
-                }
-                return '/' + locale + href;
-            }
-            catch (CultureNotFoundException)
-            {
-                return '/' + locale + href;
-            }
-        }
-
-        private static int CountWordInText(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return 0;
-            }
-
-            string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
-            return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
-        }
-
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
@@ -215,6 +146,75 @@ namespace Microsoft.Docs.Build
                 result.Append(html, pos, html.Length - pos);
             }
             return result.ToString();
+        }
+
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
+        {
+            foreach (var node in html.Descendants(tag))
+            {
+                var href = node.GetAttributeValue(attribute, null);
+                if (string.IsNullOrEmpty(href))
+                {
+                    continue;
+                }
+                if (href[0] == '#')
+                {
+                    node.SetAttributeValue("data-linktype", "self-bookmark");
+                    continue;
+                }
+                if (href.Contains(":"))
+                {
+                    node.SetAttributeValue("data-linktype", "external");
+                    continue;
+                }
+                if (href[0] == '/' || href[0] == '\\')
+                {
+                    node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
+                    node.SetAttributeValue("data-linktype", "absolute-path");
+                    continue;
+                }
+                node.SetAttributeValue(attribute, HrefToLower(href));
+                node.SetAttributeValue("data-linktype", "relative-path");
+            }
+        }
+
+        private static string HrefToLower(string href)
+        {
+            var i = href.IndexOfAny(new[] { '#', '?' });
+            return i >= 0 ? href.Substring(0, i).ToLowerInvariant() + href.Substring(i) : href.ToLowerInvariant();
+        }
+
+        private static string AddLocaleIfMissing(string href, string locale)
+        {
+            try
+            {
+                var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
+                if (pos >= 1)
+                {
+                    var urlLocale = href.Substring(1, pos - 1);
+                    if (urlLocale.Contains("-"))
+                    {
+                        CultureInfo.GetCultureInfo(urlLocale);
+                        return href;
+                    }
+                }
+                return '/' + locale + href;
+            }
+            catch (CultureNotFoundException)
+            {
+                return '/' + locale + href;
+            }
+        }
+
+        private static int CountWordInText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return 0;
+            }
+
+            string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
+            return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
         }
     }
 }

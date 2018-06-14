@@ -671,10 +671,7 @@ namespace Microsoft.Docs.Build
 
                 public override List<StringBuilder> Flatten()
                 {
-                    List<StringBuilder> result = new List<StringBuilder>(1)
-                    {
-                        _builder
-                    };
+                    List<StringBuilder> result = new List<StringBuilder>(1) { _builder };
                     return result;
                 }
             }

@@ -22,12 +22,12 @@ namespace Microsoft.Docs.Build
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
-            var buildScope = GlobFiles(context, docset);
+            var buildScope = GlobFiles(docset);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
+            var tocMap = await BuildTableOfContents.BuildTocMap(buildScope);
             var repo = new GitRepoInfoProvider();
 
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap, repo);
+            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static HashSet<Document> GlobFiles(Context context, Docset docset)
+        private static HashSet<Document> GlobFiles(Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
                            .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
@@ -47,8 +47,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
             HashSet<Document> buildScope,
-            TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo)
+            TableOfContentsMap tocMap)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var fileListBuilder = new DocumentListBuilder();
@@ -59,7 +58,7 @@ namespace Microsoft.Docs.Build
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, repo, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -69,7 +68,7 @@ namespace Microsoft.Docs.Build
 
             bool ShouldBuildTheFile(Document file)
             {
-                if (!ShouldBuildFile(context, file, tocMap, buildScope))
+                if (!ShouldBuildFile(file, tocMap, buildScope))
                 {
                     return false;
                 }
@@ -82,7 +81,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
             Action<Document> buildChild)
         {
             switch (file.ContentType)
@@ -90,9 +88,9 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, repo, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file, tocMap, buildChild);
+                    return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
@@ -111,7 +109,7 @@ namespace Microsoft.Docs.Build
         /// We control all the inclusion logic here:
         /// https://github.com/dotnet/docfx/issues/2755
         /// </summary>
-        private static bool ShouldBuildFile(Context context, Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
+        private static bool ShouldBuildFile(Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
         {
             if (childToBuild.OutputPath == null)
             {

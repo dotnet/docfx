@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
             Action<Document> buildChild)
         {
             var dependencyMapBuilder = new DependencyMapBuilder();

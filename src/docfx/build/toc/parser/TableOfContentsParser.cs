@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+        public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null)
             => LoadInputModelItems(tocContent, isYaml, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)

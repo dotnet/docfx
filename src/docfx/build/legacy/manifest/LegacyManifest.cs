@@ -83,6 +83,7 @@ namespace Microsoft.Docs.Build
                 is_already_processed = true,
                 source_base_path = docset.Config.SourceBasePath,
                 version_info = new { },
+
                 // todo: items to publish
                 // todo: type_mapping
             },
