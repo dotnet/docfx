@@ -15,5 +15,6 @@ namespace Microsoft.Docs.Build
         internal const string Source = "source";
         internal const string Destination = "destination";
         internal const string Extend = "extend";
+        internal const string Redirections = "redirections";
     }
 }

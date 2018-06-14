@@ -71,9 +71,9 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>body</p>",
+      "title": "Title",
       "metadata":
       {
-        "title": "Title",
         "author": "me"
       }
     }

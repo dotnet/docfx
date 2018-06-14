@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,11 +23,12 @@ namespace Microsoft.Docs.Build
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
-            var buildScope = GlobFiles(docset);
+            var glob = GlobFiles(docset);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(buildScope);
+            var tocMap = await BuildTableOfContents.BuildTocMap(glob);
             var repo = new GitRepoInfoProvider();
 
+            var buildScope = new HashSet<Document>(glob.Concat(docset.Redirections.Keys));
             var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
@@ -37,11 +39,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static HashSet<Document> GlobFiles(Docset docset)
+        private static List<Document> GlobFiles(Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToHashSet();
+                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
@@ -83,6 +85,11 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             Action<Document> buildChild)
         {
+            if (file.IsRedirection)
+            {
+                return BuildRedirectionItem(context, file);
+            }
+
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -101,6 +108,22 @@ namespace Microsoft.Docs.Build
         private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
+            return Task.FromResult(DependencyMap.Empty);
+        }
+
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        {
+            Debug.Assert(file.IsRedirection);
+
+            var model = new PageModel
+            {
+                Content = "<p></p>",
+                RedirectionUrl = file.Docset.Redirections[file],
+                Locale = file.Docset.Config.Locale,
+            };
+
+            context.WriteJson(model, file.OutputPath);
+
             return Task.FromResult(DependencyMap.Empty);
         }
 

@@ -57,9 +57,19 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
-        /// Intentionally left as private. Use <see cref="Document.TryCreate(Docset, string)"/> instead.
+        /// Gets a value indicating whether if it master content
         /// </summary>
-        internal Document(Docset docset, string filePath)
+        public bool IsMasterContent => ContentType == ContentType.Markdown || ContentType == ContentType.SchemaDocument;
+
+        /// <summary>
+        /// Gets a value indicating whether if the document is redirection
+        /// </summary>
+        public bool IsRedirection { get; }
+
+        /// <summary>
+        /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
+        /// </summary>
+        internal Document(Docset docset, string filePath, bool isRedirection = false)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
@@ -73,6 +83,7 @@ namespace Microsoft.Docs.Build
             SitePath = FilePathToSitePath(routedFilePath, ContentType);
             SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
             OutputPath = SitePath;
+            IsRedirection = isRedirection;
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
@@ -87,6 +98,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Stream ReadStream()
         {
+            Debug.Assert(!IsRedirection);
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
 
@@ -95,6 +107,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadText()
         {
+            Debug.Assert(!IsRedirection);
             using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
@@ -103,7 +116,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return StringComparer.Ordinal.GetHashCode(FilePath);
+            return StringComparer.Ordinal.GetHashCode(FilePath) + IsRedirection.GetHashCode();
         }
 
         public bool Equals(Document other)
@@ -113,7 +126,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return FilePath == other.FilePath && Docset == other.Docset;
+            return FilePath == other.FilePath && Docset == other.Docset && IsRedirection == other.IsRedirection;
         }
 
         public override bool Equals(object obj)
@@ -141,8 +154,24 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
+        /// <returns>A new document, or null if the doument is not master content</returns>
+        public static Document TryCreateFromRedirection(Docset docset, string path)
+        {
+            Debug.Assert(docset != null);
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!Path.IsPathRooted(path));
+
+            path = PathUtility.NormalizeFile(path);
+            return new Document(docset, path, true);
+        }
+
+        /// <summary>
+        /// Opens a new <see cref="Document"/> based on the path relative to docset.
+        /// </summary>
+        /// <param name="docset">The current docset</param>
+        /// <param name="path">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document TryCreate(Docset docset, string path)
+        public static Document TryCreateFromFile(Docset docset, string path)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -172,7 +201,7 @@ namespace Microsoft.Docs.Build
                 var dependentDocset = docset.DependentDocset[dependencyName];
                 var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
 
-                var dependencyFile = TryCreate(dependentDocset, relativePathToDependentDocset);
+                var dependencyFile = TryCreateFromFile(dependentDocset, relativePathToDependentDocset);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;
