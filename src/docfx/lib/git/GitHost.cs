@@ -3,11 +3,9 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class Repository
+    internal enum GitHost
     {
-        /// <summary>
-        /// Gets the path to the git repository.
-        /// </summary>
-        public string RepositoryPath { get; }
+        GitHub,
+        Unknown,
     }
 }

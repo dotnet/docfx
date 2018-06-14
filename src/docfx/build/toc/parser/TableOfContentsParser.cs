@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
+        public delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
+
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
         public static List<TableOfContentsItem> Load(string tocContent, bool isYaml, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
@@ -82,6 +84,7 @@ namespace Microsoft.Docs.Build
 
         private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, bool isYaml, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
         {
+            // TODO: support TOC.json
             parents = parents ?? new List<Document>();
 
             // add to parent path

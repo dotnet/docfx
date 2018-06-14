@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
+            GitRepoInfoProvider repo,
             LegacyManifestOutput legacyManifestOutput)
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
@@ -30,11 +31,11 @@ namespace Microsoft.Docs.Build
                                 .RemoveRerunCodepenIframes());
             }
 
-            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset);
+            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset, doc, repo);
             context.WriteJson(legacyPageModel, rawPageOutputPath);
         }
 
-        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset)
+        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
             legacyPageModel.RawMetadata = new LegacyPageMetadata();
             legacyPageModel.RawMetadata.Metadata = pageModel.Metadata;
@@ -54,6 +55,15 @@ namespace Microsoft.Docs.Build
 
             legacyPageModel.RawMetadata.Metadata["site_name"] = "Docs";
             legacyPageModel.RawMetadata.Metadata["version"] = 0;
+
+            var repoInfo = repo.GetGitRepoInfo(file);
+            if (repoInfo != null)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                legacyPageModel.RawMetadata.Metadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
+                legacyPageModel.RawMetadata.Metadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
+            }
         }
     }
 }

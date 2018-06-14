@@ -48,6 +48,7 @@ namespace Microsoft.Docs.Build
                 .UseExtractYamlHeader(file, errors, metadata)
                 .UseExtractTitle(title)
                 .UseResolveHtmlLinks(markdownContext, hasHtml)
+                .UseResolveXref(errors, ResolveXref)
                 .Build();
 
             using (InclusionContext.PushFile(file))
@@ -109,6 +110,12 @@ namespace Microsoft.Docs.Build
                 }
 
                 return link;
+            }
+
+            string ResolveXref(string uid)
+            {
+                // TODO: implement xref resolve
+                return null;
             }
         }
     }
