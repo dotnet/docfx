@@ -7,6 +7,7 @@
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.8.2" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="1.0.210" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.36.0-alpha-0200-g869e2cd" />
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.36.0-alpha-0201-g57dd325" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006" PrivateAssets="All" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-e171109-2" />

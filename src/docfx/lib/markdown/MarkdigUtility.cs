@@ -34,19 +34,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            else if (obj is LeafBlock leaf)
-            {
-                if (leaf.Inline != null)
-                {
-                    foreach (var child in leaf.Inline)
-                    {
-                        if (Visit(child, action))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
             else if (obj is ContainerInline inline)
             {
                 foreach (var child in inline)
@@ -57,8 +44,61 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+            else if (obj is LeafBlock leaf)
+            {
+                Visit(leaf.Inline, action);
+            }
 
             return false;
+        }
+
+        /// <summary>
+        /// Traverses the markdown object graph and replace each node with another node,
+        /// If <paramref name="action"/> returns null, remove the node from the graph.
+        /// </summary>
+        public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject> action)
+        {
+            if (obj == null)
+                return null;
+
+            obj = action(obj);
+
+            if (obj is ContainerBlock block)
+            {
+                for (var i = 0; i < block.Count; i++)
+                {
+                    var replacement = (Block)Replace(block[i], action);
+                    if (replacement != block[i])
+                    {
+                        block.RemoveAt(i--);
+                        if (replacement != null)
+                        {
+                            block.Insert(i, replacement);
+                        }
+                    }
+                }
+            }
+            else if (obj is ContainerInline inline)
+            {
+                foreach (var child in inline)
+                {
+                    var replacement = Replace(child, action);
+                    if (replacement == null)
+                    {
+                        child.Remove();
+                    }
+                    else if (replacement != child)
+                    {
+                        child.ReplaceBy((Inline)replacement);
+                    }
+                }
+            }
+            else if (obj is LeafBlock leaf)
+            {
+                leaf.Inline = (ContainerInline)Replace(leaf.Inline, action);
+            }
+
+            return obj;
         }
 
         public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)

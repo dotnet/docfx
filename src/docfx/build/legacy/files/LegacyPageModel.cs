@@ -3,12 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum LogLevel
+    internal class LegacyPageModel
     {
-        Diagnostic = -1,
-        Verbose,
-        Info,
-        Warning,
-        Error,
+        public string Content { get; set; }
+
+        public LegacyPageMetadata RawMetadata { get; set; }
     }
 }

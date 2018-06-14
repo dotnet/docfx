@@ -11,9 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
+        public delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
+
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static List<TableOfContentsItem> Load(string tocContent, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+        public static List<TableOfContentsItem> Load(string tocContent, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null)
             => LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref)?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList();
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
@@ -97,6 +99,7 @@ namespace Microsoft.Docs.Build
 
         private static List<TableOfContentsInputItem> LoadInputModelItems(string tocContent, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
         {
+            // TODO: support TOC.json
             parents = parents ?? new List<Document>();
 
             // add to parent path

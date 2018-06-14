@@ -9,12 +9,16 @@ namespace Microsoft.Docs.Build
     {
         public string Content { get; set; }
 
-        public PageMetadata Metadata { get; set; }
-
         public long WordCount { get; set; }
 
         public string Locale { get; set; }
 
         public string TocRelativePath { get; set; }
+
+        public string Title { get; set; }
+
+        public string RedirectionUrl { get; set; }
+
+        public JObject Metadata { get; set; }
     }
 }

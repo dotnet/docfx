@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.Docs.Build
 {
-    internal class Repository
+    internal class LegacyPageMetadata
     {
-        /// <summary>
-        /// Gets the path to the git repository.
-        /// </summary>
-        public string RepositoryPath { get; }
+        [JsonExtensionData]
+        public JObject Metadata { get; set; }
     }
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,40 +23,40 @@ namespace Microsoft.Docs.Build
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
-            var buildScope = GlobFiles(context, docset);
+            var glob = GlobFiles(docset);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
+            var tocMap = await BuildTableOfContents.BuildTocMap(glob);
+            var repo = new GitRepoInfoProvider();
 
+            var buildScope = new HashSet<Document>(glob.Concat(docset.Redirections.Keys));
             var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo);
             }
         }
 
-        private static HashSet<Document> GlobFiles(Context context, Docset docset)
+        private static List<Document> GlobFiles(Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToHashSet();
+                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
-        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(Context context, HashSet<Document> buildScope, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
+            Context context,
+            HashSet<Document> buildScope,
+            TableOfContentsMap tocMap)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
-            var publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
-            var filesByUrl = new ConcurrentDictionary<string, Document>();
+            var fileListBuilder = new DocumentListBuilder();
 
             await ParallelUtility.ForEach(buildScope, BuildTheFile, ShouldBuildTheFile);
 
-            HandlePublishConflicts();
-
-            return (
-                filesByUrl.Values.OrderBy(d => d.OutputPath).ToList(),
-                new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
+            return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
@@ -69,52 +70,26 @@ namespace Microsoft.Docs.Build
 
             bool ShouldBuildTheFile(Document file)
             {
-                if (!ShouldBuildFile(context, file, tocMap, buildScope))
+                if (!ShouldBuildFile(file, tocMap, buildScope))
                 {
                     return false;
                 }
 
-                // Find publish URL conflicts
-                if (!filesByUrl.TryAdd(file.SiteUrl, file))
-                {
-                    if (filesByUrl.TryGetValue(file.SiteUrl, out var publishedFile) && publishedFile != file)
-                    {
-                        publishConflicts.GetOrAdd(file.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
-                    }
-                    return false;
-                }
-
-                return true;
-            }
-
-            void HandlePublishConflicts()
-            {
-                foreach (var (siteUrl, conflict) in publishConflicts)
-                {
-                    var conflictingFiles = new HashSet<Document>();
-
-                    foreach (var conflictingFile in conflict)
-                    {
-                        conflictingFiles.Add(conflictingFile);
-                    }
-
-                    if (filesByUrl.TryRemove(siteUrl, out var removed))
-                    {
-                        conflictingFiles.Add(removed);
-                    }
-
-                    context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
-
-                    foreach (var conflictingFile in conflictingFiles)
-                    {
-                        context.Delete(conflictingFile.OutputPath);
-                    }
-                }
+                return fileListBuilder.TryAdd(file);
             }
         }
 
-        private static Task<DependencyMap> BuildFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<DependencyMap> BuildFile(
+            Context context,
+            Document file,
+            TableOfContentsMap tocMap,
+            Action<Document> buildChild)
         {
+            if (file.IsRedirection)
+            {
+                return BuildRedirectionItem(context, file);
+            }
+
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -122,7 +97,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Markdown:
                     return BuildMarkdown.Build(context, file, tocMap, buildChild);
                 case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build(context, file, tocMap, buildChild);
+                    return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 default:
@@ -136,12 +111,28 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(DependencyMap.Empty);
         }
 
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        {
+            Debug.Assert(file.IsRedirection);
+
+            var model = new PageModel
+            {
+                Content = "<p></p>",
+                RedirectionUrl = file.Docset.Redirections[file],
+                Locale = file.Docset.Config.Locale,
+            };
+
+            context.WriteJson(model, file.OutputPath);
+
+            return Task.FromResult(DependencyMap.Empty);
+        }
+
         /// <summary>
         /// All children will be built through this gate
         /// We control all the inclusion logic here:
         /// https://github.com/dotnet/docfx/issues/2755
         /// </summary>
-        private static bool ShouldBuildFile(Context context, Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
+        private static bool ShouldBuildFile(Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
         {
             if (childToBuild.OutputPath == null)
             {

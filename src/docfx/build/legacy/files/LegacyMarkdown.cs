@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
+            GitRepoInfoProvider repo,
             LegacyManifestOutput legacyManifestOutput)
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
@@ -30,17 +31,18 @@ namespace Microsoft.Docs.Build
                                 .RemoveRerunCodepenIframes());
             }
 
-            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset);
+            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset, doc, repo);
             context.WriteJson(legacyPageModel, rawPageOutputPath);
         }
 
-        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset)
+        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
-            legacyPageModel.RawMetadata = pageModel.Metadata;
+            legacyPageModel.RawMetadata = new LegacyPageMetadata();
+            legacyPageModel.RawMetadata.Metadata = pageModel.Metadata;
             legacyPageModel.RawMetadata.Metadata["toc_rel"] = pageModel.TocRelativePath;
             legacyPageModel.RawMetadata.Metadata["locale"] = pageModel.Locale;
             legacyPageModel.RawMetadata.Metadata["word_count"] = pageModel.WordCount;
-            legacyPageModel.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Metadata.Title)}</h1>";
+            legacyPageModel.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>";
 
             legacyPageModel.RawMetadata.Metadata["_op_canonicalUrlPrefix"] = $"https://{docset.Config.HostName}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             legacyPageModel.RawMetadata.Metadata["_op_pdfUrlPrefixTemplate"] = $"https://{docset.Config.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
@@ -53,6 +55,15 @@ namespace Microsoft.Docs.Build
 
             legacyPageModel.RawMetadata.Metadata["site_name"] = "Docs";
             legacyPageModel.RawMetadata.Metadata["version"] = 0;
+
+            var repoInfo = repo.GetGitRepoInfo(file);
+            if (repoInfo != null)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                legacyPageModel.RawMetadata.Metadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
+                legacyPageModel.RawMetadata.Metadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
+            }
         }
     }
 }
