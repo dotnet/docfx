@@ -30,9 +30,10 @@ namespace Microsoft.Docs.Build
             }
 
             // Make result relative to `resultRelativeTo`
-            var resolvedHref = PathUtility.GetRelativePathToFile(resultRelativeTo.SiteUrl, file.SiteUrl).Replace('\\', '/');
+            var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
+            var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
 
-            return (error, resolvedHref + fragment + query, fragment, file);
+            return (error, relativeUrl + fragment + query, fragment, file);
         }
 
         private static (DocfxException error, Document file, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
