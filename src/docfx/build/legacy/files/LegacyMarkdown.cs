@@ -10,6 +10,24 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMarkdown
     {
+        private static readonly string[] pageMetadataOutputItems =
+        {
+            "author", "breadcrumb_path", "depot_name", "description", "document_id",
+            "document_version_independent_id", "gitcommit", "keywords",
+            "locale", "ms.author", "ms.date", "ms.prod", "ms.topic", "original_content_git_url",
+            "page_type", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name",
+            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
+        };
+
+        private static readonly string[] metadataOutputItems =
+        {
+            "author", "breadcrumb_path", "canonical_url", "content_git_url", "depot_name", "description", "document_id",
+            "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "is_dynamic_rendering", "keywords",
+            "layout", "locale", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
+            "page_type", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
+            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
+        };
+
         public static void Convert(
             Docset docset,
             Context context,
@@ -17,6 +35,7 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput)
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
+            var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
 
             var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, rawPageOutputPath)));
@@ -30,29 +49,65 @@ namespace Microsoft.Docs.Build
                                 .RemoveRerunCodepenIframes());
             }
 
-            GenerateLegacyRawMetadata(legacyPageModel, pageModel, docset);
+            // TODO: run template to generate more metadata with Jint.
+            legacyPageModel.RawMetadata = GenerateLegacyRawMetadata(pageModel, docset);
+
+            legacyPageModel.PageMetadata = GenerateLegacyPageMetadata(legacyPageModel.RawMetadata);
+
+            var metadate = GenerateLegacyMetadateOutput(legacyPageModel.RawMetadata);
+
             context.WriteJson(legacyPageModel, rawPageOutputPath);
+            context.WriteJson(metadate, metadataOutputPath);
         }
 
-        private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset)
+        private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset)
         {
-            legacyPageModel.RawMetadata = pageModel.Metadata;
-            legacyPageModel.RawMetadata.Metadata["toc_rel"] = pageModel.TocRelativePath;
-            legacyPageModel.RawMetadata.Metadata["locale"] = pageModel.Locale;
-            legacyPageModel.RawMetadata.Metadata["word_count"] = pageModel.WordCount;
-            legacyPageModel.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Metadata.Title)}</h1>";
+            var rawMetadata = new JObject(pageModel.Metadata.Metadata);
+            rawMetadata["toc_rel"] = pageModel.TocRelativePath;
+            rawMetadata["locale"] = pageModel.Locale;
+            rawMetadata["word_count"] = pageModel.WordCount;
+            rawMetadata["depot_name"] = docset.Config.Name;
+            rawMetadata["site_name"] = "Docs";
+            rawMetadata["version"] = 0;
+            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Metadata.Title)}</h1>";
 
-            legacyPageModel.RawMetadata.Metadata["_op_canonicalUrlPrefix"] = $"https://{docset.Config.HostName}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
-            legacyPageModel.RawMetadata.Metadata["_op_pdfUrlPrefixTemplate"] = $"https://{docset.Config.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"https://{docset.Config.HostName}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
+            rawMetadata["_op_pdfUrlPrefixTemplate"] = $"https://{docset.Config.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
 
-            legacyPageModel.RawMetadata.Metadata["_op_wordCount"] = pageModel.WordCount;
+            rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
-            legacyPageModel.RawMetadata.Metadata["depot_name"] = docset.Config.Name;
-            legacyPageModel.RawMetadata.Metadata["is_dynamic_rendering"] = true;
-            legacyPageModel.RawMetadata.Metadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
+            rawMetadata["is_dynamic_rendering"] = true;
+            rawMetadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
 
-            legacyPageModel.RawMetadata.Metadata["site_name"] = "Docs";
-            legacyPageModel.RawMetadata.Metadata["version"] = 0;
+            return rawMetadata;
+        }
+
+        private static string GenerateLegacyPageMetadata(JObject rawMetadata)
+        {
+            string pageMetadataOutput = string.Empty;
+            foreach (string item in pageMetadataOutputItems)
+            {
+                if (rawMetadata.TryGetValue(item, out JToken value))
+                {
+                    pageMetadataOutput += $"<meta name=\"{item}\" content=\"{(string)value}\" />" + System.Environment.NewLine;
+                }
+            }
+
+            return pageMetadataOutput;
+        }
+
+        private static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
+        {
+            var metadataOutput = new JObject();
+            foreach (string item in metadataOutputItems)
+            {
+                if(rawMetadata.TryGetValue(item, out JToken value))
+                {
+                    metadataOutput[item] = value;
+                }
+            }
+
+            return metadataOutput;
         }
     }
 }
