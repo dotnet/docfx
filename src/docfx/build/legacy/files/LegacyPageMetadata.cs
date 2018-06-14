@@ -6,12 +6,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PageMetadata
+    internal class LegacyPageMetadata
     {
-        public string Title { get; set; }
-
-        public string RedirectionUrl { get; set; }
-
         [JsonExtensionData]
         public JObject Metadata { get; set; }
     }

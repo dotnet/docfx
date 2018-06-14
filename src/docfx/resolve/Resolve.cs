@@ -88,10 +88,10 @@ namespace Microsoft.Docs.Build
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-            if (relativeTo.Docset.Redirections.ContainsKey(pathToDocset))
+            if (relativeTo.Docset.Redirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
-                return (null, null, relativeTo.Docset.Redirections[pathToDocset], null, null);
+                return (null, null, redirectTo, null, null);
             }
 
             var file = Document.TryCreate(relativeTo.Docset, pathToDocset);

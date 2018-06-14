@@ -150,4 +150,4 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n"}
   docs/redirect.json: |
-    {"content":"<p></p>","metadata":{"redirectionUrl":"/absolute/path"}}
+    {"content":"<p></p>", "redirectionUrl":"/absolute/path"}

@@ -145,10 +145,7 @@ namespace Microsoft.Docs.Build
                 var model = new PageModel
                 {
                     Content = "<p></p>",
-                    Metadata = new PageMetadata
-                    {
-                        RedirectionUrl = redirection.Value,
-                    },
+                    RedirectionUrl = redirection.Value,
                     Locale = docset.Config.Locale,
                 };
 

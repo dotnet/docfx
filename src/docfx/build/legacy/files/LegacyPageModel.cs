@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
     {
         public string Content { get; set; }
 
-        public PageMetadata RawMetadata { get; set; }
+        public LegacyPageMetadata RawMetadata { get; set; }
     }
 }
