@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the redirection mappings
         /// </summary>
-        public IReadOnlyDictionary<string, string> Redirections => _redirections.Value;
+        public IReadOnlyDictionary<Document, string> Redirections => _redirections.Value;
 
         /// <summary>
         /// Gets the owning repostiroy if this docset is managed by git, otherwise returns null.
@@ -40,13 +40,13 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private Lazy<Dictionary<string, Docset>> _dependentDocsets;
-        private Lazy<Dictionary<string, string>> _redirections;
+        private Lazy<Dictionary<Document, string>> _redirections;
 
         public Docset(string docsetPath, CommandLineOptions options)
             : this(docsetPath, Config.Load(docsetPath, options), options)
         {
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
-            _redirections = new Lazy<Dictionary<string, string>>(() => LoadRedirectionMappings(docsetPath, "docfx-redirect.yml"));
+            _redirections = new Lazy<Dictionary<Document, string>>(() => LoadRedirectionMappings());
         }
 
         public Docset(string docsetPath, Config config, CommandLineOptions options)
@@ -73,12 +73,22 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private Dictionary<string, string> LoadRedirectionMappings(string docset, string fileName)
+        private Dictionary<Document, string> LoadRedirectionMappings()
         {
-            var filePath = Path.Join(docset, fileName);
-            var mappings = File.Exists(filePath) ? YamlUtility.Deserialize<Dictionary<string, string>>(File.ReadAllText(filePath)) : new Dictionary<string, string>();
+            var mappings = new Dictionary<Document, string>();
+            foreach (var (pathToDocset, href) in Config.Redirections)
+            {
+                var document = Document.TryCreateFromRedirection(this, pathToDocset);
+                if (!document.IsMasterContent)
+                {
+                    // just throw to abort the whole process
+                    throw Errors.InvalidRedirection(document);
+                }
 
-            return mappings.ToDictionary(k => PathUtility.NormalizeFile(k.Key), v => v.Value, StringComparer.OrdinalIgnoreCase);
+                mappings.Add(document, href);
+            }
+
+            return mappings;
         }
     }
 }

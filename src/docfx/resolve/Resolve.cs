@@ -11,7 +11,12 @@ namespace Microsoft.Docs.Build
     {
         public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var (error, file, _, _, _) = TryResolveFile(relativeTo, href);
+            var (error, file, redirect, _, _) = TryResolveFile(relativeTo, href);
+
+            if (redirect != null)
+            {
+                return (Errors.IncludeRedirection(relativeTo, href), null, null);
+            }
 
             return file != null ? (error, file.ReadText(), file) : default;
         }
@@ -88,13 +93,13 @@ namespace Microsoft.Docs.Build
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-            if (relativeTo.Docset.Redirections.TryGetValue(pathToDocset, out var redirectTo))
+            if (relativeTo.Docset.Config.Redirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
                 return (null, null, redirectTo, null, null);
             }
 
-            var file = Document.TryCreate(relativeTo.Docset, pathToDocset);
+            var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
             return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, fragment, query);
         }

@@ -9,6 +9,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
+        public static DocfxException InvalidRedirection(Document document)
+            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {document.FilePath} shouldn't belong to redirections since it's a {document.ContentType}");
+
         public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException(ReportLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 
@@ -34,6 +37,18 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
 
         public static DocfxException PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents uses the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}");
+        {
+            var containsRedirection = files.Any(f => f.IsRedirection);
+            var errorMessage = $"Two or more documents uses the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}";
+            if (containsRedirection)
+            {
+                errorMessage += ", at least one of them belongs to redirections";
+            }
+
+            return new DocfxException(ReportLevel.Warning, "publish-url-conflict", errorMessage);
+        }
+
+        public static DocfxException IncludeRedirection(Document relativeTo, string path)
+            => new DocfxException(ReportLevel.Warning, "invalid-inclusion", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
     }
 }

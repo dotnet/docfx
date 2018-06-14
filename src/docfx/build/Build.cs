@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,11 +27,9 @@ namespace Microsoft.Docs.Build
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
 
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, new HashSet<Document>(buildScope.Concat(docset.Redirections.Keys)), tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
-
-            BuildRedirections(docset, context);
 
             if (options.Legacy)
             {
@@ -41,7 +40,7 @@ namespace Microsoft.Docs.Build
         private static HashSet<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
                            .ToHashSet();
         }
 
@@ -117,6 +116,11 @@ namespace Microsoft.Docs.Build
 
         private static Task<DependencyMap> BuildFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
+            if (file.IsRedirection)
+            {
+                return BuildRedirectionItem(context, file);
+            }
+
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -138,20 +142,20 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(DependencyMap.Empty);
         }
 
-        private static void BuildRedirections(Docset docset, Context context)
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
         {
-            Parallel.ForEach(docset.Redirections, redirection =>
-            {
-                var model = new PageModel
-                {
-                    Content = "<p></p>",
-                    RedirectionUrl = redirection.Value,
-                    Locale = docset.Config.Locale,
-                };
+            Debug.Assert(file.IsRedirection);
 
-                var contentType = Document.GetContentType(redirection.Key);
-                context.WriteJson(model, Document.GetSitePath(Document.GetSiteUrl(redirection.Key, contentType, docset.Config), contentType));
-            });
+            var model = new PageModel
+            {
+                Content = "<p></p>",
+                RedirectionUrl = file.Docset.Redirections[file],
+                Locale = file.Docset.Config.Locale,
+            };
+
+            context.WriteJson(model, file.OutputPath);
+
+            return Task.FromResult(DependencyMap.Empty);
         }
 
         /// <summary>
