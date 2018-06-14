@@ -13,21 +13,22 @@ namespace Microsoft.Docs.Build
         public static void Convert(
             Docset docset,
             Context context,
-            string absoluteOutputFilePath,
-            string relativeOutputFilePath,
-            string legacyOutputFilePathRelativeToSiteBasePath)
+            Document doc,
+            LegacyManifestOutput legacyManifestOutput)
         {
-            var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(absoluteOutputFilePath));
+            var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, doc.OutputPath)));
             var tocItemWithPath = toc?.Items?.FirstOrDefault();
             if (tocItemWithPath != null)
             {
                 tocItemWithPath.PdfAbsolutePath = PathUtility.NormalizeFile(
-                    $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".pdf")}");
+                    $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
                 tocItemWithPath.PdfName = PathUtility.NormalizeFile(
-                    $"/{Path.GetDirectoryName(legacyOutputFilePathRelativeToSiteBasePath)}.pdf");
+                    $"/{Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath)}.pdf");
             }
 
-            context.WriteJson(toc, relativeOutputFilePath);
+            context.Delete(doc.OutputPath);
+            context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(new { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
 
         private class LegacyTableOfContentsItem : TableOfContentsItem

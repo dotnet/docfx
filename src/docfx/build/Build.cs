@@ -51,16 +51,11 @@ namespace Microsoft.Docs.Build
             GitRepoInfoProvider repo)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
-            var publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
-            var filesByUrl = new ConcurrentDictionary<string, Document>();
+            var fileListBuilder = new DocumentListBuilder();
 
             await ParallelUtility.ForEach(buildScope, BuildTheFile, ShouldBuildTheFile);
 
-            HandlePublishConflicts();
-
-            return (
-                filesByUrl.Values.OrderBy(d => d.OutputPath).ToList(),
-                new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
+            return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
@@ -79,42 +74,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 }
 
-                // Find publish URL conflicts
-                if (!filesByUrl.TryAdd(file.SiteUrl, file))
-                {
-                    if (filesByUrl.TryGetValue(file.SiteUrl, out var publishedFile) && publishedFile != file)
-                    {
-                        publishConflicts.GetOrAdd(file.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
-                    }
-                    return false;
-                }
-
-                return true;
-            }
-
-            void HandlePublishConflicts()
-            {
-                foreach (var (siteUrl, conflict) in publishConflicts)
-                {
-                    var conflictingFiles = new HashSet<Document>();
-
-                    foreach (var conflictingFile in conflict)
-                    {
-                        conflictingFiles.Add(conflictingFile);
-                    }
-
-                    if (filesByUrl.TryRemove(siteUrl, out var removed))
-                    {
-                        conflictingFiles.Add(removed);
-                    }
-
-                    context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
-
-                    foreach (var conflictingFile in conflictingFiles)
-                    {
-                        context.Delete(conflictingFile.OutputPath);
-                    }
-                }
+                return fileListBuilder.TryAdd(file);
             }
         }
 

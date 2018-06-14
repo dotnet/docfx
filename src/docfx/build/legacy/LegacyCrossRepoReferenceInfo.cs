@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Newtonsoft.Json;
+
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyCrossRepoReferenceInfo
@@ -30,6 +32,18 @@ namespace Microsoft.Docs.Build
             }
 
             context.WriteJson(crrInfo, Path.Combine(docset.Config.SiteBasePath, "op_crr_info.json"));
+        }
+
+        private class LegacyCrossRepoReferenceInfoItem
+        {
+            [JsonProperty("path_to_root")]
+            public string PathToRoot { get; set; }
+
+            [JsonProperty("branch")]
+            public string Branch { get; set; }
+
+            [JsonProperty("url")]
+            public string Url { get; set; }
         }
     }
 }
