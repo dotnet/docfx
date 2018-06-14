@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using System.Text;
 using System.Web;
 
 using Newtonsoft.Json.Linq;
@@ -84,16 +85,25 @@ namespace Microsoft.Docs.Build
 
         private static string GenerateLegacyPageMetadata(JObject rawMetadata)
         {
-            string pageMetadataOutput = string.Empty;
+            StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
             foreach (string item in pageMetadataOutputItems)
             {
                 if (rawMetadata.TryGetValue(item, out JToken value))
                 {
-                    pageMetadataOutput += $"<meta name=\"{item}\" content=\"{(string)value}\" />" + System.Environment.NewLine;
+                    string content;
+                    if (value is JArray)
+                    {
+                        content = string.Join(",", value);
+                    }
+                    else
+                    {
+                        content = value.ToString();
+                    }
+                    pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
                 }
             }
 
-            return pageMetadataOutput;
+            return pageMetadataOutput.ToString();
         }
 
         private static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
