@@ -30,7 +30,19 @@ namespace Microsoft.Docs.Build
                 return path;
             }
 
-            return Path.GetRelativePath(directory, path);
+            var result = Path.GetRelativePath(directory, path);
+
+            // https://github.com/dotnet/corefx/issues/30263
+            if (result == ".")
+            {
+                return Path.Combine("../", Path.GetFileName(path));
+            }
+            else if (result.EndsWith('\\') || result.EndsWith('/'))
+            {
+                return NormalizeFile(Path.Combine(result, Path.GetFileName(path)));
+            }
+
+            return result;
         }
 
         /// <summary>

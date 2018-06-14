@@ -112,11 +112,32 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Retrieve git head version
+        /// TODO: use libgit2sharp
         /// </summary>
         /// <param name="cwd">The working directory</param>
-        /// <returns>The git head version</returns>
         public static Task<string> HeadRevision(string cwd)
            => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
+
+        /// <summary>
+        /// Retrieve original URL
+        /// TODO: use libgit2sharp
+        /// </summary>
+        public static Task<string> GetOriginalUrl(string cwd)
+            => ExecuteQuery(cwd, $"config --get remote.origin.url", TimeSpan.FromMinutes(1));
+
+        /// <summary>
+        /// Retrieve local branch name
+        /// TODO: use libgit2sharp
+        /// </summary>
+        public static Task<string> GetLocalBranch(string cwd)
+            => ExecuteQuery(cwd, $"rev-parse --abbrev-ref HEAD", TimeSpan.FromMinutes(1));
+
+        /// <summary>
+        /// Retrieve head commit id for local branch
+        /// TODO: use libgit2sharp
+        /// </summary>
+        public static Task<string> GetLocalBranchCommitId(string cwd)
+            => ExecuteQuery(cwd, $"rev-parse HEAD", TimeSpan.FromMinutes(1));
 
         /// <summary>
         /// Get commits (per file)
