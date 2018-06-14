@@ -37,18 +37,9 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
 
         public static DocfxException PublishUrlConflict(string url, IEnumerable<Document> files)
-        {
-            var containsRedirection = files.Any(f => f.IsRedirection);
-            var errorMessage = $"Two or more documents uses the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}";
-            if (containsRedirection)
-            {
-                errorMessage += ", at least one of them belongs to redirections";
-            }
-
-            return new DocfxException(ReportLevel.Warning, "publish-url-conflict", errorMessage);
-        }
+            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents uses the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.IsRedirection ? $"'{file}(redirection)'" : $"'{file}'").Take(5))}");
 
         public static DocfxException IncludeRedirection(Document relativeTo, string path)
-            => new DocfxException(ReportLevel.Warning, "invalid-inclusion", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
+            => new DocfxException(ReportLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
     }
 }

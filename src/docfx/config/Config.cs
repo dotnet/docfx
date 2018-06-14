@@ -108,9 +108,9 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             try
             {
-                var configObject = Normalize(JsonUtility.Merge(
-                    Expand(LoadOriginalConfigObject(configPath, new List<string>(), true)),
-                    options?.ToJObject()));
+                var configObject = JsonUtility.Merge(
+                    ExpandAndNormalize(LoadOriginalConfigObject(configPath, new List<string>(), true)),
+                    options?.ToJObject());
 
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
@@ -165,16 +165,11 @@ namespace Microsoft.Docs.Build
             throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(objExtend)}");
         }
 
-        private static JObject Expand(JObject config)
+        private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
-            return config;
-        }
-
-        private static JObject Normalize(JObject config)
-        {
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             return config;
         }

@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static HashSet<Document> GlobFiles(Context context, Docset docset)
+        private static List<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
                            .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToHashSet();
+                           .ToList();
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(Context context, HashSet<Document> buildScope, TableOfContentsMap tocMap)
