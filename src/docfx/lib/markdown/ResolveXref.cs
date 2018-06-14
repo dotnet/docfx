@@ -25,7 +25,11 @@ namespace Microsoft.Docs.Build
                         if (string.IsNullOrEmpty(href))
                         {
                             var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
-                            errors.Add(Errors.XrefNotFound((Document)InclusionContext.File, xref.Href, raw));
+                            var error = raw.StartsWith("@")
+                                ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
+                                : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
+
+                            errors.Add(error);
                             return new LiteralInline(raw);
                         }
                     }

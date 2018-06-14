@@ -33,8 +33,11 @@ namespace Microsoft.Docs.Build
         public static DocfxException FileNotFound(Document relativeTo, string path)
             => new DocfxException(ReportLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
 
-        public static DocfxException XrefNotFound(Document file, string uid, string rawXref)
-            => new DocfxException(ReportLevel.Warning, "xref-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
+        public static DocfxException UidNotFound(Document file, string uid, string rawXref)
+            => new DocfxException(ReportLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
+
+        public static DocfxException AtUidNotFound(Document file, string uid, string rawXref)
+            => new DocfxException(ReportLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static DocfxException PublishUrlConflict(string url, IEnumerable<Document> files)
             => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}");

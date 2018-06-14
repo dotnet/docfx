@@ -2,10 +2,21 @@
 # Unknown xrefs are output as is with a warning
 inputs:
   docfx.yml:
-  docs/a.md: Link to @xref
+  docs/a.md: Link to <xref:a>
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to @xref</p>" }
+    { "content": "<p>Link to &lt;xref:a&gt;</p>" }
   build.log: |
-    ["warning","xref-not-found","Cannot find uid 'xref' using xref '@xref'","docs/a.md"]
+    ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
+  build.manifest:
+---
+# Unknown xrefs using @ syntax are output as is with a informational message
+inputs:
+  docfx.yml:
+  docs/a.md: Link to @a
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to @a</p>" }
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
   build.manifest:
