@@ -71,8 +71,8 @@ namespace Microsoft.Docs.Build
             rawMetadata["version"] = 0;
             rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Metadata.Title)}</h1>";
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"https://{docset.Config.HostName}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
-            rawMetadata["_op_pdfUrlPrefixTemplate"] = $"https://{docset.Config.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
+            rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
 
             rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
