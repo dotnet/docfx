@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
 
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
-            // TODO: handle URL escape
             SitePath = FilePathToSitePath(routedFilePath, ContentType);
             SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
             OutputPath = SitePath;
