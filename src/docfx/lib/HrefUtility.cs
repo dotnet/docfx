@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -50,6 +51,13 @@ namespace Microsoft.Docs.Build
             }
 
             return (path, fragment, query);
+        }
+
+        public static DependencyType FragmentToDependencyType(string fragment)
+        {
+            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
+
+            return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
         public static bool IsRelativeHref(string str)

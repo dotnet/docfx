@@ -34,10 +34,19 @@ namespace Microsoft.Docs.Build
             }
 
             // Cannot resolve the file, leave href as is
-            // Or self bookmark
-            if (file == null || file == relativeTo)
+            if (file == null)
             {
                 return (error, href, fragment, file);
+            }
+
+            // Self reference, leave href as is
+            if (file == relativeTo)
+            {
+                if (string.IsNullOrEmpty(fragment))
+                {
+                    fragment = "#";
+                }
+                return (error, fragment + query, fragment, file);
             }
 
             // Make result relative to `resultRelativeTo`
@@ -94,6 +103,7 @@ namespace Microsoft.Docs.Build
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
+
             if (relativeTo.Docset.Config.Redirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href

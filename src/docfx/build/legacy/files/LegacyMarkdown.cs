@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["depot_name"] = docset.Config.Name;
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
-            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>";
+            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";

@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 if (child != null)
                 {
                     buildChild(child);
-                    dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyTypeExtensions.ToLink(fragment));
+                    dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
                 }
 
                 return link;

@@ -117,7 +117,6 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
-                Content = "<p></p>",
                 RedirectionUrl = file.Docset.Redirections[file],
                 Locale = file.Docset.Config.Locale,
             };
