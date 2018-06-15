@@ -21,30 +21,43 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (DocfxException error, string href, Document file, bool hasBookmark) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             var (error, file, redirectTo, fragment, query) = TryResolveFile(relativeTo, href);
 
+            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
+
+            var hasBookmark = fragment != null && fragment.Length > 1;
+
             // Redirection
             if (!string.IsNullOrEmpty(redirectTo))
             {
-                return (error, redirectTo, fragment, file);
+                return (error, redirectTo, file, hasBookmark);
             }
 
             // Cannot resolve the file, leave href as is
-            // Or self bookmark
-            if (file == null || file == relativeTo)
+            if (file == null)
             {
-                return (error, href, fragment, file);
+                return (error, href, file, hasBookmark);
+            }
+
+            // Self reference, leave href as is
+            if (file == relativeTo)
+            {
+                if (string.IsNullOrEmpty(fragment))
+                {
+                    fragment = "#";
+                }
+                return (error, fragment + query, file, hasBookmark);
             }
 
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
 
-            return (error, relativeUrl + fragment + query, fragment, file);
+            return (error, relativeUrl + fragment + query, file, hasBookmark);
         }
 
         private static (DocfxException error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
@@ -72,7 +85,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, fragment, query);
             }
 
             // Leave absolute URL path as is
@@ -94,10 +107,11 @@ namespace Microsoft.Docs.Build
 
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
+
             if (relativeTo.Docset.Config.Redirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
-                return (null, null, redirectTo, null, null);
+                return (null, null, redirectTo, fragment, query);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);

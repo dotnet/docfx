@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "self-bookmark");
                     continue;
                 }
-                if (href.Contains(":"))
+                if (Uri.TryCreate(href, UriKind.Absolute, out _))
                 {
                     node.SetAttributeValue("data-linktype", "external");
                     continue;
