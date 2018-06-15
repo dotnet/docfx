@@ -26,9 +26,13 @@ inputs:
   docs/a.md: |
     ## Hello World
     Link to [bookmark](#hello-world)
+  docs/b.md: |
+    Link to [self](./b.md)
 outputs:
   docs/a.json: |
     { "content": "<h2 id=\"hello-world\">Hello World</h2><p>Link to <a href=\"#hello-world\">bookmark</a></p>" }
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"#\">self</a></p>" }
   build.manifest:
 ---
 # Support both / and \ as directory seperator
@@ -161,7 +165,7 @@ outputs:
   docs/b&/c~.json:
   build.manifest:
 ---
-# Reference to a redirection file(absolute)
+# Absolute link to a redirection file
 inputs:
   docfx.yml: |
     redirections:
@@ -173,9 +177,9 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n"}
   docs/redirect.json: |
-    {"content":"<p></p>", "redirectionUrl":"/absolute/path"}
+    {"redirectionUrl":"/absolute/path"}
 ---
-# Reference to a redirection file(relative)
+# Relative link to a redirection file
 inputs:
   docfx.yml: |
     redirections:
@@ -187,7 +191,7 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>\n"}
   docs/redirect.json: |
-    {"content":"<p></p>", "redirectionUrl":"relative/path"}
+    {"redirectionUrl":"relative/path"}
 ---
 # Incude a redirection file
 inputs:
@@ -201,7 +205,7 @@ outputs:
   docs/a.json: |
     {"content":"<p>Link to [!include[](redirect.md)]</p>\n"}
   docs/redirect.json: |
-    {"content":"<p></p>", "redirectionUrl":"/absolute/path"}
+    {"redirectionUrl":"/absolute/path"}
   build.log: |
     ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md"]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]

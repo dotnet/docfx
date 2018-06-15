@@ -38,11 +38,11 @@ namespace Microsoft.Docs.Build
         private static void GenerateLegacyRawMetadata(LegacyPageModel legacyPageModel, PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
             legacyPageModel.RawMetadata = new LegacyPageMetadata();
-            legacyPageModel.RawMetadata.Metadata = pageModel.Metadata;
+            legacyPageModel.RawMetadata.Metadata = pageModel.Metadata ?? new JObject();
             legacyPageModel.RawMetadata.Metadata["toc_rel"] = pageModel.TocRelativePath;
             legacyPageModel.RawMetadata.Metadata["locale"] = pageModel.Locale;
             legacyPageModel.RawMetadata.Metadata["word_count"] = pageModel.WordCount;
-            legacyPageModel.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>";
+            legacyPageModel.RawMetadata.Metadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
 
             legacyPageModel.RawMetadata.Metadata["_op_canonicalUrlPrefix"] = $"https://{docset.Config.HostName}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             legacyPageModel.RawMetadata.Metadata["_op_pdfUrlPrefixTemplate"] = $"https://{docset.Config.HostName}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";

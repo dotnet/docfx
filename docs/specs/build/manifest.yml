@@ -286,3 +286,27 @@ outputs:
         }
       ]
     }
+---
+# Treat `#` as link dependency
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [link](#)
+outputs:
+  docs/a.json:
+  build.manifest: |
+    {
+      "dependencies":
+      [
+        {
+          "source": "docs/a.md",
+          "dependencies": 
+          [
+            {
+              "source": "docs/a.md",
+              "type": "link"
+            }
+          ]
+        }
+      ]
+    }
