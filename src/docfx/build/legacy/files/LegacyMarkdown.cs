@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             var metadataOutput = new JObject();
             foreach (string item in s_metadataOutputItems)
             {
-                if(rawMetadata.TryGetValue(item, out JToken value))
+                if (rawMetadata.TryGetValue(item, out JToken value))
                 {
                     metadataOutput[item] = value;
                 }
