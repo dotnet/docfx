@@ -3,16 +3,12 @@
 
 using System;
 using System.IO;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class RestoreTest
     {
-        public static readonly TheoryData<string, int> Specs = TestHelper.FindTestSpecs("restore");
-
         [Theory]
         [InlineData("https://github.com/dotnet/docfx", "github.com/dotnet/docfx/master", "https://github.com/dotnet/docfx", "master")]
         [InlineData("https://visualstudio.com/dotnet/docfx", "visualstudio.com/dotnet/docfx/master", "https://visualstudio.com/dotnet/docfx", "master")]
@@ -32,22 +28,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(PathUtility.NormalizeFolder(Path.Combine(restoreDir, expectedDir)), dir);
             Assert.Equal(expectedUrl, url);
             Assert.Equal(expectedRev, rev);
-        }
-
-        [Theory]
-        [MemberData(nameof(Specs))]
-        public static async Task BuildDocset(string name, int ordinal)
-        {
-            var (docsetPath, spec) = TestHelper.CreateDocset(name, ordinal);
-
-            await Program.Run(new[] { "restore", docsetPath });
-
-            foreach (var (file, content) in spec.Restorations)
-            {
-                var restoredFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git", file);
-                Assert.True(File.Exists(restoredFile));
-                TestHelper.VerifyJsonContainEquals(JToken.Parse(content), JToken.Parse(File.ReadAllText(restoredFile)));
-            }
         }
     }
 }
