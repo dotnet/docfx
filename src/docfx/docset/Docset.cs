@@ -33,15 +33,22 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
 
+        /// <summary>
+        /// Gets the initial build scope.
+        /// </summary>
+        public HashSet<Document> BuildScope => _buildScope.Value;
+
         private readonly CommandLineOptions _options;
-        private Lazy<Dictionary<string, Docset>> _dependentDocsets;
-        private Lazy<Dictionary<Document, string>> _redirections;
+        private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
+        private readonly Lazy<Dictionary<Document, string>> _redirections;
+        private readonly Lazy<HashSet<Document>> _buildScope;
 
         public Docset(string docsetPath, CommandLineOptions options)
             : this(docsetPath, Config.Load(docsetPath, options), options)
         {
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
             _redirections = new Lazy<Dictionary<Document, string>>(() => LoadRedirectionMappings());
+            _buildScope = new Lazy<HashSet<Document>>(() => GlobFiles());
         }
 
         public Docset(string docsetPath, Config config, CommandLineOptions options)
@@ -84,6 +91,14 @@ namespace Microsoft.Docs.Build
             }
 
             return mappings;
+        }
+
+        private HashSet<Document> GlobFiles()
+        {
+            return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
+                           .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
+                           .Concat(Redirections.Keys)
+                           .ToHashSet();
         }
     }
 }

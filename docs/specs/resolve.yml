@@ -165,7 +165,7 @@ outputs:
   docs/b&/c~.json:
   build.manifest:
 ---
-# Absolute link to a redirection file
+# Files redirected to an aboslute URL
 inputs:
   docfx.yml: |
     redirections:
@@ -175,11 +175,11 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n"}
+    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>"}
   docs/redirect.json: |
     {"redirectionUrl":"/absolute/path"}
 ---
-# Relative link to a redirection file
+# Files redirected to a relative URL
 inputs:
   docfx.yml: |
     redirections:
@@ -189,11 +189,11 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p><a href=\"relative/path\">redirect</a></p>\n"}
+    {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
   docs/redirect.json: |
     {"redirectionUrl":"relative/path"}
 ---
-# Incude a redirection file
+# Show warning if include a redirection file
 inputs:
   docfx.yml: |
     redirections:
@@ -203,14 +203,14 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p>Link to [!include[](redirect.md)]</p>\n"}
+    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
   docs/redirect.json: |
     {"redirectionUrl":"/absolute/path"}
   build.log: |
     ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md"]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]
 ---
-# Redirection file conflicts with existing file
+# Show warning if redirection file conflicts with existing file
 inputs:
   docfx.yml: |
     redirections:
@@ -220,3 +220,36 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md(redirection)', 'docs/redirect.md'"]
+---
+# Show warning if link to a master content outside build scope
+inputs:
+  docfx.yml:
+  docs/a.md: '[a](../b.md)'
+  b.md:
+outputs:
+  docs/a.json: |
+    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md(redirection)', 'docs/redirect.md'"]
+  build.manifest:
+---
+# Don't show warning if link to a non-master content outside build scope
+inputs:
+  docfx.yml:
+  docs/a.md: '[a](../b.png)'
+  b.png:
+outputs:
+  docs/a.json: |
+    {"content":"<p><a href=\"../b.png\">a</a></p>"}
+  b.png:
+  build.manifest:
+---
+# Don't show warning if include a master content outside build scope
+inputs:
+  docfx.yml:
+  docs/a.md: '[!include[a](../b.md)]'
+  b.md: b
+outputs:
+  docs/a.json: |
+    {"content":"<p>b</p>"}
+  build.manifest:

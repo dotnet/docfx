@@ -30,6 +30,9 @@ namespace Microsoft.Docs.Build
         public static DocfxException LinkIsEmpty(Document file)
             => new DocfxException(ReportLevel.Warning, "link-is-empty", "Link is empty", file.ToString());
 
+        public static DocfxException LinkOutsideBuildScope(Document relativeTo, Document file, string href)
+            => new DocfxException(ReportLevel.Warning, "link-out-of-scope", $"The file '{file}' referenced by link '{href}' will not be published because it is not included in docfx.yml", relativeTo.ToString());
+
         public static DocfxException AbsoluteFilePath(Document relativeTo, string path)
             => new DocfxException(ReportLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
 
@@ -43,7 +46,7 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static DocfxException PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.IsRedirection ? $"'{file}(redirection)'" : $"'{file}'").Take(5))}");
+            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.ContentType == ContentType.Redirection ? $"'{file} <redirection>'" : $"'{file}'").Take(5))}");
 
         public static DocfxException IncludeRedirection(Document relativeTo, string path)
             => new DocfxException(ReportLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());

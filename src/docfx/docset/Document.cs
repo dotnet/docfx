@@ -59,17 +59,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether if it master content
         /// </summary>
-        public bool IsMasterContent => ContentType == ContentType.Markdown || ContentType == ContentType.SchemaDocument;
+        public bool IsMasterContent { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether if the document is redirection
-        /// </summary>
-        public bool IsRedirection { get; }
-
-        /// <summary>
-        /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
-        /// </summary>
-        internal Document(Docset docset, string filePath, bool isRedirection = false)
+        private Document(Docset docset, string filePath, bool isRedirection = false)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
@@ -83,7 +75,13 @@ namespace Microsoft.Docs.Build
             SitePath = FilePathToSitePath(routedFilePath, ContentType);
             SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
             OutputPath = SitePath;
-            IsRedirection = isRedirection;
+
+            IsMasterContent = ContentType == ContentType.Markdown || ContentType == ContentType.SchemaDocument;
+
+            if (isRedirection)
+            {
+                ContentType = ContentType.Redirection;
+            }
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
@@ -98,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Stream ReadStream()
         {
-            Debug.Assert(!IsRedirection);
+            Debug.Assert(ContentType != ContentType.Redirection);
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
 
@@ -107,7 +105,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadText()
         {
-            Debug.Assert(!IsRedirection);
+            Debug.Assert(ContentType != ContentType.Redirection);
             using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
@@ -116,7 +114,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return StringComparer.Ordinal.GetHashCode(FilePath) + IsRedirection.GetHashCode();
+            return StringComparer.Ordinal.GetHashCode(FilePath) + ContentType.GetHashCode();
         }
 
         public bool Equals(Document other)
@@ -126,7 +124,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return FilePath == other.FilePath && Docset == other.Docset && IsRedirection == other.IsRedirection;
+            return FilePath == other.FilePath && Docset == other.Docset && ContentType == other.ContentType;
         }
 
         public override bool Equals(object obj)
@@ -162,7 +160,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!Path.IsPathRooted(path));
 
             path = PathUtility.NormalizeFile(path);
-            return new Document(docset, path, true);
+            return new Document(docset, path, isRedirection: true);
         }
 
         /// <summary>

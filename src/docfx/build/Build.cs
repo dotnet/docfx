@@ -23,13 +23,10 @@ namespace Microsoft.Docs.Build
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
 
-            var glob = GlobFiles(docset);
-
-            var tocMap = await BuildTableOfContents.BuildTocMap(glob);
+            var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
             var repo = new GitRepoInfoProvider();
 
-            var buildScope = new HashSet<Document>(glob.Concat(docset.Redirections.Keys));
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -37,13 +34,6 @@ namespace Microsoft.Docs.Build
             {
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo);
             }
-        }
-
-        private static List<Document> GlobFiles(Docset docset)
-        {
-            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToList();
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
@@ -85,11 +75,6 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             Action<Document> buildChild)
         {
-            if (file.IsRedirection)
-            {
-                return BuildRedirectionItem(context, file);
-            }
-
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -100,6 +85,8 @@ namespace Microsoft.Docs.Build
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
+                case ContentType.Redirection:
+                    return BuildRedirectionItem(context, file);
                 default:
                     return Task.FromResult(DependencyMap.Empty);
             }
@@ -107,13 +94,15 @@ namespace Microsoft.Docs.Build
 
         private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
+            Debug.Assert(file.ContentType == ContentType.Asset);
+
             context.Copy(file, file.FilePath);
             return Task.FromResult(DependencyMap.Empty);
         }
 
         private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
         {
-            Debug.Assert(file.IsRedirection);
+            Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var model = new PageModel
             {
@@ -133,11 +122,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static bool ShouldBuildFile(Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
         {
-            if (childToBuild.OutputPath == null)
-            {
-                return false;
-            }
-
             if (childToBuild.ContentType == ContentType.Unknown)
             {
                 return false;
@@ -149,7 +133,7 @@ namespace Microsoft.Docs.Build
             }
 
             // the `content` scope is fix, all the `content` children out of our glob scope will be treated as warnings
-            if (childToBuild.ContentType == ContentType.Markdown || childToBuild.ContentType == ContentType.SchemaDocument)
+            if (childToBuild.IsMasterContent)
             {
                 if (!buildScope.Contains(childToBuild))
                 {
