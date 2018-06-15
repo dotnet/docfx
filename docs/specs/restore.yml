@@ -1,0 +1,11 @@
+---
+# Restore dependencies with their children
+inputs:
+  docfx.yml: |
+    dependencies:
+      docfx-test-dependencies: https://github.com/docascode/docfx-test-dependencies
+restores:
+  github.com/docascode/docfx-test-dependencies/master/dep.md: DEP
+  github.com/docascode/docfx-test-dependencies/child/dep.md: child-DEP
+outputs:
+  build.manifest:
