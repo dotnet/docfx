@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, fragment, query);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null);
             }
 
             // Leave absolute URL path as is
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             if (relativeTo.Docset.Config.Redirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
-                return (null, null, redirectTo, fragment, query);
+                return (null, null, redirectTo, null, null);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
