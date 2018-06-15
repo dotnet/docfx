@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,25 +26,30 @@ namespace Microsoft.Docs.Build
             var buildScope = GlobFiles(context, docset);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, buildScope);
+            var repo = new GitRepoInfoProvider();
 
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, new HashSet<Document>(buildScope.Concat(docset.Redirections.Keys)), tocMap, repo);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo);
             }
         }
 
-        private static HashSet<Document> GlobFiles(Context context, Docset docset)
+        private static List<Document> GlobFiles(Context context, Docset docset)
         {
             return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreate(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToHashSet();
+                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
+                           .ToList();
         }
 
-        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(Context context, HashSet<Document> buildScope, TableOfContentsMap tocMap)
+        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
+            Context context,
+            HashSet<Document> buildScope,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var fileListBuilder = new DocumentListBuilder();
@@ -54,7 +60,7 @@ namespace Microsoft.Docs.Build
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, repo, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -73,14 +79,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task<DependencyMap> BuildFile(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        private static Task<DependencyMap> BuildFile(
+            Context context,
+            Document file,
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo,
+            Action<Document> buildChild)
         {
+            if (file.IsRedirection)
+            {
+                return BuildRedirectionItem(context, file);
+            }
+
             switch (file.ContentType)
             {
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, repo, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build(context, file, tocMap, buildChild);
                 case ContentType.TableOfContents:
@@ -93,6 +109,22 @@ namespace Microsoft.Docs.Build
         private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
             context.Copy(file, file.FilePath);
+            return Task.FromResult(DependencyMap.Empty);
+        }
+
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        {
+            Debug.Assert(file.IsRedirection);
+
+            var model = new PageModel
+            {
+                Content = "<p></p>",
+                RedirectionUrl = file.Docset.Redirections[file],
+                Locale = file.Docset.Config.Locale,
+            };
+
+            context.WriteJson(model, file.OutputPath);
+
             return Task.FromResult(DependencyMap.Empty);
         }
 

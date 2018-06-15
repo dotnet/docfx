@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,9 +24,9 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the owning repostiroy if this docset is managed by git, otherwise returns null.
+        /// Gets the redirection mappings
         /// </summary>
-        public Repository Repository { get; }
+        public IReadOnlyDictionary<Document, string> Redirections => _redirections.Value;
 
         /// <summary>
         /// Gets the dependent docsets
@@ -34,11 +35,13 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private Lazy<Dictionary<string, Docset>> _dependentDocsets;
+        private Lazy<Dictionary<Document, string>> _redirections;
 
         public Docset(string docsetPath, CommandLineOptions options)
             : this(docsetPath, Config.Load(docsetPath, options), options)
         {
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
+            _redirections = new Lazy<Dictionary<Document, string>>(() => LoadRedirectionMappings());
         }
 
         public Docset(string docsetPath, Config config, CommandLineOptions options)
@@ -63,6 +66,24 @@ namespace Microsoft.Docs.Build
                 result.Add(name, new Docset(dir, config, _options));
             }
             return result;
+        }
+
+        private Dictionary<Document, string> LoadRedirectionMappings()
+        {
+            var mappings = new Dictionary<Document, string>();
+            foreach (var (pathToDocset, href) in Config.Redirections)
+            {
+                var document = Document.TryCreateFromRedirection(this, pathToDocset);
+                if (!document.IsMasterContent)
+                {
+                    // just throw to abort the whole process
+                    throw Errors.InvalidRedirection(document);
+                }
+
+                mappings.Add(document, href);
+            }
+
+            return mappings;
         }
     }
 }

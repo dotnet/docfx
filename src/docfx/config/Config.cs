@@ -73,6 +73,12 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Gets the redirection mappings
+        /// The default value is empty mappings
+        /// </summary>
+        public readonly Dictionary<string, string> Redirections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options)
@@ -103,7 +109,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var configObject = JsonUtility.Merge(
-                    Expand(LoadOriginalConfigObject(configPath, new List<string>(), true)),
+                    ExpandAndNormalize(LoadOriginalConfigObject(configPath, new List<string>(), true)),
                     options?.ToJObject());
 
                 return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
@@ -159,12 +165,33 @@ namespace Microsoft.Docs.Build
             throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(objExtend)}");
         }
 
-        private static JObject Expand(JObject config)
+        private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             return config;
+        }
+
+        private static JToken NormalizeRedirections(JToken redirection)
+        {
+            if (redirection == null)
+                return null;
+
+            if (redirection is JObject redirectionJObject)
+            {
+                var normalizedRedirection = new JObject();
+                foreach (var (path, redirectTo) in redirectionJObject)
+                {
+                    var normalizedPath = PathUtility.NormalizeFile(path);
+                    normalizedRedirection[normalizedPath] = redirectTo;
+                }
+
+                return normalizedRedirection;
+            }
+
+            return redirection;
         }
 
         private static JToken ExpandRouteConfigs(JToken jToken)

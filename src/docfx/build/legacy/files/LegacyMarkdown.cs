@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
+            GitRepoInfoProvider repo,
             LegacyManifestOutput legacyManifestOutput)
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
@@ -51,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: run template to generate more metadata with Jint.
-            legacyPageModel.RawMetadata = GenerateLegacyRawMetadata(pageModel, docset);
+            legacyPageModel.RawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
 
             legacyPageModel.PageMetadata = GenerateLegacyPageMetadata(legacyPageModel.RawMetadata);
 
@@ -61,16 +62,16 @@ namespace Microsoft.Docs.Build
             context.WriteJson(metadate, metadataOutputPath);
         }
 
-        private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset)
+        private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
-            var rawMetadata = new JObject(pageModel.Metadata.Metadata);
+            var rawMetadata = new JObject(pageModel.Metadata);
             rawMetadata["toc_rel"] = pageModel.TocRelativePath;
             rawMetadata["locale"] = pageModel.Locale;
             rawMetadata["word_count"] = pageModel.WordCount;
             rawMetadata["depot_name"] = docset.Config.Name;
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
-            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Metadata.Title)}</h1>";
+            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
@@ -79,6 +80,15 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["is_dynamic_rendering"] = true;
             rawMetadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
+
+            var repoInfo = repo.GetGitRepoInfo(file);
+            if (repoInfo != null)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                rawMetadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
+                rawMetadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
+            }
 
             return rawMetadata;
         }

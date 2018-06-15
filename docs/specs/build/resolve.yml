@@ -137,3 +137,82 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+---
+# Prefer relative url to file when there is a matching folder name
+inputs:
+  docfx.yml:
+  docs/a/index.md: Link to [a](../a.md)
+  docs/a.md: Link to [index](a/index.md)
+outputs:
+  docs/a/index.json: |
+    { "content": "<p>Link to <a href=\"../a\">a</a></p>" }
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
+  build.manifest:
+---
+# Escape special charactors in path
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b&/c~.md)
+  docs/b&/c~.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b%26/c%7E\">b</a></p>" }
+  docs/b&/c~.json:
+  build.manifest:
+---
+# Reference to a redirection file(absolute)
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: /absolute/path
+  docs/a.md: |
+    [redirect](redirect.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>\n"}
+  docs/redirect.json: |
+    {"content":"<p></p>", "redirectionUrl":"/absolute/path"}
+---
+# Reference to a redirection file(relative)
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: relative/path
+  docs/a.md: |
+    [redirect](redirect.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"relative/path\">redirect</a></p>\n"}
+  docs/redirect.json: |
+    {"content":"<p></p>", "redirectionUrl":"relative/path"}
+---
+# Incude a redirection file
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: /absolute/path
+  docs/a.md: |
+    Link to [!INCLUDE[](redirect.md)]
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p>Link to [!include[](redirect.md)]</p>\n"}
+  docs/redirect.json: |
+    {"content":"<p></p>", "redirectionUrl":"/absolute/path"}
+  build.log: |
+    ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md"]
+    ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]
+---
+# Redirection file conflicts with existing file
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: /absolute/path
+  docs/redirect.md:
+outputs:
+  build.manifest:
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md(redirection)', 'docs/redirect.md'"]
