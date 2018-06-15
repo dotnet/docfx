@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMarkdown
     {
-        private static readonly string[] pageMetadataOutputItems =
+        private static readonly string[] s_pageMetadataOutputItems =
         {
             "author", "breadcrumb_path", "depot_name", "description", "document_id",
             "document_version_independent_id", "gitcommit", "keywords",
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
         };
 
-        private static readonly string[] metadataOutputItems =
+        private static readonly string[] s_metadataOutputItems =
         {
             "author", "breadcrumb_path", "canonical_url", "content_git_url", "depot_name", "description", "document_id",
             "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "is_dynamic_rendering", "keywords",
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         private static string GenerateLegacyPageMetadata(JObject rawMetadata)
         {
             StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-            foreach (string item in pageMetadataOutputItems)
+            foreach (string item in s_pageMetadataOutputItems)
             {
                 if (rawMetadata.TryGetValue(item, out JToken value))
                 {
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
         private static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
         {
             var metadataOutput = new JObject();
-            foreach (string item in metadataOutputItems)
+            foreach (string item in s_metadataOutputItems)
             {
                 if(rawMetadata.TryGetValue(item, out JToken value))
                 {
