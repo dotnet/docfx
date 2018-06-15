@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The hostname
         /// </summary>
-        public readonly string HostName = "docs.microsoft.com";
+        public readonly string BaseUrl = string.Empty;
 
         /// <summary>
         /// Gets the file metadata added to each document.
