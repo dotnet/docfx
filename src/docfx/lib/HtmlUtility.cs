@@ -162,15 +162,15 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "self-bookmark");
                     continue;
                 }
-                if (Uri.TryCreate(href, UriKind.Absolute, out _))
-                {
-                    node.SetAttributeValue("data-linktype", "external");
-                    continue;
-                }
                 if (href[0] == '/' || href[0] == '\\')
                 {
                     node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
+                    continue;
+                }
+                if (Uri.TryCreate(href, UriKind.Absolute, out _))
+                {
+                    node.SetAttributeValue("data-linktype", "external");
                     continue;
                 }
                 node.SetAttributeValue(attribute, HrefToLower(href));

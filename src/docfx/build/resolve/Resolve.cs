@@ -21,26 +21,22 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, Document file, bool hasBookmark) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (DocfxException error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
             var (error, file, redirectTo, fragment, query) = TryResolveFile(relativeTo, href);
 
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
-
-            var hasBookmark = fragment != null && fragment.Length > 1;
-
             // Redirection
             if (!string.IsNullOrEmpty(redirectTo))
             {
-                return (error, redirectTo, file, hasBookmark);
+                return (error, redirectTo, fragment, file);
             }
 
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (error, href, file, hasBookmark);
+                return (error, href, fragment, file);
             }
 
             // Self reference, leave href as is
@@ -50,14 +46,14 @@ namespace Microsoft.Docs.Build
                 {
                     fragment = "#";
                 }
-                return (error, fragment + query, file, hasBookmark);
+                return (error, fragment + query, fragment, file);
             }
 
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
 
-            return (error, relativeUrl + fragment + query, file, hasBookmark);
+            return (error, relativeUrl + fragment + query, fragment, file);
         }
 
         private static (DocfxException error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)

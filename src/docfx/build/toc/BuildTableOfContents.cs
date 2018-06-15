@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 {
                     // add to referenced document list
                     // only resolve href, no need to build
-                    var (error, link, buildItem, hasBookmark) = file.TryResolveHref(href, resultRelativeTo);
+                    var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
                     if (error != null)
                     {
                         errors.Add(error);
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
-                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, hasBookmark ? DependencyType.Bookmark : DependencyType.Link);
+                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
                     }
                     return link;
                 });

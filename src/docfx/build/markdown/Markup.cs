@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(relativeTo is Document);
 
-                var (error, link, child, hasBookmark) = ((Document)relativeTo).TryResolveHref(path, file);
+                var (error, link, fragment, child) = ((Document)relativeTo).TryResolveHref(path, file);
 
                 if (error != null)
                 {
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 if (child != null)
                 {
                     buildChild(child);
-                    dependencyMap.AddDependencyItem((Document)relativeTo, child, hasBookmark ? DependencyType.Bookmark : DependencyType.Link);
+                    dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
                 }
 
                 return link;
