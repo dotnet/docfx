@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
+        public static async Task<TableOfContentsMap> BuildTocMap(IEnumerable<Document> files)
         {
             Debug.Assert(files != null);
 
@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
             var referencedTocs = new List<Document>();
             var tocViewModel = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
-                fileToBuild.FilePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase),
                 fileToBuild,
                 (file, href, isInclude) =>
                 {

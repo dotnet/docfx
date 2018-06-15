@@ -51,6 +51,22 @@ outputs:
     }
   build.manifest:
 ---
+# TOC can be a json file
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    [{ "name": "title" }]
+outputs:
+  docs/toc.json: |
+    {  
+      "items":[
+          {
+            "toc_title":"title"
+          }
+      ]
+    }
+  build.manifest:
+---
 # No-existing file reference
 inputs:
   docfx.yml:

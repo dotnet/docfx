@@ -23,7 +23,6 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    Logger.Error(ex.ToString());
                     PrintFatalErrorMessage(ex, args);
                 }
                 catch
@@ -60,7 +59,6 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    Logger.Error(ex.ToString());
                     reporter.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
                     return 1;
                 }
@@ -76,7 +74,7 @@ namespace Microsoft.Docs.Build
             if (args.Length == 0)
             {
                 // Show usage when just running `docfx`
-                args = new [] { "--help" };
+                args = new[] { "--help" };
             }
 
             ArgumentSyntax.Parse(args, syntax =>

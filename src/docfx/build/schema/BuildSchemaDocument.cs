@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildSchemaDocument
     {
-        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static Task<DependencyMap> Build()
         {
             return Task.FromResult(DependencyMap.Empty);
         }
