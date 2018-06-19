@@ -29,5 +29,10 @@ namespace Microsoft.Docs.Build
         /// Static asserts copied to output
         /// </summary>
         Asset,
+
+        /// <summary>
+        /// Redirection documents
+        /// </summary>
+        Redirection,
     }
 }

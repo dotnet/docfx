@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
-        public static DocfxException InvalidRedirection(Document document)
-            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {document.FilePath} shouldn't belong to redirections since it's a {document.ContentType}");
+        public static DocfxException InvalidRedirection(string path, ContentType contentType)
+            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {path} shouldn't belong to redirections since it's a {contentType}");
 
         public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException(ReportLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             => new DocfxException(ReportLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static DocfxException PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.IsRedirection ? $"'{file}(redirection)'" : $"'{file}'").Take(5))}");
+            => new DocfxException(ReportLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.ContentType == ContentType.Redirection ? $"'{file}(redirection)'" : $"'{file}'").Take(5))}");
 
         public static DocfxException IncludeRedirection(Document relativeTo, string path)
             => new DocfxException(ReportLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());

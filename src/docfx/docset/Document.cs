@@ -61,12 +61,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether if it master content
         /// </summary>
-        public bool IsMasterContent => ContentType == ContentType.Markdown || ContentType == ContentType.SchemaDocument;
-
-        /// <summary>
-        /// Gets a value indicating whether if the document is redirection
-        /// </summary>
-        public bool IsRedirection { get; }
+        public bool IsMasterContent { get; }
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -78,21 +73,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
-        private Document(Docset docset, string filePath, bool isRedirection = false)
+        private Document(Docset docset, string filePath, string sitePath, string siteUrl, string outputPath, ContentType contentType, bool isMasterContent)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
             Docset = docset;
-
-            FilePath = PathUtility.NormalizeFile(filePath);
-            ContentType = GetContentType(filePath);
-
-            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
-
-            SitePath = FilePathToSitePath(routedFilePath, ContentType);
-            SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
-            OutputPath = SitePath;
-            IsRedirection = isRedirection;
+            FilePath = filePath;
+            SitePath = sitePath;
+            SiteUrl = siteUrl;
+            OutputPath = outputPath;
+            ContentType = contentType;
+            IsMasterContent = isMasterContent;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
@@ -109,7 +100,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Stream ReadStream()
         {
-            Debug.Assert(!IsRedirection);
+            Debug.Assert(ContentType != ContentType.Redirection);
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
         }
 
@@ -118,7 +109,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadText()
         {
-            Debug.Assert(!IsRedirection);
+            Debug.Assert(ContentType != ContentType.Redirection);
             using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
@@ -127,7 +118,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return StringComparer.Ordinal.GetHashCode(FilePath) + IsRedirection.GetHashCode();
+            return StringComparer.Ordinal.GetHashCode(FilePath) + ContentType.GetHashCode();
         }
 
         public bool Equals(Document other)
@@ -137,7 +128,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return FilePath == other.FilePath && Docset == other.Docset && IsRedirection == other.IsRedirection;
+            return FilePath == other.FilePath && Docset == other.Docset && ContentType == other.ContentType;
         }
 
         public override bool Equals(object obj)
@@ -165,15 +156,28 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        /// <returns>A new document, or null if the doument is not master content</returns>
-        public static Document TryCreate(Docset docset, string path, bool redirection = true)
+        public static (Document doc, DocfxException error) TryCreate(Docset docset, string path, bool redirection = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
-            path = PathUtility.NormalizeFile(path);
-            return new Document(docset, path, redirection);
+            var filePath = PathUtility.NormalizeFile(path);
+            var type = GetContentType(filePath);
+            var isMasterContent = type == ContentType.Markdown || type == ContentType.SchemaDocument;
+            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
+
+            var sitePath = FilePathToSitePath(routedFilePath, type);
+            var siteUrl = PathToAbsoluteUrl(sitePath, type);
+            var outputPath = sitePath;
+            var contentType = redirection ? ContentType.Redirection : type;
+
+            if (redirection && !isMasterContent)
+            {
+                return (default, Errors.InvalidRedirection(filePath, type));
+            }
+
+            return (new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent), default);
         }
 
         /// <summary>
@@ -193,7 +197,7 @@ namespace Microsoft.Docs.Build
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, path)))
             {
-                return new Document(docset, path);
+                return TryCreate(docset, path, false).doc;
             }
 
             // todo: localization fallback logic

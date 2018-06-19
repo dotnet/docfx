@@ -85,11 +85,6 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             Action<Document> buildChild)
         {
-            if (file.IsRedirection)
-            {
-                return BuildRedirectionItem(context, file);
-            }
-
             switch (file.ContentType)
             {
                 case ContentType.Asset:
@@ -100,6 +95,8 @@ namespace Microsoft.Docs.Build
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
+                case ContentType.Redirection:
+                    return BuildRedirectionItem(context, file);
                 default:
                     return Task.FromResult(DependencyMap.Empty);
             }
@@ -113,7 +110,7 @@ namespace Microsoft.Docs.Build
 
         private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
         {
-            Debug.Assert(file.IsRedirection);
+            Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var model = new PageModel
             {
