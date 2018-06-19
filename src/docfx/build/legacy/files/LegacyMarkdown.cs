@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
-            var rawMetadata = new JObject(pageModel.Metadata);
+            var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath;
             rawMetadata["locale"] = pageModel.Locale;
