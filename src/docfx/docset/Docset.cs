@@ -72,11 +72,11 @@ namespace Microsoft.Docs.Build
             var mappings = new Dictionary<Document, string>();
             foreach (var (pathToDocset, href) in Config.Redirections)
             {
-                var document = Document.TryCreate(this, pathToDocset);
-                if (!document.IsMasterContent)
+                var (document, error) = Document.TryCreate(this, pathToDocset, true);
+                if (error != null)
                 {
                     // just throw to abort the whole process
-                    throw Errors.InvalidRedirection(document);
+                    throw error;
                 }
 
                 mappings.Add(document, href);
