@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -14,6 +13,11 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets the default product name
+        /// </summary>
+        public readonly string Product = string.Empty;
 
         /// <summary>
         /// Gets the default docset name
@@ -77,6 +81,11 @@ namespace Microsoft.Docs.Build
         /// The default value is empty mappings
         /// </summary>
         public readonly Dictionary<string, string> Redirections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the document id configuration section
+        /// </summary>
+        public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
