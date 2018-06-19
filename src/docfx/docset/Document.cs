@@ -68,7 +68,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (string docId, string versionIndependentId) Id => _id.Value;
 
-        private readonly ContentType _originType;
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>
