@@ -41,32 +41,32 @@ namespace Microsoft.Docs.Build
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
 
             var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, rawPageOutputPath)));
+            var content = pageModel.Content;
 
-            var legacyPageModel = new LegacyPageModel();
-            if (!string.IsNullOrEmpty(pageModel.Content))
+            var rawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
+
+            // rawMetadata = Jint.Run(rawMetadata);
+            var pageMetadata = GenerateLegacyPageMetadata(rawMetadata);
+
+            if (!string.IsNullOrEmpty(content))
             {
-                legacyPageModel.Content = HtmlUtility.TransformHtml(
-                    pageModel.Content,
+                content = HtmlUtility.TransformHtml(
+                    content,
                     node => node.AddLinkType(docset.Config.Locale)
                                 .RemoveRerunCodepenIframes());
             }
 
-            // TODO: run template to generate more metadata with Jint.
-            legacyPageModel.RawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
-
-            legacyPageModel.PageMetadata = GenerateLegacyPageMetadata(legacyPageModel.RawMetadata);
-
-            legacyPageModel.OutputRootRelativePath =
+            var outputRootRelativePath =
                 PathUtility.NormalizeFolder(
                     Path.GetRelativePath(
                         PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath)),
                         PathUtility.NormalizeFolder(".")));
 
-            legacyPageModel.ThemesRelativePathToOutputRoot = "_themes/";
+            var themesRelativePathToOutputRoot = "_themes/";
 
-            var metadate = GenerateLegacyMetadateOutput(legacyPageModel.RawMetadata);
+            var metadate = GenerateLegacyMetadateOutput(rawMetadata);
 
-            context.WriteJson(legacyPageModel, rawPageOutputPath);
+            context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             context.WriteJson(metadate, metadataOutputPath);
         }
 
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
             rawMetadata["is_dynamic_rendering"] = true;
-            rawMetadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
+            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
