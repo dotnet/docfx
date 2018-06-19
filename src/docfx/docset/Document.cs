@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
-        internal Document(Docset docset, string filePath, bool isRedirection = false)
+        private Document(Docset docset, string filePath, bool isRedirection = false)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
