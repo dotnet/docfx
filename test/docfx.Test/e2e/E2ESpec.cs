@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    public class TestSpec
+    public class E2ESpec
     {
         public readonly string OS;
 
@@ -14,6 +14,6 @@ namespace Microsoft.Docs.Build
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public readonly Dictionary<string, string> Restorations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
 }

@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
-                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, DependencyTypeExtensions.ToLink(fragment));
+                        dependencyMapBuilder?.AddDependencyItem(file, buildItem, HrefUtility.FragmentToDependencyType(fragment));
                     }
                     return link;
                 });

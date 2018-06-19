@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("<a href='a.md' />", "<a href='a.md' data-linktype='relative-path' />")]
+        [InlineData("<a href='(https://a)' />", "<a href='(https://a)' data-linktype='relative-path' />")]
         [InlineData("<a href='#aA' />", "<a href='#aA' data-linktype='self-bookmark' />")]
         [InlineData("<a href='/a' />", "<a href='/zh-cn/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/zh-cn/alink#fraGMENT' data-linktype='absolute-path' />")]
