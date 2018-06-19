@@ -66,7 +66,6 @@ inputs:
     # Title
     
     body
-  build.manifest:
 outputs:
   docs/a.json: |
     {
@@ -89,9 +88,7 @@ inputs:
     <style>h1 {color:red;}</style>
 
     body
-  build.manifest:
 outputs:
   docs/a.json: |
     { "content": "<div></div><p>body</p>" }
   build.manifest:
-
