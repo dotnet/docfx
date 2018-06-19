@@ -324,23 +324,21 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var (depotName, _) = Docset.Config.SplitName();
+            var depotName = !string.IsNullOrEmpty(Docset.Config.Product)
+                ? $"{Docset.Config.Product}.{Docset.Config.Name}"
+                : Docset.Config.Name;
 
             var sourcePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SourceBasePath)
                 ? FilePath
                 : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
 
             // site path doesn't contain version info according to the output spec
+            var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
             var sitePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SiteBasePath)
-                ? Path.ChangeExtension(SitePath, string.Empty)
-                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, Path.ChangeExtension(SitePath, string.Empty)));
+                ? PathUtility.NormalizeFile(sitePathWithoutExtension)
+                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
-            if (!string.IsNullOrEmpty(depotName))
-            {
-                return (Md5($"{depotName}|{sourcePath.ToLowerInvariant()}"), Md5($"{depotName}|{sitePath.ToLowerInvariant()}"));
-            }
-
-            return (Md5($"{sourcePath.ToLowerInvariant()}"), Md5($"{sitePath.ToLowerInvariant()}"));
+            return (Md5($"{depotName}|{sourcePath.ToLowerInvariant()}"), Md5($"{depotName}|{sitePath.ToLowerInvariant()}"));
 
             string Md5(string input)
             {

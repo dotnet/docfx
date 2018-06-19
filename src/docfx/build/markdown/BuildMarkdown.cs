@@ -2,11 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -39,7 +37,7 @@ namespace Microsoft.Docs.Build
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
-                DocumentId = file.Id.docId,
+                Id = file.Id.docId,
                 VersionIndependentId = file.Id.versionIndependentId,
             };
 

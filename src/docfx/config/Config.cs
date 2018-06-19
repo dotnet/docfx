@@ -15,6 +15,11 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
 
         /// <summary>
+        /// Gets the default product name
+        /// </summary>
+        public readonly string Product = string.Empty;
+
+        /// <summary>
         /// Gets the default docset name
         /// </summary>
         public readonly string Name = string.Empty;
@@ -80,7 +85,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public readonly DocumentId DocumentId = new DocumentId();
+        public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>

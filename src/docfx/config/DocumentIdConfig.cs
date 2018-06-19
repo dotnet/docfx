@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class DocumentId
+    internal class DocumentIdConfig
     {
         /// <summary>
         /// The source base folder path, used by docs.com, for backward compatibility

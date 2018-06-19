@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string RedirectionUrl { get; set; }
 
-        public string DocumentId { get; set; }
+        public string Id { get; set; }
 
         public string VersionIndependentId { get; set; }
 
