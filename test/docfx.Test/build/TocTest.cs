@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var document = new Document(new Docset(Directory.GetCurrentDirectory(), new Config(), null), file);
+            var document = Document.TryCreate(new Docset(Directory.GetCurrentDirectory(), new Config(), null), file, false);
 
             foreach (var tocFile in tocFiles)
             {
-                var toc = new Document(new Docset(Directory.GetCurrentDirectory(), new Config(), null), tocFile);
+                var toc = Document.TryCreate(new Docset(Directory.GetCurrentDirectory(), new Config(), null), tocFile, false);
                 builder.Add(toc, new[] { document }, Array.Empty<Document>());
             }
 
