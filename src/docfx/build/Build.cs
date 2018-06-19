@@ -120,6 +120,8 @@ namespace Microsoft.Docs.Build
                 Content = "<p></p>",
                 RedirectionUrl = file.Docset.Redirections[file],
                 Locale = file.Docset.Config.Locale,
+                DocumentId = file.Id.docId,
+                VersionId = file.Id.versionId,
             };
 
             context.WriteJson(model, file.OutputPath);

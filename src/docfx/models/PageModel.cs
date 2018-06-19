@@ -19,6 +19,10 @@ namespace Microsoft.Docs.Build
 
         public string RedirectionUrl { get; set; }
 
+        public string DocumentId { get; set; }
+
+        public string VersionId { get; set; }
+
         public JObject Metadata { get; set; }
     }
 }

@@ -39,6 +39,8 @@ namespace Microsoft.Docs.Build
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
+                DocumentId = file.Id.docId,
+                VersionId = file.Id.versionId,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here

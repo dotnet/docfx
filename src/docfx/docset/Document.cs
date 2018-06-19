@@ -5,6 +5,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -67,6 +69,13 @@ namespace Microsoft.Docs.Build
         public bool IsRedirection { get; }
 
         /// <summary>
+        /// Gets the document id and version independent id
+        /// </summary>
+        public (string docId, string versionId) Id => _id.Value;
+
+        private readonly Lazy<(string docId, string versionId)> _id;
+
+        /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
         internal Document(Docset docset, string filePath, bool isRedirection = false)
@@ -84,6 +93,8 @@ namespace Microsoft.Docs.Build
             SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
             OutputPath = SitePath;
             IsRedirection = isRedirection;
+
+            _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
@@ -155,14 +166,14 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
         /// <returns>A new document, or null if the doument is not master content</returns>
-        public static Document TryCreateFromRedirection(Docset docset, string path)
+        public static Document TryCreate(Docset docset, string path, bool redirection = true)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
             path = PathUtility.NormalizeFile(path);
-            return new Document(docset, path, true);
+            return new Document(docset, path, redirection);
         }
 
         /// <summary>
@@ -309,6 +320,37 @@ namespace Microsoft.Docs.Build
         private static bool IsValidRelativePath(string path)
         {
             return path != null && path.IndexOf('\\') == -1 && !path.StartsWith('/');
+        }
+
+        private (string docId, string versionId) LoadDocumentId()
+        {
+            var (depotName, _) = Docset.Config.SplitName();
+
+            var sourcePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SourceBasePath)
+                ? FilePath
+                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
+
+            // site path doesn't contain version info according to the output spec
+            var sitePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SiteBasePath)
+                ? Path.ChangeExtension(SitePath, string.Empty)
+                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, Path.ChangeExtension(SitePath, string.Empty)));
+
+            if (!string.IsNullOrEmpty(depotName))
+            {
+                return (Md5($"{depotName}|{sourcePath.ToLowerInvariant()}"), Md5($"{depotName}|{sitePath.ToLowerInvariant()}"));
+            }
+
+            return (Md5($"{sourcePath.ToLowerInvariant()}"), Md5($"{sitePath.ToLowerInvariant()}"));
+
+            string Md5(string input)
+            {
+#pragma warning disable CA5351 //Not used for encryption
+                using (var md5 = MD5.Create())
+#pragma warning restore CA5351
+                {
+                    return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input))).ToString();
+                }
+            }
         }
     }
 }
