@@ -41,30 +41,31 @@ namespace Microsoft.Docs.Build
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, rawPageOutputPath));
 
             var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, rawPageOutputPath)));
+            var content = pageModel.Content;
 
-            var legacyPageModel = new LegacyPageModel();
-            if (!string.IsNullOrEmpty(pageModel.Content))
+            var rawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
+
+            rawMetadata = Jint.Run(rawMetadata);
+
+            var pageMetadata = GenerateLegacyPageMetadata(rawMetadata);
+
+            if (!string.IsNullOrEmpty(content))
             {
-                legacyPageModel.Content = HtmlUtility.TransformHtml(
-                    pageModel.Content,
+                content = HtmlUtility.TransformHtml(
+                    content,
                     node => node.AddLinkType(docset.Config.Locale)
                                 .RemoveRerunCodepenIframes());
             }
 
-            // TODO: run template to generate more metadata with Jint.
-            legacyPageModel.RawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
+            var metadate = GenerateLegacyMetadateOutput(rawMetadata);
 
-            legacyPageModel.PageMetadata = GenerateLegacyPageMetadata(legacyPageModel.RawMetadata);
-
-            var metadate = GenerateLegacyMetadateOutput(legacyPageModel.RawMetadata);
-
-            context.WriteJson(legacyPageModel, rawPageOutputPath);
+            context.WriteJson(new { content, rawMetadata, pageMetadata }, rawPageOutputPath);
             context.WriteJson(metadate, metadataOutputPath);
         }
 
         private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
-            var rawMetadata = new JObject(pageModel.Metadata);
+            var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
             rawMetadata["toc_rel"] = pageModel.TocRelativePath;
             rawMetadata["locale"] = pageModel.Locale;
             rawMetadata["word_count"] = pageModel.WordCount;
@@ -79,7 +80,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
             rawMetadata["is_dynamic_rendering"] = true;
-            rawMetadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
+            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
