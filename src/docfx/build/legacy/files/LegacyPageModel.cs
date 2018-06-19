@@ -9,6 +9,10 @@ namespace Microsoft.Docs.Build
     {
         public string Content { get; set; }
 
+        public string OutputRootRelativePath { get; set; }
+
+        public string ThemesRelativePathToOutputRoot { get; set; }
+
         public JObject RawMetadata { get; set; }
 
         public string PageMetadata { get; set; }
