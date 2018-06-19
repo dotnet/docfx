@@ -47,7 +47,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 if (document.ContentType == ContentType.Markdown ||
-                    document.ContentType == ContentType.SchemaDocument)
+                    document.ContentType == ContentType.SchemaDocument ||
+                    document.ContentType == ContentType.Redirection)
                 {
                     output.PageOutput = new LegacyManifestOutputItem
                     {
