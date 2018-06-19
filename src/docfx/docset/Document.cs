@@ -157,7 +157,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        /// <returns>A new document, or null if the doument is not master content</returns>
         public static (Document doc, DocfxException error) TryCreate(Docset docset, string path, bool redirection = false)
         {
             Debug.Assert(docset != null);
