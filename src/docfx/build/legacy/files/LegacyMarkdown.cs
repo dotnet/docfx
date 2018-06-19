@@ -29,11 +29,6 @@ namespace Microsoft.Docs.Build
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
         };
 
-        private static readonly string[] s_needAddOpPrefixItems =
-        {
-            "extendBreadcrumb", "feedback_github_repo", "feedback_product_url", "feedback_system",
-        };
-
         public static void Convert(
             Docset docset,
             Context context,
@@ -77,17 +72,12 @@ namespace Microsoft.Docs.Build
 
         private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
         {
-            var depotName = docset.Config.Name;
-            var items = depotName.Split('.');
-            var productName = items[0];
-            var docsetName = items[1];
-
             var rawMetadata = new JObject(pageModel.Metadata);
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath;
             rawMetadata["locale"] = pageModel.Locale;
             rawMetadata["word_count"] = pageModel.WordCount;
-            rawMetadata["depot_name"] = depotName;
+            rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
             rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
@@ -100,8 +90,8 @@ namespace Microsoft.Docs.Build
             rawMetadata["is_dynamic_rendering"] = true;
             rawMetadata["layout"] = docset.Config.GlobalMetadata.TryGetValue("layout", out JToken layout) ? (string)layout : "Conceptual";
 
-            rawMetadata["search.ms_docsetname"] = docsetName;
-            rawMetadata["search.ms_product"] = productName;
+            rawMetadata["search.ms_docsetname"] = docset.Config.Name;
+            rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
             var repoInfo = repo.GetGitRepoInfo(file);
@@ -111,20 +101,6 @@ namespace Microsoft.Docs.Build
                 var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
                 rawMetadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
                 rawMetadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
-            }
-
-            return AddOpPrefix(rawMetadata);
-        }
-
-        private static JObject AddOpPrefix(JObject rawMetadata)
-        {
-            foreach (var item in s_needAddOpPrefixItems)
-            {
-                if (rawMetadata.TryGetValue(item, out JToken value))
-                {
-                    rawMetadata[$"_op_{item}"] = value;
-                    rawMetadata.Remove(item);
-                }
             }
 
             return rawMetadata;
