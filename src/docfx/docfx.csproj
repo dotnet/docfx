@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="../../stylecop.json" />
+    <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.36.0-alpha-0201-g57dd325" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006" PrivateAssets="All" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-e171109-2" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.8.0" />
