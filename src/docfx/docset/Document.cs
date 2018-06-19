@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
-        public (string docId, string versionId) Id => _id.Value;
+        public (string docId, string versionIndependentId) Id => _id.Value;
 
-        private readonly Lazy<(string docId, string versionId)> _id;
+        private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
@@ -322,7 +322,7 @@ namespace Microsoft.Docs.Build
             return path != null && path.IndexOf('\\') == -1 && !path.StartsWith('/');
         }
 
-        private (string docId, string versionId) LoadDocumentId()
+        private (string docId, string versionIndependentId) LoadDocumentId()
         {
             var (depotName, _) = Docset.Config.SplitName();
 

@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 RedirectionUrl = file.Docset.Redirections[file],
                 Locale = file.Docset.Config.Locale,
                 DocumentId = file.Id.docId,
-                VersionId = file.Id.versionId,
+                VersionIndependentId = file.Id.versionIndependentId,
             };
 
             context.WriteJson(model, file.OutputPath);

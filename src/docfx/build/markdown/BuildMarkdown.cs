@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
                 DocumentId = file.Id.docId,
-                VersionId = file.Id.versionId,
+                VersionIndependentId = file.Id.versionIndependentId,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here

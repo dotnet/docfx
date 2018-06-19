@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public string DocumentId { get; set; }
 
-        public string VersionId { get; set; }
+        public string VersionIndependentId { get; set; }
 
         public JObject Metadata { get; set; }
     }
