@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "is_dynamic_rendering", "keywords",
             "layout", "locale", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
             "page_type", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
-            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url",
+            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
         };
 
         public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
