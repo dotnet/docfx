@@ -248,7 +248,7 @@ inputs:
   docfx.yml: |
     redirections:
       docs/a.md: /absolute/path1
-    redirectionsWithoutDocumentId:
+    redirectionsWithoutId:
       docs/a.md: /absolute/path2
 outputs:
   build.log: |
