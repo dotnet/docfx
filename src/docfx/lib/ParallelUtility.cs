@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in source)
             {
-                Enqueue(item, false);
+                Enqueue(item, dynamicAdd: false);
             }
 
             if (Volatile.Read(ref running) == 0)
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             async Task Run(T item)
             {
-                await action(item, i => Enqueue(i, dynamic: true));
+                await action(item, i => Enqueue(i, dynamicAdd: true));
 
                 if (Interlocked.Decrement(ref running) == 0)
                 {
@@ -85,13 +85,13 @@ namespace Microsoft.Docs.Build
                 progress?.Invoke(Interlocked.Increment(ref done), total);
             }
 
-            void Enqueue(T item, bool dynamic)
+            void Enqueue(T item, bool dynamicAdd)
             {
                 if (item == null)
                 {
                     return;
                 }
-                if (predicate != null && !predicate(item, dynamic))
+                if (predicate != null && !predicate(item, dynamicAdd))
                 {
                     return;
                 }

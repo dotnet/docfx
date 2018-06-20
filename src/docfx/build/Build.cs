@@ -22,9 +22,9 @@ namespace Microsoft.Docs.Build
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(reporter, outputPath);
             var docset = new Docset(docsetPath, options);
+            var repo = new GitRepoInfoProvider();
 
             var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
-            var repo = new GitRepoInfoProvider();
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap);
 
@@ -58,15 +58,17 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            bool ShouldBuildFile(Document file, bool isDynamic)
+            bool ShouldBuildFile(Document file, bool dynamicAdd)
             {
                 if (file.ContentType == ContentType.Unknown)
+                {
                     return false;
-
-                // Don't build master content that are not part of initial build scope
-                if (isDynamic && file.IsMasterContent)
+                }
+                if (dynamicAdd && file.IsMasterContent)
+                {
+                    // Don't build master content that are not part of initial build scope
                     return false;
-
+                }
                 return fileListBuilder.TryAdd(file);
             }
         }
