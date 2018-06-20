@@ -44,11 +44,11 @@ namespace Microsoft.Docs.Build
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var fileListBuilder = new DocumentListBuilder();
 
-            await ParallelUtility.ForEach(buildScope, BuildTheFile, ShouldBuildTheFile);
+            await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile);
 
             return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 
-            async Task BuildTheFile(Document file, Action<Document> buildChild)
+            async Task BuildOneFile(Document file, Action<Document> buildChild)
             {
                 var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
 
@@ -58,12 +58,14 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            bool ShouldBuildTheFile(Document file)
+            bool ShouldBuildFile(Document file, bool isDynamic)
             {
-                if (!ShouldBuildFile(file, tocMap, buildScope))
-                {
+                if (file.ContentType == ContentType.Unknown)
                     return false;
-                }
+
+                // Don't build master content that are not part of initial build scope
+                if (isDynamic && file.IsMasterContent)
+                    return false;
 
                 return fileListBuilder.TryAdd(file);
             }
@@ -84,7 +86,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
-                    return BuildTableOfContents.Build(context, file, buildChild);
+                    return BuildTableOfContents.Build(context, file, tocMap, buildChild);
                 case ContentType.Redirection:
                     return BuildRedirectionItem(context, file);
                 default:
@@ -115,36 +117,6 @@ namespace Microsoft.Docs.Build
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(DependencyMap.Empty);
-        }
-
-        /// <summary>
-        /// All children will be built through this gate
-        /// We control all the inclusion logic here:
-        /// https://github.com/dotnet/docfx/issues/2755
-        /// </summary>
-        private static bool ShouldBuildFile(Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
-        {
-            if (childToBuild.ContentType == ContentType.Unknown)
-            {
-                return false;
-            }
-
-            if (childToBuild.ContentType == ContentType.TableOfContents && !tocMap.Contains(childToBuild))
-            {
-                return false;
-            }
-
-            // the `content` scope is fix, all the `content` children out of our glob scope will be treated as warnings
-            if (childToBuild.IsMasterContent)
-            {
-                if (!buildScope.Contains(childToBuild))
-                {
-                    // todo: report warnings
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

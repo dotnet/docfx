@@ -49,6 +49,8 @@ outputs:
           }
       ]
     }
+  build.log: |
+    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be build because it is not included in docfx.yml","docs/toc.md"]
   build.manifest:
 ---
 # TOC can be a json file
@@ -273,6 +275,8 @@ outputs:
           }
        ]
     }
+  build.log: |
+    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
   build.manifest:
 
 ---
@@ -310,6 +314,10 @@ outputs:
           }
        ]
     }
+  build.log: |
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
   build.manifest:
 ---
 # Title with # or End with #

@@ -193,7 +193,7 @@ outputs:
   docs/redirect.json: |
     {"redirectionUrl":"relative/path"}
 ---
-# Show warning if include a redirection file
+# Show warning if inclusion is a redirection file
 inputs:
   docfx.yml: |
     redirections:
@@ -219,18 +219,18 @@ inputs:
 outputs:
   build.manifest:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md(redirection)', 'docs/redirect.md'"]
+    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md <redirection>', 'docs/redirect.md'"]
 ---
 # Show warning if link to a master content outside build scope
 inputs:
   docfx.yml:
-  docs/a.md: '[a](../b.md)'
+  docs/a.md: 'Link to [a](../b.md)'
   b.md:
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to [!include[](redirect.md)]</p>"}
+    {"content":"<p>Link to <a href=\"../b\">a</a></p>"}
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md(redirection)', 'docs/redirect.md'"]
+    ["warning","link-out-of-scope","File 'b.md' referenced by link '../b.md' will not be build because it is not included in docfx.yml","docs/a.md"]
   build.manifest:
 ---
 # Don't show warning if link to a non-master content outside build scope
