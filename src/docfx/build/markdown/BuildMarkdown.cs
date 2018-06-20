@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
-            var (id, versionIndependentId, error) = GetIds();
+            var (error, id, versionIndependentId) = redirectionMap.GetIds(file);
 
             var model = new PageModel
             {
@@ -50,30 +50,6 @@ namespace Microsoft.Docs.Build
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
-
-            (string id, string versionIndependentId, DocfxException error) GetIds()
-            {
-                var documentId = file.Id.docId;
-                var versionId = file.Id.versionIndependentId;
-
-                var idError = (DocfxException)null;
-                if (redirectionMap.RedirectFrom.TryGetValue(file, out var redirectFromDocs))
-                {
-                    if (redirectFromDocs.Count > 1)
-                    {
-                        idError = Errors.RedirectionDocumentIdConflict(redirectFromDocs, file);
-                    }
-
-                    var redirectFromDoc = redirectFromDocs.FirstOrDefault();
-                    if (redirectFromDoc != null)
-                    {
-                        documentId = redirectFromDoc.Id.docId;
-                        versionId = redirectFromDoc.Id.versionIndependentId;
-                    }
-                }
-
-                return (documentId, versionId, idError);
-            }
         }
     }
 }

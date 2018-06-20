@@ -54,6 +54,30 @@ namespace Microsoft.Docs.Build
                 }
                 CombinedRedirectTo.Add(document, redirectTo);
             }
+        }
+
+        public (DocfxException error, string id, string versionIndependentId) GetIds(Document file)
+        {
+            var documentId = file.Id.docId;
+            var versionId = file.Id.versionIndependentId;
+
+            var error = (DocfxException)null;
+            if (RedirectFrom.TryGetValue(file, out var redirectFromDocs))
+            {
+                if (redirectFromDocs.Count > 1)
+                {
+                    error = Errors.RedirectionDocumentIdConflict(redirectFromDocs, file);
+                }
+
+                var redirectFromDoc = redirectFromDocs.FirstOrDefault();
+                if (redirectFromDoc != null)
+                {
+                    documentId = redirectFromDoc.Id.docId;
+                    versionId = redirectFromDoc.Id.versionIndependentId;
+                }
             }
+
+            return (error, documentId, versionId);
+        }
     }
 }
