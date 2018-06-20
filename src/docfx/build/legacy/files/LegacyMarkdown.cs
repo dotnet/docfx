@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, repo, tocMap);
 
-            // rawMetadata = Jint.Run(rawMetadata);
+            rawMetadata = Jint.Run(rawMetadata);
             var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
 
             if (!string.IsNullOrEmpty(content))

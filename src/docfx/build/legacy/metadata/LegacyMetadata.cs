@@ -35,16 +35,14 @@ namespace Microsoft.Docs.Build
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
             rawMetadata["locale"] = pageModel.Locale;
-            rawMetadata["word_count"] = pageModel.WordCount;
+            rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
-            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
+            rawMetadata["rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
-
-            rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
             rawMetadata["is_dynamic_rendering"] = true;
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
@@ -52,6 +50,9 @@ namespace Microsoft.Docs.Build
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
+
+            var path = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
+            rawMetadata["_path"] = path.Remove(path.Length - Path.GetExtension(path).Length);
 
             rawMetadata["document_id"] = pageModel.Id;
             rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
