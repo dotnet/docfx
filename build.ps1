@@ -6,10 +6,9 @@ function exec([string] $cmd) {
     }
 }
 
-# After first v3 release, $version is just `git describe`
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
-$version = "3.0.0-preview1-$commitCount-$commitSha"
+$version = "3.0.0-preview1.$commitCount+$commitSha"
 
 exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"

@@ -5,3 +5,6 @@ artifacts:
 nuget:
   project_feed: true
   disable_publish_on_pr: true
+branches:
+  only:
+  - v3
