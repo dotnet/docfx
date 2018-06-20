@@ -36,3 +36,42 @@ outputs:
   sccm/mdm/index.json: |
     { "content": "", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   build.manifest:
+---
+# generate same document id and version id with 'redirection with document id'
+# A => B, B's ids should be same with A's
+inputs:
+  docfx.yml: |
+    documentId:
+      sourceBasePath: sccm
+      siteBasePath: sccm
+    name: sccm
+    product: Win
+    content: "**/*"
+    redirections:
+      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+  sccm/mdm/understand/hybrid-mobile-device-management.md:
+outputs:
+  sccm/mdm/understand/hybrid-mobile-device-management.json: |
+    { "content": "", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  sccm/mdm/index.json: |
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  build.manifest:
+---
+# generate different document id and version id with 'redirection without document id'
+inputs:
+  docfx.yml: |
+    documentId:
+      sourceBasePath: sccm
+      siteBasePath: sccm
+    name: sccm
+    product: Win
+    content: "**/*"
+    redirectionsWithoutDocumentId:
+      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+  sccm/mdm/understand/hybrid-mobile-device-management.md:
+outputs:
+  sccm/mdm/understand/hybrid-mobile-device-management.json: |
+    { "content": "", "id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "versionIndependentId": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
+  sccm/mdm/index.json: |
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  build.manifest:

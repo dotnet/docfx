@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
+        public static DocfxException ConflictedRedirection(string redirectTo)
+            => new DocfxException(ReportLevel.Error, "conflicted-redirection", $"The {redirectTo} appeares twice in the redirection mappings");
         public static DocfxException InvalidRedirection(string path, ContentType contentType)
             => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {path} shouldn't belong to redirections since it's a {contentType}");
 

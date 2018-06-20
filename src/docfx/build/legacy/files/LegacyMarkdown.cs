@@ -94,6 +94,9 @@ namespace Microsoft.Docs.Build
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
 
+            rawMetadata["document_id"] = pageModel.Id;
+            rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
+
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
             {
