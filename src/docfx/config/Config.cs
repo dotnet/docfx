@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         /// The default value is empty mappings
         /// The redirection doesn't transfer the document id
         /// </summary>
-        public readonly Dictionary<string, string> RedirectionsWithoutDocumentId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> RedirectionsWithoutId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the document id configuration section

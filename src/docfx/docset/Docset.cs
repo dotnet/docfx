@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
         private Dictionary<string, string> CombineRedirections(Config config)
         {
             var redirections = new Dictionary<string, string>(config.Redirections, StringComparer.OrdinalIgnoreCase);
-            foreach (var (redirectFrom, redirectTo) in config.RedirectionsWithoutDocumentId)
+            foreach (var (redirectFrom, redirectTo) in config.RedirectionsWithoutId)
             {
                 if (redirections.ContainsKey(redirectFrom))
                 {

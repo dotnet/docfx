@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             }
 
             // load redirections without document id
-            foreach (var (pathToDocset, redirectTo) in docset.Config.RedirectionsWithoutDocumentId)
+            foreach (var (pathToDocset, redirectTo) in docset.Config.RedirectionsWithoutId)
             {
                 var (document, error) = Document.TryCreate(docset, pathToDocset, true);
                 if (error != null)
