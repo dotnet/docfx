@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(pageModel.RedirectionUrl))
             {
                 rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
+                rawMetadata["redirect_document_id"] = true;
             }
 
             var repoInfo = repo.GetGitRepoInfo(file);
