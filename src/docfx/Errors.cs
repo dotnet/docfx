@@ -10,10 +10,10 @@ namespace Microsoft.Docs.Build
     internal static class Errors
     {
         public static DocfxException ConflictedRedirection(string redirectFrom)
-            => new DocfxException(ReportLevel.Error, "conflicted-redirection", $"The {redirectFrom} appears twice or more in the redirection mappings");
+            => new DocfxException(ReportLevel.Error, "conflicted-redirection", $"The '{redirectFrom}' appears twice or more in the redirection mappings");
 
         public static DocfxException InvalidRedirection(string path, ContentType contentType)
-            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {path} shouldn't belong to redirections since it's a {contentType}");
+            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
         public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException(ReportLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
@@ -53,5 +53,8 @@ namespace Microsoft.Docs.Build
 
         public static DocfxException OutputPathConflict(string path, IEnumerable<Document> files)
             => new DocfxException(ReportLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}");
+
+        public static DocfxException ConflictedRedirectionDocumentId(List<Document> redirectFromDocs, Document redirectTo)
+            => new DocfxException(ReportLevel.Warning, "conflicted-redirected-id", $"Multiple documents {string.Join(", ", redirectFromDocs.OrderBy(f => f.FilePath).Select(f => $"'{f}'"))} redirect to '{redirectTo}' with document id");
     }
 }

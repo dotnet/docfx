@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
-            var (id, versionIndependentId) = GetId();
+            var (id, versionIndependentId, error) = GetIds();
 
             var model = new PageModel
             {
@@ -45,27 +45,34 @@ namespace Microsoft.Docs.Build
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            context.Report(file, markup.Errors);
+            var errors = error == null ? markup.Errors : markup.Errors.Concat(new[] { error });
+            context.Report(file, errors);
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
 
-            (string id, string versionIndependentId) GetId()
+            (string id, string versionIndependentId, DocfxException error) GetIds()
             {
                 var documentId = file.Id.docId;
                 var versionId = file.Id.versionIndependentId;
 
-                if (redirectionMap.RedirectFrom.TryGetValue(file, out var redirectToDocs))
+                var idError = (DocfxException)null;
+                if (redirectionMap.RedirectFrom.TryGetValue(file, out var redirectFromDocs))
                 {
-                    var redirectToDoc = redirectToDocs.FirstOrDefault();
-                    if (redirectToDoc != null)
+                    if (redirectFromDocs.Count > 1)
                     {
-                        documentId = redirectToDoc.Id.docId;
-                        versionId = redirectToDoc.Id.versionIndependentId;
+                        idError = Errors.ConflictedRedirectionDocumentId(redirectFromDocs, file);
+                    }
+
+                    var redirectFromDoc = redirectFromDocs.FirstOrDefault();
+                    if (redirectFromDoc != null)
+                    {
+                        documentId = redirectFromDoc.Id.docId;
+                        versionId = redirectFromDoc.Id.versionIndependentId;
                     }
                 }
 
-                return (documentId, versionId);
+                return (documentId, versionId, idError);
             }
         }
     }
