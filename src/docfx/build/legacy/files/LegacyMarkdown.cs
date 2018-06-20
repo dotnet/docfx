@@ -98,6 +98,9 @@ namespace Microsoft.Docs.Build
 
             var path = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
             rawMetadata["_path"] = path.Remove(path.Length - Path.GetExtension(path).Length);
+            
+            rawMetadata["document_id"] = pageModel.Id;
+            rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
 
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)

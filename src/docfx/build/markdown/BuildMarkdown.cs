@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using HtmlAgilityPack;
@@ -14,6 +15,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
             var dependencyMapBuilder = new DependencyMapBuilder();
@@ -28,6 +30,7 @@ namespace Microsoft.Docs.Build
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
+            var (error, id, versionIndependentId) = redirectionMap.GetIds(file);
 
             var model = new PageModel
             {
@@ -37,12 +40,13 @@ namespace Microsoft.Docs.Build
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
-                Id = file.Id.docId,
-                VersionIndependentId = file.Id.versionIndependentId,
+                Id = id,
+                VersionIndependentId = versionIndependentId,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            context.Report(file, markup.Errors);
+            var errors = error == null ? markup.Errors : markup.Errors.Concat(new[] { error });
+            context.Report(file, errors);
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());

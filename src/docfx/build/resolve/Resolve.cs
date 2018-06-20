@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (relativeTo.Docset.Config.Redirections.TryGetValue(pathToDocset, out var redirectTo))
+            if (relativeTo.Docset.CombinedRedirections.TryGetValue(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
                 return (null, null, redirectTo, null, null);

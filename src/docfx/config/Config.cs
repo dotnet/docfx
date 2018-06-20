@@ -79,8 +79,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the redirection mappings
         /// The default value is empty mappings
+        /// The redirection always transfer the document id
         /// </summary>
         public readonly Dictionary<string, string> Redirections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the redirection mappings without document id
+        /// The default value is empty mappings
+        /// The redirection doesn't transfer the document id
+        /// </summary>
+        public readonly Dictionary<string, string> RedirectionsWithoutId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the document id configuration section
@@ -180,6 +188,7 @@ namespace Microsoft.Docs.Build
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
+            config[ConfigConstants.RedirectionsWithoutDocumentId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutDocumentId]);
             return config;
         }
 

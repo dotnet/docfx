@@ -98,6 +98,7 @@ namespace Microsoft.Docs.Build
             switch (type)
             {
                 case ContentType.Markdown:
+                case ContentType.Redirection: // todo: support reference redirection
                     return "Conceptual";
                 case ContentType.Asset:
                     return "Resource";
@@ -115,6 +116,7 @@ namespace Microsoft.Docs.Build
             switch (type)
             {
                 case ContentType.Markdown:
+                case ContentType.Redirection: // todo: support reference redirection
                     return "Content";
                 case ContentType.Asset:
                     return "Resource";

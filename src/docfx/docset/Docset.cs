@@ -23,30 +23,29 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the redirection mappings
-        /// </summary>
-        public IReadOnlyDictionary<Document, string> Redirections => _redirections.Value;
-
-        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
 
+        /// <summary>
+        /// Gets the combined redirection rules 'source file' -> 'absolute path'
+        /// </summary>
+        public IReadOnlyDictionary<string, string> CombinedRedirections { get; }
+
         private readonly CommandLineOptions _options;
         private Lazy<Dictionary<string, Docset>> _dependentDocsets;
-        private Lazy<Dictionary<Document, string>> _redirections;
 
         public Docset(string docsetPath, CommandLineOptions options)
             : this(docsetPath, Config.Load(docsetPath, options), options)
         {
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
-            _redirections = new Lazy<Dictionary<Document, string>>(() => LoadRedirectionMappings());
         }
 
         public Docset(string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
             Config = config;
+            CombinedRedirections = CombineRedirections(config);
 
             // pass on the command line options to its children
             _options = options;
@@ -67,22 +66,21 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private Dictionary<Document, string> LoadRedirectionMappings()
+        private Dictionary<string, string> CombineRedirections(Config config)
         {
-            var mappings = new Dictionary<Document, string>();
-            foreach (var (pathToDocset, href) in Config.Redirections)
+            var redirections = new Dictionary<string, string>(config.Redirections, StringComparer.OrdinalIgnoreCase);
+            foreach (var (redirectFrom, redirectTo) in config.RedirectionsWithoutId)
             {
-                var (document, error) = Document.TryCreate(this, pathToDocset, true);
-                if (error != null)
+                if (redirections.ContainsKey(redirectFrom))
                 {
-                    // just throw to abort the whole process
-                    throw error;
+                    // just abort the whole process
+                    throw Errors.RedirectionConflict(redirectFrom);
                 }
 
-                mappings.Add(document, href);
+                redirections.Add(redirectFrom, redirectTo);
             }
 
-            return mappings;
+            return redirections;
         }
     }
 }
