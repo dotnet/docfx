@@ -247,9 +247,9 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/toc.md: /absolute/path1
+      docs/a.md: /absolute/path1
     redirectionsWithoutDocumentId:
-      docs/toc.md: /absolute/path2
+      docs/a.md: /absolute/path2
 outputs:
   build.log: |
-    ["error","conflicted-redirection","The docs/toc.md appears twice or more in the redirection mappings"]
+    ["error","conflicted-redirection","The docs/a.md appears twice or more in the redirection mappings"]
