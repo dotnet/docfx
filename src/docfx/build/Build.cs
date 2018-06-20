@@ -26,10 +26,11 @@ namespace Microsoft.Docs.Build
             var glob = GlobFiles(docset);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(glob);
+            var redirectionMap = new RedirectionMap(docset, glob);
             var repo = new GitRepoInfoProvider();
 
-            var buildScope = new HashSet<Document>(glob.Concat(docset.Redirections.Keys));
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, tocMap);
+            var buildScope = new HashSet<Document>(glob.Concat(redirectionMap.CombinedRedirectTo.Keys));
+            var (files, sourceDependencies) = await BuildFiles(context, buildScope, redirectionMap, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -49,6 +50,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
             HashSet<Document> buildScope,
+            RedirectionMap redirectionMap,
             TableOfContentsMap tocMap)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
@@ -60,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, redirectionMap, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -83,6 +85,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
             switch (file.ContentType)
@@ -90,13 +93,13 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, redirectionMap, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 case ContentType.Redirection:
-                    return BuildRedirectionItem(context, file);
+                    return BuildRedirectionItem(context, file, redirectionMap);
                 default:
                     return Task.FromResult(DependencyMap.Empty);
             }
@@ -108,13 +111,13 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(DependencyMap.Empty);
         }
 
-        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file, RedirectionMap redirectionMap)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var model = new PageModel
             {
-                RedirectionUrl = file.Docset.Redirections[file],
+                RedirectionUrl = redirectionMap.CombinedRedirectTo[file],
                 Locale = file.Docset.Config.Locale,
                 Id = file.Id.docId,
                 VersionIndependentId = file.Id.versionIndependentId,
