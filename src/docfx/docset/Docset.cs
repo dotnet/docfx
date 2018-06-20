@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var config);
-                result.Add(name, new Docset(dir, config, _options));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(dir, config, _options));
             }
             return result;
         }
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             var mappings = new Dictionary<Document, string>();
             foreach (var (pathToDocset, href) in Config.Redirections)
             {
-                var (document, error) = Document.TryCreate(this, pathToDocset, true);
+                var (error, document) = Document.TryCreate(this, pathToDocset, true);
                 if (error != null)
                 {
                     // just throw to abort the whole process

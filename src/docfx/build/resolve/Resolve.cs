@@ -49,14 +49,20 @@ namespace Microsoft.Docs.Build
                 return (error, fragment + query, fragment, file);
             }
 
+            // Link to dependent repo, don't build the file, leave href as is
+            if (file.Docset != relativeTo.Docset)
+            {
+                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, null);
+            }
+
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
 
-            // Master content outside build scope, use relative href
+            // Master content outside build scope, don't build the file, use relative href
             if (error == null && file.IsMasterContent && !relativeTo.Docset.BuildScope.Contains(file))
             {
-                error = Errors.LinkOutOfScope(relativeTo, file, href);
+                return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + fragment + query, fragment, null);
             }
 
             return (error, relativeUrl + fragment + query, fragment, file);

@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Document doc, DocfxException error) TryCreate(Docset docset, string path, bool redirection = false)
+        public static (DocfxException error, Document doc) TryCreate(Docset docset, string path, bool redirection = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -174,10 +174,10 @@ namespace Microsoft.Docs.Build
 
             if (redirection && !isMasterContent)
             {
-                return (default, Errors.InvalidRedirection(filePath, type));
+                return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent), default);
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent));
         }
 
         /// <summary>
@@ -197,26 +197,24 @@ namespace Microsoft.Docs.Build
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, path)))
             {
-                return TryCreate(docset, path, false).doc;
+                var (error, file) = TryCreate(docset, path, false);
+                return error == null ? file : null;
             }
 
             // todo: localization fallback logic
-            // todo: redirection files
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, url) in docset.Config.Dependencies)
+            foreach (var (dependencyName, dependentDocset) in docset.DependentDocset)
             {
+                Debug.Assert(dependencyName.EndsWith('/'));
+
                 if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
                 {
                     // the file stored in the dependent docset should start with dependency name
                     continue;
                 }
 
-                var (docsetPath, _, _) = Restore.GetGitRestoreInfo(url);
-                var dependentDocset = docset.DependentDocset[dependencyName];
-                var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
-
-                var dependencyFile = TryCreateFromFile(dependentDocset, relativePathToDependentDocset);
+                var dependencyFile = TryCreateFromFile(dependentDocset, path.Substring(dependencyName.Length));
                 if (dependencyFile != null)
                 {
                     return dependencyFile;

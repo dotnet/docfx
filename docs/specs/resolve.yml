@@ -253,3 +253,27 @@ outputs:
   docs/a.json: |
     {"content":"<p>b</p>"}
   build.manifest:
+---
+# Show warning if link to a file in dependency repo
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies
+  docs/a.md: 'Link to [dep](~/dep/logo.svg)'
+outputs:
+  docs/a.json: |
+    {"content":"<p>Link to <a href=\"%7E/dep/logo.svg\">dep</a></p>"}
+  build.log: |
+    ["warning","link-is-dependency","File 'logo.svg' referenced by link '~/dep/logo.svg' will not be build because it is from a dependency docset","docs/a.md"]
+  build.manifest:
+---
+# Don't show warning if include a file from dependency repo
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies
+  docs/a.md: '[!include[dep](~/dep/dep.md)]'
+outputs:
+  docs/a.json: |
+    {"content":"<p>DEP</p>"}
+  build.manifest:

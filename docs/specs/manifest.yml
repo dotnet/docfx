@@ -106,8 +106,7 @@ outputs:
 ---
 # `build.manifest` contains nested token or codesnippet dependencies
 inputs:
-  docfx.yml: |
-    content: docs/a.md
+  docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)
   docs/b.md: |
     Link to [c](c.md)
@@ -115,8 +114,8 @@ inputs:
   docs/c.md:
 outputs:
   docs/a.json:
-  build.log: |
-    ["warning","link-out-of-scope","File 'docs/c.md' referenced by link 'c.md' will not be build because it is not included in docfx.yml","docs/b.md"]
+  docs/b.json:
+  docs/c.json:
   build.manifest: |
     {
       "dependencies":

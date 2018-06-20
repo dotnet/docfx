@@ -60,16 +60,7 @@ namespace Microsoft.Docs.Build
 
             bool ShouldBuildFile(Document file, bool dynamicAdd)
             {
-                if (file.ContentType == ContentType.Unknown)
-                {
-                    return false;
-                }
-                if (dynamicAdd && file.IsMasterContent)
-                {
-                    // Don't build master content that are not part of initial build scope
-                    return false;
-                }
-                return fileListBuilder.TryAdd(file);
+                return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
             }
         }
 

@@ -33,6 +33,9 @@ namespace Microsoft.Docs.Build
         public static DocfxException LinkOutOfScope(Document relativeTo, Document file, string href)
             => new DocfxException(ReportLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be build because it is not included in docfx.yml", relativeTo.ToString());
 
+        public static DocfxException LinkIsDependency(Document relativeTo, Document file, string href)
+            => new DocfxException(ReportLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be build because it is from a dependency docset", relativeTo.ToString());
+
         public static DocfxException AbsoluteFilePath(Document relativeTo, string path)
             => new DocfxException(ReportLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
 
