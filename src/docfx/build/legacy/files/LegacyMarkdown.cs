@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             var rawMetadata = GenerateLegacyRawMetadata(pageModel, docset, doc, repo);
 
-            // rawMetadata = Jint.Run(rawMetadata);
+            rawMetadata = Jint.Run(rawMetadata);
             var pageMetadata = GenerateLegacyPageMetadata(rawMetadata);
 
             if (!string.IsNullOrEmpty(content))
@@ -70,22 +70,24 @@ namespace Microsoft.Docs.Build
             context.WriteJson(metadate, metadataOutputPath);
         }
 
-        private static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo)
+        private static JObject GenerateLegacyRawMetadata(
+            PageModel pageModel,
+            Docset docset,
+            Document file,
+            GitRepoInfoProvider repo)
         {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath;
             rawMetadata["locale"] = pageModel.Locale;
-            rawMetadata["word_count"] = pageModel.WordCount;
+            rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
             rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
-            rawMetadata["_op_rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
+            rawMetadata["rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
             rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
-
-            rawMetadata["_op_wordCount"] = pageModel.WordCount;
 
             rawMetadata["is_dynamic_rendering"] = true;
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
@@ -93,6 +95,9 @@ namespace Microsoft.Docs.Build
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
             rawMetadata["search.ms_product"] = docset.Config.Product;
             rawMetadata["search.ms_sitename"] = "Docs";
+
+            var path = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
+            rawMetadata["_path"] = path.Remove(path.Length - Path.GetExtension(path).Length);
 
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
