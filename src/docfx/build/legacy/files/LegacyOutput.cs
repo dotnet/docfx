@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
                         LegacyTableOfContents.Convert(docset, context, document, manifestItem.Output);
                         break;
                     case ContentType.Markdown:
+                    case ContentType.Redirection:
                         LegacyMarkdown.Convert(docset, context, document, repo, manifestItem.Output);
                         break;
                     case ContentType.Asset:
