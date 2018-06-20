@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
 
         /// <summary>
-        /// Gets the combined redurection rules
+        /// Gets the combined redirection rules 'source file' -> 'absolute path'
         /// </summary>
         public IReadOnlyDictionary<string, string> CombinedRedirections { get; }
 

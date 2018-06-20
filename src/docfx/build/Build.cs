@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var glob = GlobFiles(docset);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(glob);
-            var redirectionMap = new RedirectionMap(docset, new HashSet<Document>(glob));
+            var redirectionMap = new RedirectionMap(docset, glob);
             var repo = new GitRepoInfoProvider();
 
             var buildScope = new HashSet<Document>(glob.Concat(redirectionMap.CombinedRedirectTo.Keys));

@@ -242,3 +242,14 @@ inputs:
 outputs:
   build.log: |
     ["error","invalid-redirection","The docs/toc.md shouldn't belong to redirections since it's a TableOfContents"]
+---
+# Conflicted redirection file
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/toc.md: /absolute/path1
+    redirectionsWithoutDocumentId:
+      docs/toc.md: /absolute/path2
+outputs:
+  build.log: |
+    ["error","conflicted-redirection","The docs/toc.md appears twice or more in the redirection mappings"]

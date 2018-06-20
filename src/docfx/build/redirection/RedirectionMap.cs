@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         // B <- C with document id
         public Dictionary<Document, List<Document>> RedirectFrom { get; } = new Dictionary<Document, List<Document>>();
 
-        public RedirectionMap(Docset docset, HashSet<Document> files)
+        public RedirectionMap(Docset docset, List<Document> files)
         {
             var filesGroupBySiteUrl = files.ToDictionary(f => f.SiteUrl, f => f, StringComparer.OrdinalIgnoreCase);
 
