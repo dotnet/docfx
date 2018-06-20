@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class Errors
     {
-        public static DocfxException InvalidRedirection(Document document)
-            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {document.FilePath} shouldn't belong to redirections since it's a {document.ContentType}");
+        public static DocfxException InvalidRedirection(string path, ContentType contentType)
+            => new DocfxException(ReportLevel.Error, "invalid-redirection", $"The {path} shouldn't belong to redirections since it's a {contentType}");
 
         public static DocfxException ConfigNotFound(string docsetPath)
             => new DocfxException(ReportLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");

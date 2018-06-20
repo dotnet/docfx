@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -80,11 +79,11 @@ namespace Microsoft.Docs.Build
             var mappings = new Dictionary<Document, string>();
             foreach (var (pathToDocset, href) in Config.Redirections)
             {
-                var document = Document.TryCreateFromRedirection(this, pathToDocset);
-                if (!document.IsMasterContent)
+                var (document, error) = Document.TryCreate(this, pathToDocset, true);
+                if (error != null)
                 {
                     // just throw to abort the whole process
-                    throw Errors.InvalidRedirection(document);
+                    throw error;
                 }
 
                 mappings.Add(document, href);

@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var document = Document.TryCreateFromRedirection(new Docset(Directory.GetCurrentDirectory(), new Config(), null), file);
+            var (document, _) = Document.TryCreate(new Docset(Directory.GetCurrentDirectory(), new Config(), null), file, false);
 
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.TryCreateFromRedirection(new Docset(Directory.GetCurrentDirectory(), new Config(), null), tocFile);
+                var (toc, _) = Document.TryCreate(new Docset(Directory.GetCurrentDirectory(), new Config(), null), tocFile, false);
                 builder.Add(toc, new[] { document }, Array.Empty<Document>());
             }
 
@@ -55,8 +55,8 @@ namespace Microsoft.Docs.Build
             var toc = TableOfContentsParser.LoadMdTocModel(@"
 # [Article1](article1.md)
 ## Container1 ##
-### [Article2](article2.md ""Article 2"") ## 
-### [Article3](article3.md)     
+### [Article2](article2.md ""Article 2"") ##
+### [Article3](article3.md)
 ## Container2
 ### [Article4](article4.md)
 #### [Article5](article5.md)

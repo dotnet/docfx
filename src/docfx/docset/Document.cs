@@ -5,6 +5,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -61,27 +63,29 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsMasterContent { get; }
 
-        private Document(Docset docset, string filePath, bool isRedirection = false)
+        /// <summary>
+        /// Gets the document id and version independent id
+        /// </summary>
+        public (string docId, string versionIndependentId) Id => _id.Value;
+
+        private readonly Lazy<(string docId, string versionIndependentId)> _id;
+
+        /// <summary>
+        /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
+        /// </summary>
+        private Document(Docset docset, string filePath, string sitePath, string siteUrl, string outputPath, ContentType contentType, bool isMasterContent)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
 
             Docset = docset;
+            FilePath = filePath;
+            SitePath = sitePath;
+            SiteUrl = siteUrl;
+            OutputPath = outputPath;
+            ContentType = contentType;
+            IsMasterContent = isMasterContent;
 
-            FilePath = PathUtility.NormalizeFile(filePath);
-            ContentType = GetContentType(filePath);
-
-            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
-
-            SitePath = FilePathToSitePath(routedFilePath, ContentType);
-            SiteUrl = PathToAbsoluteUrl(SitePath, ContentType);
-            OutputPath = SitePath;
-
-            IsMasterContent = ContentType == ContentType.Markdown || ContentType == ContentType.SchemaDocument;
-
-            if (isRedirection)
-            {
-                ContentType = ContentType.Redirection;
-            }
+            _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
             Debug.Assert(IsValidRelativePath(FilePath));
             Debug.Assert(IsValidRelativePath(OutputPath));
@@ -152,15 +156,28 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        /// <returns>A new document, or null if the doument is not master content</returns>
-        public static Document TryCreateFromRedirection(Docset docset, string path)
+        public static (Document doc, DocfxException error) TryCreate(Docset docset, string path, bool redirection = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
-            path = PathUtility.NormalizeFile(path);
-            return new Document(docset, path, isRedirection: true);
+            var filePath = PathUtility.NormalizeFile(path);
+            var type = GetContentType(filePath);
+            var isMasterContent = type == ContentType.Markdown || type == ContentType.SchemaDocument;
+            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
+
+            var sitePath = FilePathToSitePath(routedFilePath, type);
+            var siteUrl = PathToAbsoluteUrl(sitePath, type);
+            var outputPath = sitePath;
+            var contentType = redirection ? ContentType.Redirection : type;
+
+            if (redirection && !isMasterContent)
+            {
+                return (default, Errors.InvalidRedirection(filePath, type));
+            }
+
+            return (new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent), default);
         }
 
         /// <summary>
@@ -180,7 +197,7 @@ namespace Microsoft.Docs.Build
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, path)))
             {
-                return new Document(docset, path);
+                return TryCreate(docset, path, false).doc;
             }
 
             // todo: localization fallback logic
@@ -307,6 +324,35 @@ namespace Microsoft.Docs.Build
         private static bool IsValidRelativePath(string path)
         {
             return path != null && path.IndexOf('\\') == -1 && !path.StartsWith('/');
+        }
+
+        private (string docId, string versionIndependentId) LoadDocumentId()
+        {
+            var depotName = !string.IsNullOrEmpty(Docset.Config.Product)
+                ? $"{Docset.Config.Product}.{Docset.Config.Name}"
+                : Docset.Config.Name;
+
+            var sourcePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SourceBasePath)
+                ? FilePath
+                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
+
+            // site path doesn't contain version info according to the output spec
+            var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
+            var sitePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SiteBasePath)
+                ? PathUtility.NormalizeFile(sitePathWithoutExtension)
+                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
+
+            return (Md5($"{depotName}|{sourcePath.ToLowerInvariant()}"), Md5($"{depotName}|{sitePath.ToLowerInvariant()}"));
+
+            string Md5(string input)
+            {
+#pragma warning disable CA5351 //Not used for encryption
+                using (var md5 = MD5.Create())
+#pragma warning restore CA5351
+                {
+                    return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input))).ToString();
+                }
+            }
         }
     }
 }
