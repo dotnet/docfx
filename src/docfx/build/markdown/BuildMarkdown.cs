@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (redirectFromDocs.Count > 1)
                     {
-                        idError = Errors.ConflictedRedirectionDocumentId(redirectFromDocs, file);
+                        idError = Errors.RedirectionDocumentIdConflict(redirectFromDocs, file);
                     }
 
                     var redirectFromDoc = redirectFromDocs.FirstOrDefault();

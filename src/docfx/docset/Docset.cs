@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                 if (redirections.ContainsKey(redirectFrom))
                 {
                     // just abort the whole process
-                    throw Errors.ConflictedRedirection(redirectFrom);
+                    throw Errors.RedirectionConflict(redirectFrom);
                 }
 
                 redirections.Add(redirectFrom, redirectTo);
