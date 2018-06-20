@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     return BuildTableOfContents.Build(context, file, buildChild);
                 case ContentType.Redirection:
-                    return BuildRedirectionItem(context, file, redirectionMap);
+                    return BuildRedirectionItem(context, file, redirectionMap, tocMap);
                 default:
                     return Task.FromResult(DependencyMap.Empty);
             }
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(DependencyMap.Empty);
         }
 
-        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file, RedirectionMap redirectionMap)
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file, RedirectionMap redirectionMap, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
@@ -121,6 +121,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Config.Locale,
                 Id = file.Id.docId,
                 VersionIndependentId = file.Id.versionIndependentId,
+                TocRelativePath = tocMap.FindTocRelativePath(file),
             };
 
             context.WriteJson(model, file.OutputPath);
