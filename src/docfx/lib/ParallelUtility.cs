@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool, bool> predicate = null, Action<int, int> progress = null)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
             ActionBlock<T> queue = null;
 
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in source)
             {
-                Enqueue(item, dynamicAdd: false);
+                Enqueue(item);
             }
 
             if (Volatile.Read(ref running) == 0)
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             async Task Run(T item)
             {
-                await action(item, i => Enqueue(i, dynamicAdd: true));
+                await action(item, Enqueue);
 
                 if (Interlocked.Decrement(ref running) == 0)
                 {
@@ -85,13 +85,13 @@ namespace Microsoft.Docs.Build
                 progress?.Invoke(Interlocked.Increment(ref done), total);
             }
 
-            void Enqueue(T item, bool dynamicAdd)
+            void Enqueue(T item)
             {
                 if (item == null)
                 {
                     return;
                 }
-                if (predicate != null && !predicate(item, dynamicAdd))
+                if (predicate != null && !predicate(item))
                 {
                     return;
                 }

@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            bool ShouldBuildFile(Document file, bool dynamicAdd)
+            bool ShouldBuildFile(Document file)
             {
                 return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
             }
