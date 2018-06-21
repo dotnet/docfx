@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             // pass on the command line options to its children
             _options = options;
             _context = context;
-            _buildScope = new Lazy<HashSet<Document>>(() => GlobFiles());
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
             _redirections = new Lazy<RedirectionMap>(() =>
             {
@@ -77,11 +77,11 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private HashSet<Document> GlobFiles()
+        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
         {
             return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
                            .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
-                           .Concat(Redirections.Files)
+                           .Concat(redirections)
                            .ToHashSet();
         }
     }
