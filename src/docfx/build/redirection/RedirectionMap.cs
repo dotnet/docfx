@@ -46,18 +46,18 @@ namespace Microsoft.Docs.Build
             AddRedirections(docset.Config.Redirections);
 
             var redirectionsByRedirectionUrl = redirections
-                .GroupBy(pair => pair.RedirectionUrl)
+                .GroupBy(file => file.RedirectionUrl)
                 .ToDictionary(group => group.Key, group => group.First());
 
             errors.AddRange(redirections
-                .GroupBy(pair => pair.RedirectionUrl)
+                .GroupBy(file => file.RedirectionUrl)
                 .Where(group => group.Count() > 1)
                 .Select(group => Errors.RedirectionDocumentIdConflict(group, group.Key)));
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
 
-            var redirectionsBySourcePath = redirections.ToDictionary(pair => pair.FilePath);
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath);
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 
