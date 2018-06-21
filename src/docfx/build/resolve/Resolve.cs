@@ -119,6 +119,9 @@ namespace Microsoft.Docs.Build
             if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
+                //
+                // TODO: In case of file rename, we should warn if the content is not inside build scope.
+                //       But we should not warn or do anything with absolute URLs.
                 return (null, null, redirectTo, null, null);
             }
 
