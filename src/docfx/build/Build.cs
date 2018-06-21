@@ -27,10 +27,10 @@ namespace Microsoft.Docs.Build
 
             var tocMap = await BuildTableOfContents.BuildTocMap(glob);
             var redirectionMap = new RedirectionMap(docset, glob);
-            var repo = new GitRepoInfoProvider();
+            var repo = new GitRepoInfoProvider(docset, glob);
 
             var buildScope = new HashSet<Document>(glob.Concat(redirectionMap.CombinedRedirectTo.Keys));
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, redirectionMap, tocMap);
+            var (files, sourceDependencies) = await BuildFiles(context, buildScope, redirectionMap, tocMap, repo);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -51,7 +51,8 @@ namespace Microsoft.Docs.Build
             Context context,
             HashSet<Document> buildScope,
             RedirectionMap redirectionMap,
-            TableOfContentsMap tocMap)
+            TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var fileListBuilder = new DocumentListBuilder();
@@ -62,7 +63,7 @@ namespace Microsoft.Docs.Build
 
             async Task BuildTheFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, redirectionMap, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, repo, redirectionMap, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -85,6 +86,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo,
             RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
@@ -93,7 +95,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, redirectionMap, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, repo, redirectionMap, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:

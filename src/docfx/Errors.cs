@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
         public static DocfxException CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new DocfxException(ReportLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
+        public static DocfxException InvalidUserProfileCache(string userProfileCache, Exception ex)
+            => new DocfxException(ReportLevel.Warning, "invalid-user-profile-cache", ex.Message, userProfileCache);
+
         public static DocfxException YamlHeaderNotObject(object filePath, bool isArray)
             => new DocfxException(ReportLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
 

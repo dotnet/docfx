@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo,
             RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
@@ -43,6 +44,7 @@ namespace Microsoft.Docs.Build
                 Id = id,
                 VersionIndependentId = versionIndependentId,
             };
+            Git.Process(model, file, repo);
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
             var errors = error == null ? markup.Errors : markup.Errors.Concat(new[] { error });

@@ -23,6 +23,12 @@ namespace Microsoft.Docs.Build
 
         public string VersionIndependentId { get; set; }
 
+        public string Author { get; set; }
+
+        public string UpdatedAt { get; set; }
+
+        public GitContributorInfo GitContributorInformation { get; set; }
+
         public JObject Metadata { get; set; }
     }
 }

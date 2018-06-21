@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
         public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
 
         /// <summary>
+        /// Gets the configuration about contributors.
+        /// </summary>
+        public readonly ContributorConfig Contributor = new ContributorConfig();
+
+        /// <summary>
         /// Gets the map from dependency name to git url
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings

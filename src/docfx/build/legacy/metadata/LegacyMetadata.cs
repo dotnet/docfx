@@ -63,6 +63,14 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_document_id"] = true;
             }
 
+            if (pageModel.GitContributorInformation != null)
+            {
+                rawMetadata["_op_gitContributorInformation"] =
+                    JsonUtility.Deserialize<JObject>(JsonUtility.Serialize(pageModel.GitContributorInformation));
+            }
+            rawMetadata["author"] = pageModel.Author;
+            rawMetadata["updated_at"] = pageModel.UpdatedAt;
+
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
             {
