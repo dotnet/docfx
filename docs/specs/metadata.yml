@@ -98,4 +98,4 @@ outputs:
     { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "573a60b3-e1f9-c2a1-6d92-47f36b55d89b", "versionIndependentId": "b0cc90bf-c553-6b04-e613-57559503e93c" }
   build.manifest:
   build.log: |
-    ["warning","redirected-id-conflict","Multiple documents 'sccm/mdm/index.md', 'sccm/mdm/index2.md' redirect to 'sccm/mdm/understand/hybrid-mobile-device-management.md' with document id","sccm/mdm/understand/hybrid-mobile-device-management.md"]
+    ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]

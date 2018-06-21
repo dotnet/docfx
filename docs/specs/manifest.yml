@@ -79,7 +79,7 @@ outputs:
       ]
     }
 ---
-# `build.manifest` contains File(Link) dependencies
+# `build.manifest` contains link dependencies
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b.md)
@@ -104,10 +104,9 @@ outputs:
       ]
     }
 ---
-# `build.manifest` contains nested(token/codesnippet) dependencies
+# `build.manifest` contains nested token or codesnippet dependencies
 inputs:
-  docfx.yml: |
-    content: docs/a.md
+  docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)
   docs/b.md: |
     Link to [c](c.md)
@@ -115,6 +114,8 @@ inputs:
   docs/c.md:
 outputs:
   docs/a.json:
+  docs/b.json:
+  docs/c.json:
   build.manifest: |
     {
       "dependencies":
@@ -146,7 +147,7 @@ outputs:
       ]
     }
 ---
-# `build.manifest` contains nested(toc) dependencies
+# `build.manifest` contains nested TOC dependencies
 inputs:
   docfx.yml:
   docs/TOC.md: |

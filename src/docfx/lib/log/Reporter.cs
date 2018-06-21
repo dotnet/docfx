@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,75 +8,77 @@ namespace Microsoft.Docs.Build
 {
     internal class RedirectionMap
     {
-        // A -> B
-        // C -> B
-        public Dictionary<Document, string> CombinedRedirectTo { get; } = new Dictionary<Document, string>();
+        private readonly IReadOnlyDictionary<string, Document> _redirectionsBySourcePath;
+        private readonly IReadOnlyDictionary<string, Document> _redirectionsByRedirectionUrl;
 
-        // B <- A with document id
-        // B <- C with document id
-        public Dictionary<Document, List<Document>> RedirectFrom { get; } = new Dictionary<Document, List<Document>>();
+        public IEnumerable<Document> Files => _redirectionsBySourcePath.Values;
 
-        public RedirectionMap(Docset docset, List<Document> files)
+        private RedirectionMap(
+            IReadOnlyDictionary<string, Document> redirectionsBySourcePath,
+            IReadOnlyDictionary<string, Document> redirectionsByRedirectionUrl)
         {
-            var filesGroupBySiteUrl = files.ToDictionary(f => f.SiteUrl, f => f, StringComparer.OrdinalIgnoreCase);
-
-            // load redirections with document id
-            foreach (var (pathToDocset, redirectTo) in docset.Config.Redirections)
-            {
-                var (document, error) = Document.TryCreate(docset, pathToDocset, true);
-                if (error != null)
-                {
-                    // just throw to abort the whole process
-                    throw error;
-                }
-                CombinedRedirectTo.Add(document, redirectTo);
-
-                if (filesGroupBySiteUrl.TryGetValue(redirectTo, out var redirectToDoc))
-                {
-                    if (!RedirectFrom.TryGetValue(redirectToDoc, out var redirectFromDocs))
-                    {
-                        redirectFromDocs = RedirectFrom[redirectToDoc] = new List<Document>();
-                    }
-
-                    redirectFromDocs.Add(document);
-                }
-            }
-
-            // load redirections without document id
-            foreach (var (pathToDocset, redirectTo) in docset.Config.RedirectionsWithoutId)
-            {
-                var (document, error) = Document.TryCreate(docset, pathToDocset, true);
-                if (error != null)
-                {
-                    // just throw to abort the whole process
-                    throw error;
-                }
-                CombinedRedirectTo.Add(document, redirectTo);
-            }
+            _redirectionsBySourcePath = redirectionsBySourcePath;
+            _redirectionsByRedirectionUrl = redirectionsByRedirectionUrl;
         }
 
-        public (DocfxException error, string id, string versionIndependentId) GetIds(Document file)
+        public bool TryGetRedirectionUrl(string sourcePath, out string redirectionUrl)
         {
-            var documentId = file.Id.docId;
-            var versionId = file.Id.versionIndependentId;
-
-            var error = (DocfxException)null;
-            if (RedirectFrom.TryGetValue(file, out var redirectFromDocs))
+            if (_redirectionsBySourcePath.TryGetValue(sourcePath, out var file))
             {
-                if (redirectFromDocs.Count > 1)
-                {
-                    error = Errors.RedirectionDocumentIdConflict(redirectFromDocs, file);
-                }
+                redirectionUrl = file.RedirectionUrl;
+                return true;
+            }
+            redirectionUrl = null;
+            return false;
+        }
 
-                var redirectFromDoc = redirectFromDocs.FirstOrDefault();
-                if (redirectFromDoc != null)
+        public (string id, string versionIndependentId) GetDocumentId(Document file)
+        {
+            return _redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var source) ? source.Id : file.Id;
+        }
+
+        public static (List<DocfxException> errors, RedirectionMap map) Create(Docset docset)
+        {
+            var errors = new List<DocfxException>();
+            var redirections = new HashSet<Document>();
+
+            // load redirections with document id
+            AddRedirections(docset.Config.Redirections);
+
+            var redirectionsByRedirectionUrl = redirections
+                .GroupBy(file => file.RedirectionUrl)
+                .ToDictionary(group => group.Key, group => group.First());
+
+            errors.AddRange(redirections
+                .GroupBy(file => file.RedirectionUrl)
+                .Where(group => group.Count() > 1)
+                .Select(group => Errors.RedirectionDocumentIdConflict(group, group.Key)));
+
+            // load redirections without document id
+            AddRedirections(docset.Config.RedirectionsWithoutId);
+
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath);
+
+            return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
+
+            void AddRedirections(Dictionary<string, string> items)
+            {
+                foreach (var (pathToDocset, redirectTo) in items)
                 {
-                    documentId = redirectFromDoc.Id.docId;
-                    versionId = redirectFromDoc.Id.versionIndependentId;
+                    var (error, document) = Document.TryCreate(docset, pathToDocset, redirectTo);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    else
+                    {
+                        if (!redirections.Add(document))
+                        {
+                            errors.Add(Errors.RedirectionConflict(pathToDocset));
+                        }
+                    }
                 }
             }
-
-            return (error, documentId, versionId);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class Config
     {
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
+        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
 
         /// <summary>
         /// Gets the default product name

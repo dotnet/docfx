@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -28,27 +29,37 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
 
         /// <summary>
-        /// Gets the combined redirection rules 'source file' -> 'absolute path'
+        /// Gets the redirection map.
         /// </summary>
-        public IReadOnlyDictionary<string, string> CombinedRedirections { get; }
+        public RedirectionMap Redirections => _redirections.Value;
+
+        /// <summary>
+        /// Gets the initial build scope.
+        /// </summary>
+        public HashSet<Document> BuildScope => _buildScope.Value;
 
         private readonly CommandLineOptions _options;
-        private Lazy<Dictionary<string, Docset>> _dependentDocsets;
+        private readonly Context _context;
+        private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
+        private readonly Lazy<HashSet<Document>> _buildScope;
+        private readonly Lazy<RedirectionMap> _redirections;
 
-        public Docset(string docsetPath, CommandLineOptions options)
-            : this(docsetPath, Config.Load(docsetPath, options), options)
-        {
-            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
-        }
-
-        public Docset(string docsetPath, Config config, CommandLineOptions options)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
             Config = config;
-            CombinedRedirections = CombineRedirections(config);
 
             // pass on the command line options to its children
             _options = options;
+            _context = context;
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
+            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
+            _redirections = new Lazy<RedirectionMap>(() =>
+            {
+                var (errors, map) = RedirectionMap.Create(this);
+                context.Report("docfx.yml", errors);
+                return map;
+            });
         }
 
         private Dictionary<string, Docset> LoadDependencies()
@@ -61,26 +72,17 @@ namespace Microsoft.Docs.Build
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var config);
-                result.Add(name, new Docset(dir, config, _options));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, config, _options));
             }
             return result;
         }
 
-        private Dictionary<string, string> CombineRedirections(Config config)
+        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
         {
-            var redirections = new Dictionary<string, string>(config.Redirections, StringComparer.OrdinalIgnoreCase);
-            foreach (var (redirectFrom, redirectTo) in config.RedirectionsWithoutId)
-            {
-                if (redirections.ContainsKey(redirectFrom))
-                {
-                    // just abort the whole process
-                    throw Errors.RedirectionConflict(redirectFrom);
-                }
-
-                redirections.Add(redirectFrom, redirectTo);
-            }
-
-            return redirections;
+            return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
+                           .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
+                           .Concat(redirections)
+                           .ToHashSet();
         }
     }
 }

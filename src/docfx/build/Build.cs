@@ -21,16 +21,12 @@ namespace Microsoft.Docs.Build
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(reporter, outputPath);
-            var docset = new Docset(docsetPath, options);
-
-            var glob = GlobFiles(docset);
-
-            var tocMap = await BuildTableOfContents.BuildTocMap(glob);
-            var redirectionMap = new RedirectionMap(docset, glob);
+            var docset = new Docset(context, docsetPath, config, options);
             var repo = new GitRepoInfoProvider();
 
-            var buildScope = new HashSet<Document>(glob.Concat(redirectionMap.CombinedRedirectTo.Keys));
-            var (files, sourceDependencies) = await BuildFiles(context, buildScope, redirectionMap, tocMap);
+            var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
+
+            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -40,29 +36,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static List<Document> GlobFiles(Docset docset)
-        {
-            return FileGlob.GetFiles(docset.DocsetPath, docset.Config.Content.Include, docset.Config.Content.Exclude)
-                           .Select(file => Document.TryCreateFromFile(docset, Path.GetRelativePath(docset.DocsetPath, file)))
-                           .ToList();
-        }
-
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
             HashSet<Document> buildScope,
-            RedirectionMap redirectionMap,
             TableOfContentsMap tocMap)
         {
             var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
             var fileListBuilder = new DocumentListBuilder();
 
-            await ParallelUtility.ForEach(buildScope, BuildTheFile, ShouldBuildTheFile);
+            await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile);
 
             return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 
-            async Task BuildTheFile(Document file, Action<Document> buildChild)
+            async Task BuildOneFile(Document file, Action<Document> buildChild)
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, redirectionMap, buildChild);
+                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
 
                 foreach (var (souce, dependencies) in dependencyMap)
                 {
@@ -70,14 +58,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            bool ShouldBuildTheFile(Document file)
+            bool ShouldBuildFile(Document file)
             {
-                if (!ShouldBuildFile(file, tocMap, buildScope))
-                {
-                    return false;
-                }
-
-                return fileListBuilder.TryAdd(file);
+                return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
             }
         }
 
@@ -85,7 +68,6 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
             switch (file.ContentType)
@@ -93,13 +75,13 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, redirectionMap, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
-                    return BuildTableOfContents.Build(context, file, buildChild);
+                    return BuildTableOfContents.Build(context, file, tocMap, buildChild);
                 case ContentType.Redirection:
-                    return BuildRedirectionItem(context, file, redirectionMap);
+                    return BuildRedirectionItem(context, file);
                 default:
                     return Task.FromResult(DependencyMap.Empty);
             }
@@ -107,60 +89,27 @@ namespace Microsoft.Docs.Build
 
         private static Task<DependencyMap> BuildAsset(Context context, Document file)
         {
+            Debug.Assert(file.ContentType == ContentType.Asset);
+
             context.Copy(file, file.FilePath);
             return Task.FromResult(DependencyMap.Empty);
         }
 
-        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file, RedirectionMap redirectionMap)
+        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var model = new PageModel
             {
-                RedirectionUrl = redirectionMap.CombinedRedirectTo[file],
+                RedirectionUrl = file.RedirectionUrl,
                 Locale = file.Docset.Config.Locale,
-                Id = file.Id.docId,
+                Id = file.Id.id,
                 VersionIndependentId = file.Id.versionIndependentId,
             };
 
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(DependencyMap.Empty);
-        }
-
-        /// <summary>
-        /// All children will be built through this gate
-        /// We control all the inclusion logic here:
-        /// https://github.com/dotnet/docfx/issues/2755
-        /// </summary>
-        private static bool ShouldBuildFile(Document childToBuild, TableOfContentsMap tocMap, HashSet<Document> buildScope)
-        {
-            if (childToBuild.OutputPath == null)
-            {
-                return false;
-            }
-
-            if (childToBuild.ContentType == ContentType.Unknown)
-            {
-                return false;
-            }
-
-            if (childToBuild.ContentType == ContentType.TableOfContents && !tocMap.Contains(childToBuild))
-            {
-                return false;
-            }
-
-            // the `content` scope is fix, all the `content` children out of our glob scope will be treated as warnings
-            if (childToBuild.ContentType == ContentType.Markdown || childToBuild.ContentType == ContentType.SchemaDocument)
-            {
-                if (!buildScope.Contains(childToBuild))
-                {
-                    // todo: report warnings
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
