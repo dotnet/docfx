@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(reporter, outputPath);
-            var docset = new Docset(docsetPath, options);
+            var docset = new Docset(context, docsetPath, config, options);
             var repo = new GitRepoInfoProvider();
 
             var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
@@ -101,9 +101,9 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
-                RedirectionUrl = file.Docset.Redirections[file],
+                RedirectionUrl = file.RedirectionUrl,
                 Locale = file.Docset.Config.Locale,
-                Id = file.Id.docId,
+                Id = file.Id.id,
                 VersionIndependentId = file.Id.versionIndependentId,
             };
 

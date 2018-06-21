@@ -23,13 +23,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Report(Document file, IEnumerable<DocfxException> exceptions)
         {
-            var path = file.ToString();
+            Report(file.ToString(), exceptions);
+        }
 
+        /// <summary>
+        /// Reports errors and warnings defined in <see cref="Errors"/>.
+        /// </summary>
+        public void Report(string file, IEnumerable<DocfxException> exceptions)
+        {
             foreach (var error in exceptions)
             {
-                Report(path == error.File || !string.IsNullOrEmpty(error.File)
+                Report(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new DocfxException(error.Level, error.Code, error.Message, path, error.Line, error.Column, error.InnerException));
+                    : new DocfxException(error.Level, error.Code, error.Message, file, error.Line, error.Column, error.InnerException));
             }
         }
 

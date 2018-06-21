@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
+            var (id, versionIndependentId) = file.Docset.Redirections.GetDocumentId(file);
 
             var model = new PageModel
             {
@@ -39,8 +40,8 @@ namespace Microsoft.Docs.Build
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
-                Id = file.Id.docId,
-                VersionIndependentId = file.Id.versionIndependentId,
+                Id = id,
+                VersionIndependentId = versionIndependentId,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here

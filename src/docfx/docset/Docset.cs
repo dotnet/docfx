@@ -24,14 +24,14 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the redirection mappings
-        /// </summary>
-        public IReadOnlyDictionary<Document, string> Redirections => _redirections.Value;
-
-        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
+
+        /// <summary>
+        /// Gets the redirection map.
+        /// </summary>
+        public RedirectionMap Redirections => _redirections.Value;
 
         /// <summary>
         /// Gets the initial build scope.
@@ -39,25 +39,27 @@ namespace Microsoft.Docs.Build
         public HashSet<Document> BuildScope => _buildScope.Value;
 
         private readonly CommandLineOptions _options;
+        private readonly Context _context;
         private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
-        private readonly Lazy<Dictionary<Document, string>> _redirections;
         private readonly Lazy<HashSet<Document>> _buildScope;
+        private readonly Lazy<RedirectionMap> _redirections;
 
-        public Docset(string docsetPath, CommandLineOptions options)
-            : this(docsetPath, Config.Load(docsetPath, options), options)
-        {
-            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
-            _redirections = new Lazy<Dictionary<Document, string>>(() => LoadRedirectionMappings());
-            _buildScope = new Lazy<HashSet<Document>>(() => GlobFiles());
-        }
-
-        public Docset(string docsetPath, Config config, CommandLineOptions options)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
             Config = config;
 
             // pass on the command line options to its children
             _options = options;
+            _context = context;
+            _buildScope = new Lazy<HashSet<Document>>(() => GlobFiles());
+            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
+            _redirections = new Lazy<RedirectionMap>(() =>
+            {
+                var (errors, map) = RedirectionMap.Create(this);
+                context.Report("docfx.yml", errors);
+                return map;
+            });
         }
 
         private Dictionary<string, Docset> LoadDependencies()
@@ -70,34 +72,16 @@ namespace Microsoft.Docs.Build
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var config);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(dir, config, _options));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, config, _options));
             }
             return result;
-        }
-
-        private Dictionary<Document, string> LoadRedirectionMappings()
-        {
-            var mappings = new Dictionary<Document, string>();
-            foreach (var (pathToDocset, href) in Config.Redirections)
-            {
-                var (error, document) = Document.TryCreate(this, pathToDocset, true);
-                if (error != null)
-                {
-                    // just throw to abort the whole process
-                    throw error;
-                }
-
-                mappings.Add(document, href);
-            }
-
-            return mappings;
         }
 
         private HashSet<Document> GlobFiles()
         {
             return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
                            .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
-                           .Concat(Redirections.Keys)
+                           .Concat(Redirections.Files)
                            .ToHashSet();
         }
     }
