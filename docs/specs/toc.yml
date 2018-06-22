@@ -254,72 +254,6 @@ outputs:
     }
   build.manifest:
 ---
-# Topic href for normal reference
-# topic href has higher priority
-inputs:
-  docfx.yml: |
-    content: docs/f1/toc.yml
-  docs/f1/n1.md:
-  docs/f1/n2.md:
-  docs/f1/toc.yml: |
-    - name: normal file reference
-      href: ~/docs/f1/n1.md
-      topicHref: ~/docs/f1/n2.md
-outputs:
-  docs/f1/toc.json: |
-    {  
-       "items":[  
-          {  
-             "toc_title":"normal file reference",
-             "href":"n2",
-          }
-       ]
-    }
-  build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
-  build.manifest:
-
----
-# Topic href for toc reference
-# replace href finally
-inputs:
-  docfx.yml: |
-    content: docs/f1/toc.yml
-  docs/f1/toc.yml: |
-    - name: Toc Reference 1
-      href: f11/toc.md
-      topicHref: f11/n1.md
-    - name: Toc Reference 2
-      href: f11/
-  docs/f1/f11/toc.md: |
-    # [Index Reference](n1.md)
-  docs/f1/f11/n1.md:
-outputs:
-  docs/f1/toc.json: |
-    {  
-       "items":[  
-          {  
-             "children":[  
-                {  
-                   "toc_title":"Index Reference",
-                   "href":"f11/n1"
-                }
-             ],
-             "toc_title":"Toc Reference 1",
-             "href":"f11/n1"
-          },
-          {  
-             "href":"f11/n1",
-             "toc_title":"Toc Reference 2"
-          }
-       ]
-    }
-  build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
-  build.manifest:
----
 # Title with # or End with #
 inputs:
   docfx.yml:
@@ -355,7 +289,7 @@ outputs:
                       }
                   ],
                   "toc_title":"Topic1.2 Language Java",
-                  "href":""
+                  "href": ""
                 }
             ],
             "toc_title":"Topic1",
@@ -513,7 +447,7 @@ outputs:
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
 ---
-# Topice href can replace href
+# Topic href can replace href
 inputs:
   docfx.yml:
   docs/toc.yml: |
@@ -533,7 +467,237 @@ outputs:
     }
   build.manifest:
 ---
-# Topice href cann't reference a local toc file or folder
+# Combine toc href, topic href => href + children
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: href + children
+      topicHref: f1/a.md
+      tocHref: f1/toc.md
+  docs/f1/a.md:
+  docs/f1/toc.md: |
+    # [Reference a](a.md)
+outputs:
+  docs/f1/a.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"href + children",
+             "href":"f1/a",
+             "children": [
+                {
+                  "toc_title": "Reference a",
+                  "href": "f1/a"
+                }
+             ]
+          }
+       ]
+    }
+  build.manifest:
+---
+# Combine toc href, href => href + children
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: href + children
+      href: f1/a.md
+      tocHref: f1/toc.md
+  docs/f1/a.md:
+  docs/f1/toc.md: |
+    # [Reference a](a.md)
+outputs:
+  docs/f1/a.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"href + children",
+             "href":"f1/a",
+             "children": [
+                {
+                  "toc_title": "Reference a",
+                  "href": "f1/a"
+                }
+             ]
+          }
+       ]
+    }
+  build.manifest:
+---
+# Combine toc href, href(toc) => toc href > href + children
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: toc href > href + children
+      href: f1/toc.md
+      tocHref: f2/toc.md
+  docs/f1/toc.md:
+  docs/f2/a.md:
+  docs/f2/toc.md: |
+    # [Reference a](a.md)
+outputs:
+  docs/f2/a.json:
+  docs/f1/toc.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"toc href > href + children",
+             "children": [
+                {
+                  "toc_title": "Reference a",
+                  "href": "f2/a"
+                }
+             ]
+          }
+       ]
+    }
+  build.manifest:
+---
+# Combine topic href and href => topic href has higher priority
+inputs:
+  docfx.yml: |
+    content: docs/f1/toc.yml
+  docs/f1/n1.md:
+  docs/f1/n2.md:
+  docs/f1/toc.yml: |
+    - name: topic href has higher priority
+      href: ~/docs/f1/n1.md
+      topicHref: ~/docs/f1/n2.md
+outputs:
+  docs/f1/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"topic href has higher priority",
+             "href":"n2",
+          }
+       ]
+    }
+  build.log: |
+    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
+  build.manifest:
+---
+# Combine topic href and href(toc) => href + children
+# replace href finally
+inputs:
+  docfx.yml: |
+    content: docs/f1/toc.yml
+  docs/f1/toc.yml: |
+    - name: Toc Reference 1
+      href: f11/toc.md
+      topicHref: f11/n1.md
+    - name: Toc Reference 2
+      href: f11/
+  docs/f1/f11/toc.md: |
+    # [Index Reference](n1.md)
+  docs/f1/f11/n1.md:
+outputs:
+  docs/f1/toc.json: |
+    {  
+       "items":[  
+          {  
+             "children":[  
+                {  
+                   "toc_title":"Index Reference",
+                   "href":"f11/n1"
+                }
+             ],
+             "toc_title":"Toc Reference 1",
+             "href":"f11/n1"
+          },
+          {  
+             "href":"f11/n1",
+             "toc_title":"Toc Reference 2"
+          }
+       ]
+    }
+  build.log: |
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
+  build.manifest:
+---
+# Combine topic href and toc href(folder) -> topic href > toc href(folder)
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: topic href has higher priority
+      topicHref: f1/a.md
+      tocHref: f1/
+  docs/f1/a.md:
+  docs/f1/toc.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/toc.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"topic href has higher priority",
+             "href":"f1/a"
+          }
+       ]
+    }
+  build.manifest:
+---
+# Combine toc href(folder), href => href > toc href(folder)
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: href has higher priority than toc href
+      href: f1/a.md
+      tocHref: f1/
+  docs/f1/a.md:
+  docs/f1/b.md:
+  docs/f1/toc.md: |
+    # [Reference b](b.md)
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  docs/f1/toc.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"href has higher priority than toc href",
+             "href":"f1/a"
+          }
+       ]
+    }
+  build.manifest:
+---
+# Combine toc href(folder), topic href and href => href
+# topic href has higher priority than href
+# topic href has higher priority than toc href
+# href has higher priority than toc href(folder)
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: topic href has highest priority
+      topicHref: f1/a.md
+      tocHref: f1/
+      href: f1/b.md
+  docs/f1/a.md:
+  docs/f1/b.md:
+  docs/f1/toc.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  docs/f1/toc.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"topic href has highest priority",
+             "href":"f1/a"
+          }
+       ]
+    }
+  build.manifest:
+---
+# Topic href cann't reference a local toc file or folder
 inputs:
   docfx.yml:
   docs/toc.yml: |
@@ -551,12 +715,10 @@ outputs:
     {  
        "items":[  
           {  
-             "toc_title":"Invalid Topic Reference1",
-             "href":"f1/"
+             "toc_title":"Invalid Topic Reference1"
           },
           {  
-             "toc_title":"Invalid Topic Reference2",
-             "href":"f1/toc.md"
+             "toc_title":"Invalid Topic Reference2"
           },
           {  
              "toc_title":"Invalid Topic Reference3",
@@ -565,3 +727,39 @@ outputs:
        ]
     }
   build.manifest:
+  build.log: |
+    ["error","invalid-topc-href","The topic href f1/ can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topc-href","The topic href f1/toc.md can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topc-href","The topic href f1/toc.md can only reference to a local file or absolute path","docs/toc.yml"]
+---
+# Toc href cann't reference a local file
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: Invalid Toc Reference1
+      tocHref: f1/a.md
+    - name: Invalid Toc Reference2
+      tocHref: f1/a.md
+      href: /abc/def
+  docs/f1/toc.md:
+  docs/f1/a.md:
+outputs:
+  docs/f1/toc.json:
+  docs/f1/a.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"Invalid Toc Reference1"
+          },
+          {  
+             "toc_title":"Invalid Toc Reference2",
+             "href":"/abc/def"
+          }
+       ]
+    }
+  build.manifest:
+  build.log: |
+    ["error","invalid-toc-href","The toc href f1/a.md can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
+    ["error","invalid-toc-href","The toc href f1/a.md can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
+

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static (List<TableOfContentsItem> model, List<DocfxException> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent = null, ResolveHref resolveHref = null)
+        public static (List<TableOfContentsItem> model, List<DocfxException> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var (inputModel, errors) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref);
             return (inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), errors);
@@ -100,7 +101,7 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is not a valid TOC file.");
         }
 
-        private static (List<TableOfContentsInputItem> model, List<DocfxException> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null, List<Document> parents = null)
+        private static (List<TableOfContentsInputItem> model, List<DocfxException> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents = null)
         {
             parents = parents ?? new List<Document>();
 
@@ -125,7 +126,7 @@ namespace Microsoft.Docs.Build
         }
 
         // tod: uid support
-        private static List<DocfxException> ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath = default, ResolveContent resolveContent = null, ResolveHref resolveHref = null)
+        private static List<DocfxException> ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var errors = new List<DocfxException>();
             foreach (var tocModelItem in tocModelItems)
@@ -135,66 +136,120 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(ResolveTocModelItems(tocModelItem.Items, parents, filePath, rootPath, resolveContent, resolveHref));
                 }
 
-                // process topic href
-                // topic href should always reference to local file or absolute path
-                var topicHref = tocModelItem.TopicHref;
-                if (!string.IsNullOrEmpty(topicHref))
-                {
-                    var topicHrefType = GetHrefType(topicHref);
-                    if (IsIncludeHref(topicHrefType))
-                    {
-                        errors.Add(Errors.InvalidTopicHref(topicHref));
-                    }
-                    else
-                    {
-                        topicHref = resolveHref?.Invoke(filePath, topicHref, rootPath) ?? topicHref;
-                    }
-                }
+                var tocHref = GetTocHref(tocModelItem);
+                var topicHref = GetTopicHref(tocModelItem);
 
-                // topic href and toc href has higher priority than href
-                var href = tocModelItem.Href;
-                if (!string.IsNullOrEmpty(href))
-                {
-                    var hrefType = GetHrefType(href);
-                    var (hrefPath, fragment, query) = HrefUtility.SplitHref(href);
-                    if (IsIncludeHref(hrefType) && (!string.IsNullOrEmpty(fragment) || !string.IsNullOrEmpty(query)))
-                    {
-                        // '#' and '?' is not allowed when referencing toc file
-                        href = hrefPath;
-                    }
+                var (resolvedTocHref, resolvedTopicHrefFromTocHref, subChildren) = ProcessTocHref(tocHref);
+                var resolvedTopicHref = ProcessTopicHref(topicHref);
 
-                    if (IsIncludeHref(hrefType))
-                    {
-                        var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(hrefType, tocModelItem.Href, filePath, resolveContent);
-                        if (referencedTocContent != null)
-                        {
-                            var (nestedTocItems, subErrors) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
-                            if (hrefType == TocHrefType.RelativeFolder)
-                            {
-                                tocModelItem.Href = (string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref) ?? href;
-                            }
-                            else
-                            {
-                                tocModelItem.Items = nestedTocItems;
-                                tocModelItem.Href = topicHref;
-                            }
-                            errors.AddRange(subErrors);
-                        }
-                    }
-                    else
-                    {
-                        tocModelItem.Href = string.IsNullOrEmpty(topicHref)
-                            ? resolveHref?.Invoke(filePath, href, rootPath) ?? tocModelItem.Href
-                            : topicHref;
-                    }
-                }
-                else
+                // set resolved href back
+                tocModelItem.Href = resolvedTopicHref ?? resolvedTopicHrefFromTocHref;
+                tocModelItem.TocHref = resolvedTocHref;
+                if (subChildren != null)
                 {
-                    tocModelItem.Href = topicHref ?? tocModelItem.Href;
+                    tocModelItem.Items = subChildren;
                 }
             }
 
             return errors;
+
+            string GetTocHref(TableOfContentsInputItem tocInputModel)
+            {
+                if (!string.IsNullOrEmpty(tocInputModel.TocHref))
+                {
+                    var tocHrefType = GetHrefType(tocInputModel.TocHref);
+                    if (IsIncludeHref(tocHrefType) || tocHrefType == TocHrefType.AbsolutePath)
+                    {
+                        return tocInputModel.TocHref;
+                    }
+                    else
+                    {
+                        errors.Add(Errors.InvalidTocHref(tocInputModel.TocHref));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(tocInputModel.Href) && IsIncludeHref(GetHrefType(tocInputModel.Href)))
+                {
+                    return tocInputModel.Href;
+                }
+
+                return default;
+            }
+
+            string GetTopicHref(TableOfContentsInputItem tocInputModel)
+            {
+                if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
+                {
+                    var topicHrefType = GetHrefType(tocInputModel.TopicHref);
+                    if (IsIncludeHref(topicHrefType))
+                    {
+                        errors.Add(Errors.InvalidTopicHref(tocInputModel.TopicHref));
+                    }
+                    else
+                    {
+                        return tocInputModel.TopicHref;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(tocInputModel.Href) || !IsIncludeHref(GetHrefType(tocInputModel.Href)))
+                {
+                    return tocInputModel.Href;
+                }
+
+                return default;
+            }
+
+            (string resolvedTocHref, string resolvedTopicHref, List<TableOfContentsInputItem> subChildren) ProcessTocHref(string tocHref)
+            {
+                if (string.IsNullOrEmpty(tocHref))
+                {
+                    return (tocHref, default, default);
+                }
+
+                var tocHrefType = GetHrefType(tocHref);
+                Debug.Assert(tocHrefType == TocHrefType.AbsolutePath || IsIncludeHref(tocHrefType));
+
+                if (tocHrefType == TocHrefType.AbsolutePath)
+                {
+                    return (tocHref, default, default);
+                }
+
+                var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
+                if (!string.IsNullOrEmpty(fragment) || !string.IsNullOrEmpty(query))
+                {
+                    // '#' and '?' is not allowed when referencing toc file
+                    tocHref = hrefPath;
+                }
+                var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
+                if (referencedTocContent != null)
+                {
+                    var (nestedTocItems, subErrors) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                    errors.AddRange(subErrors);
+                    if (tocHrefType == TocHrefType.RelativeFolder)
+                    {
+                        return (default, GetFirstHref(nestedTocItems), default);
+                    }
+                    else
+                    {
+                        return (default, default, nestedTocItems);
+                    }
+                }
+
+                return default;
+            }
+
+            string ProcessTopicHref(string topicHref)
+            {
+                if (string.IsNullOrEmpty(topicHref))
+                {
+                    return topicHref;
+                }
+
+                var topicHrefType = GetHrefType(topicHref);
+                Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
+
+                return resolveHref.Invoke(filePath, topicHref, rootPath);
+            }
         }
 
         private static string GetFirstHref(List<TableOfContentsInputItem> nestedTocItems)
