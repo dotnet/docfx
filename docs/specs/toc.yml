@@ -278,7 +278,6 @@ outputs:
   build.log: |
     ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
   build.manifest:
-
 ---
 # Topic href for toc reference
 # replace href finally
@@ -318,6 +317,22 @@ outputs:
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/toc.yml"]
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/toc.md"]
+  build.manifest:
+---
+# Probe TOC in JSON format
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    [{ "name": "a", "href": "a/" }]
+  docs/a/toc.json: |
+    [{ "name": "b", "href": "b.md" }]
+  docs/a/b.md:
+outputs:
+  docs/toc.json: |
+    { "items": [{ "toc_title": "a", "href": "a/b" }] }
+  docs/a/toc.json: |
+    { "items": [{ "toc_title": "b", "href": "b" }] }
+  docs/a/b.json:
   build.manifest:
 ---
 # Title with # or End with #
