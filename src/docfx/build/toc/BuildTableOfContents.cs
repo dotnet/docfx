@@ -63,17 +63,17 @@ namespace Microsoft.Docs.Build
         }
 
         private static (
-            List<DocfxException> errors,
+            List<Error> errors,
             List<TableOfContentsItem> tocModel,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
             Load(Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
         {
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
-            var tocViewModel = TableOfContentsParser.Load(
+            var (tocViewModel, loadErros) = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -108,6 +108,7 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
+            errors.AddRange(loadErros);
             return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }

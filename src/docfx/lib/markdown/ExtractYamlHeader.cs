@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseExtractYamlHeader(
             this MarkdownPipelineBuilder builder,
             Document file,
-            List<DocfxException> errors,
+            List<Error> errors,
             StrongBox<JObject> result)
         {
             return builder.Use(document =>
