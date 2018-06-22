@@ -38,20 +38,15 @@ outputs:
   docs/a.json:
   docs/TOC.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/TOC.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a.md",
-              "type": "link"
-            }
+    {  
+       "dependencies":{  
+          "docs/TOC.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"link"
+             }
           ]
-        }
-      ]
+       }
     }
 ---
 # `build.manifest` contains Inclusion dependencies
@@ -63,20 +58,15 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/b.md",
-              "type": "inclusion"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"inclusion"
+             }
           ]
-        }
-      ]
+       }
     }
 ---
 # `build.manifest` contains link dependencies
@@ -88,20 +78,15 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/b.md",
-              "type": "link"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"link"
+             }
           ]
-        }
-      ]
+       }
     }
 ---
 # `build.manifest` contains nested token or codesnippet dependencies
@@ -117,34 +102,25 @@ outputs:
   docs/b.json:
   docs/c.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/b.md",
-              "type": "inclusion"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"inclusion"
+             }
+          ],
+          "docs/b.md":[  
+             {  
+                "source":"docs/c.md",
+                "type":"link"
+             },
+             {  
+                "source":"docs/c.md",
+                "type":"inclusion"
+             }
           ]
-        },
-        {
-          "source": "docs/b.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/c.md",
-              "type": "link"
-            },
-            {
-              "source": "docs/c.md",
-              "type": "inclusion"
-            }
-          ]
-        }
-      ]
+       }
     }
 ---
 # `build.manifest` contains nested TOC dependencies
@@ -159,30 +135,21 @@ outputs:
   docs/TOC.json:
   docs/a/b.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a/TOC.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a/b.md",
-              "type": "link"
-            }
+    {  
+       "dependencies":{  
+          "docs/a/TOC.md":[  
+             {  
+                "source":"docs/a/b.md",
+                "type":"link"
+             }
+          ],
+          "docs/TOC.md":[  
+             {  
+                "source":"docs/a/TOC.md",
+                "type":"tocInclusion"
+             }
           ]
-        },
-        {
-          "source": "docs/TOC.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a/TOC.md",
-              "type": "tocInclusion"
-            }
-          ]
-        }
-      ]
+       }
     }
 ---
 # `build.manifest` inclusion circular reference
@@ -196,30 +163,21 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/b.md",
-              "type": "inclusion"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"inclusion"
+             }
+          ],
+          "docs/b.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"inclusion"
+             }
           ]
-        },
-        {
-          "source": "docs/b.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a.md",
-              "type": "inclusion"
-            }
-          ]
-        }
-      ]
+       }
     }
   build.log: |
     ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
@@ -237,32 +195,22 @@ outputs:
   docs/a.json:
   docs/b.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/b.md",
-              "type": "link"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/b.md",
+                "type":"link"
+             }
+          ],
+          "docs/b.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"bookmark"
+             }
           ]
-        },
-        {
-          "source": "docs/b.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a.md",
-              "type": "bookmark"
-            }
-          ]
-        }
-      ]
+       }
     }
-
 ---
 # `build.manifest` bookmark generates self dependency 
 inputs:
@@ -272,20 +220,15 @@ inputs:
 outputs:
   docs/a.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a.md",
-              "type": "bookmark"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"bookmark"
+             }
           ]
-        }
-      ]
+       }
     }
 ---
 # Treat `#` as link dependency
@@ -296,18 +239,13 @@ inputs:
 outputs:
   docs/a.json:
   build.manifest: |
-    {
-      "dependencies":
-      [
-        {
-          "source": "docs/a.md",
-          "dependencies": 
-          [
-            {
-              "source": "docs/a.md",
-              "type": "link"
-            }
+    {  
+       "dependencies":{  
+          "docs/a.md":[  
+             {  
+                "source":"docs/a.md",
+                "type":"link"
+             }
           ]
-        }
-      ]
+       }
     }

@@ -13,7 +13,14 @@ namespace Microsoft.Docs.Build
             var manifest = new Manifest
             {
                 Files = files.Select(ToPublishManifest).ToArray(),
-                Dependencies = dependencies.Select(ToDependencyManifest).ToArray(),
+                Dependencies = dependencies.ToDictionary(
+                    d => d.Key.FilePath,
+                    d => d.Value.Select(v =>
+                    new DependencyManifestItem
+                    {
+                        Source = v.Dest.FilePath,
+                        Type = v.Type,
+                    }).ToArray()),
             };
 
             context.WriteJson(manifest, "build.manifest");
@@ -25,15 +32,6 @@ namespace Microsoft.Docs.Build
             {
                 SiteUrl = doc.SiteUrl,
                 OutputPath = doc.OutputPath,
-            };
-        }
-
-        private static DependencyManifest ToDependencyManifest(KeyValuePair<Document, List<DependencyItem>> dependency)
-        {
-            return new DependencyManifest
-            {
-                Source = dependency.Key.FilePath,
-                Dependencies = dependency.Value.Select(v => new DependencyManifestItem { Source = v.Dest.FilePath, Type = v.Type }).ToArray(),
             };
         }
     }
