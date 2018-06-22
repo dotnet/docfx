@@ -25,20 +25,19 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("a", true)]
-        [InlineData("a/b", true)]
-        [InlineData("a\\b", true, true)]
-        [InlineData("/a", false)]
-        [InlineData("\\a", false, true)]
+        [InlineData("a", false)]
+        [InlineData("a/b", false)]
+        [InlineData("a\\b", false)]
+        [InlineData("/a", true)]
+        [InlineData("\\a", true)]
         [InlineData("#a", false)]
-        [InlineData("http://a", false)]
-        [InlineData("https://a.com", false)]
-        [InlineData("c:/a", false, true)]
-        [InlineData("c:\\a", false, true)]
-        public static void IsRelativeHref(string href, bool expected, bool windowsSpecific = false)
+        [InlineData("http://a", true)]
+        [InlineData("https://a.com", true)]
+        [InlineData("c:/a", true)]
+        [InlineData("c:\\a", true)]
+        public static void IsAbsolutePath(string href, bool expected)
         {
-            if (windowsSpecific && (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))) return;
-            Assert.Equal(expected, HrefUtility.IsRelativeHref(href));
+            Assert.Equal(expected, HrefUtility.IsAbsoluteHref(href));
         }
     }
 }

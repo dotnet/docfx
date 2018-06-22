@@ -16,10 +16,11 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static (List<TableOfContentsItem> model, List<Error> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
+        public static (List<Error> errors, List<TableOfContentsItem> model) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
-            var (inputModel, errors) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref);
-            return (inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), errors);
+            var (errors, inputModel) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref, new List<Document>());
+
+            return (errors, inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList());
         }
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
@@ -98,13 +99,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            throw new NotSupportedException($"{filePath} is not a valid TOC file.");
+            throw new NotSupportedException($"{filePath} is must be an array or an object with an items property");
         }
 
-        private static (List<TableOfContentsInputItem> model, List<Error> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents = null)
+        private static (List<Error> errors, List<TableOfContentsInputItem> model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
         {
-            parents = parents ?? new List<Document>();
-
             // add to parent path
             if (parents.Contains(filePath))
             {
@@ -116,13 +115,13 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var models = LoadTocModel(tocContent, filePath.FilePath);
 
-            if (models != null && models.Any())
+            if (models.Any())
             {
                 errors = ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref);
                 parents.RemoveAt(parents.Count - 1);
             }
 
-            return (models, errors);
+            return (errors, models);
         }
 
         // tod: uid support
@@ -223,7 +222,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (nestedTocItems, subErrors) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                    var (subErrors, nestedTocItems) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
@@ -282,51 +281,35 @@ namespace Microsoft.Docs.Build
 
         private static bool IsIncludeHref(TocHrefType tocHrefType)
         {
-            return tocHrefType == TocHrefType.MarkdownTocFile ||
-                tocHrefType == TocHrefType.YamlTocFile ||
-                tocHrefType == TocHrefType.RelativeFolder;
+            return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
         }
 
         private static (string content, Document filePath) ResolveTocHrefContent(TocHrefType tocHrefType, string href, Document filePath, ResolveContent resolveContent)
         {
-            if (resolveContent == null)
-            {
-                return default;
-            }
-
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    // First, try finding toc.yml under the relative folder
-                    // Second, try finding toc.md under the relative folder
-                    var ymlTocHref = Path.Combine(href, "toc.yml");
-                    var (ymlTocContent, ymlTocPath) = resolveContent(filePath, ymlTocHref, false);
-
-                    if (ymlTocPath != null)
-                    {
-                        return (ymlTocContent, ymlTocPath);
-                    }
-
-                    var mdTocHref = Path.Combine(href, "toc.md");
-                    var (mdTocContent, mdTocPath) = resolveContent(filePath, mdTocHref, false);
-                    return (mdTocContent, mdTocPath);
-                case TocHrefType.MarkdownTocFile:
-                    var (mc, mp) = resolveContent(filePath, href, true);
-                    return (mc, mp);
-                case TocHrefType.YamlTocFile:
-                    var (yc, yp) = resolveContent(filePath, href, true);
-                    return (yc, yp);
+                    return Resolve("toc.yml") ?? Resolve("toc.json") ?? Resolve("toc.md") ?? default;
+                case TocHrefType.TocFile:
+                    return resolveContent(filePath, href, isInclusion: true);
                 default:
-                    // do nothing
-                    break;
+                    return default;
             }
 
-            return default;
+            (string content, Document filePath)? Resolve(string name)
+            {
+                var content = resolveContent(filePath, Path.Combine(href, name), isInclusion: false);
+                if (content.file != null)
+                {
+                    return content;
+                }
+                return null;
+            }
         }
 
         private static TocHrefType GetHrefType(string href)
         {
-            if (!HrefUtility.IsRelativeHref(href))
+            if (HrefUtility.IsAbsoluteHref(href))
             {
                 return TocHrefType.AbsolutePath;
             }
@@ -336,14 +319,11 @@ namespace Microsoft.Docs.Build
                 return TocHrefType.RelativeFolder;
             }
 
-            if ("toc.md".Equals(Path.GetFileName(href), StringComparison.OrdinalIgnoreCase))
+            if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
+                "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
+                "toc.yml".Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
-                return TocHrefType.MarkdownTocFile;
-            }
-
-            if ("toc.yml".Equals(Path.GetFileName(href), StringComparison.OrdinalIgnoreCase))
-            {
-                return TocHrefType.YamlTocFile;
+                return TocHrefType.TocFile;
             }
 
             return TocHrefType.RelativeFile;
@@ -354,8 +334,7 @@ namespace Microsoft.Docs.Build
             AbsolutePath,
             RelativeFile,
             RelativeFolder,
-            MarkdownTocFile,
-            YamlTocFile,
+            TocFile,
         }
     }
 }
