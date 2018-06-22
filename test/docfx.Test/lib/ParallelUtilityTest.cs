@@ -13,9 +13,12 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task ThrowsTheSameException()
         {
-            await Assert.ThrowsAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 10000), Run));
+            for (var i = 0; i < 5; i++)
+            {
+                await Assert.ThrowsAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
 
-            Task Run(int _) => throw new Exception();
+                Task Run(int n) => n % 500 == 0 ? throw new Exception() : Task.CompletedTask;
+            }
         }
 
         [Fact]
