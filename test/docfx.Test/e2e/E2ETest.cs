@@ -65,6 +65,12 @@ namespace Microsoft.Docs.Build
                     var i = 0;
                     foreach (var header in FindTestSpecHeadersInFile(file))
                     {
+                        if (string.IsNullOrEmpty(header))
+                        {
+                            i++;
+                            continue;
+                        }
+
                         var name = $"{i + 1:D2}. {header}";
                         var folder = Path.Combine(
                             file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
