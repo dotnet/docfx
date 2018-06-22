@@ -115,7 +115,7 @@ outputs:
     { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
   build.manifest:
   build.log: |
-    ["warning","link-is-empty","Link is empty","docs/a.md"]
+    ["info","link-is-empty","Link is empty","docs/a.md"]
     ["warning","file-not-found","Cannot find file 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
     ["warning","file-not-found","Cannot find file 'c.md' relative to 'b.md'","b.md"]
 ---

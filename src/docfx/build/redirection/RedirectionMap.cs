@@ -37,9 +37,9 @@ namespace Microsoft.Docs.Build
             return _redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var source) ? source.Id : file.Id;
         }
 
-        public static (List<DocfxException> errors, RedirectionMap map) Create(Docset docset)
+        public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
         {
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             var redirections = new HashSet<Document>();
 
             // load redirections with document id

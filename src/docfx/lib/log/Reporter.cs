@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -29,26 +27,14 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public void Report(ReportLevel level, string code, string message, string file = "", int line = 0, int column = 0)
+        public void Report(Error error)
         {
-            Debug.Assert(!string.IsNullOrEmpty(code));
-            Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
-            Debug.Assert(!string.IsNullOrEmpty(message));
-
-            string outputMessage = null;
-
-            if (_output != null)
+            if (error.Level == ErrorLevel.Off)
             {
-                var payload = new List<object> { level, code, message, file, line, column };
-                for (var i = payload.Count - 1; i >= 0; i--)
-                {
-                    if (payload[i] == null || Equals(payload[i], "") || Equals(payload[i], 0))
-                        payload.RemoveAt(i);
-                    else
-                        break;
-                }
-                outputMessage = JsonUtility.Serialize(payload);
+                return;
             }
+
+            var outputMessage = error.ToString();
 
             lock (_lock)
             {
@@ -57,33 +43,33 @@ namespace Microsoft.Docs.Build
                     _output.Value.WriteLine(outputMessage);
                 }
 
-                if (!string.IsNullOrEmpty(file))
+                if (!string.IsNullOrEmpty(error.File))
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write(file);
+                    Console.Write(error.File);
                     Console.ResetColor();
                     Console.WriteLine();
                 }
 
-                Console.ForegroundColor = GetColor(level);
-                Console.Write(code + " ");
+                Console.ForegroundColor = GetColor(error.Level);
+                Console.Write(error.Code + " ");
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(message);
+                Console.WriteLine(error.Message);
                 Console.ResetColor();
             }
         }
 
-        private static ConsoleColor GetColor(ReportLevel level)
+        private static ConsoleColor GetColor(ErrorLevel level)
         {
             switch (level)
             {
-                case ReportLevel.Error:
+                case ErrorLevel.Error:
                     return ConsoleColor.Red;
-                case ReportLevel.Warning:
+                case ErrorLevel.Warning:
                     return ConsoleColor.Yellow;
                 default:
-                    return ConsoleColor.Green;
+                    return ConsoleColor.Cyan;
             }
         }
 

@@ -14,6 +14,6 @@ namespace Microsoft.Docs.Build
 
         public JObject Metadata;
 
-        public List<DocfxException> Errors;
+        public List<Error> Errors;
     }
 }
