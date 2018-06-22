@@ -69,6 +69,37 @@ outputs:
     }
   build.manifest:
 ---
+# Probe TOC in JSON format
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    [{ "name": "a", "href": "a/" }]
+  docs/a/toc.json: |
+    [{ "name": "b", "href": "b.md" }]
+  docs/a/b.md:
+outputs:
+  docs/toc.json: |
+    {
+      "items": [
+        {
+          "toc_title": "a",
+          "href": "a/b"
+        }
+      ]
+    }
+  docs/a/toc.json: |
+    {
+      "items": [
+        {
+          "toc_title": "b",
+          "href": "b"
+        }
+      ]
+    }
+  docs/a/b.json:
+  build.manifest:
+---
+---
 # No-existing file reference
 inputs:
   docfx.yml:

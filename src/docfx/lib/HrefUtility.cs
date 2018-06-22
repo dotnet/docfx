@@ -60,14 +60,11 @@ namespace Microsoft.Docs.Build
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
-        public static bool IsRelativeHref(string str)
+        public static bool IsAbsoluteHref(string str)
         {
-            return !(str.StartsWith('#')
-                || str.StartsWith('/')
+            return str.StartsWith('/')
                 || str.StartsWith('\\')
-                || string.IsNullOrWhiteSpace(str)
-                || !Uri.TryCreate(str, UriKind.Relative, out _)
-                || Path.IsPathRooted(str));
+                || Uri.TryCreate(str, UriKind.Absolute, out _);
         }
     }
 }
