@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public readonly string OS;
 
+        public readonly string Repo;
+
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
