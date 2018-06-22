@@ -8,7 +8,8 @@ function exec([string] $cmd) {
 
 $commitSha = & { git describe --always }
 $commitCount = & { git rev-list --count HEAD }
-$version = "3.0.0-preview1.$commitCount+$commitSha"
+$revision = $commitCount.ToString().PadLeft(5, '0')
+$version = "3.0.0-alpha-$revision-$commitSha"
 
 exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"
