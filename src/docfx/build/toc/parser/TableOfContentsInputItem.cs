@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 
         public string TopicHref { get; set; }
 
+        public string TocHref { get; set; }
+
         public List<TableOfContentsInputItem> Items { get; set; }
 
         public static TableOfContentsItem ToTableOfContentsModel(TableOfContentsInputItem inputModel)

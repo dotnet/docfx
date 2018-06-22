@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (DocfxException error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null)
+        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
