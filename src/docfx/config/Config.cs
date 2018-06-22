@@ -55,6 +55,11 @@ namespace Microsoft.Docs.Build
         public readonly string SourceBasePath = string.Empty;
 
         /// <summary>
+        /// Just for backward compatibility, Indicate that whether genereate pdf url template in medadata.
+        /// </summary>
+        public readonly bool NeedGeneratePdfUrlTemplate = false;
+
+        /// <summary>
         /// The hostname
         /// </summary>
         public readonly string BaseUrl = string.Empty;
