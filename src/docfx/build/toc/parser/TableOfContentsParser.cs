@@ -16,18 +16,11 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-<<<<<<< HEAD
-        public static List<TableOfContentsItem> Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
+        public static (List<Error> errors, List<TableOfContentsItem> model) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
-            return LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref, new List<Document>())
-                .Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r))
-                .ToList();
-=======
-        public static (List<TableOfContentsItem> model, List<Error> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
-        {
-            var (inputModel, errors) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref);
-            return (inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), errors);
->>>>>>> dotnet/v3
+            var (errors, inputModel) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref, new List<Document>());
+
+            return (errors, inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList());
         }
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
@@ -109,7 +102,7 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is must be an array or an object with an items property");
         }
 
-        private static (List<TableOfContentsInputItem> model, List<Error> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
+        private static (List<Error> errors, List<TableOfContentsInputItem> model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
         {
             // add to parent path
             if (parents.Contains(filePath))
@@ -128,7 +121,7 @@ namespace Microsoft.Docs.Build
                 parents.RemoveAt(parents.Count - 1);
             }
 
-            return (models, errors);
+            return (errors, models);
         }
 
         // tod: uid support
@@ -229,7 +222,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (nestedTocItems, subErrors) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                    var (subErrors, nestedTocItems) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
