@@ -512,3 +512,56 @@ outputs:
   build.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/toc.md'","docs/f2/toc.md"]
+---
+# Topice href can replace href
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: File Reference
+      topicHref: f1/a.md
+  docs/f1/a.md:
+outputs:
+  docs/f1/a.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"File Reference",
+             "href":"f1/a"
+          }
+       ]
+    }
+  build.manifest:
+---
+# Topice href cann't reference a local toc file or folder
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: Invalid Topic Reference1
+      topicHref: f1/
+    - name: Invalid Topic Reference2
+      topicHref: f1/toc.md
+    - name: Invalid Topic Reference3
+      topicHref: f1/toc.md
+      href: /abc/def
+  docs/f1/toc.md:
+outputs:
+  docs/f1/toc.json:
+  docs/toc.json: |
+    {  
+       "items":[  
+          {  
+             "toc_title":"Invalid Topic Reference1",
+             "href":"f1/"
+          },
+          {  
+             "toc_title":"Invalid Topic Reference2",
+             "href":"f1/toc.md"
+          },
+          {  
+             "toc_title":"Invalid Topic Reference3",
+             "href":"/abc/def"
+          }
+       ]
+    }
+  build.manifest:

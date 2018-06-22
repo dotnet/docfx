@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<DocfxException>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
-            var tocViewModel = TableOfContentsParser.Load(
+            var (tocViewModel, loadErros) = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -108,6 +108,7 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
+            errors.AddRange(loadErros);
             return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }
