@@ -99,7 +99,6 @@ outputs:
   docs/a/b.json:
   build.manifest:
 ---
----
 # No-existing file reference
 inputs:
   docfx.yml:
