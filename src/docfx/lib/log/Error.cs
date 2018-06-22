@@ -9,10 +9,6 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Throw this exception in case of known error that should stop execution of the program.
-    /// E.g, loading a malformed configuration.
-    /// </summary>
     internal class Error
     {
         public ErrorLevel Level { get; }
