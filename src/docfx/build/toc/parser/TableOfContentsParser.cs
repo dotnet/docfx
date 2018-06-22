@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static (List<TableOfContentsItem> model, List<DocfxException> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
+        public static (List<TableOfContentsItem> model, List<Error> errors) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var (inputModel, errors) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref);
             return (inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), errors);
@@ -101,19 +101,19 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is not a valid TOC file.");
         }
 
-        private static (List<TableOfContentsInputItem> model, List<DocfxException> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents = null)
+        private static (List<TableOfContentsInputItem> model, List<Error> errors) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents = null)
         {
             parents = parents ?? new List<Document>();
 
             // add to parent path
             if (parents.Contains(filePath))
             {
-                throw Errors.CircularReference(filePath, parents);
+                throw Errors.CircularReference(filePath, parents).ToException();
             }
 
             parents.Add(filePath);
 
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             var models = LoadTocModel(tocContent, filePath.FilePath);
 
             if (models != null && models.Any())
@@ -126,9 +126,9 @@ namespace Microsoft.Docs.Build
         }
 
         // tod: uid support
-        private static List<DocfxException> ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref)
+        private static List<Error> ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             foreach (var tocModelItem in tocModelItems)
             {
                 if (tocModelItem.Items != null && tocModelItem.Items.Any())

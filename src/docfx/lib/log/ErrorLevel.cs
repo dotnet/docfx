@@ -3,8 +3,9 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum ReportLevel
+    internal enum ErrorLevel
     {
+        Off,
         Info,
         Warning,
         Error,

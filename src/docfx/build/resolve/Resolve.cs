@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Resolve
     {
-        public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
             var (error, file, redirect, _, _) = TryResolveFile(relativeTo, href);
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + fragment + query, fragment, file);
         }
 
-        private static (DocfxException error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {

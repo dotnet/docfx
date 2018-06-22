@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
-                throw Errors.ConfigNotFound(docsetPath);
+                throw Errors.ConfigNotFound(docsetPath).ToException();
             }
             return LoadCore(configPath, options);
         }
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                throw Errors.InvalidConfig(configPath, e);
+                throw Errors.InvalidConfig(configPath, e).ToException(e);
             }
         }
 
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 return config;
 
             if (parents.Contains(configPath))
-                throw Errors.CircularReference(configPath, parents);
+                throw Errors.CircularReference(configPath, parents).ToException();
 
             parents.Add(configPath);
             var extendedConfig = new JObject();

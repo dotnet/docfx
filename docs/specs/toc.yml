@@ -728,9 +728,9 @@ outputs:
     }
   build.manifest:
   build.log: |
-    ["error","invalid-topc-href","The topic href f1/ can only reference to a local file or absolute path","docs/toc.yml"]
-    ["error","invalid-topc-href","The topic href f1/toc.md can only reference to a local file or absolute path","docs/toc.yml"]
-    ["error","invalid-topc-href","The topic href f1/toc.md can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topc-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topc-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topc-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
 ---
 # Toc href cann't reference a local file
 inputs:
@@ -760,6 +760,6 @@ outputs:
     }
   build.manifest:
   build.log: |
-    ["error","invalid-toc-href","The toc href f1/a.md can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
-    ["error","invalid-toc-href","The toc href f1/a.md can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
+    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
 
