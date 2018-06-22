@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (DocfxException ex)
                 {
-                    reporter.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
+                    reporter.Report(ex.Error);
                     return 1;
                 }
             }
