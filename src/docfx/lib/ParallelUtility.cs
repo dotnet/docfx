@@ -34,7 +34,8 @@ namespace Microsoft.Docs.Build
                 // if the ActionBlock has been closed to additional messages, which could happen for example
                 // if someone called Complete on the block
                 // or if the block's delegate threw an exception that went unhandled and caused the block to fault.
-                Debug.Assert(posted || queue.Completion.IsFaulted);
+                DebugAssertPostedOrFaulted(posted, queue);
+
                 total++;
             }
 
@@ -99,9 +100,26 @@ namespace Microsoft.Docs.Build
                 Interlocked.Increment(ref running);
 
                 var posted = queue.Post(item);
-                Debug.Assert(posted || queue.Completion.IsFaulted);
+                DebugAssertPostedOrFaulted(posted, queue);
 
                 progress?.Invoke(done, Interlocked.Increment(ref total));
+            }
+        }
+
+        [Conditional("Debug")]
+        private static void DebugAssertPostedOrFaulted<T>(bool posted, ActionBlock<T> queue)
+        {
+            if (!posted)
+            {
+                try
+                {
+                    queue.Completion.Wait();
+                }
+                catch
+                {
+                }
+
+                Debug.Assert(queue.Completion.IsFaulted);
             }
         }
     }
