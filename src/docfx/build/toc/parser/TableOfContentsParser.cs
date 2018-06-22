@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 var topicHref = tocModelItem.TopicHref;
                 if (!string.IsNullOrEmpty(topicHref))
                 {
-                    topicHref = resolveHref.Invoke(filePath, topicHref, rootPath) ?? topicHref;
+                    topicHref = resolveHref.Invoke(filePath, topicHref, rootPath);
                 }
 
                 var href = tocModelItem.Href;
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
                             var nestedTocItems = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                             if (hrefType == TocHrefType.RelativeFolder)
                             {
-                                tocModelItem.Href = (string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref) ?? href;
+                                tocModelItem.Href = string.IsNullOrEmpty(topicHref) ? GetFirstHref(nestedTocItems) : topicHref;
                             }
                             else
                             {
@@ -168,9 +168,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        tocModelItem.Href = string.IsNullOrEmpty(topicHref)
-                            ? resolveHref.Invoke(filePath, href, rootPath) ?? tocModelItem.Href
-                            : topicHref;
+                        tocModelItem.Href = string.IsNullOrEmpty(topicHref) ? resolveHref.Invoke(filePath, href, rootPath) : topicHref;
                     }
                 }
             }
