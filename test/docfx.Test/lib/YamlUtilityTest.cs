@@ -277,7 +277,7 @@ ValueBasic:
 Key1: 0
 Key1: 0
 ";
-            var exception = Assert.Throws<YamlException>(() => YamlUtility.Deserialize(new StringReader(yaml)));
+            var exception = Assert.Throws<YamlException>(() => YamlUtility.Deserialize(yaml));
             Assert.Equal("An item with the same key has already been added. Key: Key1", exception.InnerException.Message);
         }
 
