@@ -96,6 +96,11 @@ namespace Microsoft.Docs.Build
         public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
 
         /// <summary>
+        /// Gets the rules for error levels by error code.
+        /// </summary>
+        public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
+
+        /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options)
