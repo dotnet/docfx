@@ -22,8 +22,6 @@ namespace Microsoft.Docs.Build
         {
             var (docsetPath, spec) = await CreateDocset(name, ordinal);
 
-            if (!docsetPath.Contains("nts and querys are preserved f")) return;
-
             if (!string.IsNullOrEmpty(spec.OS) &&
                 !spec.OS.Split(',').Any(os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim()))))
             {
