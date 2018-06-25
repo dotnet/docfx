@@ -56,9 +56,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public LogActionDelegate LogError { get; }
 
         public MarkdownContext(
-            IReadOnlyDictionary<string, string> tokens,
-            LogActionDelegate logWarning,
-            LogActionDelegate logError,
+            IReadOnlyDictionary<string, string> tokens = null,
+            LogActionDelegate logWarning = null,
+            LogActionDelegate logError = null,
             ReadFileDelegate readFile = null,
             GetLinkDelegate getLink = null)
         {
