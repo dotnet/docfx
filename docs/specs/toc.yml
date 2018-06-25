@@ -34,7 +34,7 @@ outputs:
                       },
                       {  
                         "toc_title":"Reference Normal File 3",
-                        "href":"f1/n1#row=4?branch=master"
+                        "href":"f1/n1?branch=master#row=4"
                       },
                       {  
                         "toc_title":"Reference Normal File 4",
