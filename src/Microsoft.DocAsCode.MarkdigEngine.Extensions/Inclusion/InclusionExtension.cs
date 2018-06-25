@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     UpdateLinks(subInline, context);
                 }
 
-                if (markdownObject is LinkInline linkInline)
+                if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
                 {
                     linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, InclusionContext.File);
                 }
