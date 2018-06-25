@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class LegacyMetadata
     {
         private static readonly string[] s_pageMetadataOutputItems =
-       {
+        {
             "author", "breadcrumb_path", "depot_name", "description", "document_id",
             "document_version_independent_id", "gitcommit", "keywords",
             "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "original_content_git_url",
