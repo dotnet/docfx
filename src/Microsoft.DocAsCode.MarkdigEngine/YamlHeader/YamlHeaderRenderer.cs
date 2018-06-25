@@ -15,8 +15,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
     {
+        private readonly MarkdownContext _context;
+
+        public YamlHeaderRenderer(MarkdownContext context)
+        {
+            _context = context;
+        }
+
         protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
         {
+            if (InclusionContext.IsInclude)
+            {
+                return;
+            }
+
             var content = obj.Lines.ToString();
             try
             {
@@ -32,10 +44,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // not a valid ymlheader, do nothing
-                Logger.LogWarning("Invalid YamlHeader, ignored");
+                _context.LogWarning("invalid-yaml-header", ex.Message);
             }
         }
     }

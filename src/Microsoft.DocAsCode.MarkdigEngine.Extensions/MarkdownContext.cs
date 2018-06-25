@@ -5,53 +5,81 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
 
     public class MarkdownContext
     {
         /// <summary>
-        /// Absolute path of `~`, the directory contains docfx.json.
+        /// Logs an error or warning message.
         /// </summary>
-        public string BasePath { get; }
+        public delegate void LogActionDelegate(string code, string message, string file = null, int line = 0);
 
         /// <summary>
-        /// Relative path of current markdown file.
+        /// Reads a file as text based on path relative to an existing file.
         /// </summary>
-        public string FilePath { get; }
+        /// <param name="path">Path to the file being opened.</param>
+        /// <param name="relativeTo">The source file that path is based on.</param>
+        /// <returns>An stream and the opened file, or default if such file does not exists.</returns>
+        public delegate (string content, object file) ReadFileDelegate(string path, object relativeTo);
 
         /// <summary>
-        /// Indicate if this file is inline included.
+        /// Allows late binding of urls.
         /// </summary>
-        public bool IsInline { get; }
+        /// <param name="path">Path of the link</param>
+        /// <param name="relativeTo">The source file that path is based on.</param>
+        /// <returns>Url bound to the path</returns>
+        public delegate string GetLinkDelegate(string path, object relativeTo);
 
-        public ImmutableHashSet<string> InclusionSet { get; }
-
-        public HashSet<string> Dependencies { get; } = new HashSet<string>();
-
-        public bool EnableSourceInfo { get; }
-
-        public MarkdownValidatorBuilder Mvb { get; }
-
+        /// <summary>
+        /// Localizable text tokens used for rendering notes.
+        /// </summary>
         public IReadOnlyDictionary<string, string> Tokens { get; }
 
-        public MarkdownContext(
-            string basePath,
-            string filePath,
-            bool isInline,
-            ImmutableHashSet<string> inclusionSet,
-            HashSet<string> dependencies,
-            bool enableSourceInfo,
-            IReadOnlyDictionary<string, string> tokens,
-            MarkdownValidatorBuilder mvb)
-        {
-            BasePath = basePath;
-            FilePath = filePath;
-            IsInline = isInline;
-            InclusionSet = inclusionSet ?? ImmutableHashSet<string>.Empty;
-            Dependencies = dependencies ?? new HashSet<string>();
+        /// <summary>
+        /// Reads a file as text.
+        /// </summary>
+        public ReadFileDelegate ReadFile { get; }
 
-            Tokens = tokens;
-            Mvb = mvb;
-            EnableSourceInfo = enableSourceInfo;
+        /// <summary>
+        /// Get the link for a given url.
+        /// </summary>
+        public GetLinkDelegate GetLink { get; }
+
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        public LogActionDelegate LogWarning { get; }
+
+        /// <summary>
+        /// Log error
+        /// </summary>
+        public LogActionDelegate LogError { get; }
+
+        public MarkdownContext(
+            IReadOnlyDictionary<string, string> tokens = null,
+            LogActionDelegate logWarning = null,
+            LogActionDelegate logError = null,
+            ReadFileDelegate readFile = null,
+            GetLinkDelegate getLink = null)
+        {
+            Tokens = tokens ?? ImmutableDictionary<string, string>.Empty;
+            ReadFile = readFile ?? ReadFileDefault;
+            GetLink = getLink ?? ((path, relativeTo) => path);
+
+            LogWarning = logWarning;
+            LogError = logError;
+        }
+
+        private static (string content, object file) ReadFileDefault(string path, object relativeTo)
+        {
+            var target = relativeTo != null ? path : Path.Combine(relativeTo.ToString(), path);
+
+            if (File.Exists(target))
+            {
+                return (File.ReadAllText(target), target);
+            }
+
+            return (null, null);
         }
     }
 }

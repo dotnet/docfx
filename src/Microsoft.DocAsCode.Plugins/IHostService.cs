@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.Plugins
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
+        MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation);
         ImmutableDictionary<string, FileAndType> SourceFiles { get; }
         ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; }
         ImmutableHashSet<string> GetAllUids();

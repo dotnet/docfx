@@ -42,5 +42,8 @@ namespace Microsoft.DocAsCode
 
         [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
         public bool DisableGitFeatures { get; set; }
+
+        [Option("disableDefaultFilter", HelpText = "Disable the default API filter (default filter only generate public or protected APIs).")]
+        public bool DisableDefaultFilter { get; set; }
     }
 }

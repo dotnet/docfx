@@ -418,14 +418,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!(processor is ISupportIncrementalDocumentProcessor))
             {
-                string message = $"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.";
+                string message = $"Processor {processor.Name} cannot support incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.";
                 IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
             {
-                string message = $"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.";
+                string message = $"Processor {processor.Name} cannot support incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.";
                 IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
                 Logger.LogVerbose(message);
                 return false;

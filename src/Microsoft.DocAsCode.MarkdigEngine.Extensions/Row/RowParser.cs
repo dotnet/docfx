@@ -6,16 +6,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class RowParser : BlockParser
     {
         private const string StartString = "row:::";
         private const string EndString = "row-end:::";
         private const char Colon = ':';
-        public RowParser()
+
+        private readonly MarkdownContext _context;
+
+        public RowParser(MarkdownContext context)
         {
             OpeningCharacters = new[] { ':' };
+            _context = context;
         }
 
         public override BlockState TryOpen(BlockProcessor processor)
@@ -89,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"Row has some invalid chars in the ending.");
+                _context.LogWarning("invalid-row", $"Row has some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);

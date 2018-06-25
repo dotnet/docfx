@@ -1,8 +1,27 @@
-Version Notes (Current Version: v2.36)
+Version Notes (Current Version: v2.37)
 =======================================
 
-v2.36 (Pre-release)
+v2.37 (Pre-release)
 -----------
+
+v2.36
+-----------
+1. Allow setting the base path for code sources. (#2131)
+2. Bug fix:
+   1. Fix API filter for attribute. (#2451)
+   2. Fix error when attribute has null value. (#2539)
+   3. Fix Markdown when link contains space. (#2681)
+   4. Fix XML comment merge not preserving inheritdoc metadata.
+   5. Fix page error under Internet Explorer 11 (#2741)
+   6. Disable building document when live unit testing.
+
+v2.35.3
+-----------
+1. Bug fix: Tabbed content always enables second tab. (#2706)
+
+v2.35.1
+-----------
+1. Bug fix: codesnippet tagname is not recognized when the tag starts with \t in Markdig.
 
 v2.35
 -----------

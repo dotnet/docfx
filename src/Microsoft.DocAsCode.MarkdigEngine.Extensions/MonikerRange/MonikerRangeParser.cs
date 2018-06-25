@@ -6,16 +6,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class MonikerRangeParser : BlockParser
     {
         private const string StartString = "moniker";
         private const string EndString = "moniker-end";
         private const char Colon = ':';
-        public MonikerRangeParser()
+
+        private readonly MarkdownContext _context;
+
+        public MonikerRangeParser(MarkdownContext context)
         {
             OpeningCharacters = new[] { ':' };
+            _context = context;
         }
 
         public override BlockState TryOpen(BlockProcessor processor)
@@ -69,7 +72,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c != '"')
             {
-                Logger.LogWarning("MonikerRange does not have ending charactor (\").");
+                _context.LogWarning("invalid-moniker-range", "MonikerRange does not have ending charactor (\").");
                 return BlockState.None;
             }
 
@@ -81,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the starting.");
+                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the starting.");
             }
 
             processor.NewBlocks.Push(new MonikerRangeBlock(this)
@@ -124,7 +127,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                Logger.LogWarning($"MonikerRange have some invalid chars in the ending.");
+                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the ending.");
             }
 
             block.UpdateSpanEnd(slice.End);
@@ -138,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var monikerRange = (MonikerRangeBlock)block;
             if (monikerRange != null && monikerRange.Closed == false)
             {
-                Logger.LogWarning($"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.");
+                _context.LogWarning("invalid-moniker-range", $"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.");
             }
             return true;
         }

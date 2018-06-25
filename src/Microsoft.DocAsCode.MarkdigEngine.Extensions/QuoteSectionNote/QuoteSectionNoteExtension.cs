@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Microsoft.DocAsCode.Common;
-
     using Markdig;
     using Markdig.Parsers;
     using Markdig.Renderers;
@@ -12,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public QuoteSectionNoteExtension(MarkdownContext context)
         {
@@ -21,10 +19,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         void IMarkdownExtension.Setup(MarkdownPipelineBuilder pipeline)
         {
-            if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser()))
+            if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
             {
-                Logger.LogWarning($"Can't find QuoteBlockParser to replace, insert QuoteSectionNoteParser directly.");
-                pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser());
+                pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
             }
         }
 
@@ -37,7 +34,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
                 {
-                    Logger.LogWarning($"Can't find QuoteBlockRenderer to replace, insert QuoteSectionNoteRender directly.");
                     renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
                 }
             }

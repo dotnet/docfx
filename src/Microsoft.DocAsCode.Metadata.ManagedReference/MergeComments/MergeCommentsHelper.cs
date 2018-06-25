@@ -181,6 +181,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
+            item.IsInheritDoc = commentModel.IsInheritDoc;
             // todo more.
         }
 

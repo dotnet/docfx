@@ -561,6 +561,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
+            var uidList = ResolveByXRefServiceAsync(new List<string> { uid }, ExternalXRefSpec).Result;
+            if (uidList.Count == 0)
+            {
+                return ExternalXRefSpec[uid];
+            }
+
             UnknownUids.TryAdd(uid, null);
             return null;
         }

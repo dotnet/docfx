@@ -40,9 +40,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            var context = new InclusionContext();
+            string title = null, path = null;
 
-            if (!ExtensionsHelper.MatchLink(ref line, ref context))
+            if (!ExtensionsHelper.MatchLink(ref line, ref title, ref path))
             {
                 return BlockState.None;
             }
@@ -53,7 +53,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            includeFile.Context = context;
+            includeFile.Title = title;
+            includeFile.IncludedFilePath = path;
             processor.NewBlocks.Push(includeFile);
 
             return BlockState.BreakDiscard;

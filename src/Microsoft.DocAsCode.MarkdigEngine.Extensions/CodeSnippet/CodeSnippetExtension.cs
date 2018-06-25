@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class CodeSnippetExtension : IMarkdownExtension
     {
-        private MarkdownContext _context;
+        private readonly MarkdownContext _context;
 
         public CodeSnippetExtension(MarkdownContext context)
         {

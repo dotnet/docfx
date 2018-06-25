@@ -20,6 +20,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     {
         public const string MarkdownValidatePhaseName = "Markdown style";
 
+        private readonly MarkdownContext DefaultContext = 
+            new MarkdownContext(
+                null,
+                (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
+                (code, message, file, line) => Logger.LogError(message, null, file, line.ToString(), code));
+
         [Fact]
         [Trait("Related", "Validation")]
         public void TestHtmlBlockTagValidation()
@@ -84,9 +90,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             builder.LoadEnabledRulesProvider();
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            using (new LoggerPhaseScope(MarkdownValidatePhaseName))
+            {
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
-            Assert.Equal(@"<div class='a'>
+                Assert.Equal(@"<div class='a'>
     <i>x</i>
     <EM>y</EM>
     <h1>
@@ -98,6 +106,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 <script>alert(1);</script>
 ".Replace("\r\n", "\n"), html);
+            }
             Assert.Equal(8, listener.Items.Count);
             Assert.Equal(new[]
             {
@@ -143,9 +152,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             });
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            using (new LoggerPhaseScope(MarkdownValidatePhaseName))
+            {
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
-            Assert.Equal(@"<div class='a'>
+                Assert.Equal(@"<div class='a'>
     <i>x</i>
     <EM>y</EM>
     <h1>
@@ -157,6 +168,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 <script>alert(1);</script>
 ".Replace("\r\n", "\n"), html);
+            }
             Assert.Equal(3, listener.Items.Count);
             Assert.Equal(new[]
             {
@@ -210,13 +222,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                     Behavior = TagValidationBehavior.Warning,
                 },
             });
-
+            
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
-            var html = Markup(content, builder.CreateRewriter(), listener);
+            using (new LoggerPhaseScope(MarkdownValidatePhaseName))
+            {
+                var html = Markup(content, builder.CreateRewriter(DefaultContext), listener);
 
-            Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
+                Assert.Equal(@"<p>This is inline html: <div class='a'><i>x</i><EM>y</EM><h1>z<pre><code>a<em>b</em>c</code></pre></h1></div></p>
 <script>alert(1);</script> end.
 ".Replace("\r\n", "\n"), html);
+            }
             Assert.Equal(7, listener.Items.Count);
             Assert.Equal(new[]
             {

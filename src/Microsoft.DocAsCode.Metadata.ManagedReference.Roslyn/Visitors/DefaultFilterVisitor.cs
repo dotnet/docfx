@@ -53,38 +53,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return false;
             }
 
-            var methodSymbol = symbol as IMethodSymbol;
-            if (methodSymbol != null)
+            if (symbol is IMethodSymbol methodSymbol)
             {
                 return CanVisitCore(methodSymbol, visitFunc, wantProtectedMember, outer);
             }
 
-            var propertySymbol = symbol as IPropertySymbol;
-            if (propertySymbol != null)
+            if (symbol is IPropertySymbol propertySymbol)
             {
                 return CanVisitCore(propertySymbol, visitFunc, wantProtectedMember, outer);
             }
 
-            var eventSymbol = symbol as IEventSymbol;
-            if (eventSymbol != null)
+            if (symbol is IEventSymbol eventSymbol)
             {
                 return CanVisitCore(eventSymbol, visitFunc, wantProtectedMember, outer);
             }
 
-            var fieldSymbol = symbol as IFieldSymbol;
-            if (fieldSymbol != null)
+            if (symbol is IFieldSymbol fieldSymbol)
             {
                 return CanVisitCore(fieldSymbol, visitFunc, wantProtectedMember, outer);
             }
 
-            var namedTypeSymbol = symbol as INamedTypeSymbol;
-            if (namedTypeSymbol != null)
+            if (symbol is INamedTypeSymbol namedTypeSymbol)
             {
                 return CanVisitCore(namedTypeSymbol, visitFunc, wantProtectedMember, outer);
             }
 
-            var ts = symbol as ITypeSymbol;
-            if (ts != null)
+            if (symbol is ITypeSymbol ts)
             {
                 switch (ts.TypeKind)
                 {

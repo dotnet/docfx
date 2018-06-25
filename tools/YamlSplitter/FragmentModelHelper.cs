@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 BasePath = ".",
                 Extensions = new Dictionary<string, object>
                     {
-                        { LineNumberExtension.EnableSourceInfo, false }
+                        { "EnableSourceInfo", false }
                     }
             });
 
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 return new Dictionary<string, MarkdownFragment>();
             }
             var markdown = File.ReadAllText(fileName);
-            var ast = MDService.Parse(markdown, fileName);
+            var ast = MDService.Parse(markdown, Path.GetFileName(fileName));
             var models = new MarkdownFragmentsCreater().Create(ast).ToList();
             return models.ToDictionary(m => m.Uid, m => m.ToMarkdownFragment(markdown));
         }

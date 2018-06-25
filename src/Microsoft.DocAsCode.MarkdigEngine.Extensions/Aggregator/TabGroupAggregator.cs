@@ -6,10 +6,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Text.RegularExpressions;
-
-    using Microsoft.DocAsCode.Common;
 
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
@@ -69,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             int offset
             )
         {
-            var groupId = (items[0]?.Content?.ToString() ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
+            var groupId = GetMd5String((items[0]?.Content?.ToString() ?? string.Empty)).Replace("/", "-").Remove(10);
 
             context.AggregateTo(new TabGroupBlock(
                                 groupId,
@@ -78,6 +79,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                                 startSpan,
                                 0),
                                 offset);
+        }
+
+        private static string GetMd5String(string content)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms, Encoding.Unicode, 0x100, true))
+                {
+                    writer.Write(content);
+                }
+                using (var md5 = MD5.Create())
+                {
+                    return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
+                }
+            }
         }
 
         private static TabItemBlock CreateTabItem(

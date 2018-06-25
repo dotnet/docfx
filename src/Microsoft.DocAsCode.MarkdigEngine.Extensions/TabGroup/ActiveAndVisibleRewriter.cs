@@ -9,11 +9,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Linq;
 
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
 
     public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
     {
+        private readonly MarkdownContext _context;
         private List<string[]> tabSelectionInfo = new List<string[]>();
+
+        public ActiveAndVisibleRewriter(MarkdownContext context)
+        {
+            _context = context;
+        }
 
         public void PostProcess(IMarkdownObject markdownObject)
         {
@@ -32,9 +37,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var idAndCountList = GetTabIdAndCountList(items).ToList();
                 if (idAndCountList.Any(g => g.Item2 > 1))
                 {
-                    Logger.LogWarning(
-                        $"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.",
-                        code: WarningCodes.Markdown.InvalidTabGroup);
+                    _context.LogWarning(
+                        "invalid-tab-group",
+                        $"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.");
                 }
                 var active = GetTabActive(block, tabSelectionInfo, items, firstVisibleTab, idAndCountList);
                 block.ActiveTabIndex = active;
@@ -103,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (hasDifferentSet)
             {
-                Logger.LogWarning("Tab group with different tab id set.", code: WarningCodes.Markdown.InvalidTabGroup);
+                _context.LogWarning("invalid-tab-group", "Tab group with different tab id set.");
             }
 
             if (active == -1)
@@ -116,7 +121,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 else
                 {
                     active = 0;
-                    Logger.LogWarning("All tabs are hidden in the tab group.", code: WarningCodes.Markdown.InvalidTabGroup);
+                    _context.LogWarning("invalid-tab-group", "All tabs are hidden in the tab group.");
                 }
             }
 

@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Shared/base.props" />
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Fsc.fs" />

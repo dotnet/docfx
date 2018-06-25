@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -46,6 +48,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (stack.Contains(file))
             {
                 throw new DocumentException($"Circular reference to {file.FullPath} is found in {stack.Peek().FullPath}");
+            }
+
+            if (wrapper.Content == null)
+            {
+                Logger.LogWarning("Empty TOC item node found.", code: WarningCodes.Build.EmptyTocItemNode);
+                return null;
             }
 
             var item = wrapper.Content;
@@ -125,10 +133,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.RelativeFile:
                     if (item.Items != null && item.Items.Count > 0)
                     {
-                        for (int i = 0; i < item.Items.Count; i++)
-                        {
-                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
-                        }
+                        item.Items = new TocViewModel(from i in item.Items
+                                                      select ResolveItem(new TocItemInfo(file, i), stack, false) into r
+                                                      where r != null
+                                                      select r.Content);
                         if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                         {
                             var defaultItem = GetDefaultHomepageItem(item);
@@ -264,7 +272,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             else
             {
                 // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
+                TocItemViewModel referencedTocItemViewModel;
+                try
+                {
+                    referencedTocItemViewModel = TocHelper.LoadSingleToc(tocFile.FullPath);
+                }
+                catch (FileNotFoundException fnfe)
+                {
+                    throw new DocumentException($"Referenced TOC file {tocFile.FullPath} does not exist.", fnfe);
+                }
+
+                referencedTocFileModel = new TocItemInfo(tocFile, referencedTocItemViewModel);
 
                 referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
                 _notInProjectTocCache[tocFile] = referencedTocFileModel;
@@ -310,7 +328,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             RelativePath relativeToTargetFile;
             try
             {
-                relativeToTargetFile= RelativePath.Parse(href);
+                relativeToTargetFile = RelativePath.Parse(href);
             }
             catch (Exception ex)
             {

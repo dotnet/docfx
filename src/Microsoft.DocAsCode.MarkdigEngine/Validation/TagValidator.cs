@@ -8,17 +8,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Linq;
 
     using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal class TagValidator
     {
-        public TagValidator(ImmutableList<MarkdownTagValidationRule> validators)
+        public ImmutableList<MarkdownTagValidationRule> Validators { get; }
+
+        private readonly MarkdownContext _context;
+
+        public TagValidator(ImmutableList<MarkdownTagValidationRule> validators, MarkdownContext context)
         {
+            _context = context;
             Validators = validators;
         }
-
-        public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
         public void Validate(IMarkdownObject markdownObject)
         {
@@ -54,10 +56,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             switch (validator.Behavior)
             {
                 case TagValidationBehavior.Warning:
-                    Logger.LogWarning(string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line.ToString());
+                    _context.LogWarning("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line);
                     return;
                 case TagValidationBehavior.Error:
-                    Logger.LogError(string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line.ToString());
+                    _context.LogError("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), line: tag.Line);
                     return;
                 case TagValidationBehavior.None:
                 default:

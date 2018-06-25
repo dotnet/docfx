@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             /// <?                                          '<' 0~1
             /// (                                           start group 2: link
             ///     (?:                                     start non-capturing group
-            ///         [^()]                               any chararacter but '(' or ')'
+            ///         [^()\s]                             any chararacter but '(', ')' or white spaces
             ///         |                                   or
             ///         \((?<DEPTH>)                        '(' with depth++
             ///         |                                   or
@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             /// \)                                          ')'
             /// ]]>
             /// </summary>
-            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\(\s*<?((?:[^()]|\((?<DEPTH>)|\)(?<-DEPTH>))*?(?(DEPTH)(?!)))>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\(\s*<?((?:[^()\s]|\((?<DEPTH>)|\)(?<-DEPTH>))*?(?(DEPTH)(?!)))>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[\s*([^\]]*?)\s*\]", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex NoLink = new Regex(@"^!?\[\s*((?:\[[^\]]*?\]|[^\[\]])*?)\s*\]", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)", RegexOptionCompiled, RegexTimeOut);

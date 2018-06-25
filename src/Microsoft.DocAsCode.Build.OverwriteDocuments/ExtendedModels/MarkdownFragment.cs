@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         public Dictionary<string, MarkdownProperty> Properties { get; set; }
 
+        public bool Touched { get; set; }
+
         public override string ToString()
         {
             string uidWrapper = OverwriteUtility.GetUidWrapper(Uid);

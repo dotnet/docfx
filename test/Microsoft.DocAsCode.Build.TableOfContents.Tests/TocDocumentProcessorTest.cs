@@ -564,6 +564,34 @@ items:
         }
 
         [Fact]
+        public void ProcessMarkdownTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/toc.yml";
+            var toc = _fileCreator.CreateFile($@"
+#Topic
+##[ReferencedToc]({pathToReferencedToc})
+", FileType.MarkdownToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithNonExistentReferencedTocShouldFail()
+        {
+            var pathToReferencedToc = "non-existent/TOC.md";
+            var toc = _fileCreator.CreateFile($@"
+- name: Topic
+  href: {pathToReferencedToc}
+", FileType.YamlToc);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", e.Message, true);
+        }
+
+        [Fact]
         public void ProcessYamlTocWithTocHrefShouldSucceed()
         {
             var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -722,6 +750,28 @@ items:
             var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
             var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
             Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context..", ex.Message);
+        }
+
+        [Fact]
+        public void LoadTocYamlWithEmptyNodeShouldSucceed()
+        {
+            // Arrange
+            var content = @"
+- name: x
+  href: a.md
+-";
+            var files = new FileCollection(_inputFolder);
+            var file = _fileCreator.CreateFile(content, FileType.YamlToc);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // Act
+            BuildDocument(files);
+
+            // Assert
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
+            Assert.Single(model.Items); // empty node is removed
         }
 
         #region Helper methods

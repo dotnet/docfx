@@ -285,7 +285,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         manifest.Files.AddRange(restoredIncreItems);
                     }
-                        
+
                     return restoredIncreItems;
                 }
 
@@ -295,8 +295,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static OSPlatformSensitiveDictionary<List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
         {
-            var pairs = items.GroupBy(item => item.SourceRelativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
-                .Select(g => new KeyValuePair<string, List<ManifestItem>>(g.Key, g.ToList()));
+            var pairs = from i in items
+                        group i by new { i.SourceRelativePath, i.Group }
+                        into grp
+                        select new KeyValuePair<string, List<ManifestItem>>(
+                            $"{grp.Key.Group}:{grp.Key.SourceRelativePath}",
+                            grp.ToList());
             return new OSPlatformSensitiveDictionary<List<ManifestItem>>(pairs);
         }
 

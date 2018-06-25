@@ -6,5 +6,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public static class Constants
     {
         public static readonly string FencedCodePrefix = "lang-";
+
+        public static class WarningCodes
+        {
+            public const string InvalidTabGroup = "InvalidTabGroup";
+        }
     }
 }

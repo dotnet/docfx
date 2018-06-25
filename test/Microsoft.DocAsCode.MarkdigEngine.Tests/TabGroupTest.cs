@@ -151,7 +151,7 @@ $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sou
                 BasePath = ".",
                 Extensions = new Dictionary<string, object>
                 {
-                    { LineNumberExtension.EnableSourceInfo, true }
+                    { "EnableSourceInfo", true }
                 }
             };
             var service = new MarkdigMarkdownService(parameter);

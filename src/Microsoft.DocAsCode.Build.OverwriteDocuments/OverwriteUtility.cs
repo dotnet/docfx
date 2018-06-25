@@ -90,6 +90,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 });
             }
             fragments[uid].Metadata = MergeMetadata(fragments[uid].Metadata, metadata);
+            fragments[uid].Touched = true;
         }
 
         public static void AddOrUpdateFragmentProperty(this MarkdownFragment fragment, string oPath, string content = null, Dictionary<string, object> metadata = null)
@@ -105,6 +106,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             {
                 fragment.Properties[oPath].Content = string.IsNullOrWhiteSpace(content) ? string.Empty : content.Trim('\n', '\r');
             }
+            fragment.Properties[oPath].Touched = true;
             fragment.Metadata = MergeMetadata(fragment.Metadata, metadata);
         }
 

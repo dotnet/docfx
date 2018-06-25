@@ -1,5 +1,10 @@
-How-to: Customize DocFX Flavored Markdown
+How-to: Customize DFM Engine
 =========================================
+
+> [!WARNING]
+> Currently, there're two markdown engines in DocFX: **dfm engine** and **markdig engine**. This tutorial is about how to customize dfm engine, so it doesn't work with markdig engine.
+> **markdig engine** will be enabled only when `docfx.json` contains `markdownEngineName: markdig` in build configuration part, otherwise **dfm engine** will be enabled.
+>
 
 Customize Renderer
 ------------------
@@ -34,7 +39,7 @@ Now we want any csharp code (`cs`, `c#`, `csharp`) will generate following html:
 To complete this goal, we need to create a customized rendering plugin.
 
 1. Create a project, set project names.
-2. Add required nuget package: `Microsoft.DocAsCode.Dfm` with version >= 2.17.
+2. Add required nuget package: `Microsoft.DocAsCode.Dfm` with version >= 2.17, `Microsoft.Composition` with version 1.0.31.
 3. Create a class, for example with name `CustomBlockCodeRendererPart`.
 4. Inherit @"Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3" (which implements @Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart).
 5. Implements renderer part class like following:
