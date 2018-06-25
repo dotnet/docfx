@@ -140,8 +140,9 @@ namespace Microsoft.Docs.Build
         private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
         {
             // TODO: support URL
-            var config = new JObject();
-            (_, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            var (_, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            if (config == null)
+                config = new JObject();
             if (!expand || !config.TryGetValue(ConfigConstants.Extend, out var objExtend))
                 return config;
 

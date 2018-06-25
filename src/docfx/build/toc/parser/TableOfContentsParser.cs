@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath, Document file)
+        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath)
         {
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
