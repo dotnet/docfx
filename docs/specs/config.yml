@@ -234,6 +234,18 @@ outputs:
   output/b.json:
   build.manifest:
 ---
+# Adjust error level using rules
+inputs:
+  docfx.yml: |
+    rules:
+      file-not-found: off
+  docs/a.md: |
+    [b](b.md)
+outputs:
+  docs/a.json: |
+    { "content": "<p><a href=\"b.md\">b</a></p>" }
+  build.manifest:
+---
 # Invalid redirection file
 inputs:
   docfx.yml: |
