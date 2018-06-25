@@ -13,36 +13,35 @@ namespace Microsoft.Docs.Build
         /// Split href to path, fragement and query
         /// </summary>
         /// <param name="href">The href</param>
-        /// <returns>The splited path, fragment and query</returns>
-        public static (string path, string fragment, string query) SplitHref(string href)
+        /// <returns>The splited path, query and fragment</returns>
+        public static (string path, string query, string fragment) SplitHref(string href)
         {
             var path = "";
-            var fragment = "";
             var query = "";
+            var fragment = "";
 
-            var queryIndex = href.IndexOf('?');
-            var fragmentIndex = href.IndexOf('#', queryIndex < 0 ? 0 : queryIndex);
-
-            if (queryIndex >= 0)
+            var fragmentIndex = href.IndexOf('#');
+            if (fragmentIndex >= 0)
             {
-                path = href.Substring(0, queryIndex);
-
-                if (fragmentIndex >= 0)
+                fragment = href.Substring(fragmentIndex);
+                var queryIndex = href.IndexOf('?', 0, fragmentIndex);
+                if (queryIndex >= 0)
                 {
                     query = href.Substring(queryIndex, fragmentIndex - queryIndex);
-                    fragment = href.Substring(fragmentIndex);
+                    path = href.Substring(0, queryIndex);
                 }
                 else
                 {
-                    query = href.Substring(queryIndex);
+                    path = href.Substring(0, fragmentIndex);
                 }
             }
             else
             {
-                if (fragmentIndex >= 0)
+                var queryIndex = href.IndexOf('?');
+                if (queryIndex >= 0)
                 {
-                    path = href.Substring(0, fragmentIndex);
-                    fragment = href.Substring(fragmentIndex);
+                    query = href.Substring(queryIndex);
+                    path = href.Substring(0, queryIndex);
                 }
                 else
                 {
@@ -50,7 +49,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (path, fragment, query);
+            return (path, query, fragment);
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)

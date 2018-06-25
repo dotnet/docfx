@@ -213,12 +213,6 @@ namespace Microsoft.Docs.Build
                     return (tocHref, default, default);
                 }
 
-                var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                if (!string.IsNullOrEmpty(fragment) || !string.IsNullOrEmpty(query))
-                {
-                    // '#' and '?' is not allowed when referencing toc file
-                    tocHref = hrefPath;
-                }
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
