@@ -1,13 +1,15 @@
-﻿namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using static Microsoft.DocAsCode.MarkdigEngine.Extensions.MarkdownContext;
 
     public class TripleColonExtension : IMarkdownExtension
     {
@@ -50,8 +52,8 @@
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
-        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, LogActionDelegate logError);
-        bool TryValidateAncestry(ContainerBlock container, LogActionDelegate logError);
+        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError);
+        bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
         // todo: "Render" function as-needed.
     }
 }

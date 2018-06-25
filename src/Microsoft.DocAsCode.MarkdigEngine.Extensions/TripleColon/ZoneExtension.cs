@@ -1,20 +1,23 @@
-﻿
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
-    using static Microsoft.DocAsCode.MarkdigEngine.Extensions.MarkdownContext;
 
     public class ZoneExtension : ITripleColonExtensionInfo
     {
-        private static readonly Regex pivotRegex = new Regex(@"^(?:\s*[a-z0-9-]\s*)*$");
+        private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
+        private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
         public string Name { get; } = "zone";
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, LogActionDelegate logError)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
         {
             htmlAttributes = null;
-            var target = "docs";
+            var target = string.Empty;
             var pivot = string.Empty;
             foreach (var attribute in attributes)
             {
@@ -25,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     case "target":
                         if (value != "docs" && value != "chromeless" && value != "pdf")
                         {
-                            logError("invalid-zone", $"Invalid zone. Unexpected target \"{value}\". Permitted targets are \"docs\", \"chromeless\" or \"pdf\".");
+                            logError($"Unexpected target \"{value}\". Permitted targets are \"docs\", \"chromeless\" or \"pdf\".");
                             return false;
                         }
                         target = value;
@@ -33,38 +36,46 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     case "pivot":
                         if (!pivotRegex.IsMatch(value))
                         {
-                            logError("invalid-zone", $"Invalid zone pivot \"{value}\". Pivot must be a space-delimited list of pivot names. Pivot names must be lower-case and contain only letters, numbers and dashes.");
+                            logError($"Invalid pivot \"{value}\". Pivot must be a comma-delimited list of pivot names. Pivot names must be lower-case and contain only letters, numbers or dashes.");
                             return false;
                         }
                         pivot = value;
                         break;
                     default:
-                        logError("invalid-zone", $"Invalid zone. Unexpected attribute \"{name}\".");
+                        logError($"Unexpected attribute \"{name}\".");
                         return false;
                 }
             }
 
+            if (target == string.Empty && pivot == string.Empty)
+            {
+                logError($"Either target or privot must be specified.");
+                return false;
+            }
             if (target == "pdf" && pivot != string.Empty)
             {
-                logError("invalid-zone", $"Invalid zone. Pivot not permitted in pdf target.");
+                logError($"Pivot not permitted on pdf target.");
                 return false;
             }
 
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("data-zone", target);
+            if (target != string.Empty)
+            {
+                htmlAttributes.AddProperty("data-zone", target);
+            }
             if (pivot != string.Empty)
             {
-                htmlAttributes.AddProperty("data-pivot", pivot);
+                htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(pivotReplaceCommasRegex, " "));
             }
             return true;
         }
-        public bool TryValidateAncestry(ContainerBlock container, LogActionDelegate logError)
+        public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             while (container != null)
             {
                 if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == this.Name)
                 {
-                    logError("invalid-zone", "Zones cannot be nested.");
+                    logError("Zones cannot be nested.");
                     return false;
                 }
                 container = container.Parent;

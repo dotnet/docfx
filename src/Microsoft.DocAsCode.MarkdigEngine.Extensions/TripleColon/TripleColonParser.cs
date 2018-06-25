@@ -1,4 +1,6 @@
-﻿namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Helpers;
     using Markdig.Parsers;
@@ -7,8 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using static Microsoft.DocAsCode.MarkdigEngine.Extensions.MarkdownContext;
-
+ 
     public class TripleColonParser : BlockParser
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
@@ -37,15 +38,16 @@
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            var extensionName = string.Empty;
+            var extensionName = "triple-colon";
             ITripleColonExtensionInfo extension;
             IDictionary<string, string> attributes;
             HtmlAttributes htmlAttributes;
+            Action<string> logError = (string message) => _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}", line: processor.LineIndex);
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out extension)
-                || !extension.TryValidateAncestry(processor.CurrentContainer, _context.LogError)
-                || !TryMatchAttributes(ref slice, out attributes, extensionName, _context.LogError)
-                || !extension.TryProcessAttributes(attributes, out htmlAttributes, _context.LogError))
+                || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
+                || !TryMatchAttributes(ref slice, out attributes, extensionName, logError)
+                || !extension.TryProcessAttributes(attributes, out htmlAttributes, logError))
             {
                 return BlockState.None;
             }
@@ -95,7 +97,7 @@
 
             if (!c.IsZero())
             {
-                _context.LogWarning($"invalid-{extensionName}", $"Invalid character after \"::: {extensionName}-end\": \"{c}\".");
+                _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"");
             }
 
             block.UpdateSpanEnd(slice.End);
@@ -109,12 +111,12 @@
             var extensionName = ((TripleColonBlock)block).Extension.Name;
             if (processor.CurrentContainer != block)
             {
-                _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName}. A {extensionName} cannot end before blocks nested within it have ended.");
+                _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}.  A {extensionName} cannot end before blocks nested within it have ended.");
                 return true;
             }
             if (block.IsOpen)
             {
-                _context.LogWarning($"invalid-{extensionName}", $"No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
+                _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");
             }
             return true;
         }
@@ -137,13 +139,13 @@
             return false;
         }
 
-        private bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, LogActionDelegate logError)
+        private bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, Action<string> logError)
         {
             value = string.Empty;
             var c = slice.CurrentChar;
             if (c != '"')
             {
-                logError($"invalid-{extensionName}", $"Invalid {extensionName} attribute \"{attributeName}\". Values must be enclosed in double quotes.");
+                logError($"Invalid attribute \"{attributeName}\". Values must be enclosed in double quotes.");
                 return false;
             }
             var b = StringBuilderCache.Local();
@@ -152,7 +154,7 @@
             {
                 if (c.IsZero())
                 {
-                    logError($"invalid-{extensionName}", $"Invalid {extensionName} attribute \"{attributeName}\". Values must be terminated with a double quote.");
+                    logError($"Invalid attribute \"{attributeName}\". Values must be terminated with a double quote.");
                     return false;
                 }
                 b.Append(c);
@@ -163,7 +165,7 @@
             return true;
         }
 
-        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, LogActionDelegate logError)
+        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, Action<string> logError)
         {
             attributes = EmptyAttributes;
             while (true)
@@ -176,12 +178,12 @@
                 string attributeName;
                 if (!TryMatchIdentifier(ref slice, out attributeName))
                 {
-                    logError($"invalid-{extensionName}", $"Invalid {extensionName} attribute.");
+                    logError($"Invalid attribute.");
                     return false;
                 }
                 if (attributes.ContainsKey(attributeName))
                 {
-                    logError($"invalid-{extensionName}", $"Invalid {extensionName}. Attribute \"{attributeName}\" specified multiple times.");
+                    logError($"Attribute \"{attributeName}\" specified multiple times.");
                     return false;
                 }
 
