@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -23,11 +24,11 @@ namespace Microsoft.Docs.Build
 
         public string VersionIndependentId { get; set; }
 
-        public string Author { get; set; }
+        public GitUserInfo Author { get; set; }
 
-        public string UpdatedAt { get; set; }
+        public GitUserInfo[] Contributors { get; set; }
 
-        public GitContributorInfo GitContributorInformation { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         public JObject Metadata { get; set; }
     }

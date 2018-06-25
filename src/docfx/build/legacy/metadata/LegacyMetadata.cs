@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -68,13 +69,15 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_document_id"] = true;
             }
 
-            if (pageModel.GitContributorInformation != null)
+            var culture = new CultureInfo(pageModel.Locale);
+            rawMetadata["_op_gitContributorInformation"] = new JObject
             {
-                rawMetadata["_op_gitContributorInformation"] =
-                    JsonUtility.Deserialize<JObject>(JsonUtility.Serialize(pageModel.GitContributorInformation));
-            }
-            rawMetadata["author"] = pageModel.Author;
-            rawMetadata["updated_at"] = pageModel.UpdatedAt;
+                ["author"] = JObject.FromObject(pageModel.Author),
+                ["contributors"] = JObject.FromObject(pageModel.Contributors),
+                ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+            };
+            rawMetadata["author"] = pageModel.Author.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
+            rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
 
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)

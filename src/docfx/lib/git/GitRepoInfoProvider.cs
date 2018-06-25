@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,6 +12,12 @@ namespace Microsoft.Docs.Build
 {
     internal class GitRepoInfoProvider
     {
+        private static readonly string s_defaultCachePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".docfx",
+            "cache",
+            "user-profile.json");
+
         private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache
             = new ConcurrentDictionary<string, GitRepoInfo>();
 
@@ -20,28 +25,47 @@ namespace Microsoft.Docs.Build
 
         private readonly GitUserProfileCache _githubUserProfileCache;
 
-        public GitRepoInfoProvider(Docset docset, List<Document> documents)
+        public GitRepoInfoProvider(Docset docset)
         {
             Debug.Assert(docset != null);
-            Debug.Assert(documents != null);
 
-            _fileCommitsCache = new Lazy<Dictionary<string, List<GitCommit>>>(() => LoadCommits(docset, documents));
-            var userProfileCachePath = docset.Config.Contributor.UserProfileCachePath;
-            _githubUserProfileCache = GitUserProfileCache.Create(Path.Combine(docset.DocsetPath, userProfileCachePath));
+            _fileCommitsCache = new Lazy<Dictionary<string, List<GitCommit>>>(() => LoadCommits(docset));
+            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contributor.UserProfileCachePath)
+                ? s_defaultCachePath
+                : Path.Combine(docset.DocsetPath, docset.Config.Contributor.UserProfileCachePath);
+            _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
-        public bool TryGetCommits(Document document, out List<GitCommit> commits)
+        public (GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(Document document)
         {
             Debug.Assert(document != null);
 
-            return _fileCommitsCache.Value.TryGetValue(document.FilePath, out commits);
+            // TODO: support specifed authorName and updatedAt
+            GitUserProfile authorInfo = null;
+            if (_fileCommitsCache.Value.TryGetValue(document.FilePath, out var commits))
+            {
+                for (var i = commits.Count - 1; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                    {
+                        authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
+                        if (authorInfo != null)
+                            break;
+                    }
+                }
+            }
+            var contributors = (from commit in commits
+                                where !string.IsNullOrEmpty(commit.AuthorEmail)
+                                let info = _githubUserProfileCache.GetByUserEmail(commit.AuthorEmail)
+                                where info != null
+                                group info by info.Id into g
+                                select g.First()).ToArray();
+
+            // TODO: support read build history
+            var updatedAt = DateTime.Now;
+
+            return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
         }
-
-        public GitUserProfile GetUserInformationByName(string userName)
-            => _githubUserProfileCache.GetByUserName(userName);
-
-        public GitUserProfile GetUserInformationByEmail(string userEmail)
-            => _githubUserProfileCache.GetByUserEmail(userEmail);
 
         public GitRepoInfo GetGitRepoInfo(Document document)
         {
@@ -57,10 +81,17 @@ namespace Microsoft.Docs.Build
             return GetFolderGitRepoInfo(Path.GetDirectoryName(Path.GetFullPath(filePath)));
         }
 
-        private Dictionary<string, List<GitCommit>> LoadCommits(Docset docset, List<Document> documents)
+        private bool TryGetCommits(Document document, out List<GitCommit> commits)
+        {
+            Debug.Assert(document != null);
+
+            return _fileCommitsCache.Value.TryGetValue(document.FilePath, out commits);
+        }
+
+        private Dictionary<string, List<GitCommit>> LoadCommits(Docset docset)
         {
             var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
-            var files = documents
+            var files = docset.BuildScope
                 .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
                 .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
                 .ToList();
@@ -91,6 +122,16 @@ namespace Microsoft.Docs.Build
             return Directory.Exists(parent)
                 ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
                 : null;
+        }
+
+        private GitUserInfo ToGitUserInfo(GitUserProfile profile)
+        {
+            return new GitUserInfo
+            {
+                DisplayName = profile.DisplayName,
+                Id = profile.Id,
+                ProfileUrl = profile.ProfileUrl,
+            };
         }
     }
 }

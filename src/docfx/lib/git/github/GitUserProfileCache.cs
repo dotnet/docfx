@@ -12,15 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal class GitUserProfileCache
     {
-        private static readonly string s_defaultCachePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            ".docfx",
-            "cache",
-            "user-profiles.json");
-
         private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByEmail;
-
         private readonly string _cachePath;
 
         public GitUserProfileCache(IDictionary<string, GitUserProfile> cache, string path)
@@ -64,23 +57,21 @@ namespace Microsoft.Docs.Build
         /// <param name="cachePath">the path of the cache file</param>
         public static GitUserProfileCache Create(string cachePath)
         {
-            if (!string.IsNullOrEmpty(cachePath))
-            {
-                try
-                {
-                    var json = File.ReadAllText(cachePath);
-                    var cache = JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(json);
-                    return new GitUserProfileCache(cache, cachePath);
-                }
-                catch (Exception ex)
-                {
-                    Errors.InvalidUserProfileCache(cachePath, ex);
-                }
-            }
+            Debug.Assert(!string.IsNullOrEmpty(cachePath));
 
-            return new GitUserProfileCache(
-                JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(File.ReadAllText(s_defaultCachePath)),
-                s_defaultCachePath);
+            var json = "{}";
+            if (File.Exists(cachePath))
+                json = File.ReadAllText(cachePath);
+
+            try
+            {
+                var cache = JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(json);
+                return new GitUserProfileCache(cache, cachePath);
+            }
+            catch (Exception ex)
+            {
+                throw Errors.InvalidUserProfileCache(cachePath, ex).ToException(ex);
+            }
         }
     }
 }
