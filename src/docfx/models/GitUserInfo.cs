@@ -7,13 +7,10 @@ namespace Microsoft.Docs.Build
 {
     internal class GitUserInfo
     {
-        [JsonProperty("profile_url")]
         public string ProfileUrl { get; set; }
 
-        [JsonProperty("display_name")]
         public string DisplayName { get; set; }
 
-        [JsonProperty("id")]
         public string Id { get; set; }
     }
 }

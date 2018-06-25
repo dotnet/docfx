@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,11 +12,23 @@ namespace Microsoft.Docs.Build
 {
     internal class GitUserProfileCache
     {
+        private static readonly string s_defaultCachePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ".docfx",
+            "cache",
+            "user-profiles.json");
+
         private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByEmail;
 
-        public GitUserProfileCache(IDictionary<string, GitUserProfile> cache)
+        private readonly string _cachePath;
+
+        public GitUserProfileCache(IDictionary<string, GitUserProfile> cache, string path)
         {
+            Debug.Assert(cache != null);
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            _cachePath = path;
             _cacheByName = new ConcurrentDictionary<string, GitUserProfile>(cache);
             _cacheByEmail = new ConcurrentDictionary<string, GitUserProfile>(
                 from profile in cache.Values
@@ -53,18 +64,23 @@ namespace Microsoft.Docs.Build
         /// <param name="cachePath">the path of the cache file</param>
         public static GitUserProfileCache Create(string cachePath)
         {
-            Dictionary<string, GitUserProfile> cache = null;
-            try
+            if (!string.IsNullOrEmpty(cachePath))
             {
-                var json = File.ReadAllText(cachePath);
-                cache = JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(json);
-            }
-            catch (Exception ex)
-            {
-                Errors.InvalidUserProfileCache(cachePath, ex);
+                try
+                {
+                    var json = File.ReadAllText(cachePath);
+                    var cache = JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(json);
+                    return new GitUserProfileCache(cache, cachePath);
+                }
+                catch (Exception ex)
+                {
+                    Errors.InvalidUserProfileCache(cachePath, ex);
+                }
             }
 
-            return new GitUserProfileCache(cache ?? new Dictionary<string, GitUserProfile>());
+            return new GitUserProfileCache(
+                JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(File.ReadAllText(s_defaultCachePath)),
+                s_defaultCachePath);
         }
     }
 }
