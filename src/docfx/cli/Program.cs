@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            using (var reporter = new Reporter())
+            using (var report = new Report())
             {
                 try
                 {
@@ -49,17 +49,17 @@ namespace Microsoft.Docs.Build
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docset, options, reporter);
+                            await Restore.Run(docset, options, report);
                             break;
                         case "build":
-                            await Build.Run(docset, options, reporter);
+                            await Build.Run(docset, options, report);
                             break;
                     }
                     return 0;
                 }
                 catch (DocfxException ex)
                 {
-                    reporter.Report(ReportLevel.Error, ex.Code, ex.Message, ex.File, ex.Line, ex.Column);
+                    report.Write(ex.Error);
                     return 1;
                 }
             }

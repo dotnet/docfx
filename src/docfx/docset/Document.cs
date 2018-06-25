@@ -66,16 +66,30 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
-        public (string docId, string versionIndependentId) Id => _id.Value;
+        public (string id, string versionIndependentId) Id => _id.Value;
+
+        /// <summary>
+        /// Gets the redirection URL if <see cref="ContentType"/> is <see cref="ContentType.Redirection"/>
+        /// </summary>
+        public string RedirectionUrl { get; }
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
-        private Document(Docset docset, string filePath, string sitePath, string siteUrl, string outputPath, ContentType contentType, bool isMasterContent)
+        private Document(
+            Docset docset,
+            string filePath,
+            string sitePath,
+            string siteUrl,
+            string outputPath,
+            ContentType contentType,
+            bool isMasterContent,
+            string redirectionUrl = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
+            Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
             FilePath = filePath;
@@ -84,6 +98,7 @@ namespace Microsoft.Docs.Build
             OutputPath = outputPath;
             ContentType = contentType;
             IsMasterContent = isMasterContent;
+            RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
@@ -156,7 +171,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static (Document doc, DocfxException error) TryCreate(Docset docset, string path, bool redirection = false)
+        public static (Error error, Document doc) TryCreate(Docset docset, string path, string redirectionUrl = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -170,14 +185,14 @@ namespace Microsoft.Docs.Build
             var sitePath = FilePathToSitePath(routedFilePath, type);
             var siteUrl = PathToAbsoluteUrl(sitePath, type);
             var outputPath = sitePath;
-            var contentType = redirection ? ContentType.Redirection : type;
+            var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
-            if (redirection && !isMasterContent)
+            if (contentType == ContentType.Redirection && !isMasterContent)
             {
-                return (default, Errors.InvalidRedirection(filePath, type));
+                return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent), default);
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent, redirectionUrl));
         }
 
         /// <summary>
@@ -197,26 +212,24 @@ namespace Microsoft.Docs.Build
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, path)))
             {
-                return TryCreate(docset, path, false).doc;
+                var (error, file) = TryCreate(docset, path);
+                return error == null ? file : null;
             }
 
             // todo: localization fallback logic
-            // todo: redirection files
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, url) in docset.Config.Dependencies)
+            foreach (var (dependencyName, dependentDocset) in docset.DependentDocset)
             {
+                Debug.Assert(dependencyName.EndsWith('/'));
+
                 if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
                 {
                     // the file stored in the dependent docset should start with dependency name
                     continue;
                 }
 
-                var (docsetPath, _, _) = Restore.GetGitRestoreInfo(url);
-                var dependentDocset = docset.DependentDocset[dependencyName];
-                var relativePathToDependentDocset = Path.GetRelativePath(dependencyName, path);
-
-                var dependencyFile = TryCreateFromFile(dependentDocset, relativePathToDependentDocset);
+                var dependencyFile = TryCreateFromFile(dependentDocset, path.Substring(dependencyName.Length));
                 if (dependencyFile != null)
                 {
                     return dependencyFile;

@@ -17,18 +17,40 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput)
         {
             var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(Path.Combine(docset.Config.Output.Path, doc.OutputPath)));
-            var tocItemWithPath = toc?.Items?.FirstOrDefault();
-            if (tocItemWithPath != null)
+            ConvertLegacyHref(toc.Items.Select(l => (TableOfContentsItem)l));
+
+            var firstItem = toc?.Items?.FirstOrDefault();
+            if (firstItem != null)
             {
-                tocItemWithPath.PdfAbsolutePath = PathUtility.NormalizeFile(
+                firstItem.PdfAbsolutePath = PathUtility.NormalizeFile(
                     $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
-                tocItemWithPath.PdfName = PathUtility.NormalizeFile(
-                    $"/{Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath)}.pdf");
+
+                var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
+                firstItem.PdfName = PathUtility.NormalizeFile(
+                    $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
             }
 
             context.Delete(doc.OutputPath);
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
             context.WriteJson(new { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+        }
+
+        private static void ConvertLegacyHref(IEnumerable<TableOfContentsItem> items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                if (string.Equals(item.Href, "."))
+                {
+                    item.Href = "./";
+                }
+
+                ConvertLegacyHref(item.Children);
+            }
         }
 
         private class LegacyTableOfContentsItem : TableOfContentsItem

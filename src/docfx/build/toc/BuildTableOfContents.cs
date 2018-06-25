@@ -11,9 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task<DependencyMap> Build(Context context, Document file, Action<Document> buildChild)
+        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
+
+            if (!tocMap.Contains(file))
+            {
+                return Task.FromResult(DependencyMap.Empty);
+            }
 
             var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, refArticles, refTocs) = Load(file, dependencyMapBuilder);
@@ -58,17 +63,17 @@ namespace Microsoft.Docs.Build
         }
 
         private static (
-            List<DocfxException> errors,
+            List<Error> errors,
             List<TableOfContentsItem> tocModel,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
             Load(Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
         {
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
-            var tocViewModel = TableOfContentsParser.Load(
+            var (loadErrors, tocViewModel) = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -103,6 +108,7 @@ namespace Microsoft.Docs.Build
                     return link;
                 });
 
+            errors.AddRange(loadErrors);
             return (errors, tocViewModel, referencedDocuments, referencedTocs);
         }
     }

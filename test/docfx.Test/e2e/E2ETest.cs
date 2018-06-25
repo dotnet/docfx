@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(Specs))]
         public static async Task Run(string name, int ordinal)
         {
-            var (docsetPath, spec) = CreateDocset(name, ordinal);
+            var (docsetPath, spec) = await CreateDocset(name, ordinal);
 
             if (!string.IsNullOrEmpty(spec.OS) &&
                 !spec.OS.Split(',').Any(os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim()))))
@@ -65,6 +65,12 @@ namespace Microsoft.Docs.Build
                     var i = 0;
                     foreach (var header in FindTestSpecHeadersInFile(file))
                     {
+                        if (string.IsNullOrEmpty(header))
+                        {
+                            i++;
+                            continue;
+                        }
+
                         var name = $"{i + 1:D2}. {header}";
                         var folder = Path.Combine(
                             file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
@@ -77,7 +83,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static (string docsetPath, E2ESpec spec) CreateDocset(string specName, int ordinal)
+        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName, int ordinal)
         {
             var i = specName.LastIndexOf('/');
             var specPath = specName.Substring(0, i) + ".yml";
@@ -88,7 +94,15 @@ namespace Microsoft.Docs.Build
 
             if (Directory.Exists(docsetPath))
             {
-                Directory.Delete(docsetPath, recursive: true);
+                // Directory.Delete(recursive: true) does not delete hidden files. .git folder is hidden.
+                DeleteDirectory(docsetPath);
+            }
+
+            if (!string.IsNullOrEmpty(spec.Repo))
+            {
+                var (_, remote, refspec) = Restore.GetGitRestoreInfo(spec.Repo);
+                await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
+                return (docsetPath, spec);
             }
 
             foreach (var (file, content) in spec.Inputs)
@@ -99,6 +113,25 @@ namespace Microsoft.Docs.Build
             }
 
             return (docsetPath, spec);
+        }
+
+        private static void DeleteDirectory(string targetDir)
+        {
+            string[] files = Directory.GetFiles(targetDir);
+            string[] dirs = Directory.GetDirectories(targetDir);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(targetDir, false);
         }
 
         private static IEnumerable<string> FindTestSpecHeadersInFile(string path)

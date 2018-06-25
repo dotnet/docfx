@@ -10,35 +10,41 @@ namespace Microsoft.Docs.Build
     internal class Context
     {
         private readonly string _outputPath;
-        private readonly Reporter _reporter;
+        private readonly Report _report;
 
-        public Context(Reporter reporter, string outputPath)
+        public Context(Report report, string outputPath)
         {
-            _reporter = reporter;
+            _report = report;
             _outputPath = Path.GetFullPath(outputPath);
         }
 
         /// <summary>
         /// Reports errors and warnings defined in <see cref="Errors"/>.
         /// </summary>
-        public void Report(Document file, IEnumerable<DocfxException> exceptions)
+        public void Report(Document file, IEnumerable<Error> errors)
         {
-            var path = file.ToString();
+            Report(file.ToString(), errors);
+        }
 
-            foreach (var error in exceptions)
+        /// <summary>
+        /// Reports errors and warnings defined in <see cref="Errors"/>.
+        /// </summary>
+        public void Report(string file, IEnumerable<Error> errors)
+        {
+            foreach (var error in errors)
             {
-                Report(path == error.File || !string.IsNullOrEmpty(error.File)
+                Report(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new DocfxException(error.Level, error.Code, error.Message, path, error.Line, error.Column, error.InnerException));
+                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
             }
         }
 
         /// <summary>
         /// Reports an error or warning defined in <see cref="Errors"/>.
         /// </summary>
-        public void Report(DocfxException exception)
+        public void Report(Error error)
         {
-            _reporter.Report(exception.Level, exception.Code, exception.Message, exception.File, exception.Line, exception.Column);
+            _report.Write(error);
         }
 
         /// <summary>

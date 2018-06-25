@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class Config
     {
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = Array.Empty<string>();
+        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
 
         /// <summary>
         /// Gets the default product name
@@ -53,6 +53,11 @@ namespace Microsoft.Docs.Build
         /// Just for backward compatibility, the source path prefix
         /// </summary>
         public readonly string SourceBasePath = string.Empty;
+
+        /// <summary>
+        /// Just for backward compatibility, Indicate that whether generate pdf url template in medadata.
+        /// </summary>
+        public readonly bool NeedGeneratePdfUrlTemplate = false;
 
         /// <summary>
         /// The hostname
@@ -101,6 +106,11 @@ namespace Microsoft.Docs.Build
         public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
 
         /// <summary>
+        /// Gets the rules for error levels by error code.
+        /// </summary>
+        public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
+
+        /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options)
@@ -108,7 +118,7 @@ namespace Microsoft.Docs.Build
             var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
-                throw Errors.ConfigNotFound(docsetPath);
+                throw Errors.ConfigNotFound(docsetPath).ToException();
             }
             return LoadCore(configPath, options);
         }
@@ -138,7 +148,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                throw Errors.InvalidConfig(configPath, e);
+                throw Errors.InvalidConfig(configPath, e).ToException(e);
             }
         }
 
@@ -150,7 +160,7 @@ namespace Microsoft.Docs.Build
                 return config;
 
             if (parents.Contains(configPath))
-                throw Errors.CircularReference(configPath, parents);
+                throw Errors.CircularReference(configPath, parents).ToException();
 
             parents.Add(configPath);
             var extendedConfig = new JObject();

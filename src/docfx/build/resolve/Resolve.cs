@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Resolve
     {
-        public static (DocfxException error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
+        public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
             var (error, file, redirect, _, _) = TryResolveFile(relativeTo, href);
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        public static (DocfxException error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
+        public static (Error error, string href, string fragment, Document file) TryResolveHref(this Document relativeTo, string href, Document resultRelativeTo)
         {
             Debug.Assert(resultRelativeTo != null);
 
@@ -49,14 +49,26 @@ namespace Microsoft.Docs.Build
                 return (error, fragment + query, fragment, file);
             }
 
+            // Link to dependent repo, don't build the file, leave href as is
+            if (file.Docset != relativeTo.Docset)
+            {
+                return (Errors.LinkIsDependency(relativeTo, file, href), href, fragment, null);
+            }
+
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
 
+            // Master content outside build scope, don't build the file, use relative href
+            if (error == null && file.IsMasterContent && !relativeTo.Docset.BuildScope.Contains(file))
+            {
+                return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + fragment + query, fragment, null);
+            }
+
             return (error, relativeUrl + fragment + query, fragment, file);
         }
 
-        private static (DocfxException error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
@@ -104,9 +116,12 @@ namespace Microsoft.Docs.Build
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (relativeTo.Docset.CombinedRedirections.TryGetValue(pathToDocset, out var redirectTo))
+            if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
             {
                 // redirectTo always is absolute href
+                //
+                // TODO: In case of file rename, we should warn if the content is not inside build scope.
+                //       But we should not warn or do anything with absolute URLs.
                 return (null, null, redirectTo, null, null);
             }
 

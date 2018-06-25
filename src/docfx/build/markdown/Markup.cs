@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
         {
-            var errors = new List<DocfxException>();
+            var errors = new List<Error>();
             var metadata = new StrongBox<JObject>();
             var title = new StrongBox<string>();
             var hasHtml = new StrongBox<bool>();
@@ -68,12 +68,12 @@ namespace Microsoft.Docs.Build
 
             void LogError(string code, string message, string doc, int line)
             {
-                errors.Add(new DocfxException(ReportLevel.Error, code, message, doc, line));
+                errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
             }
 
             void LogWarning(string code, string message, string doc, int line)
             {
-                errors.Add(new DocfxException(ReportLevel.Warning, code, message, doc, line));
+                errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
             }
 
             (string content, object file) ReadFile(string path, object relativeTo)

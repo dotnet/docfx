@@ -2,9 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
-
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
@@ -16,9 +15,10 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             GitRepoInfoProvider repo,
-            RedirectionMap redirectionMap,
             Action<Document> buildChild)
         {
+            Debug.Assert(file.ContentType == ContentType.Markdown);
+
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
@@ -31,7 +31,8 @@ namespace Microsoft.Docs.Build
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
-            var (error, id, versionIndependentId) = redirectionMap.GetIds(file);
+            var (id, versionIndependentId) = file.Docset.Redirections.GetDocumentId(file);
+            var (author, contributors, updatedAt) = repo.GetContributorInfo(file);
 
             var model = new PageModel
             {
@@ -44,11 +45,9 @@ namespace Microsoft.Docs.Build
                 Id = id,
                 VersionIndependentId = versionIndependentId,
             };
-            Git.Process(model, file, repo);
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            var errors = error == null ? markup.Errors : markup.Errors.Concat(new[] { error });
-            context.Report(file, errors);
+            context.Report(file, markup.Errors);
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());

@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         Asset,
 
         /// <summary>
-        /// Redirection documents
+        /// Redirected documents specifed in redirection config
         /// </summary>
         Redirection,
     }

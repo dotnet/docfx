@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 
 using Xunit;
+using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -267,6 +268,17 @@ ValueBasic:
             var yaml = String.Empty;
             var value = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
             Assert.Null(value);
+        }
+
+        [Fact]
+        public void TestDuplicatedKeys()
+        {
+            var yaml = @"
+Key1: 0
+Key1: 0
+";
+            var exception = Assert.Throws<YamlException>(() => YamlUtility.Deserialize(yaml));
+            Assert.Equal("An item with the same key has already been added. Key: Key1", exception.InnerException.Message);
         }
 
         public class BasicClass

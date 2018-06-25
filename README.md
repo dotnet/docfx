@@ -12,7 +12,7 @@ Build your docs website with [DocFX](https://github.com/dotnet/docfx), with land
 To access docfx 3 preview, install `docfx` using the latest version of [.NET Core](https://www.microsoft.com/net/download):
 
 ```powershell
-dotnet tool install -g docfx --version 3.0.0-* --add-source https://ci.appveyor.com/nuget/docfx
+dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
 ```
 
 ## Contributing

@@ -1,0 +1,7 @@
+---
+# Show git contributors
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-1
+outputs:
+  README.json: |
+    { "metadata": {} }
+  build.manifest:
