@@ -23,8 +23,6 @@ namespace Microsoft.Docs.Build
 
         public int Column { get; }
 
-        public Exception Exception { get; }
-
         public Error(
             ErrorLevel level,
             string code,

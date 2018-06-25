@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using Newtonsoft.Json.Linq;
@@ -63,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static T Deserialize<T>(string input)
+        public static (List<Error> errors, T) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -71,16 +72,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static T Deserialize<T>(TextReader reader)
+        public static (List<Error> errors, T) Deserialize<T>(TextReader reader)
         {
-            var json = Deserialize(reader);
-            return json.ToObject<T>(JsonUtility.DefaultDeserializer);
+            var (errors, json) = Deserialize(reader);
+            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static JToken Deserialize(string input)
+        public static (List<Error> errors, JToken) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -88,22 +89,30 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static JToken Deserialize(TextReader reader)
+        public static (List<Error> erros, JToken token) Deserialize(TextReader reader)
         {
+            var errors = new List<Error>();
             var stream = new YamlStream();
 
-            stream.Load(reader);
+            try
+            {
+                stream.Load(reader);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(Errors.InvalidYaml(ex));
+            }
 
             if (stream.Documents.Count == 0)
             {
-                return JValue.CreateNull();
+                return (errors, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return ToJson(stream.Documents[0].RootNode);
+            return (errors, ToJson(stream.Documents[0].RootNode));
         }
 
         private static JToken ToJson(YamlNode node)

@@ -45,18 +45,19 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath)
+        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath, Document file)
         {
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
+                List<Error> errors;
                 JToken tocToken;
-                try
+
+                (errors, tocToken) = YamlUtility.Deserialize(content);
+
+                // TODO: Add error list to the return type instead of throwing exception
+                if (errors.Any())
                 {
-                    tocToken = YamlUtility.Deserialize(content);
-                }
-                catch (Exception ex)
-                {
-                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
+                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {errors[0].Message}.");
                 }
                 return LoadTocModel(tocToken, filePath);
             }
