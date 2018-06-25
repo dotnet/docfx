@@ -12,39 +12,44 @@ namespace Microsoft.Docs.Build
     internal static class LegacyMetadata
     {
         private static readonly string[] s_pageMetadataOutputItems =
-       {
+        {
             "author", "breadcrumb_path", "depot_name", "description", "document_id",
             "document_version_independent_id", "gitcommit", "keywords",
-            "locale", "ms.author", "ms.date", "ms.prod", "ms.topic", "original_content_git_url",
-            "page_type", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name",
+            "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "original_content_git_url",
+            "page_type", "pdf_url_template", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name",
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
         };
 
         private static readonly string[] s_metadataOutputItems =
         {
             "author", "breadcrumb_path", "canonical_url", "content_git_url", "depot_name", "description", "document_id",
-            "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "is_dynamic_rendering", "keywords",
-            "layout", "locale", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
-            "page_type", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
+            "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "keywords",
+            "layout", "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
+            "page_type", "pdf_url_template", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
         };
 
         public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap)
         {
+            var depotName = $"{docset.Config.Product}.{docset.Config.Name}";
+
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
             rawMetadata["locale"] = pageModel.Locale;
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
-            rawMetadata["depot_name"] = $"{docset.Config.Product}.{docset.Config.Name}";
+            rawMetadata["depot_name"] = depotName;
             rawMetadata["site_name"] = "Docs";
             rawMetadata["version"] = 0;
-            rawMetadata["rawTitle"] = $"<h1>{HttpUtility.HtmlEncode(pageModel.Title ?? "")}</h1>";
+            rawMetadata["rawTitle"] = !string.IsNullOrEmpty(pageModel.Title) ? $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>" : "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
-            rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Name}/{{branchName}}{{pdfName}}";
 
-            rawMetadata["is_dynamic_rendering"] = true;
+            if (docset.Config.NeedGeneratePdfUrlTemplate)
+            {
+                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{depotName}/{{branchName}}";
+            }
+
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
             rawMetadata["search.ms_docsetname"] = docset.Config.Name;
@@ -108,6 +113,8 @@ namespace Microsoft.Docs.Build
                     metadataOutput[item] = value;
                 }
             }
+
+            metadataOutput["is_dynamic_rendering"] = true;
 
             return metadataOutput;
         }
