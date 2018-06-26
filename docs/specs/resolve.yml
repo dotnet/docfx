@@ -11,6 +11,18 @@ outputs:
     { "content": "<p>Link to <a href=\"a\">a</a></p>" }
   build.manifest:
 ---
+# Preserve query and fragment for links to files
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](b.md#a?b=c)
+  docs/b.md: Link to [a](./a.md?a=b&c=d#e)
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"b#a?b=c\">b</a></p>" }
+  docs/b.json: |
+    { "content": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
+  build.manifest:
+---
 # Links to URLs are preserved as is
 inputs:
   docfx.yml:

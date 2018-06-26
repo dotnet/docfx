@@ -214,11 +214,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                if (!string.IsNullOrEmpty(fragment) || !string.IsNullOrEmpty(query))
-                {
-                    // '#' and '?' is not allowed when referencing toc file
-                    tocHref = hrefPath;
-                }
+                tocHref = hrefPath;
+
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
@@ -313,6 +310,8 @@ namespace Microsoft.Docs.Build
             {
                 return TocHrefType.AbsolutePath;
             }
+
+            // TODO: split href here
             var fileName = Path.GetFileName(href);
             if (string.IsNullOrEmpty(fileName))
             {
