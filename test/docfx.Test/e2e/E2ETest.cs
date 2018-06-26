@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             // Verify output
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetPath));
+            Assert.True(Directory.Exists(docsetOutputPath));
 
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             var specPath = specName.Substring(0, i) + ".yml";
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
-            var spec = YamlUtility.Deserialize<E2ESpec>(yaml);
+            var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml);
             var docsetPath = Path.Combine("specs.drop", specName.Replace("<", "").Replace(">", ""));
 
             if (Directory.Exists(docsetPath))

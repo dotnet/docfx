@@ -25,13 +25,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
         public static Error InvalidTopicHref(string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topc-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
 
         public static Error InvalidTocHref(string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path");
 
         public static Error YamlHeaderNotObject(object filePath, bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
+
+        public static Error YamlSyntaxError(Exception ex)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", ex.Message);
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
