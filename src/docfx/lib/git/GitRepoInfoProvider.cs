@@ -42,16 +42,18 @@ namespace Microsoft.Docs.Build
 
             // TODO: support specifed authorName and updatedAt
             GitUserProfile authorInfo = null;
-            if (_fileCommitsCache.Value.TryGetValue(document.FilePath, out var commits))
+            if (!_fileCommitsCache.Value.TryGetValue(document.FilePath, out var commits)
+                || commits.Count == 0)
             {
-                for (var i = commits.Count - 1; i >= 0; i--)
+                return (null, null, DateTime.Now);
+            }
+            for (var i = commits.Count - 1; i >= 0; i--)
+            {
+                if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
                 {
-                    if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
-                    {
-                        authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
-                        if (authorInfo != null)
-                            break;
-                    }
+                    authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
+                    if (authorInfo != null)
+                        break;
                 }
             }
             var contributors = (from commit in commits
@@ -93,13 +95,15 @@ namespace Microsoft.Docs.Build
             var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
             var files = docset.BuildScope
                 .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
+                .ToList();
+            var filesFromRepoRoot = files
                 .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
                 .ToList();
-            var commitsList = GitUtility.GetCommits(repoRoot, files);
+            var commitsList = GitUtility.GetCommits(repoRoot, filesFromRepoRoot);
             var result = new Dictionary<string, List<GitCommit>>();
             for (var i = 0; i < files.Count; i++)
             {
-                result[files[i]] = commitsList[i];
+                result[files[i].FilePath] = commitsList[i];
             }
             return result;
         }
@@ -126,6 +130,9 @@ namespace Microsoft.Docs.Build
 
         private GitUserInfo ToGitUserInfo(GitUserProfile profile)
         {
+            if (profile == null)
+                return null;
+
             return new GitUserInfo
             {
                 DisplayName = profile.DisplayName,

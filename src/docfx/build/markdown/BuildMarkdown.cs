@@ -44,6 +44,9 @@ namespace Microsoft.Docs.Build
                 TocRelativePath = tocMap.FindTocRelativePath(file),
                 Id = id,
                 VersionIndependentId = versionIndependentId,
+                Author = author,
+                Contributors = contributors,
+                UpdatedAt = updatedAt,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
