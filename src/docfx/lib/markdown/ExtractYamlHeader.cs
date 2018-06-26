@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -24,23 +25,18 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is YamlFrontMatterBlock yamlHeader)
                     {
-                        try
-                        {
-                            var yamlHeaderObj = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
+                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
 
-                            if (yamlHeaderObj is JObject obj)
-                            {
-                                result.Value = obj;
-                            }
-                            else
-                            {
-                                errors.Add(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
-                            }
-                        }
-                        catch (Exception ex)
+                        if (yamlHeaderObj is JObject obj)
                         {
-                            errors.Add(Errors.InvalidYamlHeader(file, ex));
+                            result.Value = obj;
                         }
+                        else
+                        {
+                            errors.Add(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
+                        }
+
+                        errors.AddRange(errors);
                         return true;
                     }
                     return false;
