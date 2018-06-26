@@ -810,4 +810,4 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["error","yaml-syntax-error","(Line: 3, Col: 3, Idx: 63) - (Line: 3, Col: 12, Idx: 72): Duplicate key","docs/toc.yml"]
+    ["error","yaml-syntax-error","(Line: 3, Col: 3, Idx: 47) - (Line: 3, Col: 12, Idx: 56): Duplicate key","docs/toc.yml"]
