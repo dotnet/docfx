@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             }
             catch (YamlException ex)
             {
-                errors.Add(Errors.YamlSyntaxError(ex));
+                errors.Add(Errors.YamlSyntaxError(ex.InnerException));
             }
 
             if (stream.Documents.Count == 0)
