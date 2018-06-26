@@ -45,21 +45,15 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(string content, string filePath)
+        private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
         {
+            var errors = new List<Error>();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                List<Error> errors;
                 JToken tocToken;
-
                 (errors, tocToken) = YamlUtility.Deserialize(content);
 
-                // TODO: Add error list to the return type instead of throwing exception
-                if (errors.Any())
-                {
-                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {errors[0].Message}.");
-                }
-                return LoadTocModel(tocToken, filePath);
+                return (errors, LoadTocModel(tocToken, filePath));
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
@@ -72,11 +66,11 @@ namespace Microsoft.Docs.Build
                 {
                     throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
                 }
-                return LoadTocModel(tocToken, filePath);
+                return (errors, LoadTocModel(tocToken, filePath));
             }
             else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
-                return LoadMdTocModel(content, filePath);
+                return (errors, LoadMdTocModel(content, filePath));
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
@@ -99,8 +93,7 @@ namespace Microsoft.Docs.Build
                     return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
                 }
             }
-
-            throw new NotSupportedException($"{filePath} is must be an array or an object with an items property");
+            return new List<TableOfContentsInputItem>();
         }
 
         private static (List<Error> errors, List<TableOfContentsInputItem> model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
@@ -113,12 +106,11 @@ namespace Microsoft.Docs.Build
 
             parents.Add(filePath);
 
-            var errors = new List<Error>();
-            var models = LoadTocModel(tocContent, filePath.FilePath);
+            var (errors, models) = LoadTocModel(tocContent, filePath.FilePath);
 
             if (models.Any())
             {
-                errors = ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref);
+                errors.AddRange(ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref));
                 parents.RemoveAt(parents.Count - 1);
             }
 
