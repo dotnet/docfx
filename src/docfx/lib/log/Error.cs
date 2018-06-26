@@ -43,9 +43,11 @@ namespace Microsoft.Docs.Build
             Column = column;
         }
 
-        public override string ToString()
+        public override string ToString() => ToString(Level);
+
+        public string ToString(ErrorLevel level)
         {
-            object[] payload = { Level, Code, Message, File, Line, Column };
+            object[] payload = { level, Code, Message, File, Line, Column };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))

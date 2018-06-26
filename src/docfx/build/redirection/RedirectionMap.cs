@@ -32,9 +32,16 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public (string id, string versionIndependentId) GetDocumentId(Document file)
+        public bool TryGetDocumentId(Document file, out (string id, string versionIndependentId) id)
         {
-            return _redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var source) ? source.Id : file.Id;
+            if (_redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var docId))
+            {
+                id = docId.Id;
+                return true;
+            }
+
+            id = default;
+            return false;
         }
 
         public static (List<Error> errors, RedirectionMap map) Create(Docset docset)
