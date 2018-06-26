@@ -55,6 +55,11 @@ namespace Microsoft.Docs.Build
         public readonly string SourceBasePath = string.Empty;
 
         /// <summary>
+        /// Just for backward compatibility, Indicate that whether generate pdf url template in medadata.
+        /// </summary>
+        public readonly bool NeedGeneratePdfUrlTemplate = false;
+
+        /// <summary>
         /// The hostname
         /// </summary>
         public readonly string BaseUrl = string.Empty;
@@ -94,6 +99,11 @@ namespace Microsoft.Docs.Build
         /// Gets the document id configuration section
         /// </summary>
         public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
+
+        /// <summary>
+        /// Gets the rules for error levels by error code.
+        /// </summary>
+        public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>

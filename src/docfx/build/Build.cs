@@ -13,14 +13,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, Reporter reporter)
+        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             var config = Config.Load(docsetPath, options);
 
-            reporter.Configure(docsetPath, config);
+            report.Configure(docsetPath, config);
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
-            var context = new Context(reporter, outputPath);
+            var context = new Context(report, outputPath);
             var docset = new Docset(context, docsetPath, config, options);
             var repo = new GitRepoInfoProvider();
 
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, docset.Redirections, repo);
             }
         }
 
@@ -105,6 +105,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Config.Locale,
                 Id = file.Id.id,
                 VersionIndependentId = file.Id.versionIndependentId,
+                Metadata = Metadata.GetFromConfig(file),
             };
 
             context.WriteJson(model, file.OutputPath);

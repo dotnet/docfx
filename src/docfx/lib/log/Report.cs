@@ -2,21 +2,24 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class Reporter : IDisposable
+    internal sealed class Report : IDisposable
     {
-        private readonly object _lock = new object();
+        private readonly object _consoleLock = new object();
+        private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
+        private Dictionary<string, ErrorLevel> _rules;
 
         public void Configure(string docsetPath, Config config)
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
-            // TODO: errors and warnings before config loaded are lost, need a way to report them back to host
+            _rules = config.Rules;
             _output = new Lazy<TextWriter>(() =>
             {
                 var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
@@ -27,32 +30,39 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public void Report(Error error)
+        public void Write(Error error)
         {
-            if (error.Level == ErrorLevel.Off)
+            var level = _rules != null && _rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
+            if (level == ErrorLevel.Off)
             {
                 return;
             }
 
-            var outputMessage = error.ToString();
-
-            lock (_lock)
+            if (_output != null)
             {
-                if (_output != null)
+                lock (_outputLock)
                 {
-                    _output.Value.WriteLine(outputMessage);
+                    _output.Value.WriteLine(error.ToString(level));
                 }
+            }
 
+            ConsoleLog(level, error);
+        }
+
+        private void ConsoleLog(ErrorLevel level, Error error)
+        {
+            lock (_consoleLock)
+            {
                 if (!string.IsNullOrEmpty(error.File))
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write(error.File);
+                    Console.Write(error.File + ":");
                     Console.ResetColor();
                     Console.WriteLine();
                 }
 
-                Console.ForegroundColor = GetColor(error.Level);
+                Console.ForegroundColor = GetColor(level);
                 Console.Write(error.Code + " ");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine(error.Message);
@@ -75,7 +85,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            lock (_lock)
+            lock (_outputLock)
             {
                 if (_output != null && _output.IsValueCreated)
                 {

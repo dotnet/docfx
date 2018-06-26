@@ -10,11 +10,11 @@ namespace Microsoft.Docs.Build
     internal class Context
     {
         private readonly string _outputPath;
-        private readonly Reporter _reporter;
+        private readonly Report _report;
 
-        public Context(Reporter reporter, string outputPath)
+        public Context(Report report, string outputPath)
         {
-            _reporter = reporter;
+            _report = report;
             _outputPath = Path.GetFullPath(outputPath);
         }
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Report(Error error)
         {
-            _reporter.Report(error);
+            _report.Write(error);
         }
 
         /// <summary>
