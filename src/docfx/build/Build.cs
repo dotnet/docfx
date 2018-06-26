@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, docset.Redirections, repo);
             }
         }
 
@@ -107,6 +107,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Config.Locale,
                 Id = file.Id.id,
                 VersionIndependentId = file.Id.versionIndependentId,
+                Metadata = Metadata.GetFromConfig(file),
             };
 
             context.WriteJson(model, file.OutputPath);

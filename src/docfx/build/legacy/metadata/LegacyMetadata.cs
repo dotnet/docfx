@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
         };
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap)
+        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
         {
             var depotName = $"{docset.Config.Product}.{docset.Config.Name}";
 
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(pageModel.RedirectionUrl))
             {
                 rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
-                rawMetadata["redirect_document_id"] = true;
+                rawMetadata["redirect_document_id"] = redirectionMap.TryGetDocumentId(file, out var _);
             }
 
             var culture = new CultureInfo(pageModel.Locale);
