@@ -29,32 +29,40 @@ namespace Microsoft.Docs.Build
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
         };
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
+        public static void GenerataCommonMetadata(this JObject metadata, Docset docset)
         {
             var depotName = $"{docset.Config.Product}.{docset.Config.Name}";
+            metadata["depot_name"] = depotName;
 
+            metadata["search.ms_docsetname"] = docset.Config.Name;
+            metadata["search.ms_product"] = docset.Config.Product;
+            metadata["search.ms_sitename"] = "Docs";
+
+            metadata["locale"] = docset.Config.Locale;
+            metadata["site_name"] = "Docs";
+            metadata["version"] = 0;
+        }
+
+        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
+        {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
+
+            rawMetadata.GenerataCommonMetadata(docset);
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
-            rawMetadata["locale"] = pageModel.Locale;
+
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
-            rawMetadata["depot_name"] = depotName;
-            rawMetadata["site_name"] = "Docs";
-            rawMetadata["version"] = 0;
+
             rawMetadata["rawTitle"] = !string.IsNullOrEmpty(pageModel.Title) ? $"<h1>{HttpUtility.HtmlEncode(pageModel.Title)}</h1>" : "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 
             if (docset.Config.NeedGeneratePdfUrlTemplate)
             {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{depotName}/{{branchName}}";
+                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{$"{docset.Config.Product}.{docset.Config.Name}"}/{{branchName}}";
             }
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
-
-            rawMetadata["search.ms_docsetname"] = docset.Config.Name;
-            rawMetadata["search.ms_product"] = docset.Config.Product;
-            rawMetadata["search.ms_sitename"] = "Docs";
 
             var path = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
             rawMetadata["_path"] = path.Remove(path.Length - Path.GetExtension(path).Length);
