@@ -213,6 +213,9 @@ namespace Microsoft.Docs.Build
                     return (tocHref, default, default);
                 }
 
+                var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
+                tocHref = hrefPath;
+
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
@@ -307,6 +310,8 @@ namespace Microsoft.Docs.Build
             {
                 return TocHrefType.AbsolutePath;
             }
+
+            // TODO: split href here
             var fileName = Path.GetFileName(href);
             if (string.IsNullOrEmpty(fileName))
             {
