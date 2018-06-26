@@ -25,8 +25,7 @@ namespace Microsoft.Docs.Build
                         LegacyMarkdown.Convert(docset, context, document, repo, manifestItem.Output, tocMap, redirectionMap);
                         break;
                     case ContentType.Asset:
-                        File.Move(Path.Combine(docset.Config.Output.Path, document.OutputPath), Path.Combine(docset.Config.Output.Path, manifestItem.Output.ResourceOutput.ToLegacyOutputPath(docset)));
-                        context.WriteJson(new { }, manifestItem.Output.MetadataOutput.ToLegacyOutputPath(docset)); // todo: art metadata
+                        LegacyResource.Convert(docset, context, document, manifestItem.Output);
                         break;
                 }
             });
