@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
             };
             rawMetadata["author"] = pageModel.Author.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
-            rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
+            rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
