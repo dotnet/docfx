@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return index == startString.Length;
         }
 
-        public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
+		public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
         {
             if (IsEscaped(slice))
             {

@@ -46,17 +46,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
-                || !TryMatchAttributes(ref slice, out attributes, extensionName, logError)
+                || !TryMatchAttributes(ref slice, out attributes, extensionName, extension.SelfClosing, logError)
                 || !extension.TryProcessAttributes(attributes, out htmlAttributes, logError))
             {
                 return BlockState.None;
             }
 
-            var block = new TripleColonBlock(this)
-            {
-                Column = column,
-                Span = new SourceSpan(sourcePosition, slice.End),
-                Extension = extension
+			var block = new TripleColonBlock(this)
+			{
+				Column = column,
+				Span = new SourceSpan(sourcePosition, slice.End),
+				Extension = extension
             };
 
             if (htmlAttributes != null)
@@ -66,7 +66,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
-            return BlockState.ContinueDiscard;
+			if (extension.SelfClosing)
+			{
+				ExtensionsHelper.SkipSpaces(ref slice);
+				if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
+				{
+					_context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Blocks should be explicitly closed with :::");
+				}
+
+				return BlockState.BreakDiscard;
+			}
+
+			return BlockState.ContinueDiscard;
         }
 
         public override BlockState TryContinue(BlockProcessor processor, Block block)
@@ -108,7 +119,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Close(BlockProcessor processor, Block block)
         {
-            var extensionName = ((TripleColonBlock)block).Extension.Name;
+			if ((block as TripleColonBlock).Extension.SelfClosing)
+			{
+				return true;
+			}
+
+			var extensionName = ((TripleColonBlock)block).Extension.Name;
             if (processor.CurrentContainer != block)
             {
                 _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}.  A {extensionName} cannot end before blocks nested within it have ended.");
@@ -165,13 +181,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, Action<string> logError)
+        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
         {
             attributes = EmptyAttributes;
             while (true)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
-                if (slice.CurrentChar.IsZero())
+                if (slice.CurrentChar.IsZero() || (selfClosing && ExtensionsHelper.MatchStart(ref slice, ":::")))
                 {
                     return true;
                 }
