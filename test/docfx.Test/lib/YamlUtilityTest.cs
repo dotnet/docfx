@@ -290,10 +290,12 @@ Key1: 0
 Key1: 0
 ";
             var (errors, _) = YamlUtility.Deserialize(yaml);
-            Assert.NotEmpty(errors);
-            Assert.Equal(ErrorLevel.Error, errors[0].Level);
-            Assert.Equal("yaml-syntax-error", errors[0].Code);
-            Assert.Equal("An item with the same key has already been added. Key: Key1", errors[0].Message);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, errors[0].Level);
+                Assert.Equal("yaml-syntax-error", errors[0].Code);
+                Assert.Contains("Duplicate key", errors[0].Message);
+            });
         }
 
         public class BasicClass

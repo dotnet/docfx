@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> erros, JToken token) Deserialize(TextReader reader)
+        public static (List<Error> errors, JToken token) Deserialize(TextReader reader)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             }
             catch (YamlException ex)
             {
-                errors.Add(Errors.YamlSyntaxError(ex.InnerException));
+                errors.Add(Errors.YamlSyntaxError(ex));
             }
 
             if (stream.Documents.Count == 0)

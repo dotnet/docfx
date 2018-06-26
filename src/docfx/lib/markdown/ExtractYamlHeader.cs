@@ -36,10 +36,7 @@ namespace Microsoft.Docs.Build
                             errors.Add(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
                         }
 
-                        if (yamlErrors.Any())
-                        {
-                            errors.AddRange(errors);
-                        }
+                        errors.AddRange(errors);
                         return true;
                     }
                     return false;
