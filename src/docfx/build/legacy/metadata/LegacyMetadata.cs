@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "keywords",
             "layout", "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
             "page_type", "pdf_url_template", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
-            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
+            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url",
         };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return newMetadata;
         }
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
+        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap)
         {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
 
@@ -84,7 +84,6 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(pageModel.RedirectionUrl))
             {
                 rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
-                rawMetadata["redirect_document_id"] = redirectionMap.TryGetDocumentId(file, out var _);
             }
 
             var culture = new CultureInfo(pageModel.Locale);
