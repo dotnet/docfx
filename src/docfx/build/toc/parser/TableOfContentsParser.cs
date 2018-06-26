@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 // toc root model
                 if (tocToken is JObject tocObject &&
-                    tocObject.TryGetValue("Items", out var tocItemToken) &&
+                    tocObject.TryGetValue("items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
                     return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
@@ -312,12 +312,13 @@ namespace Microsoft.Docs.Build
                 return TocHrefType.AbsolutePath;
             }
 
-            // TODO: split href here
-            var fileName = Path.GetFileName(href);
-            if (string.IsNullOrEmpty(fileName))
+            var (path, _, _) = HrefUtility.SplitHref(href);
+            if (path.EndsWith('/') || path.EndsWith('\\'))
             {
                 return TocHrefType.RelativeFolder;
             }
+
+            var fileName = Path.GetFileName(path);
 
             if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
                 "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
