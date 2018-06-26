@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -75,6 +76,11 @@ namespace Microsoft.Docs.Build
         public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
 
         /// <summary>
+        /// Gets the configuration about contributors.
+        /// </summary>
+        public readonly ContributorConfig Contributor = new ContributorConfig();
+
+        /// <summary>
         /// Gets the map from dependency name to git url
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
@@ -133,17 +139,49 @@ namespace Microsoft.Docs.Build
         private static Config LoadCore(string configPath, CommandLineOptions options = null)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
+            Config config = null;
             try
             {
                 var configObject = JsonUtility.Merge(
                     ExpandAndNormalize(LoadOriginalConfigObject(configPath, new List<string>(), true)),
                     options?.ToJObject());
 
-                return configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
+                config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
             {
-                throw Errors.InvalidConfig(configPath, e).ToException(e);
+                throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
+            }
+
+            Validate(config, configPath);
+
+            return config;
+        }
+
+        private static void Validate(Config config, string configPath)
+        {
+            ValidateLocale(config);
+            ValidateContributorConfig(config.Contributor, configPath);
+        }
+
+        private static void ValidateLocale(Config config)
+        {
+            try
+            {
+                var culture = new CultureInfo(config.Locale);
+            }
+            catch (CultureNotFoundException e)
+            {
+                throw Errors.InvalidLocale(config.Locale).ToException(e);
+            }
+        }
+
+        private static void ValidateContributorConfig(ContributorConfig config, string configPath)
+        {
+            if (!string.IsNullOrEmpty(config.UserProfileCachePath)
+                && File.Exists(Path.Combine(configPath, config.UserProfileCachePath)))
+            {
+                throw Errors.UserProfileCacheNotFound(config.UserProfileCachePath).ToException();
             }
         }
 

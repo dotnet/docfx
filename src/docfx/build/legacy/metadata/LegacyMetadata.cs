@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web;
 
@@ -80,6 +82,18 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_document_id"] = redirectionMap.TryGetDocumentId(file, out var _);
             }
 
+            var culture = new CultureInfo(pageModel.Locale);
+            rawMetadata["_op_gitContributorInformation"] = new JObject
+            {
+                ["author"] = pageModel.Author?.ToJObject(),
+                ["contributors"] = pageModel.Contributors != null
+                    ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
+                    : null,
+                ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+            };
+            rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
+            rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
+
             var repoInfo = repo.GetGitRepoInfo(file);
             if (repoInfo != null)
             {
@@ -129,6 +143,16 @@ namespace Microsoft.Docs.Build
             metadataOutput["is_dynamic_rendering"] = true;
 
             return metadataOutput;
+        }
+
+        private static JObject ToJObject(this GitUserInfo info)
+        {
+            return new JObject
+            {
+                ["display_name"] = info.DisplayName,
+                ["id"] = info.Id,
+                ["profile_url"] = info.ProfileUrl,
+            };
         }
     }
 }
