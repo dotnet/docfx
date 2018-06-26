@@ -46,6 +46,11 @@ namespace Microsoft.Docs.Build
             newMetadata["site_name"] = "Docs";
             newMetadata["version"] = 0;
 
+            newMetadata["__global"] = new JObject
+            {
+                ["tutorial_allContributors"] = "all {0} contributors",
+            };
+
             return newMetadata;
         }
 
