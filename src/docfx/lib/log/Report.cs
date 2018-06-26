@@ -10,7 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
-        private readonly object _consoleLock = new object();
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
         private Dictionary<string, ErrorLevel> _rules;
@@ -46,41 +45,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            ConsoleLog(level, error);
-        }
-
-        private void ConsoleLog(ErrorLevel level, Error error)
-        {
-            lock (_consoleLock)
-            {
-                if (!string.IsNullOrEmpty(error.File))
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write(error.File + ":");
-                    Console.ResetColor();
-                    Console.WriteLine();
-                }
-
-                Console.ForegroundColor = GetColor(level);
-                Console.Write(error.Code + " ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(error.Message);
-                Console.ResetColor();
-            }
-        }
-
-        private static ConsoleColor GetColor(ErrorLevel level)
-        {
-            switch (level)
-            {
-                case ErrorLevel.Error:
-                    return ConsoleColor.Red;
-                case ErrorLevel.Warning:
-                    return ConsoleColor.Yellow;
-                default:
-                    return ConsoleColor.Cyan;
-            }
+            ConsoleLog.WriteError(level, error);
         }
 
         public void Dispose()

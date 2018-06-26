@@ -44,15 +44,20 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    var startTime = DateTime.UtcNow;
                     var (command, docset, options) = ParseCommandLineOptions(args);
 
                     switch (command)
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Done in {ConsoleLog.ElapsedTime(startTime)}");
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Done in {ConsoleLog.ElapsedTime(startTime)}");
                             break;
                     }
                     return 0;

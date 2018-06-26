@@ -16,14 +16,17 @@ namespace Microsoft.Docs.Build
             RedirectionMap redirectionMap,
             GitRepoInfoProvider repo)
         {
-            // generate manifest and corresponding files
-            var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-            LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap, redirectionMap);
+            using (ConsoleLog.Measure("Converting to legacy"))
+            {
+                // generate manifest and corresponding files
+                var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
+                LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap, redirectionMap);
 
-            // generate mappings
-            LegacyFileMap.Convert(docset, context, documents);
-            LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
-            LegacyCrossRepoReferenceInfo.Convert(docset, context);
+                // generate mappings
+                LegacyFileMap.Convert(docset, context, documents);
+                LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
+                LegacyCrossRepoReferenceInfo.Convert(docset, context);
+            }
         }
     }
 }

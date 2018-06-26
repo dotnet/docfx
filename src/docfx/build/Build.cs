@@ -41,26 +41,29 @@ namespace Microsoft.Docs.Build
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap)
         {
-            var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
-            var fileListBuilder = new DocumentListBuilder();
-
-            await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile);
-
-            return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
-
-            async Task BuildOneFile(Document file, Action<Document> buildChild)
+            using (ConsoleLog.Measure("Building"))
             {
-                var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
+                var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
+                var fileListBuilder = new DocumentListBuilder();
 
-                foreach (var (souce, dependencies) in dependencyMap)
+                await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, ConsoleLog.Progress);
+
+                return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
+
+                async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    sourceDependencies.TryAdd(souce, dependencies);
-                }
-            }
+                    var dependencyMap = await BuildFile(context, file, tocMap, buildChild);
 
-            bool ShouldBuildFile(Document file)
-            {
-                return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
+                    foreach (var (souce, dependencies) in dependencyMap)
+                    {
+                        sourceDependencies.TryAdd(souce, dependencies);
+                    }
+                }
+
+                bool ShouldBuildFile(Document file)
+                {
+                    return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
+                }
             }
         }
 
