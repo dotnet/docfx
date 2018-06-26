@@ -49,14 +49,15 @@ namespace Microsoft.Docs.Build
         {
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
+                List<Error> errors;
                 JToken tocToken;
-                try
+
+                (errors, tocToken) = YamlUtility.Deserialize(content);
+
+                // TODO: Add error list to the return type instead of throwing exception
+                if (errors.Any())
                 {
-                    tocToken = YamlUtility.Deserialize(content);
-                }
-                catch (Exception ex)
-                {
-                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
+                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {errors[0].Message}.");
                 }
                 return LoadTocModel(tocToken, filePath);
             }
@@ -92,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 // toc root model
                 if (tocToken is JObject tocObject &&
-                    tocObject.TryGetValue("Items", out var tocItemToken) &&
+                    tocObject.TryGetValue("items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
                     return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
@@ -214,11 +215,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (hrefPath, fragment, query) = HrefUtility.SplitHref(tocHref);
-                if (!string.IsNullOrEmpty(fragment) || !string.IsNullOrEmpty(query))
-                {
-                    // '#' and '?' is not allowed when referencing toc file
-                    tocHref = hrefPath;
-                }
+                tocHref = hrefPath;
+
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
@@ -313,11 +311,14 @@ namespace Microsoft.Docs.Build
             {
                 return TocHrefType.AbsolutePath;
             }
-            var fileName = Path.GetFileName(href);
-            if (string.IsNullOrEmpty(fileName))
+
+            var (path, _, _) = HrefUtility.SplitHref(href);
+            if (path.EndsWith('/') || path.EndsWith('\\'))
             {
                 return TocHrefType.RelativeFolder;
             }
+
+            var fileName = Path.GetFileName(path);
 
             if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
                 "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||

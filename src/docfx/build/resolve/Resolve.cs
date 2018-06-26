@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            var (error, file, redirectTo, fragment, query) = TryResolveFile(relativeTo, href);
+            var (error, file, redirectTo, query, fragment) = TryResolveFile(relativeTo, href);
 
             // Redirection
             if (!string.IsNullOrEmpty(redirectTo))
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 {
                     fragment = "#";
                 }
-                return (error, fragment + query, fragment, file);
+                return (error, query + fragment, fragment, file);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
@@ -62,26 +62,26 @@ namespace Microsoft.Docs.Build
             // Master content outside build scope, don't build the file, use relative href
             if (error == null && file.IsMasterContent && !relativeTo.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + fragment + query, fragment, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + query + fragment, fragment, null);
             }
 
-            return (error, relativeUrl + fragment + query, fragment, file);
+            return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private static (Error error, Document file, string redirectTo, string fragment, string query) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
                 return (Errors.LinkIsEmpty(relativeTo), null, null, null, null);
             }
 
-            var (path, fragment, query) = HrefUtility.SplitHref(href);
+            var (path, query, fragment) = HrefUtility.SplitHref(href);
             var pathToDocset = "";
 
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return (null, relativeTo, null, fragment, query);
+                return (null, relativeTo, null, query, fragment);
             }
 
             // Leave absolute URL as is
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, fragment, query);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment);
         }
     }
 }

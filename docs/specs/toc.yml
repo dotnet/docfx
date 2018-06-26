@@ -34,7 +34,7 @@ outputs:
                       },
                       {  
                         "toc_title":"Reference Normal File 3",
-                        "href":"f1/n1#row=4?branch=master"
+                        "href":"f1/n1?branch=master#row=4"
                       },
                       {  
                         "toc_title":"Reference Normal File 4",
@@ -73,7 +73,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/toc.json: |
-    [{ "name": "a", "href": "a/" }]
+    [{ "name": "a", "href": "a/?query" }]
   docs/a/toc.json: |
     [{ "name": "b", "href": "b.md" }]
   docs/a/b.md:
@@ -758,9 +758,9 @@ outputs:
     }
   build.manifest:
   build.log: |
-    ["error","invalid-topc-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/toc.yml"]
-    ["error","invalid-topc-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
-    ["error","invalid-topc-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topic-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
+    ["error","invalid-topic-href","The topic href 'f1/toc.md' can only reference to a local file or absolute path","docs/toc.yml"]
 ---
 # Toc href cann't reference a local file
 inputs:
