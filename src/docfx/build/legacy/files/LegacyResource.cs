@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         {
             var metadata = Metadata.GetFromConfig(doc);
             metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
+            metadata.Remove("__global");
 
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset)));
             context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
