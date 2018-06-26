@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
 
-            var (path, fragment, _) = HrefUtility.SplitHref(remote);
+            var (path, _, fragment) = HrefUtility.SplitHref(remote);
 
             var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
             var uri = new Uri(path);
