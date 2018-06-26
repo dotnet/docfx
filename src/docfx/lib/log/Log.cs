@@ -82,6 +82,8 @@ namespace Microsoft.Docs.Build
             {
                 lock (s_consoleLock)
                 {
+                    s_lastProgressName = null;
+
                     if (!string.IsNullOrEmpty(error.File))
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -126,7 +128,7 @@ namespace Microsoft.Docs.Build
                     Console.SetCursorPosition(0, Console.CursorTop - 1);
                 }
                 s_lastProgressName = name;
-                Console.WriteLine(line.PadRight(Console.BufferWidth - 1 - line.Length, ' '));
+                Console.WriteLine(line.PadRight(Console.BufferWidth - 1, ' '));
             }
         }
 
