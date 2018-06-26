@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             // Verify output
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetPath));
+            Assert.True(Directory.Exists(docsetOutputPath));
 
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();

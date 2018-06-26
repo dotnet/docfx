@@ -292,6 +292,7 @@ Key1: 0
             var (errors, _) = YamlUtility.Deserialize(yaml);
             Assert.NotEmpty(errors);
             Assert.Equal(ErrorLevel.Error, errors[0].Level);
+            Assert.Equal("yaml-syntax-error", errors[0].Code);
             Assert.Equal("(Line: 3, Col: 1, Idx: 11) - (Line: 3, Col: 5, Idx: 15): Duplicate key", errors[0].Message);
         }
 

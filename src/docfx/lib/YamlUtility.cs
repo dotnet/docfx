@@ -98,9 +98,9 @@ namespace Microsoft.Docs.Build
             {
                 stream.Load(reader);
             }
-            catch (Exception ex)
+            catch (YamlException ex)
             {
-                errors.Add(Errors.InvalidYaml(ex));
+                errors.Add(Errors.YamlSyntaxError(ex));
             }
 
             if (stream.Documents.Count == 0)
