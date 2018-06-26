@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput)
         {
             var metadata = Metadata.GetFromConfig(doc);
-            metadata.GenerataCommonMetadata(docset);
+            metadata = LegacyMetadata.GenerataCommonMetadata(metadata, docset);
 
             File.Move(Path.Combine(docset.Config.Output.Path, doc.OutputPath), Path.Combine(docset.Config.Output.Path, legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset)));
             context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));

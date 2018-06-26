@@ -29,25 +29,29 @@ namespace Microsoft.Docs.Build
             "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url", "redirect_document_id",
         };
 
-        public static void GenerataCommonMetadata(this JObject metadata, Docset docset)
+        public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
         {
+            var newMetadata = new JObject(metadata);
+
             var depotName = $"{docset.Config.Product}.{docset.Config.Name}";
-            metadata["depot_name"] = depotName;
+            newMetadata["depot_name"] = depotName;
 
-            metadata["search.ms_docsetname"] = docset.Config.Name;
-            metadata["search.ms_product"] = docset.Config.Product;
-            metadata["search.ms_sitename"] = "Docs";
+            newMetadata["search.ms_docsetname"] = docset.Config.Name;
+            newMetadata["search.ms_product"] = docset.Config.Product;
+            newMetadata["search.ms_sitename"] = "Docs";
 
-            metadata["locale"] = docset.Config.Locale;
-            metadata["site_name"] = "Docs";
-            metadata["version"] = 0;
+            newMetadata["locale"] = docset.Config.Locale;
+            newMetadata["site_name"] = "Docs";
+            newMetadata["version"] = 0;
+
+            return newMetadata;
         }
 
         public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
         {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
 
-            rawMetadata.GenerataCommonMetadata(docset);
+            rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
             rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
 
