@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public static async Task<TableOfContentsMap> BuildTocMap(IEnumerable<Document> files)
         {
-            using (ConsoleLog.Measure("Generating TOC map"))
+            using (Log.Measure("Generating TOC map"))
             {
                 Debug.Assert(files != null);
 
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), ConsoleLog.Progress);
+                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Log.Progress);
 
                 return builder.Build();
             }

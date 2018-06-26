@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
+            GitRepoInfoProvider repo,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Markdown);
@@ -31,6 +32,7 @@ namespace Microsoft.Docs.Build
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            var (author, contributors, updatedAt) = repo.GetContributorInfo(file);
 
             var model = new PageModel
             {
@@ -42,6 +44,9 @@ namespace Microsoft.Docs.Build
                 TocRelativePath = tocMap.FindTocRelativePath(file),
                 Id = id,
                 VersionIndependentId = versionIndependentId,
+                Author = author,
+                Contributors = contributors,
+                UpdatedAt = updatedAt,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here

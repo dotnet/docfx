@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
         {
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Done in {ConsoleLog.ElapsedTime(startTime)}");
+            Console.WriteLine($"Done in {Log.ElapsedTime(startTime)}");
             Console.ResetColor();
         }
 

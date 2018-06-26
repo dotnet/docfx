@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public static Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            using (ConsoleLog.Measure("Restore dependencies"))
+            using (Log.Measure("Restore dependencies"))
             {
                 // Restore has to use Config directly, it cannot depend on Docset,
                 // because Docset assumes the repo to physically exist on disk.
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return ParallelUtility.ForEach(
                     config.Dependencies.Values,
                     (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild, restoredDirs),
-                    progress: ConsoleLog.Progress);
+                    progress: Log.Progress);
             }
         }
 

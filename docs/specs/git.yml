@@ -1,7 +1,25 @@
 ---
-# Show git contributors
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-1
+# Show git contributors, author, updatedAt
+repo: https://github.com/docascode/docfx-test-dependencies#git-test
 outputs:
   README.json: |
-    { "metadata": {} }
+    {
+      "author": {
+        "profileUrl": "https://github.com/OsmondJiang",
+        "displayName": "Osmond Jiang",
+        "id": "19990166"
+      },
+      "contributors": [
+        {
+          "profileUrl": "https://github.com/superyyrrzz",
+          "displayName": "Renze Yu",
+          "id": "3831744"
+        },
+        {
+          "profileUrl": "https://github.com/OsmondJiang",
+          "displayName": "Osmond Jiang",
+          "id": "19990166"
+        }
+      ],
+    }
   build.manifest:

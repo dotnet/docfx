@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            ConsoleLog.WriteError(level, error);
+            Log.WriteError(level, error);
         }
 
         public void Dispose()

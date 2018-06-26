@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ConsoleLog
+    internal static class Log
     {
         private static readonly object s_consoleLock = new object();
         private static string s_lastProgressName;
