@@ -34,6 +34,12 @@ namespace Microsoft.Docs.Build
 
         public bool TryGetDocumentId(Document file, out (string id, string versionIndependentId) id)
         {
+            if (file.SiteUrl == "/microsoft-edge/devtools-guide")
+            {
+                id = default;
+                return false;
+            }
+
             if (_redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var docId))
             {
                 id = docId.Id;

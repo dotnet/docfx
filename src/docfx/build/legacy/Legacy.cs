@@ -13,12 +13,11 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            RedirectionMap redirectionMap,
             GitRepoInfoProvider repo)
         {
             // generate manifest and corresponding files
             var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-            LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap, redirectionMap);
+            LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap);
 
             // generate mappings
             LegacyFileMap.Convert(docset, context, documents);
