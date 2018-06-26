@@ -797,7 +797,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/toc.yml: |
-    - name: topic href has highest priority
+    - name: Duplicated keys
       topicHref: f1/a.md
       topicHref: f1/a.md
       tocHref: f1/
