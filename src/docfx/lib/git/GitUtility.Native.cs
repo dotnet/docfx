@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);
+
+            // TODO: handle exception when shallow clone
             var commits = LoadCommits(repo);
             var trees = LoadTrees(repo, commits, pathToParent, progress);
 
