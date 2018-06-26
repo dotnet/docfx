@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 JToken tocToken;
                 (errors, tocToken) = YamlUtility.Deserialize(content);
 
-                return (errors, LoadTocModel(tocToken, filePath));
+                return (errors, LoadTocModel(tocToken));
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                 {
                     throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
                 }
-                return (errors, LoadTocModel(tocToken, filePath));
+                return (errors, LoadTocModel(tocToken));
             }
             else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken, string filePath)
+        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken)
         {
             if (tocToken is JArray tocArray)
             {
