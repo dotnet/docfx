@@ -69,6 +69,17 @@ outputs:
     }
   build.manifest:
 ---
+# TOC json file is invalid
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    [{ "name": "title" ]
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object. Path '[0]', line 1, position 20.","docs/toc.json"]
+---
 # Probe TOC in JSON format
 inputs:
   docfx.yml:

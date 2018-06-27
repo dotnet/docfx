@@ -64,7 +64,8 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex)
                 {
-                    throw new NotSupportedException($"{filePath} is not a valid TOC file, detail: {ex.Message}.", ex);
+                    errors.Add(Errors.JsonSyntaxError(ex));
+                    return (errors, LoadTocModel(JValue.CreateNull()));
                 }
                 return (errors, LoadTocModel(tocToken));
             }
