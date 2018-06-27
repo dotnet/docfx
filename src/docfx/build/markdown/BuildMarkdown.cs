@@ -47,6 +47,7 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
+                EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
