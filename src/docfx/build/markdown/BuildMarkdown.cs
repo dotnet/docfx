@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
-            HtmlDocument document = new HtmlDocument();
+            var document = new HtmlDocument();
             document.LoadHtml(html);
 
             var wordCount = HtmlUtility.CountWord(html);
@@ -33,12 +33,14 @@ namespace Microsoft.Docs.Build
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             var (author, contributors, updatedAt) = repo.GetContributorInfo(file);
+            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
             var model = new PageModel
             {
                 Content = content,
                 Metadata = metadata,
-                Title = markup.Title,
+                Title = title,
+                TitleHtml = markup.TitleHtml,
                 WordCount = wordCount,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),

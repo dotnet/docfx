@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal struct MarkupResult
     {
-        public string Title;
+        public string TitleHtml;
 
         public bool HasHtml;
 

@@ -66,5 +66,13 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));
         }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("<p id='1'>a</p>", "a")]
+        public void GetInnerText(string input, string output)
+        {
+            Assert.Equal(output, HtmlUtility.GetInnerText(input));
+        }
     }
 }
