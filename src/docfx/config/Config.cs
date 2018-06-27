@@ -77,11 +77,6 @@ namespace Microsoft.Docs.Build
         public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
 
         /// <summary>
-        /// Gets the configuration about contributors display in page.
-        /// </summary>
-        public readonly ContributorConfig Contributor = new ContributorConfig();
-
-        /// <summary>
         /// Gets the configuration about contribution scenario.
         /// </summary>
         public readonly ContributionConfig Contribution = new ContributionConfig();
@@ -167,7 +162,7 @@ namespace Microsoft.Docs.Build
         private static void Validate(Config config, string configPath)
         {
             ValidateLocale(config);
-            ValidateContributorConfig(config.Contributor, configPath);
+            ValidateContributorConfig(config.Contribution, configPath);
         }
 
         private static void ValidateLocale(Config config)
@@ -182,7 +177,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateContributorConfig(ContributorConfig config, string configPath)
+        private static void ValidateContributorConfig(ContributionConfig config, string configPath)
         {
             if (!string.IsNullOrEmpty(config.UserProfileCachePath)
                 && File.Exists(Path.Combine(configPath, config.UserProfileCachePath)))
