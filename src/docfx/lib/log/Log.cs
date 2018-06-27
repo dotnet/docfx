@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                return Console.BufferWidth - 1;
+                return Math.Max(0, Console.BufferWidth - 1);
             }
             catch
             {
