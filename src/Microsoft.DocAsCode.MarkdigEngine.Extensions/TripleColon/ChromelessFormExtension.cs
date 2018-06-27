@@ -13,7 +13,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
 		public string Name => "form";
 		public bool SelfClosing => true;
-		public Func<HtmlRenderer, TripleColonBlock, bool> Render { get; private set; }
+		public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+
+		public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+		{
+			return RenderDelegate != null
+				? RenderDelegate(renderer, block)
+				: false;
+		}
 
 		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
 		{
@@ -61,7 +68,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 			htmlAttributes.AddProperty("data-action", action);
 			htmlAttributes.AddClass("chromeless-form");
 
-			Render = (renderer, obj) =>
+			RenderDelegate = (renderer, obj) =>
 			{
 				renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
 

@@ -56,6 +56,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 		bool SelfClosing { get; }
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
-		Func<HtmlRenderer, TripleColonBlock, bool> Render { get; }
+		bool Render(HtmlRenderer renderer, TripleColonBlock block);
     }
 }

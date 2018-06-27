@@ -9,9 +9,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, TripleColonBlock b)
         {
-			if (b.Extension.Render != null)
+			if (b.Extension.Render(renderer, b))
 			{
-				b.Extension.Render(renderer, b);
 				return;
 			}
 

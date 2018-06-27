@@ -16,7 +16,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
         public string Name => "zone";
 		public bool SelfClosing => false;
-		public Func<HtmlRenderer, TripleColonBlock, bool> Render => (r, t) => false;
+
+		public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+		{
+			return false;
+		}
 
 		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
         {
