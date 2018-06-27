@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
+        // TODO: add more test cases
         public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
             Document document,
             string author)
