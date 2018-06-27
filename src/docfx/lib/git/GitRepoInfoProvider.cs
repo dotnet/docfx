@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -36,38 +37,54 @@ namespace Microsoft.Docs.Build
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
-        public (GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(Document document)
+        public (GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt, List<Error> errors) GetContributorInfo(
+            Document document,
+            JObject metadata)
         {
             Debug.Assert(document != null);
 
-            // TODO: support specifed authorName and updatedAt
+            // TODO: support specifed updatedAt
+            var errors = new List<Error>();
             GitUserProfile authorInfo = null;
-            if (!TryGetCommits(document.FilePath, out var commits)
-                || commits.Count == 0)
-            {
-                return (null, null, DateTime.Now);
-            }
+            if (!TryGetCommits(document.FilePath, out var commits) || commits.Count == 0)
+                return (null, null, DateTime.Now, errors);
 
-            for (var i = commits.Count - 1; i >= 0; i--)
+            if (metadata.TryGetValue("author", out var author))
             {
-                if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                var authorStr = ToString(author);
+                if (!string.IsNullOrEmpty(authorStr))
                 {
-                    authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
-                    if (authorInfo != null)
-                        break;
+                    authorInfo = _githubUserProfileCache.GetByUserName(authorStr);
+                    if (authorInfo == null)
+                        errors.Add(Errors.AuthorNotFound(authorStr));
                 }
             }
+            else
+            {
+                for (var i = commits.Count - 1; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                    {
+                        authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
+                        if (authorInfo != null)
+                            break;
+                    }
+                }
+            }
+
             var contributors = (from commit in commits
                                 where !string.IsNullOrEmpty(commit.AuthorEmail)
                                 let info = _githubUserProfileCache.GetByUserEmail(commit.AuthorEmail)
                                 where info != null
                                 group info by info.Id into g
-                                select g.First()).ToArray();
+                                select g.First()).ToList();
+            if (authorInfo != null && contributors.All(p => p.Name != authorInfo.Name))
+                contributors.Add(authorInfo);
 
             // TODO: support read build history
             var updatedAt = DateTime.Now;
 
-            return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
+            return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt, errors);
         }
 
         public bool TryGetCommits(string filePath, out List<GitCommit> commits)
@@ -143,6 +160,18 @@ namespace Microsoft.Docs.Build
                 Id = profile.Id,
                 ProfileUrl = profile.ProfileUrl,
             };
+        }
+
+        private string ToString(JToken obj)
+        {
+            if (obj == null)
+                return null;
+            if (!(obj is JValue jValue))
+                return null;
+            if (!(jValue.Value is string str))
+                return null;
+
+            return str;
         }
     }
 }

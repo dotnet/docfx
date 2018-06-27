@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            var (author, contributors, updatedAt) = repo.GetContributorInfo(file);
+            var (author, contributors, updatedAt, repoErrors) = repo.GetContributorInfo(file, metadata);
 
             var model = new PageModel
             {
@@ -52,6 +52,7 @@ namespace Microsoft.Docs.Build
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
             context.Report(file, markup.Errors);
+            context.Report(file, repoErrors);
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
