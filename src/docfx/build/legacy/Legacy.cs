@@ -13,7 +13,8 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo)
+            GitRepoInfoProvider repo,
+            Report report)
         {
             // generate manifest and corresponding files
             var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
@@ -23,6 +24,7 @@ namespace Microsoft.Docs.Build
             LegacyFileMap.Convert(docset, context, documents);
             LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
             LegacyCrossRepoReferenceInfo.Convert(docset, context);
+            LegacyReport.Convert(docset, report);
         }
     }
 }
