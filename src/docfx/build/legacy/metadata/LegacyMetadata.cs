@@ -57,9 +57,13 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
+<<<<<<< HEAD
             rawMetadata["rawTitle"] = !string.IsNullOrEmpty(pageModel.Title)
                 ? $"<h1 id=\"{Regex.Replace(pageModel.Title.ToLower(new CultureInfo("en-US", false)), @"[^\p{L}\p{N}\- ]+", "").Replace(' ', '-')}\">{HttpUtility.HtmlEncode(pageModel.Title)}</h1>"
                 : "";
+=======
+            rawMetadata["rawTitle"] = pageModel.TitleHtml;
+>>>>>>> 873d06b3d47dc5ec2dad57a1920569c705ca3afd
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 
@@ -104,6 +108,8 @@ namespace Microsoft.Docs.Build
                     rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
                 }
             }
+
+            rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
 
             return rawMetadata;
         }

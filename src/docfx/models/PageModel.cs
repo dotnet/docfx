@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public string Title { get; set; }
 
+        public string TitleHtml { get; set; }
+
         public string RedirectionUrl { get; set; }
 
         public string Id { get; set; }
@@ -29,6 +31,8 @@ namespace Microsoft.Docs.Build
         public GitUserInfo[] Contributors { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        public bool EnableContribution { get; set; }
 
         public JObject Metadata { get; set; }
     }

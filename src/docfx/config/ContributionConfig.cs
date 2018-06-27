@@ -3,10 +3,15 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContributorConfig
+    internal class ContributionConfig
     {
         /// <summary>
-        /// The path of user profile cache.
+        /// Determine whether to show links for contribution.
+        /// </summary>
+        public readonly bool Enabled = true;
+
+        /// <summary>
+        /// The path of user profile cache, used for generating authoer and contributors.
         /// </summary>
         public readonly string UserProfileCachePath = string.Empty;
     }
