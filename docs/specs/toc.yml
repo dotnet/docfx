@@ -69,6 +69,17 @@ outputs:
     }
   build.manifest:
 ---
+# TOC json file is invalid
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    [{ "name": "title" ]
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object. Path '[0]', line 1, position 20.","docs/toc.json"]
+---
 # Probe TOC in JSON format
 inputs:
   docfx.yml:
@@ -792,4 +803,22 @@ outputs:
   build.log: |
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/toc.yml"]
-
+---
+# Toc syntax error with duplicated keys
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    - name: Duplicated keys
+      topicHref: f1/a.md
+      topicHref: f1/a.md
+      tocHref: f1/
+      href: f1/b.md
+  docs/f1/a.md:
+  docs/f1/b.md:
+outputs:
+  docs/toc.json: 
+  docs/f1/a.json:
+  docs/f1/b.json:
+  build.manifest:
+  build.log: |
+    ["error","yaml-syntax-error","(Line: 3, Col: 3, Idx: 47) - (Line: 3, Col: 12, Idx: 56): Duplicate key","docs/toc.yml"]
