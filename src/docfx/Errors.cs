@@ -18,14 +18,23 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 
-        public static Error InvalidConfig(string configPath, Exception e)
-            => new Error(ErrorLevel.Error, "invalid-config", $"Error parsing docset config: {e.Message}", configPath);
+        public static Error InvalidConfig(string configPath, string message, Exception ex = null)
+            => new Error(ErrorLevel.Error, "invalid-config", $"Error parsing docset config: {message ?? ex.Message}", configPath);
+
+        public static Error InvalidLocale(string locale)
+            => new Error(ErrorLevel.Error, "invalid-locale", $"Local {locale} is not supported ");
 
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
+        public static Error UserProfileCacheNotFound(string userProfilePath)
+            => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache at '{userProfilePath}'");
+
+        public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
+            => new Error(ErrorLevel.Warning, "invalid-user-profile-cache", ex.Message, userProfileCache);
+
         public static Error InvalidTopicHref(string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topc-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
 
         public static Error InvalidTocHref(string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path");

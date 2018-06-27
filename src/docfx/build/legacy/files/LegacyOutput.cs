@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyOutput
     {
-        public static void Convert(Docset docset, Context context, GitRepoInfoProvider repo, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap, RedirectionMap redirectionMap)
+        public static void Convert(Docset docset, Context context, GitRepoInfoProvider repo, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
         {
             Parallel.ForEach(files, file =>
             {
@@ -22,11 +22,10 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.Markdown:
                     case ContentType.Redirection:
-                        LegacyMarkdown.Convert(docset, context, document, repo, manifestItem.Output, tocMap, redirectionMap);
+                        LegacyMarkdown.Convert(docset, context, document, repo, manifestItem.Output, tocMap);
                         break;
                     case ContentType.Asset:
-                        File.Move(Path.Combine(docset.Config.Output.Path, document.OutputPath), Path.Combine(docset.Config.Output.Path, manifestItem.Output.ResourceOutput.ToLegacyOutputPath(docset)));
-                        context.WriteJson(new { }, manifestItem.Output.MetadataOutput.ToLegacyOutputPath(docset)); // todo: art metadata
+                        LegacyResource.Convert(docset, context, document, manifestItem.Output);
                         break;
                 }
             });
