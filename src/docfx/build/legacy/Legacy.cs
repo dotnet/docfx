@@ -13,7 +13,8 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo)
+            GitRepoInfoProvider repo,
+            Report report)
         {
             using (Log.Measure("Converting to legacy"))
             {
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
                 LegacyFileMap.Convert(docset, context, documents);
                 LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
                 LegacyCrossRepoReferenceInfo.Convert(docset, context);
+                LegacyReport.Convert(docset, report);
             }
         }
     }

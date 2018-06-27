@@ -33,6 +33,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-user-profile-cache", ex.Message, userProfileCache);
 
+        public static Error AuthorNotFound(string author)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Author {author} cannot be recognized");
+
         public static Error InvalidTopicHref(string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
 
@@ -83,5 +86,8 @@ namespace Microsoft.Docs.Build
 
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
             => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {string.Join(", ", redirectFromDocs.OrderBy(f => f.FilePath).Select(f => $"'{f}'"))}");
+
+        public static Error GitShadowClone(string repoPath)
+            => new Error(ErrorLevel.Error, "git-shadow-clone", $"Does not support git shallow clone: '{repoPath}'");
     }
 }
