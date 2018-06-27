@@ -99,12 +99,15 @@ namespace Microsoft.Docs.Build
             rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
             var repoInfo = repo.GetGitRepoInfo(file);
-            if (repoInfo != null)
+            if (repoInfo?.Host == GitHost.GitHub)
             {
                 var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
                 var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
-                rawMetadata["gitcommit"] = repoInfo.GetGitPermaLink(relPath);
-                rawMetadata["original_content_git_url"] = repoInfo.GetGitLink(relPath);
+                rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch}/{relPath}";
+                if (repo.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
+                {
+                    rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
+                }
             }
 
             return rawMetadata;
