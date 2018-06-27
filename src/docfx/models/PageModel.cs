@@ -32,6 +32,8 @@ namespace Microsoft.Docs.Build
 
         public DateTime UpdatedAt { get; set; }
 
+        public bool EnableContribution { get; set; }
+
         public JObject Metadata { get; set; }
     }
 }

@@ -110,6 +110,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
+
             return rawMetadata;
         }
 

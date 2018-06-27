@@ -30,9 +30,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(docset != null);
 
             _fileCommitsCache = new Lazy<Dictionary<string, List<GitCommit>>>(() => LoadCommits(docset));
-            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contributor.UserProfileCachePath)
+            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCachePath)
                 ? s_defaultCachePath
-                : Path.Combine(docset.DocsetPath, docset.Config.Contributor.UserProfileCachePath);
+                : Path.Combine(docset.DocsetPath, docset.Config.Contribution.UserProfileCachePath);
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
