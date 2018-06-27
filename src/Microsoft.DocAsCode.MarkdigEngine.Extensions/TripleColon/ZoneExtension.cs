@@ -59,12 +59,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             htmlAttributes = new HtmlAttributes();
+            htmlAttributes.AddClass("zone");
             if (target != string.Empty)
             {
-                htmlAttributes.AddProperty("data-zone", target);
+                htmlAttributes.AddClass("has-target");
+                htmlAttributes.AddProperty("data-target", target);
             }
             if (pivot != string.Empty)
             {
+                htmlAttributes.AddClass("has-pivot");
                 htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(pivotReplaceCommasRegex, " "));
             }
             return true;
