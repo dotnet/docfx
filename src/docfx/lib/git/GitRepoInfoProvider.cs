@@ -42,11 +42,12 @@ namespace Microsoft.Docs.Build
 
             // TODO: support specifed authorName and updatedAt
             GitUserProfile authorInfo = null;
-            if (!_fileCommitsCache.Value.TryGetValue(document.FilePath, out var commits)
+            if (!TryGetCommits(document.FilePath, out var commits)
                 || commits.Count == 0)
             {
                 return (null, null, DateTime.Now);
             }
+
             for (var i = commits.Count - 1; i >= 0; i--)
             {
                 if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
@@ -68,6 +69,9 @@ namespace Microsoft.Docs.Build
 
             return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
         }
+
+        public bool TryGetCommits(string filePath, out List<GitCommit> commits)
+            => _fileCommitsCache.Value.TryGetValue(filePath, out commits);
 
         public GitRepoInfo GetGitRepoInfo(Document document)
         {

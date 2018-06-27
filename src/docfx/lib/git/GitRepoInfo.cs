@@ -49,25 +49,5 @@ namespace Microsoft.Docs.Build
                 RootPath = cwd,
             };
         }
-
-        /// <summary>
-        /// Retrieve permanent git URL
-        /// </summary>
-        /// <param name="path">Path relative to <see cref="RootPath"/> </param>
-        public string GetGitPermaLink(string path)
-        {
-            Debug.Assert(Host == GitHost.GitHub);
-            return $"https://github.com/{Account}/{Name}/blob/{HeadCommitId}/{path}";
-        }
-
-        /// <summary>
-        /// Retrieve git URL
-        /// </summary>
-        /// <param name="path">Path relative to <see cref="RootPath"/> </param>
-        public string GetGitLink(string path)
-        {
-            Debug.Assert(Host == GitHost.GitHub);
-            return $"https://github.com/{Account}/{Name}/blob/{Branch}/{path}";
-        }
     }
 }
