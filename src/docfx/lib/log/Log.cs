@@ -37,73 +37,60 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string ElapsedTime(DateTime startTime)
+        public static void Progress(int done, int total)
+        {
+            Debug.Assert(t_scope.Value != null);
+
+            // Throttle writing progress to console once every second.
+            var now = DateTime.UtcNow;
+            if (done != total && now - s_lastProgressTime < TimeSpan.FromSeconds(1))
+            {
+                return;
+            }
+            s_lastProgressTime = now;
+
+            var scope = t_scope.Value.Peek();
+            var percent = Math.Min(1.0, done / Math.Max(1.0, total));
+            var head = $"{scope.Name} ";
+            var tail = $" {(int)(percent * 100)}%, {done}/{total} [{ElapsedTime(scope.StartTime)}]";
+
+            var width = Math.Min(40, SafeConsoleWidth() - head.Length - tail.Length - 2);
+            var n = (int)(percent * width);
+            var progress = width > 0 ? $"[{new string('#', n)}{new string(' ', Math.Max(0, width - n))}]" : "";
+            var line = head + progress + tail;
+
+            WriteProgress(scope.Name, line);
+
+            scope.HasProgress = true;
+        }
+
+        public static void Error(ErrorLevel level, Error error)
+        {
+            lock (s_consoleLock)
+            {
+                s_lastProgressName = null;
+
+                if (!string.IsNullOrEmpty(error.File))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write(error.File + ":");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+
+                Console.ForegroundColor = GetColor(level);
+                Console.Write(error.Code + " ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(error.Message);
+                Console.ResetColor();
+            }
+        }
+
+        internal static string ElapsedTime(DateTime startTime)
         {
             var elapsed = DateTime.UtcNow - startTime;
             return new TimeSpan(elapsed.Days, elapsed.Hours, elapsed.Minutes, elapsed.Seconds).ToString();
-        }
-
-        public static void Progress(int done, int total)
-        {
-            try
-            {
-                Debug.Assert(t_scope.Value != null);
-
-                var now = DateTime.UtcNow;
-                if (done != total && now - s_lastProgressTime < TimeSpan.FromSeconds(1))
-                {
-                    return;
-                }
-                s_lastProgressTime = now;
-
-                var scope = t_scope.Value.Peek();
-                var percent = Math.Min(1.0, done / Math.Max(1.0, total));
-                var head = $"{scope.Name} ";
-                var tail = $" {(int)(percent * 100)}%, {done}/{total} [{ElapsedTime(scope.StartTime)}]";
-
-                var width = Math.Min(40, Console.BufferWidth - 1 - head.Length - tail.Length - 2);
-                var n = (int)(percent * width);
-                var progress = width > 0 ? $"[{new string('#', n)}{new string(' ', Math.Max(0, width - n))}]" : "";
-                var line = head + progress + tail;
-
-                WriteProgress(scope.Name, line);
-
-                scope.HasProgress = true;
-            }
-            catch
-            {
-                // Swallow console exceptions
-            }
-        }
-
-        public static void WriteError(ErrorLevel level, Error error)
-        {
-            try
-            {
-                lock (s_consoleLock)
-                {
-                    s_lastProgressName = null;
-
-                    if (!string.IsNullOrEmpty(error.File))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.Write(error.File + ":");
-                        Console.ResetColor();
-                        Console.WriteLine();
-                    }
-
-                    Console.ForegroundColor = GetColor(level);
-                    Console.Write(error.Code + " ");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine(error.Message);
-                    Console.ResetColor();
-                }
-            }
-            catch
-            {
-                // Swallow console exceptions
-            }
         }
 
         private static ConsoleColor GetColor(ErrorLevel level)
@@ -125,10 +112,33 @@ namespace Microsoft.Docs.Build
             {
                 if (s_lastProgressName == name)
                 {
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    SafeResetCursor();
                 }
                 s_lastProgressName = name;
-                Console.WriteLine(line.PadRight(Console.BufferWidth - 1, ' '));
+                Console.WriteLine(line.PadRight(SafeConsoleWidth(), ' '));
+            }
+        }
+
+        private static int SafeConsoleWidth()
+        {
+            try
+            {
+                return Console.BufferWidth - 1;
+            }
+            catch
+            {
+                return 80;
+            }
+        }
+
+        private static void SafeResetCursor()
+        {
+            try
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+            }
+            catch
+            {
             }
         }
 
