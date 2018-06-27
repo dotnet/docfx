@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Extensions.Yaml;
+using Markdig.Renderers;
 using Markdig.Syntax;
 
 namespace Microsoft.Docs.Build
@@ -19,11 +21,24 @@ namespace Microsoft.Docs.Build
 
                 if (h1 != null && h1.Level == 1)
                 {
-                    // TODO: H1 with markdown formats?
-                    result.Value = h1.Inline.FirstChild.ToString();
+                    result.Value = RenderTitle(h1);
                     document.Remove(h1);
                 }
             });
+        }
+
+        private static string RenderTitle(HeadingBlock h1)
+        {
+            using (var writer = new StringWriter())
+            {
+                var renderer = new HtmlRenderer(writer);
+                var pipeline = new MarkdownPipelineBuilder().Build();
+                pipeline.Setup(renderer);
+                renderer.Render(h1);
+                writer.Flush();
+
+                return writer.ToString().Trim();
+            }
         }
     }
 }

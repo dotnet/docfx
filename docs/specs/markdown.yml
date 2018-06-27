@@ -63,18 +63,16 @@ inputs:
     ---
     author: me
     ---
-    # Title
+    # This is *a* title
     
     body
 outputs:
   docs/a.json: |
     {
       "content": "<p>body</p>",
-      "title": "Title",
-      "metadata":
-      {
-        "author": "me"
-      }
+      "title": "This is a title",
+      "titleHtml": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "metadata": { "author": "me" }
     }
   build.manifest:
 ---
