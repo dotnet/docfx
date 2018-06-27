@@ -21,5 +21,6 @@ outputs:
           "id": "19990166"
         }
       ],
+      "enableContribution": true
     }
   build.manifest:
