@@ -34,6 +34,8 @@ namespace Microsoft.Docs.Build
 
         public bool EnableContribution { get; set; }
 
+        public string EditLink { get; set; }
+
         public JObject Metadata { get; set; }
     }
 }
