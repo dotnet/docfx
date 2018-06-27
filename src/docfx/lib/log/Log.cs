@@ -15,26 +15,13 @@ namespace Microsoft.Docs.Build
         private static DateTime s_lastProgressTime;
         private static AsyncLocal<ImmutableStack<LogScope>> t_scope = new AsyncLocal<ImmutableStack<LogScope>>();
 
-        public static MeasureScope Measure(string name)
+        public static IDisposable Measure(string name)
         {
             WriteProgress(name, name);
 
             var scope = new LogScope { Name = name, StartTime = DateTime.UtcNow };
             t_scope.Value = (t_scope.Value ?? ImmutableStack<LogScope>.Empty).Push(scope);
-            return default;
-        }
-
-        public struct MeasureScope : IDisposable
-        {
-            public void Dispose()
-            {
-                t_scope.Value = t_scope.Value.Pop(out var scope);
-
-                if (!scope.HasProgress)
-                {
-                    WriteProgress(scope.Name, $"{scope.Name} [{ElapsedTime(scope.StartTime)}]");
-                }
-            }
+            return scope;
         }
 
         public static void Progress(int done, int total)
@@ -142,11 +129,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private class LogScope
+        private class LogScope : IDisposable
         {
             public string Name;
             public DateTime StartTime;
             public bool HasProgress;
+
+            public void Dispose()
+            {
+                Log.t_scope.Value = Log.t_scope.Value.Pop(out var scope);
+
+                if (!scope.HasProgress)
+                {
+                    WriteProgress(scope.Name, $"{scope.Name} [{ElapsedTime(scope.StartTime)}]");
+                }
+            }
         }
     }
 }
