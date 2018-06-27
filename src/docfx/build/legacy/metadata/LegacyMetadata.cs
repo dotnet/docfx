@@ -91,19 +91,23 @@ namespace Microsoft.Docs.Build
             rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
             rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
-            var repoInfo = repo.GetGitRepoInfo(file);
-            if (repoInfo?.Host == GitHost.GitHub)
+            if (file.ContentType != ContentType.Redirection)
             {
-                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
-                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
-                rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch}/{relPath}";
-                if (repo.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
+                var repoInfo = repo.GetGitRepoInfo(file);
+                if (repoInfo?.Host == GitHost.GitHub)
                 {
-                    rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
+                    var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                    var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                    rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch}/{relPath}";
+                    if (repo.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
+                    {
+                        rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
+                    }
                 }
             }
 
             rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
+            rawMetadata["content_git_url"] = pageModel.EditLink;
 
             return rawMetadata;
         }
