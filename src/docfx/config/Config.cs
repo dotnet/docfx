@@ -77,9 +77,14 @@ namespace Microsoft.Docs.Build
         public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
 
         /// <summary>
-        /// Gets the configuration about contributors.
+        /// Gets the configuration about contributors display in page.
         /// </summary>
         public readonly ContributorConfig Contributor = new ContributorConfig();
+
+        /// <summary>
+        /// Gets the configuration about contribution scenario.
+        /// </summary>
+        public readonly ContributionConfig Contribution = new ContributionConfig();
 
         /// <summary>
         /// Gets the map from dependency name to git url
