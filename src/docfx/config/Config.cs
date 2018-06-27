@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -188,7 +189,12 @@ namespace Microsoft.Docs.Build
         private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
         {
             // TODO: support URL
-            var (_, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            if (errors.Any())
+            {
+                throw errors[0].ToException();
+            }
+
             if (config == null)
                 config = new JObject();
             if (!expand || !config.TryGetValue(ConfigConstants.Extend, out var objExtend))
