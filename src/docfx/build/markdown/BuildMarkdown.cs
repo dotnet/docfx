@@ -34,7 +34,9 @@ namespace Microsoft.Docs.Build
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(file, GetInputAuthor(metadata));
+
+            // TODO: add check before to avoid case failure
+            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(file, metadata.Value<string>("author"));
 
             var model = new PageModel
             {
@@ -57,30 +59,6 @@ namespace Microsoft.Docs.Build
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
-        }
-
-        private static string GetInputAuthor(JObject metadata)
-        {
-            if (!metadata.TryGetValue("author", out var author))
-                return null;
-
-            var authorStr = ToString(author);
-            if (string.IsNullOrEmpty(authorStr))
-                return null;
-
-            return authorStr;
-        }
-
-        private static string ToString(JToken obj)
-        {
-            if (obj == null)
-                return null;
-            if (!(obj is JValue jValue))
-                return null;
-            if (!(jValue.Value is string str))
-                return null;
-
-            return str;
         }
     }
 }
