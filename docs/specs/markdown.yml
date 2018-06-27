@@ -90,3 +90,13 @@ outputs:
   docs/a.json: |
     { "content": "<div></div><p>body</p>" }
   build.manifest:
+---
+# do not process auto links
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    http://*.windowsupdate.microsoft.com
+outputs:
+  docs/a.json: |
+    { "content": "<p>http://*.windowsupdate.microsoft.co</p>" }
+  build.manifest:
