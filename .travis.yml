@@ -1,5 +1,7 @@
 language: csharp
 dotnet: 2.1
 mono: none
+git:
+  depth: false
 script:
   - ./build.sh
