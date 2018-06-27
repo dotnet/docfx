@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                                 where info != null
                                 group info by info.Id into g
                                 select g.First()).ToList();
-            if (authorInfo != null && contributors.All(p => p.Name != authorInfo.Name))
+            if (authorInfo != null && contributors.All(p => p.Id != authorInfo.Id))
                 contributors.Add(authorInfo);
 
             // TODO: support read build history
