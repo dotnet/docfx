@@ -114,6 +114,7 @@ namespace Microsoft.Docs.Build
             }
 
             rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
+            rawMetadata["content_git_url"] = pageModel.EditLink;
 
             return rawMetadata;
         }

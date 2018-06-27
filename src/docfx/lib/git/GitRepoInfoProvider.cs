@@ -84,6 +84,26 @@ namespace Microsoft.Docs.Build
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
         }
 
+        public string GetEditLink(Document document)
+        {
+            Debug.Assert(document != null);
+
+            var repoInfo = GetGitRepoInfo(document);
+            if (repoInfo?.Host != GitHost.GitHub)
+                return null;
+
+            var repo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
+                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
+                : document.Docset.Config.Contribution.Repository;
+            var branch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
+                ? repoInfo.Branch
+                : document.Docset.Config.Contribution.Branch;
+            var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+            var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+
+            return $"{repo}/blob/{branch}/{relPath}";
+        }
+
         public bool TryGetCommits(string filePath, out List<GitCommit> commits)
             => _fileCommitsCache.Value.TryGetValue(filePath, out commits);
 
