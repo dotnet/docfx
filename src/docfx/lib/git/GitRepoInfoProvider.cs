@@ -37,9 +37,9 @@ namespace Microsoft.Docs.Build
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
-        public (GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt, List<Error> errors) GetContributorInfo(
+        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
             Document document,
-            JObject metadata)
+            string author)
         {
             Debug.Assert(document != null);
 
@@ -47,17 +47,13 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             GitUserProfile authorInfo = null;
             if (!TryGetCommits(document.FilePath, out var commits) || commits.Count == 0)
-                return (null, null, DateTime.Now, errors);
+                return (errors, null, null, DateTime.Now);
 
-            if (metadata.TryGetValue("author", out var author))
+            if (!string.IsNullOrEmpty(author))
             {
-                var authorStr = ToString(author);
-                if (!string.IsNullOrEmpty(authorStr))
-                {
-                    authorInfo = _githubUserProfileCache.GetByUserName(authorStr);
-                    if (authorInfo == null)
-                        errors.Add(Errors.AuthorNotFound(authorStr));
-                }
+                authorInfo = _githubUserProfileCache.GetByUserName(author);
+                if (authorInfo == null)
+                    errors.Add(Errors.AuthorNotFound(author));
             }
             else
             {
@@ -84,7 +80,7 @@ namespace Microsoft.Docs.Build
             // TODO: support read build history
             var updatedAt = DateTime.Now;
 
-            return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt, errors);
+            return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
         }
 
         public bool TryGetCommits(string filePath, out List<GitCommit> commits)
@@ -160,18 +156,6 @@ namespace Microsoft.Docs.Build
                 Id = profile.Id,
                 ProfileUrl = profile.ProfileUrl,
             };
-        }
-
-        private string ToString(JToken obj)
-        {
-            if (obj == null)
-                return null;
-            if (!(obj is JValue jValue))
-                return null;
-            if (!(jValue.Value is string str))
-                return null;
-
-            return str;
         }
     }
 }

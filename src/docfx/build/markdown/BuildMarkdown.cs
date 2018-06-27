@@ -3,8 +3,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -32,7 +34,7 @@ namespace Microsoft.Docs.Build
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            var (author, contributors, updatedAt, repoErrors) = repo.GetContributorInfo(file, metadata);
+            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(file, GetInputAuthor(metadata));
 
             var model = new PageModel
             {
@@ -51,11 +53,34 @@ namespace Microsoft.Docs.Build
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            context.Report(file, markup.Errors);
-            context.Report(file, repoErrors);
+            context.Report(file, markup.Errors.Concat(repoErrors));
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());
+        }
+
+        private static string GetInputAuthor(JObject metadata)
+        {
+            if (!metadata.TryGetValue("author", out var author))
+                return null;
+
+            var authorStr = ToString(author);
+            if (string.IsNullOrEmpty(authorStr))
+                return null;
+
+            return authorStr;
+        }
+
+        private static string ToString(JToken obj)
+        {
+            if (obj == null)
+                return null;
+            if (!(obj is JValue jValue))
+                return null;
+            if (!(jValue.Value is string str))
+                return null;
+
+            return str;
         }
     }
 }
