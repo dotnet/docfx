@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var metadata = new StrongBox<JObject>();
-            var title = new StrongBox<string>();
+            var titleHtml = new StrongBox<string>();
             var hasHtml = new StrongBox<bool>();
 
             var markdownContext = new MarkdownContext(s_markdownTokens, LogWarning, LogError, ReadFile, GetLink);
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader(file, errors, metadata)
-                .UseExtractTitle(title)
+                .UseExtractTitle(titleHtml)
                 .UseResolveHtmlLinks(markdownContext, hasHtml)
                 .UseResolveXref(errors, ResolveXref)
                 .Build();
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
                 var result = new MarkupResult
                 {
-                    Title = title.Value,
+                    TitleHtml = titleHtml.Value ?? "",
                     HasHtml = hasHtml.Value,
                     Metadata = metadata.Value,
                     Errors = errors,
