@@ -40,6 +40,41 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 		}
 
 		[Fact]
+		public void ChromelessFormsAttributeStartQuotationsRequired()
+		{
+			var content = @"::: form submitText=something"" :::";
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.MarkupWithoutSourceInfo(content);
+			}
+			Logger.UnregisterListener(listener);
+
+			// Listener should have an error message and not output.
+			Assert.NotEmpty(listener.Items.Where(x => x.Code == "invalid-form"));
+		}
+
+		[Fact]
+		public void ChromelessFormsAttributeEndQuotationsRequired()
+		{
+			var content = @"::: form submitText=""something :::";
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.MarkupWithoutSourceInfo(content);
+			}
+			Logger.UnregisterListener(listener);
+
+			// Listener should have an error message and not output.
+			Assert.NotEmpty(listener.Items.Where(x => x.Code == "invalid-form"));
+		}
+
+
+		[Fact]
 		public void ChromelessFormsAttributeValueRequired()
 		{
 			var content = @"::: form submitText :::";
