@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -15,7 +14,22 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("README.md")]
-        public static async Task GetCommitsSameAsGitLog(string file)
+        public static void GetRepoInfoSameAsGitExe(string file)
+        {
+            Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
+
+            var repo = GitUtility.FindRepo(Path.GetFullPath(file));
+            Assert.NotNull(repo);
+
+            var (remote, branch, commit) = GitUtility.GetRepoInfo(repo);
+            Assert.Equal(Exec("git", "config --get remote.origin.url", repo), remote);
+            Assert.Equal(Exec("git", "rev-parse --abbrev-ref HEAD", repo), branch ?? "HEAD");
+            Assert.Equal(Exec("git", "rev-parse HEAD", repo), commit);
+        }
+
+        [Theory]
+        [InlineData("README.md")]
+        public static void GetCommitsSameAsGitExe(string file)
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
@@ -24,9 +38,12 @@ namespace Microsoft.Docs.Build
 
             var pathToRepo = PathUtility.NormalizeFile(file);
 
-            var exe = await GitUtility.GetCommits(repo, pathToRepo);
+            var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
             var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
-            Assert.Equal(JsonConvert.SerializeObject(exe), JsonConvert.SerializeObject(lib));
+
+            Assert.Equal(
+                exe.Replace("\r", ""),
+                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
         }
 
         [Fact]
@@ -37,6 +54,13 @@ namespace Microsoft.Docs.Build
             var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.HeadRevision(cwd)));
 
             Assert.True(results.All(r => r.Any()));
+        }
+
+        private static string Exec(string name, string args, string cwd)
+        {
+            var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
+            p.WaitForExit();
+            return p.StandardOutput.ReadToEnd().Trim();
         }
     }
 }

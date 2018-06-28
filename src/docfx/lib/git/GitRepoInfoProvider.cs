@@ -88,6 +88,9 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
+            if (!document.Docset.Config.Contribution.Enabled)
+                return null;
+
             var repoInfo = GetGitRepoInfo(document);
             if (repoInfo?.Host != GitHost.GitHub)
                 return null;
@@ -158,9 +161,10 @@ namespace Microsoft.Docs.Build
         private GitRepoInfo GetFolderGitRepoInfoCore(string folder)
         {
             if (GitUtility.IsRepo(folder))
-                return GitRepoInfo.CreateAsync(folder).Result;
+                return GitRepoInfo.Create(folder);
 
-            var parent = folder.Substring(0, folder.LastIndexOf("/", System.StringComparison.Ordinal));
+            // TODO: add GitUtility.Discover repo
+            var parent = folder.Substring(0, folder.LastIndexOf("/", StringComparison.Ordinal));
             return Directory.Exists(parent)
                 ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
                 : null;
