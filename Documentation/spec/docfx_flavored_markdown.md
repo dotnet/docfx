@@ -569,7 +569,7 @@ When select `tabid-2` in tab group 1, you can get content-a or content-b for 2 i
 ## Differences introduced by DFM syntax
 
 > [!Warning]
-> Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
+> DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
 > Markdown file inside *GFM Preview* can lead to different results.
 
 ### YAML header
@@ -588,7 +588,7 @@ a: b
 In GFM, it would be rendered as `<hr>a: b<hr>`.  
 In DFM, it would be rendered as a YAML header.
 
-If you want to get `<hr>` in html in DFM, please use:
+If you want to get `<hr>` in html in DFM, use:
 ```md
 - - -
 ***
