@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -19,6 +18,39 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
+        /// <summary>
+        /// Retrieve git repo information.
+        /// </summary>
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        {
+            var (remote, branch, commit) = default((string, string, string));
+            var pRepo = OpenRepo(repoPath);
+
+            // TODO: marshal strings
+            fixed (byte* pRemoteName = NativeMethods.ToUtf8Native("origin"))
+            {
+                if (NativeMethods.GitRemoteLookup(out var pRemote, pRepo, pRemoteName) == 0)
+                {
+                    remote = NativeMethods.FromUtf8Native(NativeMethods.GitRemoteUrl(pRemote));
+                    NativeMethods.GitRemoteFree(pRemote);
+                }
+            }
+
+            if (NativeMethods.GitRepositoryHead(out var pHead, pRepo) == 0)
+            {
+                commit = NativeMethods.GitReferenceTarget(pHead)->ToString();
+                if (NativeMethods.GitBranchName(out var pName, pHead) == 0)
+                {
+                    branch = NativeMethods.FromUtf8Native(pName);
+                }
+                NativeMethods.GitReferenceFree(pHead);
+            }
+
+            NativeMethods.GitRepositoryFree(pRepo);
+
+            return (remote, branch, commit);
+        }
+
         /// <summary>
         /// Get git commits group by files
         /// </summary>

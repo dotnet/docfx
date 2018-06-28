@@ -5,7 +5,7 @@ namespace Microsoft.Docs.Build
 {
     internal enum GitHost
     {
-        GitHub,
         Unknown,
+        GitHub,
     }
 }

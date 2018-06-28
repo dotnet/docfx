@@ -56,11 +56,9 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
+                EditLink = repo.GetEditLink(file),
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
-
-            if (file.Docset.Config.Contribution.Enabled)
-                model.EditLink = repo.GetEditLink(file);
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
             context.Report(file, markup.Errors.Concat(repoErrors));
