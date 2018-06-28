@@ -57,29 +57,25 @@ namespace Microsoft.Docs.Build
         private static TheoryData<string, int> FindTestSpecs()
         {
             var result = new TheoryData<string, int>();
-
-            Parallel.ForEach(
-                Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories),
-                file =>
+            foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
+            {
+                var i = 0;
+                foreach (var header in FindTestSpecHeadersInFile(file))
                 {
-                    var i = 0;
-                    foreach (var header in FindTestSpecHeadersInFile(file))
+                    if (string.IsNullOrEmpty(header))
                     {
-                        if (string.IsNullOrEmpty(header))
-                        {
-                            i++;
-                            continue;
-                        }
-
-                        var name = $"{i + 1:D2}. {header}";
-                        var folder = Path.Combine(
-                            file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
-                            name).Replace("\\", "/");
-
-                        result.Add(folder, i++);
+                        i++;
+                        continue;
                     }
-                });
 
+                    var name = $"{i + 1:D2}. {header}";
+                    var folder = Path.Combine(
+                        file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
+                        name).Replace("\\", "/");
+
+                    result.Add(folder, i++);
+                }
+            }
             return result;
         }
 
