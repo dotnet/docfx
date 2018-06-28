@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,19 +22,19 @@ namespace Microsoft.Docs.Build
 
         public string Branch { get; set; }
 
-        public string HeadCommitId { get; set; }
+        public string Commit { get; set; }
 
         public string RootPath { get; set; }
 
-        public static async Task<GitRepoInfo> CreateAsync(string cwd)
+        public static GitRepoInfo Create(string cwd)
         {
             Debug.Assert(GitUtility.IsRepo(cwd));
             Debug.Assert(Path.IsPathRooted(cwd));
 
-            var url = await GitUtility.GetOriginalUrl(cwd);
+            var (remote, branch, commit) = GitUtility.GetRepoInfo(cwd);
 
             // TODO: support VSTS, or others
-            var match = GitHubRepoUrlRegex.Match(url);
+            var match = GitHubRepoUrlRegex.Match(remote);
             if (!match.Success)
                 return null;
 
@@ -44,8 +43,8 @@ namespace Microsoft.Docs.Build
                 Host = GitHost.GitHub,
                 Account = match.Groups["account"].Value,
                 Name = match.Groups["repository"].Value,
-                Branch = await GitUtility.GetLocalBranch(cwd), // TODO: handle detached HEAD/submodule/sourceBranchName
-                HeadCommitId = await GitUtility.GetLocalBranchCommitId(cwd),
+                Branch = branch,
+                Commit = commit,
                 RootPath = cwd,
             };
         }

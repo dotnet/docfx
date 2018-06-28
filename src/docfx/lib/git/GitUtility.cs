@@ -112,40 +112,16 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Retrieve git head version
-        /// TODO: use libgit2sharp
+        /// TODO: For testing purpose only, move it to test
         /// </summary>
-        /// <param name="cwd">The working directory</param>
         public static Task<string> HeadRevision(string cwd)
            => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
-        /// <summary>
-        /// Retrieve original URL
-        /// TODO: use libgit2sharp
-        /// </summary>
-        public static Task<string> GetOriginalUrl(string cwd)
-            => ExecuteQuery(cwd, $"config --get remote.origin.url", TimeSpan.FromMinutes(1));
-
-        /// <summary>
-        /// Retrieve local branch name
-        /// TODO: use libgit2sharp
-        /// </summary>
-        public static Task<string> GetLocalBranch(string cwd)
-            => ExecuteQuery(cwd, $"rev-parse --abbrev-ref HEAD", TimeSpan.FromMinutes(1));
-
-        /// <summary>
-        /// Retrieve head commit id for local branch
-        /// TODO: use libgit2sharp
-        /// </summary>
-        public static Task<string> GetLocalBranchCommitId(string cwd)
-            => ExecuteQuery(cwd, $"rev-parse HEAD", TimeSpan.FromMinutes(1));
 
         /// <summary>
         /// Get commits (per file)
+        /// TODO: For testing purpose only, move it to test
         /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="file">The file path, can be null</param>
-        /// <param name="count">The commit count you want to retrieve, defualt is all</param>
-        /// <returns>A collection of git commit info</returns>
         public static Task<IReadOnlyList<GitCommit>> GetCommits(string cwd, string file = null, int count = -1)
         {
             string formatter = "%H|%cI|%an|%ae|%cn|%ce";
