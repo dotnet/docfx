@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
             Document document,
             string author,
-            string updateDate)
+            DateTime? updateDate)
         {
             Debug.Assert(document != null);
 
@@ -82,9 +82,9 @@ namespace Microsoft.Docs.Build
                 contributors.Add(authorInfo);
 
             DateTime updateDateTime;
-            if (!string.IsNullOrEmpty(updateDate) && DateTime.TryParse(updateDate, out var userDateTime))
+            if (updateDate != null)
             {
-                updateDateTime = userDateTime;
+                updateDateTime = updateDate.Value;
             }
             else if (commits?.Count > 0)
             {
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                updateDateTime = DateTime.Now;
+                updateDateTime = File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             }
 
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updateDateTime);

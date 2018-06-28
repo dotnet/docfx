@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(
                 file,
                 metadata.Value<string>("author"),
-                metadata.Value<string>("update_date"));
+                metadata.Value<DateTime?>("update_date"));
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
             var model = new PageModel
