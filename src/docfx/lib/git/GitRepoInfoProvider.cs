@@ -40,48 +40,63 @@ namespace Microsoft.Docs.Build
         // TODO: add more test cases
         public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
             Document document,
-            string author)
+            string author,
+            string updateDate)
         {
             Debug.Assert(document != null);
 
-            // TODO: support specifed updatedAt
             var errors = new List<Error>();
             GitUserProfile authorInfo = null;
-            if (!TryGetCommits(document.FilePath, out var commits) || commits.Count == 0)
-                return (errors, null, null, DateTime.Now);
-
             if (!string.IsNullOrEmpty(author))
             {
                 authorInfo = _githubUserProfileCache.GetByUserName(author);
                 if (authorInfo == null)
                     errors.Add(Errors.AuthorNotFound(author));
             }
-            else
+            var contributors = new List<GitUserProfile>();
+
+            if (TryGetCommits(document.FilePath, out var commits) && commits.Count != 0)
             {
-                for (var i = commits.Count - 1; i >= 0; i--)
+                if (string.IsNullOrEmpty(author))
                 {
-                    if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                    for (var i = commits.Count - 1; i >= 0; i--)
                     {
-                        authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
-                        if (authorInfo != null)
-                            break;
+                        if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                        {
+                            authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
+                            if (authorInfo != null)
+                                break;
+                        }
                     }
                 }
-            }
 
-            var contributors = (from commit in commits
+                contributors = (from commit in commits
                                 where !string.IsNullOrEmpty(commit.AuthorEmail)
                                 let info = _githubUserProfileCache.GetByUserEmail(commit.AuthorEmail)
                                 where info != null
                                 group info by info.Id into g
                                 select g.First()).ToList();
+            }
+
             if (authorInfo != null && contributors.All(p => p.Id != authorInfo.Id))
                 contributors.Add(authorInfo);
 
-            // TODO: support read build history
-            var updatedAt = DateTime.Now;
+            DateTime updateDateTime;
+            if (!string.IsNullOrEmpty(updateDate) && DateTime.TryParse(updateDate, out var userDateTime))
+            {
+                updateDateTime = userDateTime;
+            }
+            else if (commits?.Count >= 0)
+            {
+                // TODO: support read build history
+                updateDateTime = commits[0].Time.DateTime;
+            }
+            else
+            {
+                updateDateTime = DateTime.Now;
+            }
 
-            return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
+            return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updateDateTime);
         }
 
         public string GetEditLink(Document document)
