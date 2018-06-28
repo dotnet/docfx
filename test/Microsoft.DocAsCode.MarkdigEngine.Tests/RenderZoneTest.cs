@@ -58,7 +58,7 @@ hello
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"">Shared content.</p>
-<div data-zone=""chromeless"" sourceFile=""fake.md"" sourceStartLineNumber=""9"">
+<div class=""zone has-target"" data-target=""chromeless"" sourceFile=""fake.md"" sourceStartLineNumber=""9"">
 <h2 id=""section-for-chromeless-only"" sourceFile=""fake.md"" sourceStartLineNumber=""10"">Section for chromeless only</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""12"">Some chromeless-specific content here...</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""14"">::: nested moniker zone is not allowed. So this line is in plain text.
@@ -66,13 +66,13 @@ Inline ::: should not end moniker zone.</p>
 </div>
 <h2 id=""section-2"" sourceFile=""fake.md"" sourceStartLineNumber=""19"">Section 2</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""21"">Shared content.</p>
-<div data-pivot=""foo"" sourceFile=""fake.md"" sourceStartLineNumber=""23"">
+<div class=""zone has-pivot"" data-pivot=""foo"" sourceFile=""fake.md"" sourceStartLineNumber=""23"">
 <p sourceFile=""fake.md"" sourceStartLineNumber=""24"">a pivot</p>
 </div>
-<div data-zone=""docs"" data-pivot=""foo bar"" sourceFile=""fake.md"" sourceStartLineNumber=""27"">
+<div class=""zone has-target has-pivot"" data-target=""docs"" data-pivot=""foo bar"" sourceFile=""fake.md"" sourceStartLineNumber=""27"">
 <p sourceFile=""fake.md"" sourceStartLineNumber=""28"">a pivot with target</p>
 </div>
-<div data-zone=""docs"" data-pivot=""csharp7-is-great"" sourceFile=""fake.md"" sourceStartLineNumber=""31"">
+<div class=""zone has-target has-pivot"" data-target=""docs"" data-pivot=""csharp7-is-great"" sourceFile=""fake.md"" sourceStartLineNumber=""31"">
 <p sourceFile=""fake.md"" sourceStartLineNumber=""32"">hello</p>
 </div>
 ".Replace("\r\n", "\n");
@@ -110,7 +110,7 @@ Inline ::: should not end moniker zone.</p>
 ::: zone-end";
 
             // assert
-            var expected = @"<div data-zone=""chromeless"">
+            var expected = @"<div class=""zone has-target"" data-target=""chromeless"">
 </div>
 ";
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
@@ -251,7 +251,7 @@ Inline ::: should not end moniker zone.</p>
 ::: zone-end";
 
             // assert
-            var expected = "<div data-pivot=\"a b\">\n</div>\n";
+            var expected = "<div class=\"zone has-pivot\" data-pivot=\"a b\">\n</div>\n";
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
 
             Logger.RegisterListener(listener);
