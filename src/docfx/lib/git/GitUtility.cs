@@ -117,7 +117,6 @@ namespace Microsoft.Docs.Build
         public static Task<string> HeadRevision(string cwd)
            => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
-
         /// <summary>
         /// Get commits (per file)
         /// TODO: For testing purpose only, move it to test
