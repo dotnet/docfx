@@ -92,6 +92,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 		}
 
 		[Fact]
+		public void ChromelessFormsAttributeValueSingleQuote()
+		{
+			var content = @"::: form submitText="""""" action=""create-Resource"" :::";
+			var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+			Logger.RegisterListener(listener);
+			using (new LoggerPhaseScope(LoggerPhase))
+			{
+				TestUtility.MarkupWithoutSourceInfo(content);
+			}
+			Logger.UnregisterListener(listener);
+
+			// Listener should have an error message and not output.
+			Assert.NotEmpty(listener.Items.Where(x => x.Code == "invalid-form"));
+		}
+
+		[Fact]
 		public void ChromelessFormsTestActionRequired()
 		{
 			var content = @"::: form submitText=""Do it"" :::";
