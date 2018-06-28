@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 if (document.ContentType == ContentType.Asset ||
                     document.ContentType == ContentType.TableOfContents ||
+                    document.ContentType == ContentType.Redirection ||
                     document.ContentType == ContentType.Unknown)
                 {
                     continue;

@@ -36,7 +36,10 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(file, metadata.Value<string>("author"));
+            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(
+                file,
+                metadata.Value<string>("author"),
+                metadata.Value<DateTime?>("update_date"));
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
             var model = new PageModel
