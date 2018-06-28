@@ -61,7 +61,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    author: me
+    metaKey: metaValue
     ---
     # This is *a* title
     
@@ -72,7 +72,7 @@ outputs:
       "content": "<p>body</p>",
       "title": "This is a title",
       "titleHtml": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
-      "metadata": { "author": "me" }
+      "metadata": { "metaKey": "metaValue" }
     }
   build.manifest:
 ---

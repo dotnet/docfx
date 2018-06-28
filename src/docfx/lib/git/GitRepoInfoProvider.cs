@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             {
                 updateDateTime = userDateTime;
             }
-            else if (commits?.Count >= 0)
+            else if (commits?.Count > 0)
             {
                 // TODO: support read build history
                 updateDateTime = commits[0].Time.DateTime;
