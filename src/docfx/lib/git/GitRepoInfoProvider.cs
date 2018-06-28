@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                 ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
                 : document.Docset.Config.Contribution.Repository;
             var branch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
-                ? repoInfo.Branch ?? "master"
+                ? repoInfo.Branch ?? repoInfo.Commit
                 : document.Docset.Config.Contribution.Branch;
             var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
