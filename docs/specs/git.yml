@@ -23,6 +23,7 @@ outputs:
           "id": "19990166"
         }
       ],
+      "updatedAt": "2018-06-28T10:00:00",
       "enableContribution": true,
       "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test/README.md"
     }
