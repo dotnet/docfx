@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 using Newtonsoft.Json.Linq;
@@ -13,23 +14,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataOutputItems =
-        {
-            "author", "breadcrumb_path", "depot_name", "description", "document_id",
-            "document_version_independent_id", "gitcommit", "keywords",
-            "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "original_content_git_url",
-            "page_type", "pdf_url_template", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name",
-            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count",
-        };
+        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "fileRelativePath", "layout", "title" };
 
-        private static readonly string[] s_metadataOutputItems =
-        {
-            "author", "breadcrumb_path", "canonical_url", "content_git_url", "depot_name", "description", "document_id",
-            "document_version_independent_id", "experiment_id", "experimental", "gitcommit", "keywords",
-            "layout", "locale", "ms.assetid", "ms.author", "ms.date", "ms.prod", "ms.topic", "open_to_public_contributors", "original_content_git_url",
-            "page_type", "pdf_url_template", "search.ms_docsetname", "search.ms_product", "search.ms_sitename", "site_name", "title", "titleSuffix", "toc_asset_id",
-            "toc_rel", "uhfHeaderId", "updated_at", "version", "word_count", "redirect_url",
-        };
+        private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
         {
@@ -54,12 +41,18 @@ namespace Microsoft.Docs.Build
             return newMetadata;
         }
 
-        public static JObject GenerateLegacyRawMetadata(PageModel pageModel, Docset docset, Document file, GitRepoInfoProvider repo, TableOfContentsMap tocMap)
+        public static JObject GenerateLegacyRawMetadata(
+            PageModel pageModel,
+            Docset docset,
+            Document file,
+            GitRepoInfoProvider repo,
+            LegacyManifestOutput legacyManifestOutput,
+            TableOfContentsMap tocMap)
         {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
-            rawMetadata["fileRelativePath"] = Path.GetFileNameWithoutExtension(file.OutputPath) + ".html";
+            rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
             rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
@@ -98,19 +91,23 @@ namespace Microsoft.Docs.Build
             rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
             rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
-            var repoInfo = repo.GetGitRepoInfo(file);
-            if (repoInfo?.Host == GitHost.GitHub)
+            if (file.ContentType != ContentType.Redirection)
             {
-                var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
-                var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
-                rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch}/{relPath}";
-                if (repo.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
+                var repoInfo = repo.GetGitRepoInfo(file);
+                if (repoInfo?.Host == GitHost.GitHub)
                 {
-                    rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
+                    var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
+                    var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+                    rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch}/{relPath}";
+                    if (repo.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
+                    {
+                        rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
+                    }
                 }
             }
 
             rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
+            rawMetadata["content_git_url"] = pageModel.EditLink;
 
             return rawMetadata;
         }
@@ -118,20 +115,18 @@ namespace Microsoft.Docs.Build
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
         {
             StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-            foreach (string item in s_pageMetadataOutputItems)
+
+            foreach (var item in rawMetadata)
             {
-                if (rawMetadata.TryGetValue(item, out JToken value))
+                if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
                 {
-                    string content;
-                    if (value is JArray)
+                    string content = item.Value is JArray
+                        ? string.Join(",", item.Value)
+                        : item.Value.ToString();
+                    if (!string.IsNullOrEmpty(content))
                     {
-                        content = string.Join(",", value);
+                        pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item.Key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
                     }
-                    else
-                    {
-                        content = value.ToString();
-                    }
-                    pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
                 }
             }
 
@@ -141,11 +136,11 @@ namespace Microsoft.Docs.Build
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
         {
             var metadataOutput = new JObject();
-            foreach (string item in s_metadataOutputItems)
+            foreach (var item in rawMetadata)
             {
-                if (rawMetadata.TryGetValue(item, out JToken value))
+                if (!s_metadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
                 {
-                    metadataOutput[item] = value;
+                    metadataOutput[item.Key] = item.Value;
                 }
             }
 
