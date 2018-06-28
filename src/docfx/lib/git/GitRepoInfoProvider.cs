@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -36,38 +37,74 @@ namespace Microsoft.Docs.Build
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
         }
 
-        public (GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(Document document)
+        // TODO: add more test cases
+        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
+            Document document,
+            string author)
         {
             Debug.Assert(document != null);
 
-            // TODO: support specifed authorName and updatedAt
+            // TODO: support specifed updatedAt
+            var errors = new List<Error>();
             GitUserProfile authorInfo = null;
-            if (!TryGetCommits(document.FilePath, out var commits)
-                || commits.Count == 0)
-            {
-                return (null, null, DateTime.Now);
-            }
+            if (!TryGetCommits(document.FilePath, out var commits) || commits.Count == 0)
+                return (errors, null, null, DateTime.Now);
 
-            for (var i = commits.Count - 1; i >= 0; i--)
+            if (!string.IsNullOrEmpty(author))
             {
-                if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                authorInfo = _githubUserProfileCache.GetByUserName(author);
+                if (authorInfo == null)
+                    errors.Add(Errors.AuthorNotFound(author));
+            }
+            else
+            {
+                for (var i = commits.Count - 1; i >= 0; i--)
                 {
-                    authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
-                    if (authorInfo != null)
-                        break;
+                    if (!string.IsNullOrEmpty(commits[i].AuthorEmail))
+                    {
+                        authorInfo = _githubUserProfileCache.GetByUserEmail(commits[i].AuthorEmail);
+                        if (authorInfo != null)
+                            break;
+                    }
                 }
             }
+
             var contributors = (from commit in commits
                                 where !string.IsNullOrEmpty(commit.AuthorEmail)
                                 let info = _githubUserProfileCache.GetByUserEmail(commit.AuthorEmail)
                                 where info != null
                                 group info by info.Id into g
-                                select g.First()).ToArray();
+                                select g.First()).ToList();
+            if (authorInfo != null && contributors.All(p => p.Id != authorInfo.Id))
+                contributors.Add(authorInfo);
 
             // TODO: support read build history
             var updatedAt = DateTime.Now;
 
-            return (ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
+            return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedAt);
+        }
+
+        public string GetEditLink(Document document)
+        {
+            Debug.Assert(document != null);
+
+            if (!document.Docset.Config.Contribution.Enabled)
+                return null;
+
+            var repoInfo = GetGitRepoInfo(document);
+            if (repoInfo?.Host != GitHost.GitHub)
+                return null;
+
+            var repo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
+                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
+                : document.Docset.Config.Contribution.Repository;
+            var branch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
+                ? repoInfo.Branch
+                : document.Docset.Config.Contribution.Branch;
+            var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+            var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+
+            return $"{repo}/blob/{branch}/{relPath}";
         }
 
         public bool TryGetCommits(string filePath, out List<GitCommit> commits)
@@ -127,9 +164,10 @@ namespace Microsoft.Docs.Build
         private GitRepoInfo GetFolderGitRepoInfoCore(string folder)
         {
             if (GitUtility.IsRepo(folder))
-                return GitRepoInfo.CreateAsync(folder).Result;
+                return GitRepoInfo.Create(folder);
 
-            var parent = folder.Substring(0, folder.LastIndexOf("/", System.StringComparison.Ordinal));
+            // TODO: add GitUtility.Discover repo
+            var parent = folder.Substring(0, folder.LastIndexOf("/", StringComparison.Ordinal));
             return Directory.Exists(parent)
                 ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
                 : null;

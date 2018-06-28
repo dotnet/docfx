@@ -4,12 +4,14 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test
 outputs:
   README.json: |
     {
-      "author": {
-        "profileUrl": "https://github.com/OsmondJiang",
-        "displayName": "Osmond Jiang",
-        "id": "19990166"
+      "author":
+      {
+        "profileUrl": "https://github.com/superyyrrzz",
+        "displayName": "Renze Yu",
+        "id": "3831744"
       },
-      "contributors": [
+      "contributors":
+      [
         {
           "profileUrl": "https://github.com/superyyrrzz",
           "displayName": "Renze Yu",
@@ -21,6 +23,7 @@ outputs:
           "id": "19990166"
         }
       ],
-      "enableContribution": true
+      "enableContribution": true,
+      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test/README.md"
     }
   build.manifest:

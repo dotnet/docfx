@@ -3,8 +3,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -32,7 +34,9 @@ namespace Microsoft.Docs.Build
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
             var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            var (author, contributors, updatedAt) = repo.GetContributorInfo(file);
+
+            // TODO: add check before to avoid case failure
+            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(file, metadata.Value<string>("author"));
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
             var model = new PageModel
@@ -49,11 +53,12 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
+                EditLink = repo.GetEditLink(file),
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
             // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            context.Report(file, markup.Errors);
+            context.Report(file, markup.Errors.Concat(repoErrors));
             context.WriteJson(model, file.OutputPath);
 
             return Task.FromResult(dependencyMapBuilder.Build());

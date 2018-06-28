@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -20,6 +19,39 @@ namespace Microsoft.Docs.Build
     internal static partial class GitUtility
     {
         /// <summary>
+        /// Retrieve git repo information.
+        /// </summary>
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        {
+            var (remote, branch, commit) = default((string, string, string));
+            var pRepo = OpenRepo(repoPath);
+
+            // TODO: marshal strings
+            fixed (byte* pRemoteName = NativeMethods.ToUtf8Native("origin"))
+            {
+                if (NativeMethods.GitRemoteLookup(out var pRemote, pRepo, pRemoteName) == 0)
+                {
+                    remote = NativeMethods.FromUtf8Native(NativeMethods.GitRemoteUrl(pRemote));
+                    NativeMethods.GitRemoteFree(pRemote);
+                }
+            }
+
+            if (NativeMethods.GitRepositoryHead(out var pHead, pRepo) == 0)
+            {
+                commit = NativeMethods.GitReferenceTarget(pHead)->ToString();
+                if (NativeMethods.GitBranchName(out var pName, pHead) == 0)
+                {
+                    branch = NativeMethods.FromUtf8Native(pName);
+                }
+                NativeMethods.GitReferenceFree(pHead);
+            }
+
+            NativeMethods.GitRepositoryFree(pRepo);
+
+            return (remote, branch, commit);
+        }
+
+        /// <summary>
         /// Get git commits group by files
         /// </summary>
         /// <param name="repoPath">The git repo root path</param>
@@ -32,8 +64,7 @@ namespace Microsoft.Docs.Build
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);
 
-            // TODO: handle exception when shallow clone
-            var commits = LoadCommits(repo);
+            var commits = LoadCommits(repoPath, repo);
             var trees = LoadTrees(repo, commits, pathToParent, progress);
 
             var (done, total, result) = (0, files.Count, new List<GitCommit>[files.Count]);
@@ -85,7 +116,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static unsafe List<Commit> LoadCommits(IntPtr repo)
+        private static unsafe List<Commit> LoadCommits(string repoPath, IntPtr repo)
         {
             var commits = new List<Commit>();
             var commitToIndex = new Dictionary<NativeMethods.GitOid, int>();
@@ -103,7 +134,7 @@ namespace Microsoft.Docs.Build
 
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error == -3 /* GIT_ENOTFOUND */)
-                    throw new NotSupportedException($"Does not support git shallow clone");
+                    throw Errors.GitShadowClone(repoPath).ToException();
 
                 if (error != 0)
                     throw new InvalidOperationException($"Unknown error calling git_revwalk_next: {error}");
