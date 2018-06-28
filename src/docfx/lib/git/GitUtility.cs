@@ -117,33 +117,6 @@ namespace Microsoft.Docs.Build
         public static Task<string> HeadRevision(string cwd)
            => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
-        /// <summary>
-        /// Get commits (per file)
-        /// TODO: For testing purpose only, move it to test
-        /// </summary>
-        public static Task<IReadOnlyList<GitCommit>> GetCommits(string cwd, string file = null, int count = -1)
-        {
-            string formatter = "%H|%cI|%an|%ae|%cn|%ce";
-            var argumentsBuilder = new StringBuilder();
-            argumentsBuilder.Append($@"--no-pager log --format=""{formatter}""");
-            if (count > 0)
-            {
-                argumentsBuilder.Append($" -{count}");
-            }
-
-            if (!string.IsNullOrEmpty(file))
-            {
-                argumentsBuilder.Append($@" -- ""{file}""");
-            }
-
-            return ExecuteQuery(cwd, argumentsBuilder.ToString(), ParseListCommitOutput);
-        }
-
-        private static IReadOnlyList<GitCommit> ParseListCommitOutput(string lines)
-            => (from line in lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries)
-                let parts = line.Split('|')
-                select new GitCommit { Sha = parts[0], Time = DateTimeOffset.Parse(parts[1], null), AuthorName = parts[2], AuthorEmail = parts[3] }).ToList();
-
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
             => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
 
