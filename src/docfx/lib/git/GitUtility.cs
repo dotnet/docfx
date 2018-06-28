@@ -16,8 +16,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        private static readonly char[] s_newline = new[] { '\r', '\n' };
-
         /// <summary>
         /// Find git repo directory
         /// </summary>

@@ -31,18 +31,27 @@ namespace Microsoft.Docs.Build
             Debug.Assert(GitUtility.IsRepo(cwd));
             Debug.Assert(Path.IsPathRooted(cwd));
 
+            var (host, account, repository) = default((GitHost, string, string));
             var (remote, branch, commit) = GitUtility.GetRepoInfo(cwd);
 
             // TODO: support VSTS, or others
-            var match = GitHubRepoUrlRegex.Match(remote);
-            if (!match.Success)
-                return null;
+            // TODO: fallback branch to environment variable to support CIs
+            if (!string.IsNullOrEmpty(remote))
+            {
+                var match = GitHubRepoUrlRegex.Match(remote);
+                if (match.Success)
+                {
+                    account = match.Groups["account"].Value;
+                    repository = match.Groups["repository"].Value;
+                    host = GitHost.GitHub;
+                }
+            }
 
             return new GitRepoInfo
             {
-                Host = GitHost.GitHub,
-                Account = match.Groups["account"].Value,
-                Name = match.Groups["repository"].Value,
+                Host = host,
+                Account = account,
+                Name = repository,
                 Branch = branch,
                 Commit = commit,
                 RootPath = cwd,

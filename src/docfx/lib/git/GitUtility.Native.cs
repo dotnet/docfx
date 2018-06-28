@@ -42,7 +42,6 @@ namespace Microsoft.Docs.Build
                 if (NativeMethods.GitBranchName(out var pName, pHead) == 0)
                 {
                     branch = NativeMethods.FromUtf8Native(pName);
-                    NativeMethods.GitObjectFree((IntPtr)pName);
                 }
                 NativeMethods.GitReferenceFree(pHead);
             }
