@@ -16,15 +16,18 @@ namespace Microsoft.Docs.Build
             GitRepoInfoProvider repo,
             Report report)
         {
-            // generate manifest and corresponding files
-            var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-            LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap);
+            using (Log.Measure("Converting to legacy"))
+            {
+                // generate manifest and corresponding files
+                var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
+                LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap);
 
-            // generate mappings
-            LegacyFileMap.Convert(docset, context, documents);
-            LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
-            LegacyCrossRepoReferenceInfo.Convert(docset, context);
-            LegacyReport.Convert(docset, report);
+                // generate mappings
+                LegacyFileMap.Convert(docset, context, documents);
+                LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
+                LegacyCrossRepoReferenceInfo.Convert(docset, context);
+                LegacyReport.Convert(docset, report);
+            }
         }
     }
 }
