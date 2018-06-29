@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     : null,
                 ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
             };
-            rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
+            rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/') + 1);
             rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
             if (file.ContentType != ContentType.Redirection)
@@ -106,6 +106,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            rawMetadata["_op_openToPublicContributors"] = pageModel.EnableContribution;
             rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
             rawMetadata["content_git_url"] = pageModel.EditLink;
 
