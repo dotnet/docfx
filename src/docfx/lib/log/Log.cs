@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     internal static class Log
     {
         private static readonly object s_consoleLock = new object();
+
+        private static bool s_hasConsole = true;
         private static string s_lastProgressName;
         private static DateTime s_lastProgressTime;
         private static AsyncLocal<ImmutableStack<LogScope>> t_scope = new AsyncLocal<ImmutableStack<LogScope>>();
@@ -108,24 +110,39 @@ namespace Microsoft.Docs.Build
 
         private static int SafeConsoleWidth()
         {
+            if (!s_hasConsole)
+            {
+                return 0;
+            }
+
             try
             {
-                return Math.Max(0, Console.BufferWidth - 1);
+                var width = Math.Max(0, Console.BufferWidth - 1);
+                if (width == 0)
+                {
+                    s_hasConsole = false;
+                }
+                return width;
             }
             catch
             {
-                return 80;
+                s_hasConsole = false;
+                return 0;
             }
         }
 
         private static void SafeResetCursor()
         {
-            try
+            if (s_hasConsole)
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-            }
-            catch
-            {
+                try
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                }
+                catch
+                {
+                    s_hasConsole = false;
+                }
             }
         }
 
