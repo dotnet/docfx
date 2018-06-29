@@ -184,6 +184,11 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.UserProfileCacheNotFound(config.UserProfileCachePath).ToException();
             }
+            if (!string.IsNullOrEmpty(config.GitCommitsHistoryPath)
+                && File.Exists(Path.Combine(configPath, config.GitCommitsHistoryPath)))
+            {
+                throw Errors.UserProfileCacheNotFound(config.UserProfileCachePath).ToException();
+            }
         }
 
         private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
