@@ -2,7 +2,7 @@
   <Import Project="../Shared/test.base.props" />
 
   <ItemGroup>
-    <Compile Include="FSharpCompilationTests.fs" />    
+    <Compile Include="FSharpCompilationTests.fs" />
     <Compile Include="FSharpProjectTests.fs" />
   </ItemGroup>
 
@@ -13,18 +13,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference.Common\Microsoft.DocAsCode.Metadata.ManagedReference.Common.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.fsproj" />    
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <PackageReference Include="FSharp.Compiler.Service" Version="17.0.1" />
+    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" Version="17.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Compiler.Service" version="17.0.1" />
-    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" version="17.0.1" />    
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference.Common\Microsoft.DocAsCode.Metadata.ManagedReference.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.fsproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
   </ItemGroup>
 
 </Project>
