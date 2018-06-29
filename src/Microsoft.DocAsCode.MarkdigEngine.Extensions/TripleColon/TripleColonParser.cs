@@ -52,11 +52,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-			var block = new TripleColonBlock(this)
-			{
-				Column = column,
-				Span = new SourceSpan(sourcePosition, slice.End),
-				Extension = extension
+            var block = new TripleColonBlock(this)
+            {
+                Column = column,
+                Span = new SourceSpan(sourcePosition, slice.End),
+                Extension = extension
             };
 
             if (htmlAttributes != null)
@@ -66,18 +66,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
-			if (extension.SelfClosing)
-			{
-				ExtensionsHelper.SkipSpaces(ref slice);
-				if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
-				{
-					_context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Blocks should be explicitly closed with :::");
-				}
+            if (extension.SelfClosing)
+            {
+                ExtensionsHelper.SkipSpaces(ref slice);
+                if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
+                {
+                    _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Blocks should be explicitly closed with :::");
+                }
 
-				return BlockState.BreakDiscard;
-			}
+                return BlockState.BreakDiscard;
+            }
 
-			return BlockState.ContinueDiscard;
+            return BlockState.ContinueDiscard;
         }
 
         public override BlockState TryContinue(BlockProcessor processor, Block block)
@@ -119,13 +119,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Close(BlockProcessor processor, Block block)
         {
-			TripleColonBlock tripleColonBlock = (TripleColonBlock)block;
-			if (tripleColonBlock.Extension.SelfClosing)
-			{
-				return true;
-			}
+            TripleColonBlock tripleColonBlock = (TripleColonBlock)block;
+            if (tripleColonBlock.Extension.SelfClosing)
+            {
+                return true;
+            }
 
-			var extensionName = tripleColonBlock.Extension.Name;
+            var extensionName = tripleColonBlock.Extension.Name;
             if (processor.CurrentContainer != block)
             {
                 _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}.  A {extensionName} cannot end before blocks nested within it have ended.");
