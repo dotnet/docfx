@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public static async Task<TableOfContentsMap> BuildTocMap(IEnumerable<Document> files)
         {
-            using (Log.Measure("Generating TOC map"))
+            using (Log.Measure("Loading TOC"))
             {
                 Debug.Assert(files != null);
 

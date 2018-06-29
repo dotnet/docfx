@@ -56,23 +56,30 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="repoPath">The git repo root path</param>
         /// <param name="files">The collection of git repo files</param>
-        /// <param name="progress">The processing progress</param>
         /// <returns>A collection of git commits</returns>
-        public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files, Action<int, int> progress = null)
+        public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files)
         {
+            var (trees, commits) = default((TreeMap, List<Commit>));
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);
 
-            var commits = LoadCommits(repoPath, repo);
-            var trees = LoadTrees(repo, commits, pathToParent, progress);
+            using (Log.Measure("Loading git commits"))
+            {
+                commits = LoadCommits(repoPath, repo);
+                trees = LoadTrees(repo, commits, pathToParent, Log.Progress);
+            }
 
             var (done, total, result) = (0, files.Count, new List<GitCommit>[files.Count]);
-            Parallel.For(0, files.Count, i =>
+            using (Log.Measure("Computing git commits"))
             {
-                result[i] = GetCommitsByPath(files[i], trees, pathToParentByRef, commits);
-                progress?.Invoke(Interlocked.Increment(ref done), total);
-            });
+                Parallel.For(0, files.Count, i =>
+                {
+                    result[i] = GetCommitsByPath(files[i], trees, pathToParentByRef, commits);
+                    Log.Progress(Interlocked.Increment(ref done), total);
+                });
+            }
+
             NativeMethods.GitRepositoryFree(repo);
             return result;
         }

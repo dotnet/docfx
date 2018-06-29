@@ -148,23 +148,20 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, List<GitCommit>> LoadCommits(Docset docset)
         {
-            using (Log.Measure("Loading git commits"))
+            var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
+            var files = docset.BuildScope
+                .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
+                .ToList();
+            var filesFromRepoRoot = files
+                .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
+                .ToList();
+            var commitsList = GitUtility.GetCommits(repoRoot, filesFromRepoRoot);
+            var result = new Dictionary<string, List<GitCommit>>();
+            for (var i = 0; i < files.Count; i++)
             {
-                var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
-                var files = docset.BuildScope
-                    .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
-                    .ToList();
-                var filesFromRepoRoot = files
-                    .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
-                    .ToList();
-                var commitsList = GitUtility.GetCommits(repoRoot, filesFromRepoRoot);
-                var result = new Dictionary<string, List<GitCommit>>();
-                for (var i = 0; i < files.Count; i++)
-                {
-                    result[files[i].FilePath] = commitsList[i];
-                }
-                return result;
+                result[files[i].FilePath] = commitsList[i];
             }
+            return result;
         }
 
         private GitRepoInfo GetFolderGitRepoInfo(string folder)
