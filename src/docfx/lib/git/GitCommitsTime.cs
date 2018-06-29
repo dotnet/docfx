@@ -10,17 +10,10 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitCommitsHistory
+    internal class GitCommitsTime
     {
-        [JsonProperty("last_build_commit_id")]
-        public string LastBuildCommitId { get; set; }
-
         [JsonProperty("commits")]
-        public List<CommitsHistoryItem> Commits { get; set; } = new List<CommitsHistoryItem>();
-
-        [JsonProperty("cross_repository_references")]
-        public Dictionary<string, GitCommitsHistory> CrossRepositoryReferences { get; set; }
-            = new Dictionary<string, GitCommitsHistory>();
+        public List<CommitsTimeItem> Commits { get; set; } = new List<CommitsTimeItem>();
 
         /// <summary>
         /// Get the dictionary recording commits time
@@ -29,10 +22,10 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, DateTime> ToDictionary() => Commits.ToDictionary(c => c.Sha, c => c.BuiltAt);
 
         /// <summary>
-        /// Create an instance of <see cref="GitCommitsHistory"/> from local cache
+        /// Create an instance of <see cref="GitCommitsTime"/> from local file
         /// </summary>
-        /// <param name="path">the path of the cache file</param>
-        public static GitCommitsHistory Create(string path)
+        /// <param name="path">the path of the file</param>
+        public static GitCommitsTime Create(string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(File.Exists(path));
@@ -40,11 +33,11 @@ namespace Microsoft.Docs.Build
             try
             {
                 var json = File.ReadAllText(path);
-                return JsonUtility.Deserialize<GitCommitsHistory>(json);
+                return JsonUtility.Deserialize<GitCommitsTime>(json);
             }
             catch (Exception ex)
             {
-                throw Errors.InvalidGitCommitsHistory(path, ex).ToException(ex);
+                throw Errors.InvalidGitCommitsTime(path, ex).ToException(ex);
             }
         }
     }

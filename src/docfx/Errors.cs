@@ -33,11 +33,11 @@ namespace Microsoft.Docs.Build
         public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
 
-        public static Error GitCommitsHistoryNotFound(string gitCommitsHistoryPath)
-            => new Error(ErrorLevel.Error, "git-commits-history-not-found", $"Cannot find git commits history at '{gitCommitsHistoryPath}'");
+        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
+            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time at '{gitCommitsTimePath}'");
 
-        public static Error InvalidGitCommitsHistory(string gitCommitsHistoryPath, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-git-commits-history", ex.Message, gitCommitsHistoryPath);
+        public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
+            => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Author {author} cannot be recognized");

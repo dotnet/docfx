@@ -4,7 +4,7 @@
 using System;
 using Newtonsoft.Json;
 
-internal class CommitsHistoryItem
+internal class CommitsTimeItem
 {
     [JsonProperty("sha")]
     public string Sha { get; set; }

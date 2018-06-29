@@ -30,6 +30,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The path of commit time history file, which contains the time each commit being pushed.
         /// </summary>
-        public readonly string GitCommitsHistoryPath = string.Empty;
+        public readonly string GitCommitsTimePath = string.Empty;
     }
 }

@@ -40,9 +40,9 @@ namespace Microsoft.Docs.Build
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
 
             _commitTimeBySha = new ReadOnlyDictionary<string, DateTime>(
-                string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsHistoryPath)
+                string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTimePath)
                 ? new Dictionary<string, DateTime>()
-                : GitCommitsHistory.Create(Path.Combine(docset.DocsetPath, docset.Config.Contribution.GitCommitsHistoryPath)).ToDictionary());
+                : GitCommitsTime.Create(Path.Combine(docset.DocsetPath, docset.Config.Contribution.GitCommitsTimePath)).ToDictionary());
         }
 
         // TODO: add more test cases
