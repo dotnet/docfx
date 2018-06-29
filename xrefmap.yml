@@ -34357,6 +34357,38 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AbstractProjectLoader.Load
   nameWithType: AbstractProjectLoader.Load
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor
+  name: AllMemberFilterVisitor
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html
+  commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor
+  nameWithType: AllMemberFilterVisitor
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  name: CanVisitApi(ISymbol, Boolean, IFilterVisitor)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_AllMemberFilterVisitor_CanVisitApi_Microsoft_CodeAnalysis_ISymbol_System_Boolean_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi(Microsoft.CodeAnalysis.ISymbol, System.Boolean, Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  nameWithType: AllMemberFilterVisitor.CanVisitApi(ISymbol, Boolean, IFilterVisitor)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi*
+  name: CanVisitApi
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_AllMemberFilterVisitor_CanVisitApi_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitApi
+  nameWithType: AllMemberFilterVisitor.CanVisitApi
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  name: CanVisitAttribute(ISymbol, Boolean, IFilterVisitor)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_AllMemberFilterVisitor_CanVisitAttribute_Microsoft_CodeAnalysis_ISymbol_System_Boolean_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute(Microsoft.CodeAnalysis.ISymbol, System.Boolean, Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  nameWithType: AllMemberFilterVisitor.CanVisitAttribute(ISymbol, Boolean, IFilterVisitor)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute*
+  name: CanVisitAttribute
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_AllMemberFilterVisitor_CanVisitAttribute_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.AllMemberFilterVisitor.CanVisitAttribute
+  nameWithType: AllMemberFilterVisitor.CanVisitAttribute
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ApplicationLevelCache
   name: ApplicationLevelCache
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ApplicationLevelCache.html
@@ -36009,6 +36041,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.CodeSourceBasePath
   nameWithType: ExtractMetadataInputModel.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_DisableDefaultFilter
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter
+  nameWithType: ExtractMetadataInputModel.DisableDefaultFilter
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter*
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_DisableDefaultFilter_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.DisableDefaultFilter
+  nameWithType: ExtractMetadataInputModel.DisableDefaultFilter
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.Files
   name: Files
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_Files
@@ -36158,6 +36203,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.CodeSourceBasePath
   nameWithType: ExtractMetadataOptions.CodeSourceBasePath
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_DisableDefaultFilter
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter
+  nameWithType: ExtractMetadataOptions.DisableDefaultFilter
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter*
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_DisableDefaultFilter_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.DisableDefaultFilter
+  nameWithType: ExtractMetadataOptions.DisableDefaultFilter
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.FilterConfigFile
   name: FilterConfigFile
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_FilterConfigFile
@@ -38699,15 +38757,12 @@ references:
   commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter
   nameWithType: SymbolVisitorAdapter
-- uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}},System.String)
-  name: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>, String)
-  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_System_Boolean_System_String_System_Collections_Generic_IReadOnlyDictionary_Microsoft_CodeAnalysis_Compilation_System_Collections_Generic_IEnumerable_Microsoft_CodeAnalysis_IMethodSymbol___System_String_
-  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}},System.String)
-  name.vb: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)), String)
-  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary<Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable<Microsoft.CodeAnalysis.IMethodSymbol>>, System.String)
-  fullName.vb: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, System.Boolean, System.String, System.Collections.Generic.IReadOnlyDictionary(Of Microsoft.CodeAnalysis.Compilation, System.Collections.Generic.IEnumerable(Of Microsoft.CodeAnalysis.IMethodSymbol)), System.String)
-  nameWithType: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>>, String)
-  nameWithType.vb: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary(Of Compilation, IEnumerable(Of IMethodSymbol)), String)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions)
+  name: SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, ExtractMetadataOptions)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.SymbolVisitorAdapter(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator, Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage, Microsoft.CodeAnalysis.Compilation, Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions)
+  nameWithType: SymbolVisitorAdapter.SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, ExtractMetadataOptions)
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor*
   name: SymbolVisitorAdapter
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.html#Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_
@@ -40042,6 +40097,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.Destination
   nameWithType: MetadataJsonItemConfig.Destination
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_DisableDefaultFilter
+  commentId: P:Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter
+  nameWithType: MetadataJsonItemConfig.DisableDefaultFilter
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter*
+  name: DisableDefaultFilter
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_DisableDefaultFilter_
+  commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.DisableDefaultFilter
+  nameWithType: MetadataJsonItemConfig.DisableDefaultFilter
 - uid: Microsoft.DocAsCode.MetadataJsonItemConfig.DisableGitFeatures
   name: DisableGitFeatures
   href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_DisableGitFeatures

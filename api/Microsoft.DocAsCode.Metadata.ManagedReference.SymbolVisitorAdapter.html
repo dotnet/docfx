@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class SymbolVisitorAdapter
    | DocFX website ">
-    <meta name="generator" content="docfx 2.36.2.0">
+    <meta name="generator" content="docfx 2.37.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -161,18 +161,18 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_System_Boolean_System_String_System_Collections_Generic_IReadOnlyDictionary_Microsoft_CodeAnalysis_Compilation_System_Collections_Generic_IEnumerable_Microsoft_CodeAnalysis_IMethodSymbol___System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.%23ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator%2CMicrosoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage%2CMicrosoft.CodeAnalysis.Compilation%2CSystem.Boolean%2CSystem.String%2CSystem.Collections.Generic.IReadOnlyDictionary%7BMicrosoft.CodeAnalysis.Compilation%2CSystem.Collections.Generic.IEnumerable%7BMicrosoft.CodeAnalysis.IMethodSymbol%7D%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.%23ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator%2CMicrosoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage%2CMicrosoft.CodeAnalysis.Compilation%2CMicrosoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L38">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor*"></a>
-  <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_System_Boolean_System_String_System_Collections_Generic_IReadOnlyDictionary_Microsoft_CodeAnalysis_Compilation_System_Collections_Generic_IEnumerable_Microsoft_CodeAnalysis_IMethodSymbol___System_String_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,System.Boolean,System.String,System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.Compilation,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.IMethodSymbol}},System.String)">SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, Boolean, String, IReadOnlyDictionary&lt;Compilation, IEnumerable&lt;IMethodSymbol&gt;&gt;, String)</h4>
+  <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_YamlModelGenerator_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage_Microsoft_CodeAnalysis_Compilation_Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataOptions_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.YamlModelGenerator,Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,Microsoft.CodeAnalysis.Compilation,Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions)">SymbolVisitorAdapter(YamlModelGenerator, SyntaxLanguage, Compilation, ExtractMetadataOptions)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary&lt;Compilation, IEnumerable&lt;IMethodSymbol&gt;&gt; extensionMethods = null, string codeSourceBasePath = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, ExtractMetadataOptions options)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -200,23 +200,8 @@
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
-        <td><span class="parametername">preserveRawInlineComments</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">filterConfigFile</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/microsoft.codeanalysis.compilation">Compilation</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/microsoft.codeanalysis.imethodsymbol">IMethodSymbol</a>&gt;&gt;</td>
-        <td><span class="parametername">extensionMethods</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">codeSourceBasePath</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataOptions.html">ExtractMetadataOptions</a></td>
+        <td><span class="parametername">options</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -228,7 +213,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_FilterVisitor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.FilterVisitor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L57">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L58">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_FilterVisitor_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.FilterVisitor*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_FilterVisitor" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.FilterVisitor">FilterVisitor</h4>
@@ -258,7 +243,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_Language.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.Language%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L55">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L56">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_Language_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.Language*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_Language" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.Language">Language</h4>
@@ -290,7 +275,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddOverloadReference_Microsoft_CodeAnalysis_ISymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddOverloadReference(Microsoft.CodeAnalysis.ISymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L439">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L440">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddOverloadReference_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddOverloadReference*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddOverloadReference_Microsoft_CodeAnalysis_ISymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddOverloadReference(Microsoft.CodeAnalysis.ISymbol)">AddOverloadReference(ISymbol)</h4>
@@ -337,7 +322,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_Microsoft_CodeAnalysis_ISymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference(Microsoft.CodeAnalysis.ISymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L423">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L424">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_Microsoft_CodeAnalysis_ISymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference(Microsoft.CodeAnalysis.ISymbol)">AddReference(ISymbol)</h4>
@@ -384,7 +369,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L434">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L435">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddReference_System_String_System_String_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddReference(System.String,System.String)">AddReference(String, String)</h4>
@@ -436,7 +421,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddSpecReference_Microsoft_CodeAnalysis_ISymbol_System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddSpecReference(Microsoft.CodeAnalysis.ISymbol%2CSystem.Collections.Generic.IReadOnlyList%7BSystem.String%7D%2CSystem.Collections.Generic.IReadOnlyList%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L455">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L456">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddSpecReference_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddSpecReference*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_AddSpecReference_Microsoft_CodeAnalysis_ISymbol_System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.AddSpecReference(Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyList{System.String})">AddSpecReference(ISymbol, IReadOnlyList&lt;String&gt;, IReadOnlyList&lt;String&gt;)</h4>
@@ -493,7 +478,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_DefaultVisit_Microsoft_CodeAnalysis_ISymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L63">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L64">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_DefaultVisit_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.DefaultVisit*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_DefaultVisit_Microsoft_CodeAnalysis_ISymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)">DefaultVisit(ISymbol)</h4>
@@ -542,7 +527,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitAssembly_Microsoft_CodeAnalysis_IAssemblySymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L118">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L119">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitAssembly_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitAssembly*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitAssembly_Microsoft_CodeAnalysis_IAssemblySymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)">VisitAssembly(IAssemblySymbol)</h4>
@@ -591,7 +576,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitEvent_Microsoft_CodeAnalysis_IEventSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L324">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L325">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitEvent_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitEvent*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitEvent_Microsoft_CodeAnalysis_IEventSymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)">VisitEvent(IEventSymbol)</h4>
@@ -640,7 +625,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitField_Microsoft_CodeAnalysis_IFieldSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L295">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L296">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitField_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitField*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitField_Microsoft_CodeAnalysis_IFieldSymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)">VisitField(IFieldSymbol)</h4>
@@ -689,7 +674,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitMethod_Microsoft_CodeAnalysis_IMethodSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L238">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L239">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitMethod_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitMethod*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitMethod_Microsoft_CodeAnalysis_IMethodSymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)">VisitMethod(IMethodSymbol)</h4>
@@ -738,7 +723,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamedType_Microsoft_CodeAnalysis_INamedTypeSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L173">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L174">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamedType_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamedType*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamedType_Microsoft_CodeAnalysis_INamedTypeSymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)">VisitNamedType(INamedTypeSymbol)</h4>
@@ -787,7 +772,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamespace_Microsoft_CodeAnalysis_INamespaceSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L157">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L158">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamespace_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamespace*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitNamespace_Microsoft_CodeAnalysis_INamespaceSymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)">VisitNamespace(INamespaceSymbol)</h4>
@@ -836,7 +821,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitProperty_Microsoft_CodeAnalysis_IPropertySymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L362">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn/Visitors/SymbolVisitorAdapter.cs/#L363">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitProperty_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitProperty*"></a>
   <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_SymbolVisitorAdapter_VisitProperty_Microsoft_CodeAnalysis_IPropertySymbol_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.SymbolVisitorAdapter.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)">VisitProperty(IPropertySymbol)</h4>
