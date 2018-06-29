@@ -202,6 +202,7 @@ namespace Microsoft.Docs.Build
 
             return new GitUserInfo
             {
+                Name = profile.Name,
                 DisplayName = profile.DisplayName,
                 Id = profile.Id,
                 ProfileUrl = profile.ProfileUrl,

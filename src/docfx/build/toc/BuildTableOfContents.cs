@@ -36,18 +36,21 @@ namespace Microsoft.Docs.Build
 
         public static async Task<TableOfContentsMap> BuildTocMap(IEnumerable<Document> files)
         {
-            Debug.Assert(files != null);
-
-            var builder = new TableOfContentsMapBuilder();
-            var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
-            if (!tocFiles.Any())
+            using (Log.Measure("Loading TOC"))
             {
+                Debug.Assert(files != null);
+
+                var builder = new TableOfContentsMapBuilder();
+                var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
+                if (!tocFiles.Any())
+                {
+                    return builder.Build();
+                }
+
+                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Log.Progress);
+
                 return builder.Build();
             }
-
-            await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder));
-
-            return builder.Build();
         }
 
         private static Task BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
