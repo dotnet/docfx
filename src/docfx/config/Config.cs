@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(config.GitCommitsHistoryPath)
                 && File.Exists(Path.Combine(configPath, config.GitCommitsHistoryPath)))
             {
-                throw Errors.UserProfileCacheNotFound(config.UserProfileCachePath).ToException();
+                throw Errors.UserProfileCacheNotFound(config.GitCommitsHistoryPath).ToException();
             }
         }
 
