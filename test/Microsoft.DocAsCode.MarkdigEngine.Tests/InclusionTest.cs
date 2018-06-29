@@ -7,8 +7,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
-
+    using Markdig;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using Microsoft.DocAsCode.Plugins;
 
     using Xunit;
@@ -716,6 +717,18 @@ body";
             var dependency = result.Dependency;
             var expectedDependency = new List<string> { "~/r/include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        }
+
+        [Fact]
+        [Trait("Related", "Inclusion")]
+        public void TestBlockInclude_Does_Not_Replace_AutoLink()
+        {
+            var root = "https://docs.microsoft.com";
+            var context = new MarkdownContext(getLink: (path, relativeTo) => "REPLACE IT");
+            var pipeline = new MarkdownPipelineBuilder().UseDocfxExtensions(context).Build();
+            var result = Markdown.ToHtml(root, pipeline);
+
+            Assert.Equal("<p><a href=\"https://docs.microsoft.com\">https://docs.microsoft.com</a></p>", result.Trim());
         }
     }
 }

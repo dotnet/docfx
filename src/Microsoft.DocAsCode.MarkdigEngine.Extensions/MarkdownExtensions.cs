@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseInteractiveCode()
                 .UseRow(context)
                 .UseNestedColumn(context)
-                .UseRenderZone(context)
+                .UseTripleColon(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -131,9 +131,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseRenderZone(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new RenderZoneExtension(context));
+            pipeline.Extensions.Insert(0, new TripleColonExtension(context));
             return pipeline;
         }
     }

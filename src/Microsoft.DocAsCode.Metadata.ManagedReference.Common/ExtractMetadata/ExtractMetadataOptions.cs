@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string CodeSourceBasePath { get; set; }
 
+        public bool DisableDefaultFilter { get; set; }
+
         [JsonIgnore]
         public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
 
