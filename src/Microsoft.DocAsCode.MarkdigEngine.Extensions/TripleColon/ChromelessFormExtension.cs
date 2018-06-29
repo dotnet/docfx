@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 	using Markdig.Syntax;
 	using System;
 	using System.Collections.Generic;
-	using System.Text;
+	using System.Net;
 
 	public class ChromelessFormExtension : ITripleColonExtensionInfo
     {
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 						action = value;
 						break;
 					case "submittext":
-						submitText = value;
+						submitText = WebUtility.HtmlEncode(value);
 						break;
 					default:
 						logError($"Unexpected attribute \"{name}\".");
@@ -71,19 +71,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 			RenderDelegate = (renderer, obj) =>
 			{
 				renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
-
-				if (String.IsNullOrEmpty(model))
-				{
-					renderer.WriteLine($"<button type=\"submit\">{submitText}</button>");
-				}
-				else
-				{
-					renderer.WriteLine(@"<fieldset disabled=""disabled"">");
-					renderer.WriteLine("<div></div>");
-					renderer.WriteLine($"<button type=\"submit\">{submitText}</button>");
-					renderer.WriteLine("</fieldset>");
-				}
-
+				renderer.WriteLine(@"<fieldset disabled=""disabled"">");
+				renderer.WriteLine("<div></div>");
+				renderer.WriteLine($"<button type=\"submit\">{submitText}</button>");
+				renderer.WriteLine("</fieldset>");
 				renderer.WriteLine("</form>");
 
 				return true;
