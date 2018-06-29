@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace Microsoft.Docs.Build
 
         private readonly GitUserProfileCache _githubUserProfileCache;
 
+        private readonly ReadOnlyDictionary<string, DateTime> _commitTimeBySha;
+
         public GitRepoInfoProvider(Docset docset)
         {
             Debug.Assert(docset != null);
@@ -35,6 +38,11 @@ namespace Microsoft.Docs.Build
                 ? s_defaultCachePath
                 : Path.Combine(docset.DocsetPath, docset.Config.Contribution.UserProfileCachePath);
             _githubUserProfileCache = GitUserProfileCache.Create(userProfileCachePath);
+
+            _commitTimeBySha = new ReadOnlyDictionary<string, DateTime>(
+                string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsHistoryPath)
+                ? new Dictionary<string, DateTime>()
+                : GitCommitsHistory.Create(Path.Combine(docset.DocsetPath, docset.Config.Contribution.GitCommitsHistoryPath)).ToDictionary());
         }
 
         // TODO: add more test cases
@@ -88,8 +96,10 @@ namespace Microsoft.Docs.Build
             }
             else if (commits?.Count > 0)
             {
-                // TODO: support read build history
-                updateDateTime = commits[0].Time.DateTime;
+                if (_commitTimeBySha.TryGetValue(commits[0].Sha, out var timeFromHistory))
+                    updateDateTime = timeFromHistory;
+                else
+                    updateDateTime = commits[0].Time.UtcDateTime;
             }
             else
             {
