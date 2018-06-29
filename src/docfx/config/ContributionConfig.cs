@@ -26,5 +26,10 @@ namespace Microsoft.Docs.Build
         /// The path of user profile cache, used for generating authoer and contributors.
         /// </summary>
         public readonly string UserProfileCachePath = string.Empty;
+
+        /// <summary>
+        /// The path of commit time history file, which contains the time each commit being pushed.
+        /// </summary>
+        public readonly string GitCommitsTimePath = string.Empty;
     }
 }

@@ -31,7 +31,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache at '{userProfilePath}'");
 
         public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
-            => new Error(ErrorLevel.Warning, "invalid-user-profile-cache", ex.Message, userProfileCache);
+            => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
+
+        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
+            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time at '{gitCommitsTimePath}'");
+
+        public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
+            => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Author {author} cannot be recognized");
