@@ -79,10 +79,13 @@ namespace Microsoft.Docs.Build
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
         {
-            return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
-                           .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
-                           .Concat(redirections)
-                           .ToHashSet();
+            using (Log.Measure("Globbing files"))
+            {
+                return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
+                               .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
+                               .Concat(redirections)
+                               .ToHashSet();
+            }
         }
     }
 }
