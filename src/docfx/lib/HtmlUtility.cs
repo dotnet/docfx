@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 
@@ -12,9 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private const string SpecialChars = ".?!;:,()[]";
-        private static readonly char[] s_delimChars = { ' ', '\t', '\n' };
-
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -49,9 +45,6 @@ namespace Microsoft.Docs.Build
             if (node.NodeType == HtmlNodeType.Comment)
                 return 0;
 
-            if (node.Name.Equals("title", StringComparison.OrdinalIgnoreCase))
-                return 0;
-
             if (node is HtmlTextNode textNode)
                 return CountWordInText(textNode.Text);
 
@@ -61,17 +54,6 @@ namespace Microsoft.Docs.Build
                 total += CountWord(child);
             }
             return total;
-
-            int CountWordInText(string text)
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    return 0;
-                }
-
-                string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
-                return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
-            }
         }
 
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
@@ -213,6 +195,39 @@ namespace Microsoft.Docs.Build
             {
                 return '/' + locale + href;
             }
+        }
+
+        private static int CountWordInText(string text)
+        {
+            var total = 0;
+            var word = false;
+
+            foreach (var ch in text)
+            {
+                if (ch == ' ' || ch == '\t' || ch == '\n')
+                {
+                    if (word)
+                    {
+                        word = false;
+                        total++;
+                    }
+                }
+                else if (
+                    ch != '.' && ch != '?' && ch != '!' &&
+                    ch != ';' && ch != ':' && ch != ',' &&
+                    ch != '(' && ch != ')' && ch != '[' &&
+                    ch != ']')
+                {
+                    word = true;
+                }
+            }
+
+            if (word)
+            {
+                total++;
+            }
+
+            return total;
         }
     }
 }
