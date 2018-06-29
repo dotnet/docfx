@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
-            rawMetadata["rawTitle"] = pageModel.TitleHtml;
+            rawMetadata["rawTitle"] = pageModel.TitleHtml ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 
@@ -80,16 +81,21 @@ namespace Microsoft.Docs.Build
             }
 
             var culture = new CultureInfo(pageModel.Locale);
-            rawMetadata["_op_gitContributorInformation"] = new JObject
+            if (pageModel.UpdatedAt != default)
             {
-                ["author"] = pageModel.Author?.ToJObject(),
-                ["contributors"] = pageModel.Contributors != null
-                    ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
-                    : null,
-                ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
-            };
-            rawMetadata["author"] = pageModel.Author?.ProfileUrl.Substring(pageModel.Author.ProfileUrl.LastIndexOf('/'));
-            rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
+                rawMetadata["_op_gitContributorInformation"] = new JObject
+                {
+                    ["author"] = pageModel.Author?.ToJObject(),
+                    ["contributors"] = pageModel.Contributors != null
+                        ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
+                        : null,
+                    ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                };
+            }
+            if (!string.IsNullOrEmpty(pageModel.Author?.Name))
+                rawMetadata["author"] = pageModel.Author?.Name;
+            if (pageModel.UpdatedAt != default)
+                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
             if (file.ContentType != ContentType.Redirection)
             {
@@ -106,8 +112,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            rawMetadata["open_to_public_contributors"] = pageModel.EnableContribution;
-            rawMetadata["content_git_url"] = pageModel.EditLink;
+            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
+            if (file.ContentType != ContentType.Redirection)
+                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.Enabled;
+            if (!string.IsNullOrEmpty(pageModel.EditLink))
+                rawMetadata["content_git_url"] = pageModel.EditLink;
 
             return rawMetadata;
         }
