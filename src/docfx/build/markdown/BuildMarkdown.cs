@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,13 +25,12 @@ namespace Microsoft.Docs.Build
 
             var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
 
-            var document = new HtmlDocument();
-            document.LoadHtml(html);
+            var htmlDom = HtmlUtility.LoadHtml(html);
+            var content = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
+            var wordCount = HtmlUtility.CountWord(htmlDom);
 
-            var wordCount = HtmlUtility.CountWord(html);
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
-            var content = markup.HasHtml ? HtmlUtility.TransformHtml(document.DocumentNode, node => node.StripTags()) : html;
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
