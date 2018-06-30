@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -54,29 +55,29 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
-            ActionBlock<T> queue = null;
+            ActionBlock<(T item, IEnumerable<T> inputs)> queue = null;
 
-            var total = 0;
             var done = 0;
-            var running = 0;
+            var total = 0;
+            var running = 1;
 
-            queue = new ActionBlock<T>(Run, s_dataflowOptions);
-
-            foreach (var item in source)
-            {
-                Enqueue(item);
-            }
-
-            if (Volatile.Read(ref running) == 0)
-            {
-                queue.Complete();
-            }
-
+            queue = new ActionBlock<(T, IEnumerable<T>)>(Run, s_dataflowOptions);
+            queue.Post((default, source));
             return queue.Completion;
 
-            async Task Run(T item)
+            async Task Run((T item, IEnumerable<T> inputs) item)
             {
-                await action(item, Enqueue);
+                if (item.inputs != null)
+                {
+                    foreach (var input in item.inputs)
+                    {
+                        Enqueue(input);
+                    }
+                }
+                else
+                {
+                    await action(item.item, Enqueue);
+                }
 
                 if (Interlocked.Decrement(ref running) == 0)
                 {
@@ -88,21 +89,15 @@ namespace Microsoft.Docs.Build
 
             void Enqueue(T item)
             {
-                if (item == null)
+                if (predicate == null || predicate(item))
                 {
-                    return;
+                    var posted = queue.Post((item, null));
+                    DebugAssertPostedOrFaulted(posted, queue);
+
+                    Interlocked.Increment(ref running);
+
+                    progress?.Invoke(done, Interlocked.Increment(ref total));
                 }
-                if (predicate != null && !predicate(item))
-                {
-                    return;
-                }
-
-                Interlocked.Increment(ref running);
-
-                var posted = queue.Post(item);
-                DebugAssertPostedOrFaulted(posted, queue);
-
-                progress?.Invoke(done, Interlocked.Increment(ref total));
             }
         }
 
