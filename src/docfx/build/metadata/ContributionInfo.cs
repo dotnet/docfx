@@ -54,10 +54,15 @@ namespace Microsoft.Docs.Build
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
         {
             var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
-            var files = docset.BuildScope.Where(d => d.IsMasterContent).ToList();
+
+            var files = docset.BuildScope
+                .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
+                .ToList();
+
             var filesFromRepoRoot = files
                 .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
                 .ToList();
+
             var commitsList = GitUtility.GetCommits(repoRoot, filesFromRepoRoot);
             var result = new Dictionary<string, List<GitCommit>>();
             for (var i = 0; i < files.Count; i++)
