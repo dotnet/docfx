@@ -54,29 +54,34 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
-            ActionBlock<T> queue = null;
+            ActionBlock<(T, bool)> queue = null;
 
-            var total = 0;
             var done = 0;
-            var running = 0;
+            var total = 0;
+            var running = 1; // Always run the virtual root node
 
-            queue = new ActionBlock<T>(Run, s_dataflowOptions);
+            queue = new ActionBlock<(T, bool)>(Run, s_dataflowOptions);
 
-            foreach (var item in source)
-            {
-                Enqueue(item);
-            }
-
-            if (Volatile.Read(ref running) == 0)
-            {
-                queue.Complete();
-            }
-
+            // Enqueue a virtual root node as a placeholder,
+            // it is responsible for queueing each items in source parameter
+            queue.Post((default, true));
             return queue.Completion;
 
-            async Task Run(T item)
+            async Task Run((T, bool) input)
             {
-                await action(item, Enqueue);
+                var (item, root) = input;
+
+                if (root)
+                {
+                    foreach (var sourceItem in source)
+                    {
+                        Enqueue(sourceItem);
+                    }
+                }
+                else
+                {
+                    await action(item, Enqueue);
+                }
 
                 if (Interlocked.Decrement(ref running) == 0)
                 {
@@ -88,21 +93,17 @@ namespace Microsoft.Docs.Build
 
             void Enqueue(T item)
             {
-                if (item == null)
+                Debug.Assert(item != null);
+
+                if (predicate == null || predicate(item))
                 {
-                    return;
+                    Interlocked.Increment(ref running);
+
+                    var posted = queue.Post((item, false));
+                    DebugAssertPostedOrFaulted(posted, queue);
+
+                    progress?.Invoke(done, Interlocked.Increment(ref total));
                 }
-                if (predicate != null && !predicate(item))
-                {
-                    return;
-                }
-
-                Interlocked.Increment(ref running);
-
-                var posted = queue.Post(item);
-                DebugAssertPostedOrFaulted(posted, queue);
-
-                progress?.Invoke(done, Interlocked.Increment(ref total));
             }
         }
 
