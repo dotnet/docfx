@@ -97,10 +97,10 @@ namespace Microsoft.Docs.Build
 
                 if (predicate == null || predicate(item))
                 {
+                    Interlocked.Increment(ref running);
+
                     var posted = queue.Post((item, false));
                     DebugAssertPostedOrFaulted(posted, queue);
-
-                    Interlocked.Increment(ref running);
 
                     progress?.Invoke(done, Interlocked.Increment(ref total));
                 }
