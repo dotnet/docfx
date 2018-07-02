@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "fileRelativePath", "layout", "title" };
+        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url" };
 
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
@@ -69,8 +69,7 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
-            var path = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
-            rawMetadata["_path"] = path.Remove(path.Length - Path.GetExtension(path).Length);
+            rawMetadata["_path"] = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
 
             rawMetadata["document_id"] = pageModel.Id;
             rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
