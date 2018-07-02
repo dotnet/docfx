@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
+            ContributionInfo repo,
             Report report)
         {
             using (Log.Measure("Converting to legacy"))

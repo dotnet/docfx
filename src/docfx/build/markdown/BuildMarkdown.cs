@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,7 +14,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
+            ContributionInfo contribution,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Markdown);
@@ -34,10 +33,11 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = repo.GetContributorInfo(
+            var (repoErrors, author, contributors, updatedAt) = contribution.GetContributorInfo(
                 file,
                 metadata.Value<string>("author"),
                 metadata.Value<DateTime?>("update_date"));
+
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
             var model = new PageModel
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
-                EditLink = repo.GetEditLink(file),
+                EditLink = contribution.GetEditLink(file),
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
