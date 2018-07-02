@@ -212,38 +212,21 @@ outputs:
        }
     }
 ---
-# `build.manifest` bookmark generates self dependency 
+# Ignores link to self, treat empty bookmark as link
 inputs:
   docfx.yml:
   docs/a.md: |
-    Link to [bookmark](#bookmark)
+    Link to [a](#bookmark) and [b](b.md#)
+  docs/b.md:
 outputs:
   docs/a.json:
+  docs/b.json:
   build.manifest: |
     {  
        "dependencies":{  
           "docs/a.md":[  
              {  
-                "source":"docs/a.md",
-                "type":"bookmark"
-             }
-          ]
-       }
-    }
----
-# Treat `#` as link dependency
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    Link to [link](#)
-outputs:
-  docs/a.json:
-  build.manifest: |
-    {  
-       "dependencies":{  
-          "docs/a.md":[  
-             {  
-                "source":"docs/a.md",
+                "source":"docs/b.md",
                 "type":"link"
              }
           ]
