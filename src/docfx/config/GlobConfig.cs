@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
 
             if (IsGlob)
             {
+                // TODO: optimize this
                 var glob = new GlobMatcher(pattern);
                 return glob.Match(filePath);
             }
