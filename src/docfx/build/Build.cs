@@ -24,15 +24,15 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
-            var repo = new GitRepoInfoProvider(docset);
+            var contribution = ContributionInfo.Load(docset);
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, repo);
+            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, repo, report);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, contribution, report);
             }
         }
 
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             Context context,
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo)
+            ContributionInfo contribution)
         {
             using (Log.Measure("Building files"))
             {
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var dependencyMap = await BuildFile(context, file, tocMap, repo, buildChild);
+                    var dependencyMap = await BuildFile(context, file, tocMap, contribution, buildChild);
 
                     foreach (var (souce, dependencies) in dependencyMap)
                     {
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
+            ContributionInfo contribution,
             Action<Document> buildChild)
         {
             switch (file.ContentType)
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Asset:
                     return BuildAsset(context, file);
                 case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, repo, buildChild);
+                    return BuildMarkdown.Build(context, file, tocMap, contribution, buildChild);
                 case ContentType.SchemaDocument:
                     return BuildSchemaDocument.Build();
                 case ContentType.TableOfContents:
