@@ -13,14 +13,14 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            GitRepoInfoProvider repo,
+            ContributionInfo contribution,
             Report report)
         {
             using (Log.Measure("Converting to legacy"))
             {
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-                LegacyOutput.Convert(docset, context, repo, legacyManifestItems, tocMap);
+                LegacyOutput.Convert(docset, context, contribution, legacyManifestItems, tocMap);
 
                 // generate mappings
                 LegacyFileMap.Convert(docset, context, documents);
