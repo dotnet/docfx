@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
 
             var done = 0;
             var total = 0;
-            var running = 1; // Always run the virual root node
+            var running = 1; // Always run the virtual root node
 
             queue = new ActionBlock<(T, bool)>(Run, s_dataflowOptions);
 
