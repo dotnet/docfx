@@ -10,28 +10,28 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitUserProfileCache
+    internal class UserProfileCache
     {
-        private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByName;
-        private readonly ConcurrentDictionary<string, GitUserProfile> _cacheByEmail;
+        private readonly ConcurrentDictionary<string, UserProfile> _cacheByName;
+        private readonly ConcurrentDictionary<string, UserProfile> _cacheByEmail;
         private readonly string _cachePath;
 
-        public GitUserProfileCache(IDictionary<string, GitUserProfile> cache, string path)
+        public UserProfileCache(IDictionary<string, UserProfile> cache, string path)
         {
             Debug.Assert(cache != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
 
             _cachePath = path;
-            _cacheByName = new ConcurrentDictionary<string, GitUserProfile>(cache);
-            _cacheByEmail = new ConcurrentDictionary<string, GitUserProfile>(
+            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache);
+            _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
                 from profile in cache.Values
                 where profile?.UserEmails != null
                 from email in profile.UserEmails.Split(";")
                 group profile by email into g
-                select new KeyValuePair<string, GitUserProfile>(g.Key, g.First()));
+                select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
         }
 
-        public GitUserProfile GetByUserName(string userName)
+        public UserProfile GetByUserName(string userName)
         {
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 return null;
         }
 
-        public GitUserProfile GetByUserEmail(string userEmail)
+        public UserProfile GetByUserEmail(string userEmail)
         {
             Debug.Assert(!string.IsNullOrEmpty(userEmail));
 
@@ -52,10 +52,10 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Create an instance of <see cref="GitUserProfileCache"/> from local cache
+        /// Create an instance of <see cref="UserProfileCache"/> from local cache
         /// </summary>
         /// <param name="cachePath">the path of the cache file</param>
-        public static GitUserProfileCache Create(string cachePath)
+        public static UserProfileCache Create(string cachePath)
         {
             Debug.Assert(!string.IsNullOrEmpty(cachePath));
 
@@ -65,8 +65,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var cache = JsonUtility.Deserialize<Dictionary<string, GitUserProfile>>(json);
-                return new GitUserProfileCache(cache, cachePath);
+                var cache = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
+                return new UserProfileCache(cache, cachePath);
             }
             catch (Exception ex)
             {

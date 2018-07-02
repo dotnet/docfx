@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache = new ConcurrentDictionary<string, GitRepoInfo>();
 
-        private readonly GitUserProfileCache _userProfileCache;
+        private readonly UserProfileCache _userProfileCache;
 
         private readonly IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
 
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         public ContributionInfo(
             IReadOnlyDictionary<string, List<GitCommit>> commitsByFile,
             IReadOnlyDictionary<string, DateTime> updateTimeByCommit,
-            GitUserProfileCache userProfileCache)
+            UserProfileCache userProfileCache)
         {
             _commitsByFile = commitsByFile;
             _updateTimeByCommit = updateTimeByCommit;
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 ? s_defaultCachePath
                 : Path.Combine(docset.DocsetPath, docset.Config.Contribution.UserProfileCachePath);
 
-            return new ContributionInfo(commitsByFile, updateTimeByCommit, GitUserProfileCache.Create(userProfileCachePath));
+            return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
         }
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
@@ -76,14 +76,14 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var errors = new List<Error>();
-            GitUserProfile authorInfo = null;
+            UserProfile authorInfo = null;
             if (!string.IsNullOrEmpty(author))
             {
                 authorInfo = _userProfileCache.GetByUserName(author);
                 if (authorInfo == null)
                     errors.Add(Errors.AuthorNotFound(author));
             }
-            var contributors = new List<GitUserProfile>();
+            var contributors = new List<UserProfile>();
 
             if (_commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count != 0)
             {
@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private GitUserInfo ToGitUserInfo(GitUserProfile profile)
+        private GitUserInfo ToGitUserInfo(UserProfile profile)
         {
             if (profile == null)
                 return null;
