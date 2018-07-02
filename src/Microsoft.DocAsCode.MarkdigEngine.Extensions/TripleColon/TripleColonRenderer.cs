@@ -9,6 +9,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         protected override void Write(HtmlRenderer renderer, TripleColonBlock b)
         {
+            if (b.Extension.Render(renderer, b))
+            {
+                return;
+            }
+
             renderer.Write("<div").WriteAttributes(b).WriteLine(">");
             renderer.WriteChildren(b);
             renderer.WriteLine("</div>");

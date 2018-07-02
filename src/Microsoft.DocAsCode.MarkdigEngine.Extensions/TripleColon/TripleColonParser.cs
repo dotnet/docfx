@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
-                || !TryMatchAttributes(ref slice, out attributes, extensionName, logError)
+                || !TryMatchAttributes(ref slice, out attributes, extensionName, extension.SelfClosing, logError)
                 || !extension.TryProcessAttributes(attributes, out htmlAttributes, logError))
             {
                 return BlockState.None;
@@ -65,6 +65,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             processor.NewBlocks.Push(block);
+
+            if (extension.SelfClosing)
+            {
+                ExtensionsHelper.SkipSpaces(ref slice);
+                if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
+                {
+                    _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Blocks should be explicitly closed with :::");
+                }
+
+                return BlockState.BreakDiscard;
+            }
 
             return BlockState.ContinueDiscard;
         }
@@ -108,7 +119,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Close(BlockProcessor processor, Block block)
         {
-            var extensionName = ((TripleColonBlock)block).Extension.Name;
+            TripleColonBlock tripleColonBlock = (TripleColonBlock)block;
+            if (tripleColonBlock.Extension.SelfClosing)
+            {
+                return true;
+            }
+
+            var extensionName = tripleColonBlock.Extension.Name;
             if (processor.CurrentContainer != block)
             {
                 _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}.  A {extensionName} cannot end before blocks nested within it have ended.");
@@ -165,13 +182,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, Action<string> logError)
+        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
         {
             attributes = EmptyAttributes;
             while (true)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
-                if (slice.CurrentChar.IsZero())
+                if (slice.CurrentChar.IsZero() || (selfClosing && ExtensionsHelper.MatchStart(ref slice, ":::")))
                 {
                     return true;
                 }

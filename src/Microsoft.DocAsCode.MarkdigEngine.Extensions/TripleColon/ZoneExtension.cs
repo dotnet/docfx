@@ -2,19 +2,27 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+	using Markdig.Renderers;
+	using Markdig.Renderers.Html;
+	using Markdig.Syntax;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text.RegularExpressions;
 
-    public class ZoneExtension : ITripleColonExtensionInfo
+	public class ZoneExtension : ITripleColonExtensionInfo
     {
         private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
         private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
-        public string Name { get; } = "zone";
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
+        public string Name => "zone";
+		public bool SelfClosing => false;
+
+		public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+		{
+			return false;
+		}
+
+		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
         {
             htmlAttributes = null;
             var target = string.Empty;

@@ -21,7 +21,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _context = context;
             _extensions = (new ITripleColonExtensionInfo[]
             {
-                new ZoneExtension()
+                new ZoneExtension(),
+                new ChromelessFormExtension()
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
         }
@@ -52,8 +53,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
+        bool SelfClosing { get; }
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
-        // todo: "Render" function as-needed.
+        bool Render(HtmlRenderer renderer, TripleColonBlock block);
     }
 }
