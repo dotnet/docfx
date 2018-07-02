@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Linq;
 
@@ -54,11 +55,11 @@ namespace Microsoft.Docs.Build
             var result = FileGlob.GetFiles(
                 _workingDirectory,
                 new string[] { "**.md" },
-                null).ToArray();
+                Array.Empty<string>()).ToArray();
             Assert.Equal(3, result.Length);
             result = FileGlob.GetFiles(
                 _workingDirectory,
-                null,
+                Array.Empty<string>(),
                 new string[] { "**.md" }).ToArray();
             Assert.Empty(result);
             result = FileGlob.GetFiles(

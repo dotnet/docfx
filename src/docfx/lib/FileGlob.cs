@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,56 +16,42 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get files with patterns
         /// </summary>
-        public static IEnumerable<string> GetFiles(string cwd, IEnumerable<string> patterns, IEnumerable<string> excludePatterns, GlobMatcherOptions options = GlobMatcher.DefaultOptions)
-        {
-            // If there is no pattern, nothing will be included
-            if (patterns == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            if (string.IsNullOrEmpty(cwd))
-            {
-                cwd = Directory.GetCurrentDirectory();
-            }
-
-            IEnumerable<GlobMatcher> globList = patterns.Select(s => new GlobMatcher(s, options));
-            IEnumerable<GlobMatcher> excludeGlobList = Enumerable.Empty<GlobMatcher>();
-            if (excludePatterns != null)
-            {
-                excludeGlobList = excludePatterns.Select(s => new GlobMatcher(s, options));
-            }
-            return GetFilesCore(cwd, globList, excludeGlobList);
-        }
-
-        private static IEnumerable<string> GetFilesCore(string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
+        public static IEnumerable<string> GetFiles(string cwd, string[] patterns, string[] excludePatterns)
         {
             if (!Directory.Exists(cwd))
             {
-                yield break;
+                return Array.Empty<string>();
             }
 
+            var globList = patterns.Select(s => new GlobMatcher(s)).ToArray();
+            var excludeGlobList = excludePatterns.Select(s => new GlobMatcher(s)).ToArray();
+
+            return GetFilesCore(cwd, globList, excludeGlobList);
+        }
+
+        private static IEnumerable<string> GetFilesCore(string cwd, GlobMatcher[] globs, GlobMatcher[] excludeGlobs)
+        {
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
                 yield return Path.GetFullPath(file);
             }
         }
 
-        private static IEnumerable<string> GetFilesFromSubfolder(string baseDirectory, string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
+        private static IEnumerable<string> GetFilesFromSubfolder(string baseDirectory, string cwd, GlobMatcher[] globs, GlobMatcher[] excludeGlobs)
         {
-            foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
+            foreach (var file in Directory.EnumerateFiles(baseDirectory))
             {
                 var relativePath = GetRelativeFilePath(cwd, file);
-                if (IsFileMatch(relativePath, globs, excludeGlobs))
+                if (IsMatch(relativePath, globs, excludeGlobs, directory: false))
                 {
                     yield return file;
                 }
             }
 
-            foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
+            foreach (var dir in Directory.EnumerateDirectories(baseDirectory))
             {
                 var relativePath = GetRelativeDirectoryPath(cwd, dir);
-                if (IsDirectoryMatch(relativePath, globs, excludeGlobs))
+                if (IsMatch(relativePath, globs, excludeGlobs, directory: true))
                 {
                     foreach (var file in GetFilesFromSubfolder(dir, cwd, globs, excludeGlobs))
                     {
@@ -90,17 +77,7 @@ namespace Microsoft.Docs.Build
             return relativeDirectory.TrimEnd('\\', '/') + "/";
         }
 
-        private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
-        {
-            return IsMatch(path, globs, excludeGlobs, false);
-        }
-
-        private static bool IsDirectoryMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
-        {
-            return IsMatch(path, globs, excludeGlobs, true);
-        }
-
-        private static bool IsMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs, bool partial)
+        private static bool IsMatch(string path, GlobMatcher[] globs, GlobMatcher[] excludeGlobs, bool directory)
         {
             foreach (var exclude in excludeGlobs)
             {
@@ -111,7 +88,7 @@ namespace Microsoft.Docs.Build
             }
             foreach (var glob in globs)
             {
-                if (glob.Match(path, partial))
+                if (glob.Match(path, directory))
                 {
                     return true;
                 }
