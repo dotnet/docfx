@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
             var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
-            File.Delete(context.ConvertToAbsolutePath(rawPageOutputPath));
-            File.Move(context.ConvertToAbsolutePath(doc.OutputPath), context.ConvertToAbsolutePath(rawPageOutputPath));
+            File.Delete(rawPageOutputPath.ToAbsoluteOutputPath(docset));
+            File.Move(doc.OutputPath.ToAbsoluteOutputPath(docset), rawPageOutputPath.ToAbsoluteOutputPath(docset));
 
-            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(context.ConvertToAbsolutePath(rawPageOutputPath)));
+            var pageModel = JsonUtility.Deserialize<PageModel>(File.ReadAllText(rawPageOutputPath.ToAbsoluteOutputPath(docset)));
             var content = pageModel.Content;
 
             var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, repo, legacyManifestOutput, tocMap);

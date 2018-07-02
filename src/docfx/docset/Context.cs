@@ -48,15 +48,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Convert relative path to absolute path
-        /// </summary>
-        /// <param name="relativePath">Relatived to _outputPath</param>
-        public string ConvertToAbsolutePath(string relativePath)
-        {
-            return Path.Combine(_outputPath, relativePath);
-        }
-
-        /// <summary>
         /// Opens a write stream to write to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
