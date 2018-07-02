@@ -74,5 +74,22 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(output, HtmlUtility.GetInnerText(input));
         }
+
+        [Theory]
+        [InlineData("", 0)]
+        [InlineData("a", 1)]
+        [InlineData("a b", 2)]
+        [InlineData("a b ?!", 2)]
+        [InlineData(@"<p>a</p>b", 2)]
+        [InlineData(@"<p>a</p>b<p>c</p>", 3)]
+        [InlineData(@"<div><div class=""content""><h1>Connect and TFS information ?!</h1></div></div>", 4)]
+        [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1></div></div>", 4)]
+        [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
+        [InlineData(@"<div><title>Connect and TFS information</title><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 39)]
+        [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the <a href=""http://www.msdn.com"">MSDN</a> and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
+        public static void CountWord(string html, long expectedCount)
+        {
+            Assert.Equal(expectedCount, HtmlUtility.CountWord(HtmlUtility.LoadHtml(html)));
+        }
     }
 }
