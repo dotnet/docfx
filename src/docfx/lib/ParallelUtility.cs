@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -55,28 +54,33 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
-            ActionBlock<(T item, IEnumerable<T> inputs)> queue = null;
+            ActionBlock<(T, bool)> queue = null;
 
             var done = 0;
             var total = 0;
-            var running = 1;
+            var running = 1; // Always run the virual root node
 
-            queue = new ActionBlock<(T, IEnumerable<T>)>(Run, s_dataflowOptions);
-            queue.Post((default, source));
+            queue = new ActionBlock<(T, bool)>(Run, s_dataflowOptions);
+
+            // Enqueue a virtual root node as a placeholder,
+            // it is responsible for queueing each items in source parameter
+            queue.Post((default, true));
             return queue.Completion;
 
-            async Task Run((T item, IEnumerable<T> inputs) item)
+            async Task Run((T, bool) input)
             {
-                if (item.inputs != null)
+                var (item, root) = input;
+
+                if (root)
                 {
-                    foreach (var input in item.inputs)
+                    foreach (var sourceItem in source)
                     {
-                        Enqueue(input);
+                        Enqueue(sourceItem);
                     }
                 }
                 else
                 {
-                    await action(item.item, Enqueue);
+                    await action(item, Enqueue);
                 }
 
                 if (Interlocked.Decrement(ref running) == 0)
@@ -91,7 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 if (predicate == null || predicate(item))
                 {
-                    var posted = queue.Post((item, null));
+                    var posted = queue.Post((item, false));
                     DebugAssertPostedOrFaulted(posted, queue);
 
                     Interlocked.Increment(ref running);
