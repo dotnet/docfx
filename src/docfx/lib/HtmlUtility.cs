@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 
@@ -12,20 +11,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private const string SpecialChars = ".?!;:,()[]";
-        private static readonly char[] s_delimChars = { ' ', '\t', '\n' };
-        private static readonly string[] ExcludeNodeXPaths = { "//title" };
+        public static HtmlNode LoadHtml(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            return doc.DocumentNode;
+        }
 
         public static string TransformHtml(string html, Func<HtmlNode, HtmlNode> transform)
         {
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
-            return TransformHtml(document.DocumentNode, transform);
-        }
-
-        public static string TransformHtml(HtmlNode html, Func<HtmlNode, HtmlNode> transform)
-        {
-            return transform(html).OuterHtml;
+            return transform(document.DocumentNode).OuterHtml;
         }
 
         public static string GetInnerText(string html)
@@ -42,34 +39,21 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        public static long CountWord(string html)
+        public static long CountWord(this HtmlNode node)
         {
             // TODO: word count does not work for CJK locales...
-            if (html == null)
+            if (node.NodeType == HtmlNodeType.Comment)
+                return 0;
+
+            if (node is HtmlTextNode textNode)
+                return CountWordInText(textNode.Text);
+
+            var total = 0L;
+            foreach (var child in node.ChildNodes)
             {
-                throw new ArgumentNullException(nameof(html));
+                total += CountWord(child);
             }
-
-            // TODO: try to load html just once
-            HtmlDocument document = new HtmlDocument();
-
-            // Append a space before each end bracket so that InnerText inside different child nodes can separate itself from each other.
-            document.LoadHtml(html.Replace("</", " </", StringComparison.OrdinalIgnoreCase));
-            long wordCount = CountWordInText(document.DocumentNode.InnerText);
-
-            foreach (var excludeNodeXPath in ExcludeNodeXPaths)
-            {
-                HtmlNodeCollection excludeNodes = document.DocumentNode.SelectNodes(excludeNodeXPath);
-                if (excludeNodes != null)
-                {
-                    foreach (var excludeNode in excludeNodes)
-                    {
-                        wordCount -= CountWordInText(excludeNode.InnerText);
-                    }
-                }
-            }
-
-            return wordCount;
+            return total;
         }
 
         public static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
@@ -215,13 +199,35 @@ namespace Microsoft.Docs.Build
 
         private static int CountWordInText(string text)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            var total = 0;
+            var word = false;
+
+            foreach (var ch in text)
             {
-                return 0;
+                if (ch == ' ' || ch == '\t' || ch == '\n')
+                {
+                    if (word)
+                    {
+                        word = false;
+                        total++;
+                    }
+                }
+                else if (
+                    ch != '.' && ch != '?' && ch != '!' &&
+                    ch != ';' && ch != ':' && ch != ',' &&
+                    ch != '(' && ch != ')' && ch != '[' &&
+                    ch != ']')
+                {
+                    word = true;
+                }
             }
 
-            string[] wordList = text.Split(s_delimChars, StringSplitOptions.RemoveEmptyEntries);
-            return wordList.Count(s => !s.Trim().All(SpecialChars.Contains));
+            if (word)
+            {
+                total++;
+            }
+
+            return total;
         }
     }
 }
