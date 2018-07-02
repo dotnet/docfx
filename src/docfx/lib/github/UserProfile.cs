@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitUserProfile
+    internal class UserProfile
     {
         [JsonProperty("profile_url")]
         public string ProfileUrl { get; set; }
