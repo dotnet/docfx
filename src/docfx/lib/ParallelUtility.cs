@@ -93,6 +93,8 @@ namespace Microsoft.Docs.Build
 
             void Enqueue(T item)
             {
+                Debug.Assert(item != null);
+
                 if (predicate == null || predicate(item))
                 {
                     var posted = queue.Post((item, false));
