@@ -2,8 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -21,7 +26,7 @@ namespace Microsoft.Docs.Build
         protected override ITestFrameworkExecutor CreateExecutor(AssemblyName assemblyName)
         {
             MakeDebugAssertThrowException();
-            return base.CreateExecutor(assemblyName);
+            return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }
 
         private static void MakeDebugAssertThrowException()
@@ -35,6 +40,46 @@ namespace Microsoft.Docs.Build
             void Throw(string stackTrace, string message, string detailMessage, string info)
             {
                 Assert.True(false, $"Debug.Assert failed: {message} {detailMessage}\n{stackTrace}");
+            }
+        }
+
+        class ParallelExecutor : XunitTestFrameworkExecutor
+        {
+            public ParallelExecutor(AssemblyName assemblyName, ISourceInformationProvider sourceInformationProvider, IMessageSink diagnosticMessageSink)
+                : base(assemblyName, sourceInformationProvider, diagnosticMessageSink)
+            { }
+
+            protected async override void RunTestCases(IEnumerable<IXunitTestCase> testCases, IMessageSink executionMessageSink, ITestFrameworkExecutionOptions executionOptions)
+            {
+                using (var assemblyRunner = new ParallelAssemblyRunner(TestAssembly, testCases, DiagnosticMessageSink, executionMessageSink, executionOptions))
+                {
+                    await assemblyRunner.RunAsync();
+                }
+            }
+        }
+
+        class ParallelAssemblyRunner : XunitTestAssemblyRunner
+        {
+            public ParallelAssemblyRunner(ITestAssembly testAssembly, IEnumerable<IXunitTestCase> testCases, IMessageSink diagnosticMessageSink, IMessageSink executionMessageSink, ITestFrameworkExecutionOptions executionOptions)
+                : base(testAssembly, testCases, diagnosticMessageSink, executionMessageSink, executionOptions)
+            { }
+
+            protected async override Task<RunSummary> RunTestCollectionsAsync(IMessageBus messageBus, CancellationTokenSource cancellationTokenSource)
+            {
+                var summary = new RunSummary();
+                var times = new ConcurrentBag<decimal>();
+
+                await ParallelUtility.ForEach(TestCases, async testCase =>
+                {
+                    var runSummary = await base.RunTestCollectionAsync(messageBus, testCase.TestMethod.TestClass.TestCollection, new[] { testCase }, cancellationTokenSource);
+                    Interlocked.Add(ref summary.Total, runSummary.Total);
+                    Interlocked.Add(ref summary.Failed, runSummary.Failed);
+                    Interlocked.Add(ref summary.Skipped, runSummary.Skipped);
+                    times.Add(runSummary.Time);
+                });
+
+                summary.Time = times.Max();
+                return summary;
             }
         }
     }
