@@ -1,8 +1,21 @@
 Version Notes (Current Version: v2.37)
 =======================================
 
-v2.37 (Pre-release)
+v2.37
 -----------
+
+v2.36.2
+-----------
+1. Bug fix:
+    1. Improve download command error message. (#2805)
+    2. Fix code indent issue. (#2830)
+    3. Fix error when generating metadata. (#2852)git s
+
+v2.36.1
+-----------
+1. Bug fix:
+    1. Fix .targets file. (#2804)
+    2. Fix missing publish `Microsoft.DocAsCode.Metadata.ManagedReference.FSharp` NuGet package. (#2779)
 
 v2.36
 -----------
