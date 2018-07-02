@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
             metadata.Remove("__global");
 
             File.Move(
-                doc.OutputPath.ToAbsoluteOutputPath(docset),
-                legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset).ToAbsoluteOutputPath(docset));
+                docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
+                docset.GetAbsoluteOutputPathFromRelativePath(legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset)));
             context.WriteJson(metadata, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
     }

@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             return Path.Combine(docset.Config.SiteBasePath ?? string.Empty, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
         }
 
-        public static string ToAbsoluteOutputPath(this string relativePath, Docset docset)
+        public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
         {
             return Path.Combine(docset.DocsetPath, docset.Config.Output.Path, relativePath);
         }
