@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -34,6 +35,22 @@ namespace Microsoft.Docs.Build
                 }
                 return Task.CompletedTask;
             }
+        }
+
+        [Fact]
+        public static async Task MustRunSource()
+        {
+            var done = 0;
+            var total = 10;
+            await ParallelUtility.ForEach(Enumerable.Range(0, total), Run, null, (a, b) => Thread.Sleep(100));
+
+            Task Run(int n, Action<int> queue)
+            {
+                Interlocked.Increment(ref done);
+                return Task.CompletedTask;
+            }
+
+            Assert.Equal(total, done);
         }
     }
 }
