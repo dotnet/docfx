@@ -47,6 +47,11 @@ namespace Microsoft.Docs.Build
             _report.Write(error);
         }
 
+        public string ConvertToAbsolutePath(string relativePath)
+        {
+            return Path.Combine(_outputPath, relativePath);
+        }
+
         /// <summary>
         /// Opens a write stream to write to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
@@ -75,15 +80,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Opens a text file, reads all lines of the file, and then closes the file.
-        /// </summary>
-        public string ReadAllText(string path)
-        {
-            var sourcePath = Path.Combine(_outputPath, path);
-            return File.ReadAllText(sourcePath);
-        }
-
-        /// <summary>
         /// Copies a file from source to destination, throws if source does not exists.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
@@ -106,21 +102,6 @@ namespace Microsoft.Docs.Build
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
             File.Delete(destinationPath);
-        }
-
-        /// <summary>
-        /// Moves a specified file to a new location, providing the option to specify a new file name.
-        /// </summary>
-        public void Move(string sourceFileName, string destFileName)
-        {
-            Debug.Assert(!Path.IsPathRooted(destFileName));
-
-            var sourcePath = Path.Combine(_outputPath, sourceFileName);
-            var destinationPath = Path.Combine(_outputPath, destFileName);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-
-            File.Move(sourcePath, destinationPath);
         }
     }
 }
