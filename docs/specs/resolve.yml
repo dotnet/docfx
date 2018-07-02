@@ -236,13 +236,16 @@ outputs:
 # Show warning if link to a master content outside build scope
 inputs:
   docfx.yml:
-  docs/a.md: 'Link to [a](../b.md)'
-  b.md:
+  docs/a.md: 'Link to [c](../c.md)'
+  docs/b.md: '[!include[](../c.md)]'
+  c.md: '[](#self)'
 outputs:
   docs/a.json: |
-    {"content":"<p>Link to <a href=\"../b\">a</a></p>"}
+    {"content":"<p>Link to <a href=\"../c\">c</a></p>"}
+  docs/b.json: |
+    {"content":"<p><a href=\"#self\"></a></p>"}
   build.log: |
-    ["warning","link-out-of-scope","File 'b.md' referenced by link '../b.md' will not be build because it is not included in docfx.yml","docs/a.md"]
+    ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be build because it is not included in docfx.yml","docs/a.md"]
   build.manifest:
 ---
 # Don't show warning if link to a non-master content outside build scope
