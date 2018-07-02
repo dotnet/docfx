@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
 
-        public ContributionInfo(
+        private ContributionInfo(
             IReadOnlyDictionary<string, List<GitCommit>> commitsByFile,
             IReadOnlyDictionary<string, DateTime> updateTimeByCommit,
             UserProfileCache userProfileCache)
