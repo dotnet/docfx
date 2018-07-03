@@ -50,13 +50,13 @@ namespace Microsoft.Docs.Build
         private static (List<TableOfContentsInputItem>, List<Error> errors) LoadTocModel(string content, string filePath)
         {
             var errors = new List<Error>();
-            var mappings = new Dictionary<JToken, List<(int, int, int, int)>>();
+            var mappings = new Dictionary<JToken, List<(int, int)>>();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
                 (tocToken, errors, mappings) = YamlUtility.Deserialize(content);
 
-                return (LoadTocModel(tocToken, mappings, errors), errors);
+                return (LoadTocModel(tocToken, mappings, errors, false), errors);
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
@@ -80,44 +80,54 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int, int, int)>> mappings, List<Error> errors)
+        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int)>> mappings, List<Error> errors, bool fromJsonFile)
         {
-            foreach (var content in tocArray.Children<JObject>())
+            var nullNodes = new List<JToken>();
+            foreach (var item in tocArray.Children<JObject>())
             {
-                var lineInfo = content as IJsonLineInfo;
-                var lineNumber = lineInfo.LineNumber;
-                var linePosition = lineInfo.LinePosition;
-                foreach (var prop in content.Properties())
+                foreach (var element in item.Children())
                 {
-                    var value = content[prop.ToString()];
-                    if (value is null)
+                    var prop = element as JProperty;
+                    if (prop.Value.IsNullOrEmpty())
                     {
-                        if (mappings.TryGetValue(content, out List<(int, int, int, int)> mapping))
+                        if (fromJsonFile)
                         {
-                            errors.AddRange(mapping.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
-                            mappings.Remove(content);
+                            var lineInfo = item as IJsonLineInfo;
+                            errors.Add(Errors.NullValue(lineInfo.LineNumber, lineInfo.LinePosition));
                         }
+                        else
+                        {
+                            if (mappings.TryGetValue(item, out List<(int, int)> value))
+                            {
+                                errors.AddRange(value.Select(x => Errors.NullValue(x.Item1, x.Item2)));
+                            }
+                        }
+
+                        nullNodes.Add(item);
                     }
                 }
-                //if (string.IsNullOrEmpty(item.ToString())
-                //    || string.Compare("null", item.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
-                //{
-                //    if (mappings.TryGetValue(item, out List<(int, int, int, int)> mapping))
-                //    {
-                //        errors.AddRange(mapping.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
-                //        mappings.Remove(item);
-                //    }
-                //}
             }
+
+            foreach (var node in nullNodes)
+            {
+                node.Remove();
+            }
+
             return tocArray;
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken, Dictionary<JToken, List<(int, int, int, int)>> mappings, List<Error> errors)
+        private static List<TableOfContentsInputItem> LoadTocModel(
+            JToken tocToken,
+            Dictionary<JToken,
+            List<(int, int)>> mappings,
+            List<Error> errors,
+            bool fromJasonFile = false)
         {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                return tocArray.ValidateNullElement(mappings, errors).ToObject<List<TableOfContentsInputItem>>();
+                var temp = tocArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
+                return temp;
             }
             else
             {
@@ -126,7 +136,8 @@ namespace Microsoft.Docs.Build
                     tocObject.TryGetValue("items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
-                    return tocItemArray.ValidateNullElement(mappings, errors).ToObject<List<TableOfContentsInputItem>>();
+                    var temp = tocItemArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
+                    return temp;
                 }
             }
             return new List<TableOfContentsInputItem>();

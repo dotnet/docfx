@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, T) Deserialize<T>(string input)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings, T) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, T) Deserialize<T>(TextReader reader)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings, T) Deserialize<T>(TextReader reader)
         {
             var (json, errors, mappings) = Deserialize(reader);
             return (errors, mappings, json.ToObject<T>(JsonUtility.DefaultDeserializer));
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (JToken, List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings) Deserialize(string input)
+        public static (JToken, List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,9 +89,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (JToken token, List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings) Deserialize(TextReader reader)
+        public static (JToken token, List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings) Deserialize(TextReader reader)
         {
-            var mappings = new Dictionary<JToken, List<(int, int, int, int)>>();
+            var mappings = new Dictionary<JToken, List<(int, int)>>();
             var errors = new List<Error>();
             var stream = new YamlStream();
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             return (ToJson(stream.Documents[0].RootNode, mappings), errors, mappings);
         }
 
-        private static JToken ToJson(YamlNode node, Dictionary<JToken, List<(int, int, int, int)>> mappings)
+        private static JToken ToJson(YamlNode node, Dictionary<JToken, List<(int, int)>> mappings)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -162,7 +162,6 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var jToken = ToJson(value, mappings);
-                        SetMappings(mappings, scalarKey, jToken);
                         obj[scalarKey.Value] = jToken;
                     }
                     else
@@ -170,6 +169,7 @@ namespace Microsoft.Docs.Build
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
+                SetMappings(mappings, node, obj);
                 return obj;
             }
             if (node is YamlSequenceNode seq)
@@ -184,15 +184,15 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static void SetMappings(Dictionary<JToken, List<(int, int, int, int)>> mappings, YamlScalarNode scalar, JToken value)
+        private static void SetMappings(Dictionary<JToken, List<(int, int)>> mappings, YamlNode scalar, JToken value)
         {
             if (mappings.ContainsKey(value))
             {
-                mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
+                mappings[value].Add((scalar.Start.Line, scalar.Start.Column));
             }
             else
             {
-                mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
+                mappings.Add(value, new List<(int, int)> { (scalar.Start.Line, scalar.Start.Column) });
             }
         }
     }

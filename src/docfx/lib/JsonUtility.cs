@@ -125,6 +125,16 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        public static bool IsNullOrEmpty(this JToken token)
+        {
+            return
+                (token == null) ||
+                (token.Type == JTokenType.Array && !token.HasValues) ||
+                (token.Type == JTokenType.Object && !token.HasValues) ||
+                (token.Type == JTokenType.String && string.IsNullOrEmpty(token.ToString())) ||
+                (token.Type == JTokenType.Null);
+        }
+
         private sealed class JsonContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
