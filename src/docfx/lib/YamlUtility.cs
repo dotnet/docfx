@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(string input)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, T) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -72,16 +72,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(TextReader reader)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, T) Deserialize<T>(TextReader reader)
         {
-            var (errors, json) = Deserialize(reader);
-            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+            var (errors, mappings, json) = Deserialize(reader);
+            return (errors, mappings, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, JToken) Deserialize(string input)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, JToken) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,8 +89,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, JToken token) Deserialize(TextReader reader)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, JToken token) Deserialize(TextReader reader)
         {
+            var mappings = new Dictionary<JToken, List<(int, int, int, int)>>();
             var errors = new List<Error>();
             var stream = new YamlStream();
 
@@ -105,17 +106,17 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull());
+                return (errors, mappings, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return (errors, ToJson(stream.Documents[0].RootNode));
+            return (errors, mappings, ToJson(stream.Documents[0].RootNode, mappings));
         }
 
-        private static JToken ToJson(YamlNode node)
+        private static JToken ToJson(YamlNode node, Dictionary<JToken, List<(int, int, int, int)>> mappings)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -131,15 +132,42 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return new JValue(n);
+                        var value = new JValue(n);
+                        if (mappings.ContainsKey(value))
+                        {
+                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
+                        }
+                        else
+                        {
+                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
+                        }
+                        return value;
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return new JValue(d);
+                        var value = new JValue(d);
+                        if (mappings.ContainsKey(value))
+                        {
+                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
+                        }
+                        else
+                        {
+                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
+                        }
+                        return value;
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return new JValue(b);
+                        var value = new JValue(b);
+                        if (mappings.ContainsKey(value))
+                        {
+                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
+                        }
+                        else
+                        {
+                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
+                        }
+                        return value;
                     }
                 }
                 return new JValue(scalar.Value);
@@ -151,7 +179,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        obj[scalarKey.Value] = ToJson(value);
+                        obj[scalarKey.Value] = ToJson(value, mappings);
                     }
                     else
                     {
@@ -165,7 +193,7 @@ namespace Microsoft.Docs.Build
                 var arr = new JArray();
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item));
+                    arr.Add(ToJson(item, mappings));
                 }
                 return arr;
             }

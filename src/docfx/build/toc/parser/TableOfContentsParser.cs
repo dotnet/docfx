@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -45,15 +46,16 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
+        private static (List<TableOfContentsInputItem>, List<Error> errors) LoadTocModel(string content, string filePath)
         {
             var errors = new List<Error>();
+            var mappings = new Dictionary<JToken, List<(int, int, int, int)>>();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
-                (errors, tocToken) = YamlUtility.Deserialize(content);
+                (errors, mappings, tocToken) = YamlUtility.Deserialize(content);
 
-                return (errors, LoadTocModel(tocToken));
+                return (LoadTocModel(tocToken, mappings, errors), errors);
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
@@ -65,24 +67,45 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     errors.Add(Errors.JsonSyntaxError(ex));
-                    return (errors, LoadTocModel(JValue.CreateNull()));
+                    return (LoadTocModel(JValue.CreateNull(), mappings, errors), errors);
                 }
-                return (errors, LoadTocModel(tocToken));
+                return (LoadTocModel(tocToken, mappings, errors), errors);
             }
             else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
-                return (errors, LoadMdTocModel(content, filePath));
+                return (LoadMdTocModel(content, filePath), errors);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken)
+        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int, int, int)>> mappings, List<Error> errors)
+        {
+            for (var i=0; i<tocArray.Count; i++)
+            {
+                if (string.IsNullOrEmpty(tocArray[i].ToString())
+                    || string.Compare("null", tocArray[i].ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    if (mappings.TryGetValue(tocArray[i], out List<(int, int, int, int)> value))
+                    {
+                        errors.AddRange(value.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
+                    }
+                    else
+                    {
+                        errors.Add(Errors.NullValue());
+                    }
+                    tocArray.RemoveAt(i);
+                }
+            }
+            return tocArray;
+        }
+
+        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken, Dictionary<JToken, List<(int, int, int, int)>> mappings, List<Error> errors)
         {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                return tocArray.ToObject<List<TableOfContentsInputItem>>();
+                return tocArray.ValidateNullElement(mappings, errors).ToObject<List<TableOfContentsInputItem>>();
             }
             else
             {
@@ -107,7 +130,7 @@ namespace Microsoft.Docs.Build
 
             parents.Add(filePath);
 
-            var (errors, models) = LoadTocModel(tocContent, filePath.FilePath);
+            var (models, errors) = LoadTocModel(tocContent, filePath.FilePath);
 
             if (models.Any())
             {
