@@ -36,17 +36,17 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
-                return (error, href, fragment, file);
+                return (error, href, fragment, null);
             }
 
-            // Self reference, leave href as is
+            // Self reference, don't build the file, leave href as is
             if (file == relativeTo)
             {
                 if (string.IsNullOrEmpty(fragment))
                 {
                     fragment = "#";
                 }
-                return (error, query + fragment, fragment, file);
+                return (error, query + fragment, fragment, null);
             }
 
             // Link to dependent repo, don't build the file, leave href as is

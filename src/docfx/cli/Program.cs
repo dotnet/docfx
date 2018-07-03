@@ -44,15 +44,18 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    var startTime = DateTime.UtcNow;
                     var (command, docset, options) = ParseCommandLineOptions(args);
 
                     switch (command)
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
+                            Done(startTime);
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
+                            Done(startTime);
                             break;
                     }
                     return 0;
@@ -101,6 +104,14 @@ namespace Microsoft.Docs.Build
             return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         }
 
+        private static void Done(DateTime startTime)
+        {
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Done in {Log.ElapsedTime(startTime)}");
+            Console.ResetColor();
+        }
+
         private static void PrintFatalErrorMessage(Exception exception, string[] args)
         {
             Console.ResetColor();
@@ -137,6 +148,7 @@ namespace Microsoft.Docs.Build
 ```
 {exception}
 ```");
+            Console.ResetColor();
         }
     }
 }
