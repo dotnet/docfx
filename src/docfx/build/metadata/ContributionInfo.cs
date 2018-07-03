@@ -107,13 +107,10 @@ namespace Microsoft.Docs.Build
                 contributors = (from commit in commits
                                 where !string.IsNullOrEmpty(commit.AuthorEmail)
                                 let info = _userProfileCache.GetByUserEmail(commit.AuthorEmail)
-                                where info != null
+                                where info != null && info.Id != authorInfo?.Id
                                 group info by info.Id into g
                                 select g.First()).ToList();
             }
-
-            if (authorInfo != null && contributors.All(p => p.Id != authorInfo.Id))
-                contributors.Add(authorInfo);
 
             DateTime updateDateTime;
             if (updateDate != null)
