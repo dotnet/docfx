@@ -832,10 +832,7 @@ inputs:
       - name: 
       - displayName: 1
 outputs:
-  docs/toc.json: |
-  {
-    "items":[]
-  }
+  docs/toc.json:
   build.manifest:
   build.log: |
     ["warning","null-value","(Line: 3, Column: 5) Value is null","docs/toc.yml"]
