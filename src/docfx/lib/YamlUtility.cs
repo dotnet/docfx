@@ -74,14 +74,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, T) Deserialize<T>(TextReader reader)
         {
-            var (errors, mappings, json) = Deserialize(reader);
+            var (json, errors, mappings) = Deserialize(reader);
             return (errors, mappings, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, JToken) Deserialize(string input)
+        public static (JToken, List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings, JToken token) Deserialize(TextReader reader)
+        public static (JToken token, List<Error> errors, Dictionary<JToken, List<(int, int, int, int)>> mappings) Deserialize(TextReader reader)
         {
             var mappings = new Dictionary<JToken, List<(int, int, int, int)>>();
             var errors = new List<Error>();
@@ -106,20 +106,21 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, mappings, JValue.CreateNull());
+                return (JValue.CreateNull(), errors, mappings);
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return (errors, mappings, ToJson(stream.Documents[0].RootNode, mappings));
+            return (ToJson(stream.Documents[0].RootNode, mappings), errors, mappings);
         }
 
         private static JToken ToJson(YamlNode node, Dictionary<JToken, List<(int, int, int, int)>> mappings)
         {
             if (node is YamlScalarNode scalar)
             {
+                JValue value;
                 if (scalar.Style == ScalarStyle.Plain)
                 {
                     if (string.IsNullOrWhiteSpace(scalar.Value))
@@ -132,45 +133,26 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        var value = new JValue(n);
-                        if (mappings.ContainsKey(value))
-                        {
-                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
-                        }
-                        else
-                        {
-                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
-                        }
+                        value = new JValue(n);
+                        SetMappings(mappings, scalar, value);
                         return value;
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        var value = new JValue(d);
-                        if (mappings.ContainsKey(value))
-                        {
-                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
-                        }
-                        else
-                        {
-                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
-                        }
+                        value = new JValue(d);
+                        SetMappings(mappings, scalar, value);
                         return value;
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        var value = new JValue(b);
-                        if (mappings.ContainsKey(value))
-                        {
-                            mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
-                        }
-                        else
-                        {
-                            mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
-                        }
+                        value = new JValue(b);
+                        SetMappings(mappings, scalar, value);
                         return value;
                     }
                 }
-                return new JValue(scalar.Value);
+                value = new JValue(scalar.Value);
+                SetMappings(mappings, scalar, value);
+                return value;
             }
             if (node is YamlMappingNode map)
             {
@@ -179,7 +161,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        obj[scalarKey.Value] = ToJson(value, mappings);
+                        var jToken = ToJson(value, mappings);
+                        SetMappings(mappings, scalarKey, jToken);
+                        obj[scalarKey.Value] = jToken;
                     }
                     else
                     {
@@ -198,6 +182,18 @@ namespace Microsoft.Docs.Build
                 return arr;
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
+        }
+
+        private static void SetMappings(Dictionary<JToken, List<(int, int, int, int)>> mappings, YamlScalarNode scalar, JToken value)
+        {
+            if (mappings.ContainsKey(value))
+            {
+                mappings[value].Add((scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column));
+            }
+            else
+            {
+                mappings.Add(value, new List<(int, int, int, int)> { (scalar.Start.Line, scalar.Start.Column, scalar.End.Line, scalar.End.Column) });
+            }
         }
     }
 }

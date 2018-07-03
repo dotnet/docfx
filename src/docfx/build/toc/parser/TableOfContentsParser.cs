@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
-                (errors, mappings, tocToken) = YamlUtility.Deserialize(content);
+                (tocToken, errors, mappings) = YamlUtility.Deserialize(content);
 
                 return (LoadTocModel(tocToken, mappings, errors), errors);
             }
@@ -81,21 +82,32 @@ namespace Microsoft.Docs.Build
 
         private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int, int, int)>> mappings, List<Error> errors)
         {
-            for (var i=0; i<tocArray.Count; i++)
+            foreach (var content in tocArray.Children<JObject>())
             {
-                if (string.IsNullOrEmpty(tocArray[i].ToString())
-                    || string.Compare("null", tocArray[i].ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                var lineInfo = content as IJsonLineInfo;
+                var lineNumber = lineInfo.LineNumber;
+                var linePosition = lineInfo.LinePosition;
+                foreach (var prop in content.Properties())
                 {
-                    if (mappings.TryGetValue(tocArray[i], out List<(int, int, int, int)> value))
+                    var value = content[prop.ToString()];
+                    if (value is null)
                     {
-                        errors.AddRange(value.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
+                        if (mappings.TryGetValue(content, out List<(int, int, int, int)> mapping))
+                        {
+                            errors.AddRange(mapping.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
+                            mappings.Remove(content);
+                        }
                     }
-                    else
-                    {
-                        errors.Add(Errors.NullValue());
-                    }
-                    tocArray.RemoveAt(i);
                 }
+                //if (string.IsNullOrEmpty(item.ToString())
+                //    || string.Compare("null", item.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+                //{
+                //    if (mappings.TryGetValue(item, out List<(int, int, int, int)> mapping))
+                //    {
+                //        errors.AddRange(mapping.Select(x => Errors.NullValue(x.Item1, x.Item2, x.Item3, x.Item4)));
+                //        mappings.Remove(item);
+                //    }
+                //}
             }
             return tocArray;
         }
@@ -114,7 +126,7 @@ namespace Microsoft.Docs.Build
                     tocObject.TryGetValue("items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
-                    return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
+                    return tocItemArray.ValidateNullElement(mappings, errors).ToObject<List<TableOfContentsInputItem>>();
                 }
             }
             return new List<TableOfContentsInputItem>();

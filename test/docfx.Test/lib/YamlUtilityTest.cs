@@ -161,7 +161,7 @@ D: true
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, _, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
+            var (value2, errors2, _) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
 - TRUE
@@ -289,7 +289,7 @@ ValueBasic:
 Key1: 0
 Key1: 0
 ";
-            var (errors, _, _) = YamlUtility.Deserialize(yaml);
+            var (_, errors, _) = YamlUtility.Deserialize(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);

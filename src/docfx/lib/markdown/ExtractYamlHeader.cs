@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is YamlFrontMatterBlock yamlHeader)
                     {
-                        var (yamlErrors, _, yamlHeaderObj) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
+                        var (yamlHeaderObj, yamlErrors, _) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
 
                         if (yamlHeaderObj is JObject obj)
                         {
