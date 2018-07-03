@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 contributors = (from commit in commits
                                 where !string.IsNullOrEmpty(commit.AuthorEmail)
                                 let info = _userProfileCache.GetByUserEmail(commit.AuthorEmail)
-                                where info != null && info.Id != authorInfo?.Id
+                                where info != null && !(authorInfo != null && info.Id == authorInfo.Id)
                                 group info by info.Id into g
                                 select g.First()).ToList();
             }
