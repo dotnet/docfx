@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
         {
             return new JObject
             {
-                ["display_name"] = info.DisplayName,
+                ["display_name"] = !string.IsNullOrEmpty(info.DisplayName) ? info.DisplayName : info.Name,
                 ["id"] = info.Id,
                 ["profile_url"] = info.ProfileUrl,
             };
