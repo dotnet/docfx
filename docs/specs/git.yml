@@ -1,18 +1,16 @@
 ---
-# Show git contributors, author, updatedAt
+# Show git contributors, author, updatedAt, enableContribution, editLink
 repo: https://github.com/docascode/docfx-test-dependencies#git-test
 outputs:
   README.json: |
     {
-      "author":
-      {
+      "author": {
         "name": "superyyrrzz",
         "profileUrl": "https://github.com/superyyrrzz",
         "displayName": "Renze Yu",
         "id": "3831744"
       },
-      "contributors":
-      [
+      "contributors": [
         {
           "name": "superyyrrzz",
           "profileUrl": "https://github.com/superyyrrzz",
@@ -34,5 +32,62 @@ outputs:
     {
       "updatedAt":"1874-01-01T00:00:00"
     }
+  build.manifest:
+  dep.json:
+---
+# Specify invalid author in YAML header should log warning
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-1
+outputs:
+  README.json:
+  testdata1.json:
+  build.manifest:
+  dep.json:
+  build.log: |
+    ["warning","author-not-found","Author 'invalid_user' cannot be recognized","README.md"]
+---
+# Author should also exist in contributors, even hasn't contributed to the file before
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-2
+outputs:
+  README.json: |
+   {
+      "author":  {
+        "name": "yufeih",
+        "profileUrl": "https://github.com/yufeih",
+        "displayName": "Yufei Huang",
+        "id": "511355"
+      },
+      "contributors": [
+        {
+          "name": "superyyrrzz",
+          "profileUrl": "https://github.com/superyyrrzz",
+          "displayName": "Renze Yu",
+          "id": "3831744"
+        },
+        {
+          "name": "OsmondJiang",
+          "profileUrl": "https://github.com/OsmondJiang",
+          "displayName": "Osmond Jiang",
+          "id": "19990166"
+        },
+        {
+          "name": "yufeih",
+          "profileUrl": "https://github.com/yufeih",
+          "displayName": "Yufei Huang",
+          "id": "511355"
+        }
+      ],
+    }
+  testdata1.json:
+  build.manifest:
+  dep.json:
+---
+# Config can specify which repo and branch editLink goes to
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-2
+outputs:
+  README.json: |
+   {
+      "editLink": "https://gitlab.com/test-org/test-repo/blob/contribution/README.md"
+    }
+  testdata1.json:
   build.manifest:
   dep.json:
