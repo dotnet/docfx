@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -145,7 +144,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
+                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
                 }
                 catch when (retryCount++ < retry)
                 {
