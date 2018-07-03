@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
         public static Error AuthorNotFound(string author)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author {author} cannot be recognized");
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
 
         public static Error InvalidTopicHref(string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");

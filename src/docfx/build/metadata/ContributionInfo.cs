@@ -72,7 +72,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        // TODO: add more test cases
         public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
             Document document,
             string author,
