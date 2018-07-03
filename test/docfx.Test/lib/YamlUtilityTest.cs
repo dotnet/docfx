@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 
 using Xunit;
+using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -295,48 +296,6 @@ Key1: 0
                 Assert.Equal("yaml-syntax-error", error.Code);
                 Assert.Contains("Duplicate key", error.Message);
             });
-        }
-
-        [Fact]
-        public void TestListWithNullValue()
-        {
-            var yaml = @"- null
-- 1
-- null";
-            var (errors, list) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(list, item =>
-            {
-                Assert.Equal(1, item);
-            });
-            Assert.Collection(errors,
-                error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("Value is null", error.Message);
-            },
-                error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("Value is null", error.Message);
-            });
-        }
-
-        [Fact]
-        public void TestKeyWithNullValue()
-        {
-            var yaml = @"a: null";
-
-            var(errors, value) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("Value is null", error.Message);
-            });
-
-            Assert.Empty(value);
         }
 
         public class BasicClass

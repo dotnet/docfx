@@ -112,101 +112,64 @@ namespace Microsoft.Docs.Build
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-
-            var (jErrors, json) = ToJson(stream.Documents[0].RootNode);
-            errors.AddRange(jErrors);
-            return (errors, json);
+            return (errors, ToJson(stream.Documents[0].RootNode));
         }
 
-        private static (List<Error>, JToken) ToJson(YamlNode node)
+        private static JToken ToJson(YamlNode node)
         {
-            var errors = new List<Error>();
             if (node is YamlScalarNode scalar)
             {
-                return (errors, ParseYamlScalarNode(scalar));
+                if (scalar.Style == ScalarStyle.Plain)
+                {
+                    if (string.IsNullOrWhiteSpace(scalar.Value))
+                    {
+                        return null;
+                    }
+                    if (scalar.Value == "~")
+                    {
+                        return null;
+                    }
+                    if (long.TryParse(scalar.Value, out var n))
+                    {
+                        return new JValue(n);
+                    }
+                    if (double.TryParse(scalar.Value, out var d))
+                    {
+                        return new JValue(d);
+                    }
+                    if (bool.TryParse(scalar.Value, out var b))
+                    {
+                        return new JValue(b);
+                    }
+                }
+                return new JValue(scalar.Value);
             }
             if (node is YamlMappingNode map)
             {
-                return (errors, ParseYamlMappingNode(errors, map));
-            }
-            if (node is YamlSequenceNode seq)
-            {
-                return (errors, ParseYamlSequenceNode(errors, seq));
-            }
-            throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
-        }
-
-        private static JToken ParseYamlSequenceNode(List<Error> errors, YamlSequenceNode seq)
-        {
-            var arr = new JArray();
-            foreach (var item in seq)
-            {
-                if (string.IsNullOrEmpty(item.ToString()) || item.ToString() == "null")
+                var obj = new JObject();
+                foreach (var (key, value) in map)
                 {
-                    errors.Add(Errors.NullValue(item.Start, item.End));
-                }
-                else
-                {
-                    var (e, json) = ToJson(item);
-                    errors.AddRange(e);
-                    arr.Add(json);
-                }
-            }
-            return arr;
-        }
-
-        private static JToken ParseYamlMappingNode(List<Error> errors, YamlMappingNode map)
-        {
-            var obj = new JObject();
-            foreach (var (key, value) in map)
-            {
-                if (key is YamlScalarNode scalarKey)
-                {
-                    if (string.IsNullOrEmpty(value.ToString()) || value.ToString() == "null")
+                    if (key is YamlScalarNode scalarKey)
                     {
-                        errors.Add(Errors.NullValue(value.Start, value.End));
+                        obj[scalarKey.Value] = ToJson(value);
                     }
                     else
                     {
-                        List<Error> e;
-                        (e, obj[scalarKey.Value]) = ToJson(value);
-                        errors.AddRange(e);
+                        throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
-                else
-                {
-                    throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
-                }
+                return obj;
             }
-            return obj;
-        }
-
-        private static JToken ParseYamlScalarNode(YamlScalarNode scalar)
-        {
-            if (scalar.Style == ScalarStyle.Plain)
+            if (node is YamlSequenceNode seq)
             {
-                if (string.IsNullOrWhiteSpace(scalar.Value))
+                var arr = new JArray();
+                foreach (var item in seq)
                 {
-                    return null;
+                    arr.Add(ToJson(item));
                 }
-                if (scalar.Value == "~")
-                {
-                    return null;
-                }
-                if (long.TryParse(scalar.Value, out var n))
-                {
-                    return new JValue(n);
-                }
-                if (double.TryParse(scalar.Value, out var d))
-                {
-                    return new JValue(d);
-                }
-                if (bool.TryParse(scalar.Value, out var b))
-                {
-                    return new JValue(b);
-                }
+                return arr;
             }
-            return new JValue(scalar.Value);
+            throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
     }
 }

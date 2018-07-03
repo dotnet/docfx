@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -96,8 +95,5 @@ namespace Microsoft.Docs.Build
 
         public static Error GitShadowClone(string repoPath)
             => new Error(ErrorLevel.Error, "git-shadow-clone", $"Does not support git shallow clone: '{repoPath}'");
-
-        public static Error NullValue(Mark start, Mark end)
-            => new Error(ErrorLevel.Warning, "null-value", $"({start}) - ({end}) Value is null");
     }
 }
