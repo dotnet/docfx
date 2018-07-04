@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataPath()
         {
-            // TODO: document this environment variable and show it in welcome message
+            // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
             if (!string.IsNullOrEmpty(docfxAppData))
             {
                 docfxAppData = Path.GetFullPath(docfxAppData);
             }
 
-            return docfxAppData ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         }
     }
 }
