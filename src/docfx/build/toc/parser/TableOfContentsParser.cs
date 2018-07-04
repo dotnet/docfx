@@ -50,11 +50,11 @@ namespace Microsoft.Docs.Build
         private static (List<TableOfContentsInputItem>, List<Error> errors) LoadTocModel(string content, string filePath)
         {
             var errors = new List<Error>();
-            var mappings = new Dictionary<JToken, List<(int, int)>>();
+            var mappings = new Dictionary<MappingKey, LineInfo>();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
-                (errors, mappings, tocToken) = YamlUtility.Deserialize(content);
+                (errors, tocToken, mappings) = YamlUtility.Deserialize(content);
 
                 return (LoadTocModel(tocToken, mappings, errors, false), errors);
             }
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int)>> mappings, List<Error> errors, bool fromJsonFile)
+        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<MappingKey, LineInfo> mappings, List<Error> errors, bool fromJsonFile)
         {
             var nullNodes = new List<JToken>();
             foreach (var item in tocArray.Children())
@@ -108,18 +108,18 @@ namespace Microsoft.Docs.Build
 
             return tocArray;
 
-            void LogWarningForNullValue(JToken item, Func<int, int, Error> func)
+            void LogWarningForNullValue(JToken item, Func<int, int, Error> log)
             {
                 if (fromJsonFile)
                 {
                     var lineInfo = item as IJsonLineInfo;
-                    errors.Add(func(lineInfo.LineNumber, lineInfo.LinePosition));
+                    errors.Add(log(lineInfo.LineNumber, lineInfo.LinePosition));
                 }
                 else
                 {
-                    if (mappings.TryGetValue(item, out List<(int, int)> value))
+                    if (mappings.TryGetValue(new MappingKey { Key = item }, out LineInfo value))
                     {
-                        errors.AddRange(value.Select(x => func(x.Item1, x.Item2)));
+                        errors.Add(log(value.LineNumber, value.LineNumber));
                     }
                 }
             }
@@ -127,8 +127,7 @@ namespace Microsoft.Docs.Build
 
         private static List<TableOfContentsInputItem> LoadTocModel(
             JToken tocToken,
-            Dictionary<JToken,
-            List<(int, int)>> mappings,
+            Dictionary<MappingKey, LineInfo> mappings,
             List<Error> errors,
             bool fromJasonFile = true)
         {

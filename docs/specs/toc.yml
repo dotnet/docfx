@@ -835,7 +835,7 @@ outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-property","(Line: 3, Column: 5) Property value is null","docs/toc.yml"]
+    ["warning","null-property","(Line: 3, Column: 3) Property value is null","docs/toc.yml"]
 ---
 # Toc list with null item
 inputs:
@@ -907,4 +907,3 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","null-property","(Line: 4, Column: 5) Property value is null","docs/toc.json"]
----
