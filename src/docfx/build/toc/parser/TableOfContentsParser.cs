@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (mappings.TryGetValue(new MappingKey { Key = item }, out LineInfo value))
                     {
-                        errors.Add(log(value.LineNumber, value.LineNumber));
+                        errors.Add(log(value.LineNumber, value.LinePosition));
                     }
                 }
             }
