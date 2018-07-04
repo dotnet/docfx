@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
         {
-            var content = tocContent.Replace("\r\n", "\n", StringComparison.OrdinalIgnoreCase).Replace("\r", "\n", StringComparison.OrdinalIgnoreCase);
+            var content = tocContent.Replace("\r\n", "\n").Replace("\r", "\n");
             TableOfContentsParseState state = new InitialState(filePath);
             var rules = new TableOfContentsParseRule[]
             {
@@ -48,14 +48,14 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
         {
             var errors = new List<Error>();
-            if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 JToken tocToken;
                 (errors, tocToken) = YamlUtility.Deserialize(content);
 
                 return (errors, LoadTocModel(tocToken));
             }
-            else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
                 JToken tocToken;
                 try
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 }
                 return (errors, LoadTocModel(tocToken));
             }
-            else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 return (errors, LoadMdTocModel(content, filePath));
             }
@@ -313,9 +313,9 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.yml".Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if ("toc.md".Equals(fileName, PathUtility.PathComparison) ||
+                "toc.json".Equals(fileName, PathUtility.PathComparison) ||
+                "toc.yml".Equals(fileName, PathUtility.PathComparison))
             {
                 return TocHrefType.TocFile;
             }

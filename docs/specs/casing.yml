@@ -1,0 +1,75 @@
+# Path is case insensitive on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](B.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"B\">b</a></p>" }
+  docs/b.json:
+  build.manifest:
+---
+# Path is case sensitive on linux
+os: linux
+inputs:
+  docfx.yml:
+  docs/a.md: Link to [b](B.md)
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <a href=\"B\">b</a></p>" }
+  docs/b.json:
+  build.manifest:
+---
+# URL is case insensitive on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml:
+  docs/A.png.md: '![](a.png)'
+  docs/a.png:
+outputs:
+  build.manifest:
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/A.png.md'"]
+---
+# Redirection config is case insensitive on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: relative/path
+  docs/a.md: |
+    [redirect](REDIRECT.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
+  docs/redirect.json:
+---
+# Dependency resolve is case insensitive on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies
+  docs/a.md: '[!include[dep](~/DEP/dep.md)]'
+outputs:
+  docs/a.json: |
+    {"content":"<p>DEP</p>"}
+  build.manifest:
+---
+# Route config is case insensitive on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml: |
+    routes:
+      docs/a.md: output
+      docs/B/: output
+  docs/A.md:
+  docs/b/b.md:
+outputs:
+  output/A.json:
+  output/b.json:
+  build.manifest:
+---

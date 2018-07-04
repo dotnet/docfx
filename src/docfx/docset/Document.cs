@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return StringComparer.Ordinal.GetHashCode(FilePath) + ContentType.GetHashCode();
+            return HashCode.Combine(Docset, PathUtility.PathComparer.GetHashCode(FilePath), ContentType);
         }
 
         public bool Equals(Document other)
@@ -143,7 +143,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return FilePath == other.FilePath && Docset == other.Docset && ContentType == other.ContentType;
+            return Docset == other.Docset &&
+                   ContentType == other.ContentType &&
+                   string.Equals(FilePath, other.FilePath, PathUtility.PathComparison);
         }
 
         public override bool Equals(object obj)
@@ -223,7 +225,7 @@ namespace Microsoft.Docs.Build
             {
                 Debug.Assert(dependencyName.EndsWith('/'));
 
-                if (!path.StartsWith(dependencyName, StringComparison.OrdinalIgnoreCase))
+                if (!path.StartsWith(dependencyName, PathUtility.PathComparison))
                 {
                     // the file stored in the dependent docset should start with dependency name
                     continue;

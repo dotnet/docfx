@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
                 report.Configure(docsetPath, config);
 
-                var restoredDirs = new HashSet<string>();
+                var restoredDirs = new HashSet<string>(PathUtility.PathComparer);
 
                 return ParallelUtility.ForEach(
                     config.Dependencies.Values,

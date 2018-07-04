@@ -19,8 +19,9 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<string>();
             }
 
-            var includeGlobs = patterns.Select(s => new GlobMatcher(s)).ToList();
-            var excludeGlobs = excludePatterns.Select(s => new GlobMatcher(s)).ToList();
+            var options = PathUtility.IsCaseSensitive ? GlobMatcher.DefaultCaseSensitiveOptions : GlobMatcher.DefaultOptions;
+            var includeGlobs = patterns.Select(s => new GlobMatcher(s, options)).ToList();
+            var excludeGlobs = excludePatterns.Select(s => new GlobMatcher(s, options)).ToList();
             var result = new ConcurrentBag<string>();
             Parallel.ForEach(Directory.EnumerateFiles(cwd, "*.*", SearchOption.AllDirectories), MatchFile);
             return result;

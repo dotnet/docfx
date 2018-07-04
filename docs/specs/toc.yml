@@ -56,10 +56,10 @@ outputs:
 # TOC can be a json file
 inputs:
   docfx.yml:
-  docs/toc.json: |
+  docs/TOC.json: |
     [{ "name": "title" }]
 outputs:
-  docs/toc.json: |
+  docs/TOC.json: |
     {  
       "items":[
           {

@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                 return GitRepoInfo.Create(folder);
 
             // TODO: add GitUtility.Discover repo
-            var parent = folder.Substring(0, folder.LastIndexOf("/", StringComparison.Ordinal));
+            var parent = folder.Substring(0, folder.LastIndexOf("/"));
             return Directory.Exists(parent)
                 ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
                 : null;
