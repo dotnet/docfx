@@ -74,14 +74,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings, T) Deserialize<T>(TextReader reader)
         {
-            var (json, errors, mappings) = Deserialize(reader);
+            var (errors, mappings, json) = Deserialize(reader);
             return (errors, mappings, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (JToken, List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings) Deserialize(string input)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings, JToken) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (JToken token, List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings) Deserialize(TextReader reader)
+        public static (List<Error> errors, Dictionary<JToken, List<(int, int)>> mappings, JToken token) Deserialize(TextReader reader)
         {
             var mappings = new Dictionary<JToken, List<(int, int)>>();
             var errors = new List<Error>();
@@ -106,14 +106,14 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (JValue.CreateNull(), errors, mappings);
+                return (errors, mappings, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return (ToJson(stream.Documents[0].RootNode, mappings), errors, mappings);
+            return (errors, mappings, ToJson(stream.Documents[0].RootNode, mappings));
         }
 
         private static JToken ToJson(YamlNode node, Dictionary<JToken, List<(int, int)>> mappings)

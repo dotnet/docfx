@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
-                (tocToken, errors, mappings) = YamlUtility.Deserialize(content);
+                (errors, mappings, tocToken) = YamlUtility.Deserialize(content);
 
                 return (LoadTocModel(tocToken, mappings, errors, false), errors);
             }
