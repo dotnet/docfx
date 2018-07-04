@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            var marked = TestUtility.MarkupWithoutSourceInfo("[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
+            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
 
             // assert
             var expected = @"<pre><code class=""lang-csharp"" name=""name"" highlight-lines=""1,2,4-""> line1

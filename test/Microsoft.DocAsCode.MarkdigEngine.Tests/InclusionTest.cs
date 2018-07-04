@@ -188,8 +188,9 @@ This is a file A included by another file.
             var root = @"
 # Hello World
 
-Test Inline Included File: [!include[refa](~/r/a.md)].
+Test Inline Included File: \\[!include[refa](~/r/a.md)].
 
+Test Escaped Inline Included File: \[!include[refa](~/r/a.md)].
 ";
 
             var refa = "This is a **included** token";
@@ -199,7 +200,8 @@ Test Inline Included File: [!include[refa](~/r/a.md)].
 
             var result = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md"); ;
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
-<p>Test Inline Included File: This is a <strong>included</strong> token.</p>
+<p>Test Inline Included File: \This is a <strong>included</strong> token.</p>
+<p>Test Escaped Inline Included File: [!include<a href=""%7E/r/a.md"">refa</a>].</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
