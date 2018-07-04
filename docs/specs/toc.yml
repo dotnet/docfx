@@ -850,3 +850,61 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","null-list-item","(Line: 3, Column: 3) List contains null item","docs/toc.yml"]
+---
+# TOC json file with null list item
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    { 
+      "name": "title", 
+      "items":[
+        {},
+        {
+          "name": "1"
+        }
+      ]
+    }
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["warning","null-list-item","(Line: 3, Column: 11) List contains null item","docs/toc.json"]
+---
+# TOC json file with undefined property
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    { 
+      "name": "title", 
+      "items":[
+        {
+          "name": ,
+          "displayName": "1"
+        }
+      ]
+    }
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["warning","null-property","(Line: 4, Column: 5) Property value is null","docs/toc.json"]
+---
+# TOC json file with empty value
+inputs:
+  docfx.yml:
+  docs/toc.json: |
+    { 
+      "name": "title", 
+      "items":[
+        {
+          "name": "",
+          "displayName": "1"
+        }
+      ]
+    }
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["warning","null-property","(Line: 4, Column: 5) Property value is null","docs/toc.json"]
+---

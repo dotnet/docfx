@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             Dictionary<JToken,
             List<(int, int)>> mappings,
             List<Error> errors,
-            bool fromJasonFile = false)
+            bool fromJasonFile = true)
         {
             if (tocToken is JArray tocArray)
             {

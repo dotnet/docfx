@@ -132,7 +132,8 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Array && !token.HasValues) ||
                 (token.Type == JTokenType.Object && !token.HasValues) ||
                 (token.Type == JTokenType.String && string.IsNullOrEmpty(token.ToString())) ||
-                (token.Type == JTokenType.Null);
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver
