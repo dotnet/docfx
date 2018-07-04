@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             // Verify restored files
             foreach (var (file, content) in spec.Restores)
             {
-                var restoredFile = Path.Combine(Restore.GetRestoreRoot(), file);
+                var restoredFile = Path.Combine(AppData.RestoreDir, file);
                 Assert.True(File.Exists(restoredFile));
                 Assert.Equal(content, File.ReadAllText(restoredFile).Trim());
             }

@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        private static readonly string s_restoreDir = GetRestoreRoot();
-
         public static Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             using (Log.Measure("Restore dependencies"))
@@ -47,25 +45,9 @@ namespace Microsoft.Docs.Build
             var uri = new Uri(path);
             var url = uri.GetLeftPart(UriPartial.Path);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(s_restoreDir, repo, PathUtility.Encode(refSpec));
+            var dir = Path.Combine(AppData.RestoreDir, repo, PathUtility.Encode(refSpec));
 
             return (PathUtility.NormalizeFolder(dir), url, refSpec);
-        }
-
-        /// <summary>
-        /// Get the restore root dir, default is the user proflie dir.
-        /// User can set the DOCFX_APPDATA_PATH environment to change the root
-        /// </summary>
-        public static string GetRestoreRoot()
-        {
-            // TODO: document this environment variable and show it in welcome message
-            var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
-            if (!string.IsNullOrEmpty(docfxAppData))
-            {
-                docfxAppData = Path.GetFullPath(docfxAppData);
-            }
-
-            return Path.Combine(docfxAppData ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
         }
 
         // Recursively restore dependent repo including their children
@@ -87,7 +69,7 @@ namespace Microsoft.Docs.Build
         {
             var (restoreDir, url, rev) = GetGitRestoreInfo(href);
 
-            var lockRelativePath = Path.Combine(Path.GetRelativePath(s_restoreDir, restoreDir), ".lock");
+            var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restoreDir), ".lock");
             await ProcessUtility.ProcessLock(
                 lockRelativePath,
                 async () =>
