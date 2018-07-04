@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
-            var relativeUrl = Document.PathToRelativeUrl(relativePath, file.ContentType);
+            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
 
             // Master content outside build scope, don't build the file, use relative href
             if (error == null && file.IsMasterContent && !relativeTo.Docset.BuildScope.Contains(file))

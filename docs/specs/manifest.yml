@@ -4,27 +4,20 @@ inputs:
   docfx.yml:
   docs/a.md:
   docs/TOC.md:
-  docs/folder/b.md:
+  docs/folder/b~$.md:
+  docs/index.md:
 outputs:
   docs/a.json:
   docs/TOC.json:
-  docs/folder/b.json:
+  docs/folder/b~$.json:
+  docs/index.json:
   build.manifest: |
     {
-      "files":
-      [
-        {
-          "siteUrl": "/docs/a",
-          "outputPath": "docs/a.json"
-        },
-        {
-          "siteUrl": "/docs/folder/b",
-          "outputPath": "docs/folder/b.json"
-        },
-        {
-          "siteUrl": "/docs/TOC.json",
-          "outputPath": "docs/TOC.json"
-        }
+      "files": [
+        { "siteUrl": "/docs/a", "outputPath": "docs/a.json" },
+        { "siteUrl": "/docs/folder/b~$", "outputPath": "docs/folder/b~$.json" },
+        { "siteUrl": "/docs/", "outputPath": "docs/index.json" },
+        { "siteUrl": "/docs/TOC.json", "outputPath": "docs/TOC.json" }
       ]
     }
 ---

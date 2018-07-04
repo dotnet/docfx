@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.InteropServices;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -41,6 +40,14 @@ namespace Microsoft.Docs.Build
         public static void IsAbsolutePath(string href, bool expected)
         {
             Assert.Equal(expected, HrefUtility.IsAbsoluteHref(href));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("a&#/b\\.* d.png", "a%26%23/b/.%2A%20d.png")]
+        public static void EscapeUrl(string path, string expected)
+        {
+            Assert.Equal(expected, HrefUtility.EscapeUrl(path));
         }
     }
 }
