@@ -126,14 +126,7 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
             using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {
-                try
-                {
-                    await action();
-                }
-                finally
-                {
-                    File.Delete(lockPath);
-                }
+                await action();
             }
         }
 
@@ -144,7 +137,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Delete);
+                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
                 }
                 catch when (retryCount++ < retry)
                 {
