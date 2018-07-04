@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
+        private static readonly string s_restoreDir = GetRestoreRoot();
 
         public static Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
@@ -50,6 +50,22 @@ namespace Microsoft.Docs.Build
             var dir = Path.Combine(s_restoreDir, repo, PathUtility.Encode(refSpec));
 
             return (PathUtility.NormalizeFolder(dir), url, refSpec);
+        }
+
+        /// <summary>
+        /// Get the restore root dir, default is the user proflie dir.
+        /// User can set the DOCFX_APPDATA_PATH environment to change the root
+        /// </summary>
+        public static string GetRestoreRoot()
+        {
+            // TODO: document this environment variable and show it in welcome message
+            var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
+            if (!string.IsNullOrEmpty(docfxAppData))
+            {
+                docfxAppData = Path.GetFullPath(docfxAppData);
+            }
+
+            return Path.Combine(docfxAppData ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
         }
 
         // Recursively restore dependent repo including their children
