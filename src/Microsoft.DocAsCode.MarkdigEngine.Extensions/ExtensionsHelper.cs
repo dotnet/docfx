@@ -76,11 +76,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static bool MatchStart(ref StringSlice slice, string startString, bool isCaseSensitive = true)
         {
-            if (IsEscaped(slice))
-            {
-                return false;
-            }
-
             var c = slice.CurrentChar;
             var index = 0;
 
@@ -109,11 +104,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
 		public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
         {
-            if (IsEscaped(slice))
-            {
-                return false;
-            }
-
             if (MatchTitle(ref slice, ref title) && MatchPath(ref slice, ref path))
             {
                 slice.NextChar();
@@ -196,11 +186,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static bool MatchTitle(ref StringSlice slice, ref string title)
         {
-            if (IsEscaped(slice))
-            {
-                return false;
-            }
-
             while (slice.CurrentChar == ' ')
             {
                 slice.NextChar();

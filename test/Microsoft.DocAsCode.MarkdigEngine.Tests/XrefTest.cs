@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             //arange
             var content = @"<xref:Microsoft.Build.Tasks>
+\<xref:Microsoft.Build.Tasks>
+\\<xref:Microsoft.Build.Tasks>
 @Microsoft.Build.Tasks
 ""@""a[test](link)
 @hehe
@@ -27,6 +29,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             // assert
             var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
+&lt;xref:Microsoft.Build.Tasks&gt;
+\<xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
 <xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@Microsoft.Build.Tasks""></xref>
 &quot;@&quot;a<a href=""link"">test</a>
 <xref href=""hehe"" data-throw-if-not-resolved=""False"" data-raw-source=""@hehe""></xref>

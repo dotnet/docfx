@@ -29,12 +29,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var slice = processor.Line;
-
-            if (ExtensionsHelper.IsEscaped(slice))
-            {
-                return BlockState.None;
-            }
-
             var column = processor.Column;
             var sourcePosition = processor.Start;
             var colonCount = 0;

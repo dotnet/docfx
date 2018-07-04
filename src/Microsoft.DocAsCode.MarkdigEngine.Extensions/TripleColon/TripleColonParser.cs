@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var sourcePosition = processor.Start;
 
             if (processor.IsCodeIndent
-                || ExtensionsHelper.IsEscaped(slice)
                 || !ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 return BlockState.None;
