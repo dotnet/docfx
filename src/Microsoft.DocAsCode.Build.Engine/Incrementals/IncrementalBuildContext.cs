@@ -592,23 +592,34 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
         {
+            var details = String.Empty;
+            var canIncremental = false;
+
             if (lb == null)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because last build info is missing." };
+                details = "Cannot build incrementally because last build info is missing.";
             }
-            if (cb.DocfxVersion != lb.DocfxVersion)
+            else if (cb.DocfxVersion != lb.DocfxVersion)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}." };
+                details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}.";
             }
-            if (cb.PluginHash != lb.PluginHash)
+            else if (cb.PluginHash != lb.PluginHash)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because plugin changed." };
+                details = "Cannot build incrementally because plugin changed.";
             }
-            if (cb.CommitFromSHA != lb.CommitToSHA)
+            else if (cb.CommitFromSHA != lb.CommitToSHA)
             {
-                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}." };
+                details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}.";
             }
-            return new IncrementalStatus { CanIncremental = true };
+            else
+            {
+                canIncremental = true;
+            }
+
+            // Log
+            Logger.LogInfo($"Build strategy", code: canIncremental ? WarningCodes.Build.IsIncrementalBuild : WarningCodes.Build.IsFullBuild);
+
+            return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
         }
 
         private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
