@@ -830,9 +830,23 @@ inputs:
     name: Nested list with null value
     items:
       - name: 
-      - displayName: 1
+        displayName: 1
 outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-value","(Line: 3, Column: 5) Value is null","docs/toc.yml"]
+    ["warning","null-property","(Line: 3, Column: 5) Property value is null","docs/toc.yml"]
+---
+# Toc list with null item
+inputs:
+  docfx.yml:
+  docs/toc.yml: |
+    name: List with null item
+    items:
+      - 
+      - name: 1
+outputs:
+  docs/toc.json:
+  build.manifest:
+  build.log: |
+    ["warning","null-list-item","(Line: 3, Column: 3) List contains null item","docs/toc.yml"]

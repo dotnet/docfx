@@ -179,6 +179,7 @@ namespace Microsoft.Docs.Build
                 {
                     arr.Add(ToJson(item, mappings));
                 }
+                SetMappings(mappings, node, arr);
                 return arr;
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");

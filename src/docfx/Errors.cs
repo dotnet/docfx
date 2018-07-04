@@ -96,7 +96,10 @@ namespace Microsoft.Docs.Build
         public static Error GitShadowClone(string repoPath)
             => new Error(ErrorLevel.Error, "git-shadow-clone", $"Does not support git shallow clone: '{repoPath}'");
 
-        public static Error NullValue(int startLine = 0, int startColumn = 0)
-            => new Error(ErrorLevel.Warning, "null-value", $"(Line: {startLine}, Column: {startColumn}) Value is null");
+        public static Error NullPropertyValue(int startLine = 0, int startColumn = 0)
+            => new Error(ErrorLevel.Warning, "null-property", $"(Line: {startLine}, Column: {startColumn}) Property value is null");
+
+        public static Error NullListItemValue(int startLine = 0, int startColumn = 0)
+            => new Error(ErrorLevel.Warning, "null-list-item", $"(Line: {startLine}, Column: {startColumn}) List contains null item");
     }
 }

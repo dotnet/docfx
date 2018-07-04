@@ -83,26 +83,19 @@ namespace Microsoft.Docs.Build
         private static JArray ValidateNullElement(this JArray tocArray, Dictionary<JToken, List<(int, int)>> mappings, List<Error> errors, bool fromJsonFile)
         {
             var nullNodes = new List<JToken>();
-            foreach (var item in tocArray.Children<JObject>())
+            foreach (var item in tocArray.Children())
             {
+                if (item.IsNullOrEmpty())
+                {
+                    LogWarningForNullValue(tocArray, Errors.NullListItemValue);
+                    nullNodes.Add(item);
+                }
                 foreach (var element in item.Children())
                 {
                     var prop = element as JProperty;
                     if (prop.Value.IsNullOrEmpty())
                     {
-                        if (fromJsonFile)
-                        {
-                            var lineInfo = item as IJsonLineInfo;
-                            errors.Add(Errors.NullValue(lineInfo.LineNumber, lineInfo.LinePosition));
-                        }
-                        else
-                        {
-                            if (mappings.TryGetValue(item, out List<(int, int)> value))
-                            {
-                                errors.AddRange(value.Select(x => Errors.NullValue(x.Item1, x.Item2)));
-                            }
-                        }
-
+                        LogWarningForNullValue(item, Errors.NullPropertyValue);
                         nullNodes.Add(item);
                     }
                 }
@@ -114,6 +107,22 @@ namespace Microsoft.Docs.Build
             }
 
             return tocArray;
+
+            void LogWarningForNullValue(JToken item, Func<int, int, Error> func)
+            {
+                if (fromJsonFile)
+                {
+                    var lineInfo = item as IJsonLineInfo;
+                    errors.Add(func(lineInfo.LineNumber, lineInfo.LinePosition));
+                }
+                else
+                {
+                    if (mappings.TryGetValue(item, out List<(int, int)> value))
+                    {
+                        errors.AddRange(value.Select(x => func(x.Item1, x.Item2)));
+                    }
+                }
+            }
         }
 
         private static List<TableOfContentsInputItem> LoadTocModel(
@@ -126,8 +135,7 @@ namespace Microsoft.Docs.Build
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                var temp = tocArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
-                return temp;
+                return tocArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
             }
             else
             {
@@ -136,8 +144,7 @@ namespace Microsoft.Docs.Build
                     tocObject.TryGetValue("items", out var tocItemToken) &&
                     tocItemToken is JArray tocItemArray)
                 {
-                    var temp = tocItemArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
-                    return temp;
+                    return tocItemArray.ValidateNullElement(mappings, errors, fromJasonFile).ToObject<List<TableOfContentsInputItem>>();
                 }
             }
             return new List<TableOfContentsInputItem>();
