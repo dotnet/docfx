@@ -25,12 +25,12 @@ namespace Microsoft.Docs.Build
         {
             var arr = JArray.Parse(str);
             var message_severity = arr.Count > 0 ? arr.Value<string>(0) : null;
-            var type = arr.Count > 1 ? arr.Value<string>(1) : null;
+            var code = arr.Count > 1 ? arr.Value<string>(1) : null;
             var message = arr.Count > 2 ? arr.Value<string>(2) : null;
             var file = arr.Count > 3 ? arr.Value<string>(3) : null;
             var line = arr.Count > 4 ? arr.Value<int?>(4) : null;
 
-            return JsonUtility.Serialize(new { message_severity, type, message, file, line });
+            return JsonUtility.Serialize(new { message_severity, code, message, file, line });
         }
     }
 }
