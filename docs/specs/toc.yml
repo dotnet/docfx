@@ -835,7 +835,7 @@ outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-property","(Line: 3, Column: 5) Property value is null","docs/toc.yml"]
+    ["warning","null-value","(Line: 3, Character: 5) has null value","docs/toc.yml"]
 ---
 # Toc list with null item
 inputs:
@@ -849,7 +849,8 @@ outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-list-item","(Line: 3, Column: 3) List contains null item","docs/toc.yml"]
+    ["warning","null-value","(Line: 3, Character: 3) has null value","docs/toc.yml"]
+
 ---
 # TOC json file with null list item
 inputs:
@@ -858,7 +859,7 @@ inputs:
     { 
       "name": "title", 
       "items":[
-        {},
+        ,
         {
           "name": "1"
         }
@@ -868,7 +869,7 @@ outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-list-item","(Line: 3, Column: 11) List contains null item","docs/toc.json"]
+    ["warning","null-value","(Line: 3, Character: 11) has null value","docs/toc.json"]
 ---
 # TOC json file with undefined property
 inputs:
@@ -887,23 +888,4 @@ outputs:
   docs/toc.json:
   build.manifest:
   build.log: |
-    ["warning","null-property","(Line: 4, Column: 5) Property value is null","docs/toc.json"]
----
-# TOC json file with empty value
-inputs:
-  docfx.yml:
-  docs/toc.json: |
-    { 
-      "name": "title", 
-      "items":[
-        {
-          "name": "",
-          "displayName": "1"
-        }
-      ]
-    }
-outputs:
-  docs/toc.json:
-  build.manifest:
-  build.log: |
-    ["warning","null-property","(Line: 4, Column: 5) Property value is null","docs/toc.json"]
+    ["warning","null-value","(Line: 4, Character: 5) has null value","docs/toc.json"]

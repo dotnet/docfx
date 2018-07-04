@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, T, Dictionary<MappingKey, LineInfo> mappings) Deserialize<T>(string input)
+        public static (List<Error> errors, T, JTokenSourceMap mappings) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, T, Dictionary<MappingKey, LineInfo> mappings) Deserialize<T>(TextReader reader)
+        public static (List<Error> errors, T, JTokenSourceMap mappings) Deserialize<T>(TextReader reader)
         {
             var (errors, json, mappings) = Deserialize(reader);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer), mappings);
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, JToken jtoken, Dictionary<MappingKey, LineInfo> mappings) Deserialize(string input)
+        public static (List<Error> errors, JToken jtoken, JTokenSourceMap mappings) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,9 +89,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, JToken token, Dictionary<MappingKey, LineInfo> mappings) Deserialize(TextReader reader)
+        public static (List<Error> errors, JToken token, JTokenSourceMap mappings) Deserialize(TextReader reader)
         {
-            var mappings = new Dictionary<MappingKey, LineInfo>();
+            var mappings = new JTokenSourceMap();
             var errors = new List<Error>();
             var stream = new YamlStream();
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             return (errors, ToJson(stream.Documents[0].RootNode, mappings), mappings);
         }
 
-        private static JToken ToJson(YamlNode node, Dictionary<MappingKey, LineInfo> mappings)
+        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -185,9 +185,9 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static void SetMappings(Dictionary<MappingKey, LineInfo> mappings, YamlNode scalar, JToken value)
+        private static void SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
         {
-            mappings.Add(new MappingKey { Key = value }, new LineInfo(scalar.Start.Line, scalar.Start.Column));
+            mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
         }
     }
 }

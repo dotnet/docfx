@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -47,16 +46,16 @@ namespace Microsoft.Docs.Build
             return state.Root;
         }
 
-        private static (List<TableOfContentsInputItem>, List<Error> errors) LoadTocModel(string content, string filePath)
+        private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
         {
             var errors = new List<Error>();
-            var mappings = new Dictionary<MappingKey, LineInfo>();
+            var mappings = new JTokenSourceMap();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
                 JToken tocToken;
                 (errors, tocToken, mappings) = YamlUtility.Deserialize(content);
 
-                return (LoadTocModel(tocToken, mappings, errors, false), errors);
+                return (errors, LoadTocModel(tocToken, mappings, errors, false));
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
@@ -68,26 +67,26 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     errors.Add(Errors.JsonSyntaxError(ex));
-                    return (LoadTocModel(JValue.CreateNull(), mappings, errors), errors);
+                    return (errors, LoadTocModel(JValue.CreateNull(), mappings, errors));
                 }
-                return (LoadTocModel(tocToken, mappings, errors), errors);
+                return (errors, LoadTocModel(tocToken, mappings, errors));
             }
             else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
-                return (LoadMdTocModel(content, filePath), errors);
+                return (errors, LoadMdTocModel(content, filePath));
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static JArray ValidateNullElement(this JArray tocArray, Dictionary<MappingKey, LineInfo> mappings, List<Error> errors, bool fromJsonFile)
+        private static JArray ValidateNullElement(this JArray tocArray, JTokenSourceMap mappings, List<Error> errors, bool fromJsonFile)
         {
             var nullNodes = new List<JToken>();
             foreach (var item in tocArray.Children())
             {
                 if (item.IsNullOrEmpty())
                 {
-                    LogWarningForNullValue(tocArray, Errors.NullListItemValue);
+                    LogWarningForNullValue(tocArray);
                     nullNodes.Add(item);
                 }
                 foreach (var element in item.Children())
@@ -95,7 +94,7 @@ namespace Microsoft.Docs.Build
                     var prop = element as JProperty;
                     if (prop.Value.IsNullOrEmpty())
                     {
-                        LogWarningForNullValue(item, Errors.NullPropertyValue);
+                        LogWarningForNullValue(item);
                         nullNodes.Add(item);
                     }
                 }
@@ -108,18 +107,18 @@ namespace Microsoft.Docs.Build
 
             return tocArray;
 
-            void LogWarningForNullValue(JToken item, Func<int, int, Error> log)
+            void LogWarningForNullValue(JToken item)
             {
                 if (fromJsonFile)
                 {
                     var lineInfo = item as IJsonLineInfo;
-                    errors.Add(log(lineInfo.LineNumber, lineInfo.LinePosition));
+                    errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition)));
                 }
                 else
                 {
-                    if (mappings.TryGetValue(new MappingKey { Key = item }, out LineInfo value))
+                    if (mappings.TryGetValue(item, out Range value))
                     {
-                        errors.Add(log(value.LineNumber, value.LinePosition));
+                        errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
                     }
                 }
             }
@@ -127,7 +126,7 @@ namespace Microsoft.Docs.Build
 
         private static List<TableOfContentsInputItem> LoadTocModel(
             JToken tocToken,
-            Dictionary<MappingKey, LineInfo> mappings,
+            JTokenSourceMap mappings,
             List<Error> errors,
             bool fromJasonFile = true)
         {
@@ -159,7 +158,7 @@ namespace Microsoft.Docs.Build
 
             parents.Add(filePath);
 
-            var (models, errors) = LoadTocModel(tocContent, filePath.FilePath);
+            var (errors, models) = LoadTocModel(tocContent, filePath.FilePath);
 
             if (models.Any())
             {
