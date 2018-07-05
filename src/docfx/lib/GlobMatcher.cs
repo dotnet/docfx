@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         public string Raw { get; }
 
         public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
-        public const GlobMatcherOptions DefaultCaseSensitiveOptions =  GlobMatcherOptions.AllowNegate | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
+        public const GlobMatcherOptions DefaultCaseSensitiveOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
 
         private const char NegateChar = '!';
         private const string GlobStar = "**";
