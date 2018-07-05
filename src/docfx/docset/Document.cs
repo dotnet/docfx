@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
         ///  - May end with '/' if it is index.html
+        ///  - Does not escape with <see cref="HrefUtility.EscapeUrl(string)"/>
         /// </summary>
         public string SiteUrl { get; }
 
@@ -295,7 +296,7 @@ namespace Microsoft.Docs.Build
 
         internal static string PathToRelativeUrl(string path, ContentType contentType)
         {
-            var url = string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
+            var url = path.Replace('\\', '/');
 
             switch (contentType)
             {
