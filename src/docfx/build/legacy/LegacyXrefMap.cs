@@ -22,12 +22,9 @@ namespace Microsoft.Docs.Build
 
             using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.SiteBasePath, "xrefmap.yml"))))
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("### YamlMime:XRefMap");
+                writer.WriteLine("### YamlMime:XRefMap");
                 var serializer = new SerializerBuilder().Build();
-                var str = serializer.Serialize(map);
-                sb.AppendLine(str);
-                writer.Write(sb.ToString());
+                serializer.Serialize(writer, map);
             }
         }
     }
