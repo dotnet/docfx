@@ -107,7 +107,7 @@ Also, note that if your csprojs are located outside of your docfx directory, and
     {
       "src": [
         {
-          "src": "../../"
+          "src": "../../",
           "files": [
             "somewhere/src/**.csproj"
           ],
