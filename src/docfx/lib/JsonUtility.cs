@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
             var (errors, token) = Deserialize(reader);
-            return (errors, token.ToObject<T>());
+            return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
         /// <summary>
