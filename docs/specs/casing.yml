@@ -10,18 +10,6 @@ outputs:
   docs/b.json:
   build.manifest:
 ---
-# Path is case sensitive on linux
-os: linux
-inputs:
-  docfx.yml:
-  docs/a.md: Link to [b](B.md)
-  docs/b.md:
-outputs:
-  docs/a.json: |
-    { "content": "<p>Link to <a href=\"B\">b</a></p>" }
-  docs/b.json:
-  build.manifest:
----
 # URL is case insensitive on windows and mac
 os: windows, osx
 inputs:
