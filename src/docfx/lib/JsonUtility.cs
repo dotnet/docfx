@@ -121,14 +121,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static bool IsNullOrUndefined(this JToken token)
-        {
-            return
-                (token == null) ||
-                (token.Type == JTokenType.Null) ||
-                (token.Type == JTokenType.Undefined);
-        }
-
         public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
         {
             var errors = new List<Error>();
@@ -139,6 +131,14 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        private static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token == null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
         }
 
         /// <summary>
