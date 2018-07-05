@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Microsoft.Docs.Build
@@ -22,6 +23,12 @@ namespace Microsoft.Docs.Build
 
         private static bool GetIsCaseSensitive()
         {
+            // Fast pass for windows
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return false;
+            }
+
             // https://github.com/dotnet/corefx/blob/bffef76f6af208e2042a2f27bc081ee908bb390b/src/Common/src/System/IO/PathInternal.CaseSensitivity.cs#L37
             try
             {
@@ -40,7 +47,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Create a relative path from one path to another file.
         /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
