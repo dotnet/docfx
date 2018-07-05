@@ -76,18 +76,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
-        public static T Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
-            using (JsonReader json = new JsonTextReader(reader))
-            {
-                return DefaultDeserializer.Deserialize<T>(json);
-            }
+            var (errors, token) = Deserialize(reader);
+            return (errors, token.ToObject<T>());
         }
 
         /// <summary>
         /// Deserialize a string to an object
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static (List<Error>, T) Deserialize<T>(string json)
         {
             return Deserialize<T>(new StringReader(json));
         }
@@ -96,9 +94,12 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error>, JToken) Parse(string json)
+        private static (List<Error>, JToken) Deserialize(TextReader reader)
         {
-            return JToken.Parse(json).ValidateNullValue();
+            using (JsonReader json = new JsonTextReader(reader))
+            {
+                return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+            }
         }
 
         /// <summary>

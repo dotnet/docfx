@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var cache = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
+                var (_, cache) = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
                 return new UserProfileCache(cache, cachePath);
             }
             catch (Exception ex)

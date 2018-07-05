@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 List<Error> nullErrors;
                 try
                 {
-                    (nullErrors, tocToken) = JsonUtility.Parse(content);
+                    (nullErrors, tocToken) = JsonUtility.Deserialize<JToken>(content);
                     errors.AddRange(nullErrors);
                 }
                 catch (Exception ex)
