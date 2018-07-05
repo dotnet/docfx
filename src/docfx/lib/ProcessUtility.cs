@@ -14,8 +14,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private static readonly string s_lockDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "lock");
-
         /// <summary>
         /// Execute process with args
         /// </summary>
@@ -122,7 +120,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
             Debug.Assert(!Path.IsPathRooted(lockRelativePath));
 
-            var lockPath = Path.Combine(s_lockDir, lockRelativePath);
+            var lockPath = Path.Combine(AppData.LockDir, lockRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
             using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {

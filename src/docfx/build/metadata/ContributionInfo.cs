@@ -12,11 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
-        private static readonly string s_defaultCachePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            ".docfx",
-            "cache",
-            "user-profile.json");
+        private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
 
         private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache = new ConcurrentDictionary<string, GitRepoInfo>();
 
@@ -45,7 +41,7 @@ namespace Microsoft.Docs.Build
                 : GitCommitsTime.Create(Path.Combine(docset.DocsetPath, docset.Config.Contribution.GitCommitsTimePath)).ToDictionary();
 
             var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCachePath)
-                ? s_defaultCachePath
+                ? s_defaultProfilePath
                 : Path.Combine(docset.DocsetPath, docset.Config.Contribution.UserProfileCachePath);
 
             return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
