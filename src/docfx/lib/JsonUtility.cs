@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static bool IsNullOrEmpty(this JToken token)
+        public static bool IsNullOrUndefined(this JToken token)
         {
             return
                 (token == null) ||
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var item in token.Children())
             {
-                if (item.IsNullOrEmpty())
+                if (item.IsNullOrUndefined())
                 {
                     LogWarningForNullValue(array, errors, mappings);
                     nullNodes.Add(item);
@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
             foreach (var item in token.Children())
             {
                 var prop = item as JProperty;
-                if (prop.Value.IsNullOrEmpty())
+                if (prop.Value.IsNullOrUndefined())
                 {
                     LogWarningForNullValue(token, errors, mappings);
                     nullNodes.Add(item);
