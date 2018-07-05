@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(string input)
+        public static (List<Error>, T) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
             var (errors, json) = Deserialize(reader);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, JToken jtoken) Deserialize(string input)
+        public static (List<Error>, JToken) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, JToken token) Deserialize(TextReader reader)
+        public static (List<Error>, JToken) Deserialize(TextReader reader)
         {
             var mappings = new JTokenSourceMap();
             var errors = new List<Error>();
