@@ -193,6 +193,36 @@ namespace Microsoft.Docs.Build
             Assert.Equal(result, resultJsonString);
         }
 
+        [Fact]
+        public void TestListWithNullItem()
+        {
+            var json = "{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}";
+            var (errors, result) = JsonUtility.Parse(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
+        }
+
+        [Fact]
+        public void TestListItemWithNullValue()
+        {
+            var json = "{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}";
+            var (errors, result) = JsonUtility.Parse(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
+        }
+
         public class BasicClass
         {
             public string C { get; set; }

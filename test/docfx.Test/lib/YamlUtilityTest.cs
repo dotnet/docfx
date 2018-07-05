@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithStringProperty(string input)
         {
             var yaml = $"C: \"{input}\"";
-            var (errors, value, _) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithMultiLinesStringProperty(string input, string expected)
         {
             var yaml = $"C: {input}";
-            var (errors, value, _) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 - 18446744073709551615
 ";
             Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
-            var (errors, value, _) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(4, value.Length);
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 A: &anchor test
 B: *anchor
 ";
-            var (errors, value, _) = YamlUtility.Deserialize<Dictionary<string, string>>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value["A"]);
@@ -123,11 +123,16 @@ C: ""~""
 D: ~
 ";
             Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
-            var (errors, value, _) = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
-            Assert.Empty(errors);
+            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
             Assert.NotNull(value);
             Assert.Equal("~", value["C"]);
-            Assert.Null(value["D"]);
+            Assert.DoesNotContain("D", value.Keys);
         }
 
         [Fact]
@@ -139,7 +144,7 @@ C: Good!
 D: true
 ";
             Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
-            var (errors, value, _) = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -155,13 +160,13 @@ D: true
 - false
 ";
             Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(yaml));
-            var (errors1, value, _) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            var (errors1, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.Empty(errors1);
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, value2, _) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
+            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
 - TRUE
@@ -213,7 +218,7 @@ D: true
   C: Good9!
   D: true
 ";
-            var (errors, values, _) = YamlUtility.Deserialize<List<BasicClass>>(new StringReader(yaml));
+            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -229,7 +234,7 @@ D: true
         public void TestClassWithReadOnlyField()
         {
             var yaml = $"B: test";
-            var (errors, value, _) = YamlUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -255,7 +260,7 @@ ValueBasic:
   C: Good3!
   D: false
 ";
-            var (errors, value, _) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -277,7 +282,7 @@ ValueBasic:
         public void TestStringEmpty()
         {
             var yaml = String.Empty;
-            var (errors, value, _) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -289,12 +294,46 @@ ValueBasic:
 Key1: 0
 Key1: 0
 ";
-            var (errors, _, _) = YamlUtility.Deserialize(yaml);
+            var (errors, _) = YamlUtility.Deserialize(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("yaml-syntax-error", error.Code);
                 Assert.Contains("Duplicate key", error.Message);
+            });
+        }
+
+        [Fact]
+        public void TestListItemWithNullValue()
+        {
+            var yaml = @"name: List item with null value
+items:
+  - name: 
+    displayName: 1
+";
+            var (errors, value) = YamlUtility.Deserialize(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
+        }
+
+        [Fact]
+        public void TestListWithNullItem()
+        {
+            var yaml = @"name: List with null item
+items:
+  - 
+  - name: 1
+";
+            var (errors, value) = YamlUtility.Deserialize(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
             });
         }
 

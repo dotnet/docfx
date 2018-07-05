@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, T, JTokenSourceMap mappings) Deserialize<T>(string input)
+        public static (List<Error> errors, T) Deserialize<T>(string input)
         {
             return Deserialize<T>(new StringReader(input));
         }
@@ -72,16 +72,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, T, JTokenSourceMap mappings) Deserialize<T>(TextReader reader)
+        public static (List<Error> errors, T) Deserialize<T>(TextReader reader)
         {
-            var (errors, json, mappings) = Deserialize(reader);
-            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer), mappings);
+            var (errors, json) = Deserialize(reader);
+            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, JToken jtoken, JTokenSourceMap mappings) Deserialize(string input)
+        public static (List<Error> errors, JToken jtoken) Deserialize(string input)
         {
             return Deserialize(new StringReader(input));
         }
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, JToken token, JTokenSourceMap mappings) Deserialize(TextReader reader)
+        public static (List<Error> errors, JToken token) Deserialize(TextReader reader)
         {
             var mappings = new JTokenSourceMap();
             var errors = new List<Error>();
@@ -106,14 +106,16 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull(), mappings);
+                return (errors, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return (errors, ToJson(stream.Documents[0].RootNode, mappings), mappings);
+            var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+            errors.AddRange(nullErrors);
+            return (errors, token);
         }
 
         private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)

@@ -93,6 +93,15 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        public static (List<Error>, JToken) Parse(string json)
+        {
+            return JToken.Parse(json).ValidateNullValue();
+        }
+
+        /// <summary>
         /// Merge multiple JSON objects.
         /// The latter value overwrites the former value for a given key.
         /// </summary>
@@ -129,6 +138,83 @@ namespace Microsoft.Docs.Build
                 (token == null) ||
                 (token.Type == JTokenType.Null) ||
                 (token.Type == JTokenType.Undefined);
+        }
+
+        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        {
+            var errors = new List<Error>();
+            var nullNodes = new List<JToken>();
+            token.Traverse(errors, mappings, nullNodes);
+            foreach (var node in nullNodes)
+            {
+                node.Remove();
+            }
+            return (errors, token);
+        }
+
+        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
+        {
+            if (token is JArray array)
+            {
+                TraverseArray(token, errors, mappings, nullNodes, array);
+            }
+            else
+            {
+                TraverseProperty(token, errors, mappings, nullNodes);
+            }
+        }
+
+        private static void TraverseArray(JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, JArray array)
+        {
+            foreach (var item in token.Children())
+            {
+                if (item.IsNullOrEmpty())
+                {
+                    LogWarningForNullValue(array, errors, mappings);
+                    nullNodes.Add(item);
+                }
+                else if (item is JArray)
+                {
+                    item.Traverse(errors, mappings, nullNodes);
+                }
+                else
+                {
+                    TraverseProperty(item, errors, mappings, nullNodes);
+                }
+            }
+        }
+
+        private static void TraverseProperty(JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
+        {
+            foreach (var item in token.Children())
+            {
+                var prop = item as JProperty;
+                if (prop.Value.IsNullOrEmpty())
+                {
+                    LogWarningForNullValue(token, errors, mappings);
+                    nullNodes.Add(item);
+                }
+                else if (prop.Value is JArray)
+                {
+                    prop.Value.Traverse(errors, mappings, nullNodes);
+                }
+            }
+        }
+
+        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings)
+        {
+            if (mappings == null)
+            {
+                var lineInfo = item as IJsonLineInfo;
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition)));
+            }
+            else
+            {
+                if (mappings.TryGetValue(item, out Range value))
+                {
+                    errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
+                }
+            }
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver
