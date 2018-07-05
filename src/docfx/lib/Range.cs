@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal struct Range
+    internal readonly struct Range
     {
         public Range(int startLine, int startCharacter, int endLine = 0, int endCharacter = 0)
         {
@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
             EndCharacter = endCharacter;
         }
 
-        public int StartLine { get; set; }
+        public int StartLine { get; }
 
-        public int StartCharacter { get; set; }
+        public int StartCharacter { get; }
 
-        public int EndLine { get; set; }
+        public int EndLine { get; }
 
-        public int EndCharacter { get; set; }
+        public int EndCharacter { get; }
 
         public override string ToString()
         {

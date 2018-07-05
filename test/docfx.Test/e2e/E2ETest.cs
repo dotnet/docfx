@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         private static TheoryData<string, int> FindTestSpecs()
         {
             var result = new TheoryData<string, int>();
-            foreach (var file in Directory.EnumerateFiles("specs", "toc.yml", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
             {
                 var i = 0;
                 foreach (var header in FindTestSpecHeadersInFile(file))
