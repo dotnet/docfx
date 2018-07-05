@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -147,9 +149,21 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static (List<Error>, JToken) Deserialize(TextReader reader)
         {
-            using (JsonReader json = new JsonTextReader(reader))
+            try
             {
-                return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+                using (JsonReader json = new JsonTextReader(reader))
+                {
+                    return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<Error>
+                {
+                    Errors.JsonSyntaxError(ex),
+                };
+                return (errors, JValue.CreateNull());
             }
         }
 
@@ -157,47 +171,33 @@ namespace Microsoft.Docs.Build
         {
             if (token is JArray array)
             {
-                TraverseArray(token, errors, mappings, nullNodes, array);
-            }
-            else
-            {
-                TraverseProperty(token, errors, mappings, nullNodes);
-            }
-        }
-
-        private static void TraverseArray(JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, JArray array)
-        {
-            foreach (var item in token.Children())
-            {
-                if (item.IsNullOrUndefined())
+                foreach (var item in token.Children())
                 {
-                    LogWarningForNullValue(array, errors, mappings);
-                    nullNodes.Add(item);
-                }
-                else if (item is JArray)
-                {
-                    item.Traverse(errors, mappings, nullNodes);
-                }
-                else
-                {
-                    TraverseProperty(item, errors, mappings, nullNodes);
+                    if (item.IsNullOrUndefined())
+                    {
+                        LogWarningForNullValue(array, errors, mappings);
+                        nullNodes.Add(item);
+                    }
+                    else
+                    {
+                        Traverse(item, errors, mappings, nullNodes);
+                    }
                 }
             }
-        }
-
-        private static void TraverseProperty(JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
-        {
-            foreach (var item in token.Children())
+            else if (token is JObject obj)
             {
-                var prop = item as JProperty;
-                if (prop.Value.IsNullOrUndefined())
+                foreach (var item in token.Children())
                 {
-                    LogWarningForNullValue(token, errors, mappings);
-                    nullNodes.Add(item);
-                }
-                else if (prop.Value is JArray)
-                {
-                    prop.Value.Traverse(errors, mappings, nullNodes);
+                    var prop = item as JProperty;
+                    if (prop.Value.IsNullOrUndefined())
+                    {
+                        LogWarningForNullValue(token, errors, mappings);
+                        nullNodes.Add(item);
+                    }
+                    else
+                    {
+                        prop.Value.Traverse(errors, mappings, nullNodes);
+                    }
                 }
             }
         }
@@ -211,6 +211,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
+                Debug.Assert(mappings.ContainsKey(item));
                 if (mappings.TryGetValue(item, out Range value))
                 {
                     errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));

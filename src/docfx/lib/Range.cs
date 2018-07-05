@@ -5,6 +5,11 @@ namespace Microsoft.Docs.Build
 {
     internal readonly struct Range
     {
+        public readonly int StartLine;
+        public readonly int StartCharacter;
+        public readonly int EndLine;
+        public readonly int EndCharacter;
+
         public Range(int startLine, int startCharacter, int endLine = 0, int endCharacter = 0)
         {
             StartLine = startLine;
@@ -12,14 +17,6 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndCharacter = endCharacter;
         }
-
-        public int StartLine { get; }
-
-        public int StartCharacter { get; }
-
-        public int EndLine { get; }
-
-        public int EndCharacter { get; }
 
         public override string ToString()
         {
