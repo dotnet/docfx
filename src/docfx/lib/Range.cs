@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class Range
+    internal struct Range
     {
         public Range(int startLine, int startCharacter, int endLine = 0, int endCharacter = 0)
         {
