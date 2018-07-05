@@ -91,18 +91,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Parse a string to JToken.
-        /// Validate null value during the process.
-        /// </summary>
-        private static (List<Error>, JToken) Deserialize(TextReader reader)
-        {
-            using (JsonReader json = new JsonTextReader(reader))
-            {
-                return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
-            }
-        }
-
-        /// <summary>
         /// Merge multiple JSON objects.
         /// The latter value overwrites the former value for a given key.
         /// </summary>
@@ -151,6 +139,18 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        private static (List<Error>, JToken) Deserialize(TextReader reader)
+        {
+            using (JsonReader json = new JsonTextReader(reader))
+            {
+                return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+            }
         }
 
         private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
