@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -15,8 +14,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
-        private static readonly string s_lockDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "lock");
-
         /// <summary>
         /// Execute process with args
         /// </summary>
@@ -123,18 +120,11 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
             Debug.Assert(!Path.IsPathRooted(lockRelativePath));
 
-            var lockPath = Path.Combine(s_lockDir, lockRelativePath);
+            var lockPath = Path.Combine(AppData.LockDir, lockRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
             using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {
-                try
-                {
-                    await action();
-                }
-                finally
-                {
-                    File.Delete(lockPath);
-                }
+                await action();
             }
         }
 
@@ -145,7 +135,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Delete);
+                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
                 }
                 catch when (retryCount++ < retry)
                 {

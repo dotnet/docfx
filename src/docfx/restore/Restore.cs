@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        private static readonly string s_restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
-
         public static Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             using (Log.Measure("Restore dependencies"))
@@ -47,7 +45,7 @@ namespace Microsoft.Docs.Build
             var uri = new Uri(path);
             var url = uri.GetLeftPart(UriPartial.Path);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(s_restoreDir, repo, PathUtility.Encode(refSpec));
+            var dir = Path.Combine(AppData.RestoreDir, repo, PathUtility.Encode(refSpec));
 
             return (PathUtility.NormalizeFolder(dir), url, refSpec);
         }
@@ -71,7 +69,7 @@ namespace Microsoft.Docs.Build
         {
             var (restoreDir, url, rev) = GetGitRestoreInfo(href);
 
-            var lockRelativePath = Path.Combine(Path.GetRelativePath(s_restoreDir, restoreDir), ".lock");
+            var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restoreDir), ".lock");
             await ProcessUtility.ProcessLock(
                 lockRelativePath,
                 async () =>

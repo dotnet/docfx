@@ -24,8 +24,7 @@ namespace Microsoft.Docs.Build
             var (dir, url, rev) = Restore.GetGitRestoreInfo(remote);
 
             // Assert
-            var restoreDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx", "git");
-            Assert.Equal(PathUtility.NormalizeFolder(Path.Combine(restoreDir, expectedDir)), dir);
+            Assert.Equal(PathUtility.NormalizeFolder(Path.Combine(AppData.RestoreDir, expectedDir)), dir);
             Assert.Equal(expectedUrl, url);
             Assert.Equal(expectedRev, rev);
         }

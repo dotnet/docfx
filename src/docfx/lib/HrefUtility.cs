@@ -3,7 +3,7 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -64,6 +64,11 @@ namespace Microsoft.Docs.Build
             return str.StartsWith('/')
                 || str.StartsWith('\\')
                 || Uri.TryCreate(str, UriKind.Absolute, out _);
+        }
+
+        public static string EscapeUrl(string path)
+        {
+            return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
         }
     }
 }
