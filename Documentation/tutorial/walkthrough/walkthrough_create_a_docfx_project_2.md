@@ -265,6 +265,32 @@ The [docfx-seed sample project repo](https://github.com/docascode/docfx-seed) is
 
 More details: http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file
 
+Step6. Reference projects outside of docfx directory.
+------------------------------------------------------------------------------
+
+If your csprojs are located outside of your docfx directory, and you need to use `../` you will need to use the `src` property.
+
+```json
+"metadata": [
+    {
+      "src": [
+        {
+          "src": "../../somewhere"
+          "files": [
+            "src/**.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "_site/**"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ]
+```
+
 Conclusion
 ---------
 In this walkthrough, we build a website containing both **Conceptual Documentation** and **API Documentation**. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
