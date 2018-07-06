@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,13 @@ namespace Microsoft.Docs.Build
 {
     public static class ProcessUtilityTest
     {
+        [Fact]
+        public static void ExeNotFoundMessage()
+        {
+            var ex = Assert.ThrowsAny<Exception>(() => Process.Start("a-fake-exe"));
+            Assert.True(ex.Message.Contains("The system cannot find the file specified"));
+        }
+
         [Fact]
         public static async Task ConcurrencyCreatingFileShouldNotThrowNoException()
         {

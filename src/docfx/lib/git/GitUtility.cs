@@ -128,8 +128,17 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
 
-            // todo: check git exist or not
-            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
+            string response;
+
+            try
+            {
+                response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
+            }
+            catch (Exception ex) when (ex.Message.Contains("The system cannot find the file specified"))
+            {
+                throw Errors.GitNotFound().ToException();
+            }
+
             return parser(response);
         }
 
