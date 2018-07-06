@@ -124,8 +124,6 @@ namespace Microsoft.Docs.Build
             Console.ResetColor();
             Console.WriteLine();
 
-            var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
-
             // windows command line does not have good emoji support
             // https://github.com/Microsoft/console/issues/190
             var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
@@ -143,7 +141,7 @@ namespace Microsoft.Docs.Build
 # docfx crash report: {exception.GetType()}
 
 docfx: `{GetVersion()}`
-cmd: `{commandLine}`
+cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
 
 ## callstack
