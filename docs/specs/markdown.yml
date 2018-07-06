@@ -1,102 +1,41 @@
 ---
-# Hello World
-inputs:
-  docfx.yml:
-  docs/a.md: Hello `docfx`!
-outputs:
-  docs/a.json: |
-    { "content": "<p>Hello <code>docfx</code>!</p>" }
-  build.manifest:
----
-# Basic markdown syntax
-inputs:
-  docfx.yml:
-  docs/a.md: _this_ *is* an ***inline*** `markdown` **test**
-outputs:
-  docs/a.json: |
-    { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
-  build.manifest:
----
-# Yaml header
+# Yaml header title in lower-case
 inputs:
   docfx.yml:
   docs/a.md: |
     ---
-    title: me
+    title: title from yaml header
     ---
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>hello</p>\n",
+      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "title": "title from yaml header",
+      "metadata": { "title": "title from yaml header" }
+    }
+  build.manifest:
+---
+# Yaml header title in upper-case
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+    # Title from H1
     hello
 outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>",
-      "metadata": { "title": "me" }
+      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "title": "Title from H1",
+      "metadata":
+      {
+          "Title": "Title from yaml header"
+      }
     }
-  build.manifest:
----
-# include another file
-inputs:
-  docfx.yml:
-  docs/a.md: a [!INCLUDE[](b.md)]
-  docs/b.md: b
-outputs:
-  docs/a.json: |
-    { "content": "<p>a b</p>" }
-  docs/b.json: |
-    { "content": "<p>b</p>" }
-  build.manifest:
----
-# note
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    >[!NOTE]
-    >note
-outputs:
-  docs/a.json: |
-    { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
-  build.manifest:
----
-# title
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    metaKey: metaValue
-    ---
-    # This is *a* title
-    
-    body
-outputs:
-  docs/a.json: |
-    {
-      "content": "<p>body</p>",
-      "title": "This is a title",
-      "titleHtml": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
-      "metadata": { "metaKey": "metaValue" }
-    }
-  build.manifest:
----
-# do not allow custom js, styles and css
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    <script>alert(0);</script>
-    <link rel="stylesheet" href="https://a.com/b.css" />
-    <div style="display:hidden"></div>
-    <style>h1 {color:red;}</style>
-
-    body
-outputs:
-  docs/a.json: |
-    { "content": "<div></div><p>body</p>" }
-  build.manifest:
----
-# do not process auto links
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    http://*.windowsupdate.microsoft.com
-outputs:
-  docs/a.json: |
-    { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
   build.manifest:
