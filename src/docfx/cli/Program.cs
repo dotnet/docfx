@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void PrintFatalErrorMessage(Exception exception, string[] args)
+        private static void PrintFatalErrorMessage(Exception exception)
         {
             Console.ResetColor();
             Console.WriteLine();
