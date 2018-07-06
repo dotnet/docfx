@@ -95,5 +95,8 @@ namespace Microsoft.Docs.Build
 
         public static Error GitShadowClone(string repoPath)
             => new Error(ErrorLevel.Error, "git-shadow-clone", $"Does not support git shallow clone: '{repoPath}'");
+
+        public static Error NullValue(Range range)
+            => new Error(ErrorLevel.Warning, "null-value", $"{range} contains null value");
     }
 }
