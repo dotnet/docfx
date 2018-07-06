@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
+        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, string name = null)
         {
             if (token is JArray array)
             {
@@ -174,12 +174,12 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(array, errors, mappings);
+                        LogWarningForNullValue(array, errors, mappings, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        Traverse(item, errors, mappings, nullNodes);
+                        Traverse(item, errors, mappings, nullNodes, name);
                     }
                 }
             }
@@ -190,29 +190,29 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(token, errors, mappings);
+                        LogWarningForNullValue(token, errors, mappings, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.Traverse(errors, mappings, nullNodes);
+                        prop.Value.Traverse(errors, mappings, nullNodes, prop.Name);
                     }
                 }
             }
         }
 
-        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings)
+        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
         {
             if (mappings == null)
             {
                 var lineInfo = item as IJsonLineInfo;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition)));
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
             }
             else
             {
                 Debug.Assert(mappings.ContainsKey(item));
                 var value = mappings[item];
-                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
+                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
             }
         }
 
