@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -29,8 +30,9 @@ namespace Microsoft.Docs.Build
             var message = arr.Count > 2 ? arr.Value<string>(2) : null;
             var file = arr.Count > 3 ? arr.Value<string>(3) : null;
             var line = arr.Count > 4 ? arr.Value<int?>(4) : null;
+            var date_time = DateTime.UtcNow;
 
-            return JsonUtility.Serialize(new { message_severity, code, message, file, line });
+            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time });
         }
     }
 }
