@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Document doc,
             LegacyManifestOutput legacyManifestOutput)
         {
-            var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
+            var (_, toc) = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
             ConvertLegacyHref(toc.Items.Select(l => (TableOfContentsItem)l));
 
             var firstItem = toc?.Items?.FirstOrDefault();
