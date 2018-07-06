@@ -98,6 +98,10 @@ namespace Microsoft.Docs.Build
             {
                 stream.Load(reader);
             }
+            catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
+            {
+                errors.Add(Errors.YamlDuplicateKey(ParseDuplicateKeyFromErrorMessage(ex.Message + ex.InnerException?.Message)));
+            }
             catch (YamlException ex)
             {
                 errors.Add(Errors.YamlSyntaxError(ex));
@@ -124,6 +128,12 @@ namespace Microsoft.Docs.Build
             {
                 return (errors, ToJson(stream.Documents[0].RootNode));
             }
+        }
+
+        private static string ParseDuplicateKeyFromErrorMessage(string message)
+        {
+            var index = message.LastIndexOf(':');
+            return message.Substring(index + 1, message.Length - index);
         }
 
         private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
