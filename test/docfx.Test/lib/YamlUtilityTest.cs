@@ -299,7 +299,7 @@ Key1: 0
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("yaml-duplicate-key", error.Code);
-                Assert.Contains("An item with the same key has already been added. Key: Key1", error.Message);
+                Assert.Contains("Key ' Key1' is already defined, please remove the duplicate key", error.Message);
             });
         }
 

@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
         private static string ParseDuplicateKeyFromErrorMessage(string message)
         {
             var index = message.LastIndexOf(':');
-            return message.Substring(index + 1, message.Length - index);
+            return message.Substring(index + 1, message.Length - index - 1);
         }
 
         private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
