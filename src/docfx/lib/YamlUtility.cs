@@ -64,34 +64,33 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input)
+        public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input));
+            return Deserialize<T>(new StringReader(input), nullValidation);
         }
 
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
         {
-            var (errors, json) = Deserialize(reader);
+            var (errors, json) = Deserialize(reader, nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input)
+        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
         {
-            return Deserialize(new StringReader(input));
+            return Deserialize(new StringReader(input), nullValidation);
         }
 
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(TextReader reader)
+        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
         {
-            var mappings = new JTokenSourceMap();
             var errors = new List<Error>();
             var stream = new YamlStream();
 
@@ -113,12 +112,21 @@ namespace Microsoft.Docs.Build
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
-            errors.AddRange(nullErrors);
-            return (errors, token);
+
+            if (nullValidation)
+            {
+                var mappings = new JTokenSourceMap();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            else
+            {
+                return (errors, ToJson(stream.Documents[0].RootNode));
+            }
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)
+        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -178,6 +186,9 @@ namespace Microsoft.Docs.Build
 
         private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
         {
+            if (mappings == null)
+                return value;
+
             mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
             return value;
         }
