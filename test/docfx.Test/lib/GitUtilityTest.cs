@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         {
             var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
 
-            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.HeadRevision(cwd)));
+            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.Revision(cwd)));
 
             Assert.True(results.All(r => r.Any()));
         }

@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
             Debug.Assert(!Path.IsPathRooted(lockRelativePath));
 
-            var lockPath = Path.Combine(AppData.LockDir, lockRelativePath);
+            var lockPath = Path.Combine(AppData.ProcessLockDir, lockRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
             using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {

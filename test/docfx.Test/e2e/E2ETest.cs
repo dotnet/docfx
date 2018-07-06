@@ -32,11 +32,12 @@ namespace Microsoft.Docs.Build
             await Program.Run(new[] { "build", docsetPath });
 
             // Verify restored files
+            var restore = new Restore(docsetPath);
             foreach (var (file, content) in spec.Restores)
             {
-                var restoredFile = Path.Combine(AppData.RestoreDir, file);
+                var restoredFile = Path.Combine(AppData.AppDataDir, file);
                 Assert.True(File.Exists(restoredFile));
-                Assert.Equal(content, File.ReadAllText(restoredFile).Trim());
+                VerifyFile(restoredFile, content);
             }
 
             // Verify output
@@ -96,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(spec.Repo))
             {
-                var (_, remote, refspec) = Restore.GetGitRestoreInfo(spec.Repo);
+                var (remote, refspec) = Restore.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 return (docsetPath, spec);
             }

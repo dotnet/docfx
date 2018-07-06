@@ -9,9 +9,30 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Restore
+    internal class Restore
     {
-        public static Task Run(string docsetPath, CommandLineOptions options, Report report)
+        private readonly RestoreLock _workTreeStore;
+
+        public Restore(string docset)
+        {
+            _workTreeStore = new RestoreLock(docset);
+        }
+
+        public bool TryGetRestorePath(string remote, out string restorePath)
+        {
+            var (url, rev) = GetGitRemoteInfo(remote);
+            var restoreDir = GetRestoreDir(url, rev);
+            if (_workTreeStore.TryGetWorkTreeHead(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
+            {
+                restorePath = GetWorkTreePath(restoreDir, workTreeHead);
+                return true;
+            }
+
+            restorePath = default;
+            return false;
+        }
+
+        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             using (Log.Measure("Restore dependencies"))
             {
@@ -22,38 +43,42 @@ namespace Microsoft.Docs.Build
                 report.Configure(docsetPath, config);
 
                 var restoredDirs = new HashSet<string>();
+                var workTreeMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                return ParallelUtility.ForEach(
+                await ParallelUtility.ForEach(
                     config.Dependencies.Values,
-                    (href, restoreChild) => RestoreDependentRepo(href, options, restoreChild, restoredDirs),
+                    async (href, restoreChild) =>
+                    {
+                        var workTreeHead = await RestoreDependentRepo(href, options, restoreChild, restoredDirs);
+                        workTreeMappings[href] = workTreeHead;
+                    },
                     progress: Log.Progress);
+
+                await RestoreLock.Lock(docsetPath, item =>
+                {
+                    item.Git = workTreeMappings;
+                    return item;
+                });
             }
         }
 
-        /// <summary>
-        /// Get git repo information from git remote href, like https://github.com/org/repo#master
-        /// </summary>
-        /// <param name="remote">The git remote href</param>
-        /// <returns>The git repo information including local dir, git remote url and the ref sepc</returns>
-        public static (string restoreDir, string url, string refSpec) GetGitRestoreInfo(string remote)
+        public static (string url, string branch) GetGitRemoteInfo(string remoteHref)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(remoteHref));
 
-            var (path, _, fragment) = HrefUtility.SplitHref(remote);
+            var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
 
             var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
             var uri = new Uri(path);
             var url = uri.GetLeftPart(UriPartial.Path);
-            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(AppData.RestoreDir, repo, PathUtility.Encode(refSpec));
 
-            return (PathUtility.NormalizeFolder(dir), url, refSpec);
+            return (url, refSpec);
         }
 
         // Recursively restore dependent repo including their children
-        private static async Task RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild, HashSet<string> restoredDirs)
+        private static async Task<string> RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild, HashSet<string> restoredDirs)
         {
-            var childDir = await FetchOrCloneDependentRepo(href);
+            var (childDir, workTreeHead) = await FetchOrCloneDependentRepo(href);
 
             if (restoredDirs.Add(childDir) && Config.LoadIfExists(childDir, options, out var childConfig))
             {
@@ -62,12 +87,18 @@ namespace Microsoft.Docs.Build
                     restoreChild(childHref);
                 }
             }
+
+            return workTreeHead;
         }
 
         // Fetch or clone dependent repo to local
-        private static async Task<string> FetchOrCloneDependentRepo(string href)
+        private static async Task<(string workTreePath, string workTreeHead)> FetchOrCloneDependentRepo(string href)
         {
-            var (restoreDir, url, rev) = GetGitRestoreInfo(href);
+            var (url, rev) = GetGitRemoteInfo(href);
+            var restoreDir = GetRestoreDir(url, rev);
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
+            var workTreeHead = string.Empty;
+            var workTreePath = string.Empty;
 
             var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restoreDir), ".lock");
             await ProcessUtility.ProcessLock(
@@ -77,16 +108,39 @@ namespace Microsoft.Docs.Build
                     if (GitUtility.IsRepo(restoreDir))
                     {
                         // already exists, just pull the new updates from remote
-                        await GitUtility.Pull(restoreDir);
+                        await GitUtility.Fetch(restorePath);
                     }
                     else
                     {
                         // doesn't exist yet, clone this repo to a specified branch
-                        await GitUtility.Clone(restoreDir, url, restoreDir, rev);
+                        await GitUtility.Clone(restoreDir, url, restorePath, null, true);
+                    }
+
+                    workTreeHead = await GitUtility.Revision(restorePath, rev);
+                    await GitUtility.PruneWorkTrees(restorePath);
+                    workTreePath = GetWorkTreePath(restoreDir, workTreeHead);
+                    var workTrees = await GitUtility.ListWorkTrees(restorePath);
+                    if (!workTrees.Contains(workTreePath))
+                    {
+                        await GitUtility.CreateWorkTree(restorePath, workTreeHead, workTreePath);
                     }
                 });
 
-            return restoreDir;
+            Debug.Assert(!string.IsNullOrEmpty(workTreeHead));
+            Debug.Assert(!string.IsNullOrEmpty(workTreePath));
+
+            return (workTreePath, workTreeHead);
+        }
+
+        private static string GetWorkTreePath(string restoreDir, string workTreeHead)
+            => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
+
+        private static string GetRestoreDir(string url, string rev)
+        {
+            var uri = new Uri(url);
+            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
+            var dir = Path.Combine(AppData.RestoreDir, repo);
+            return PathUtility.NormalizeFolder(dir);
         }
     }
 }

@@ -5,7 +5,9 @@ inputs:
     dependencies:
       docfx-test-dependencies: https://github.com/docascode/docfx-test-dependencies
 restores:
-  github.com/docascode/docfx-test-dependencies/master/dep.md: DEP
-  github.com/docascode/docfx-test-dependencies/child/dep.md: child-DEP
+  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
+  restore_lock/01. Restore dependencies with their children-7L3k0Io77RE9U4ScglekEA==-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a","https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
   build.manifest:

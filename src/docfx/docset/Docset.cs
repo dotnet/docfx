@@ -65,9 +65,13 @@ namespace Microsoft.Docs.Build
         private Dictionary<string, Docset> LoadDependencies()
         {
             var result = new Dictionary<string, Docset>(Config.Dependencies.Count);
+            var restore = new Restore(DocsetPath);
             foreach (var (name, url) in Config.Dependencies)
             {
-                var (dir, _, _) = Restore.GetGitRestoreInfo(url);
+                if (!restore.TryGetRestorePath(url, out var dir))
+                {
+                    throw Errors.DependenyRepoNotFound(url).ToException();
+                }
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
