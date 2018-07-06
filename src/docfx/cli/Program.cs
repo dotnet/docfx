@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    PrintFatalErrorMessage(ex, args);
+                    PrintFatalErrorMessage(ex);
                 }
                 catch
                 {
