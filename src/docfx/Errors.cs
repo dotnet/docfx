@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
 
         public static Error YamlSyntaxError(Exception ex)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", ex.Message);
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
