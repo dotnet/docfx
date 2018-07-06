@@ -31,7 +31,8 @@ namespace Microsoft.Docs.Build
             var sw = new StringWriter();
             JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
-            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
         }
@@ -47,7 +48,8 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -59,7 +61,8 @@ namespace Microsoft.Docs.Build
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
-            var value = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(0, value.B);
             Assert.Null(value.C);
@@ -73,7 +76,8 @@ namespace Microsoft.Docs.Build
             JsonUtility.Serialize(sw, new object[] { true, false });
             var json = sw.ToString();
             Assert.Equal("[true,false]", json);
-            var value = JsonUtility.Deserialize<object[]>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<object[]>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
             Assert.True((bool)value[0]);
@@ -86,7 +90,8 @@ namespace Microsoft.Docs.Build
             var json = JsonUtility.Serialize(
                 (from i in Enumerable.Range(0, 10)
                  select new BasicClass { B = i, C = $"Good{i}!", D = (i % 2 == 0) ? true : false }).ToList());
-            var values = JsonUtility.Deserialize<List<BasicClass>>(new StringReader(json));
+            var (errors, values) = JsonUtility.Deserialize<List<BasicClass>>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
             for (int i = 0; i < values.Count; i++)
@@ -104,7 +109,8 @@ namespace Microsoft.Docs.Build
 {
     ""b"": ""test""
 }";
-            var value = JsonUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
         }
@@ -156,7 +162,8 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var value = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
+            Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -186,11 +193,41 @@ namespace Microsoft.Docs.Build
             "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
         public void TestMerge(string target, string source, string result)
         {
-            var targetJson = JsonUtility.Deserialize<JObject>(target);
-            var sourceJson = JsonUtility.Deserialize<JObject>(source);
+            var (_, targetJson) = JsonUtility.Deserialize<JObject>(target);
+            var (_, sourceJson) = JsonUtility.Deserialize<JObject>(source);
             var resultJson = JsonUtility.Merge(targetJson, sourceJson);
             var resultJsonString = JsonUtility.Serialize(resultJson);
             Assert.Equal(result, resultJsonString);
+        }
+
+        [Fact]
+        public void TestListWithNullItem()
+        {
+            var json = "{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}";
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
+        }
+
+        [Fact]
+        public void TestListItemWithNullValue()
+        {
+            var json = "{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}";
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("contains null value", error.Message);
+            });
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
         }
 
         public class BasicClass
