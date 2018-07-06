@@ -233,11 +233,11 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestNullJson()
         {
-            var json = "{}";
+            var json = string.Empty;
             var (errors, result) = JsonUtility.Deserialize<JToken>(json);
             var resultJsonString = JsonUtility.Serialize(result);
             Assert.Empty(errors);
-            Assert.Equal("{}", resultJsonString);
+            Assert.Equal("null", resultJsonString);
         }
 
         public class BasicClass
