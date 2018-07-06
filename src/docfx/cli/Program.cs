@@ -83,7 +83,6 @@ namespace Microsoft.Docs.Build
 
             ArgumentSyntax.Parse(args, syntax =>
             {
-                throw new Exception();
                 // Restore command
                 // usage: docfx restore [docset]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
