@@ -63,25 +63,15 @@ namespace Microsoft.Docs.Build
         {
             // https://github.com/dotnet/corefx/issues/2808
             // Do not lock on objects with weak identity,
-            // but since this is the only way to synchronize colors
+            // but since this is the only way to synchronize console color
             #pragma warning disable CA2002
             lock (Console.Out)
             #pragma warning restore CA2002
             {
-                if (!string.IsNullOrEmpty(error.File))
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write(error.File + ":");
-                    Console.ResetColor();
-                    Console.WriteLine();
-                }
-
                 Console.ForegroundColor = GetColor(level);
                 Console.Write(error.Code + " ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(error.Message);
                 Console.ResetColor();
+                Console.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
             }
         }
 
