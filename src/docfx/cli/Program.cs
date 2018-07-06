@@ -3,6 +3,7 @@
 
 using System;
 using System.CommandLine;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -82,6 +83,7 @@ namespace Microsoft.Docs.Build
 
             ArgumentSyntax.Parse(args, syntax =>
             {
+                throw new Exception();
                 // Restore command
                 // usage: docfx restore [docset]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
@@ -106,19 +108,26 @@ namespace Microsoft.Docs.Build
 
         private static void Done(DateTime startTime)
         {
-            Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Done in {Progress.ElapsedTime(startTime)}");
-            Console.ResetColor();
+            #pragma warning disable CA2002 // Do not lock on objects with weak identity
+            lock (Console.Out)
+            #pragma warning restore CA2002
+            {
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Done in {Progress.ElapsedTime(startTime)}");
+                Console.ResetColor();
+            }
         }
 
         private static void PrintFatalErrorMessage(Exception exception, string[] args)
         {
             Console.ResetColor();
+            Console.WriteLine();
 
             var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
 
             // windows command line does not have good emoji support
+            // https://github.com/Microsoft/console/issues/190
             var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             if (showEmoji)
                 Console.Write("🚘💥🚗 ");
@@ -127,28 +136,43 @@ namespace Microsoft.Docs.Build
                 Console.Write(" 🚘💥🚗");
 
             Console.WriteLine();
-            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx with the following content:");
+            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx:");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine($@"
-**Version**: {GetVersion()}
+# docfx crash report: {exception.GetType()}
 
-**Steps to Reproduce**:
+docfx: `{GetVersion()}`
+cmd: `{commandLine}`
+cwd: `{Directory.GetCurrentDirectory()}`
 
-1. Run `docfx {commandLine}` in `{Directory.GetCurrentDirectory()}`
-
-**Expected Behavior**:
-
-`docfx` finished successfully.
-
-**Actual Behavior**:
-
-`docfx` crashed with exception:
+## callstack
 
 ```
 {exception}
-```");
+```
+
+## dotnet --info
+
+```
+{DotnetInfo()}
+```
+");
             Console.ResetColor();
+        }
+
+        private static string DotnetInfo()
+        {
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--info", RedirectStandardOutput = true });
+                process.WaitForExit(2000);
+                return process.StandardOutput.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
 }
