@@ -122,7 +122,6 @@ namespace Microsoft.Docs.Build
         {
             if (node is YamlScalarNode scalar)
             {
-                JValue value;
                 if (scalar.Style == ScalarStyle.Plain)
                 {
                     if (string.IsNullOrWhiteSpace(scalar.Value))
@@ -135,26 +134,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        value = new JValue(n);
-                        SetMappings(mappings, scalar, value);
-                        return value;
+                        return SetMappings(mappings, scalar, new JValue(n));
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        value = new JValue(d);
-                        SetMappings(mappings, scalar, value);
-                        return value;
+                        return SetMappings(mappings, scalar, new JValue(d));
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        value = new JValue(b);
-                        SetMappings(mappings, scalar, value);
-                        return value;
+                        return SetMappings(mappings, scalar, new JValue(b));
                     }
                 }
-                value = new JValue(scalar.Value);
-                SetMappings(mappings, scalar, value);
-                return value;
+                return SetMappings(mappings, scalar, new JValue(scalar.Value));
             }
             if (node is YamlMappingNode map)
             {
@@ -171,8 +162,7 @@ namespace Microsoft.Docs.Build
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
-                SetMappings(mappings, node, obj);
-                return obj;
+                return SetMappings(mappings, node, obj);
             }
             if (node is YamlSequenceNode seq)
             {
@@ -181,15 +171,15 @@ namespace Microsoft.Docs.Build
                 {
                     arr.Add(ToJson(item, mappings));
                 }
-                SetMappings(mappings, node, arr);
-                return arr;
+                return SetMappings(mappings, node, arr);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static void SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
+        private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
         {
             mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
+            return value;
         }
     }
 }
