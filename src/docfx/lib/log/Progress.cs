@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             var eol = done == total ? '\n' : '\r';
             var percent = ((int)(100 * Math.Min(1.0, done / Math.Max(1.0, total)))).ToString();
 
-            Console.Error.Write($"{scope.Name}: {percent.PadLeft(3)}% ({done}/{total}), {ElapsedTime(scope.StartTime)} {eol}");
+            Console.Write($"{scope.Name}: {percent.PadLeft(3)}% ({done}/{total}), {ElapsedTime(scope.StartTime)} {eol}");
         }
 
         internal static string ElapsedTime(DateTime startTime)
