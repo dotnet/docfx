@@ -333,7 +333,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Contains("items contains null value", error.Message);
             });
         }
 
