@@ -211,10 +211,8 @@ namespace Microsoft.Docs.Build
             else
             {
                 Debug.Assert(mappings.ContainsKey(item));
-                if (mappings.TryGetValue(item, out Range value))
-                {
-                    errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
-                }
+                var value = mappings[item];
+                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
             }
         }
 
