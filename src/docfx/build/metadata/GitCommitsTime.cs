@@ -33,7 +33,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 var json = File.ReadAllText(path);
-                return JsonUtility.Deserialize<GitCommitsTime>(json);
+                var (_, value) = JsonUtility.Deserialize<GitCommitsTime>(json);
+                return value;
             }
             catch (Exception ex)
             {

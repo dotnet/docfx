@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
@@ -78,18 +78,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
-        public static T Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
-            using (JsonReader json = new JsonTextReader(reader))
-            {
-                return DefaultDeserializer.Deserialize<T>(json);
-            }
+            var (errors, token) = Deserialize(reader);
+            return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize a string to an object
         /// </summary>
-        public static T Deserialize<T>(string json)
+        public static (List<Error>, T) Deserialize<T>(string json)
         {
             return Deserialize<T>(new StringReader(json));
         }
@@ -123,6 +121,99 @@ namespace Microsoft.Docs.Build
                 }
             }
             return result;
+        }
+
+        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        {
+            var errors = new List<Error>();
+            var nullNodes = new List<JToken>();
+            token.Traverse(errors, mappings, nullNodes);
+            foreach (var node in nullNodes)
+            {
+                node.Remove();
+            }
+            return (errors, token);
+        }
+
+        private static bool IsNullOrUndefined(this JToken token)
+        {
+            return
+                (token == null) ||
+                (token.Type == JTokenType.Null) ||
+                (token.Type == JTokenType.Undefined);
+        }
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        private static (List<Error>, JToken) Deserialize(TextReader reader)
+        {
+            try
+            {
+                using (JsonReader json = new JsonTextReader(reader))
+                {
+                    return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<Error>
+                {
+                    Errors.JsonSyntaxError(ex),
+                };
+                return (errors, JValue.CreateNull());
+            }
+        }
+
+        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes)
+        {
+            if (token is JArray array)
+            {
+                foreach (var item in token.Children())
+                {
+                    if (item.IsNullOrUndefined())
+                    {
+                        LogWarningForNullValue(array, errors, mappings);
+                        nullNodes.Add(item);
+                    }
+                    else
+                    {
+                        Traverse(item, errors, mappings, nullNodes);
+                    }
+                }
+            }
+            else if (token is JObject obj)
+            {
+                foreach (var item in token.Children())
+                {
+                    var prop = item as JProperty;
+                    if (prop.Value.IsNullOrUndefined())
+                    {
+                        LogWarningForNullValue(token, errors, mappings);
+                        nullNodes.Add(item);
+                    }
+                    else
+                    {
+                        prop.Value.Traverse(errors, mappings, nullNodes);
+                    }
+                }
+            }
+        }
+
+        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings)
+        {
+            if (mappings == null)
+            {
+                var lineInfo = item as IJsonLineInfo;
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition)));
+            }
+            else
+            {
+                Debug.Assert(mappings.ContainsKey(item));
+                var value = mappings[item];
+                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter)));
+            }
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver
