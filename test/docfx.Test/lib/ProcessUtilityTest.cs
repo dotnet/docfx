@@ -30,5 +30,14 @@ namespace Microsoft.Docs.Build
                         return Task.FromResult(0);
                     })));
         }
+
+        [Fact]
+        public static async Task ConcurrentCommandShouldReadOutput()
+        {
+            var results = await Task.WhenAll(
+                Enumerable.Range(0, 10).AsParallel().Select(i => ProcessUtility.Execute("git", "parse-rev HEAD")));
+
+            Assert.True(results.All(r => r.Any()));
+        }
     }
 }

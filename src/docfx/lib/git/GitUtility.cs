@@ -2,11 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -108,12 +105,6 @@ namespace Microsoft.Docs.Build
             return ExecuteNonQuery(cwd, $"reset --hard origin/{branch}", TimeSpan.FromMinutes(10));
         }
 
-        /// <summary>
-        /// Retrieve git head version
-        /// TODO: For testing purpose only, move it to test
-        /// </summary>
-        public static Task<string> HeadRevision(string cwd)
-           => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
             => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
@@ -129,8 +120,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(cwd));
 
             // todo: check git exist or not
-            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
-            return parser(response);
+            return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler));
         }
 
         private static void DefaultOutputHandler(string outputLine, bool isError)
