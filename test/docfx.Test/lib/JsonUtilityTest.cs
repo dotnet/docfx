@@ -230,6 +230,16 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
         }
 
+        [Fact]
+        public void TestNullJson()
+        {
+            var json = "{}";
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Empty(errors);
+            Assert.Equal("{}", resultJsonString);
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
