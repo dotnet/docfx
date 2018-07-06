@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var htmlRenderer = renderer as HtmlRenderer;
             if (htmlRenderer != null)
             {
-                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_context.Tokens);
+                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
 
                 if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
                 {

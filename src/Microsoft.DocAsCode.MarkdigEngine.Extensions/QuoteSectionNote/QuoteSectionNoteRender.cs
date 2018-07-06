@@ -4,18 +4,17 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
-    using System.Collections.Generic;
 
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
 
     public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     {
-        private IReadOnlyDictionary<string, string> _tokens;
+        private readonly MarkdownContext _context;
 
-        public QuoteSectionNoteRender(IReadOnlyDictionary<string, string> tokens)
+        public QuoteSectionNoteRender(MarkdownContext context)
         {
-            _tokens = tokens;
+            _context = context;
         }
 
         protected override void Write(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
@@ -42,11 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void WriteNote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
-            string noteHeading = string.Empty;
-            if (_tokens?.TryGetValue(obj.NoteTypeString.ToLower(), out noteHeading) != true)
-            {
-                noteHeading = $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
-            };
+            var noteHeading = _context.GetToken(obj.NoteTypeString.ToLower()) ?? $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
             renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
             var savedImplicitParagraph = renderer.ImplicitParagraph;
             renderer.ImplicitParagraph = false;
