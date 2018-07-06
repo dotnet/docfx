@@ -270,9 +270,7 @@ namespace Microsoft.Docs.Build
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    // TODO: the remaining part of the system compares TOC file using case insensitive comparison,
-                    //       just this part on linux does not probe TOC files using case insensitive comparison.
-                    return Resolve("toc.yml") ?? Resolve("toc.json") ?? Resolve("toc.md") ?? default;
+                    return Resolve("TOC.yml") ?? Resolve("TOC.json") ?? Resolve("TOC.md") ?? default;
                 case TocHrefType.TocFile:
                     return resolveContent(filePath, href, isInclusion: true);
                 default:
@@ -305,9 +303,9 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.yml".Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if ("TOC.md".Equals(fileName, PathUtility.PathComparison) ||
+                "TOC.json".Equals(fileName, PathUtility.PathComparison) ||
+                "TOC.yml".Equals(fileName, PathUtility.PathComparison))
             {
                 return TocHrefType.TocFile;
             }

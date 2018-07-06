@@ -28,7 +28,7 @@ inputs:
     name: sccm
     product: Win
     content: "**/*"
-  sccm/mdm/INDEX.md:
+  sccm/mdm/index.md:
   sccm/index.md:
 outputs:
   sccm/index.json: |

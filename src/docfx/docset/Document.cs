@@ -246,23 +246,23 @@ namespace Microsoft.Docs.Build
         {
             var name = Path.GetFileNameWithoutExtension(path);
 
-            if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            if (path.EndsWith(".md", PathUtility.PathComparison))
             {
-                if (name.Equals("toc", StringComparison.OrdinalIgnoreCase))
+                if (name.Equals("TOC", PathUtility.PathComparison))
                 {
                     return ContentType.TableOfContents;
                 }
                 return ContentType.Markdown;
             }
 
-            if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase) ||
-                path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            if (path.EndsWith(".yml", PathUtility.PathComparison) ||
+                path.EndsWith(".json", PathUtility.PathComparison))
             {
-                if (name.Equals("toc", StringComparison.OrdinalIgnoreCase))
+                if (name.Equals("TOC", PathUtility.PathComparison))
                 {
                     return ContentType.TableOfContents;
                 }
-                if (name.Equals("docfx", StringComparison.OrdinalIgnoreCase))
+                if (name.Equals("docfx", PathUtility.PathComparison))
                 {
                     return ContentType.Unknown;
                 }
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Markdown:
                 case ContentType.SchemaDocument:
-                    if (Path.GetFileNameWithoutExtension(path).Equals("index", StringComparison.OrdinalIgnoreCase))
+                    if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                     {
                         return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
                     }
@@ -309,11 +309,11 @@ namespace Microsoft.Docs.Build
                     {
                         url = url.Substring(0, extensionIndex);
                     }
-                    if (url.Equals("index", StringComparison.OrdinalIgnoreCase))
+                    if (url.Equals("index", PathUtility.PathComparison))
                     {
                         return ".";
                     }
-                    if (url.EndsWith("/index", StringComparison.OrdinalIgnoreCase))
+                    if (url.EndsWith("/index", PathUtility.PathComparison))
                     {
                         return url.Substring(0, url.Length - 5);
                     }
