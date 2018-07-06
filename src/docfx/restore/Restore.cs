@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -54,11 +55,14 @@ namespace Microsoft.Docs.Build
                     },
                     progress: Log.Progress);
 
-                await RestoreLock.Lock(docsetPath, item =>
+                if (workTreeMappings.Any())
                 {
-                    item.Git = workTreeMappings;
-                    return item;
-                });
+                    await RestoreLock.Lock(docsetPath, item =>
+                    {
+                        item.Git = workTreeMappings;
+                        return item;
+                    });
+                }
             }
         }
 

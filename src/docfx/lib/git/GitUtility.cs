@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         /// <param name="branch">The branch you want to clone</param>
         /// <param name="bare">Make the git repo bare</param>
         /// <returns>Task status</returns>
-        public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = true)
+        public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false)
         {
             Directory.CreateDirectory(cwd);
             var cmd = string.IsNullOrEmpty(branch)
