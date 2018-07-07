@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void ExeNotFoundMessage()
         {
-            var ex = Assert.ThrowsAny<Exception>(() => Process.Start("a-fake-exe"));
-            Assert.True(ProcessUtility.IsNotFound(ex), ex.Message);
+            var ex = Assert.Throws<Win32Exception>(() => Process.Start("a-fake-exe"));
+            Assert.True(ProcessUtility.IsNotFound(ex), ex.ErrorCode + " " + ex.NativeErrorCode + " " + ex.Message);
         }
 
         [Fact]

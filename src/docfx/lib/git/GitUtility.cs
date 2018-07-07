@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -134,7 +135,7 @@ namespace Microsoft.Docs.Build
             {
                 response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
             }
-            catch (Exception ex) when (ProcessUtility.IsNotFound(ex))
+            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
                 throw Errors.GitNotFound().ToException();
             }
