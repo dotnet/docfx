@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         public static void ExeNotFoundMessage()
         {
             var ex = Assert.ThrowsAny<Exception>(() => Process.Start("a-fake-exe"));
-            Assert.True(ex.Message.Contains("The system cannot find the file specified"));
+            Assert.True(ProcessUtility.IsNotFound(ex), ex.Message);
         }
 
         [Fact]

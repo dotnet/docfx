@@ -128,6 +128,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// Checks if the exception thrown by Process.Start is caused by file not found.
+        /// </summary>
+        public static bool IsNotFound(Exception ex)
+        {
+            return ex.Message.Contains("The system cannot find the file specified") ||
+                   ex.Message.Contains("No such file or directory");
+        }
+
         private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
         {
             var retryCount = 0;
