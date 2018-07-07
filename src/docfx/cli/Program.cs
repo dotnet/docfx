@@ -45,18 +45,18 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var startTime = DateTime.UtcNow;
+                    var stopwatch = Stopwatch.StartNew();
                     var (command, docset, options) = ParseCommandLineOptions(args);
 
                     switch (command)
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
-                            Done(startTime);
+                            Done(stopwatch.Elapsed);
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
-                            Done(startTime);
+                            Done(stopwatch.Elapsed);
                             break;
                     }
                     return 0;
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         }
 
-        private static void Done(DateTime startTime)
+        private static void Done(TimeSpan duration)
         {
             #pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Done in {Progress.ElapsedTime(startTime)}");
+                Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
                 Console.ResetColor();
             }
         }
