@@ -64,32 +64,32 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(string input)
+        public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input));
+            return Deserialize<T>(new StringReader(input), nullValidation);
         }
 
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error> errors, T) Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
         {
-            var (errors, json) = Deserialize(reader);
+            var (errors, json) = Deserialize(reader, nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error> errors, JToken) Deserialize(string input)
+        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
         {
-            return Deserialize(new StringReader(input));
+            return Deserialize(new StringReader(input), nullValidation);
         }
 
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error> errors, JToken token) Deserialize(TextReader reader)
+        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
@@ -112,10 +112,21 @@ namespace Microsoft.Docs.Build
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-            return (errors, ToJson(stream.Documents[0].RootNode));
+
+            if (nullValidation)
+            {
+                var mappings = new JTokenSourceMap();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            else
+            {
+                return (errors, ToJson(stream.Documents[0].RootNode));
+            }
         }
 
-        private static JToken ToJson(YamlNode node)
+        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -131,18 +142,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return new JValue(n);
+                        return SetMappings(mappings, scalar, new JValue(n));
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return new JValue(d);
+                        return SetMappings(mappings, scalar, new JValue(d));
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return new JValue(b);
+                        return SetMappings(mappings, scalar, new JValue(b));
                     }
                 }
-                return new JValue(scalar.Value);
+                return SetMappings(mappings, scalar, new JValue(scalar.Value));
             }
             if (node is YamlMappingNode map)
             {
@@ -151,25 +162,35 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        obj[scalarKey.Value] = ToJson(value);
+                        var jToken = ToJson(value, mappings);
+                        obj[scalarKey.Value] = jToken;
                     }
                     else
                     {
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
-                return obj;
+                return SetMappings(mappings, node, obj);
             }
             if (node is YamlSequenceNode seq)
             {
                 var arr = new JArray();
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item));
+                    arr.Add(ToJson(item, mappings));
                 }
-                return arr;
+                return SetMappings(mappings, node, arr);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
+        }
+
+        private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
+        {
+            if (mappings == null)
+                return value;
+
+            mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
+            return value;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -47,31 +48,20 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
         {
-            var errors = new List<Error>();
             if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                JToken tocToken;
-                (errors, tocToken) = YamlUtility.Deserialize(content);
+                var (errors, tocToken) = YamlUtility.Deserialize(content);
 
                 return (errors, LoadTocModel(tocToken));
             }
             else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                JToken tocToken;
-                try
-                {
-                    tocToken = JToken.Parse(content);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(Errors.JsonSyntaxError(ex));
-                    return (errors, LoadTocModel(JValue.CreateNull()));
-                }
+                var (errors, tocToken) = JsonUtility.Deserialize<JToken>(content);
                 return (errors, LoadTocModel(tocToken));
             }
             else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
-                return (errors, LoadMdTocModel(content, filePath));
+                return (new List<Error>(), LoadMdTocModel(content, filePath));
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
