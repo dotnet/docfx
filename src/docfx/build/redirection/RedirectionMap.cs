@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
             var redirectionsByRedirectionUrl = redirections
                 .GroupBy(file => file.RedirectionUrl)
-                .ToDictionary(group => group.Key, group => group.First());
+                .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
 
             errors.AddRange(redirections
                 .GroupBy(file => file.RedirectionUrl)
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
 
-            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath);
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath, PathUtility.PathComparer);
 
             return (errors, new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl));
 

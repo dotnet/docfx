@@ -64,19 +64,19 @@ namespace Microsoft.Docs.Build
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);
 
-            using (Log.Measure("Loading git commits"))
+            using (Progress.Start("Loading git commits"))
             {
                 commits = LoadCommits(repoPath, repo);
-                trees = LoadTrees(repo, commits, pathToParent, Log.Progress);
+                trees = LoadTrees(repo, commits, pathToParent, Progress.Update);
             }
 
             var (done, total, result) = (0, files.Count, new List<GitCommit>[files.Count]);
-            using (Log.Measure("Computing git commits"))
+            using (Progress.Start("Computing git commits"))
             {
                 Parallel.For(0, files.Count, i =>
                 {
                     result[i] = GetCommitsByPath(files[i], trees, pathToParentByRef, commits);
-                    Log.Progress(Interlocked.Increment(ref done), total);
+                    Progress.Update(Interlocked.Increment(ref done), total);
                 });
             }
 

@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            Log.Error(level, error);
+            ConsoleLog(level, error);
         }
 
         public void Dispose()
@@ -56,6 +56,35 @@ namespace Microsoft.Docs.Build
                 {
                     _output.Value.Dispose();
                 }
+            }
+        }
+
+        private static void ConsoleLog(ErrorLevel level, Error error)
+        {
+            // https://github.com/dotnet/corefx/issues/2808
+            // Do not lock on objects with weak identity,
+            // but since this is the only way to synchronize console color
+            #pragma warning disable CA2002
+            lock (Console.Out)
+            #pragma warning restore CA2002
+            {
+                Console.ForegroundColor = GetColor(level);
+                Console.Write(error.Code + " ");
+                Console.ResetColor();
+                Console.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+            }
+        }
+
+        private static ConsoleColor GetColor(ErrorLevel level)
+        {
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    return ConsoleColor.Red;
+                case ErrorLevel.Warning:
+                    return ConsoleColor.Yellow;
+                default:
+                    return ConsoleColor.Cyan;
             }
         }
     }

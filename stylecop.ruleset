@@ -61,6 +61,8 @@
     <Rule Id="CA1064" Action="None" />
     <Rule Id="CA1065" Action="Warning" />
     <Rule Id="CA1301" Action="Warning" />
+    <!-- CA1305: Specify IFormatProvider -->
+    <Rule Id="CA1305" Action="None" />
     <!-- CA1308: Specify StringComparison -->
     <Rule Id="CA1307" Action="None" />
     <!-- CA1308: Normalize strings to uppercase -->

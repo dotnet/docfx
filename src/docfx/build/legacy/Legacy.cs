@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             ContributionInfo contribution,
             Report report)
         {
-            using (Log.Measure("Converting to legacy"))
+            using (Progress.Start("Converting to legacy"))
             {
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
