@@ -63,14 +63,15 @@ namespace Microsoft.Docs.Build
             if (IsGlob)
             {
                 // TODO: optimize this
-                var glob = new GlobMatcher(pattern);
+                var options = PathUtility.IsCaseSensitive ? GlobMatcher.DefaultCaseSensitiveOptions : GlobMatcher.DefaultOptions;
+                var glob = new GlobMatcher(pattern, options);
                 return glob.Match(filePath);
             }
             else
             {
                 return pattern.EndsWith('/') ?
-                    filePath.StartsWith(pattern, StringComparison.Ordinal) :
-                    filePath == pattern;
+                    filePath.StartsWith(pattern, PathUtility.PathComparison) :
+                    filePath.Equals(pattern, PathUtility.PathComparison);
             }
         }
     }
