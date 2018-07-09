@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    /// todo: add other lock items liek githuber users
+    /// todo: add other lock items like githuber users, build updated_at
     /// <summary>
     /// It's like your package-lock.json which lock every version of your referencing item like
     /// 1. dependeny repo version

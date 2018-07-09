@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -44,24 +45,37 @@ namespace Microsoft.Docs.Build
                 report.Configure(docsetPath, config);
 
                 var restoredDirs = new HashSet<string>();
-                var workTreeMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var workTreeMappings = new ConcurrentDictionary<string, Dictionary<string, string>>();
 
                 await ParallelUtility.ForEach(
-                    config.Dependencies.Values,
-                    async (href, restoreChild) =>
+                    config.Dependencies.Values.Select(href => (docsetPath, href)),
+                    async (item, restoreChild) =>
                     {
-                        var workTreeHead = await RestoreDependentRepo(href, options, restoreChild, restoredDirs);
-                        workTreeMappings[href] = workTreeHead;
+                        var workTreeHead = await RestoreDependentRepo(item, options, restoreChild, restoredDirs);
+                        workTreeMappings.AddOrUpdate(
+                            item.docsetPath,
+                            new Dictionary<string, string> { { item.href, workTreeHead } },
+                            (key, value) =>
+                            {
+                                value[item.href] = workTreeHead;
+                                return value;
+                            });
                     },
                     progress: Log.Progress);
 
                 if (workTreeMappings.Any())
                 {
-                    await RestoreLock.Lock(docsetPath, item =>
+                    foreach (var (docset, mappings) in workTreeMappings)
                     {
-                        item.Git = workTreeMappings;
-                        return item;
-                    });
+                        if (mappings.Any())
+                        {
+                            await RestoreLock.Lock(docset, item =>
+                            {
+                                item.Git = mappings;
+                                return item;
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -80,15 +94,15 @@ namespace Microsoft.Docs.Build
         }
 
         // Recursively restore dependent repo including their children
-        private static async Task<string> RestoreDependentRepo(string href, CommandLineOptions options, Action<string> restoreChild, HashSet<string> restoredDirs)
+        private static async Task<string> RestoreDependentRepo((string docsetPath, string href) item, CommandLineOptions options, Action<(string docsetPath, string href)> restoreChild, HashSet<string> restoredDirs)
         {
-            var (childDir, workTreeHead) = await FetchOrCloneDependentRepo(href);
+            var (childDir, workTreeHead) = await FetchOrCloneDependentRepo(item.href);
 
             if (restoredDirs.Add(childDir) && Config.LoadIfExists(childDir, options, out var childConfig))
             {
                 foreach (var (key, childHref) in childConfig.Dependencies)
                 {
-                    restoreChild(childHref);
+                    restoreChild((childDir, childHref));
                 }
             }
 

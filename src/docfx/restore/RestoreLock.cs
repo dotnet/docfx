@@ -36,8 +36,10 @@ namespace Microsoft.Docs.Build
                     Directory.CreateDirectory(Path.GetDirectoryName(restoreLockFilePath));
                     using (var fileStream = File.Open(restoreLockFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                     {
-                        // read restore item
                         var sr = new StreamReader(fileStream);
+                        var sw = new StreamWriter(fileStream);
+
+                        // read restore item
                         var (_, restoreItem) = JsonUtility.Deserialize<RestoreItem>(sr.ReadToEnd());
                         if (restoreItem == null)
                             restoreItem = new RestoreItem();
@@ -46,8 +48,7 @@ namespace Microsoft.Docs.Build
                         restoreItem = process(restoreItem);
 
                         // write back restore item
-                        fileStream.Position = 0;
-                        var sw = new StreamWriter(fileStream);
+                        fileStream.SetLength(0);
                         sw.Write(JsonUtility.Serialize(restoreItem));
                         sw.Flush();
 
@@ -80,7 +81,7 @@ namespace Microsoft.Docs.Build
         private static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
-            var docsetKey = docset.Substring(docset.LastIndexOf("/") + 1) + "-" + PathUtility.Encode(docset.GetMd5String());
+            var docsetKey = Path.GetFileName(docset) + "-" + PathUtility.Encode(docset.GetMd5String());
 
             return Path.Combine(AppData.RestoreLockDir, $"{docsetKey}-lock.json");
         }
