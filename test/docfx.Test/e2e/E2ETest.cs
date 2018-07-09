@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,13 +22,21 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name, int ordinal)
         {
             var (docsetPath, spec) = await CreateDocset(name, ordinal);
+            var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
+                os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
-            if (!string.IsNullOrEmpty(spec.OS) &&
-                !spec.OS.Split(',').Any(os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim()))))
+            if (osMatches)
             {
-                return;
+                await RunCore(docsetPath, spec);
             }
+            else
+            {
+                await Assert.ThrowsAnyAsync<AssertActualExpectedException>(() => RunCore(docsetPath, spec));
+            }
+        }
 
+        private static async Task RunCore(string docsetPath, E2ESpec spec)
+        {
             await Program.Run(new[] { "restore", docsetPath });
             await Program.Run(new[] { "build", docsetPath });
 

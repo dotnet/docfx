@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
         {
             var legacyOutputFilePathRelativeToSiteBasePath = doc.OutputPath;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.Config.SiteBasePath, StringComparison.Ordinal))
+            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.Config.SiteBasePath, PathUtility.PathComparison))
             {
                 legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.OutputPath);
             }
@@ -27,12 +27,12 @@ namespace Microsoft.Docs.Build
         public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
         {
             var legacyOutputFilePathRelativeToSiteBasePath = doc.SiteUrl;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith($"/{docset.Config.SiteBasePath}", StringComparison.Ordinal))
+            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith($"/{docset.Config.SiteBasePath}", PathUtility.PathComparison))
             {
                 legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.SiteUrl.Substring(1));
             }
 
-            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", StringComparison.OrdinalIgnoreCase) ? $"{legacyOutputFilePathRelativeToSiteBasePath}index" : legacyOutputFilePathRelativeToSiteBasePath);
+            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacyOutputFilePathRelativeToSiteBasePath}index" : legacyOutputFilePathRelativeToSiteBasePath);
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)

@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, Docset> LoadDependencies()
         {
-            var result = new Dictionary<string, Docset>(Config.Dependencies.Count);
+            var result = new Dictionary<string, Docset>(Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in Config.Dependencies)
             {
                 var (dir, _, _) = Restore.GetGitRestoreInfo(url);
