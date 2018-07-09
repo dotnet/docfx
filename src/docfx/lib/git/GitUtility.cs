@@ -129,18 +129,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
 
-            string response;
-
             try
             {
-                response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
+                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler));
             }
             catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
                 throw Errors.GitNotFound().ToException();
             }
-
-            return parser(response);
         }
 
         private static void DefaultOutputHandler(string outputLine, bool isError)
