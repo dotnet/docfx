@@ -17,6 +17,22 @@ outputs:
     { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
   build.manifest:
 ---
+# Yaml header
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: me
+    ---
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>hello</p>",
+      "metadata": { "title": "me" }
+    }
+  build.manifest:
+---
 # Yaml header title in lower-case
 inputs:
   docfx.yml:
@@ -57,7 +73,7 @@ outputs:
       }
     }
   build.manifest:
-    ---
+---
 # include another file
 inputs:
   docfx.yml:
