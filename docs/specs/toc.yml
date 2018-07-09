@@ -815,4 +815,4 @@ inputs:
   docs/f1/b.md:
 outputs:
   build.log: |
-    ["error","yaml-duplicate-key","(Line: 3, Col: 3, Idx: 47) - (Line: 3, Col: 12, Idx: 56): Key 'topicHref' is already defined, remove the duplicate key."]
+    ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key."]
