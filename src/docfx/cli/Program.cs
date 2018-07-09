@@ -3,6 +3,7 @@
 
 using System;
 using System.CommandLine;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    PrintFatalErrorMessage(ex, args);
+                    PrintFatalErrorMessage(ex);
                 }
                 catch
                 {
@@ -36,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             if (args.Length == 1 && args[0] == "--version")
             {
-                Console.WriteLine(GetVersion());
+                Console.WriteLine(GetDocfxVersion());
                 return 0;
             }
 
@@ -44,18 +45,18 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var startTime = DateTime.UtcNow;
+                    var stopwatch = Stopwatch.StartNew();
                     var (command, docset, options) = ParseCommandLineOptions(args);
 
                     switch (command)
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
-                            Done(startTime);
+                            Done(stopwatch.Elapsed);
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
-                            Done(startTime);
+                            Done(stopwatch.Elapsed);
                             break;
                     }
                     return 0;
@@ -99,26 +100,26 @@ namespace Microsoft.Docs.Build
             return (command, docset, options);
         }
 
-        private static string GetVersion()
+        private static void Done(TimeSpan duration)
         {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            #pragma warning disable CA2002 // Do not lock on objects with weak identity
+            lock (Console.Out)
+            #pragma warning restore CA2002
+            {
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
+                Console.ResetColor();
+            }
         }
 
-        private static void Done(DateTime startTime)
+        private static void PrintFatalErrorMessage(Exception exception)
         {
             Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Done in {Log.ElapsedTime(startTime)}");
-            Console.ResetColor();
-        }
-
-        private static void PrintFatalErrorMessage(Exception exception, string[] args)
-        {
-            Console.ResetColor();
-
-            var commandLine = string.Join(" ", args.Select(arg => arg.Contains(" ") ? $"\"{arg}\"" : arg));
+            Console.WriteLine();
 
             // windows command line does not have good emoji support
+            // https://github.com/Microsoft/console/issues/190
             var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             if (showEmoji)
                 Console.Write("🚘💥🚗 ");
@@ -127,28 +128,65 @@ namespace Microsoft.Docs.Build
                 Console.Write(" 🚘💥🚗");
 
             Console.WriteLine();
-            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx with the following content:");
+            Console.WriteLine("Help us improve by creating an issue at https://github.com/dotnet/docfx:");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine($@"
-**Version**: {GetVersion()}
+# docfx crash report: {exception.GetType()}
 
-**Steps to Reproduce**:
+docfx: `{GetDocfxVersion()}`
+cmd: `{Environment.CommandLine}`
+cwd: `{Directory.GetCurrentDirectory()}`
+git: `{GetGitVersion()}`
 
-1. Run `docfx {commandLine}` in `{Directory.GetCurrentDirectory()}`
+## repro steps
 
-**Expected Behavior**:
-
-`docfx` finished successfully.
-
-**Actual Behavior**:
-
-`docfx` crashed with exception:
+## callstack
 
 ```
 {exception}
-```");
+```
+
+## dotnet --info
+
+```
+{GetDotnetInfo()}
+```
+");
             Console.ResetColor();
+        }
+
+        private static string GetDocfxVersion()
+        {
+            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        }
+
+        private static string GetDotnetInfo()
+        {
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--info", RedirectStandardOutput = true });
+                process.WaitForExit(2000);
+                return process.StandardOutput.ReadToEnd().Trim();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        private static string GetGitVersion()
+        {
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
+                process.WaitForExit(2000);
+                return process.StandardOutput.ReadToEnd().Trim();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }
