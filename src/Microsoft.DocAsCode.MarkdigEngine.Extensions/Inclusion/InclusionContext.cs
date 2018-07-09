@@ -19,15 +19,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public static class InclusionContext
     {
         [ThreadStatic]
+        private static object t_rootFile;
+
+        [ThreadStatic]
         private static ImmutableStack<object> t_files;
 
         [ThreadStatic]
         private static ImmutableHashSet<object> t_dependencies;
 
         /// <summary>
-        /// Identifies the file that owns this content.
+        /// Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.
         /// </summary>
         public static object File => t_files != null && !t_files.IsEmpty ? t_files.Peek() : null;
+
+        /// <summary>
+        /// Gets the root file, this is always the first file pushed to the context regardless of file inclusion.
+        /// </summary>
+        public static object RootFile => t_rootFile;
 
         /// <summary>
         /// Whether the content is included by other markdown files.
@@ -50,6 +58,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 // Clear dependencies for the root scope.
                 t_dependencies = ImmutableHashSet<object>.Empty;
+                t_rootFile = file;
             }
             else
             {
@@ -58,7 +67,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             t_files = current.Push(file);
 
-            return new DelegatingDisposable(() => t_files = current);
+            return new DelegatingDisposable(() =>
+            {
+                t_files = current;
+                if (current.IsEmpty)
+                {
+                    t_rootFile = null;
+                }
+            });
         }
 
         /// <summary>

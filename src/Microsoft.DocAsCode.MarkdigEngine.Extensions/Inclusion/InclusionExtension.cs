@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
                 {
-                    linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, InclusionContext.File);
+                    linkInline.GetDynamicUrl = () => context.GetLink(linkInline.Url, InclusionContext.File, InclusionContext.RootFile);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             _parameters = parameters;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
             _context = new MarkdownContext(
-                _parameters.Tokens,
+                key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
                 (code, message, file, line) => Logger.LogWarning(message, null, file, line.ToString(), code),
                 (code, message, file, line) => Logger.LogError(message, null, file, line.ToString(), code),
                 ReadFile,
@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return builder.Build();
         }
 
-        private static string GetLink(string path, object relativeTo)
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
         {
             if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#"))
             {
