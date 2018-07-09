@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
         public static Error YamlSyntaxError(Exception ex)
             => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
 
-        public static Error YamlDuplicateKey(string key)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, please remove the duplicate key");
+        public static Error YamlDuplicateKey(Exception ex)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", RedefineDuplicateKeyErrorMessage(ex.Message + ex.InnerException?.Message));
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
@@ -101,5 +101,14 @@ namespace Microsoft.Docs.Build
 
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Warning, "null-value", $"{range} {name} contains null value");
+
+        private static string RedefineDuplicateKeyErrorMessage(string message)
+        {
+            var rangeIndex = message.LastIndexOf(')');
+            var range = message.Substring(0, rangeIndex + 1);
+            var keyIndex = message.LastIndexOf(':');
+            var key = message.Substring(keyIndex + 2, message.Length - keyIndex - 2);
+            return $"{range}: Key '{key}' is already defined, please remove the duplicate key.";
+        }
     }
 }

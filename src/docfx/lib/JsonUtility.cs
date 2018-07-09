@@ -158,11 +158,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                var errors = new List<Error>
-                {
-                    Errors.JsonSyntaxError(ex),
-                };
-                return (errors, JValue.CreateNull());
+                throw Errors.JsonSyntaxError(ex).ToException();
             }
         }
 

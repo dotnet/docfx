@@ -294,13 +294,8 @@ ValueBasic:
 Key1: 0
 Key1: 0
 ";
-            var (errors, _) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("yaml-duplicate-key", error.Code);
-                Assert.Contains("Key ' Key1' is already defined, please remove the duplicate key", error.Message);
-            });
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize(yaml));
+            Assert.Contains("Key 'Key1' is already defined, please remove the duplicate key", exception.Message);
         }
 
         [Fact]

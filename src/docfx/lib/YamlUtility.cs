@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -100,11 +100,11 @@ namespace Microsoft.Docs.Build
             }
             catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
             {
-                errors.Add(Errors.YamlDuplicateKey(ParseDuplicateKeyFromErrorMessage(ex.Message + ex.InnerException?.Message)));
+                throw Errors.YamlDuplicateKey(ex).ToException();
             }
             catch (YamlException ex)
             {
-                errors.Add(Errors.YamlSyntaxError(ex));
+                throw Errors.YamlSyntaxError(ex).ToException();
             }
 
             if (stream.Documents.Count == 0)
@@ -128,12 +128,6 @@ namespace Microsoft.Docs.Build
             {
                 return (errors, ToJson(stream.Documents[0].RootNode));
             }
-        }
-
-        private static string ParseDuplicateKeyFromErrorMessage(string message)
-        {
-            var index = message.LastIndexOf(':');
-            return message.Substring(index + 1, message.Length - index - 1);
         }
 
         private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
