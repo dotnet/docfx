@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
         {
-            var content = tocContent.Replace("\r\n", "\n", StringComparison.OrdinalIgnoreCase).Replace("\r", "\n", StringComparison.OrdinalIgnoreCase);
+            var content = tocContent.Replace("\r\n", "\n").Replace("\r", "\n");
             TableOfContentsParseState state = new InitialState(filePath);
             var rules = new TableOfContentsParseRule[]
             {
@@ -48,18 +48,18 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
         {
-            if (filePath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 var (errors, tocToken) = YamlUtility.Deserialize(content);
 
                 return (errors, LoadTocModel(tocToken));
             }
-            else if (filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
                 var (errors, tocToken) = JsonUtility.Deserialize<JToken>(content);
                 return (errors, LoadTocModel(tocToken));
             }
-            else if (filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 return (new List<Error>(), LoadMdTocModel(content, filePath));
             }
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    return Resolve("toc.yml") ?? Resolve("toc.json") ?? Resolve("toc.md") ?? default;
+                    return Resolve("TOC.yml") ?? Resolve("TOC.json") ?? Resolve("TOC.md") ?? default;
                 case TocHrefType.TocFile:
                     return resolveContent(filePath, href, isInclusion: true);
                 default:
@@ -303,9 +303,9 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if ("toc.md".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.json".Equals(fileName, StringComparison.OrdinalIgnoreCase) ||
-                "toc.yml".Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if ("TOC.md".Equals(fileName, PathUtility.PathComparison) ||
+                "TOC.json".Equals(fileName, PathUtility.PathComparison) ||
+                "TOC.yml".Equals(fileName, PathUtility.PathComparison))
             {
                 return TocHrefType.TocFile;
             }

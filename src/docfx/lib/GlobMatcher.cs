@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
         public string Raw { get; }
 
         public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
+        public const GlobMatcherOptions DefaultCaseSensitiveOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
 
         private const char NegateChar = '!';
         private const string GlobStar = "**";
@@ -236,7 +237,7 @@ namespace Microsoft.Docs.Build
                 yield return parts[i] + "/";
             }
 
-            yield return path.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+            yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -247,7 +248,7 @@ namespace Microsoft.Docs.Build
 
         private bool IsFolderPath(string path)
         {
-            return path.EndsWith("/", StringComparison.OrdinalIgnoreCase);
+            return path.EndsWith("/");
         }
 
         /// <summary>
@@ -523,7 +524,7 @@ namespace Microsoft.Docs.Build
         {
             if (filePart == "."
                 || filePart == ".."
-                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".", StringComparison.OrdinalIgnoreCase)))
+                || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".")))
             {
                 return true;
             }

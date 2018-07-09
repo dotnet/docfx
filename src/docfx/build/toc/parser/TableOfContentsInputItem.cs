@@ -32,6 +32,8 @@ namespace Microsoft.Docs.Build
             return new TableOfContentsItem
             {
                 TocTitle = inputModel.DisplayName ?? inputModel.Name,
+
+                // TODO: legacy only, we should not touch href
                 Href = decodedHref?.ToLowerInvariant(),
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
