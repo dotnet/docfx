@@ -102,8 +102,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     {
                         if (item is YamlMappingNode mapNode)
                         {
-                            var opath = string.Format("{0}[{1}=\"{2}\"]", parentOPath, mergeKey, mapNode.Children[mergeKey].ToString());
-                            TraverseCore(item, fragments, schema.Items, opath, uid);
+                            if (mapNode.Children.ContainsKey(mergeKey))
+                            {
+                                var opath = string.Format("{0}[{1}=\"{2}\"]", parentOPath, mergeKey, mapNode.Children[mergeKey].ToString());
+                                TraverseCore(item, fragments, schema.Items, opath, uid);
+                            }
+                            else
+                            {
+                                Logger.LogError($"Cannot find merge key {mergeKey} in {mapNode.ToString()}");
+                            }
                         }
                     }
                 }
