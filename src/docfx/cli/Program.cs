@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             if (args.Length == 1 && args[0] == "--version")
             {
-                Console.WriteLine(GetVersion());
+                Console.WriteLine(GetDocfxVersion());
                 return 0;
             }
 
