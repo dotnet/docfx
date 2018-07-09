@@ -134,8 +134,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static bool IsNotFound(Win32Exception ex)
         {
-            return ex.ErrorCode == -2147467259 ||   // Error_ENOENT = 0x1002D, No such file or directory
-                   ex.ErrorCode == 2;               // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
+            return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
+                   ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
         private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
