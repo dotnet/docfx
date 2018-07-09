@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         /// <param name="path">Path of the link</param>
         /// <param name="relativeTo">The source file that path is based on.</param>
+        /// <param name="resultRelativeTo">The entry file that returned URL should be rebased upon.</param>
         /// <returns>Url bound to the path</returns>
         public delegate string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo);
 
