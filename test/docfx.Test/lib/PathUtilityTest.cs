@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a/b/c", "a", "../../a")]
         [InlineData("a/b", "a/b", "b")]
         public static void GetRelativePathToFile(string relativeTo, string path, string expected)
-            => Assert.Equal(expected, PathUtility.GetRelativePathToFile(relativeTo, path).Replace("\\", "/", StringComparison.Ordinal));
+            => Assert.Equal(expected, PathUtility.GetRelativePathToFile(relativeTo, path).Replace("\\", "/"));
 
         [Fact]
         public static void PathDoesNotThrowForInvalidChar()
@@ -52,6 +53,12 @@ namespace Microsoft.Docs.Build
             var str = new string(Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()).ToArray());
             Path.GetFileName(str);
             Path.GetDirectoryName(str);
+        }
+
+        [Fact]
+        public static void IsCaseSensitive()
+        {
+            Assert.Equal(RuntimeInformation.IsOSPlatform(OSPlatform.Linux), PathUtility.IsCaseSensitive);
         }
     }
 }

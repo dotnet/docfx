@@ -153,7 +153,8 @@ namespace Microsoft.Docs.Build
             {
                 using (JsonReader json = new JsonTextReader(reader))
                 {
-                    return DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+                    var (errors, token) = DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
+                    return (errors, token ?? JValue.CreateNull());
                 }
             }
             catch (Exception ex)
