@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -51,8 +52,11 @@ namespace Microsoft.Docs.Build
         public static Error YamlHeaderNotObject(object filePath, bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
 
-        public static Error YamlSyntaxError(Exception ex)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", ex.Message);
+        public static Error YamlSyntaxError(YamlException ex)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
+
+        public static Error YamlDuplicateKey(YamlException ex)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", RedefineDuplicateKeyErrorMessage(ex));
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
@@ -99,7 +103,21 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
-        public static Error NullValue(Range range)
-            => new Error(ErrorLevel.Warning, "null-value", $"{range} contains null value");
+        public static Error NullValue(Range range, string name)
+            => new Error(ErrorLevel.Warning, "null-value", $"{range} {name} contains null value");
+
+        private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
+        {
+            return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+        }
+
+        private static string RedefineDuplicateKeyErrorMessage(YamlException ex)
+        {
+            var range = ParseRangeFromYamlSyntaxException(ex);
+            var innerMessage = ex.InnerException.Message;
+            var keyIndex = innerMessage.LastIndexOf(':');
+            var key = innerMessage.Substring(keyIndex + 2, innerMessage.Length - keyIndex - 2);
+            return $"{range}: Key '{key}' is already defined, remove the duplicate key.";
+        }
     }
 }
