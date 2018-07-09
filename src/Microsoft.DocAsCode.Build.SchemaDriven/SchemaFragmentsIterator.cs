@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             }
                             else
                             {
-                                Logger.LogError($"Cannot find merge key {mergeKey} in {mapNode.ToString()}");
+                                Logger.LogError($"Cannot find merge key {mergeKey} in {mapNode}");
                             }
                         }
                     }
