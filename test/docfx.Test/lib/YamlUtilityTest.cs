@@ -295,7 +295,7 @@ Key1: 0
 Key1: 0
 ";
             var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize(yaml));
-            Assert.Contains("Key 'Key1' is already defined, please remove the duplicate key", exception.Message);
+            Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
         [Fact]

@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             var range = message.Substring(0, rangeIndex + 1);
             var keyIndex = message.LastIndexOf(':');
             var key = message.Substring(keyIndex + 2, message.Length - keyIndex - 2);
-            return $"{range}: Key '{key}' is already defined, please remove the duplicate key.";
+            return $"{range}: Key '{key}' is already defined, remove the duplicate key.";
         }
     }
 }
