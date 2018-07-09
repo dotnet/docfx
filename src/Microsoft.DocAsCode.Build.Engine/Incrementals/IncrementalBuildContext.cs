@@ -592,7 +592,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
         {
-            var details = String.Empty;
+            var details = (string)null;
             var canIncremental = false;
 
             if (lb == null)
@@ -616,8 +616,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 canIncremental = true;
             }
 
+            var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
             // Log
-            Logger.LogInfo($"Build strategy", code: canIncremental ? WarningCodes.Build.IsIncrementalBuild : WarningCodes.Build.IsFullBuild);
+            Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
 
             return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
         }

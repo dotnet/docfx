@@ -30,8 +30,6 @@ namespace Microsoft.DocAsCode.Common
             public const string UidNotFound = "UidNotFound";
             public const string UnknownContentType = "UnknownContentType";
             public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
-            public const string IsFullBuild = "IsFullBuild";
-            public const string IsIncrementalBuild = "IsIncrementalBuild";
         }
 
         public static class Markdown
