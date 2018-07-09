@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
 
         public bool TryGetRestorePath(string remote, out string restorePath)
         {
-            var (url, rev) = GetGitRemoteInfo(remote);
-            var restoreDir = GetRestoreDir(url, rev);
+            var (url, _) = GetGitRemoteInfo(remote);
+            var restoreDir = GetRestoreDir(url);
             if (_workTreeStore.TryGetWorkTreeHead(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
             {
                 restorePath = GetWorkTreePath(restoreDir, workTreeHead);
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(string workTreePath, string workTreeHead)> FetchOrCloneDependentRepo(string href)
         {
             var (url, rev) = GetGitRemoteInfo(href);
-            var restoreDir = GetRestoreDir(url, rev);
+            var restoreDir = GetRestoreDir(url);
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var workTreeHead = string.Empty;
             var workTreePath = string.Empty;
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
         private static string GetWorkTreePath(string restoreDir, string workTreeHead)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
 
-        private static string GetRestoreDir(string url, string rev)
+        private static string GetRestoreDir(string url)
         {
             var uri = new Uri(url);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
