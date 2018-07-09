@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -228,6 +229,23 @@ namespace Microsoft.Docs.Build
             });
             var resultJsonString = JsonUtility.Serialize(result);
             Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
+        }
+
+        [Fact]
+        public void TestEmptyString()
+        {
+            var json = string.Empty;
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            var resultJsonString = JsonUtility.Serialize(result);
+            Assert.Empty(errors);
+            Assert.Equal("null", resultJsonString);
+        }
+
+        [Fact]
+        public void TestNull()
+        {
+            string json = null;
+            var exception = Assert.Throws<ArgumentNullException>(() => JsonUtility.Deserialize<JToken>(json));
         }
 
         public class BasicClass
