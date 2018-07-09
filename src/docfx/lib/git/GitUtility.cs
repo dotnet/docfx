@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
-                throw Errors.GitNotFound().ToException();
+                throw Errors.GitNotFound().ToException(ex);
             }
         }
 
