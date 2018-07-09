@@ -42,12 +42,12 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionInfo contribution)
         {
-            using (Log.Measure("Building files"))
+            using (Progress.Start("Building files"))
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var fileListBuilder = new DocumentListBuilder();
 
-                await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Log.Progress);
+                await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
                 return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
 

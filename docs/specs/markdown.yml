@@ -33,6 +33,47 @@ outputs:
     }
   build.manifest:
 ---
+# Yaml header title in lower-case
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: title from yaml header
+    ---
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>hello</p>\n",
+      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "title": "title from yaml header",
+      "metadata": { "title": "title from yaml header" }
+    }
+  build.manifest:
+---
+# Yaml header title in upper-case
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>hello</p>",
+      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "title": "Title from H1",
+      "metadata":
+      {
+          "Title": "Title from yaml header"
+      }
+    }
+  build.manifest:
+---
 # include another file
 inputs:
   docfx.yml:

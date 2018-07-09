@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            using (Log.Measure("Restore dependencies"))
+            using (Progress.Start("Restore dependencies"))
             {
                 // Restore has to use Config directly, it cannot depend on Docset,
                 // because Docset assumes the repo to physically exist on disk.
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                                 return value;
                             });
                     },
-                    progress: Log.Progress);
+                    progress: Progress.Update);
 
                 if (workTreeMappings.Any())
                 {
