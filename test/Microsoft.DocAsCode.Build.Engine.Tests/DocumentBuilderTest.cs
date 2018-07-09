@@ -106,6 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"/>",
                     "Test external xref with absolute URL and anchor: @str",
                     "Test invalid autolink xref: <xref:?displayProperty=fullName>",
+                    "Test href generator: [GitHub](GitHub.md?shouldBeAbbreviated=true#test)",
                     "<p>",
                     "test",
                 },
@@ -154,12 +155,17 @@ tagRules : [
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 {
+                    var applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+                    applyTemplateSettings.RawModelExportSettings.Export = true;
+                    applyTemplateSettings.HrefGenerator = new AbbrHrefGenerator();
+
                     BuildDocument(
                         files,
                         new Dictionary<string, object>
                         {
                             ["meta"] = "Hello world!",
                         },
+                        applyTemplateSettings: applyTemplateSettings,
                         templateFolder: _templateFolder);
 
                 }
@@ -210,7 +216,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"32\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"33\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">link text</a>",
                             $"Test link: <a href=\"~/{resourceFile}\" data-raw-source=\"[link text 2](../Microsoft.DocAsCode.Build.Engine.Tests.dll)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">link text 2</a>",
                             $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" data-raw-source=\"[link text 3](xref:XRef2 &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" sourceendlinenumber=\"14\">link text 3</a>",
@@ -230,6 +236,7 @@ tagRules : [
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
                             $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"29\" sourceendlinenumber=\"29\"></xref>",
                             $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\" sourceendlinenumber=\"30\"></xref>",
+                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" data-raw-source=\"[GitHub](GitHub.md?shouldBeAbbreviated=true#test)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\" sourceendlinenumber=\"31\">GitHub</a>",
                             "<p>",
                             @"test</p>",
                             ""),
@@ -261,6 +268,7 @@ tagRules : [
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test external xref with absolute URL and anchor: <a class=\"xref\" href=\"https://docs.python.org/3.5/library/stdtypes.html#str\">str</a>",
                             "Test invalid autolink xref: &lt;xref:?displayProperty=fullName&gt;",
+                            "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -1031,7 +1039,13 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null, string versionDir = null, string falName = null)
+        private void BuildDocument(
+            FileCollection files,
+            Dictionary<string, object> metadata = null,
+            ApplyTemplateSettings applyTemplateSettings = null,
+            string templateFolder = null,
+            string versionDir = null,
+            string falName = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
@@ -1090,6 +1104,19 @@ exports.getOptions = function (){
                 }
                 return defaultBuilder.FallbackReadFromInput(
                     FileAbstractLayerBuilder.Default.ReadFromRealFileSystem(FallbackFolder).Create());
+            }
+        }
+
+        public class AbbrHrefGenerator : ICustomHrefGenerator
+        {
+            public string GenerateHref(IFileLinkInfo href)
+            {
+                var result = href.Href;
+                if (result.Contains("GitHub"))
+                {
+                    result = result.Replace("GitHub", "GH") + "?isAbbreviated=true";
+                }
+                return result;
             }
         }
     }

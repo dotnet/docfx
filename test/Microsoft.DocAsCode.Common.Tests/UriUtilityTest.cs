@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Common.Tests
 {
-    using System;
-
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
@@ -29,6 +27,23 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(fragment, UriUtility.GetFragment(input));
             Assert.Equal(queryStringAndFragment, UriUtility.GetQueryStringAndFragment(input));
             Assert.Equal(nonFragment, UriUtility.GetNonFragment(input));
+        }
+
+        [InlineData("#target", "#source", "#source")]
+        [InlineData("", "#source", "#source")]
+        [InlineData("#target", "", "#target")]
+        [InlineData("", "", "")]
+        [InlineData("?a=1#target", "?b=2#source", "?a=1&b=2#source")]
+        [InlineData("?a=1&c=11#target", "?b=2&c=22#source", "?a=1&c=22&b=2#source")]
+        [InlineData("?a=1", "#fragment", "?a=1#fragment")]
+        [InlineData("#fragment", "?a=1", "?a=1#fragment")]
+        [InlineData("a.html", "b.html", "b.html")]
+        [InlineData("a.html?a=1&c=11#target", "b.html?b=2&c=22#source", "b.html?a=1&c=22&b=2#source")]
+        [InlineData("a.html?a=1&c=11#target", "?b=2&c=22#source", "a.html?a=1&c=22&b=2#source")]
+        [Theory]
+        public void TestMergeHref(string target, string source, string expected)
+        {
+            Assert.Equal(expected, UriUtility.MergeHref(target, source));
         }
     }
 }
