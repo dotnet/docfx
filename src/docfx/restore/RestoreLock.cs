@@ -1,89 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
+    /// todo: add other lock items like githuber users, build updated_at
+    /// <summary>
+    /// It's like your package-lock.json which lock every version of your referencing item like
+    /// 1. dependeny repo version
+    /// 2. github user cache version
+    /// 3. build publish time cahe version
     internal class RestoreLock
     {
-        private readonly RestoreItem _restoreItem;
-
-        public RestoreLock(string docset)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docset));
-
-            _restoreItem = Load(docset).Result;
-        }
-
-        public bool TryGetWorkTreeHead(string href, out string workTreeHead)
-        {
-            return _restoreItem.Git.TryGetValue(href, out workTreeHead);
-        }
-
-        public static Task Lock(string docset, Func<RestoreItem, RestoreItem> process)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docset));
-
-            var restoreLockFilePath = GetRestoreLockFilePath(docset);
-            return ProcessUtility.ProcessLock(
-                Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
-                () =>
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(restoreLockFilePath));
-                    using (var fileStream = File.Open(restoreLockFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                    {
-                        var sr = new StreamReader(fileStream);
-                        var sw = new StreamWriter(fileStream);
-
-                        // read restore item
-                        var (_, restoreItem) = JsonUtility.Deserialize<RestoreItem>(sr.ReadToEnd());
-                        if (restoreItem == null)
-                            restoreItem = new RestoreItem();
-
-                        // process restore item
-                        restoreItem = process(restoreItem);
-
-                        // write back restore item
-                        fileStream.SetLength(0);
-                        sw.Write(JsonUtility.Serialize(restoreItem));
-                        sw.Flush();
-
-                        return Task.CompletedTask;
-                    }
-                });
-        }
-
-        private static async Task<RestoreItem> Load(string docset)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docset));
-
-            var restoreLockFilePath = GetRestoreLockFilePath(docset);
-            var restore = new RestoreItem();
-            await ProcessUtility.ProcessLock(
-                Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
-                () =>
-                {
-                    if (File.Exists(restoreLockFilePath))
-                    {
-                        (_, restore) = JsonUtility.Deserialize<RestoreItem>(File.ReadAllText(restoreLockFilePath));
-                    }
-
-                    return Task.CompletedTask;
-                });
-
-            return restore;
-        }
-
-        private static string GetRestoreLockFilePath(string docset)
-        {
-            docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
-            var docsetKey = Path.GetFileName(docset) + "-" + PathUtility.Encode(docset.GetMd5String());
-
-            return Path.Combine(AppData.RestoreLockDir, $"{docsetKey}-lock.json");
-        }
+        public Dictionary<string, string> Git { get; set; } = new Dictionary<string, string>();
     }
 }

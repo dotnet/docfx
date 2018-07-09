@@ -125,12 +125,7 @@ namespace Microsoft.Docs.Build
                 $"worktree list",
                 lines =>
                 {
-                    var result = new List<string>();
-                    if (string.IsNullOrEmpty(lines))
-                    {
-                        return result;
-                    }
-
+                    Debug.Assert(lines != null);
                     var worktreeLines = lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
                     return worktreeLines.Select(s => s.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]).ToList();
                 },
@@ -142,7 +137,7 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task CreateWorkTree(string cwd, string commitHash, string path)
+        public static Task AddWorkTree(string cwd, string commitHash, string path)
             => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
 
         /// <summary>

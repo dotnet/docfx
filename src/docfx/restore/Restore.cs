@@ -13,11 +13,11 @@ namespace Microsoft.Docs.Build
 {
     internal class Restore
     {
-        private readonly RestoreLock _workTreeStore;
+        private readonly RestoreLocker _workTreeStore;
 
         public Restore(string docset)
         {
-            _workTreeStore = new RestoreLock(docset);
+            _workTreeStore = new RestoreLocker(docset);
         }
 
         public bool TryGetRestorePath(string remote, out string restorePath)
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 report.Configure(docsetPath, config);
 
                 var restoredDirs = new HashSet<string>(PathUtility.PathComparer);
-                var workTreeMappings = new ConcurrentDictionary<string, Dictionary<string, string>>();
+                var workTreeMappings = new ConcurrentDictionary<string, Dictionary<string, string>>(PathUtility.PathComparer);
 
                 await ParallelUtility.ForEach(
                     config.Dependencies.Values.Select(href => (docsetPath, href)),
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (mappings.Any())
                         {
-                            await RestoreLock.Lock(docset, item =>
+                            await RestoreLocker.Lock(docset, item =>
                             {
                                 item.Git = mappings;
                                 return item;
@@ -135,12 +135,11 @@ namespace Microsoft.Docs.Build
                     }
 
                     workTreeHead = await GitUtility.Revision(restorePath, rev);
-                    await GitUtility.PruneWorkTrees(restorePath);
                     workTreePath = GetWorkTreePath(restoreDir, workTreeHead);
                     var workTrees = await GitUtility.ListWorkTrees(restorePath);
                     if (!workTrees.Contains(workTreePath))
                     {
-                        await GitUtility.CreateWorkTree(restorePath, workTreeHead, workTreePath);
+                        await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
                     }
                 });
 
