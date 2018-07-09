@@ -100,11 +100,6 @@ namespace Microsoft.Docs.Build
             return (command, docset, options);
         }
 
-        private static string GetVersion()
-        {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        }
-
         private static void Done(TimeSpan duration)
         {
             #pragma warning disable CA2002 // Do not lock on objects with weak identity
@@ -139,9 +134,10 @@ namespace Microsoft.Docs.Build
             Console.WriteLine($@"
 # docfx crash report: {exception.GetType()}
 
-docfx: `{GetVersion()}`
+docfx: `{GetDocfxVersion()}`
 cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
+git: `{GetGitVersion()}`
 
 ## callstack
 
@@ -152,13 +148,13 @@ cwd: `{Directory.GetCurrentDirectory()}`
 ## dotnet --info
 
 ```
-{DotnetInfo()}
+{GetDotnetInfo()}
 ```
 ");
             Console.ResetColor();
         }
 
-        private static string DotnetInfo()
+        private static string GetDotnetInfo()
         {
             try
             {
@@ -168,7 +164,26 @@ cwd: `{Directory.GetCurrentDirectory()}`
             }
             catch (Exception ex)
             {
-                return ex.ToString();
+                return ex.Message;
+            }
+        }
+
+        private static string GetDocfxVersion()
+        {
+            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        }
+
+        private static string GetGitVersion()
+        {
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
+                process.WaitForExit(2000);
+                return process.StandardOutput.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
     }
