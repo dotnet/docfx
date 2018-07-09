@@ -101,6 +101,28 @@ This generates several `YAML` files in the `api` folder. The `YAML` file contain
 |- toc.yml
 ```
 
+Also, note that if your csprojs are located outside of your docfx directory, and you need to use `../` you will need to use the `src` property:
+```json
+"metadata": [
+    {
+      "src": [
+        {
+          "src": "../../",
+          "files": [
+            "somewhere/src/**.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "_site/**"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ]
+```
+
 Step3. Build and preview our website
 ----------------------------------------------------
 Running the command `docfx`. `docfx` reads `docfx.json` and execute subcommands defined in the config file one by one. Our `docfx.json` defines `metadata` and `build`, so by running `docfx`, we are actually executing `docfx metadata` and `docfx build`, and thus generating the website.
