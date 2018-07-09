@@ -3,7 +3,6 @@
 
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
@@ -13,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractTitle
     {
-        public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder, StrongBox<string> result)
+        public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
@@ -21,7 +20,7 @@ namespace Microsoft.Docs.Build
 
                 if (h1 != null && h1.Level == 1)
                 {
-                    result.Value = RenderTitle(h1);
+                    Markup.Context.TitleHtml = RenderTitle(h1);
                     document.Remove(h1);
                 }
             });

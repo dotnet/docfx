@@ -1,10 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Newtonsoft.Json.Linq;
@@ -13,11 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static MarkdownPipelineBuilder UseExtractYamlHeader(
-            this MarkdownPipelineBuilder builder,
-            Document file,
-            List<Error> errors,
-            StrongBox<JObject> result)
+        public static MarkdownPipelineBuilder UseExtractYamlHeader(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
@@ -29,14 +21,14 @@ namespace Microsoft.Docs.Build
 
                         if (yamlHeaderObj is JObject obj)
                         {
-                            result.Value = obj;
+                            Markup.Context.Metadata = obj;
                         }
                         else
                         {
-                            errors.Add(Errors.YamlHeaderNotObject(file, isArray: yamlHeaderObj is JArray));
+                            Markup.Context.Errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
                         }
 
-                        errors.AddRange(errors);
+                        Markup.Context.Errors.AddRange(yamlErrors);
                         return true;
                     }
                     return false;

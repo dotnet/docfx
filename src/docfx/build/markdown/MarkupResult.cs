@@ -15,5 +15,7 @@ namespace Microsoft.Docs.Build
         public JObject Metadata;
 
         public List<Error> Errors;
+
+        public static MarkupResult Create() => new MarkupResult { TitleHtml = "", Errors = new List<Error>() };
     }
 }

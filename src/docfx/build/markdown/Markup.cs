@@ -4,16 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Markdig;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Converts markdown to html
-    /// </summary>
     internal static class Markup
     {
         // In docfx 2, a localized text is prepended to quotes beginning with
@@ -32,91 +27,106 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
+        private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
+
+        [ThreadStatic]
+        private static (MarkupResult result, DependencyMapBuilder dependencyMap, Action<Document> buildChild) t_context;
+
+        public static ref MarkupResult Context => ref t_context.result;
+
         public static (string html, MarkupResult result) ToHtml(
             string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
         {
-            var errors = new List<Error>();
-            var metadata = new StrongBox<JObject>();
-            var titleHtml = new StrongBox<string>();
-            var hasHtml = new StrongBox<bool>();
-
-            var markdownContext = new MarkdownContext(s_markdownTokens, LogWarning, LogError, ReadFile, GetLink);
-
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
-                .UseExtractYamlHeader(file, errors, metadata)
-                .UseExtractTitle(titleHtml)
-                .UseResolveHtmlLinks(markdownContext, hasHtml)
-                .UseResolveXref(errors, ResolveXref)
-                .Build();
-
             using (InclusionContext.PushFile(file))
             {
-                var html = Markdown.ToHtml(markdown, pipeline);
-
-                var result = new MarkupResult
+                try
                 {
-                    TitleHtml = titleHtml.Value ?? "",
-                    HasHtml = hasHtml.Value,
-                    Metadata = metadata.Value,
-                    Errors = errors,
-                };
-
-                return (html, result);
-            }
-
-            void LogError(string code, string message, string doc, int line)
-            {
-                errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
-            }
-
-            void LogWarning(string code, string message, string doc, int line)
-            {
-                errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
-            }
-
-            (string content, object file) ReadFile(string path, object relativeTo)
-            {
-                Debug.Assert(relativeTo is Document);
-
-                var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
-
-                if (error != null)
-                {
-                    errors.Add(error);
+                    t_context = (MarkupResult.Create(), dependencyMap, buildChild);
+                    var html = Markdown.ToHtml(markdown, s_markdownPipeline);
+                    return (html, t_context.result);
                 }
-
-                dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
-
-                return (content, child);
-            }
-
-            string GetLink(string path, object relativeTo)
-            {
-                Debug.Assert(relativeTo is Document);
-
-                var (error, link, fragment, child) = ((Document)relativeTo).TryResolveHref(path, file);
-
-                if (error != null)
+                finally
                 {
-                    errors.Add(error);
+                    t_context = default;
                 }
-
-                if (child != null)
-                {
-                    buildChild(child);
-                    dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
-                }
-
-                return link;
             }
+        }
 
-            string ResolveXref(string uid)
+        private static MarkdownPipeline CreateMarkdownPipeline()
+        {
+            var markdownContext = new MarkdownContext(
+                GetToken,
+                LogWarning,
+                LogError,
+                ReadFile,
+                GetLink);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
+                .UseExtractTitle()
+                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveXref(ResolveXref)
+                .Build();
+        }
+
+        private static string GetToken(string key)
+        {
+            return s_markdownTokens.TryGetValue(key, out var value) ? value : null;
+        }
+
+        private static void LogError(string code, string message, string doc, int line)
+        {
+            Context.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
+        }
+
+        private static void LogWarning(string code, string message, string doc, int line)
+        {
+            Context.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
+        }
+
+        private static (string content, object file) ReadFile(string path, object relativeTo)
+        {
+            Debug.Assert(relativeTo is Document);
+
+            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+
+            if (error != null)
             {
-                // TODO: implement xref resolve
-                return null;
+                Context.Errors.Add(error);
             }
+
+            t_context.dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+
+            return (content, child);
+        }
+
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
+        {
+            Debug.Assert(relativeTo is Document);
+            Debug.Assert(resultRelativeTo is Document);
+
+            var (error, link, fragment, child) = ((Document)relativeTo).TryResolveHref(path, (Document)resultRelativeTo);
+
+            if (error != null)
+            {
+                Context.Errors.Add(error);
+            }
+
+            if (child != null)
+            {
+                t_context.buildChild(child);
+                t_context.dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
+            }
+
+            return link;
+        }
+
+        private static string ResolveXref(string uid)
+        {
+            // TODO: implement xref resolve
+            return null;
         }
     }
 }

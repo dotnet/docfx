@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
@@ -13,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, List<Error> errors, Func<string, string> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, string> resolveXref)
         {
             return builder.Use(document =>
             {
@@ -29,7 +28,7 @@ namespace Microsoft.Docs.Build
                                 ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
                                 : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
 
-                            errors.Add(error);
+                            Markup.Context.Errors.Add(error);
                             return new LiteralInline(raw);
                         }
                     }
