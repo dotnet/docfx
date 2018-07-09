@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
                 report.Configure(docsetPath, config);
 
-                var restoredDirs = new HashSet<string>();
+                var restoredDirs = new HashSet<string>(PathUtility.PathComparer);
                 var workTreeMappings = new ConcurrentDictionary<string, Dictionary<string, string>>();
 
                 await ParallelUtility.ForEach(

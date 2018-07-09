@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, Docset> LoadDependencies(Restore restore)
         {
-            var result = new Dictionary<string, Docset>(Config.Dependencies.Count);
+            var result = new Dictionary<string, Docset>(Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in Config.Dependencies)
             {
                 if (!restore.TryGetRestorePath(url, out var dir))
