@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -61,14 +62,18 @@ namespace Microsoft.Docs.Build
                 ReadFile,
                 GetLink);
 
-            return new MarkdownPipelineBuilder()
+            var builder = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref)
-                .Build();
+                .UseResolveXref(ResolveXref);
+
+            // This extensions is currently not thread safe
+            builder.Extensions.Remove(builder.Extensions.Find<AutoIdentifierExtension>());
+
+            return builder.Build();
         }
 
         private static string GetToken(string key)
