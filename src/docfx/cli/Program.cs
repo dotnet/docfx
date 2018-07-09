@@ -154,23 +154,23 @@ git: `{GetGitVersion()}`
             Console.ResetColor();
         }
 
+        private static string GetDocfxVersion()
+        {
+            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        }
+
         private static string GetDotnetInfo()
         {
             try
             {
                 var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--info", RedirectStandardOutput = true });
                 process.WaitForExit(2000);
-                return process.StandardOutput.ReadToEnd();
+                return process.StandardOutput.ReadToEnd().Trim();
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
-        }
-
-        private static string GetDocfxVersion()
-        {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         }
 
         private static string GetGitVersion()
@@ -179,7 +179,7 @@ git: `{GetGitVersion()}`
             {
                 var process = Process.Start(new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
                 process.WaitForExit(2000);
-                return process.StandardOutput.ReadToEnd();
+                return process.StandardOutput.ReadToEnd().Trim();
             }
             catch (Exception ex)
             {
