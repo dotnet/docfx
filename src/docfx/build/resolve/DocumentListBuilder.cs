@@ -9,10 +9,10 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentListBuilder
     {
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>();
-        private readonly ConcurrentDictionary<string, Document> _filesByUrl = new ConcurrentDictionary<string, Document>();
-        private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>();
+        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Document> _filesByUrl = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
 
         public List<Document> Build(Context context)
         {

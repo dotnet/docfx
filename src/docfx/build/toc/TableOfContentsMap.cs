@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
                 var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
                 if (nearstToc == null || distance > 0 ||
-                    (distance == 0 && string.Compare(nearstToc.SitePath, toc.SitePath, StringComparison.OrdinalIgnoreCase) > 0))
+                    (distance == 0 && string.Compare(nearstToc.SitePath, toc.SitePath, PathUtility.PathComparison) > 0))
                 {
                     nearstToc = toc;
                     nearestSubDirCount = subDirCount;

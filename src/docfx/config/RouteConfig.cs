@@ -30,12 +30,12 @@ namespace Microsoft.Docs.Build
 
             if (Source.EndsWith('/'))
             {
-                if (path.StartsWith(Source, StringComparison.Ordinal))
+                if (path.StartsWith(Source, PathUtility.PathComparison))
                     return Path.Combine(Destination, path.Substring(Source.Length));
             }
             else
             {
-                if (path == Source)
+                if (path.Equals(Source, PathUtility.PathComparison))
                     return Path.Combine(Destination, Path.GetFileName(path));
             }
 
