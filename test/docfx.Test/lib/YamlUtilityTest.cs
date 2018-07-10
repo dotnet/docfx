@@ -126,7 +126,7 @@ D: ~
             var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("contains null value", error.Message);
             });
@@ -309,7 +309,7 @@ items:
             var (errors, value) = YamlUtility.Deserialize(yaml);
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("name contains null value", error.Message);
             });
@@ -326,7 +326,7 @@ items:
             var (errors, value) = YamlUtility.Deserialize(yaml);
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("items contains null value", error.Message);
             });
