@@ -9,5 +9,10 @@ namespace Microsoft.Docs.Build
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
         public readonly string Path = "_site";
+
+        /// <summary>
+        /// Gets whether resources are copied to output.
+        /// </summary>
+        public readonly bool CopyResources = true;
     }
 }

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             // process toc map
             foreach (var document in documemts)
             {
-                if (document.ContentType == ContentType.Asset ||
+                if (document.ContentType == ContentType.Resource ||
                     document.ContentType == ContentType.TableOfContents ||
                     document.ContentType == ContentType.Redirection ||
                     document.ContentType == ContentType.Unknown)

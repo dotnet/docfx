@@ -8,5 +8,7 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; set; }
 
         public string OutputPath { get; set; }
+
+        public string SourcePath { get; set; }
     }
 }

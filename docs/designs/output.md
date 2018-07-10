@@ -127,7 +127,6 @@ These are called *browser navigation properties* and are stored in manifest.
 ```javascript
 {
     "files": [{
-        "source": "dotnet/api/system.string",
         "siteUrl": "/dotnet/api/system.string",
         "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
         "locale": "en-us",
@@ -135,6 +134,12 @@ These are called *browser navigation properties* and are stored in manifest.
 
         // other browser navigation properties...
         // other properties needed for backward compatibility
+    }, {
+        "siteUrl": "/dotnet/api/system.string",
+
+        // when `outputPath` does not exists,
+        // use `sourcePath` relative to source docset folder to locate the file
+        "sourcePath": "en-us/netstandard-2.0/dotnet/api/system.string.json"
     }]
 }
 ```
@@ -164,8 +169,7 @@ To efficiently look up the impacted files for a given file,
 {  
    "dependencies":[  
       {  
-         "source":"dotnet/azure/service-less-app.md",
-         "dependencies":[  
+         "dotnet/azure/service-less-app.md": [
             {  
                "source":"dotnet/azure/service-less-app-dependent.md",
                "type":"link"
