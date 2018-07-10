@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// List work trees for given repo
+        /// List work trees for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         public static Task<List<string>> ListWorkTrees(string cwd)
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                 TimeSpan.FromSeconds(30));
 
         /// <summary>
-        /// Create a work tree for an given repo
+        /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
             => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
 
         /// <summary>
-        /// Remove a work tree for an given repo
+        /// Remove a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <param name="path">The to-be-removed work tree path</param>

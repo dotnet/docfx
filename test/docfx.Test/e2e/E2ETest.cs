@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             await Program.Run(new[] { "build", docsetPath });
 
             // Verify restored files
-            var restore = new Restore(docsetPath);
+            var restore = new RestoreMap(docsetPath);
             foreach (var (file, content) in spec.Restores)
             {
                 var restoredFile = Path.Combine(AppData.AppDataDir, file);

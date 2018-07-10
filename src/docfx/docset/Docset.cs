@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<Restore> _restore;
+        private readonly Lazy<RestoreMap> _restoreMap;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
             _options = options;
             _context = context;
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
-            _restore = new Lazy<Restore>(() => new Restore(DocsetPath));
-            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies(_restore.Value));
+            _restoreMap = new Lazy<RestoreMap>(() => new RestoreMap(DocsetPath));
+            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies(_restoreMap.Value));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
@@ -64,12 +64,12 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private Dictionary<string, Docset> LoadDependencies(Restore restore)
+        private Dictionary<string, Docset> LoadDependencies(RestoreMap restoreMap)
         {
             var result = new Dictionary<string, Docset>(Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in Config.Dependencies)
             {
-                if (!restore.TryGetRestorePath(url, out var dir))
+                if (!restoreMap.TryGetGitRestorePath(url, out var dir))
                 {
                     throw Errors.DependenyRepoNotFound(url).ToException();
                 }
