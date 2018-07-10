@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -98,9 +98,13 @@ namespace Microsoft.Docs.Build
             {
                 stream.Load(reader);
             }
+            catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
+            {
+                throw Errors.YamlDuplicateKey(ex).ToException();
+            }
             catch (YamlException ex)
             {
-                errors.Add(Errors.YamlSyntaxError(ex));
+                throw Errors.YamlSyntaxError(ex).ToException();
             }
 
             if (stream.Documents.Count == 0)
