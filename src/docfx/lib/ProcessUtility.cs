@@ -16,15 +16,9 @@ namespace Microsoft.Docs.Build
     internal static class ProcessUtility
     {
         /// <summary>
-        /// Execute process with args
+        /// Start a new process and wait for its execution asynchroniously
         /// </summary>
-        /// <param name="fileName">The process path name or location</param>
-        /// <param name="commandLineArgs">The process command line args</param>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="timeout">The timeout setting, default is none</param>
-        /// <param name="outputHandler">The process output action</param>
-        /// <returns>The executed result</returns>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
+        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null, bool redirectOutput = true)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
@@ -32,30 +26,31 @@ namespace Microsoft.Docs.Build
 
             var error = new StringBuilder();
             var output = new StringBuilder();
+            var psi = new ProcessStartInfo
+            {
+                FileName = fileName,
+                WorkingDirectory = cwd,
+                Arguments = commandLineArgs,
+            };
+
+            if (redirectOutput)
+            {
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
+                psi.RedirectStandardOutput = redirectOutput;
+                psi.RedirectStandardError = redirectOutput;
+            }
 
             var process = new Process
             {
                 EnableRaisingEvents = true,
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = fileName,
-                    WorkingDirectory = cwd,
-                    Arguments = commandLineArgs,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                },
+                StartInfo = psi,
             };
 
-            // Todo: output steam to current window
-            process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
-            process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
-
-            if (outputHandler != null)
+            if (redirectOutput)
             {
-                process.OutputDataReceived += (sender, e) => outputHandler(e.Data, false);
-                process.ErrorDataReceived += (sender, e) => outputHandler(e.Data, true);
+                process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
+                process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
             }
 
             var processExited = new object();
@@ -98,11 +93,14 @@ namespace Microsoft.Docs.Build
             {
                 process.Start();
 
-                // Thread.Sleep(10000);
-                // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
-                // Add lock to ensure the locked area code can be always exected before exited event
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+                if (redirectOutput)
+                {
+                    // Thread.Sleep(10000);
+                    // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
+                    // Add lock to ensure the locked area code can be always exected before exited event
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                }
             }
 
             return tcs.Task;
