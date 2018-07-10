@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,6 +12,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
+        private static readonly int s_maxWorkTreeCount = 5;
+        private static readonly int s_maxAccessDurationInDays = 5;
+
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             using (Progress.Start("Restore dependencies"))
@@ -127,10 +131,23 @@ namespace Microsoft.Docs.Build
 
                     workTreeHead = await GitUtility.Revision(restorePath, rev);
                     workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                    var workTrees = await GitUtility.ListWorkTrees(restorePath);
-                    if (!workTrees.Contains(workTreePath))
+                    var workTrees = new HashSet<string>(await GitUtility.ListWorkTrees(restorePath, false));
+                    if (workTrees.Add(workTreePath))
                     {
                         await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
+                    }
+
+                    if (workTrees.Count > s_maxWorkTreeCount)
+                    {
+                        var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
+                        foreach (var workTree in workTrees)
+                        {
+                            if (!allWorkTreesInUse.Contains(workTree))
+                            {
+                                await GitUtility.RemoveWorkTree(restorePath, workTree);
+                            }
+                        }
+                        await GitUtility.PruneWorkTrees(restorePath);
                     }
                 });
 
@@ -138,6 +155,33 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(workTreePath));
 
             return (workTreePath, workTreeHead);
+        }
+
+        private static async Task<HashSet<string>> GetAllWorkTreePaths(string restoreDir)
+        {
+            var allLocks = await RestoreLocker.LoadAll();
+            var workTreePaths = new HashSet<string>();
+
+            foreach (var restoreLock in allLocks)
+            {
+                var interval = DateTime.UtcNow - restoreLock.LastAccessData;
+                if (interval.TotalDays > s_maxAccessDurationInDays)
+                {
+                    // The lock file was not used for a long time, just ignore
+                    continue;
+                }
+
+                foreach (var (href, workTreeHead) in restoreLock.Git)
+                {
+                    var rootDir = GetRestoreRootDir(href);
+                    if (string.Equals(rootDir, restoreDir, PathUtility.PathComparison))
+                    {
+                        workTreePaths.Add(GetRestoreWorkTreeDir(restoreDir, workTreeHead));
+                    }
+                }
+            }
+
+            return workTreePaths;
         }
     }
 }

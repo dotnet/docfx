@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -120,7 +119,7 @@ namespace Microsoft.Docs.Build
         /// List work trees for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        public static Task<List<string>> ListWorkTrees(string cwd)
+        public static Task<List<string>> ListWorkTrees(string cwd, bool includeMain)
             => ExecuteQuery(
                 cwd,
                 $"worktree list",
@@ -128,7 +127,19 @@ namespace Microsoft.Docs.Build
                 {
                     Debug.Assert(lines != null);
                     var worktreeLines = lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
-                    return worktreeLines.Select(s => s.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]).ToList();
+                    var workTreePaths = new List<string>();
+
+                    var i = 0;
+                    foreach (var workTreeLine in worktreeLines)
+                    {
+                        if (i++ > 0 || includeMain)
+                        {
+                            // The main worktree is listed first, followed by each of the linked worktrees. 
+                            workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
+                        }
+                    }
+
+                    return workTreePaths;
                 },
                 TimeSpan.FromSeconds(30));
 
