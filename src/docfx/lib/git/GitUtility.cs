@@ -174,7 +174,10 @@ namespace Microsoft.Docs.Build
 
         private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
         {
-            Debug.Assert(!string.IsNullOrEmpty(cwd));
+            if (!Directory.Exists(cwd))
+            {
+                throw new DirectoryNotFoundException($"Cannot find working directory '{cwd}'");
+            }
 
             try
             {
