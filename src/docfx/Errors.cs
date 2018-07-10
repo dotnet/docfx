@@ -109,6 +109,12 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Warning, "null-value", $"{range} {name} contains null value");
 
+        public static Error JsonSchemaLicenseIssue(Exception ex)
+            => new Error(ErrorLevel.Warning, "json-schema-license", $"Encountered issue registering licenes for NewtonsoftJson.Schema: {ex.Message}");
+
+        public static Error KeyNotFoundInSchema(string key)
+            => new Error(ErrorLevel.Warning, "schema-key-not-found", $"Key '{key}' not found in schema");
+
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);

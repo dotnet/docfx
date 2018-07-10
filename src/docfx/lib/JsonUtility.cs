@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -81,6 +84,8 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
             var (errors, token) = Deserialize(reader);
+            var schemaErros = token.ValidateSchema(typeof(T));
+            errors.AddRange(schemaErros);
             return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
@@ -133,6 +138,24 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        public static IEnumerable<Error> ValidateSchema(this JToken token, Type type)
+        {
+            // TODO: Get the license somewhere
+            RegisterLicense(string.Empty);
+
+            var settings = new JSchemaReaderSettings
+            {
+                Validators = new List<JsonValidator> { new JsonKeyNoutFoundInSchemaValidator() },
+            };
+            var temp = new JSchemaGenerator().Generate(type);
+            var schema = JSchema.Parse(temp.ToString(), settings);
+            if (!token.IsValid(schema, out IList<ValidationError> errors))
+            {
+                return errors.Select(x => Errors.KeyNotFoundInSchema(x.Message));
+            }
+            return Enumerable.Empty<Error>();
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -210,6 +233,45 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(mappings.ContainsKey(item));
                 var value = mappings[item];
                 errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
+            }
+        }
+
+        private static List<Error> RegisterLicense(string license)
+        {
+            var errors = new List<Error>();
+            if (string.IsNullOrEmpty(license))
+            {
+                return errors;
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(Errors.JsonSchemaLicenseIssue(ex));
+            }
+            return errors;
+        }
+
+        private sealed class JsonKeyNoutFoundInSchemaValidator : JsonValidator
+        {
+            public override bool CanValidate(JSchema schema)
+            {
+                return schema.Type == JSchemaType.Object;
+            }
+
+            public override void Validate(JToken value, JsonValidatorContext context)
+            {
+                var children = value.Children();
+                var child = children.First() as IJsonLineInfo;
+                var names = children.Select(x => (x as JProperty)?.Name);
+                var notList = names.Where(x => !context.Schema.Properties.ContainsKey(x));
+                var keysNotInSchema = children.Where(x => !context.Schema.Properties.ContainsKey((x as JProperty)?.Name));
+                var lineInfo = keysNotInSchema as IJsonLineInfo;
+
+                // TODO: log warning for the keys
             }
         }
 
