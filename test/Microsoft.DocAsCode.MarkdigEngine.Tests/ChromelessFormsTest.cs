@@ -17,10 +17,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             var content = @"::: form action=""create-resource"" submitText=""Create"" :::";
             var expected = @"<form class=""chromeless-form"" data-action=""create-resource"">
-<fieldset disabled=""disabled"">
 <div></div>
-<button type=""submit"">Create</button>
-</fieldset>
+<button disabled=""disabled"" type=""submit"">Create</button>
 </form>
 ".Replace("\r\n", "\n");
 
@@ -32,10 +30,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             var content = @"::: form model=""./devsandbox/ChromelessFormsTest.md"" action=""create-resource"" submitText=""Do it"" :::";
             var expected = @"<form class=""chromeless-form"" data-model=""./devsandbox/ChromelessFormsTest.md"" data-action=""create-resource"">
-<fieldset disabled=""disabled"">
 <div></div>
-<button type=""submit"">Do it</button>
-</fieldset>
+<button disabled=""disabled"" type=""submit"">Do it</button>
 </form>
 ".Replace("\r\n", "\n");
 
@@ -99,10 +95,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             var content = @"::: form submitText=""<script> >.< </script>"" action=""create-Resource"" :::";
             var expected = @"<form class=""chromeless-form"" data-action=""create-Resource"">
-<fieldset disabled=""disabled"">
 <div></div>
-<button type=""submit"">&lt;script&gt; &gt;.&lt; &lt;/script&gt;</button>
-</fieldset>
+<button disabled=""disabled"" type=""submit"">&lt;script&gt; &gt;.&lt; &lt;/script&gt;</button>
 </form>
 ".Replace("\r\n", "\n");
 
