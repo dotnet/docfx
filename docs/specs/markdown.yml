@@ -17,6 +17,24 @@ outputs:
     { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
   build.manifest:
 ---
+# Report warning when Yaml header has null value
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title:
+    ---
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>hello</p>",
+      "metadata": { }
+    }
+  build.manifest:
+  build.log: |
+    ["warning","null-value","(Line: 1, Character: 1) title contains null value","docs/a.md"]
+---
 # Yaml header
 inputs:
   docfx.yml:
