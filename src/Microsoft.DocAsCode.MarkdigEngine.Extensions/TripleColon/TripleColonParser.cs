@@ -118,18 +118,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Close(BlockProcessor processor, Block block)
         {
-            TripleColonBlock tripleColonBlock = (TripleColonBlock)block;
+            var tripleColonBlock = (TripleColonBlock)block;
             if (tripleColonBlock.Extension.SelfClosing)
             {
                 return true;
             }
 
             var extensionName = tripleColonBlock.Extension.Name;
-            if (processor.CurrentContainer != block)
-            {
-                _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}.  A {extensionName} cannot end before blocks nested within it have ended.");
-                return true;
-            }
             if (block.IsOpen)
             {
                 _context.LogWarning($"invalid-{extensionName}", $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.");

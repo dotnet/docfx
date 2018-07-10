@@ -154,27 +154,35 @@ Inline ::: should not end moniker zone.</p>
         }
 
         [Fact]
-        public void NoOverlap()
+        public void PermitsNestedBlocks()
         {
-            //arange
-            var content = @"::: zone target=""chromeless""
-::: moniker range=""start""
+            var source = @"::: zone target=""chromeless""
+* foo
+* bar
+* baz
 ::: zone-end
-::: moniker-end
 ";
 
+            var expected = @"<div class=""zone has-target"" data-target=""chromeless"">
+<ul>
+<li>foo</li>
+<li>bar</li>
+<li>baz</li>
+</ul>
+</div>
+";
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
 
             Logger.RegisterListener(listener);
             using (new LoggerPhaseScope(LoggerPhase))
             {
-                TestUtility.MarkupWithoutSourceInfo(content);
+                TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
             }
             Logger.UnregisterListener(listener);
 
-            Assert.Equal("Invalid zone on line 0.  A zone cannot end before blocks nested within it have ended.", listener.Items.First(x => x.Code == "invalid-zone").Message);
+            Assert.Empty(listener.Items);
         }
-        
+
         [Fact]
         public void PdfPivotInvalid()
         {
