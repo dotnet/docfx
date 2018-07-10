@@ -40,6 +40,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
+        public static Error DependenyRepoNotFound(string dependenyRepoHref)
+            => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
+
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
 

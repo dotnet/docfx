@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var dependentRepo in docset.Config.Dependencies)
             {
-                var (_, url, branch) = Restore.GetGitRestoreInfo(dependentRepo.Value);
+                var (url, branch) = Restore.GetGitRemoteInfo(dependentRepo.Value);
                 legacyCrrInfoItems.Add(new LegacyCrossRepoReferenceInfoItem
                 {
                     PathToRoot = dependentRepo.Key,

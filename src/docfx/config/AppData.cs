@@ -8,19 +8,21 @@ namespace Microsoft.Docs.Build
 {
     internal static class AppData
     {
-        public static string RestoreDir => Path.Combine(s_appDataPath, ".docfx", "git");
+        public static readonly string AppDataDir = GetAppDataDir();
 
-        public static string LockDir => Path.Combine(s_appDataPath, ".docfx", "lock");
+        public static string RestoreDir => Path.Combine(AppDataDir, "git");
 
-        public static string CacheDir => Path.Combine(s_appDataPath, ".docfx", "cache");
+        public static string RestoreLockDir => Path.Combine(AppDataDir, "restore_lock");
 
-        private static readonly string s_appDataPath = GetAppDataPath();
+        public static string ProcessLockDir => Path.Combine(AppDataDir, "process_lock");
+
+        public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
         /// <summary>
         /// Get the restore root dir, default is the user proflie dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
         /// </summary>
-        private static string GetAppDataPath()
+        private static string GetAppDataDir()
         {
             // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
                 docfxAppData = Path.GetFullPath(docfxAppData);
             }
 
-            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return Path.Combine(!string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
         }
     }
 }
