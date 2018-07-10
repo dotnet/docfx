@@ -122,8 +122,6 @@ namespace Microsoft.Docs.Build
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
         {
             StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-            var locale = rawMetadata["locale"].ToString();
-            var culture = new CultureInfo(string.IsNullOrEmpty(locale) ? "en-us" : locale);
 
             foreach (var item in rawMetadata)
             {
@@ -136,7 +134,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (item.Value.Type == JTokenType.Boolean)
                     {
-                        content = item.Value.ToString().ToLower(culture);
+                        content = (bool)item.Value ? "true" : "false";
                     }
                     else
                     {
