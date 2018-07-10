@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -175,9 +176,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(cwd));
 
-            // todo: check git exist or not
-            var response = await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler);
-            return parser(response);
+            try
+            {
+                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler));
+            }
+            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
+            {
+                throw Errors.GitNotFound().ToException(ex);
+            }
         }
 
         private static void DefaultOutputHandler(string outputLine, bool isError)

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -126,6 +127,15 @@ namespace Microsoft.Docs.Build
             {
                 await action();
             }
+        }
+
+        /// <summary>
+        /// Checks if the exception thrown by Process.Start is caused by file not found.
+        /// </summary>
+        public static bool IsNotFound(Win32Exception ex)
+        {
+            return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
+                   ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
         private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)

@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return $"(Line: {StartLine}, Character: {StartCharacter}) - (Line: {EndLine} Character: {EndCharacter})";
+                return $"(Line: {StartLine}, Character: {StartCharacter}) - (Line: {EndLine}, Character: {EndCharacter})";
             }
         }
     }

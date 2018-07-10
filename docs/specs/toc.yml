@@ -75,10 +75,8 @@ inputs:
   docs/TOC.json: |
     [{ "name": "title" ]
 outputs:
-  docs/TOC.json:
-  build.manifest:
   build.log: |
-    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object. Path '[0]', line 1, position 20.","docs/TOC.json"]
+    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object. Path '[0]', line 1, position 20."]
 ---
 # Probe TOC in JSON format
 inputs:
@@ -816,9 +814,5 @@ inputs:
   docs/f1/a.md:
   docs/f1/b.md:
 outputs:
-  docs/TOC.json: 
-  docs/f1/a.json:
-  docs/f1/b.json:
-  build.manifest:
   build.log: |
-    ["error","yaml-syntax-error","(Line: 3, Col: 3, Idx: 47) - (Line: 3, Col: 12, Idx: 56): Duplicate key","docs/TOC.yml"]
+    ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key."]

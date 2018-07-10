@@ -294,13 +294,8 @@ ValueBasic:
 Key1: 0
 Key1: 0
 ";
-            var (errors, _) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("yaml-syntax-error", error.Code);
-                Assert.Contains("Duplicate key", error.Message);
-            });
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize(yaml));
+            Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
         [Fact]
@@ -316,7 +311,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Contains("name contains null value", error.Message);
             });
         }
 
@@ -333,7 +328,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Contains("items contains null value", error.Message);
             });
         }
 

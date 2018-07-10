@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                 legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.SiteUrl.Substring(1));
             }
 
-            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacyOutputFilePathRelativeToSiteBasePath}index" : legacyOutputFilePathRelativeToSiteBasePath);
+            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacyOutputFilePathRelativeToSiteBasePath}/index" : legacyOutputFilePathRelativeToSiteBasePath);
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
