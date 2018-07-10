@@ -137,7 +137,7 @@ These are called *browser navigation properties* and are stored in manifest.
     }, {
         "siteUrl": "/dotnet/api/system.string",
 
-        // when `outputPath` does not exists,
+        // when `outputPath` does not exist,
         // use `sourcePath` relative to source docset folder to locate the file
         "sourcePath": "en-us/netstandard-2.0/dotnet/api/system.string.json"
     }]
