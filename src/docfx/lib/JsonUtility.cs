@@ -265,7 +265,9 @@ namespace Microsoft.Docs.Build
             public override void Validate(JToken value, JsonValidatorContext context)
             {
                 var children = value.Children();
-                var child = children.First() as IJsonLineInfo;
+                var child = children.Last() as IJsonLineInfo;
+                var line = child.LineNumber;
+                var column = child.LinePosition;
                 var names = children.Select(x => (x as JProperty)?.Name);
                 var notList = names.Where(x => !context.Schema.Properties.ContainsKey(x));
                 var keysNotInSchema = children.Where(x => !context.Schema.Properties.ContainsKey((x as JProperty)?.Name));
