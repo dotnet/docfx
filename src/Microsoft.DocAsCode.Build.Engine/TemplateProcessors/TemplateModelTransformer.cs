@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 message = $"Model is transformed to empty string with template \"{template.Name}\". To get the detailed view model, please run docfx with debug mode --debug";
                             }
-                            Logger.LogWarning(message, code:WarningCodes.Build.EmptyOutputFiles);
+                            Logger.LogWarning(message, code: WarningCodes.Build.EmptyOutputFiles);
                         }
 
                         List<XRefDetails> invalidXRefs;
@@ -407,24 +407,25 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void UpdateHref(HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
         {
             var originalHref = link.GetAttributeValue(attribute, null);
-            var anchor = link.GetAttributeValue("anchor", null);
+            var path = UriUtility.GetPath(originalHref);
+            var anchorFromNode = link.GetAttributeValue("anchor", null);
+            var segments = anchorFromNode ?? UriUtility.GetQueryStringAndFragment(originalHref);
             link.Attributes.Remove("anchor");
-            var originalPath = UriUtility.GetPath(originalHref);
-            var path = RelativePath.TryParse(originalPath);
-
-            if (path == null)
+            if (RelativePath.TryParse(path) == null)
             {
-                if (!string.IsNullOrEmpty(anchor))
+                if (!string.IsNullOrEmpty(anchorFromNode))
                 {
-                    link.SetAttributeValue(attribute, originalHref + anchor);
+                    link.SetAttributeValue(attribute, originalHref + anchorFromNode);
                 }
-
                 return;
             }
+            var fli = FileLinkInfo.Create(sourceFilePath, destFilePath, path, context);
 
-            var fli = FileLinkInfo.Create(sourceFilePath, destFilePath, originalPath, context);
-            var href = _settings.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
-            link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
+            // fragment and query in original href takes precedence over the one from hrefGenerator
+            var href = _settings.HrefGenerator?.GenerateHref(fli);
+            link.SetAttributeValue(
+                attribute,
+                href == null ? fli.Href + segments : UriUtility.MergeHref(href, segments));
         }
     }
 }
