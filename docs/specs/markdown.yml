@@ -26,11 +26,7 @@ inputs:
     ---
     hello
 outputs:
-  docs/a.json: |
-    {
-      "content": "<p>hello</p>",
-      "metadata": { }
-    }
+  docs/a.json:
   build.manifest:
   build.log: |
     ["warning","null-value","(Line: 1, Character: 1) title contains null value","docs/a.md"]
