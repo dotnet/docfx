@@ -122,14 +122,26 @@ namespace Microsoft.Docs.Build
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
         {
             StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
+            var locale = rawMetadata["locale"].ToString();
+            var culture = new CultureInfo(string.IsNullOrEmpty(locale) ? "en-us" : locale);
 
             foreach (var item in rawMetadata)
             {
                 if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
                 {
-                    string content = item.Value is JArray
-                        ? string.Join(",", item.Value)
-                        : item.Value.ToString();
+                    string content;
+                    if (item.Value is JArray)
+                    {
+                        content = string.Join(",", item.Value);
+                    }
+                    else if (item.Value.Type == JTokenType.Boolean)
+                    {
+                        content = item.Value.ToString().ToLower(culture);
+                    }
+                    else
+                    {
+                        content = item.Value.ToString();
+                    }
                     if (!string.IsNullOrEmpty(content))
                     {
                         pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item.Key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
