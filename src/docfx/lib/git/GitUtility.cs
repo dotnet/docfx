@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -17,6 +16,9 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
+        private static readonly char[] s_newline = new[] { '\r', '\n' };
+        private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
+
         /// <summary>
         /// Find git repo directory
         /// </summary>
@@ -58,13 +60,18 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <param name="remote">The remote url</param>
         /// <param name="path">The path to clone</param>
+        /// <param name="branch">The branch you want to clone</param>
+        /// <param name="bare">Make the git repo bare</param>
         /// <returns>Task status</returns>
-        public static Task Clone(string cwd, string remote, string path, string branch = null)
+        public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false)
         {
             Directory.CreateDirectory(cwd);
             var cmd = string.IsNullOrEmpty(branch)
                 ? $"clone {remote} \"{path.Replace("\\", "/")}\""
                 : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+
+            if (bare)
+                cmd += " --bare";
 
             return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
         }
@@ -110,11 +117,51 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// List work trees for a given repo
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        public static Task<List<string>> ListWorkTrees(string cwd)
+            => ExecuteQuery(
+                cwd,
+                $"worktree list",
+                lines =>
+                {
+                    Debug.Assert(lines != null);
+                    var worktreeLines = lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
+                    return worktreeLines.Select(s => s.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]).ToList();
+                },
+                TimeSpan.FromSeconds(30));
+
+        /// <summary>
+        /// Create a work tree for a given repo
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
+        /// <param name="path">The work tree path</param>
+        public static Task AddWorkTree(string cwd, string commitHash, string path)
+            => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
+
+        /// <summary>
+        /// Remove a work tree for a given repo
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        /// <param name="path">The to-be-removed work tree path</param>
+        public static Task RemoveWorkTree(string cwd, string path)
+            => ExecuteNonQuery(cwd, $"worktree remove -f {path}");
+
+        /// <summary>
+        /// Prune work trees which are not connected with an given repo
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        public static Task PruneWorkTrees(string cwd)
+            => ExecuteNonQuery(cwd, $"worktree prune");
+
+        /// <summary>
         /// Retrieve git head version
         /// TODO: For testing purpose only, move it to test
         /// </summary>
-        public static Task<string> HeadRevision(string cwd)
-           => ExecuteQuery(cwd, "rev-parse HEAD", TimeSpan.FromMinutes(3));
+        public static Task<string> Revision(string cwd, string branch = "HEAD")
+           => ExecuteQuery(cwd, $"rev-parse {branch}", TimeSpan.FromMinutes(3));
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
             => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);

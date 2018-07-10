@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
+        private readonly Lazy<RestoreMap> _restoreMap;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
@@ -53,7 +54,8 @@ namespace Microsoft.Docs.Build
             _options = options;
             _context = context;
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
-            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies());
+            _restoreMap = new Lazy<RestoreMap>(() => new RestoreMap(DocsetPath));
+            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies(_restoreMap.Value));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
@@ -62,12 +64,15 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private Dictionary<string, Docset> LoadDependencies()
+        private Dictionary<string, Docset> LoadDependencies(RestoreMap restoreMap)
         {
             var result = new Dictionary<string, Docset>(Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in Config.Dependencies)
             {
-                var (dir, _, _) = Restore.GetGitRestoreInfo(url);
+                if (!restoreMap.TryGetGitRestorePath(url, out var dir))
+                {
+                    throw Errors.DependenyRepoNotFound(url).ToException();
+                }
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

@@ -358,17 +358,7 @@ namespace Microsoft.Docs.Build
                 ? PathUtility.NormalizeFile(sitePathWithoutExtension)
                 : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
-            return (Md5($"{depotName}|{sourcePath.ToLowerInvariant()}"), Md5($"{depotName}|{sitePath.ToLowerInvariant()}"));
-
-            string Md5(string input)
-            {
-#pragma warning disable CA5351 //Not used for encryption
-                using (var md5 = MD5.Create())
-#pragma warning restore CA5351
-                {
-                    return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input))).ToString();
-                }
-            }
+            return (HashUtility.GetMd5String($"{depotName}|{sourcePath.ToLowerInvariant()}"), HashUtility.GetMd5String($"{depotName}|{sitePath.ToLowerInvariant()}"));
         }
     }
 }
