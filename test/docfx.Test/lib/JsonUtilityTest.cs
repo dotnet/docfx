@@ -251,12 +251,13 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestKeyNotFoundInSchema()
         {
-            var json = "{\"A\":\"A\",\"B\":1, \"C\":\"C\", \"D\":true}";
+            var json = "{\"A\":\"A\", \"B\":1, \"C\":\"C\", \"D\":true}";
             var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("schema-key-not-found", error.Code);
+                Assert.Contains("Key 'A' not found in schema", error.Message);
             });
         }
 

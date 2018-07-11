@@ -112,8 +112,8 @@ namespace Microsoft.Docs.Build
         public static Error JsonSchemaLicenseIssue(Exception ex)
             => new Error(ErrorLevel.Warning, "json-schema-license", $"Encountered issue registering licenes for NewtonsoftJson.Schema: {ex.Message}");
 
-        public static Error KeyNotFoundInSchema(string key)
-            => new Error(ErrorLevel.Warning, "schema-key-not-found", $"Key '{key}' not found in schema");
+        public static Error KeyNotFoundInSchema(Range range, string message)
+            => new Error(ErrorLevel.Warning, "schema-key-not-found", $"{range} {message}");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

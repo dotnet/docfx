@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static IEnumerable<Error> ValidateSchema(this JToken token, Type type)
+        public static IEnumerable<Error> ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
         {
             // TODO: Get the license somewhere
             RegisterLicense(string.Empty);
@@ -153,7 +153,24 @@ namespace Microsoft.Docs.Build
             var schema = JSchema.Parse(temp.ToString(), settings);
             if (!token.IsValid(schema, out IList<ValidationError> errors))
             {
-                return errors.Select(x => Errors.KeyNotFoundInSchema(x.Message));
+                if (mappings == null)
+                {
+                    return errors
+                        .Where(x => x.Message.Contains("not found in schema"))
+                        .Select(x => Errors.KeyNotFoundInSchema((x.Value as ValidationErrorValue).Range, x.Message));
+                }
+                else
+                {
+                    var result = new List<Error>();
+                    foreach (var error in errors)
+                    {
+                        if (error.Message.Contains("not found in schema"))
+                        {
+                            result.Add(Errors.KeyNotFoundInSchema(new Range(0, 0), error.Message));
+                        }
+                    }
+                    return result;
+                }
             }
             return Enumerable.Empty<Error>();
         }
@@ -264,16 +281,25 @@ namespace Microsoft.Docs.Build
 
             public override void Validate(JToken value, JsonValidatorContext context)
             {
-                var children = value.Children();
-                var child = children.Last() as IJsonLineInfo;
-                var line = child.LineNumber;
-                var column = child.LinePosition;
-                var names = children.Select(x => (x as JProperty)?.Name);
-                var notList = names.Where(x => !context.Schema.Properties.ContainsKey(x));
-                var keysNotInSchema = children.Where(x => !context.Schema.Properties.ContainsKey((x as JProperty)?.Name));
-                var lineInfo = keysNotInSchema as IJsonLineInfo;
+                var keysNotInSchema = value.Children<JProperty>().Where(x => !context.Schema.Properties.ContainsKey((x as JProperty)?.Name));
+                foreach (var item in keysNotInSchema)
+                {
+                    var lineInfo = item as IJsonLineInfo;
+                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                    context.RaiseError($"Key '{(item as JProperty)?.Name}' not found in schema", new ValidationErrorValue(range, value));
+                }
+            }
+        }
 
-                // TODO: log warning for the keys
+        private sealed class ValidationErrorValue
+        {
+            public readonly Range Range;
+            public readonly JToken Token;
+
+            public ValidationErrorValue(Range range, JToken token)
+            {
+                Range = range;
+                Token = token;
             }
         }
 

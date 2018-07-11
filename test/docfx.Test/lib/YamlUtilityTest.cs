@@ -166,7 +166,7 @@ D: true
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
+            var (errors2, _, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
 - TRUE
@@ -329,6 +329,24 @@ items:
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("items contains null value", error.Message);
+            });
+        }
+
+        [Fact]
+        public void TestKeyNotFoundInSchema()
+        {
+            var yaml = @"
+A: A
+B: 1
+C: C
+D: false
+";
+            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("schema-key-not-found", error.Code);
+                Assert.Contains("Key 'A' not found in schema", error.Message);
             });
         }
 

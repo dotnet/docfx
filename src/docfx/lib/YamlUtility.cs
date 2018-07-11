@@ -74,7 +74,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
         {
-            var (errors, json) = Deserialize(reader, nullValidation);
+            var (errors, mappings, json) = Deserialize(reader, nullValidation, typeof(T));
+            var schemaErrors = json.ValidateSchema(typeof(T), mappings);
+            errors.AddRange(schemaErrors);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
@@ -83,16 +85,18 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
         {
-            return Deserialize(new StringReader(input), nullValidation);
+            var (errors, _, token) = Deserialize(new StringReader(input), nullValidation);
+            return (errors, token);
         }
 
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
+        public static (List<Error>, JTokenSourceMap, JToken) Deserialize(TextReader reader, bool nullValidation = true, Type type = null)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
+            var mappings = new JTokenSourceMap();
 
             try
             {
@@ -109,7 +113,7 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull());
+                return (errors, mappings, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
@@ -119,14 +123,20 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var mappings = new JTokenSourceMap();
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                JToken token = ToJson(stream.Documents[0].RootNode, mappings);
+                if (type != null)
+                {
+                    var schemaErrors = token.ValidateSchema(type, mappings);
+                    errors.AddRange(schemaErrors);
+                }
+                var nullErrors = new List<Error>();
+                (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
                 errors.AddRange(nullErrors);
-                return (errors, token);
+                return (errors, mappings, token);
             }
             else
             {
-                return (errors, ToJson(stream.Documents[0].RootNode));
+                return (errors, mappings, ToJson(stream.Documents[0].RootNode));
             }
         }
 
@@ -146,18 +156,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return SetMappings(mappings, scalar, new JValue(n));
+                        return new JValue(n);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return SetMappings(mappings, scalar, new JValue(d));
+                        return new JValue(d);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return SetMappings(mappings, scalar, new JValue(b));
+                        return new JValue(b);
                     }
                 }
-                return SetMappings(mappings, scalar, new JValue(scalar.Value));
+                return new JValue(scalar.Value);
             }
             if (node is YamlMappingNode map)
             {
