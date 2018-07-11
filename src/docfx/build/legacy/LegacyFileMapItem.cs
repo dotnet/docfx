@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = PathUtility.NormalizeFile(RemoveExtension(legacyOutputFilePathRelativeToSiteBasePath));
                     break;
-                case ContentType.Asset:
+                case ContentType.Resource:
                     Type = "Resource";
                     OutputRelativePath = AssetId = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
                     break;

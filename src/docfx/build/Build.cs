@@ -79,8 +79,8 @@ namespace Microsoft.Docs.Build
             {
                 switch (file.ContentType)
                 {
-                    case ContentType.Asset:
-                        return await BuildAsset(context, file);
+                    case ContentType.Resource:
+                        return await BuildResource(context, file);
                     case ContentType.Markdown:
                         return await BuildMarkdown.Build(context, file, tocMap, contribution, buildChild);
                     case ContentType.SchemaDocument:
@@ -100,11 +100,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task<DependencyMap> BuildAsset(Context context, Document file)
+        private static Task<DependencyMap> BuildResource(Context context, Document file)
         {
-            Debug.Assert(file.ContentType == ContentType.Asset);
+            Debug.Assert(file.ContentType == ContentType.Resource);
 
-            context.Copy(file, file.FilePath);
+            if (file.Docset.Config.Output.CopyResources)
+            {
+                context.Copy(file, file.FilePath);
+            }
             return Task.FromResult(DependencyMap.Empty);
         }
 
