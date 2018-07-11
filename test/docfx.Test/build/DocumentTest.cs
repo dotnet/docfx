@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         [InlineData("TOC.md", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("TOC.yml", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
         [InlineData("TOC.json", ContentType.TableOfContents, "TOC.json", "/TOC.json", "TOC.json")]
-        [InlineData("image.png", ContentType.Asset, "image.png", "/image.png", "image.png")]
-        [InlineData("a&#/b\\.* d.png", ContentType.Asset, "a&#/b\\.* d.png", "/a&#/b/.* d.png", "a&#/b/.* d.png")]
+        [InlineData("image.png", ContentType.Resource, "image.png", "/image.png", "image.png")]
+        [InlineData("a&#/b\\.* d.png", ContentType.Resource, "a&#/b\\.* d.png", "/a&#/b/.* d.png", "a&#/b/.* d.png")]
         internal static void FilePathToUrl(
             string path,
             ContentType expectedContentType,

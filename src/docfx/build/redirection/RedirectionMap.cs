@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             AddRedirections(docset.Config.Redirections);
 
             var redirectionsByRedirectionUrl = redirections
-                .GroupBy(file => file.RedirectionUrl)
+                .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
                 .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
 
             errors.AddRange(redirections

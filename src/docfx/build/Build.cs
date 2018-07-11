@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var context = new Context(report, outputPath);
             var docset = new Docset(context, docsetPath, config, options);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(docset.BuildScope);
+            var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
             var contribution = ContributionInfo.Load(docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
@@ -68,35 +68,46 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task<DependencyMap> BuildFile(
+        private static async Task<DependencyMap> BuildFile(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             Action<Document> buildChild)
         {
-            switch (file.ContentType)
+            try
             {
-                case ContentType.Asset:
-                    return BuildAsset(context, file);
-                case ContentType.Markdown:
-                    return BuildMarkdown.Build(context, file, tocMap, contribution, buildChild);
-                case ContentType.SchemaDocument:
-                    return BuildSchemaDocument.Build();
-                case ContentType.TableOfContents:
-                    return BuildTableOfContents.Build(context, file, tocMap, buildChild);
-                case ContentType.Redirection:
-                    return BuildRedirectionItem(context, file);
-                default:
-                    return Task.FromResult(DependencyMap.Empty);
+                switch (file.ContentType)
+                {
+                    case ContentType.Resource:
+                        return await BuildResource(context, file);
+                    case ContentType.Markdown:
+                        return await BuildMarkdown.Build(context, file, tocMap, contribution, buildChild);
+                    case ContentType.SchemaDocument:
+                        return await BuildSchemaDocument.Build();
+                    case ContentType.TableOfContents:
+                        return await BuildTableOfContents.Build(context, file, tocMap, buildChild);
+                    case ContentType.Redirection:
+                        return await BuildRedirectionItem(context, file);
+                    default:
+                        return DependencyMap.Empty;
+                }
+            }
+            catch (DocfxException ex)
+            {
+                context.Report(file.ToString(), ex.Error);
+                return DependencyMap.Empty;
             }
         }
 
-        private static Task<DependencyMap> BuildAsset(Context context, Document file)
+        private static Task<DependencyMap> BuildResource(Context context, Document file)
         {
-            Debug.Assert(file.ContentType == ContentType.Asset);
+            Debug.Assert(file.ContentType == ContentType.Resource);
 
-            context.Copy(file, file.FilePath);
+            if (file.Docset.Config.Output.CopyResources)
+            {
+                context.Copy(file, file.FilePath);
+            }
             return Task.FromResult(DependencyMap.Empty);
         }
 

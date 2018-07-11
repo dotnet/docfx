@@ -22,13 +22,13 @@ namespace Microsoft.Docs.Build
                     MetadataOutput = new LegacyManifestOutputItem
                     {
                         IsRawPage = false,
-                        OutputPathRelativeToSiteBasePath = document.ContentType == ContentType.Asset
+                        OutputPathRelativeToSiteBasePath = document.ContentType == ContentType.Resource
                         ? legacyOutputPathRelativeToBaseSitePath + ".mta.json"
                         : Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".mta.json"),
                     },
                 };
 
-                if (document.ContentType == ContentType.Asset)
+                if (document.ContentType == ContentType.Resource)
                 {
                     output.ResourceOutput = new LegacyManifestOutputItem
                     {
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                     OriginalType = GetOriginalType(document.ContentType),
                     Type = GetType(document.ContentType),
                     Output = output,
-                    SkipNormalization = !(document.ContentType == ContentType.Asset),
+                    SkipNormalization = !(document.ContentType == ContentType.Resource),
                 };
 
                 convertedItems.Add((file, document));
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Markdown:
                 case ContentType.Redirection: // todo: support reference redirection
                     return "Conceptual";
-                case ContentType.Asset:
+                case ContentType.Resource:
                     return "Resource";
                 case ContentType.TableOfContents:
                     return "Toc";
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.Markdown:
                 case ContentType.Redirection: // todo: support reference redirection
                     return "Content";
-                case ContentType.Asset:
+                case ContentType.Resource:
                     return "Resource";
                 case ContentType.TableOfContents:
                     return "Toc";

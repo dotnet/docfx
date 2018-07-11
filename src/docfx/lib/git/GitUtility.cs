@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
             if (bare)
                 cmd += " --bare";
 
-            return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
+            return ExecuteNonQuery(cwd, cmd, null);
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
         public static Task Fetch(string cwd)
-            => ExecuteNonQuery(cwd, "fetch");
+            => ExecuteNonQuery(cwd, "fetch origin '*:*'");
 
         /// <summary>
         /// Pull update from remote
@@ -120,7 +119,7 @@ namespace Microsoft.Docs.Build
         /// List work trees for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        public static Task<List<string>> ListWorkTrees(string cwd)
+        public static Task<List<string>> ListWorkTrees(string cwd, bool includeMain)
             => ExecuteQuery(
                 cwd,
                 $"worktree list",
@@ -128,7 +127,19 @@ namespace Microsoft.Docs.Build
                 {
                     Debug.Assert(lines != null);
                     var worktreeLines = lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
-                    return worktreeLines.Select(s => s.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]).ToList();
+                    var workTreePaths = new List<string>();
+
+                    var i = 0;
+                    foreach (var workTreeLine in worktreeLines)
+                    {
+                        if (i++ > 0 || includeMain)
+                        {
+                            // The main worktree is listed first, followed by each of the linked worktrees.
+                            workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
+                        }
+                    }
+
+                    return workTreePaths;
                 },
                 TimeSpan.FromSeconds(30));
 
@@ -140,14 +151,6 @@ namespace Microsoft.Docs.Build
         /// <param name="path">The work tree path</param>
         public static Task AddWorkTree(string cwd, string commitHash, string path)
             => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
-
-        /// <summary>
-        /// Remove a work tree for a given repo
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="path">The to-be-removed work tree path</param>
-        public static Task RemoveWorkTree(string cwd, string path)
-            => ExecuteNonQuery(cwd, $"worktree remove -f {path}");
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
@@ -163,45 +166,29 @@ namespace Microsoft.Docs.Build
         public static Task<string> Revision(string cwd, string branch = "HEAD")
            => ExecuteQuery(cwd, $"rev-parse {branch}", TimeSpan.FromMinutes(3));
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: false);
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, parser, outputHandler);
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, parser, redirectOutput: true);
 
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler);
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: true);
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, bool redirectOutput)
         {
-            Debug.Assert(!string.IsNullOrEmpty(cwd));
+            if (!Directory.Exists(cwd))
+            {
+                throw new DirectoryNotFoundException($"Cannot find working directory '{cwd}'");
+            }
 
             try
             {
-                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler));
+                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, redirectOutput));
             }
             catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
-            }
-        }
-
-        private static void DefaultOutputHandler(string outputLine, bool isError)
-        {
-            if (string.IsNullOrEmpty(outputLine))
-            {
-                return;
-            }
-
-            if (isError)
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.WriteLine(outputLine);
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.WriteLine(outputLine);
             }
         }
     }

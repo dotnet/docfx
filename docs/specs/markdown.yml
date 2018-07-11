@@ -17,6 +17,20 @@ outputs:
     { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
   build.manifest:
 ---
+# Report warning when Yaml header has null value
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title:
+    ---
+    hello
+outputs:
+  docs/a.json:
+  build.manifest:
+  build.log: |
+    ["info","null-value","(Line: 1, Character: 1) title contains null value","docs/a.md"]
+---
 # Yaml header
 inputs:
   docfx.yml:
@@ -116,6 +130,21 @@ outputs:
       "metadata": { "metaKey": "metaValue" }
     }
   build.manifest:
+---
+# Errors from one file does not affect another file
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a:
+    a:
+    ---
+  docs/b.md:
+outputs:
+  docs/b.json:
+  build.manifest:
+  build.log: |
+    ["error","yaml-duplicate-key","(Line: 2, Character: 1) - (Line: 2, Character: 2): Key 'a' is already defined, remove the duplicate key.","docs/a.md"]
 ---
 # do not allow custom js, styles and css
 inputs:
