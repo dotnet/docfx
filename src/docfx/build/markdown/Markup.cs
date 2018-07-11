@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Markdig;
-using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -55,12 +54,7 @@ namespace Microsoft.Docs.Build
 
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(
-                GetToken,
-                LogWarning,
-                LogError,
-                ReadFile,
-                GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
