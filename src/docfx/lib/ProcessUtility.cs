@@ -31,11 +31,11 @@ namespace Microsoft.Docs.Build
                 FileName = fileName,
                 WorkingDirectory = cwd,
                 Arguments = commandLineArgs,
+                UseShellExecute = false,
             };
 
             if (redirectOutput)
             {
-                psi.UseShellExecute = false;
                 psi.CreateNoWindow = true;
                 psi.RedirectStandardOutput = redirectOutput;
                 psi.RedirectStandardError = redirectOutput;
