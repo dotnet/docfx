@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             // Verify restored files
             foreach (var (file, content) in spec.Restores)
             {
-                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).Single();
+                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
                 Assert.NotNull(restoredFile);
                 Assert.True(File.Exists(restoredFile));
                 VerifyFile(restoredFile, content);
