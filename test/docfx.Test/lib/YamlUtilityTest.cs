@@ -332,19 +332,20 @@ items:
             });
         }
 
-        [Fact]
-        public void TestMissingRequiredValue()
-        {
-            var yaml = @"
-name: 
-displayName: missing required name
-href: 
-items: []
-tocHref: 
-";
-            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<TableOfContentsInputItem>(yaml, true));
-            Assert.Equal("Path: 'name'. Invalid type. Expected String but got Null.", ex.Message);
-        }
+        // TODO: this test should only be run with newton json schema license
+//        [Fact]
+//        public void TestMissingRequiredValue()
+//        {
+//            var yaml = @"
+//name: 
+//displayName: missing required name
+//href: 
+//items: []
+//tocHref: 
+//";
+//            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<TableOfContentsInputItem>(yaml, true));
+//            Assert.Equal("Path: 'name'. Invalid type. Expected String but got Null.", ex.Message);
+//        }
 
         public class BasicClass
         {
