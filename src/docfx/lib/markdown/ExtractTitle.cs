@@ -28,16 +28,11 @@ namespace Microsoft.Docs.Build
 
         private static string RenderTitle(HeadingBlock h1)
         {
-            using (var writer = new StringWriter())
-            {
-                var renderer = new HtmlRenderer(writer);
-                var pipeline = new MarkdownPipelineBuilder().Build();
-                pipeline.Setup(renderer);
-                renderer.Render(h1);
-                writer.Flush();
+            var writer = new StringWriter();
+            var renderer = new HtmlRenderer(writer);
+            renderer.Render(h1);
 
-                return writer.ToString().Trim();
-            }
+            return writer.ToString().Trim();
         }
     }
 }
