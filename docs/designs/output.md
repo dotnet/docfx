@@ -128,10 +128,10 @@ These are called *browser navigation properties* and are stored in manifest.
 {
     "files": [
         {
-        "siteUrl": "/dotnet/api/system.string",
-        "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
-        "locale": "en-us",
-        "moniker": "netstandard-2.0", 
+            "siteUrl": "/dotnet/api/system.string",
+            "outputPath": "en-us/netstandard-2.0/dotnet/api/system.string.json",
+            "locale": "en-us",
+            "moniker": "netstandard-2.0", 
 
             // other browser navigation properties...
             // other properties needed for backward compatibility
