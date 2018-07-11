@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
     internal static class Restore
     {
         private const int MaxWorkTreeCount = 5;
-        private const int MaxAccessDurationInDays = 5;
 
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
@@ -36,7 +35,7 @@ namespace Microsoft.Docs.Build
                     {
                         // todo: Parallel competition issue for "get lock" and then "save lock"
                         var docsetLock = await RestoreOneDocset(docsetConfig, RestoreDocset);
-                        await RestoreLocker.Lock(docset, docsetLock);
+                        await RestoreLocker.Save(docset, docsetLock);
                     }
                 }
             }
@@ -98,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await ManageWorkTrees(restoreDir, hrefs);
+                var workTreeHeads = await GetWorkTrees(restoreDir, hrefs);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -111,7 +110,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> ManageWorkTrees(string restoreDir, List<string> hrefs)
+        private static async Task<List<(string href, string head)>> GetWorkTrees(string restoreDir, List<string> hrefs)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restorePath), ".lock");
@@ -122,53 +121,72 @@ namespace Microsoft.Docs.Build
                 lockRelativePath,
                 async () =>
                 {
-                    if (GitUtility.IsRepo(restoreDir))
-                    {
-                        // already exists, just pull the new updates from remote
-                        await GitUtility.Fetch(restorePath);
-                    }
-                    else
-                    {
-                        // doesn't exist yet, clone this repo to a specified branch
-                        await GitUtility.Clone(restoreDir, url, restorePath, null, true);
-                    }
+                    await FetchOrCloneRepo();
 
-                    var existingWorkTrees = new HashSet<string>(await GitUtility.ListWorkTrees(restorePath, false));
-                    var newWorkTrees = new ConcurrentBag<string>();
-                    await ParallelUtility.ForEach(hrefs, async href =>
+                    var (existingWorkTrees, newWorkTrees) = await AddWorkTrees();
+
+                    if (NeedCleanupWorkTrees(existingWorkTrees.Count))
                     {
-                        var (_, rev) = GetGitRemoteInfo(href);
-                        var workTreeHead = await GitUtility.Revision(restorePath, rev);
-                        var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                        if (existingWorkTrees.Add(workTreePath))
-                        {
-                            await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
-                        }
-
-                        newWorkTrees.Add(workTreePath);
-                        workTreeHeads.Add((href, workTreeHead));
-                    });
-
-                    if (existingWorkTrees.Count > MaxWorkTreeCount)
-                    {
-                        var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
-                        foreach (var newWorkTree in newWorkTrees)
-                        {
-                            // add newly added work tree
-                            allWorkTreesInUse.Add(newWorkTree);
-                        }
-
-                        foreach (var workTree in existingWorkTrees)
-                        {
-                            if (!allWorkTreesInUse.Contains(workTree))
-                            {
-                                // remove not used work tree
-                                Directory.Delete(workTree, true);
-                            }
-                        }
-                        await GitUtility.PruneWorkTrees(restorePath);
+                        await CleanupWorkTrees(existingWorkTrees, newWorkTrees);
                     }
                 });
+
+            async Task FetchOrCloneRepo()
+            {
+                if (GitUtility.IsRepo(restoreDir))
+                {
+                    // already exists, just pull the new updates from remote
+                    await GitUtility.Fetch(restorePath);
+                }
+                else
+                {
+                    // doesn't exist yet, clone this repo to a specified branch
+                    await GitUtility.Clone(restoreDir, url, restorePath, null, true);
+                }
+            }
+
+            async Task<(List<string> existingWorkTrees, List<string> newWorkTrees)> AddWorkTrees()
+            {
+                var existingWorkTrees = new ConcurrentDictionary<string, int>((await GitUtility.ListWorkTrees(restorePath, false)).ToDictionary(k => k, v => 0));
+                var newWorkTrees = new ConcurrentBag<string>();
+                await ParallelUtility.ForEach(hrefs, async href =>
+                {
+                    var (_, rev) = GetGitRemoteInfo(href);
+                    var workTreeHead = await GitUtility.Revision(restorePath, rev);
+                    var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                    if (existingWorkTrees.TryAdd(workTreePath, 0))
+                    {
+                        await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
+                    }
+
+                    newWorkTrees.Add(workTreePath);
+                    workTreeHeads.Add((href, workTreeHead));
+                });
+
+                return (existingWorkTrees.Keys.ToList(), newWorkTrees.ToList());
+            }
+
+            bool NeedCleanupWorkTrees(int existingWorkTreeCount) => existingWorkTreeCount > MaxWorkTreeCount;
+
+            async Task CleanupWorkTrees(List<string> existingWorkTrees, List<string> newWorkTrees)
+            {
+                var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
+                foreach (var newWorkTree in newWorkTrees)
+                {
+                    // add newly added work tree
+                    allWorkTreesInUse.Add(newWorkTree);
+                }
+
+                foreach (var workTree in existingWorkTrees)
+                {
+                    if (!allWorkTreesInUse.Contains(workTree))
+                    {
+                        // remove not used work tree
+                        Directory.Delete(workTree, true);
+                    }
+                }
+                await GitUtility.PruneWorkTrees(restorePath);
+            }
 
             Debug.Assert(hrefs.Count == workTreeHeads.Count);
             return workTreeHeads.ToList();
@@ -181,13 +199,6 @@ namespace Microsoft.Docs.Build
 
             foreach (var restoreLock in allLocks)
             {
-                var interval = DateTime.UtcNow - restoreLock.LastAccessData;
-                if (interval.TotalDays > MaxAccessDurationInDays)
-                {
-                    // The lock file was not used for a while, just ignore
-                    continue;
-                }
-
                 foreach (var (href, workTreeHead) in restoreLock.Git)
                 {
                     var rootDir = GetRestoreRootDir(href);

@@ -18,8 +18,6 @@ namespace Microsoft.Docs.Build
     {
         public Dictionary<string, string> Git { get; set; } = new Dictionary<string, string>();
 
-        public DateTime LastAccessData { get; set; } = DateTime.UtcNow;
-
         public bool IsEmpty => !Git.Any();
     }
 }

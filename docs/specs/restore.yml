@@ -16,7 +16,8 @@ outputs:
   build.manifest:
 ---
 # Restored dependency repo can't be found
-restore: false
+commands:
+  - build
 inputs:
   docfx.yml: |
     dependencies:

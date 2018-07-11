@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreLocker
     {
-        public static Task Lock(string docset, RestoreLock restoreLock)
+        public static Task Save(string docset, RestoreLock restoreLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -50,7 +50,6 @@ namespace Microsoft.Docs.Build
                     if (File.Exists(restoreLockFilePath))
                     {
                         restore = JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2;
-                        File.WriteAllText(restoreLockFilePath, JsonUtility.Serialize(restore));
                     }
 
                     return Task.CompletedTask;
