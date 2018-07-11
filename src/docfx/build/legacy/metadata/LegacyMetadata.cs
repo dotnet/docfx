@@ -127,9 +127,19 @@ namespace Microsoft.Docs.Build
             {
                 if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
                 {
-                    string content = item.Value is JArray
-                        ? string.Join(",", item.Value)
-                        : item.Value.ToString();
+                    string content;
+                    if (item.Value is JArray)
+                    {
+                        content = string.Join(",", item.Value);
+                    }
+                    else if (item.Value.Type == JTokenType.Boolean)
+                    {
+                        content = (bool)item.Value ? "true" : "false";
+                    }
+                    else
+                    {
+                        content = item.Value.ToString();
+                    }
                     if (!string.IsNullOrEmpty(content))
                     {
                         pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item.Key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
