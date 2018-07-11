@@ -133,8 +133,8 @@ These are called *browser navigation properties* and are stored in manifest.
         "locale": "en-us",
         "moniker": "netstandard-2.0", 
 
-        // other browser navigation properties...
-        // other properties needed for backward compatibility
+            // other browser navigation properties...
+            // other properties needed for backward compatibility
         }, 
         {
             "siteUrl": "/dotnet/api/system.string",
