@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                             if (!allWorkTreesInUse.Contains(workTree))
                             {
                                 // remove not used work tree
-                                await GitUtility.RemoveWorkTree(restorePath, workTree);
+                                Directory.Delete(workTree, true);
                             }
                         }
                         await GitUtility.PruneWorkTrees(restorePath);

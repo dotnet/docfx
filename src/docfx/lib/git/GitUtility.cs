@@ -153,14 +153,6 @@ namespace Microsoft.Docs.Build
             => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
 
         /// <summary>
-        /// Remove a work tree for a given repo
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="path">The to-be-removed work tree path</param>
-        public static Task RemoveWorkTree(string cwd, string path)
-            => ExecuteNonQuery(cwd, $"worktree remove --force {path}");
-
-        /// <summary>
         /// Prune work trees which are not connected with an given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
