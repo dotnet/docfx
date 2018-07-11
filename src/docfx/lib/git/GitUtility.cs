@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
         public static Task Fetch(string cwd)
-            => ExecuteNonQuery(cwd, "fetch");
+            => ExecuteNonQuery(cwd, "fetch origin '*:*'");
 
         /// <summary>
         /// Pull update from remote
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (i++ > 0 || includeMain)
                         {
-                            // The main worktree is listed first, followed by each of the linked worktrees. 
+                            // The main worktree is listed first, followed by each of the linked worktrees.
                             workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
                         }
                     }
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <param name="path">The to-be-removed work tree path</param>
         public static Task RemoveWorkTree(string cwd, string path)
-            => ExecuteNonQuery(cwd, $"worktree remove -f {path}");
+            => ExecuteNonQuery(cwd, $"worktree remove --force {path}");
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo

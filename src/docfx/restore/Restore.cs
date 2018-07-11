@@ -6,14 +6,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        private static readonly int s_maxWorkTreeCount = 5;
-        private static readonly int s_maxAccessDurationInDays = 5;
+        private const int MaxWorkTreeCount = 5;
+        private const int MaxAccessDurationInDays = 5;
 
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
@@ -26,7 +27,6 @@ namespace Microsoft.Docs.Build
                 report.Configure(docsetPath, config);
 
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
-                var restoreLockMaps = new ConcurrentDictionary<string, RestoreLock>(PathUtility.PathComparer);
 
                 await RestoreDocset(docsetPath);
 
@@ -34,14 +34,10 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
+                        // todo: Parallel competition issue for "get lock" and then "save lock"
                         var docsetLock = await RestoreOneDocset(docsetConfig, RestoreDocset);
-                        restoreLockMaps.TryAdd(docset, docsetLock);
+                        await RestoreLocker.Lock(docset, docsetLock);
                     }
-                }
-
-                foreach (var (docset, restoreLock) in restoreLockMaps)
-                {
-                    await RestoreLocker.Lock(docset, restoreLock);
                 }
             }
         }
@@ -75,14 +71,19 @@ namespace Microsoft.Docs.Build
         private static async Task<RestoreLock> RestoreOneDocset(Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
+            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
 
             // process git restore items
             await ParallelUtility.ForEach(
-               config.Dependencies.Values,
-               async href =>
+               restoreItems,
+               async restoreItem =>
                {
-                   var workTreeHead = await RestoreDependentRepo(href);
-                   workTreeMappings.Add((href, workTreeHead));
+                   var (restoreDir, hrefs) = restoreItem;
+                   var workTreeHeads = await RestoreDependentRepo(restoreDir, hrefs);
+                   foreach (var workTreeHead in workTreeHeads)
+                   {
+                       workTreeMappings.Add(workTreeHead);
+                   }
                },
                progress: Progress.Update);
 
@@ -95,25 +96,28 @@ namespace Microsoft.Docs.Build
             // todo: restore other items, @renze
             return result;
 
-            async Task<string> RestoreDependentRepo(string href)
+            async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var (childDir, workTreeHead) = await FetchOrCloneDependentRepo(href);
-                await restoreChild(childDir);
+                var workTreeHeads = await ManageWorkTrees(restoreDir, hrefs);
 
-                return workTreeHead;
+                foreach (var (_, workTreeHead) in workTreeHeads)
+                {
+                    var childDir = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                    await restoreChild(childDir);
+                }
+
+                return workTreeHeads;
             }
         }
 
-        // Fetch or clone dependent repo to local and create work tree
-        private static async Task<(string workTreePath, string workTreeHead)> FetchOrCloneDependentRepo(string href)
+        // Restore dependent repo to local and create work tree
+        private static async Task<List<(string href, string head)>> ManageWorkTrees(string restoreDir, List<string> hrefs)
         {
-            var (url, rev) = GetGitRemoteInfo(href);
-            var restoreDir = GetRestoreRootDir(url);
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
-            var workTreeHead = string.Empty;
-            var workTreePath = string.Empty;
+            var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restorePath), ".lock");
+            var (url, _) = GetGitRemoteInfo(hrefs.First());
+            var workTreeHeads = new ConcurrentBag<(string href, string head)>();
 
-            var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restoreDir), ".lock");
             await ProcessUtility.ProcessLock(
                 lockRelativePath,
                 async () =>
@@ -129,21 +133,36 @@ namespace Microsoft.Docs.Build
                         await GitUtility.Clone(restoreDir, url, restorePath, null, true);
                     }
 
-                    workTreeHead = await GitUtility.Revision(restorePath, rev);
-                    workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                    var workTrees = new HashSet<string>(await GitUtility.ListWorkTrees(restorePath, false));
-                    if (workTrees.Add(workTreePath))
+                    var existingWorkTrees = new HashSet<string>(await GitUtility.ListWorkTrees(restorePath, false));
+                    var newWorkTrees = new ConcurrentBag<string>();
+                    await ParallelUtility.ForEach(hrefs, async href =>
                     {
-                        await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
-                    }
+                        var (_, rev) = GetGitRemoteInfo(href);
+                        var workTreeHead = await GitUtility.Revision(restorePath, rev);
+                        var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                        if (existingWorkTrees.Add(workTreePath))
+                        {
+                            await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
+                        }
 
-                    if (workTrees.Count > s_maxWorkTreeCount)
+                        newWorkTrees.Add(workTreePath);
+                        workTreeHeads.Add((href, workTreeHead));
+                    });
+
+                    if (existingWorkTrees.Count > MaxWorkTreeCount)
                     {
                         var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
-                        foreach (var workTree in workTrees)
+                        foreach (var newWorkTree in newWorkTrees)
+                        {
+                            // add newly added work tree
+                            allWorkTreesInUse.Add(newWorkTree);
+                        }
+
+                        foreach (var workTree in existingWorkTrees)
                         {
                             if (!allWorkTreesInUse.Contains(workTree))
                             {
+                                // remove not used work tree
                                 await GitUtility.RemoveWorkTree(restorePath, workTree);
                             }
                         }
@@ -151,10 +170,8 @@ namespace Microsoft.Docs.Build
                     }
                 });
 
-            Debug.Assert(!string.IsNullOrEmpty(workTreeHead));
-            Debug.Assert(!string.IsNullOrEmpty(workTreePath));
-
-            return (workTreePath, workTreeHead);
+            Debug.Assert(hrefs.Count == workTreeHeads.Count);
+            return workTreeHeads.ToList();
         }
 
         private static async Task<HashSet<string>> GetAllWorkTreePaths(string restoreDir)
@@ -165,9 +182,9 @@ namespace Microsoft.Docs.Build
             foreach (var restoreLock in allLocks)
             {
                 var interval = DateTime.UtcNow - restoreLock.LastAccessData;
-                if (interval.TotalDays > s_maxAccessDurationInDays)
+                if (interval.TotalDays > MaxAccessDurationInDays)
                 {
-                    // The lock file was not used for a long time, just ignore
+                    // The lock file was not used for a while, just ignore
                     continue;
                 }
 
