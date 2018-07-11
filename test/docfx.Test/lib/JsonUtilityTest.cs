@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             var (errors, result) = JsonUtility.Deserialize<JToken>(json);
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("contains null value", error.Message);
             });
@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
             var (errors, result) = JsonUtility.Deserialize<JToken>(json);
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("contains null value", error.Message);
             });

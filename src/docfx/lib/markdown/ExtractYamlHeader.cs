@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is YamlFrontMatterBlock yamlHeader)
                     {
+                        // TODO: fix line info in yamlErrors is not accurate due to offset in markdown
                         var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
 
                         if (yamlHeaderObj is JObject obj)

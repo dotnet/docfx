@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
         public static Error NullValue(Range range, string name)
-            => new Error(ErrorLevel.Warning, "null-value", $"{range} {name} contains null value");
+            => new Error(ErrorLevel.Info, "null-value", $"{range} {name} contains null value");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
