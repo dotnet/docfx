@@ -85,16 +85,16 @@ namespace Microsoft.Docs.Build
         {
             var (errors, token) = Deserialize(reader);
             if (schemaValidation)
-                token.ValidateSchema(typeof(T));
+                errors.AddRange(token.ValidateSchema(typeof(T)));
             return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize a string to an object
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string json)
+        public static (List<Error>, T) Deserialize<T>(string json, bool schemaValidation = false)
         {
-            return Deserialize<T>(new StringReader(json));
+            return Deserialize<T>(new StringReader(json), schemaValidation);
         }
 
         /// <summary>
@@ -140,10 +140,13 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static void ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
+        public static List<Error> ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
         {
             // TODO: Get the license somewhere
-            RegisterLicense(string.Empty);
+            var registerErrors = RegisterLicense(string.Empty);
+            if (registerErrors.Any())
+                return registerErrors;
+
             var generator = new JSchemaGenerator() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var schema = generator.Generate(type, true);
             var schemaString = schema.ToString();
@@ -152,6 +155,8 @@ namespace Microsoft.Docs.Build
                 var error = errors.First();
                 throw Errors.SchemaError($"Path: '{error.Path}'. {error.Message}").ToException();
             }
+
+            return new List<Error>();
         }
 
         private static bool IsNullOrUndefined(this JToken token)

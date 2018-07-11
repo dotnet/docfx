@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
 
             if (type != null && schemaValidation)
             {
-                token.ValidateSchema(type, mappings);
+                errors.AddRange(token.ValidateSchema(type, mappings));
             }
 
             if (nullValidation)
