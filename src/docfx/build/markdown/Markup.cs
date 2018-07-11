@@ -62,18 +62,14 @@ namespace Microsoft.Docs.Build
                 ReadFile,
                 GetLink);
 
-            var builder = new MarkdownPipelineBuilder()
+            return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref);
-
-            // This extensions is currently not thread safe
-            builder.Extensions.Remove(builder.Extensions.Find<AutoIdentifierExtension>());
-
-            return builder.Build();
+                .UseResolveXref(ResolveXref)
+                .Build();
         }
 
         private static string GetToken(string key)
