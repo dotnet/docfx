@@ -18,30 +18,26 @@ namespace Microsoft.Docs.Build
             _outputPath = Path.GetFullPath(outputPath);
         }
 
-        /// <summary>
-        /// Reports errors and warnings defined in <see cref="Errors"/>.
-        /// </summary>
         public void Report(Document file, IEnumerable<Error> errors)
         {
             Report(file.ToString(), errors);
         }
 
-        /// <summary>
-        /// Reports errors and warnings defined in <see cref="Errors"/>.
-        /// </summary>
         public void Report(string file, IEnumerable<Error> errors)
         {
             foreach (var error in errors)
             {
-                Report(file == error.File || !string.IsNullOrEmpty(error.File)
-                    ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
+                Report(file, error);
             }
         }
 
-        /// <summary>
-        /// Reports an error or warning defined in <see cref="Errors"/>.
-        /// </summary>
+        public void Report(string file, Error error)
+        {
+            Report(file == error.File || !string.IsNullOrEmpty(error.File)
+                    ? error
+                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
+        }
+
         public void Report(Error error)
         {
             _report.Write(error);

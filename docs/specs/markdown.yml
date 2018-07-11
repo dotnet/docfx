@@ -131,6 +131,21 @@ outputs:
     }
   build.manifest:
 ---
+# Errors from one file does not affect another file
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    a:
+    a:
+    ---
+  docs/b.md:
+outputs:
+  docs/b.json:
+  build.manifest:
+  build.log: |
+    ["error","yaml-duplicate-key","(Line: 2, Character: 1) - (Line: 2, Character: 2): Key 'a' is already defined, remove the duplicate key.","docs/a.md"]
+---
 # do not allow custom js, styles and css
 inputs:
   docfx.yml:
