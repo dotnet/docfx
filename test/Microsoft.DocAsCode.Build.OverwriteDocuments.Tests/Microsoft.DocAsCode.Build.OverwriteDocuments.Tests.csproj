@@ -4,7 +4,7 @@
   </PropertyGroup>
   <Import Project="..\Shared\test.base.props" />
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.14.9" />
+    <PackageReference Include="Markdig" Version="0.15.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj" />
