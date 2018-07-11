@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (YamlMime.ReadMime(file.File) == null)
             {
                 Logger.LogWarning(
-                    "Please add yamlmime in the first line of file, e.g.: `### YamlMime:ManagedReference`, we will decline yaml files without yamlmime in next release.",
+                    "Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.",
                     file: file.File,
                     code: WarningCodes.Yaml.MissingYamlMime);
             }
