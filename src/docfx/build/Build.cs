@@ -63,13 +63,7 @@ namespace Microsoft.Docs.Build
 
                 bool ShouldBuildFile(Document file)
                 {
-                    if (file.ContentType == ContentType.Unknown)
-                        return false;
-                    if (!fileListBuilder.TryAdd(file))
-                        return false;
-                    if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
-                        return false;
-                    return true;
+                    return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
                 }
             }
         }
@@ -102,7 +96,10 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            context.Copy(file, file.FilePath);
+            if (file.Docset.Config.Output.CopyResources)
+            {
+                context.Copy(file, file.FilePath);
+            }
             return Task.FromResult(DependencyMap.Empty);
         }
 
