@@ -208,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogWarning(
                     $"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}",
-                    WarningCodes.Build.UnknownContentType);
+                    code: WarningCodes.Build.UnknownContentType);
             }
 
             try
