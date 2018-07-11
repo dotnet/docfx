@@ -64,35 +64,33 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
+        public static (List<Error>, T) Deserialize<T>(string input, bool schemaValidation = false, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input), nullValidation);
+            return Deserialize<T>(new StringReader(input), schemaValidation, nullValidation);
         }
 
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool schemaValidation = false, bool nullValidation = true)
         {
-            var (errors, mappings, json) = Deserialize(reader, nullValidation, typeof(T));
-            var schemaErrors = json.ValidateSchema(typeof(T), mappings);
-            errors.AddRange(schemaErrors);
+            var (errors, mappings, json) = Deserialize(reader, schemaValidation, nullValidation, typeof(T));
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
+        public static (List<Error>, JToken) Deserialize(string input, bool schemaValidation = false, bool nullValidation = true)
         {
-            var (errors, _, token) = Deserialize(new StringReader(input), nullValidation);
+            var (errors, _, token) = Deserialize(new StringReader(input), schemaValidation, nullValidation);
             return (errors, token);
         }
 
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error>, JTokenSourceMap, JToken) Deserialize(TextReader reader, bool nullValidation = true, Type type = null)
+        public static (List<Error>, JTokenSourceMap, JToken) Deserialize(TextReader reader, bool schemaValidation = false, bool nullValidation = true, Type type = null)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
@@ -121,14 +119,15 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
 
+            var token = ToJson(stream.Documents[0].RootNode, mappings);
+
+            if (type != null && schemaValidation)
+            {
+                token.ValidateSchema(type, mappings);
+            }
+
             if (nullValidation)
             {
-                JToken token = ToJson(stream.Documents[0].RootNode, mappings);
-                if (type != null)
-                {
-                    var schemaErrors = token.ValidateSchema(type, mappings);
-                    errors.AddRange(schemaErrors);
-                }
                 var nullErrors = new List<Error>();
                 (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
                 errors.AddRange(nullErrors);
@@ -136,11 +135,11 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (errors, mappings, ToJson(stream.Documents[0].RootNode));
+                return (errors, mappings, token);
             }
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
+        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -200,9 +199,6 @@ namespace Microsoft.Docs.Build
 
         private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
         {
-            if (mappings == null)
-                return value;
-
             mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
             return value;
         }

@@ -333,21 +333,17 @@ items:
         }
 
         [Fact]
-        public void TestKeyNotFoundInSchema()
+        public void TestMissingRequiredValue()
         {
             var yaml = @"
-A: A
-B: 1
-C: C
-D: false
+name: 
+displayName: missing required name
+href: 
+items: []
+tocHref: 
 ";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("schema-key-not-found", error.Code);
-                Assert.Contains("Key 'A' not found in schema", error.Message);
-            });
+            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<TableOfContentsInputItem>(yaml, true));
+            Assert.Equal("Path: 'name'. Invalid type. Expected String but got Null.", ex.Message);
         }
 
         public class BasicClass

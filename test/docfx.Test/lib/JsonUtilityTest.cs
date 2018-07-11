@@ -248,19 +248,6 @@ namespace Microsoft.Docs.Build
             var exception = Assert.Throws<ArgumentNullException>(() => JsonUtility.Deserialize<JToken>(json));
         }
 
-        [Fact]
-        public void TestKeyNotFoundInSchema()
-        {
-            var json = "{\"A\":\"A\", \"B\":1, \"C\":\"C\", \"D\":true}";
-            var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("schema-key-not-found", error.Code);
-                Assert.Contains("Key 'A' not found in schema", error.Message);
-            });
-        }
-
         public class BasicClass
         {
             public string C { get; set; }

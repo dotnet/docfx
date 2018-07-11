@@ -81,11 +81,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool schemaValidation = false)
         {
             var (errors, token) = Deserialize(reader);
-            var schemaErros = token.ValidateSchema(typeof(T));
-            errors.AddRange(schemaErros);
+            if (schemaValidation)
+                token.ValidateSchema(typeof(T));
             return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
@@ -140,39 +140,20 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static IEnumerable<Error> ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
+        public static void ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
         {
             // TODO: Get the license somewhere
-            RegisterLicense(string.Empty);
-
-            var settings = new JSchemaReaderSettings
-            {
-                Validators = new List<JsonValidator> { new JsonKeyNoutFoundInSchemaValidator() },
-            };
-            var temp = new JSchemaGenerator().Generate(type);
-            var schema = JSchema.Parse(temp.ToString(), settings);
+            var license = "3390-vvJqYRx6mHhaH/EPFIK0LZTuUGqF1UwcTXxzg8eqoMw9fKlPncs11b93rDbwjV6Q+vc9KFWHVGFTQxGqnAwxugxKpveLgP8XwYkrGyI98oIQJdkRa0d2+kEn81OcXjuK0pgVAtArDemN6y3eUdqb3AZQ61DWLKPGVWud9yfDoNl7IklkIjozMzkwLCJFeHBpcnlEYXRlIjoiMjAxOC0wNS0wNFQwNzoyODozMC41MDYxMzMzWiIsIlR5cGUiOiJKc29uU2NoZW1hU2l0ZSJ9";
+            //RegisterLicense(string.Empty);
+            RegisterLicense(license);
+            var generator = new JSchemaGenerator() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var schema = generator.Generate(type, true);
+            var schemaString = schema.ToString();
             if (!token.IsValid(schema, out IList<ValidationError> errors))
             {
-                if (mappings == null)
-                {
-                    return errors
-                        .Where(x => x.Message.Contains("not found in schema"))
-                        .Select(x => Errors.KeyNotFoundInSchema((x.Value as ValidationErrorValue).Range, x.Message));
-                }
-                else
-                {
-                    var result = new List<Error>();
-                    foreach (var error in errors)
-                    {
-                        if (error.Message.Contains("not found in schema"))
-                        {
-                            result.Add(Errors.KeyNotFoundInSchema(new Range(0, 0), error.Message));
-                        }
-                    }
-                    return result;
-                }
+                var error = errors.First();
+                throw Errors.SchemaError($"Path: '{error.Path}'. {error.Message}").ToException();
             }
-            return Enumerable.Empty<Error>();
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -270,37 +251,6 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.JsonSchemaLicenseIssue(ex));
             }
             return errors;
-        }
-
-        private sealed class JsonKeyNoutFoundInSchemaValidator : JsonValidator
-        {
-            public override bool CanValidate(JSchema schema)
-            {
-                return schema.Type == JSchemaType.Object;
-            }
-
-            public override void Validate(JToken value, JsonValidatorContext context)
-            {
-                var keysNotInSchema = value.Children<JProperty>().Where(x => !context.Schema.Properties.ContainsKey((x as JProperty)?.Name));
-                foreach (var item in keysNotInSchema)
-                {
-                    var lineInfo = item as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    context.RaiseError($"Key '{(item as JProperty)?.Name}' not found in schema", new ValidationErrorValue(range, value));
-                }
-            }
-        }
-
-        private sealed class ValidationErrorValue
-        {
-            public readonly Range Range;
-            public readonly JToken Token;
-
-            public ValidationErrorValue(Range range, JToken token)
-            {
-                Range = range;
-                Token = token;
-            }
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver

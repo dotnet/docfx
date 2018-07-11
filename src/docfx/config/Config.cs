@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
         private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
         {
             // TODO: support URL
-            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath), false);
             if (errors.Any())
             {
                 throw errors[0].ToException();
