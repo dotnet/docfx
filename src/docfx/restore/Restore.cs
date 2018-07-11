@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
                         // todo: Parallel competition issue for "get lock" and then "save lock"
-                        var docsetLock = await RestoreOneDocset(docsetConfig, RestoreDocset);
+                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset);
                         await RestoreLocker.Save(docset, docsetLock);
                     }
                 }
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(Config config, Func<string, Task> restoreChild)
+        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
             var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await GetWorkTrees(restoreDir, hrefs);
+                var workTreeHeads = await GetWorkTrees(docsetPath, restoreDir, hrefs);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> GetWorkTrees(string restoreDir, List<string> hrefs)
+        private static async Task<List<(string href, string head)>> GetWorkTrees(string docsetPath, string restoreDir, List<string> hrefs)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restorePath), ".lock");
@@ -127,7 +127,10 @@ namespace Microsoft.Docs.Build
 
                     if (NeedCleanupWorkTrees(existingWorkTrees.Count))
                     {
-                        await CleanupWorkTrees(existingWorkTrees, newWorkTrees);
+                        using (Progress.Start($"Cleanup `{restoreDir}` work trees"))
+                        {
+                            await CleanupWorkTrees(existingWorkTrees, newWorkTrees);
+                        }
                     }
                 });
 
@@ -170,7 +173,7 @@ namespace Microsoft.Docs.Build
 
             async Task CleanupWorkTrees(List<string> existingWorkTrees, List<string> newWorkTrees)
             {
-                var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
+                var allWorkTreesInUse = await GetAllWorkTreePaths(docsetPath, restoreDir);
                 foreach (var newWorkTree in newWorkTrees)
                 {
                     // add newly added work tree
@@ -192,9 +195,13 @@ namespace Microsoft.Docs.Build
             return workTreeHeads.ToList();
         }
 
-        private static async Task<HashSet<string>> GetAllWorkTreePaths(string restoreDir)
+        private static async Task<HashSet<string>> GetAllWorkTreePaths(string docsetPath, string restoreDir)
         {
-            var allLocks = await RestoreLocker.LoadAll();
+            var allLocks = await RestoreLocker.LoadAll(
+                file => !string.Equals(
+                    PathUtility.NormalizeFile(file),
+                    PathUtility.NormalizeFile(RestoreLocker.GetRestoreLockFilePath(docsetPath)),
+                    PathUtility.PathComparison));
             var workTreePaths = new HashSet<string>();
 
             foreach (var restoreLock in allLocks)

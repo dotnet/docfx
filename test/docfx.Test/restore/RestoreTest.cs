@@ -32,51 +32,34 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task RestoreGitWorkTrees()
         {
-            // prepare denepdency repo and work trees to clean
             var docsetPath = ".restore_clean";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
-            var testBranches = new[] { "master", "chi", "test-clean-1", "test-clean-2", "test-clean-3", "test-clean-4" };
-
             Directory.CreateDirectory(docsetPath);
-            var restoreDir = Restore.GetRestoreRootDir(gitUrl);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
-            await ProcessUtility.ProcessLock(
-                Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restorePath), ".lock"),
-                async () =>
-                {
-                    if (GitUtility.IsRepo(restoreDir))
-                    {
-                        // already exists, just pull the new updates from remote
-                        await GitUtility.Fetch(restorePath);
-                    }
-                    else
-                    {
-                        // doesn't exist yet, clone this repo to a specified branch
-                        await GitUtility.Clone(restoreDir, gitUrl, restorePath, null, true);
-                    }
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(Restore.GetRestoreRootDir(gitUrl), ".git"));
 
-                    var workTrees = new HashSet<string>(await GitUtility.ListWorkTrees(restorePath, false));
-                    await ParallelUtility.ForEach(testBranches, async testBranch =>
-                    {
-                        var workTreeHead = await GitUtility.Revision(restorePath, testBranch);
-                        var workTreePath = Restore.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                        if (workTrees.Add(workTreePath))
-                        {
-                            await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
-                        }
-                    });
-                });
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+dependencies:
+  dep1: {gitUrl}#test-clean-1
+  dep2: {gitUrl}#test-clean-2
+  dep3: {gitUrl}#test-clean-3
+  dep4: {gitUrl}#test-clean-4
+  dep5: {gitUrl}#master
+  dep6: {gitUrl}#chi");
 
-            // run restore
+            // run restroe and check the work trees
+            await Program.Run(new[] { "restore", docsetPath });
+            var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
+            Assert.Equal(6, workTreeList.Count);
+
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
-            await Restore.Run(docsetPath, new CommandLineOptions(), new Report());
-
+            // run restore again to clean up
             // check the work trees
-            var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
+            await Program.Run(new[] { "restore", docsetPath });
+            workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(2, workTreeList.Count);
 
             // check restore lock file

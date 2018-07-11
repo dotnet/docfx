@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
             return restore;
         }
 
-        public static async Task<List<RestoreLock>> LoadAll()
+        public static async Task<List<RestoreLock>> LoadAll(Func<string, bool> predicate = null)
         {
             var restoreLocks = new ConcurrentBag<RestoreLock>();
             await ParallelUtility.ForEach(Directory.EnumerateFiles(AppData.RestoreLockDir, "*", SearchOption.TopDirectoryOnly), async restoreLockFilePath =>
@@ -69,7 +70,10 @@ namespace Microsoft.Docs.Build
                 {
                     if (File.Exists(restoreLockFilePath))
                     {
-                        restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
+                        if (predicate == null || predicate(restoreLockFilePath))
+                        {
+                            restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
+                        }
                     }
 
                     return Task.CompletedTask;
@@ -79,7 +83,7 @@ namespace Microsoft.Docs.Build
             return restoreLocks.ToList();
         }
 
-        private static string GetRestoreLockFilePath(string docset)
+        public static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
             var docsetKey = Path.GetFileName(docset) + "-" + PathUtility.Encode(HashUtility.GetMd5String(docset));
