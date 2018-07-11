@@ -26,9 +26,9 @@ namespace Microsoft.Docs.Build
         SchemaDocument,
 
         /// <summary>
-        /// Static asserts copied to output
+        /// Static resources copied to output
         /// </summary>
-        Asset,
+        Resource,
 
         /// <summary>
         /// Redirected documents specifed in redirection config

@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                     case ContentType.Redirection:
                         LegacyMarkdown.Convert(docset, context, document, contribution, manifestItem.Output, tocMap);
                         break;
-                    case ContentType.Asset:
+                    case ContentType.Resource:
                         LegacyResource.Convert(docset, context, document, manifestItem.Output);
                         break;
                 }

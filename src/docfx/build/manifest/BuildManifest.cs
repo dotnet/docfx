@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
         {
             return new FileManifest
             {
+                SourcePath = doc.FilePath,
                 SiteUrl = doc.SiteUrl,
                 OutputPath = doc.OutputPath,
             };

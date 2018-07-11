@@ -1,5 +1,5 @@
 ---
-# `build.manifest` contains files to publish
+# Manifest contains files to publish
 inputs:
   docfx.yml:
   docs/a.md:
@@ -21,7 +21,22 @@ outputs:
       ]
     }
 ---
-# `build.manifest` contains Toc dependencies
+# Manifest contains sourcePath when copyResources is set to false
+inputs:
+  docfx.yml: |
+    content: '**'
+    output:
+      copyResources: false
+  a.png:
+outputs:
+  build.manifest: |
+    {
+      "files": [
+        { "siteUrl": "/a.png", "sourcePath": "a.png" }
+      ]
+    }
+---
+# Manifest contains Toc dependencies
 inputs:
   docfx.yml:
   docs/a.md:
@@ -42,7 +57,7 @@ outputs:
        }
     }
 ---
-# `build.manifest` contains Inclusion dependencies
+# Manifest contains Inclusion dependencies
 inputs:
   docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)]
@@ -62,7 +77,7 @@ outputs:
        }
     }
 ---
-# `build.manifest` contains link dependencies
+# Manifest contains link dependencies
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b.md)
@@ -82,7 +97,7 @@ outputs:
        }
     }
 ---
-# `build.manifest` contains nested token or codesnippet dependencies
+# Manifest contains nested token or codesnippet dependencies
 inputs:
   docfx.yml:
   docs/a.md: a [!INCLUDE[](b.md)
@@ -116,7 +131,7 @@ outputs:
        }
     }
 ---
-# `build.manifest` contains nested TOC dependencies
+# Manifest contains nested TOC dependencies
 inputs:
   docfx.yml:
   docs/TOC.md: |
@@ -145,7 +160,7 @@ outputs:
        }
     }
 ---
-# `build.manifest` inclusion circular reference
+# Manifest inclusion circular reference
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -177,7 +192,7 @@ outputs:
     ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
 
 ---
-# `build.manifest` link circular reference
+# Manifest link circular reference
 inputs:
   docfx.yml:
   docs/a.md: |

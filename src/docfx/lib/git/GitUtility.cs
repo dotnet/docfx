@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             if (bare)
                 cmd += " --bare";
 
-            return ExecuteNonQuery(cwd, cmd, null, (outputLine, isError) => DefaultOutputHandler(outputLine, false) /*git clone always put progress to standard error*/);
+            return ExecuteNonQuery(cwd, cmd, null);
         }
 
         /// <summary>
@@ -166,45 +166,29 @@ namespace Microsoft.Docs.Build
         public static Task<string> Revision(string cwd, string branch = "HEAD")
            => ExecuteQuery(cwd, $"rev-parse {branch}", TimeSpan.FromMinutes(3));
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler ?? DefaultOutputHandler);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: false);
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, parser, outputHandler);
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, parser, redirectOutput: true);
 
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null, Action<string, bool> outputHandler = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, outputHandler);
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
+            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: true);
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, Action<string, bool> outputHandler)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, bool redirectOutput)
         {
-            Debug.Assert(!string.IsNullOrEmpty(cwd));
+            if (!Directory.Exists(cwd))
+            {
+                throw new DirectoryNotFoundException($"Cannot find working directory '{cwd}'");
+            }
 
             try
             {
-                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, outputHandler));
+                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, redirectOutput));
             }
             catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
-            }
-        }
-
-        private static void DefaultOutputHandler(string outputLine, bool isError)
-        {
-            if (string.IsNullOrEmpty(outputLine))
-            {
-                return;
-            }
-
-            if (isError)
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.WriteLine(outputLine);
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.WriteLine(outputLine);
             }
         }
     }

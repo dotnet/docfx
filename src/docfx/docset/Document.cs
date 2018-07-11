@@ -269,7 +269,7 @@ namespace Microsoft.Docs.Build
                 return ContentType.SchemaDocument;
             }
 
-            return ContentType.Asset;
+            return ContentType.Resource;
         }
 
         internal static string FilePathToSitePath(string path, ContentType contentType)
