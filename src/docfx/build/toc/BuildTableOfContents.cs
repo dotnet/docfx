@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return Task.FromResult(dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(IEnumerable<Document> files)
+        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -47,22 +47,30 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Progress.Update);
+                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static Task BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static Task BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
-            Debug.Assert(tocMapBuilder != null);
-            Debug.Assert(fileToBuild != null);
+            try
+            {
+                Debug.Assert(tocMapBuilder != null);
+                Debug.Assert(fileToBuild != null);
 
-            var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+                var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
-            tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+                tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            }
+            catch (DocfxException ex)
+            {
+                context.Report(fileToBuild.ToString(), ex.Error);
+                return Task.CompletedTask;
+            }
         }
 
         private static (
