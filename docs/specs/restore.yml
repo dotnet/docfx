@@ -3,9 +3,27 @@
 inputs:
   docfx.yml: |
     dependencies:
-      docfx-test-dependencies: https://github.com/docascode/docfx-test-dependencies
+      docfx-test-dependencies1: https://github.com/docascode/docfx-test-dependencies
+      docfx-test-dependencies2: https://github.com/docascode/docfx-test-dependencies
 restores:
   git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
+  restore_lock/01. Restore dependencies with their children-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
+  restore_lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
   build.manifest:
+---
+# Restored dependency repo can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies#not-exist-branch
+  docs/a.md: '[!include[dep](~/dep/dep.md)]'
+outputs:
+  build.manifest:
+  build.log: |
+    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, make sure the `restore` command was executed","docs/a.md"]

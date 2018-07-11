@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 
         public readonly string Repo;
 
+        public readonly string[] Commands = new[] { "restore", "build" };
+
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
