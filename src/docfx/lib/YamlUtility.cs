@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, JToken token) DeserializeAndValidateSchemaAgainstType(TextReader reader, Type type, bool nullValidation = true)
         {
             var (errors, mappings, token) = Deserialize(reader);
-            errors.AddRange(token.ValidateSchemaAgainstType(type, mappings));
+            errors.AddRange(token.ValidateSchemaAgainstType(type));
             if (nullValidation)
             {
                 var nullErrors = new List<Error>();

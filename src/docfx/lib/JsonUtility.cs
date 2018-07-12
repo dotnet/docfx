@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static IEnumerable<Error> ValidateSchemaAgainstType(this JToken token, Type type, JTokenSourceMap mappings = null)
+        public static IEnumerable<Error> ValidateSchemaAgainstType(this JToken token, Type type)
         {
             // TODO: Get the license somewhere
             var registerError = RegisterLicense(string.Empty);
