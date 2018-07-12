@@ -154,12 +154,12 @@ namespace Microsoft.Docs.Build
                 throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
             }
 
-            Validate(config, configPath);
+            Validate(config);
 
             return config;
         }
 
-        private static void Validate(Config config, string configPath)
+        private static void Validate(Config config)
         {
             ValidateLocale(config);
         }
