@@ -113,12 +113,11 @@ namespace Microsoft.Docs.Build
         private static async Task<List<(string href, string head)>> GetWorkTrees(string docsetPath, string restoreDir, List<string> hrefs)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
-            var lockRelativePath = Path.Combine(Path.GetRelativePath(AppData.RestoreDir, restorePath), ".lock");
             var (url, _) = GetGitRemoteInfo(hrefs.First());
             var workTreeHeads = new ConcurrentBag<(string href, string head)>();
 
-            await ProcessUtility.ProcessLock(
-                lockRelativePath,
+            await ProcessUtility.CreateFileMutex(
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.RestoreDir, restorePath)),
                 async () =>
                 {
                     await FetchOrCloneRepo();
