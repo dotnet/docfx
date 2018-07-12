@@ -12,10 +12,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private readonly MarkdownContext _context;
         private readonly MarkdownPipeline _inlinePipeline;
 
-        public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline pipeline)
+        public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline inlinePipeline)
         {
             _context = context;
-            _inlinePipeline = CreateInlineOnlyPipeline(pipeline);
+            _inlinePipeline = inlinePipeline;
         }
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
@@ -40,20 +40,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
             }
-        }
-
-        private static MarkdownPipeline CreateInlineOnlyPipeline(MarkdownPipeline pipeline)
-        {
-            var builder = new MarkdownPipelineBuilder();
-            
-            foreach (var extension in pipeline.Extensions)
-            {
-                builder.Extensions.Add(extension);
-            }
-
-            builder.UseInlineOnly();
-
-            return builder.Build();
         }
     }
 }
