@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
