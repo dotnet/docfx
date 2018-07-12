@@ -30,24 +30,39 @@ namespace Microsoft.Docs.Build
         private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
 
         [ThreadStatic]
-        private static (MarkupResult result, DependencyMapBuilder dependencyMap, Action<Document> buildChild) t_context;
+        private static MarkupResult t_result;
 
-        public static ref MarkupResult Result => ref t_context.result;
+        [ThreadStatic]
+        private static DependencyMapBuilder t_dependencyMap;
+
+        [ThreadStatic]
+        private static Action<Document> t_buildChild;
+
+        public static MarkupResult Result => t_result;
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
         {
+            if (t_result != null)
+            {
+                throw new NotImplementedException("Nested call to Markup.ToHtml");
+            }
+
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    t_context = (MarkupResult.Create(), dependencyMap, buildChild);
+                    t_result = new MarkupResult();
+                    t_dependencyMap = dependencyMap;
+                    t_buildChild = buildChild;
                     var html = Markdown.ToHtml(markdown, s_markdownPipeline);
-                    return (html, t_context.result);
+                    return (html, t_result);
                 }
                 finally
                 {
-                    t_context = default;
+                    t_result = null;
+                    t_dependencyMap = null;
+                    t_buildChild = null;
                 }
             }
         }
@@ -92,7 +107,7 @@ namespace Microsoft.Docs.Build
                 Result.Errors.Add(error);
             }
 
-            t_context.dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+            t_dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
 
             return (content, child);
         }
@@ -111,8 +126,8 @@ namespace Microsoft.Docs.Build
 
             if (child != null)
             {
-                t_context.buildChild(child);
-                t_context.dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
+                t_buildChild(child);
+                t_dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
             }
 
             return link;
