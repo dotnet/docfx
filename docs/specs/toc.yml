@@ -837,23 +837,7 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
-  docs/TOC.json: |
-    {  
-       "items":[  
-          {  
-             "children":[  
-                {  
-                   "toc_title":"Invalid Index Reference",
-                   "href":"index.md"
-                },
-                {  
-                   "toc_title":"Invalid TocHref Reference"
-                }
-             ],
-             "toc_title":"Reference TOC File"
-          }
-       ]
-    }
+  docs/TOC.json:
   build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]
