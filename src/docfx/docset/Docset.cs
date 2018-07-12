@@ -38,6 +38,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
+        /// <summary>
+        /// Gets the restore path mappings
+        /// </summary>
+        public RestoreMap RestoreMap => _restoreMap.Value;
+
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;

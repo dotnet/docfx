@@ -19,16 +19,9 @@ namespace Microsoft.Docs.Build
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
 
         public static string GetRestoreRootDir(string url)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
+            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-            var uri = new Uri(url);
-            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(AppData.GitRestoreDir, repo);
-            return PathUtility.NormalizeFolder(dir);
-        }
-
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> RestoreDependencyRepos(string docsetPath, Config config, Func<string, Task> restoreChild)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
             var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));

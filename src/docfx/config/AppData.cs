@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 
         public static string GitRestoreDir => Path.Combine(AppDataDir, "git");
 
+        public static string UrlRestoreDir => Path.Combine(AppDataDir, "url");
+
         public static string RestoreLockDir => Path.Combine(AppDataDir, "restore-lock");
 
         public static string FileMutexDir => Path.Combine(AppDataDir, "file-mutex");

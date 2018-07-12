@@ -26,4 +26,4 @@ inputs:
 outputs:
   build.manifest:
   build.log: |
-    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, make sure the `restore` command was executed","docs/a.md"]
+    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, please make sure the `restore` command was executed","docs/a.md"]

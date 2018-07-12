@@ -29,5 +29,18 @@ namespace Microsoft.Docs.Build
             restorePath = default;
             return false;
         }
+
+        public bool TryGetUrlRestorePath(string remote, out string restorePath)
+        {
+            var restoreDir = RestoreUrl.GetRestoreRootDir(remote);
+            if (_restoreLock.Url.TryGetValue(remote, out var version) && !string.IsNullOrEmpty(version))
+            {
+                restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
+                return true;
+            }
+
+            restorePath = default;
+            return false;
+        }
     }
 }

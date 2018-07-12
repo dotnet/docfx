@@ -162,7 +162,6 @@ namespace Microsoft.Docs.Build
         private static void Validate(Config config, string configPath)
         {
             ValidateLocale(config);
-            ValidateContributorConfig(config.Contribution, configPath);
         }
 
         private static void ValidateLocale(Config config)
@@ -174,20 +173,6 @@ namespace Microsoft.Docs.Build
             catch (CultureNotFoundException e)
             {
                 throw Errors.InvalidLocale(config.Locale).ToException(e);
-            }
-        }
-
-        private static void ValidateContributorConfig(ContributionConfig config, string configPath)
-        {
-            if (!string.IsNullOrEmpty(config.UserProfileCachePath)
-                && File.Exists(Path.Combine(configPath, config.UserProfileCachePath)))
-            {
-                throw Errors.UserProfileCacheNotFound(config.UserProfileCachePath).ToException();
-            }
-            if (!string.IsNullOrEmpty(config.GitCommitsTimePath)
-                && File.Exists(Path.Combine(configPath, config.GitCommitsTimePath)))
-            {
-                throw Errors.UserProfileCacheNotFound(config.GitCommitsTimePath).ToException();
             }
         }
 

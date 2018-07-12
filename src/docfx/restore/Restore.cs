@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -35,15 +37,37 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string GetRestoreRootDir(string url, string root)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(url));
+
+            var uri = new Uri(url);
+            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
+            var dir = Path.Combine(root, repo);
+            return PathUtility.NormalizeFolder(dir);
+        }
+
         private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild)
         {
-            // restore git dependnecy repositories
-            var workTreeHeadMappings = await RestoreGit.RestoreDependencyRepos(docsetPath, config, restoreChild);
-
             var result = new RestoreLock();
+
+            // restore git dependnecy repositories
+            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, config, restoreChild);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 result.Git[href] = workTreeHead;
+            }
+
+            // restore github user
+            if (!string.IsNullOrEmpty(config.Contribution.UserProfileCacheUrl))
+            {
+                result.Url[config.Contribution.UserProfileCacheUrl] = await RestoreUrl.Restore(docsetPath, config.Contribution.UserProfileCacheUrl);
+            }
+
+            // restore commit last update at
+            if (!string.IsNullOrEmpty(config.Contribution.GitCommitsTimeUrl))
+            {
+                result.Url[config.Contribution.GitCommitsTimeUrl] = await RestoreUrl.Restore(docsetPath, config.Contribution.GitCommitsTimeUrl);
             }
 
             // todo: restore other items, @renze

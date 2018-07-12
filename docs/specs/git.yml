@@ -1,6 +1,6 @@
 ---
 # Show git contributors, author, updatedAt, enableContribution, editLink
-repo: https://github.com/docascode/docfx-test-dependencies#git-test
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-5
 outputs:
   README.json: |
     {
@@ -20,7 +20,7 @@ outputs:
       ],
       "updatedAt": "2018-06-28T10:00:00",
       "enableContribution": true,
-      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test/README.md"
+      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-5/README.md"
     }
   testdata1.json: |
     {
@@ -30,7 +30,7 @@ outputs:
   dep.json:
 ---
 # Specify invalid author in YAML header should log warning
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-1
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-3
 outputs:
   README.json:
   testdata1.json:
@@ -40,7 +40,8 @@ outputs:
     ["warning","author-not-found","Author 'invalid_user' cannot be recognized","README.md"]
 ---
 # Author should also exist in contributors, even hasn't contributed to the file before
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-2
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+
 outputs:
   README.json: |
     {
@@ -70,7 +71,7 @@ outputs:
   dep.json:
 ---
 # Config can specify which repo and branch editLink goes to
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-2
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 outputs:
   README.json: |
     {
@@ -81,7 +82,7 @@ outputs:
   dep.json:
 ---
 # Use commit's time when gitCommitsTime file not given
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-2
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 outputs:
   README.json: |
     {

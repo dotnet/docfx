@@ -36,15 +36,30 @@ namespace Microsoft.Docs.Build
         {
             var commitsByFile = LoadCommits(docset);
 
-            var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTimePath)
+            var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTimeUrl)
                 ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(Path.Combine(docset.DocsetPath, docset.Config.Contribution.GitCommitsTimePath)).ToDictionary();
+                : GitCommitsTime.Create(GetRestorePathFromUrl(docset.Config.Contribution.GitCommitsTimeUrl, docset.RestoreMap)).ToDictionary();
 
-            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCachePath)
+            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCacheUrl)
                 ? s_defaultProfilePath
-                : Path.Combine(docset.DocsetPath, docset.Config.Contribution.UserProfileCachePath);
+                : GetRestorePathFromUrl(docset.Config.Contribution.UserProfileCacheUrl, docset.RestoreMap);
 
             return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
+        }
+
+        private static string GetRestorePathFromUrl(string url, RestoreMap restoreMap)
+        {
+            if (!string.IsNullOrEmpty(url))
+            {
+                if (restoreMap.TryGetUrlRestorePath(url, out var restorePath) && File.Exists(restorePath))
+                {
+                    return restorePath;
+                }
+
+                throw Errors.UrlRestorePathNotFound(url).ToException();
+            }
+
+            return string.Empty;
         }
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
