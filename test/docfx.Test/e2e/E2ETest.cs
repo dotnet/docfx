@@ -37,13 +37,16 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunCore(string docsetPath, E2ESpec spec)
         {
-            await Program.Run(new[] { "restore", docsetPath });
-            await Program.Run(new[] { "build", docsetPath });
+            foreach (var command in spec.Commands)
+            {
+                await Program.Run(new[] { command, docsetPath });
+            }
 
             // Verify restored files
             foreach (var (file, content) in spec.Restores)
             {
-                var restoredFile = Path.Combine(AppData.AppDataDir, file);
+                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
+                Assert.NotNull(restoredFile);
                 Assert.True(File.Exists(restoredFile));
                 VerifyFile(restoredFile, content);
             }
