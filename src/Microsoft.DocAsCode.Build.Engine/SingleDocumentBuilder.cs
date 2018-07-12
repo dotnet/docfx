@@ -207,7 +207,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (notToHandleItems.Count > 0)
             {
                 Logger.LogWarning(
-                    $"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}",
+                    $"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}. Do they miss `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`?",
                     code: WarningCodes.Build.UnknownContentType);
             }
 
