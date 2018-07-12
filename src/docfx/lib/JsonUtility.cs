@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly IDictionary<Type, JSchema> s_typeSchemas = new Dictionary<Type, JSchema>();
+        private static readonly ConcurrentDictionary<Type, JSchema> s_typeSchemas = new ConcurrentDictionary<Type, JSchema>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -164,7 +165,7 @@ namespace Microsoft.Docs.Build
             {
                 var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver };
                 var schema = generator.Generate(type, true);
-                s_typeSchemas.Add(type, schema);
+                s_typeSchemas.TryAdd(type, schema);
                 return schema;
             }
             return value;
