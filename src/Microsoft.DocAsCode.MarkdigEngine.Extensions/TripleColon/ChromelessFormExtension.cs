@@ -71,10 +71,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             RenderDelegate = (renderer, obj) =>
             {
                 renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine(@"<fieldset disabled=""disabled"">");
                 renderer.WriteLine("<div></div>");
-                renderer.WriteLine($"<button type=\"submit\">{submitText}</button>");
-                renderer.WriteLine("</fieldset>");
+                renderer.WriteLine($"<button disabled=\"disabled\" type=\"submit\">{submitText}</button>");
                 renderer.WriteLine("</form>");
 
                 return true;
