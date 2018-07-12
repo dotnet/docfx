@@ -46,11 +46,11 @@ namespace Microsoft.Docs.Build
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
 
-        public static Error InvalidTopicHref(string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
+        public static Error InvalidTopicHref(Document toc, string topicHref)
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", toc.ToString());
 
-        public static Error InvalidTocHref(string tocHref)
-            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path");
+        public static Error InvalidTocHref(Document toc, string tocHref)
+            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", toc.ToString());
 
         public static Error YamlHeaderNotObject(object filePath, bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
