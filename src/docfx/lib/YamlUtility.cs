@@ -64,33 +64,87 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input, bool schemaValidation = false, bool nullValidation = true)
+        public static (List<Error> errors, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input), schemaValidation, nullValidation);
+            return Deserialize<T>(new StringReader(input), nullValidation);
+        }
+
+        /// <summary>
+        /// Deserialize From yaml string and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, T) DeserializeAndValidateSchemaAgainstType<T>(string input, bool nullValidation = true)
+        {
+            return DeserializeAndValidateSchemaAgainstType<T>(new StringReader(input), nullValidation);
         }
 
         /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool schemaValidation = false, bool nullValidation = true)
+        public static (List<Error> errors, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
         {
-            var (errors, mappings, json) = Deserialize(reader, schemaValidation, nullValidation, typeof(T));
+            var (errors, json) = Deserialize(reader, nullValidation);
+            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+        }
+
+        /// <summary>
+        /// Deserialize From TextReader and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, T) DeserializeAndValidateSchemaAgainstType<T>(TextReader reader, bool nullValidation = true)
+        {
+            var (errors, json) = DeserializeAndValidateSchemaAgainstType(reader, typeof(T), nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, bool schemaValidation = false, bool nullValidation = true)
+        public static (List<Error> errors, JToken token) Deserialize(string input, bool nullValidation = true)
         {
-            var (errors, _, token) = Deserialize(new StringReader(input), schemaValidation, nullValidation);
-            return (errors, token);
+            return Deserialize(new StringReader(input), nullValidation);
+        }
+
+        /// <summary>
+        /// Deserialize to JToken From string and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, JToken token) DeserializeAndValidateSchemaAgainstType(string input, Type type, bool nullValidation = true)
+        {
+            return DeserializeAndValidateSchemaAgainstType(new StringReader(input), type, nullValidation);
         }
 
         /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error>, JTokenSourceMap, JToken) Deserialize(TextReader reader, bool schemaValidation = false, bool nullValidation = true, Type type = null)
+        public static (List<Error> errors, JToken token) Deserialize(TextReader reader, bool nullValidation = true)
+        {
+            var (errors, mappings, token) = Deserialize(reader);
+            if (nullValidation)
+            {
+                var nullErrors = new List<Error>();
+                (nullErrors, token) = token.ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            return (errors, token);
+        }
+
+        /// <summary>
+        /// Deserialize to JToken from TextReader and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, JToken token) DeserializeAndValidateSchemaAgainstType(TextReader reader, Type type, bool nullValidation = true)
+        {
+            var (errors, mappings, token) = Deserialize(reader);
+            errors.AddRange(token.ValidateSchemaAgainstType(type, mappings));
+            if (nullValidation)
+            {
+                var nullErrors = new List<Error>();
+                (nullErrors, token) = token.ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            return (errors, token);
+        }
+
+        private static (List<Error> errors, JTokenSourceMap mappings, JToken token) Deserialize(TextReader reader)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
@@ -118,25 +172,7 @@ namespace Microsoft.Docs.Build
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-
-            var token = ToJson(stream.Documents[0].RootNode, mappings);
-
-            if (type != null && schemaValidation)
-            {
-                errors.AddRange(token.ValidateSchema(type, mappings));
-            }
-
-            if (nullValidation)
-            {
-                var nullErrors = new List<Error>();
-                (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
-                errors.AddRange(nullErrors);
-                return (errors, mappings, token);
-            }
-            else
-            {
-                return (errors, mappings, token);
-            }
+            return (errors, mappings, ToJson(stream.Documents[0].RootNode, mappings));
         }
 
         private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)

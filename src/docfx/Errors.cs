@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "null-value", $"{range} {name} contains null value");
 
         public static Error JsonSchemaLicenseIssue(Exception ex)
-            => new Error(ErrorLevel.Warning, "json-schema-license", $"Encountered issue registering licenes for NewtonsoftJson.Schema: {ex.Message}");
+            => new Error(ErrorLevel.Warning, "json-schema-license", $"Encountered issue registering license for NewtonsoftJson.Schema: {ex.Message}");
 
         public static Error SchemaError(string message)
             => new Error(ErrorLevel.Error, "schema-error", message);

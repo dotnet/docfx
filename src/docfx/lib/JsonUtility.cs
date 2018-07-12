@@ -28,6 +28,8 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver(),
         };
 
+        private static readonly IDictionary<Type, JSchema> s_typeSchemas = new Dictionary<Type, JSchema>();
+
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
@@ -85,7 +87,7 @@ namespace Microsoft.Docs.Build
         {
             var (errors, token) = Deserialize(reader);
             if (schemaValidation)
-                errors.AddRange(token.ValidateSchema(typeof(T)));
+                errors.AddRange(token.ValidateSchemaAgainstType(typeof(T)));
             return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
@@ -140,23 +142,34 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        public static List<Error> ValidateSchema(this JToken token, Type type, JTokenSourceMap mappings = null)
+        public static IEnumerable<Error> ValidateSchemaAgainstType(this JToken token, Type type, JTokenSourceMap mappings = null)
         {
             // TODO: Get the license somewhere
-            var registerErrors = RegisterLicense(string.Empty);
-            if (registerErrors.Any())
-                return registerErrors;
+            var license = "3390-vvJqYRx6mHhaH/EPFIK0LZTuUGqF1UwcTXxzg8eqoMw9fKlPncs11b93rDbwjV6Q+vc9KFWHVGFTQxGqnAwxugxKpveLgP8XwYkrGyI98oIQJdkRa0d2+kEn81OcXjuK0pgVAtArDemN6y3eUdqb3AZQ61DWLKPGVWud9yfDoNl7IklkIjozMzkwLCJFeHBpcnlEYXRlIjoiMjAxOC0wNS0wNFQwNzoyODozMC41MDYxMzMzWiIsIlR5cGUiOiJKc29uU2NoZW1hU2l0ZSJ9";
+            var registerError = RegisterLicense(license);
+            //var registerError = RegisterLicense(string.Empty);
+            if (registerError != null)
+                return new List<Error> { registerError };
 
-            var generator = new JSchemaGenerator() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-            var schema = generator.Generate(type, true);
-            var schemaString = schema.ToString();
+            JSchema schema = GetSchemaFromType(type);
             if (!token.IsValid(schema, out IList<ValidationError> errors))
             {
-                var error = errors.First();
-                throw Errors.SchemaError($"Path: '{error.Path}'. {error.Message}").ToException();
+                return errors.Select(error => Errors.SchemaError($"Path: '{error.Path}'. {error.Message}"));
             }
 
-            return new List<Error>();
+            return Enumerable.Empty<Error>();
+        }
+
+        private static JSchema GetSchemaFromType(Type type)
+        {
+            if (!s_typeSchemas.TryGetValue(type, out JSchema value))
+            {
+                var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver };
+                var schema = generator.Generate(type, true);
+                s_typeSchemas.Add(type, schema);
+                return schema;
+            }
+            return value;
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -237,12 +250,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static List<Error> RegisterLicense(string license)
+        private static Error RegisterLicense(string license)
         {
-            var errors = new List<Error>();
             if (string.IsNullOrEmpty(license))
             {
-                return errors;
+                return null;
             }
 
             try
@@ -251,9 +263,9 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                errors.Add(Errors.JsonSchemaLicenseIssue(ex));
+                return Errors.JsonSchemaLicenseIssue(ex);
             }
-            return errors;
+            return null;
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver

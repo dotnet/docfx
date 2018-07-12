@@ -166,7 +166,7 @@ D: true
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, _, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
+            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
 - true
 - True
 - TRUE
@@ -332,20 +332,26 @@ items:
             });
         }
 
-        // TODO: this test should only be run with newton json schema license
-//        [Fact]
-//        public void TestMissingRequiredValue()
-//        {
-//            var yaml = @"
-//name: 
-//displayName: missing required name
-//href: 
-//items: []
-//tocHref: 
-//";
-//            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<TableOfContentsInputItem>(yaml, true));
-//            Assert.Equal("Path: 'name'. Invalid type. Expected String but got Null.", ex.Message);
-//        }
+        //[Fact(Skip = "This test should only be run with newton json schema license")]
+        [Fact]
+        public void TestMissingRequiredValue()
+        {
+            var yaml = @"
+Name: 
+DisplayName: missing required name
+Href: 
+Items: []
+TocHref:
+TopicHref:
+";
+            var (errors, value) = YamlUtility.DeserializeAndValidateSchemaAgainstType<TableOfContentsInputItem>(yaml);
+            Assert.Collection(errors.Where(x => x.Level == ErrorLevel.Error), error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("schema-error", error.Code);
+                Assert.Contains("Path: 'Name'. Invalid type. Expected String but got Null.", error.Message);
+            });
+        }
 
         public class BasicClass
         {
