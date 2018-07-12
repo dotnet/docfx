@@ -822,3 +822,36 @@ outputs:
   build.manifest:
   build.log: |
     ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml"]
+---
+# The included toc' errors/warning should be assigned to itself, not its parent
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # [Reference TOC File](f1/TOC.md)
+  docs/f1/TOC.yml: |
+    - name: Invalid Index Reference
+      href: index.md
+    - name: Invalid TocHref Reference
+      tocHref: index.md
+outputs:
+  docs/TOC.json: |
+    {  
+       "items":[  
+          {  
+             "children":[  
+                {  
+                   "toc_title":"Invalid Index Reference",
+                   "href":"index.md"
+                },
+                {  
+                   "toc_title":"Invalid TocHref Reference"
+                }
+             ],
+             "toc_title":"Reference TOC File"
+          }
+       ]
+    }
+  build.manifest:
+  build.log: |
+    ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]
+    ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml"]
