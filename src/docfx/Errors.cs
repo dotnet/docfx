@@ -46,11 +46,11 @@ namespace Microsoft.Docs.Build
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
 
-        public static Error InvalidTopicHref(string topicHref)
-            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path");
+        public static Error InvalidTopicHref(Document relativeTo, string topicHref)
+            => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
 
-        public static Error InvalidTocHref(string tocHref)
-            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path");
+        public static Error InvalidTocHref(Document relativeTo, string tocHref)
+            => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
         public static Error YamlHeaderNotObject(object filePath, bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
@@ -67,8 +67,8 @@ namespace Microsoft.Docs.Build
         public static Error JsonSyntaxError(Exception ex)
             => new Error(ErrorLevel.Error, "json-syntax-error", ex.Message);
 
-        public static Error LinkIsEmpty(Document file)
-            => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", file.ToString());
+        public static Error LinkIsEmpty(Document relativeTo)
+            => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
 
         public static Error LinkOutOfScope(Document relativeTo, Document file, string href)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be build because it is not included in docfx.yml", relativeTo.ToString());
