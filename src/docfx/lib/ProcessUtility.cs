@@ -107,21 +107,21 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Provide a process lock function based on locking file
+        /// Create a file mutex to lock a resource/action
         /// </summary>
-        /// <param name="lockRelativePath">The lock file relative path</param>
-        /// <param name="action">The action you want to lock</param>
+        /// <param name="mutexFileRelativePath">The mutex file relative path</param>
+        /// <param name="action">The action/resource you want to lock</param>
         /// <param name="retry">The retry count, default is 600 times</param>
         /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
         /// <returns>The task status</returns>
-        public static async Task ProcessLock(string lockRelativePath, Func<Task> action, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task CreateFileMutex(string mutexFileRelativePath, Func<Task> action, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
         {
-            Debug.Assert(!string.IsNullOrEmpty(lockRelativePath));
-            Debug.Assert(!Path.IsPathRooted(lockRelativePath));
+            Debug.Assert(!string.IsNullOrEmpty(mutexFileRelativePath));
+            Debug.Assert(!Path.IsPathRooted(mutexFileRelativePath));
 
-            var lockPath = Path.Combine(AppData.ProcessLockDir, lockRelativePath);
+            var lockPath = Path.Combine(AppData.FileMutexDir, mutexFileRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
-            using (var lockFile = await AcquireFileStreamLock(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            using (var lockFile = await AcquireFileMutex(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
             {
                 await action();
             }
@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                    ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
-        private static async Task<FileStream> AcquireFileStreamLock(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
+        private static async Task<FileStream> AcquireFileMutex(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
         {
             var retryCount = 0;
             while (true)

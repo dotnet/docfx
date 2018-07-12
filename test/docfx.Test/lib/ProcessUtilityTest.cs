@@ -25,8 +25,8 @@ namespace Microsoft.Docs.Build
         {
             var fileName = $".process_test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(
-                i => ProcessUtility.ProcessLock(
-                    $"{fileName}.lock",
+                i => ProcessUtility.CreateFileMutex(
+                    fileName,
                     () =>
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(fileName)));
