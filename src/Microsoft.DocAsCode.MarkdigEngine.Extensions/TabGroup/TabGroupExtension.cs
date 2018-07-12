@@ -17,17 +17,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            var tabGroupAggregator = new TabGroupAggregator();
-            var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
-
-            var tagGroupIdRewriter = new TabGroupIdRewriter();
-            var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
-
-            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(_context);
-            var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
-
             pipeline.DocumentProcessed += document =>
             {
+                var tabGroupAggregator = new TabGroupAggregator();
+                var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+
+                var tagGroupIdRewriter = new TabGroupIdRewriter();
+                var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
+
+                var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(_context);
+                var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
+
                 aggregateVisitor.Visit(document);
                 tagGroupIdVisitor.Visit(document);
                 activeAndVisibleVisitor.Visit(document);
