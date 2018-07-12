@@ -825,9 +825,12 @@ outputs:
 ---
 # The included toc' errors/warning should be assigned to itself, not its parent
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    content:
+      include:
+        - docs/TOC.md
   docs/TOC.md: |
-    # [Reference TOC File](f1/TOC.md)
+    # [Reference TOC File](f1/TOC.yml)
   docs/f1/TOC.yml: |
     - name: Invalid Index Reference
       href: index.md
