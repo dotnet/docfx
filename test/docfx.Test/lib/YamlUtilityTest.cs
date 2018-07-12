@@ -332,8 +332,8 @@ items:
             });
         }
 
-        //[Fact(Skip = "This test should only be run with newton json schema license")]
-        [Fact]
+        [Fact(Skip = "This test should only be run with newton json schema license")]
+        //[Fact]
         public void TestMissingRequiredValue()
         {
             var yaml = @"

@@ -145,9 +145,7 @@ namespace Microsoft.Docs.Build
         public static IEnumerable<Error> ValidateSchemaAgainstType(this JToken token, Type type, JTokenSourceMap mappings = null)
         {
             // TODO: Get the license somewhere
-            var license = "3390-vvJqYRx6mHhaH/EPFIK0LZTuUGqF1UwcTXxzg8eqoMw9fKlPncs11b93rDbwjV6Q+vc9KFWHVGFTQxGqnAwxugxKpveLgP8XwYkrGyI98oIQJdkRa0d2+kEn81OcXjuK0pgVAtArDemN6y3eUdqb3AZQ61DWLKPGVWud9yfDoNl7IklkIjozMzkwLCJFeHBpcnlEYXRlIjoiMjAxOC0wNS0wNFQwNzoyODozMC41MDYxMzMzWiIsIlR5cGUiOiJKc29uU2NoZW1hU2l0ZSJ9";
-            var registerError = RegisterLicense(license);
-            //var registerError = RegisterLicense(string.Empty);
+            var registerError = RegisterLicense(string.Empty);
             if (registerError != null)
                 return new List<Error> { registerError };
 
