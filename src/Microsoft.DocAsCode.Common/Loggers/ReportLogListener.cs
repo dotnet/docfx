@@ -23,8 +23,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 Directory.CreateDirectory(dir);
             }
-            var fs = new FileStream(reportPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-            _writer = new StreamWriter(fs);
+            _writer = new StreamWriter(reportPath, true);
             _repoRoot = repoRoot;
             _root = root;
         }
