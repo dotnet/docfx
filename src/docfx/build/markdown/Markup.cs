@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         [ThreadStatic]
         private static (MarkupResult result, DependencyMapBuilder dependencyMap, Action<Document> buildChild) t_context;
 
-        public static ref MarkupResult Context => ref t_context.result;
+        public static ref MarkupResult Result => ref t_context.result;
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
@@ -73,12 +73,12 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, string doc, int line)
         {
-            Context.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
+            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
         }
 
         private static void LogWarning(string code, string message, string doc, int line)
         {
-            Context.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
+            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
         }
 
         private static (string content, object file) ReadFile(string path, object relativeTo)
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
             if (error != null)
             {
-                Context.Errors.Add(error);
+                Result.Errors.Add(error);
             }
 
             t_context.dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
 
             if (error != null)
             {
-                Context.Errors.Add(error);
+                Result.Errors.Add(error);
             }
 
             if (child != null)

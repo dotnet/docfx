@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
 
                         if (yamlHeaderObj is JObject obj)
                         {
-                            Markup.Context.Metadata = obj;
+                            Markup.Result.Metadata = obj;
                         }
                         else
                         {
-                            Markup.Context.Errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                            Markup.Result.Errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
                         }
 
-                        Markup.Context.Errors.AddRange(yamlErrors);
+                        Markup.Result.Errors.AddRange(yamlErrors);
                         return true;
                     }
                     return false;

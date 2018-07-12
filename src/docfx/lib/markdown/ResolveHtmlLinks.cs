@@ -20,12 +20,12 @@ namespace Microsoft.Docs.Build
                     if (node is HtmlBlock block)
                     {
                         block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString()));
-                        Markup.Context.HasHtml = true;
+                        Markup.Result.HasHtml = true;
                     }
                     else if (node is HtmlInline inline)
                     {
                         inline.Tag = ResolveLinks(inline.Tag);
-                        Markup.Context.HasHtml = true;
+                        Markup.Result.HasHtml = true;
                     }
                     return false;
                 });
