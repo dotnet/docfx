@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
     {
         public Dictionary<string, string> Git { get; set; } = new Dictionary<string, string>();
 
+        public Dictionary<string, string> Http { get; set; } = new Dictionary<string, string>();
+
         public bool IsEmpty => !Git.Any();
     }
 }

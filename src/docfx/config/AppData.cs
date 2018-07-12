@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public static readonly string AppDataDir = GetAppDataDir();
 
-        public static string RestoreDir => Path.Combine(AppDataDir, "git");
+        public static string GitRestoreDir => Path.Combine(AppDataDir, "git");
 
         public static string RestoreLockDir => Path.Combine(AppDataDir, "restore-lock");
 

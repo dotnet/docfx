@@ -18,11 +18,11 @@ namespace Microsoft.Docs.Build
 
         public bool TryGetGitRestorePath(string remote, out string restorePath)
         {
-            var (url, _) = Restore.GetGitRemoteInfo(remote);
-            var restoreDir = Restore.GetRestoreRootDir(url);
+            var (url, _) = GitUtility.GetGitRemoteInfo(remote);
+            var restoreDir = RestoreGit.GetRestoreRootDir(url);
             if (_restoreLock.Git.TryGetValue(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
             {
-                restorePath = Restore.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                restorePath = RestoreGit.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                 return true;
             }
 

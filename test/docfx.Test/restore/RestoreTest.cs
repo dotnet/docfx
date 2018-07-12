@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public static void GetGitInfo(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev) = Restore.GetGitRemoteInfo(remote);
+            var (url, rev) = GitUtility.GetGitRemoteInfo(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             var docsetPath = ".restore_clean";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
             Directory.CreateDirectory(docsetPath);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(Restore.GetRestoreRootDir(gitUrl), ".git"));
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:

@@ -27,9 +27,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly string UserProfileCachePath = string.Empty;
 
+        public readonly string UserProfileCacheUrl = string.Empty;
+
         /// <summary>
         /// The path of commit time history file, which contains the time each commit being pushed.
         /// </summary>
         public readonly string GitCommitsTimePath = string.Empty;
+
+        public readonly string GitCommitsTimeUrl = string.Empty;
     }
 }
