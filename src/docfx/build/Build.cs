@@ -50,25 +50,21 @@ namespace Microsoft.Docs.Build
 
                 await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
-                var files = filesBuilder.Build(context).Except(filesWithErrors).OrderBy(file => file.FilePath).ToList();
+                var files = filesBuilder.Build(context).OrderBy(file => file.FilePath).Except(filesWithErrors).ToList();
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
 
                 return (files, new DependencyMap(allDependencies));
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var dependencyMap = await BuildFile(context, file, tocMap, contribution, buildChild);
-
-                    if (dependencyMap == null)
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, buildChild);
+                    if (hasError)
                     {
                         filesWithErrors.Add(file);
                     }
-                    else
+                    foreach (var (source, dependencies) in dependencyMap)
                     {
-                        foreach (var (source, dependencies) in dependencyMap)
-                        {
-                            sourceDependencies.TryAdd(source, dependencies);
-                        }
+                        sourceDependencies.TryAdd(source, dependencies);
                     }
                 }
 
@@ -79,7 +75,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<DependencyMap> BuildFile(
+        private static async Task<(bool hasError, DependencyMap)> BuildFile(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -96,7 +92,7 @@ namespace Microsoft.Docs.Build
                 {
                     case ContentType.Resource:
                         BuildResource(context, file);
-                        return dependencies;
+                        return (false, DependencyMap.Empty);
                     case ContentType.Markdown:
                         (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
                         break;
@@ -115,15 +111,15 @@ namespace Microsoft.Docs.Build
                 if (model != null && !hasErrors)
                 {
                     context.WriteJson(model, file.OutputPath);
-                    return dependencies;
+                    return (false, dependencies);
                 }
 
-                return null;
+                return (true, dependencies);
             }
             catch (DocfxException ex)
             {
                 context.Report(file.ToString(), ex.Error);
-                return null;
+                return (true, DependencyMap.Empty);
             }
         }
 
