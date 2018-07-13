@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
             var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
-            LegacyUtility.CopyFileSafe(
+            LegacyUtility.MoveFileSafe(
                 docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
                 docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 

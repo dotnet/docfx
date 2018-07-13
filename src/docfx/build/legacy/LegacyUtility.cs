@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static void CopyFileSafe(string sourceFileName, string destFileName)
+        public static void MoveFileSafe(string sourceFileName, string destFileName)
         {
             Debug.Assert(!string.IsNullOrEmpty(sourceFileName));
             Debug.Assert(!string.IsNullOrEmpty(destFileName));
@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
 
-                File.Copy(sourceFileName, destFileName, true);
+                File.Delete(destFileName);
+                File.Move(sourceFileName, destFileName);
             }
         }
 
