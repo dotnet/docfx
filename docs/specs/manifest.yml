@@ -190,7 +190,6 @@ outputs:
   build.log: |
     ["warning","circular-reference","Found circular reference: docs/b.md --> docs/a.md --> docs/b.md","docs/b.md"]
     ["warning","circular-reference","Found circular reference: docs/a.md --> docs/b.md --> docs/a.md","docs/a.md"]
-
 ---
 # Manifest link circular reference
 inputs:
@@ -240,3 +239,16 @@ outputs:
           ]
        }
     }
+---
+# Manifest does not include files with errors
+inputs:
+  docfx.yml: |
+    rules:
+      link-is-empty: error
+  docs/a.md: |
+    a []()
+outputs:
+  build.manifest: |
+    { files: [] }
+  build.log: |
+    ["error","link-is-empty","Link is empty","docs/a.md"]

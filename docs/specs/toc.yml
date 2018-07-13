@@ -739,7 +739,7 @@ outputs:
     }
   build.manifest:
 ---
-# Topic href cann't reference a local toc file or folder
+# Topic href cannot reference a local TOC file or folder
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -753,28 +753,13 @@ inputs:
   docs/f1/TOC.md:
 outputs:
   docs/f1/TOC.json:
-  docs/TOC.json: |
-    {  
-       "items":[  
-          {  
-             "toc_title":"Invalid Topic Reference1"
-          },
-          {  
-             "toc_title":"Invalid Topic Reference2"
-          },
-          {  
-             "toc_title":"Invalid Topic Reference3",
-             "href":"/abc/def"
-          }
-       ]
-    }
   build.manifest:
   build.log: |
     ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml"]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
 ---
-# Toc href cann't reference a local file
+# Toc href cannot reference a local file
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -788,18 +773,6 @@ inputs:
 outputs:
   docs/f1/TOC.json:
   docs/f1/a.json:
-  docs/TOC.json: |
-    {  
-       "items":[  
-          {  
-             "toc_title":"Invalid Toc Reference1"
-          },
-          {  
-             "toc_title":"Invalid Toc Reference2",
-             "href":"/abc/def"
-          }
-       ]
-    }
   build.manifest:
   build.log: |
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
@@ -823,7 +796,7 @@ outputs:
   build.log: |
     ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml"]
 ---
-# The included toc' errors/warning should be assigned to itself, not its parent
+# The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
   docfx.yml: |
     content:
@@ -837,7 +810,6 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
-  docs/TOC.json:
   build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]

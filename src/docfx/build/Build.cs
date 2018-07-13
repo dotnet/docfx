@@ -45,30 +45,37 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
-                var fileListBuilder = new DocumentListBuilder();
+                var filesBuilder = new DocumentListBuilder();
+                var filesWithErrors = new ConcurrentBag<Document>();
 
                 await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
-                return (fileListBuilder.Build(context), new DependencyMap(sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value)));
+                var files = filesBuilder.Build(context).OrderBy(file => file.FilePath).Except(filesWithErrors).ToList();
+                var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
+
+                return (files, new DependencyMap(allDependencies));
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var dependencyMap = await BuildFile(context, file, tocMap, contribution, buildChild);
-
-                    foreach (var (souce, dependencies) in dependencyMap)
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, buildChild);
+                    if (hasError)
                     {
-                        sourceDependencies.TryAdd(souce, dependencies);
+                        filesWithErrors.Add(file);
+                    }
+                    foreach (var (source, dependencies) in dependencyMap)
+                    {
+                        sourceDependencies.TryAdd(source, dependencies);
                     }
                 }
 
                 bool ShouldBuildFile(Document file)
                 {
-                    return file.ContentType != ContentType.Unknown && fileListBuilder.TryAdd(file);
+                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
                 }
             }
         }
 
-        private static async Task<DependencyMap> BuildFile(
+        private static async Task<(bool hasError, DependencyMap)> BuildFile(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -77,30 +84,46 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                var model = (object)null;
+                var dependencies = DependencyMap.Empty;
+                var errors = Enumerable.Empty<Error>();
+
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        return await BuildResource(context, file);
+                        BuildResource(context, file);
+                        return (false, DependencyMap.Empty);
                     case ContentType.Markdown:
-                        return await BuildMarkdown.Build(context, file, tocMap, contribution, buildChild);
+                        (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
+                        break;
                     case ContentType.SchemaDocument:
-                        return await BuildSchemaDocument.Build();
+                        (errors, model, dependencies) = await BuildSchemaDocument.Build();
+                        break;
                     case ContentType.TableOfContents:
-                        return await BuildTableOfContents.Build(context, file, tocMap, buildChild);
+                        (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
+                        break;
                     case ContentType.Redirection:
-                        return await BuildRedirectionItem(context, file);
-                    default:
-                        return DependencyMap.Empty;
+                        model = BuildRedirectionItem(file);
+                        break;
                 }
+
+                var hasErrors = context.Report(file.ToString(), errors);
+                if (model != null && !hasErrors)
+                {
+                    context.WriteJson(model, file.OutputPath);
+                    return (false, dependencies);
+                }
+
+                return (true, dependencies);
             }
             catch (DocfxException ex)
             {
                 context.Report(file.ToString(), ex.Error);
-                return DependencyMap.Empty;
+                return (true, DependencyMap.Empty);
             }
         }
 
-        private static Task<DependencyMap> BuildResource(Context context, Document file)
+        private static void BuildResource(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
@@ -108,14 +131,13 @@ namespace Microsoft.Docs.Build
             {
                 context.Copy(file, file.FilePath);
             }
-            return Task.FromResult(DependencyMap.Empty);
         }
 
-        private static Task<DependencyMap> BuildRedirectionItem(Context context, Document file)
+        private static PageModel BuildRedirectionItem(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            var model = new PageModel
+            return new PageModel
             {
                 RedirectionUrl = file.RedirectionUrl,
                 Locale = file.Docset.Config.Locale,
@@ -123,10 +145,6 @@ namespace Microsoft.Docs.Build
                 VersionIndependentId = file.Id.versionIndependentId,
                 Metadata = Metadata.GetFromConfig(file),
             };
-
-            context.WriteJson(model, file.OutputPath);
-
-            return Task.FromResult(DependencyMap.Empty);
         }
     }
 }
