@@ -6,14 +6,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal struct MarkupResult
+    internal class MarkupResult
     {
-        public string TitleHtml;
+        public string TitleHtml = "";
 
         public bool HasHtml;
 
         public JObject Metadata;
 
-        public List<Error> Errors;
+        public List<Error> Errors = new List<Error>();
     }
 }
