@@ -617,7 +617,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
 
             var buildStrategy = canIncremental ? InfoCodes.Build.IsIncrementalBuild : InfoCodes.Build.IsFullBuild;
-            // Log
+
             Logger.LogInfo($"Build strategy: {buildStrategy}", code: buildStrategy);
 
             return new IncrementalStatus { CanIncremental = canIncremental, Details = details };
