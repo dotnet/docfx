@@ -18,29 +18,29 @@ namespace Microsoft.Docs.Build
             _outputPath = Path.GetFullPath(outputPath);
         }
 
-        public void Report(Document file, IEnumerable<Error> errors)
+        public bool Report(string file, IEnumerable<Error> errors)
         {
-            Report(file.ToString(), errors);
-        }
-
-        public void Report(string file, IEnumerable<Error> errors)
-        {
+            var hasErrors = false;
             foreach (var error in errors)
             {
-                Report(file, error);
+                if (Report(file, error))
+                {
+                    hasErrors = true;
+                }
             }
+            return hasErrors;
         }
 
-        public void Report(string file, Error error)
+        public bool Report(string file, Error error)
         {
-            Report(file == error.File || !string.IsNullOrEmpty(error.File)
+            return Report(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
                     : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
         }
 
-        public void Report(Error error)
+        public bool Report(Error error)
         {
-            _report.Write(error);
+            return _report.Write(error);
         }
 
         /// <summary>

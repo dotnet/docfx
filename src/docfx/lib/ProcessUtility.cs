@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
             if (redirectOutput)
             {
                 psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = redirectOutput;
-                psi.RedirectStandardError = redirectOutput;
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
             }
 
             var process = new Process

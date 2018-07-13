@@ -11,13 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static Task<DependencyMap> Build(Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+        public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap) Build(
+            Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             if (!tocMap.Contains(file))
             {
-                return Task.FromResult(DependencyMap.Empty);
+                return (Enumerable.Empty<Error>(), null, DependencyMap.Empty);
             }
 
             var dependencyMapBuilder = new DependencyMapBuilder();
@@ -28,10 +29,9 @@ namespace Microsoft.Docs.Build
                 buildChild(article);
             }
 
-            context.Report(file, errors);
-            context.WriteJson(new TableOfContentsModel { Items = tocModel }, file.OutputPath);
+            var model = new TableOfContentsModel { Items = tocModel };
 
-            return Task.FromResult(dependencyMapBuilder.Build());
+            return (errors, model, dependencyMapBuilder.Build());
         }
 
         public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
