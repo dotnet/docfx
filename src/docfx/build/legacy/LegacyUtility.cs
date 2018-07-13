@@ -8,15 +8,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static void MoveFileSafe(string sourceFileName, string destFileName)
+        public static void CopyFileSafe(string sourceFileName, string destFileName)
         {
             Debug.Assert(!string.IsNullOrEmpty(sourceFileName));
             Debug.Assert(!string.IsNullOrEmpty(destFileName));
             Debug.Assert(File.Exists(sourceFileName));
+            if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-            File.Delete(destFileName);
-            File.Move(sourceFileName, destFileName);
+                File.Copy(sourceFileName, destFileName, true);
+            }
         }
 
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
