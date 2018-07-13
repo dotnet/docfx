@@ -29,12 +29,12 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public void Write(Error error)
+        public bool Write(Error error)
         {
             var level = _rules != null && _rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
             if (level == ErrorLevel.Off)
             {
-                return;
+                return false;
             }
 
             if (_output != null)
@@ -46,6 +46,8 @@ namespace Microsoft.Docs.Build
             }
 
             ConsoleLog(level, error);
+
+            return level == ErrorLevel.Error;
         }
 
         public void Dispose()
