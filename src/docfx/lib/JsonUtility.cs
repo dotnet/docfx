@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = DefaultDeserializer.ContractResolver,
         };
 
         private static readonly JsonSerializerSettings s_indentedFormatJsonSerializerSettings = new JsonSerializerSettings
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 {
                     new StringEnumConverter { CamelCaseText = true },
                 },
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = DefaultDeserializer.ContractResolver,
         };
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private sealed class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
