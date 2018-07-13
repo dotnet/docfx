@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
             var manifest = new Manifest
             {
                 Files = files.Select(ToPublishManifest).ToArray(),
+
                 Dependencies = dependencies.ToDictionary(
                     d => d.Key.FilePath,
                     d => d.Value.Select(v =>
@@ -28,11 +29,13 @@ namespace Microsoft.Docs.Build
 
         private static FileManifest ToPublishManifest(Document doc)
         {
+            var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
+
             return new FileManifest
             {
                 SourcePath = doc.FilePath,
                 SiteUrl = doc.SiteUrl,
-                OutputPath = doc.OutputPath,
+                OutputPath = noOutput ? null : doc.OutputPath,
             };
         }
     }
