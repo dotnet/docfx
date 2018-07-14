@@ -58,6 +58,10 @@ footer: <p>Footer for <code>microsoft.com/docfx/Contacts</code></p>
 
 `uid` for an *Overwrite Model* stands for the Unique IDentifier of the *Model* it will overwrite. So it is allowed to have multiple *Overwrite Section*s with YAML Header containing the same `uid`. For one *Overwrite File*, the latter *Overwrite Section* overwrites the former one with the same `uid`. For different *Overwrite File*s, the order of overwrite is **Undetermined**. So it is suggested to have *Overwrite Sections* with the same `uid` in the same *Overwrite File*.
 
+> [!NOTE]
+>
+> Multiple *Overwrite Section*s in one file doesn't work in markdig markdown engine. You should remove `"markdownEngineName": "markdig",` from `docfx.json` to support this feature.
+
 When processing *Conceptual File*s and *Metadata File*s, *Overwrite Model*s with the same `uid` are applied to the processed *Model*s. Different *Model*s have different overwrite principles, [Overwrite principles](#overwrite-principles) section describes the them in detail.
 
 Apply *Overwrite File*s
