@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             if (bare)
                 cmd += " --bare";
 
-            return ExecuteNonQuery(cwd, cmd, null);
+            return ExecuteNonQuery(cwd, cmd);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
         /// <param name="branch">The branch name, default is master</param>
         /// <returns>Task status</returns>
         public static Task Checkout(string cwd, bool create, string branch = null)
-            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}", TimeSpan.FromMinutes(10));
+            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}");
 
         /// <summary>
         /// Reset(hard) current repo to remote branch
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(branch));
 
-            return ExecuteNonQuery(cwd, $"reset --hard origin/{branch}", TimeSpan.FromMinutes(10));
+            return ExecuteNonQuery(cwd, $"reset --hard origin/{branch}");
         }
 
         /// <summary>
@@ -140,8 +140,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     return workTreePaths;
-                },
-                TimeSpan.FromSeconds(30));
+                });
 
         /// <summary>
         /// Create a work tree for a given repo
@@ -164,18 +163,18 @@ namespace Microsoft.Docs.Build
         /// TODO: For testing purpose only, move it to test
         /// </summary>
         public static Task<string> Revision(string cwd, string branch = "HEAD")
-           => ExecuteQuery(cwd, $"rev-parse {branch}", TimeSpan.FromMinutes(3));
+           => ExecuteQuery(cwd, $"rev-parse {branch}");
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: false);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
+            => Execute(cwd, commandLineArgs, x => x, redirectOutput: false);
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, parser, redirectOutput: true);
+        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser)
+            => Execute(cwd, commandLineArgs, parser, redirectOutput: true);
 
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs, TimeSpan? timeout = null)
-            => Execute(cwd, commandLineArgs, timeout, x => x, redirectOutput: true);
+        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs)
+            => Execute(cwd, commandLineArgs, x => x, redirectOutput: true);
 
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, TimeSpan? timeout, Func<string, T> parser, bool redirectOutput)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, T> parser, bool redirectOutput)
         {
             if (!Directory.Exists(cwd))
             {
@@ -184,7 +183,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, timeout, redirectOutput));
+                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
             }
             catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
             {
