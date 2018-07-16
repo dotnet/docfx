@@ -119,8 +119,8 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var mappings = new JTokenSourceMap();
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                var mappings = new Dictionary<string, Range>();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings: mappings).ValidateNullValue(mappings);
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
+        private static JToken ToJson(YamlNode node, string name = null, IDictionary<string, Range> mappings = null)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -146,18 +146,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return SetMappings(mappings, scalar, new JValue(n));
+                        return new JValue(n);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return SetMappings(mappings, scalar, new JValue(d));
+                        return new JValue(d);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return SetMappings(mappings, scalar, new JValue(b));
+                        return new JValue(b);
                     }
                 }
-                return SetMappings(mappings, scalar, new JValue(scalar.Value));
+                return new JValue(scalar.Value);
             }
             if (node is YamlMappingNode map)
             {
@@ -166,7 +166,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        var jToken = ToJson(value, mappings);
+                        var path = string.Join('|', name, key.ToString());
+                        SetMappings(mappings, key, path);
+                        var jToken = ToJson(value, path, mappings: mappings);
                         obj[scalarKey.Value] = jToken;
                     }
                     else
@@ -174,27 +176,29 @@ namespace Microsoft.Docs.Build
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
-                return SetMappings(mappings, node, obj);
+                return obj;
             }
             if (node is YamlSequenceNode seq)
             {
                 var arr = new JArray();
+
+                // Adding index to path to have unique path for array items
+                var index = 0;
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item, mappings));
+                    arr.Add(ToJson(item, string.Join('|', name, index++), mappings: mappings));
                 }
-                return SetMappings(mappings, node, arr);
+                return arr;
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
+        private static void SetMappings(IDictionary<string, Range> mappings, YamlNode scalar, string name)
         {
             if (mappings == null)
-                return value;
+                return;
 
-            mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
-            return value;
+            mappings.Add(name, new Range(scalar.Start.Line, scalar.Start.Column));
         }
     }
 }
