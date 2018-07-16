@@ -105,7 +105,9 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 outputs:
   README.json: |
     {
-      "editLink": "https://gitlab.com/test-org/test-repo/blob/contribution/README.md"
+      "editUrl": "https://gitlab.com/test-org/test-repo/blob/contribution/README.md",
+      "gitContentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-2/README.md",
+      "gitCommitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
     }
   testdata1.json:
   build.manifest:

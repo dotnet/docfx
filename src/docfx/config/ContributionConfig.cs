@@ -11,14 +11,12 @@ namespace Microsoft.Docs.Build
         public readonly bool Enabled = true;
 
         /// <summary>
-        /// Specify the which repository edit link goes to.
-        /// User the current repo if not set.
+        /// Specify the full repository url for contribution. Fallback to git origin if not set.
         /// </summary>
         public readonly string Repository = string.Empty;
 
         /// <summary>
-        /// Specify the which branch edit link goes to.
-        /// User the current branch if not set.
+        /// Specify the which branch edit link goes to. Fallback to the current branch if not set.
         /// </summary>
         public readonly string Branch = string.Empty;
 

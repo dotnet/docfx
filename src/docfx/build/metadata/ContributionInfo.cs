@@ -12,6 +12,14 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
+        private static readonly string s_branchName =
+            Environment.GetEnvironmentVariable("DOCFX_BRANCH") ??
+            Environment.GetEnvironmentVariable("TRAVIS_BRANCH") ?? /* https://docs.travis-ci.com/user/environment-variables/ */
+            Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH") ?? /* https://www.appveyor.com/docs/environment-variables/ */
+            Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCHNAME") ?? /* https://docs.microsoft.com/en-us/vsts/pipelines/build/variables */
+            Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME") ?? /* https://docs.gitlab.com/ce/ci/variables/README.html */
+            Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH"); /* https://wiki.jenkins.io/display/JENKINS/Git+Plugin */
+
         private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
 
         private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache = new ConcurrentDictionary<string, GitRepoInfo>();
@@ -139,37 +147,37 @@ namespace Microsoft.Docs.Build
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updateDateTime);
         }
 
-        public string GetEditLink(Document document)
+        public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
-            if (!document.Docset.Config.Contribution.Enabled)
-                return null;
-
             var repoInfo = GetGitRepoInfo(document);
             if (repoInfo?.Host != GitHost.GitHub)
-                return null;
+                return default;
 
-            var repo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
+            var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+            var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+
+            var contentBranch = s_branchName ?? repoInfo.Branch ?? "master";
+
+            var editBranch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
+                ? contentBranch
+                : document.Docset.Config.Contribution.Branch;
+
+            var editRepo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
                 ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
                 : document.Docset.Config.Contribution.Repository;
-            var branch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
-                ? repoInfo.Branch ?? repoInfo.Commit
-                : document.Docset.Config.Contribution.Branch;
-            var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-            var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
 
-            return $"{repo}/blob/{branch}/{relPath}";
+            var editUrl = document.Docset.Config.Contribution.Enabled ? $"{editRepo}/blob/{editBranch}/{relativePath}" : null;
+            var contentUrl = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{contentBranch}/{relativePath}";
+            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
+                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relativePath}"
+                : null;
+
+            return (editUrl, contentUrl, commitUrl);
         }
 
-        // TODO: make this private
-        public bool TryGetCommits(string filePath, out List<GitCommit> commits)
-        {
-            return _commitsByFile.TryGetValue(filePath, out commits);
-        }
-
-        // TODO: make this private
-        public GitRepoInfo GetGitRepoInfo(Document document)
+        private GitRepoInfo GetGitRepoInfo(Document document)
         {
             Debug.Assert(document != null);
 
