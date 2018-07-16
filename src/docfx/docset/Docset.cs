@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
-            DependentDocset = LoadDependencies(new RestoreMap(DocsetPath));
+            Config = config;
+            DependentDocset = LoadDependencies(Config, new RestoreMap(DocsetPath));
 
             // pass on the command line options to its children
             _options = options;
@@ -60,10 +61,10 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private Dictionary<string, Docset> LoadDependencies(RestoreMap restoreMap)
+        private Dictionary<string, Docset> LoadDependencies(Config config, RestoreMap restoreMap)
         {
-            var result = new Dictionary<string, Docset>(Config.Dependencies.Count, PathUtility.PathComparer);
-            foreach (var (name, url) in Config.Dependencies)
+            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
+            foreach (var (name, url) in config.Dependencies)
             {
                 if (!restoreMap.TryGetGitRestorePath(url, out var dir))
                 {
@@ -72,8 +73,8 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                Config.LoadIfExists(dir, _options, out var config);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, config, _options));
+                Config.LoadIfExists(dir, _options, out var subConfig);
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options));
             }
             return result;
         }
