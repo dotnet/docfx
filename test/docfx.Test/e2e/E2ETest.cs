@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(spec.Repo))
             {
-                var (remote, refspec) = Restore.GetGitRemoteInfo(spec.Repo);
+                var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 return (docsetPath, spec);
             }

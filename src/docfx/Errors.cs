@@ -29,13 +29,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
         public static Error UserProfileCacheNotFound(string userProfilePath)
-            => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache at '{userProfilePath}'");
+          => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache file at '{userProfilePath}'");
+
+        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
+            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time file at '{gitCommitsTimePath}'");
+
+        public static Error UrlRestorePathNotFound(string url)
+            => new Error(ErrorLevel.Error, "url-restore-path-not-found", $"The restore path of url `{url}` can't be found, make sure the `restore` command was executed");
 
         public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
-
-        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
-            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time at '{gitCommitsTimePath}'");
 
         public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);

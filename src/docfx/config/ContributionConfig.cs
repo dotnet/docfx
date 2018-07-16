@@ -23,13 +23,15 @@ namespace Microsoft.Docs.Build
         public readonly string Branch = string.Empty;
 
         /// <summary>
-        /// The path of user profile cache, used for generating authoer and contributors.
+        /// The address of user profile cache, used for generating authoer and contributors.
+        /// It should be an absolute url or a relative path
         /// </summary>
-        public readonly string UserProfileCachePath = string.Empty;
+        public readonly string UserProfileCache = string.Empty;
 
         /// <summary>
-        /// The path of commit time history file, which contains the time each commit being pushed.
+        /// The address of commit time history file, which contains the time each commit being pushed.
+        /// It should be an absolute url or a relative path
         /// </summary>
-        public readonly string GitCommitsTimePath = string.Empty;
+        public readonly string GitCommitsTime = string.Empty;
     }
 }

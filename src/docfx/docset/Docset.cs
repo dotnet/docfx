@@ -29,6 +29,11 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
 
         /// <summary>
+        /// Gets the restore path mappings
+        /// </summary>
+        public RestoreMap RestoreMap { get; }
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -47,7 +52,8 @@ namespace Microsoft.Docs.Build
         {
             DocsetPath = Path.GetFullPath(docsetPath);
             Config = config;
-            DependentDocset = LoadDependencies(Config, new RestoreMap(DocsetPath));
+            RestoreMap = new RestoreMap(DocsetPath);
+            DependentDocset = LoadDependencies(Config, RestoreMap);
 
             // pass on the command line options to its children
             _options = options;

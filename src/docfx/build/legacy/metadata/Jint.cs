@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         private static Func<JObject, JObject> LoadTransform()
         {
-            var scriptPath = Path.Combine(AppData.RestoreDir, "github.com/Microsoft/templates.docs.msft/master/ContentTemplate/conceptual.mta.json.js");
+            var scriptPath = Path.Combine(AppData.GitRestoreDir, "github.com/Microsoft/templates.docs.msft/master/ContentTemplate/conceptual.mta.json.js");
 
             var exports = Load(scriptPath, new Dictionary<string, ObjectInstance>());
             var transform = exports.Get("transform");

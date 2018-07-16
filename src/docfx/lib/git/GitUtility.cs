@@ -19,6 +19,23 @@ namespace Microsoft.Docs.Build
         private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
 
         /// <summary>
+        /// Get the git remote information from remote href
+        /// </summary>
+        /// <param name="remoteHref">The git remote href like https://github.com/dotnet/docfx#master</param>
+        public static (string url, string branch) GetGitRemoteInfo(string remoteHref)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(remoteHref));
+
+            var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
+
+            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var uri = new Uri(path);
+            var url = uri.GetLeftPart(UriPartial.Path);
+
+            return (url, refSpec);
+        }
+
+        /// <summary>
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>

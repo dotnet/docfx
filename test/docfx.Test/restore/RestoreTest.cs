@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,7 +23,7 @@ namespace Microsoft.Docs.Build
         public static void GetGitInfo(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev) = Restore.GetGitRemoteInfo(remote);
+            var (url, rev) = GitUtility.GetGitRemoteInfo(remote);
 
             // Assert
             Assert.Equal(expectedUrl, url);
@@ -32,10 +33,10 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task RestoreGitWorkTrees()
         {
-            var docsetPath = ".restore_clean";
+            var docsetPath = ".restore_worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
             Directory.CreateDirectory(docsetPath);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(Restore.GetRestoreRootDir(gitUrl), ".git"));
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -65,6 +66,36 @@ dependencies:
             // check restore lock file
             var restoreLock = await RestoreLocker.Load(docsetPath);
             Assert.Equal(2, restoreLock.Git.Count);
+        }
+
+        [Fact]
+        public static async Task RestoreUrls()
+        {
+            // prepare versions
+            var docsetPath = ".restore_urls";
+            Directory.CreateDirectory(docsetPath);
+            var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
+            var restoreDir = RestoreUrl.GetRestoreRootDir(url);
+            await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
+            {
+                var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
+                Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                File.WriteAllText(restorePath, $"{version}");
+                return Task.CompletedTask;
+            });
+
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
+contribution:
+  userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
+
+            // run restore again to clean up
+            await Program.Run(new[] { "restore", docsetPath });
+
+            Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
+
+            // check restore lock file
+            var restoreLock = await RestoreLocker.Load(docsetPath);
+            Assert.Single(restoreLock.Url);
         }
     }
 }

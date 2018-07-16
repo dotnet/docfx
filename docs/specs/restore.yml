@@ -15,6 +15,26 @@ restores:
 outputs:
   build.manifest:
 ---
+# Restore urls
+inputs:
+  docfx.yml: |
+    contribution:
+      gitCommitsTime: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json
+restores:
+  url/raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json/bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b: |
+    {
+      "commits": [
+        {
+          "sha": "ba823dc527860ca0a5d7844fd80c9824dd993170",
+          "built_at": "1874-01-01"
+        }
+      ]
+    }
+  restore-lock/02. Restore urls-*-lock.json: |
+    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
+outputs:
+  build.manifest:
+---
 # Restored dependency repo can't be found
 commands:
   - build
