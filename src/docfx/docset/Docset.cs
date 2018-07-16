@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the dependent docsets
         /// </summary>
-        public IReadOnlyDictionary<string, Docset> DependentDocset => _dependentDocsets.Value;
+        public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
 
         /// <summary>
         /// Gets the redirection map.
@@ -40,22 +40,18 @@ namespace Microsoft.Docs.Build
 
         private readonly CommandLineOptions _options;
         private readonly Context _context;
-        private readonly Lazy<Dictionary<string, Docset>> _dependentDocsets;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<RestoreMap> _restoreMap;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
-            Config = config;
+            DependentDocset = LoadDependencies(new RestoreMap(DocsetPath));
 
             // pass on the command line options to its children
             _options = options;
             _context = context;
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
-            _restoreMap = new Lazy<RestoreMap>(() => new RestoreMap(DocsetPath));
-            _dependentDocsets = new Lazy<Dictionary<string, Docset>>(() => LoadDependencies(_restoreMap.Value));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
