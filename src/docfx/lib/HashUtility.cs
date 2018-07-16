@@ -44,10 +44,10 @@ namespace Microsoft.Docs.Build
                 var formatted = new StringBuilder(2 * hash.Length);
                 foreach (byte b in hash)
                 {
-                    formatted.AppendFormat("{0:X2}", b);
+                    formatted.AppendFormat("{0:x2}", b);
                 }
 
-                return formatted.ToString().ToLowerInvariant();
+                return formatted.ToString();
             }
         }
     }

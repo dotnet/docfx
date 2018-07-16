@@ -55,13 +55,7 @@ namespace Microsoft.Docs.Build
                 return Path.Combine(docset.DocsetPath, path);
             }
 
-            // get the file path from restore map
-            if (restoreMap.TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
-            {
-                return restorePath;
-            }
-
-            throw Errors.UrlRestorePathNotFound(path).ToException();
+            return restoreMap.GetUrlRestorePath(path);
         }
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)

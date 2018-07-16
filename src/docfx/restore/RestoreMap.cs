@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -41,6 +42,19 @@ namespace Microsoft.Docs.Build
 
             restorePath = default;
             return false;
+        }
+
+        public string GetUrlRestorePath(string remote)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+
+            // get the file path from restore map
+            if (TryGetUrlRestorePath(remote, out var restorePath) && File.Exists(restorePath))
+            {
+                return restorePath;
+            }
+
+            throw Errors.UrlRestorePathNotFound(remote).ToException();
         }
     }
 }
