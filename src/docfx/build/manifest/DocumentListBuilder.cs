@@ -14,11 +14,11 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Document> _filesByUrl = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
 
-        public List<Document> Build(Context context)
+        public ICollection<Document> Build(Context context)
         {
             HandleConflicts(context);
 
-            return _filesByUrl.Values.OrderBy(d => d.OutputPath).ToList();
+            return _filesByUrl.Values;
         }
 
         public bool TryAdd(Document file)

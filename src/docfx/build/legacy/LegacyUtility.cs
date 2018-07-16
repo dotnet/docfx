@@ -1,13 +1,27 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LegacyExtensions
+    internal static class LegacyUtility
     {
+        public static void MoveFileSafe(string sourceFileName, string destFileName)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(sourceFileName));
+            Debug.Assert(!string.IsNullOrEmpty(destFileName));
+            Debug.Assert(File.Exists(sourceFileName));
+            if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+
+                File.Delete(destFileName);
+                File.Move(sourceFileName, destFileName);
+            }
+        }
+
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
         {
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.SourceBasePath ?? string.Empty, doc.FilePath));

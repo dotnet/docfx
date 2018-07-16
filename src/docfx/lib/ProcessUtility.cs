@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, TimeSpan? timeout = null, bool redirectOutput = true)
+        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, bool redirectOutput = true)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
             if (redirectOutput)
             {
                 psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = redirectOutput;
-                psi.RedirectStandardError = redirectOutput;
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
             }
 
             var process = new Process
@@ -73,21 +73,6 @@ namespace Microsoft.Docs.Build
                     tcs.TrySetException(new InvalidOperationException(message));
                 }
             };
-
-            if (timeout != null)
-            {
-                Task.Delay(timeout.Value).ContinueWith(
-                task =>
-                {
-                    if (!process.HasExited)
-                    {
-                        process.Kill();
-                    }
-
-                    var message = $"'\"{fileName}\" {commandLineArgs}' timeout in directory '{cwd}' after {timeout.Value.Seconds} seconds";
-                    tcs.TrySetException(new TimeoutException(message));
-                }, TaskScheduler.Default);
-            }
 
             lock (processExited)
             {

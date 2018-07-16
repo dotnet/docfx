@@ -55,8 +55,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
-        public static Error YamlHeaderNotObject(object filePath, bool isArray)
-            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", filePath.ToString());
+        public static Error YamlHeaderNotObject(bool isArray)
+            => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
 
         public static Error YamlSyntaxError(YamlException ex)
             => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");

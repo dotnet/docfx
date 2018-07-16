@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,8 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task<DependencyMap> Build(
-            Context context,
+        public static Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
@@ -58,11 +58,7 @@ namespace Microsoft.Docs.Build
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
-            // TODO: make build pure by not output using `context.Report/Write/Copy` here
-            context.Report(file, markup.Errors.Concat(repoErrors));
-            context.WriteJson(model, file.OutputPath);
-
-            return Task.FromResult(dependencyMapBuilder.Build());
+            return Task.FromResult((markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build()));
         }
     }
 }

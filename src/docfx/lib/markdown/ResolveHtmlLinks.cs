@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.CompilerServices;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -12,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveHtmlLinks
     {
-        public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context, StrongBox<bool> hasHtml)
+        public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context)
         {
             return builder.Use(document =>
             {
@@ -21,12 +20,12 @@ namespace Microsoft.Docs.Build
                     if (node is HtmlBlock block)
                     {
                         block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString()));
-                        hasHtml.Value = true;
+                        Markup.Result.HasHtml = true;
                     }
                     else if (node is HtmlInline inline)
                     {
                         inline.Tag = ResolveLinks(inline.Tag);
-                        hasHtml.Value = true;
+                        Markup.Result.HasHtml = true;
                     }
                     return false;
                 });
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             string ResolveLinks(string html)
             {
-                return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File));
+                return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile));
             }
         }
     }
