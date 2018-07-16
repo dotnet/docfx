@@ -299,6 +299,47 @@ Key1: 0
         }
 
         [Fact]
+        public void TestComplexStructureListItemsWithNullValue()
+        {
+            var yaml = @"- C: Good0!
+- B: 1
+  C: Good1!
+  D: true
+- C: Good2!
+  B: 2
+  D: false
+- D: true
+  C: Good3!
+  B: 3
+- B: 4
+  C: Good4!
+  D: false
+- B: 5
+  C: Good5!
+  D: true
+- B: 6
+  C: Good6!
+  D: false
+- B: 7
+  C: Good7!
+  D: true
+- B: 8
+  C: Good8!
+  D: false
+- B: 
+  C: Good9!
+  D: true
+";
+            var (errors, value) = YamlUtility.Deserialize(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Info, error.Level);
+                Assert.Equal("null-value", error.Code);
+                Assert.Contains("'B' contains null value", error.Message);
+            });
+        }
+
+        [Fact]
         public void TestListItemWithNullValue()
         {
             var yaml = @"name: List item with null value
@@ -311,7 +352,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("name contains null value", error.Message);
+                Assert.Contains("'name' contains null value", error.Message);
             });
         }
 
@@ -328,7 +369,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("items contains null value", error.Message);
+                Assert.Contains("'items' contains null value", error.Message);
             });
         }
 

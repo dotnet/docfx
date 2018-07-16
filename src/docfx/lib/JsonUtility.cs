@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
@@ -123,7 +124,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        public static (List<Error>, JToken) ValidateNullValue(this JToken token, IDictionary<string, Range> mappings = null)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
@@ -163,20 +164,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, string name = null)
+        private static void Traverse(this JToken token, List<Error> errors, IDictionary<string, Range> mappings, List<JToken> nullNodes, string name = null)
         {
             if (token is JArray array)
             {
+                // Adding index to path to have unique path for array items
+                var index = 0;
                 foreach (var item in token.Children())
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(array, errors, mappings, name);
+                        LogInfoForNullValue(array, errors, mappings, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        Traverse(item, errors, mappings, nullNodes, name);
+                        Traverse(item, errors, mappings, nullNodes, string.Join('|', name, index++));
                     }
                 }
             }
@@ -187,29 +190,29 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(token, errors, mappings, prop.Name);
+                        LogInfoForNullValue(token, errors, mappings, string.Join('|', name, prop.Name));
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.Traverse(errors, mappings, nullNodes, prop.Name);
+                        prop.Value.Traverse(errors, mappings, nullNodes, string.Join('|', name, prop.Name));
                     }
                 }
             }
         }
 
-        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
+        private static void LogInfoForNullValue(JToken item, List<Error> errors, IDictionary<string, Range> mappings, string name)
         {
             if (mappings == null)
             {
                 var lineInfo = item as IJsonLineInfo;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name.Split('|').Last()));
             }
             else
             {
-                Debug.Assert(mappings.ContainsKey(item));
-                var value = mappings[item];
-                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
+                Debug.Assert(mappings.ContainsKey(name));
+                var value = mappings[name];
+                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name.Split('|').Last()));
             }
         }
 
