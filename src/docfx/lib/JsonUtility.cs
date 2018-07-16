@@ -198,6 +198,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
+
+        // TODO: clean up logging only use JToken line info
         private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
         {
             if (mappings == null)
