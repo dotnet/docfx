@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
-            return LoadCore(configPath, options);
+            return LoadCore(docsetPath, configPath, options);
         }
 
         /// <summary>
@@ -133,11 +133,11 @@ namespace Microsoft.Docs.Build
         {
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
-            config = exists ? LoadCore(configPath, options) : new Config();
+            config = exists ? LoadCore(docsetPath, configPath, options) : new Config();
             return exists;
         }
 
-        private static Config LoadCore(string configPath, CommandLineOptions options = null)
+        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options = null)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             Config config = null;
@@ -154,14 +154,15 @@ namespace Microsoft.Docs.Build
                 throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
             }
 
-            Validate(config);
+            Validate(config, docsetPath);
 
             return config;
         }
 
-        private static void Validate(Config config)
+        private static void Validate(Config config, string docsetPath)
         {
             ValidateLocale(config);
+            ValidateContributorConfig(config.Contribution, docsetPath);
         }
 
         private static void ValidateLocale(Config config)
@@ -173,6 +174,22 @@ namespace Microsoft.Docs.Build
             catch (CultureNotFoundException e)
             {
                 throw Errors.InvalidLocale(config.Locale).ToException(e);
+            }
+        }
+
+        private static void ValidateContributorConfig(ContributionConfig config, string docsetPath)
+        {
+            if (!string.IsNullOrEmpty(config.UserProfileCache)
+                && !HrefUtility.IsAbsoluteHref(config.UserProfileCache)
+                && !File.Exists(Path.Combine(docsetPath, config.UserProfileCache)))
+            {
+                throw Errors.UserProfileCacheNotFound(config.UserProfileCache).ToException();
+            }
+            if (!string.IsNullOrEmpty(config.GitCommitsTime)
+                && !HrefUtility.IsAbsoluteHref(config.GitCommitsTime)
+                && !File.Exists(Path.Combine(docsetPath, config.GitCommitsTime)))
+            {
+                throw Errors.GitCommitsTimeNotFound(config.GitCommitsTime).ToException();
             }
         }
 

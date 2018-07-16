@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             var fileVersion = "";
             using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
             {
-                fileVersion = PathUtility.Encode(HashUtility.GetMd5String(fileStream));
+                fileVersion = HashUtility.GetSha1HashString(fileStream);
             }
 
             Debug.Assert(!string.IsNullOrEmpty(fileVersion));
@@ -75,10 +75,17 @@ namespace Microsoft.Docs.Build
         private static async Task<string> DownloadToTempFile(string address)
         {
             var tempFile = Path.GetTempFileName();
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                await client.DownloadFileTaskAsync(address, tempFile);
+                using (var request = new HttpRequestMessage(HttpMethod.Get, address))
+                {
+                    using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(),
+                        stream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        await contentStream.CopyToAsync(stream);
+                    }
+                }
             }
 
             return tempFile;

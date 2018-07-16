@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
-            var docsetKey = Path.GetFileName(docset) + "-" + PathUtility.Encode(HashUtility.GetMd5String(docset));
+            var docsetKey = Path.GetFileName(docset) + "-" + HashUtility.GetSha1HashString(docset);
 
             return Path.Combine(AppData.RestoreLockDir, $"{docsetKey}-lock.json");
         }

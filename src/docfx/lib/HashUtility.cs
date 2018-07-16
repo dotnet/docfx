@@ -30,5 +30,25 @@ namespace Microsoft.Docs.Build
                 return new Guid(md5.ComputeHash(stream)).ToString();
             }
         }
+
+        public static string GetSha1HashString(string input)
+            => GetSha1HashString(new MemoryStream(Encoding.UTF8.GetBytes(input)));
+
+        public static string GetSha1HashString(Stream stream)
+        {
+#pragma warning disable CA5350 //Not used for encryption
+            using (var sha1 = new SHA1CryptoServiceProvider())
+#pragma warning restore CA5350
+            {
+                var hash = sha1.ComputeHash(stream);
+                var formatted = new StringBuilder(2 * hash.Length);
+                foreach (byte b in hash)
+                {
+                    formatted.AppendFormat("{0:X2}", b);
+                }
+
+                return formatted.ToString().ToLowerInvariant();
+            }
+        }
     }
 }

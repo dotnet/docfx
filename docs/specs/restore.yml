@@ -19,9 +19,9 @@ outputs:
 inputs:
   docfx.yml: |
     contribution:
-      gitCommitsTimeUrl: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json
+      gitCommitsTime: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json
 restores:
-  url/raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json/cdbf4812-775a-6990-783b-3cb4ab3d90b3: |
+  url/raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json/bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b: |
     {
       "commits": [
         {
@@ -31,7 +31,7 @@ restores:
       ]
     }
   restore-lock/02. Restore urls-*-lock.json: |
-    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"cdbf4812-775a-6990-783b-3cb4ab3d90b3"}}
+    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
   build.manifest:
 ---
@@ -46,4 +46,4 @@ inputs:
 outputs:
   build.manifest:
   build.log: |
-    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, please make sure the `restore` command was executed","docs/a.md"]
+    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, make sure the `restore` command was executed","docs/a.md"]

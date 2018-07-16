@@ -36,30 +36,32 @@ namespace Microsoft.Docs.Build
         {
             var commitsByFile = LoadCommits(docset);
 
-            var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTimeUrl)
+            var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(GetRestorePathFromUrl(docset.Config.Contribution.GitCommitsTimeUrl, docset.RestoreMap)).ToDictionary();
+                : GitCommitsTime.Create(GetFileFromConfig(docset, docset.Config.Contribution.GitCommitsTime, docset.RestoreMap)).ToDictionary();
 
-            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCacheUrl)
+            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
                 ? s_defaultProfilePath
-                : GetRestorePathFromUrl(docset.Config.Contribution.UserProfileCacheUrl, docset.RestoreMap);
+                : GetFileFromConfig(docset, docset.Config.Contribution.UserProfileCache, docset.RestoreMap);
 
             return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
         }
 
-        private static string GetRestorePathFromUrl(string url, RestoreMap restoreMap)
+        private static string GetFileFromConfig(Docset docset, string path, RestoreMap restoreMap)
         {
-            if (!string.IsNullOrEmpty(url))
+            if (!HrefUtility.IsAbsoluteHref(path))
             {
-                if (restoreMap.TryGetUrlRestorePath(url, out var restorePath) && File.Exists(restorePath))
-                {
-                    return restorePath;
-                }
-
-                throw Errors.UrlRestorePathNotFound(url).ToException();
+                // directly return the relative path
+                return Path.Combine(docset.DocsetPath, path);
             }
 
-            return string.Empty;
+            // get the file path from restore map
+            if (restoreMap.TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
+            {
+                return restorePath;
+            }
+
+            throw Errors.UrlRestorePathNotFound(path).ToException();
         }
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)

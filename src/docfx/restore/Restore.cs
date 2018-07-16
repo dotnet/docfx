@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -44,6 +46,8 @@ namespace Microsoft.Docs.Build
             var uri = new Uri(url);
             var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
             var dir = Path.Combine(root, repo);
+
+            // todo: encode the dir converted from url
             return PathUtility.NormalizeFolder(dir);
         }
 
@@ -58,20 +62,34 @@ namespace Microsoft.Docs.Build
                 result.Git[href] = workTreeHead;
             }
 
-            // restore github user
-            if (!string.IsNullOrEmpty(config.Contribution.UserProfileCacheUrl))
+            var restoreUrls = GetRestoreUrls(config);
+            var restoreUrlMappings = new ConcurrentDictionary<string, string>();
+            await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
-                result.Url[config.Contribution.UserProfileCacheUrl] = await RestoreUrl.Restore(docsetPath, config.Contribution.UserProfileCacheUrl);
+                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(docsetPath, restoreUrl);
+            });
+
+            result.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
+            return result;
+        }
+
+        private static List<string> GetRestoreUrls(Config config)
+        {
+            var restoreUrls = new List<string>();
+
+            // restore github user
+            if (!string.IsNullOrEmpty(config.Contribution.UserProfileCache) && HrefUtility.IsAbsoluteHref(config.Contribution.UserProfileCache))
+            {
+                restoreUrls.Add(config.Contribution.UserProfileCache);
             }
 
             // restore commit last update at
-            if (!string.IsNullOrEmpty(config.Contribution.GitCommitsTimeUrl))
+            if (!string.IsNullOrEmpty(config.Contribution.GitCommitsTime) && HrefUtility.IsAbsoluteHref(config.Contribution.GitCommitsTime))
             {
-                result.Url[config.Contribution.GitCommitsTimeUrl] = await RestoreUrl.Restore(docsetPath, config.Contribution.GitCommitsTimeUrl);
+                restoreUrls.Add(config.Contribution.GitCommitsTime);
             }
 
-            // todo: restore other items, @renze
-            return result;
+            return restoreUrls;
         }
     }
 }

@@ -86,7 +86,7 @@ dependencies:
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 contribution:
-  userProfileCacheUrl: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
+  userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
 
             // run restore again to clean up
             await Program.Run(new[] { "restore", docsetPath });

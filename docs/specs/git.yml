@@ -1,5 +1,5 @@
 ---
-# Show git contributors, author, updatedAt, enableContribution, editLink
+# Show git contribution info using absolute path
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-5
 outputs:
   README.json: |
@@ -21,6 +21,36 @@ outputs:
       "updatedAt": "2018-06-28T10:00:00",
       "enableContribution": true,
       "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-5/README.md"
+    }
+  testdata1.json: |
+    {
+      "updatedAt":"1874-01-01T00:00:00"
+    }
+  build.manifest:
+  dep.json:
+---
+# Show git contribution info using relative path
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
+outputs:
+  README.json: |
+    {
+      "author": {
+        "name": "superyyrrzz",
+        "profileUrl": "https://github.com/superyyrrzz",
+        "displayName": "Renze Yu",
+        "id": "3831744"
+      },
+      "contributors": [
+        {
+          "name": "OsmondJiang",
+          "profileUrl": "https://github.com/OsmondJiang",
+          "displayName": "Osmond Jiang",
+          "id": "19990166"
+        }
+      ],
+      "updatedAt": "2018-06-28T10:00:00",
+      "enableContribution": true,
+      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md"
     }
   testdata1.json: |
     {
