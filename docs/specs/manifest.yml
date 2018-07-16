@@ -32,7 +32,7 @@ outputs:
   build.manifest: |
     {
       "files": [
-        { "siteUrl": "/a.png", "sourcePath": "a.png" }
+        { "siteUrl": "/a.png", "sourcePath": "a.png", "!outputPath": "" }
       ]
     }
 ---
