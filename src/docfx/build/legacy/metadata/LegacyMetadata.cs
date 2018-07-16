@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
             }
 
-            var culture = new CultureInfo(pageModel.Locale);
+            var culture = new CultureInfo(docset.Config.Locale);
             if (pageModel.UpdatedAt != default)
             {
                 rawMetadata["_op_gitContributorInformation"] = new JObject

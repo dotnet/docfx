@@ -13,10 +13,13 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(sourceFileName));
             Debug.Assert(!string.IsNullOrEmpty(destFileName));
             Debug.Assert(File.Exists(sourceFileName));
+            if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-            File.Delete(destFileName);
-            File.Move(sourceFileName, destFileName);
+                File.Delete(destFileName);
+                File.Move(sourceFileName, destFileName);
+            }
         }
 
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
