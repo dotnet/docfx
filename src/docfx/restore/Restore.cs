@@ -51,6 +51,23 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
+        private static IEnumerable<string> GetRestoreUrls(Config config)
+        {
+            var restoreUrls = new[]
+            {
+                config.Contribution.UserProfileCache,
+                config.Contribution.GitCommitsTime,
+            };
+
+            foreach (var url in restoreUrls)
+            {
+                if (!string.IsNullOrEmpty(url) && HrefUtility.IsAbsoluteHref(url))
+                {
+                    yield return url;
+                }
+            }
+        }
+
         private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild)
         {
             var result = new RestoreLock();
@@ -71,25 +88,6 @@ namespace Microsoft.Docs.Build
 
             result.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
             return result;
-        }
-
-        private static List<string> GetRestoreUrls(Config config)
-        {
-            var restoreUrls = new List<string>();
-
-            // restore github user
-            if (!string.IsNullOrEmpty(config.Contribution.UserProfileCache) && HrefUtility.IsAbsoluteHref(config.Contribution.UserProfileCache))
-            {
-                restoreUrls.Add(config.Contribution.UserProfileCache);
-            }
-
-            // restore commit last update at
-            if (!string.IsNullOrEmpty(config.Contribution.GitCommitsTime) && HrefUtility.IsAbsoluteHref(config.Contribution.GitCommitsTime))
-            {
-                restoreUrls.Add(config.Contribution.GitCommitsTime);
-            }
-
-            return restoreUrls;
         }
     }
 }
