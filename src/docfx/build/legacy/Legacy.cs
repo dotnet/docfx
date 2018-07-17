@@ -13,8 +13,7 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
-            Report report)
+            ContributionInfo contribution)
         {
             using (Progress.Start("Converting to legacy"))
             {
