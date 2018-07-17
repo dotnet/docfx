@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
-            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
+            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList()));
 
             // process git restore items
             await ParallelUtility.ForEach(
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
 
         public static async Task GC(Config config, Func<string, Task> gcChild)
         {
-            var restoreDirs = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => g.Key);
+            var restoreDirs = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => g.Key);
 
             await ParallelUtility.ForEach(
                restoreDirs,
