@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public string Log;
         public bool Legacy;
+        public string Token;
 
         public JObject ToJObject() => new JObject
         {

@@ -5,7 +5,6 @@ using System;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -84,8 +83,9 @@ namespace Microsoft.Docs.Build
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
-                // usage: docfx restore [docset]
+                // usage: docfx restore [docset] [-t/--token token]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
+                syntax.DefineOption("t|token", ref options.Token, "The token used to restore dependency repositories");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command

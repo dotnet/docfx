@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string token)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
             var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await GetWorkTrees(docsetPath, restoreDir, hrefs);
+                var workTreeHeads = await GetWorkTrees(docsetPath, restoreDir, hrefs, token);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> GetWorkTrees(string docsetPath, string restoreDir, List<string> hrefs)
+        private static async Task<List<(string href, string head)>> GetWorkTrees(string docsetPath, string restoreDir, List<string> hrefs, string token)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
@@ -85,12 +85,15 @@ namespace Microsoft.Docs.Build
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
-                    await GitUtility.Fetch(restorePath);
+                    await GitUtility.Fetch(restorePath, GitUtility.AppendToken(url, token));
                 }
                 else
                 {
                     // doesn't exist yet, clone this repo to a specified branch
-                    await GitUtility.Clone(restoreDir, url, restorePath, null, true);
+                    await GitUtility.WithToken(restorePath, url, token, async urlWithToken =>
+                    {
+                        await GitUtility.Clone(restoreDir, urlWithToken, restorePath, null, true);
+                    });
                 }
             }
 

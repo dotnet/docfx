@@ -56,6 +56,13 @@ namespace Microsoft.Docs.Build
             Assert.True(results.All(r => r.Any()));
         }
 
+        [Theory]
+        [InlineData("https://github.com/docfx/docfx.git", "token", "https://token@github.com/docfx/docfx.git")]
+        [InlineData("https://github.com/docfx/docfx.git", "", "https://github.com/docfx/docfx.git")]
+        [InlineData("https://github.com/docfx/docfx.git", null, "https://github.com/docfx/docfx.git")]
+        public static void AppTokenToRemoteUrl(string remote, string token, string expectedRemote)
+            => Assert.Equal(expectedRemote, GitUtility.AppendToken(remote, token));
+
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });

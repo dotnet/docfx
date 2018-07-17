@@ -36,6 +36,42 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Execute git action with remote url with token and then reset the remote url back without token
+        /// </summary>
+        public static async Task WithToken(string cwd, string remoteUrl, string token, Func<string, Task> action)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                await action(remoteUrl);
+                return;
+            }
+
+            // add token to remote href
+            var remoteUrlWithToken = AppendToken(remoteUrl, token);
+
+            await action(remoteUrlWithToken);
+
+            // reset url back without token
+            await SetRemoteGitUrl(cwd, remoteUrl);
+        }
+
+        /// <summary>
+        /// Append token to git remote href
+        /// </summary>
+        public static string AppendToken(string remoteHref, string token)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(remoteHref));
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return remoteHref;
+            }
+
+            var uri = new Uri(remoteHref);
+            return $"{uri.Scheme}://{token}@{uri.Host}{uri.PathAndQuery}";
+        }
+
+        /// <summary>
         /// Find git repo directory
         /// </summary>
         /// <param name="path">The git repo entry point</param>
@@ -97,40 +133,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
-        public static Task Fetch(string cwd)
-            => ExecuteNonQuery(cwd, "fetch origin '*:*'");
-
-        /// <summary>
-        /// Pull update from remote
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="remote">The remote name, default is origin</param>
-        /// <returns>Task status</returns>
-        public static Task Pull(string cwd, string remote = null)
-            => ExecuteNonQuery(cwd, $"pull {remote ?? string.Empty}");
-
-        /// <summary>
-        /// Checkout repo to specified branch
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="create">Create this branch if not exists or not</param>
-        /// <param name="branch">The branch name, default is master</param>
-        /// <returns>Task status</returns>
-        public static Task Checkout(string cwd, bool create, string branch = null)
-            => ExecuteNonQuery(cwd, $"checkout {(create ? "-b" : "")} {branch ?? "master"}");
-
-        /// <summary>
-        /// Reset(hard) current repo to remote branch
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="branch">The remote branch name</param>
-        /// <returns>Task status</returns>
-        public static Task Reset(string cwd, string branch)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(branch));
-
-            return ExecuteNonQuery(cwd, $"reset --hard origin/{branch}");
-        }
+        public static Task Fetch(string cwd, string remoteWitToken)
+            => ExecuteNonQuery(cwd, $"fetch {remoteWitToken} '*:*'");
 
         /// <summary>
         /// List work trees for a given repo
@@ -181,6 +185,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task<string> Revision(string cwd, string branch = "HEAD")
            => ExecuteQuery(cwd, $"rev-parse {branch}");
+
+        private static Task SetRemoteGitUrl(string cwd, string url, string remoteName = null)
+            => ExecuteNonQuery(cwd, $"remote set-url {remoteName ?? "origin"} {url}");
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
             => Execute(cwd, commandLineArgs, x => x, redirectOutput: false);

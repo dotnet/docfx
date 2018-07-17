@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
                         // todo: Parallel competition issue for "get lock" and then "save lock"
-                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset);
+                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset, options.Token);
                         await RestoreLocker.Save(docset, docsetLock);
                     }
                 }
@@ -68,12 +68,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild)
+        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild, string token)
         {
             var result = new RestoreLock();
 
             // restore git dependnecy repositories
-            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, config, restoreChild);
+            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, config, restoreChild, token);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 result.Git[href] = workTreeHead;
