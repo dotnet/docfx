@@ -56,15 +56,17 @@ namespace Microsoft.Docs.Build
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
+            _options = options;
+            _context = context;
+            Config = config;
+
             DocsetPath = Path.GetFullPath(docsetPath);
             Repository = Repository.Create(DocsetPath, options);
-            Config = config;
+
             RestoreMap = new RestoreMap(DocsetPath);
             DependentDocset = LoadDependencies(Config, RestoreMap);
 
             // pass on the command line options to its children
-            _options = options;
-            _context = context;
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
