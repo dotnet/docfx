@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
-                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docset, docsetConfig, RestoreDocset));
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docsetConfig, RestoreDocset));
                     }
                 }
             }
@@ -80,12 +80,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild)
+        private static async Task<RestoreLock> RestoreOneDocset(Config config, Func<string, Task> restoreChild)
         {
             var result = new RestoreLock();
 
             // restore git dependnecy repositories
-            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, config, restoreChild);
+            var workTreeHeadMappings = await RestoreGit.Restore(config, restoreChild);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 result.Git[href] = workTreeHead;
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             var restoreUrlMappings = new ConcurrentDictionary<string, string>();
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
-                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(docsetPath, restoreUrl);
+                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
             });
 
             result.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);

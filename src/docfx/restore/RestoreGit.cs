@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
             var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await AddWorkTrees(docsetPath, restoreDir, hrefs);
+                var workTreeHeads = await AddWorkTrees(restoreDir, hrefs);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> AddWorkTrees(string docsetPath, string restoreDir, List<string> hrefs)
+        private static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 {
                     await FetchOrCloneRepo();
 
-                    var (existingWorkTrees, newWorkTrees) = await AddWorkTrees();
+                    await AddWorkTrees();
                 });
 
             async Task FetchOrCloneRepo()
@@ -103,10 +103,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            async Task<(List<string> existingWorkTrees, List<string> newWorkTrees)> AddWorkTrees()
+            async Task AddWorkTrees()
             {
                 var existingWorkTrees = new ConcurrentDictionary<string, int>((await GitUtility.ListWorkTrees(restorePath, false)).ToDictionary(k => k, v => 0));
-                var newWorkTrees = new ConcurrentBag<string>();
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
@@ -117,11 +116,8 @@ namespace Microsoft.Docs.Build
                         await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
                     }
 
-                    newWorkTrees.Add(workTreePath);
                     workTreeHeads.Add((href, workTreeHead));
                 });
-
-                return (existingWorkTrees.Keys.ToList(), newWorkTrees.ToList());
             }
 
             Debug.Assert(hrefs.Count == workTreeHeads.Count);

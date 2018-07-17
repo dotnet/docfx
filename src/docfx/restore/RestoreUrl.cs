@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string address)
             => Docs.Build.Restore.GetRestoreRootDir(address, AppData.UrlRestoreDir);
 
-        public static async Task<string> Restore(string docset, string address)
+        public static async Task<string> Restore(string address)
         {
             var tempFile = await DownloadToTempFile(address);
 
