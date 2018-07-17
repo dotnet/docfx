@@ -592,7 +592,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
         {
-            var details = (string)null;
+            string details = null;
             var canIncremental = false;
 
             if (lb == null)
