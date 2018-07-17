@@ -4,12 +4,12 @@
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
     using System;
-    using System.IO;
     using System.Threading.Tasks;
 
     using Xunit;
 
     using Microsoft.DocAsCode.Build.Engine;
+    using System.Net;
 
     [Trait("Owner", "makaretu")]
     public class XRefMapDownloadTest
@@ -17,6 +17,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Fact]
         public async Task BaseUrlIsSet()
         {
+            // GitHub doesn't support TLS 1.1 since Feb 23, 2018. See: https://github.com/blog/2507-weak-cryptographic-standards-removed
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             var downloader = new XRefMapDownloader();
             var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml")) as XRefMap;
             Assert.NotNull(xrefs);
