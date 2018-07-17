@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Converting to legacy"))
             {
+                Jint.Init(docset);
+
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
                 LegacyOutput.Convert(docset, context, contribution, legacyManifestItems, tocMap);
