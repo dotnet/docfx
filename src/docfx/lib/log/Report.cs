@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private Lazy<TextWriter> _output;
         private Dictionary<string, ErrorLevel> _rules;
 
-        public Report(bool legacy)
+        public Report(bool legacy = false)
         {
             _legacy = legacy;
         }
