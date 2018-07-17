@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public static void Init(Docset docset)
         {
-            docset.RestoreMap.TryGetGitRestorePath("https://github.com/Microsoft/templates.docs.msft#master", out var restorePath);
+            docset.RestoreMap.TryGetGitRestorePath("https://github.com/Microsoft/templates.docs.msft", out var restorePath);
             s_transform = new ThreadLocal<Func<JObject, JObject>>(() => LoadTransform(restorePath));
         }
 
