@@ -170,6 +170,33 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Apply routes to the file path
+        /// </summary>
+        /// <param name="path">file path</param>
+        /// <param name="routes">routes config</param>
+        /// <returns>file path after apply routes</returns>
+        public static string ApplyRoutes(string path, RouteConfig[] routes)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            if(routes == null)
+            {
+                return path;
+            }
+
+            // the latter rule takes precedence of the former rule
+            for (var i = routes.Length - 1; i >= 0; i--)
+            {
+                var result = routes[i].GetOutputPath(path);
+                if (result != null)
+                {
+                    return result.Replace('\\', '/');
+                }
+            }
+            return path;
+        }
+
+        /// <summary>
         /// Opens a new <see cref="Document"/> based on the path relative to docset.
         /// </summary>
         /// <param name="docset">The current docset</param>
@@ -321,20 +348,6 @@ namespace Microsoft.Docs.Build
                 default:
                     return url;
             }
-        }
-
-        private static string ApplyRoutes(string path, RouteConfig[] routes)
-        {
-            // the latter rule takes precedence of the former rule
-            for (var i = routes.Length - 1; i >= 0; i--)
-            {
-                var result = routes[i].GetOutputPath(path);
-                if (result != null)
-                {
-                    return result.Replace('\\', '/');
-                }
-            }
-            return path;
         }
 
         private static bool IsValidRelativePath(string path)
