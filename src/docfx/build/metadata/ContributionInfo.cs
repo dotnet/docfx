@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,17 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
-        private static readonly string s_branchName =
-            Environment.GetEnvironmentVariable("DOCFX_BRANCH") ??
-            Environment.GetEnvironmentVariable("TRAVIS_BRANCH") ?? /* https://docs.travis-ci.com/user/environment-variables/ */
-            Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH") ?? /* https://www.appveyor.com/docs/environment-variables/ */
-            Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCHNAME") ?? /* https://docs.microsoft.com/en-us/vsts/pipelines/build/variables */
-            Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME") ?? /* https://docs.gitlab.com/ce/ci/variables/README.html */
-            Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH"); /* https://wiki.jenkins.io/display/JENKINS/Git+Plugin */
-
         private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
-
-        private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache = new ConcurrentDictionary<string, GitRepoInfo>();
+        private static readonly ContributionInfo s_empty = new ContributionInfo(
+            new Dictionary<string, List<GitCommit>>(),
+            new Dictionary<string, DateTime>(),
+            UserProfileCache.Create(s_defaultProfilePath));
 
         private readonly UserProfileCache _userProfileCache;
 
@@ -42,6 +35,11 @@ namespace Microsoft.Docs.Build
 
         public static ContributionInfo Load(Docset docset)
         {
+            if (docset.Repository == null)
+            {
+                return s_empty;
+            }
+
             var commitsByFile = LoadCommits(docset);
 
             var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
@@ -68,7 +66,9 @@ namespace Microsoft.Docs.Build
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
         {
-            var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
+            Debug.Assert(docset.Repository != null);
+
+            var repoRoot = docset.Repository.RepositoryPath;
 
             var files = docset.BuildScope
                 .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
@@ -151,58 +151,29 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var repoInfo = GetGitRepoInfo(document);
-            if (repoInfo?.Host != GitHost.GitHub)
+            if (document.Docset.Repository == null)
+            {
                 return default;
+            }
 
+            var repoPath = document.Docset.Repository.RepositoryPath;
             var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-            var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+            var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, fullPath));
 
-            var contentBranch = s_branchName ?? repoInfo.Branch ?? "master";
+            var editBranch = document.Docset.Config.Contribution.Branch ?? "{branch}";
+            var editRepo = document.Docset.Config.Contribution.Repository ?? "{repo}";
 
-            var editBranch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
-                ? contentBranch
-                : document.Docset.Config.Contribution.Branch;
-
-            var editRepo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
-                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
-                : document.Docset.Config.Contribution.Repository;
-
-            var editUrl = document.Docset.Config.Contribution.Enabled ? $"{editRepo}/blob/{editBranch}/{relativePath}" : null;
-            var contentUrl = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{contentBranch}/{relativePath}";
-            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
-                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relativePath}"
+            var editUrl = document.Docset.Config.Contribution.Enabled
+                ? $"https://github.com/{editRepo}/blob/{editBranch}/{relativePath}"
                 : null;
+
+            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
+                ? $"https://github.com/{{repo}}/blob/{commits[0].Sha}/{relativePath}"
+                : null;
+
+            var contentUrl = $"https://github.com/{{repo}}/blob/{{branch}}/{relativePath}";
 
             return (editUrl, contentUrl, commitUrl);
-        }
-
-        private GitRepoInfo GetGitRepoInfo(Document document)
-        {
-            Debug.Assert(document != null);
-
-            return GetFolderGitRepoInfo(Path.GetDirectoryName(Path.Combine(document.Docset.DocsetPath, document.FilePath)));
-        }
-
-        private GitRepoInfo GetFolderGitRepoInfo(string folder)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(folder));
-            Debug.Assert(Directory.Exists(folder));
-
-            folder = PathUtility.NormalizeFile(folder);
-            return _folderRepoInfocache.GetOrAdd(folder, GetFolderGitRepoInfoCore);
-        }
-
-        private GitRepoInfo GetFolderGitRepoInfoCore(string folder)
-        {
-            if (GitUtility.IsRepo(folder))
-                return GitRepoInfo.Create(folder);
-
-            // TODO: add GitUtility.Discover repo
-            var parent = folder.Substring(0, folder.LastIndexOf("/"));
-            return Directory.Exists(parent)
-                ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
-                : null;
         }
 
         private GitUserInfo ToGitUserInfo(UserProfile profile)

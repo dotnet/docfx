@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyOutput
     {
-        public static void Convert(Docset docset, Context context, ContributionInfo contribution, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
+        public static void Convert(Docset docset, Context context, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
         {
             Parallel.ForEach(files, file =>
             {
@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case ContentType.Markdown:
                     case ContentType.Redirection:
-                        LegacyMarkdown.Convert(docset, context, document, contribution, manifestItem.Output, tocMap);
+                        LegacyMarkdown.Convert(docset, context, document, manifestItem.Output, tocMap);
                         break;
                     case ContentType.Resource:
                         LegacyResource.Convert(docset, context, document, manifestItem.Output);

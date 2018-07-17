@@ -1,5 +1,5 @@
 ---
-# Show git contribution info using absolute path
+# Show git contribution info when userProfile & commitsTime is set to URL
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-5
 outputs:
   README.json: |
@@ -18,9 +18,7 @@ outputs:
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00",
-      "enableContribution": true,
-      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-5/README.md"
+      "updatedAt": "2018-06-28T10:00:00"
     }
   testdata1.json: |
     {
@@ -29,7 +27,7 @@ outputs:
   build.manifest:
   dep.json:
 ---
-# Show git contribution info using relative path
+# Show git contribution info when userProfile & commitsTime is set to relative file path
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
@@ -48,9 +46,7 @@ outputs:
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00",
-      "enableContribution": true,
-      "editLink": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md"
+      "updatedAt": "2018-06-28T10:00:00"
     }
   testdata1.json: |
     {
@@ -100,14 +96,39 @@ outputs:
   build.manifest:
   dep.json:
 ---
-# Config can specify which repo and branch editLink goes to
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+# Show editUrl, contentUrl and commitUrl as template, manifest contains repo info
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
     {
-      "editUrl": "https://gitlab.com/test-org/test-repo/blob/contribution/README.md",
-      "gitContentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-2/README.md",
-      "gitCommitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
+      "enableContribution": true,
+      "editUrl": "https://github.com/{repo}/blob/{branch}/README.md",
+      "contentUrl": "https://github.com/{repo}/blob/{branch}/README.md",
+      "commitUrl": "https://github.com/{repo}/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
+    }
+  testdata1.json: |
+    {
+      "enableContribution": true,
+      "editUrl": "https://github.com/{repo}/blob/{branch}/testdata1.md",
+      "contentUrl": "https://github.com/{repo}/blob/{branch}/testdata1.md",
+      "commitUrl": "https://github.com/{repo}/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
+    }
+  build.manifest: |
+    {
+      "repo": "docascode/docfx-test-dependencies",
+      "branch": "git-test-6",
+      "commit": "c9b8d06ee3715bdddfa7b5709fd73705265351ca"
+    }
+  dep.json:
+---
+# Specify editLink repo and branch in config
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-config-repo-branch
+outputs:
+  README.json: |
+    {
+      "editUrl": "https://github.com/test-org/test-repo/blob/contribution/README.md",
+      "contentUrl": "https://github.com/{repo}/blob/{branch}/README.md",
+      "commitUrl": "https://github.com/{repo}/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
     }
   testdata1.json:
   build.manifest:

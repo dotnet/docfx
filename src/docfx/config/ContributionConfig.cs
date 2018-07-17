@@ -11,14 +11,15 @@ namespace Microsoft.Docs.Build
         public readonly bool Enabled = true;
 
         /// <summary>
-        /// Specify the full repository url for contribution. Fallback to git origin if not set.
+        /// Specify the repository for contribution. For GitHub, it is `account/name`.
+        /// Fallback to git origin if not set.
         /// </summary>
-        public readonly string Repository = string.Empty;
+        public readonly string Repository;
 
         /// <summary>
         /// Specify the which branch edit link goes to. Fallback to the current branch if not set.
         /// </summary>
-        public readonly string Branch = string.Empty;
+        public readonly string Branch;
 
         /// <summary>
         /// The address of user profile cache, used for generating authoer and contributors.

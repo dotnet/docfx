@@ -57,8 +57,8 @@ namespace Microsoft.Docs.Build
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
                 EditUrl = editUrl,
-                GitCommitUrl = commitUrl,
-                GitContentUrl = contentUrl,
+                CommitUrl = commitUrl,
+                ContentUrl = contentUrl,
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 

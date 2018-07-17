@@ -7,32 +7,30 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitRepoInfo
+    internal class Repository
     {
         private static readonly Regex GitHubRepoUrlRegex =
             new Regex(
                 @"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
 
-        public GitHost Host { get; set; }
+        public GitHost Host { get; }
 
-        public string Account { get; set; }
+        public string Name { get; }
 
-        public string Name { get; set; }
+        public string Branch { get; }
 
-        public string Branch { get; set; }
+        public string Commit { get; }
 
-        public string Commit { get; set; }
+        public string RepositoryPath { get; }
 
-        public string RootPath { get; set; }
-
-        public static GitRepoInfo Create(string cwd)
+        private Repository(string path)
         {
-            Debug.Assert(GitUtility.IsRepo(cwd));
-            Debug.Assert(Path.IsPathRooted(cwd));
+            Debug.Assert(GitUtility.IsRepo(path));
+            Debug.Assert(Path.IsPathRooted(path));
 
             var (host, account, repository) = default((GitHost, string, string));
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(cwd);
+            var (remote, branch, commit) = GitUtility.GetRepoInfo(path);
 
             // TODO: support VSTS, or others
             // TODO: fallback branch to environment variable to support CIs
@@ -47,15 +45,17 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return new GitRepoInfo
-            {
-                Host = host,
-                Account = account,
-                Name = repository,
-                Branch = branch,
-                Commit = commit,
-                RootPath = cwd,
-            };
+            Host = host;
+            Name = $"{account}/{repository}";
+            Branch = branch;
+            Commit = commit;
+            RepositoryPath = path;
+        }
+
+        public static Repository Create(string path)
+        {
+            var repoPath = GitUtility.FindRepo(path);
+            return repoPath != null ? new Repository(repoPath) : null;
         }
     }
 }

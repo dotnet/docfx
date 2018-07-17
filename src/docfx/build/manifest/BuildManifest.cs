@@ -8,10 +8,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, List<Document> files, DependencyMap dependencies)
+        public static void Build(Context context, Docset docset, List<Document> files, DependencyMap dependencies)
         {
             var manifest = new Manifest
             {
+                Repo = docset.Repository?.Name,
+                Branch = docset.Repository?.Branch,
+                Commit = docset.Repository?.Commit,
+
                 Files = files.Select(ToPublishManifest).ToArray(),
 
                 Dependencies = dependencies.ToDictionary(

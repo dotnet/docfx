@@ -36,9 +36,9 @@ namespace Microsoft.Docs.Build
 
         public string EditUrl { get; set; }
 
-        public string GitContentUrl { get; set; }
+        public string ContentUrl { get; set; }
 
-        public string GitCommitUrl { get; set; }
+        public string CommitUrl { get; set; }
 
         public JObject Metadata { get; set; }
     }

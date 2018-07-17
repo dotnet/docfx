@@ -34,6 +34,12 @@ namespace Microsoft.Docs.Build
         public RestoreMap RestoreMap { get; }
 
         /// <summary>
+        /// Gets the git repository this docset belongs to. Null if there is no git repo.
+        /// Multiple repositories inside a single docset is not supported.
+        /// </summary>
+        public Repository Repository { get; }
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -51,6 +57,7 @@ namespace Microsoft.Docs.Build
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
+            Repository = Repository.Create(DocsetPath);
             Config = config;
             RestoreMap = new RestoreMap(DocsetPath);
             DependentDocset = LoadDependencies(Config, RestoreMap);

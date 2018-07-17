@@ -44,7 +44,6 @@ namespace Microsoft.Docs.Build
             PageModel pageModel,
             Docset docset,
             Document file,
-            ContributionInfo contribution,
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
@@ -103,10 +102,10 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(pageModel.EditUrl))
                     rawMetadata["content_git_url"] = pageModel.EditUrl;
 
-                if (!string.IsNullOrEmpty(pageModel.GitCommitUrl))
-                    rawMetadata["gitcommit"] = pageModel.GitCommitUrl;
-                if (!string.IsNullOrEmpty(pageModel.GitContentUrl))
-                    rawMetadata["original_content_git_url"] = pageModel.GitContentUrl;
+                if (!string.IsNullOrEmpty(pageModel.CommitUrl))
+                    rawMetadata["gitcommit"] = pageModel.CommitUrl;
+                if (!string.IsNullOrEmpty(pageModel.ContentUrl))
+                    rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
             return rawMetadata;
