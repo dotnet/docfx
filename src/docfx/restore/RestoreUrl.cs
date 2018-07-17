@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             var restorePath = GetRestoreVersionPath(restoreDir, fileVersion);
             await ProcessUtility.CreateFileMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
-                async () =>
+                () =>
                 {
                     if (!File.Exists(restorePath))
                     {
@@ -44,23 +44,38 @@ namespace Microsoft.Docs.Build
                         File.Move(tempFile, restorePath);
                     }
 
+                    return Task.CompletedTask;
+                });
+
+            return fileVersion;
+        }
+
+        public static async Task GC(string address)
+        {
+            var restoreDir = GetRestoreRootDir(address);
+            if (!Directory.Exists(restoreDir))
+            {
+                return;
+            }
+
+            await ProcessUtility.CreateFileMutex(
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
+                async () =>
+                {
                     var existingVersionPaths = Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
                                                .Select(f => PathUtility.NormalizeFile(f)).ToList();
 
                     if (NeedCleanupVersions(existingVersionPaths.Count))
                     {
-                        await CleanupVersions(restoreDir, restorePath, existingVersionPaths);
+                        await CleanupVersions(restoreDir, existingVersionPaths);
                     }
                 });
 
-            return fileVersion;
-
             bool NeedCleanupVersions(int versionCount) => versionCount > MaxVersionCount;
 
-            async Task CleanupVersions(string root, string newVersionPath, List<string> existingVersionPaths)
+            async Task CleanupVersions(string root, List<string> existingVersionPaths)
             {
-                var inUseVersionPaths = await GetAllVersionPaths(docset, root);
-                inUseVersionPaths.Add(newVersionPath);
+                var inUseVersionPaths = await GetAllVersionPaths(root);
 
                 foreach (var existingVersionPath in existingVersionPaths)
                 {
@@ -91,13 +106,9 @@ namespace Microsoft.Docs.Build
             return tempFile;
         }
 
-        private static async Task<HashSet<string>> GetAllVersionPaths(string docsetPath, string restoreDir)
+        private static async Task<HashSet<string>> GetAllVersionPaths(string restoreDir)
         {
-            var allLocks = await RestoreLocker.LoadAll(
-                file => !string.Equals(
-                    PathUtility.NormalizeFile(file),
-                    PathUtility.NormalizeFile(RestoreLocker.GetRestoreLockFilePath(docsetPath)),
-                    PathUtility.PathComparison));
+            var allLocks = await RestoreLocker.LoadAll();
             var versionPath = new HashSet<string>();
 
             foreach (var restoreLock in allLocks)
