@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             DocsetPath = Path.GetFullPath(docsetPath);
-            Repository = Repository.Create(DocsetPath);
+            Repository = Repository.Create(DocsetPath, options);
             Config = config;
             RestoreMap = new RestoreMap(DocsetPath);
             DependentDocset = LoadDependencies(Config, RestoreMap);

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        private static readonly Regex GitHubRepoUrlRegex =
+        private static readonly Regex s_gitHubRepoUrlRegex =
             new Regex(
                 @"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public string RepositoryPath { get; }
 
-        private Repository(string path)
+        private Repository(string path, CommandLineOptions options)
         {
             Debug.Assert(GitUtility.IsRepo(path));
             Debug.Assert(Path.IsPathRooted(path));
@@ -33,10 +33,9 @@ namespace Microsoft.Docs.Build
             var (remote, branch, commit) = GitUtility.GetRepoInfo(path);
 
             // TODO: support VSTS, or others
-            // TODO: fallback branch to environment variable to support CIs
             if (!string.IsNullOrEmpty(remote))
             {
-                var match = GitHubRepoUrlRegex.Match(remote);
+                var match = s_gitHubRepoUrlRegex.Match(remote);
                 if (match.Success)
                 {
                     account = match.Groups["account"].Value;
@@ -46,16 +45,16 @@ namespace Microsoft.Docs.Build
             }
 
             Host = host;
-            Name = $"{account}/{repository}";
-            Branch = branch;
+            Name = options.Repo ?? $"{account}/{repository}";
+            Branch = options.Branch ?? branch ?? "master";
             Commit = commit;
             RepositoryPath = path;
         }
 
-        public static Repository Create(string path)
+        public static Repository Create(string path, CommandLineOptions options)
         {
             var repoPath = GitUtility.FindRepo(path);
-            return repoPath != null ? new Repository(repoPath) : null;
+            return repoPath != null ? new Repository(repoPath, options) : null;
         }
     }
 }
