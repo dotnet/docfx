@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            if(routes == null)
+            if (routes == null)
             {
                 return path;
             }
