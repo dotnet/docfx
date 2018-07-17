@@ -32,7 +32,8 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             var content = (Dictionary<string, object>)model.Content;
             var markdown = (string)content[ConceptualKey];
-            var result = host.Markup(markdown, model.OriginalFileAndType, false, true);
+            var enableValidation = !RedirectionFileHelper.IsRedirectionFile(markdown);
+            var result = host.Markup(markdown, model.OriginalFileAndType, false, enableValidation);
 
             var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
             model.Properties.IsUserDefinedTitle = false;
