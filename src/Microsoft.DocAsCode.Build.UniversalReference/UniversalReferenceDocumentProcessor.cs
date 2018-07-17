@@ -36,6 +36,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 throw new ArgumentException($"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language");
             }
+            if (page.Items.Any(i => string.IsNullOrEmpty(i.Uid)))
+            {
+                throw new ArgumentException($"{nameof(ItemViewModel.Uid)} must not be null or empty");
+            }
             if (page.Metadata == null)
             {
                 page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
