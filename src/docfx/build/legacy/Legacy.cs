@@ -12,8 +12,7 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Document> documents,
             DependencyMap dependencyMap,
-            TableOfContentsMap tocMap,
-            Report report)
+            TableOfContentsMap tocMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
@@ -27,7 +26,6 @@ namespace Microsoft.Docs.Build
                 LegacyFileMap.Convert(docset, context, documents);
                 LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
                 LegacyCrossRepoReferenceInfo.Convert(docset, context);
-                LegacyReport.Convert(docset, report);
                 LegacyXrefMap.Convert(docset, context);
             }
         }
