@@ -112,6 +112,9 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"{range} {name} contains null value");
 
+        public static Error SchemaNotFound(string schema)
+            => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
+
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);

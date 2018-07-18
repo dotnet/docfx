@@ -40,8 +40,9 @@ namespace Microsoft.Docs.Build
 
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
-            var model = new PageModel
+            var model = new PageModel<string>
             {
+                PageType = "Conceptual",
                 Content = content,
                 Metadata = metadata,
                 Title = title,
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
-            return Task.FromResult((markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build()));
+            return Task.FromResult((markup.Errors.Concat(repoErrors), (PageModel)model, dependencyMapBuilder.Build()));
         }
     }
 }

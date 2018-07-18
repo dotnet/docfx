@@ -4,9 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -60,9 +57,9 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
-        /// Gets a value indicating whether if it master content
+        /// Gets a value indicating whether if the output is a web page.
         /// </summary>
-        public bool IsMasterContent { get; }
+        public bool IsPage { get; }
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -98,7 +95,7 @@ namespace Microsoft.Docs.Build
             SiteUrl = siteUrl;
             OutputPath = outputPath;
             ContentType = contentType;
-            IsMasterContent = isMasterContent;
+            IsPage = isMasterContent;
             RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());

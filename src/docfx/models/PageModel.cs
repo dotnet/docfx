@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class PageModel
     {
-        public string Content { get; set; }
+        public string PageType { get; set; }
 
         public long WordCount { get; set; }
 
