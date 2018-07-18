@@ -344,14 +344,25 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var depotName = !string.IsNullOrEmpty(Docset.Config.Product)
-                ? $"{Docset.Config.Product}.{Docset.Config.Name}"
-                : Docset.Config.Name;
-
             var sourcePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SourceBasePath)
                 ? FilePath
                 : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
 
+            var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
+
+            // get depot name from config or depot mapping
+            var depotName = string.IsNullOrEmpty(mappedDepotName)
+                ? !string.IsNullOrEmpty(Docset.Config.Product)
+                    ? $"{Docset.Config.Product}.{Docset.Config.Name}"
+                    : Docset.Config.Name
+                : mappedDepotName;
+
+            // get source path from source file path or directory mapping
+            sourcePath = string.IsNullOrEmpty(mappedSourcePath)
+                ? sourcePath
+                : mappedSourcePath;
+
+            // get set path from site path
             // site path doesn't contain version info according to the output spec
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
             var sitePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SiteBasePath)
@@ -359,6 +370,7 @@ namespace Microsoft.Docs.Build
                 : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
             return (HashUtility.GetMd5String($"{depotName}|{sourcePath.ToLowerInvariant()}"), HashUtility.GetMd5String($"{depotName}|{sitePath.ToLowerInvariant()}"));
+
         }
     }
 }
