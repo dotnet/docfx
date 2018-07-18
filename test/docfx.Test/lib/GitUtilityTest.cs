@@ -60,8 +60,8 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/docfx/docfx.git", "token", "https://token@github.com/docfx/docfx.git")]
         [InlineData("https://github.com/docfx/docfx.git", "", "https://github.com/docfx/docfx.git")]
         [InlineData("https://github.com/docfx/docfx.git", null, "https://github.com/docfx/docfx.git")]
-        public static void AppTokenToRemoteUrl(string remote, string token, string expectedRemote)
-            => Assert.Equal(expectedRemote, GitUtility.AppendToken(remote, token));
+        public static void EmbedTokenToRemoteUrl(string remote, string token, string expectedRemote)
+            => Assert.Equal(expectedRemote, GitUtility.EmbedToken(remote, token));
 
         private static string Exec(string name, string args, string cwd)
         {

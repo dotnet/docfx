@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             }
 
             // add token to remote href
-            var remoteUrlWithToken = AppendToken(remoteUrl, token);
+            var remoteUrlWithToken = EmbedToken(remoteUrl, token);
 
             await action(remoteUrlWithToken);
 
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Append token to git remote href
         /// </summary>
-        public static string AppendToken(string remoteHref, string token)
+        public static string EmbedToken(string remoteHref, string token)
         {
             Debug.Assert(!string.IsNullOrEmpty(remoteHref));
 

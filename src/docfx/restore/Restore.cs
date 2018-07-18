@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
                         // todo: Parallel competition issue for "get lock" and then "save lock"
-                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset, options.Token);
+                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset, options.GitToken);
                         await RestoreLocker.Save(docset, docsetLock);
                     }
                 }
