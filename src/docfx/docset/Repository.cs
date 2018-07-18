@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public string RepositoryPath { get; }
 
-        private Repository(string path, CommandLineOptions options)
+        private Repository(string path)
         {
             Debug.Assert(GitUtility.IsRepo(path));
             Debug.Assert(Path.IsPathRooted(path));
@@ -45,16 +45,16 @@ namespace Microsoft.Docs.Build
             }
 
             Host = host;
-            Name = options.Repo ?? $"{account}/{repository}";
-            Branch = options.Branch ?? branch ?? "master";
+            Name = $"{account}/{repository}";
+            Branch = branch;
             Commit = commit;
             RepositoryPath = path;
         }
 
-        public static Repository Create(string path, CommandLineOptions options)
+        public static Repository Create(string path)
         {
             var repoPath = GitUtility.FindRepo(path);
-            return repoPath != null ? new Repository(repoPath, options) : null;
+            return repoPath != null ? new Repository(repoPath) : null;
         }
     }
 }

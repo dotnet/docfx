@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
-            BuildManifest.Build(context, docset, files, sourceDependencies);
+            BuildManifest.Build(context, docset, files, sourceDependencies, contribution);
 
             if (options.Legacy)
             {

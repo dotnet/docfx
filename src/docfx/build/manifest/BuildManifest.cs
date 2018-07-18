@@ -8,14 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, Docset docset, List<Document> files, DependencyMap dependencies)
+        public static void Build(
+            Context context, Docset docset, List<Document> files, DependencyMap dependencies, ContributionInfo contribution)
         {
             var manifest = new Manifest
             {
-                Repo = docset.Repository?.Name,
-                Branch = docset.Repository?.Branch,
-                Commit = docset.Repository?.Commit,
-
                 Files = files.Select(ToPublishManifest).ToArray(),
 
                 Dependencies = dependencies.ToDictionary(
@@ -29,18 +26,21 @@ namespace Microsoft.Docs.Build
             };
 
             context.WriteJson(manifest, "build.manifest");
-        }
 
-        private static FileManifest ToPublishManifest(Document doc)
-        {
-            var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
-
-            return new FileManifest
+            FileManifest ToPublishManifest(Document doc)
             {
-                SourcePath = doc.FilePath,
-                SiteUrl = doc.SiteUrl,
-                OutputPath = noOutput ? null : doc.OutputPath,
-            };
+                var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
+                var (repo, _) = contribution.GetRepository(doc);
+
+                return new FileManifest
+                {
+                    SourcePath = doc.FilePath,
+                    SiteUrl = doc.SiteUrl,
+                    OutputPath = noOutput ? null : doc.OutputPath,
+                    Repo = repo?.Name,
+                    Branch = repo?.Branch,
+                };
+            }
         }
     }
 }

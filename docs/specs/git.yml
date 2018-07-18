@@ -113,13 +113,24 @@ outputs:
       "contentUrl": "https://github.com/{repo}/blob/{branch}/testdata1.md",
       "commitUrl": "https://github.com/{repo}/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
     }
+  dep.json:
   build.manifest: |
     {
-      "repo": "docascode/docfx-test-dependencies",
-      "branch": "git-test-6",
-      "commit": "c9b8d06ee3715bdddfa7b5709fd73705265351ca"
+      "files": [
+        {
+          "repo": "docascode/docfx-test-dependencies",
+          "branch": "git-test-6"
+        },
+        {
+          "repo": "docascode/docfx-test-dependencies",
+          "branch": "git-test-6"
+        },
+        {
+          "repo": "docascode/docfx-test-dependencies",
+          "branch": "git-test-6"
+        },
+      ]
     }
-  dep.json:
 ---
 # Specify editLink repo and branch in config
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-config-repo-branch
