@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         protected override ITestFrameworkExecutor CreateExecutor(AssemblyName assemblyName)
         {
-            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("app-data"));
+            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
             MakeDebugAssertThrowException();
             return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }
