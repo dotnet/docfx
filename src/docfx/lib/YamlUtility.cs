@@ -170,7 +170,10 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var jToken = ToJson(value, mappings);
-                        obj[scalarKey.Value] = PopulateLineInfoToJToken(jToken, value);
+                        if (jToken != null)
+                        {
+                            obj[scalarKey.Value] = PopulateLineInfoToJToken(jToken, value);
+                        }
                     }
                     else
                     {
@@ -211,12 +214,9 @@ namespace Microsoft.Docs.Build
         {
             public readonly JsonReader _reader;
             private readonly JToken _root;
-            private readonly int _lineNumber;
             private readonly int _linePosition;
-
             private JToken _parent;
             private JToken _current;
-
 
             public JsonYamlReader(JsonReader reader, JToken token, int lineNumber, int linePosition)
             {
@@ -224,13 +224,13 @@ namespace Microsoft.Docs.Build
 
                 _root = token;
                 _reader = reader;
-                _lineNumber = lineNumber;
-                _linePosition = linePosition;
+                LineNumber = lineNumber;
+                LinePosition = linePosition;
             }
 
-            public int LineNumber => _lineNumber;
+            public int LineNumber { get; }
 
-            public int LinePosition => _linePosition;
+            public int LinePosition { get; }
 
             public bool HasLineInfo()
             {
