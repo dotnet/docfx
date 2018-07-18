@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildManifest
     {
         public static void Build(
-            Context context, Docset docset, List<Document> files, DependencyMap dependencies, ContributionInfo contribution)
+            Context context, List<Document> files, DependencyMap dependencies, ContributionInfo contribution)
         {
             var manifest = new Manifest
             {
