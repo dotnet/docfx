@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             Name = $"{account}/{repository}";
             Branch = branch;
             Commit = commit;
-            RepositoryPath = path;
+            RepositoryPath = PathUtility.NormalizeFolder(path);
         }
 
         public static Repository Create(string path)

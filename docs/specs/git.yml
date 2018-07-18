@@ -158,6 +158,8 @@ outputs:
 ---
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
+commands:
+  - build --repo my-repo --branch my-branch
 outputs:
   README.json: |
     {
@@ -174,12 +176,13 @@ outputs:
       "files": [
         {
           "siteUrl": "/docfx-test-submodule/README",
-          "repo": "docascode/docfx-test-submodule"
+          "repo": "docascode/docfx-test-submodule",
+          "!branch": ""
         },
         {
           "siteUrl": "/README",
-          "repo": "docascode/docfx-test-dependencies",
-          "branch": "docset-with-submodule"
+          "repo": "my-repo",
+          "branch": "my-branch"
         }
       ]
     }

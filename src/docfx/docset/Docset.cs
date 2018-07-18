@@ -24,11 +24,6 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the repository containing this docset, null if it is not managed by a git repository.
-        /// </summary>
-        public Repository Repository { get; }
-
-        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
@@ -59,8 +54,7 @@ namespace Microsoft.Docs.Build
             _context = context;
             Config = config;
 
-            DocsetPath = Path.GetFullPath(docsetPath);
-            Repository = Repository.Create(DocsetPath);
+            DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
             RestoreMap = new RestoreMap(DocsetPath);
             DependentDocset = LoadDependencies(Config, RestoreMap);

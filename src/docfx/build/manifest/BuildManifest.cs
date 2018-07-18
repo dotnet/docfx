@@ -34,11 +34,9 @@ namespace Microsoft.Docs.Build
             FileManifest ToPublishManifest(Document doc)
             {
                 var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
-                var (repo, _) = contribution.GetRepository(doc);
-
-                // TODO: the following == does not work
-                var overrideRepo = repo == doc.Docset.Repository ? options.Repo : null;
-                var overrideBranch = repo == doc.Docset.Repository ? options.Branch : null;
+                var (repo, _, isDocsetRepo) = contribution.GetRepository(doc);
+                var overrideRepo = isDocsetRepo ? options.Repo : null;
+                var overrideBranch = isDocsetRepo ? options.Branch : null;
 
                 return new FileManifest
                 {

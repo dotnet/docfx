@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var command in spec.Commands)
             {
-                await Program.Run(new[] { command, docsetPath });
+                await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
             }
 
             // Verify restored files

@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo) = GetRepository(document);
+            var (repo, pathToRepo, _) = GetRepository(document);
 
             var editBranch = document.Docset.Config.Contribution.Branch ?? "{branch}";
             var editRepo = document.Docset.Config.Contribution.Repository ?? "{repo}";
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             return (editUrl, contentUrl, commitUrl);
         }
 
-        public (Repository repo, string pathToRepo) GetRepository(Document document)
+        public (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var repo = GetRepository(fullPath);
@@ -142,7 +142,9 @@ namespace Microsoft.Docs.Build
             {
                 return default;
             }
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)));
+
+            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.RepositoryPath, PathUtility.PathComparison);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)), isDocsetRepo);
         }
 
         private Repository GetRepository(string path)
