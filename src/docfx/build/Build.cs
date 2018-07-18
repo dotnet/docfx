@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.CopyResources)
             {
-                context.Copy(file, Document.ApplyRoutes(file.FilePath, file.Docset.Config.Routes));
+                context.Copy(file, file.OutputPath);
             }
         }
 

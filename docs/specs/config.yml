@@ -154,11 +154,17 @@ inputs:
     routes:
       docs/a.md: output
       docs/b/: output
-  docs/a.md:
-  docs/b/b.md:
+  docs/a.md: |
+    [link](c.png)
+  docs/c.png:
+  docs/b/b.md: |
+    [link](d.svg)
+  docs/b/d.svg:
 outputs:
+  docs/c.png:
   output/a.json:
   output/b.json:
+  output/d.svg:
   build.manifest:
 ---
 # latter routes rule takes precedence - 1
@@ -167,9 +173,13 @@ inputs:
     routes:
       docs/a/: output
       docs/a/b.md: outputB
-  docs/a/b.md:
+      docs/a/c.gif: outputC
+  docs/a/b.md: |
+    [link](c.gif)
+  docs/a/c.gif:
 outputs:
   outputB/b.json:
+  outputC/c.gif:
   build.manifest:
 ---
 # latter routes rule takes precedence - 2
@@ -177,10 +187,14 @@ inputs:
   docfx.yml: |
     routes:
       docs/a/b.md: outputB
+      docs/a/c.gif: outputC
       docs/a/: output
-  docs/a/b.md:
+  docs/a/b.md: |
+    [link](c.gif)
+  docs/a/c.gif:
 outputs:
   output/b.json:
+  output/c.gif:
   build.manifest:
 ---
 # extend
