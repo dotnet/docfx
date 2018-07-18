@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using System;
+    using System.Net;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -18,6 +19,9 @@ namespace Microsoft.DocAsCode
         {
             try
             {
+                // TLS best practices for .NET: https://docs.microsoft.com/en-us/dotnet/framework/network-programming/tls
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
                 var result = ExecSubCommand(args);
                 return Logger.HasError ? 1 : result;
             }
