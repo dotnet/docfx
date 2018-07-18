@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     internal class DocumentIdConfig
     {
         private readonly Lazy<Dictionary<string, string>> _reversedDepotMappings;
-        private readonly Lazy<Dictionary<string, string>> _reversedDirectoryMapping;
+        private readonly Lazy<Dictionary<string, string>> _reversedDirectoryMappings;
 
         /// <summary>
         /// The source base folder path, used by docs.com, for backward compatibility
@@ -26,35 +26,35 @@ namespace Microsoft.Docs.Build
         /// The mappings between depot and files/directory
         /// Used for backward compatibility
         /// </summary>
-        public Dictionary<string, List<string>> DepotMapping = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> DepotMappings = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// The mappings between directory and files/directory
         /// Used for backward compatibility
         /// </summary>
-        public Dictionary<string, List<string>> DirectoryMapping = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> DirectoryMappings = new Dictionary<string, List<string>>();
 
         public DocumentIdConfig()
         {
-            _reversedDepotMappings = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalize(DepotMapping));
-            _reversedDirectoryMapping = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalize(DirectoryMapping));
+            _reversedDepotMappings = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalizeMappings(DepotMappings));
+            _reversedDirectoryMappings = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalizeMappings(DirectoryMappings));
         }
 
         public (string depotName, string pathRelativeToSourceBasePath) GetMapping(string normalizedFilePathToSourceBasePath)
         {
-            var (depotName, _) = GetReversedMappingValue(_reversedDepotMappings.Value, normalizedFilePathToSourceBasePath);
-            var (mappedDir, matchedDir) = GetReversedMappingValue(_reversedDirectoryMapping.Value, normalizedFilePathToSourceBasePath);
+            var (depotName, _) = GetReversedMapping(_reversedDepotMappings.Value, normalizedFilePathToSourceBasePath);
+            var (mappedDir, matchedDir) = GetReversedMapping(_reversedDirectoryMappings.Value, normalizedFilePathToSourceBasePath);
 
             var mappedPathRelativeToSourceBasePath = !string.IsNullOrEmpty(matchedDir)
-                ? PathUtility.NormalizeFile(Path.Combine(mappedDir, normalizedFilePathToSourceBasePath.Substring(matchedDir.Length + 1)))
+                ? PathUtility.NormalizeFile(Path.Combine(mappedDir, Path.GetRelativePath(matchedDir, normalizedFilePathToSourceBasePath)))
                 : normalizedFilePathToSourceBasePath;
 
             return (depotName, mappedPathRelativeToSourceBasePath);
         }
 
-        private static (string value, string matchedDirectory) GetReversedMappingValue(Dictionary<string, string> mapping, string normalizedFilePathToSourceBasePath)
+        private static (string value, string matchedDirectory) GetReversedMapping(Dictionary<string, string> mappings, string normalizedFilePathToSourceBasePath)
         {
-            foreach (var (path, value) in mapping)
+            foreach (var (path, value) in mappings)
             {
                 if (string.Equals(path, normalizedFilePathToSourceBasePath, PathUtility.PathComparison))
                 {
@@ -72,11 +72,11 @@ namespace Microsoft.Docs.Build
             return (string.Empty, string.Empty);
         }
 
-        private static Dictionary<string, string> ReverseAndNormalize(Dictionary<string, List<string>> mapping)
+        private static Dictionary<string, string> ReverseAndNormalizeMappings(Dictionary<string, List<string>> mappings)
         {
             var reversedMapping = new Dictionary<string, string>();
 
-            foreach (var (key, value) in mapping)
+            foreach (var (key, value) in mappings)
             {
                 foreach (var path in value)
                 {

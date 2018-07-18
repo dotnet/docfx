@@ -370,7 +370,6 @@ namespace Microsoft.Docs.Build
                 : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
             return (HashUtility.GetMd5String($"{depotName}|{sourcePath.ToLowerInvariant()}"), HashUtility.GetMd5String($"{depotName}|{sitePath.ToLowerInvariant()}"));
-
         }
     }
 }
