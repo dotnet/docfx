@@ -155,3 +155,31 @@ outputs:
   testdata1.json:
   build.manifest:
   dep.json:
+---
+# Support git submodule
+repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
+outputs:
+  README.json: |
+    {
+      "commitUrl": "https://github.com/{repo}/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
+      "updatedAt": "2018-04-23T03:23:37Z"
+    }
+  docfx-test-submodule/README.json: |
+    {
+      "commitUrl": "https://github.com/{repo}/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
+      "updatedAt": "2018-07-18T05:03:26Z"
+    }
+  build.manifest: |
+    {
+      "files": [
+        {
+          "siteUrl": "/docfx-test-submodule/README",
+          "repo": "docascode/docfx-test-submodule"
+        },
+        {
+          "siteUrl": "/README",
+          "repo": "docascode/docfx-test-dependencies",
+          "branch": "docset-with-submodule"
+        }
+      ]
+    }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -110,6 +111,7 @@ namespace Microsoft.Docs.Build
             {
                 var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
+                Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
                 return (docsetPath, spec);
             }
 
