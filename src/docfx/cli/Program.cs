@@ -40,13 +40,13 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            using (var report = new Report())
+            var stopwatch = Stopwatch.StartNew();
+            var (command, docset, options) = ParseCommandLineOptions(args);
+
+            using (var report = new Report(options.Legacy))
             {
                 try
                 {
-                    var stopwatch = Stopwatch.StartNew();
-                    var (command, docset, options) = ParseCommandLineOptions(args);
-
                     switch (command)
                     {
                         case "restore":
@@ -102,9 +102,9 @@ namespace Microsoft.Docs.Build
 
         private static void Done(TimeSpan duration)
         {
-            #pragma warning disable CA2002 // Do not lock on objects with weak identity
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
-            #pragma warning restore CA2002
+#pragma warning restore CA2002
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;

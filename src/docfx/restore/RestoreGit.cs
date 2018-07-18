@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string token)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(Config config, Func<string, Task> restoreChild, string token)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
-            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d)).Select(g => (g.Key, g.Distinct().ToList()));
+            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList()));
 
             // process git restore items
             await ParallelUtility.ForEach(
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await GetWorkTrees(docsetPath, restoreDir, hrefs, token);
+                var workTreeHeads = await AddWorkTrees(restoreDir, hrefs, token);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -56,8 +56,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static async Task GC(Config config, Func<string, Task> gcChild)
+        {
+            var restoreDirs = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => g.Key);
+
+            await ParallelUtility.ForEach(
+               restoreDirs,
+               async restoreDir =>
+               {
+                   var leftWorkTrees = await CleanupWorkTrees(restoreDir);
+                   foreach (var leftWorkTree in leftWorkTrees)
+                   {
+                       await gcChild(leftWorkTree);
+                   }
+               },
+               progress: Progress.Update);
+        }
+
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> GetWorkTrees(string docsetPath, string restoreDir, List<string> hrefs, string token)
+        private static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs, string token)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
@@ -69,15 +86,7 @@ namespace Microsoft.Docs.Build
                 {
                     await FetchOrCloneRepo();
 
-                    var (existingWorkTrees, newWorkTrees) = await AddWorkTrees();
-
-                    if (NeedCleanupWorkTrees(existingWorkTrees.Count))
-                    {
-                        using (Progress.Start($"Cleanup `{restoreDir}` work trees"))
-                        {
-                            await CleanupWorkTrees(existingWorkTrees, newWorkTrees);
-                        }
-                    }
+                    await AddWorkTrees();
                 });
 
             async Task FetchOrCloneRepo()
@@ -97,10 +106,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            async Task<(List<string> existingWorkTrees, List<string> newWorkTrees)> AddWorkTrees()
+            async Task AddWorkTrees()
             {
                 var existingWorkTrees = new ConcurrentDictionary<string, int>((await GitUtility.ListWorkTrees(restorePath, false)).ToDictionary(k => k, v => 0));
-                var newWorkTrees = new ConcurrentBag<string>();
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
@@ -111,24 +119,45 @@ namespace Microsoft.Docs.Build
                         await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
                     }
 
-                    newWorkTrees.Add(workTreePath);
                     workTreeHeads.Add((href, workTreeHead));
                 });
-
-                return (existingWorkTrees.Keys.ToList(), newWorkTrees.ToList());
             }
+
+            Debug.Assert(hrefs.Count == workTreeHeads.Count);
+            return workTreeHeads.ToList();
+        }
+
+        // clean up un-used work trees
+        private static async Task<List<string>> CleanupWorkTrees(string restoreDir)
+        {
+            var remainingWorkTrees = new List<string>();
+
+            if (!GitUtility.IsRepo(restoreDir))
+            {
+                return remainingWorkTrees;
+            }
+
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
+
+            await ProcessUtility.CreateFileMutex(
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
+                async () =>
+                {
+                    var existingWorkTrees = await GitUtility.ListWorkTrees(restorePath, false);
+                    if (NeedCleanupWorkTrees(existingWorkTrees.Count))
+                    {
+                        remainingWorkTrees = await CleanupWorkTrees(existingWorkTrees);
+                    }
+                });
+
+            return remainingWorkTrees;
 
             bool NeedCleanupWorkTrees(int existingWorkTreeCount) => existingWorkTreeCount > MaxWorkTreeCount;
 
-            async Task CleanupWorkTrees(List<string> existingWorkTrees, List<string> newWorkTrees)
+            async Task<List<string>> CleanupWorkTrees(List<string> existingWorkTrees)
             {
-                var allWorkTreesInUse = await GetAllWorkTreePaths(docsetPath, restoreDir);
-                foreach (var newWorkTree in newWorkTrees)
-                {
-                    // add newly added work tree
-                    allWorkTreesInUse.Add(newWorkTree);
-                }
-
+                var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
+                var leftWorkTrees = new List<string>();
                 foreach (var workTree in existingWorkTrees)
                 {
                     if (!allWorkTreesInUse.Contains(workTree))
@@ -136,21 +165,20 @@ namespace Microsoft.Docs.Build
                         // remove not used work tree
                         Directory.Delete(workTree, true);
                     }
+                    else
+                    {
+                        leftWorkTrees.Add(workTree);
+                    }
                 }
                 await GitUtility.PruneWorkTrees(restorePath);
-            }
 
-            Debug.Assert(hrefs.Count == workTreeHeads.Count);
-            return workTreeHeads.ToList();
+                return leftWorkTrees;
+            }
         }
 
-        private static async Task<HashSet<string>> GetAllWorkTreePaths(string docsetPath, string restoreDir)
+        private static async Task<HashSet<string>> GetAllWorkTreePaths(string restoreDir)
         {
-            var allLocks = await RestoreLocker.LoadAll(
-                file => !string.Equals(
-                    PathUtility.NormalizeFile(file),
-                    PathUtility.NormalizeFile(RestoreLocker.GetRestoreLockFilePath(docsetPath)),
-                    PathUtility.PathComparison));
+            var allLocks = await RestoreLocker.LoadAll();
             var workTreePaths = new HashSet<string>();
 
             foreach (var restoreLock in allLocks)

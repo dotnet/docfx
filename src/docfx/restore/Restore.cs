@@ -15,14 +15,13 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
+            // Restore has to use Config directly, it cannot depend on Docset,
+            // because Docset assumes the repo to physically exist on disk.
+            var config = Config.Load(docsetPath, options);
+            report.Configure(docsetPath, config);
+
             using (Progress.Start("Restore dependencies"))
             {
-                // Restore has to use Config directly, it cannot depend on Docset,
-                // because Docset assumes the repo to physically exist on disk.
-                var config = Config.Load(docsetPath, options);
-
-                report.Configure(docsetPath, config);
-
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
 
                 await RestoreDocset(docsetPath);
@@ -31,9 +30,22 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
                     {
-                        // todo: Parallel competition issue for "get lock" and then "save lock"
-                        var docsetLock = await RestoreOneDocset(docset, docsetConfig, RestoreDocset, options.GitToken);
-                        await RestoreLocker.Save(docset, docsetLock);
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docsetConfig, RestoreDocset, options.GitToken));
+                    }
+                }
+            }
+
+            using (Progress.Start("GC dependencies"))
+            {
+                var gcDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
+
+                await GCDocset(docsetPath);
+
+                async Task GCDocset(string docset)
+                {
+                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
+                    {
+                        await GCOneDocset(docsetConfig, GCDocset);
                     }
                 }
             }
@@ -68,12 +80,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, Config config, Func<string, Task> restoreChild, string token)
+        private static async Task<RestoreLock> RestoreOneDocset(Config config, Func<string, Task> restoreChild, string token)
         {
             var result = new RestoreLock();
 
             // restore git dependnecy repositories
-            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, config, restoreChild, token);
+            var workTreeHeadMappings = await RestoreGit.Restore(config, restoreChild, token);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 result.Git[href] = workTreeHead;
@@ -83,11 +95,22 @@ namespace Microsoft.Docs.Build
             var restoreUrlMappings = new ConcurrentDictionary<string, string>();
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
-                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(docsetPath, restoreUrl);
+                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
             });
 
             result.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
             return result;
+        }
+
+        private static async Task GCOneDocset(Config config, Func<string, Task> gcChild)
+        {
+            await RestoreGit.GC(config, gcChild);
+
+            var restoreUrls = GetRestoreUrls(config);
+            await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
+            {
+                await RestoreUrl.GC(restoreUrl);
+            });
         }
     }
 }

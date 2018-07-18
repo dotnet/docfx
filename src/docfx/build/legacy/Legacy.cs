@@ -13,11 +13,12 @@ namespace Microsoft.Docs.Build
             List<Document> documents,
             DependencyMap dependencyMap,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
-            Report report)
+            ContributionInfo contribution)
         {
             using (Progress.Start("Converting to legacy"))
             {
+                Jint.Init(docset);
+
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
                 LegacyOutput.Convert(docset, context, contribution, legacyManifestItems, tocMap);
@@ -26,7 +27,6 @@ namespace Microsoft.Docs.Build
                 LegacyFileMap.Convert(docset, context, documents);
                 LegacyDependencyMap.Convert(docset, context, documents, dependencyMap, tocMap);
                 LegacyCrossRepoReferenceInfo.Convert(docset, context);
-                LegacyReport.Convert(docset, report);
                 LegacyXrefMap.Convert(docset, context);
             }
         }
