@@ -9,7 +9,11 @@ namespace Microsoft.Docs.Build
     internal static class BuildManifest
     {
         public static void Build(
-            Context context, List<Document> files, DependencyMap dependencies, ContributionInfo contribution)
+            Context context,
+            List<Document> files,
+            DependencyMap dependencies,
+            ContributionInfo contribution,
+            CommandLineOptions options)
         {
             var manifest = new Manifest
             {
@@ -32,13 +36,17 @@ namespace Microsoft.Docs.Build
                 var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
                 var (repo, _) = contribution.GetRepository(doc);
 
+                // TODO: the following == does not work
+                var overrideRepo = repo == doc.Docset.Repository ? options.Repo : null;
+                var overrideBranch = repo == doc.Docset.Repository ? options.Branch : null;
+
                 return new FileManifest
                 {
                     SourcePath = doc.FilePath,
                     SiteUrl = doc.SiteUrl,
                     OutputPath = noOutput ? null : doc.OutputPath,
-                    Repo = repo?.Name,
-                    Branch = repo?.Branch,
+                    Repo = overrideRepo ?? repo?.Name,
+                    Branch = overrideBranch ?? repo?.Branch,
                 };
             }
         }

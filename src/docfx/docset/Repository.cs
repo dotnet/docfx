@@ -53,6 +53,8 @@ namespace Microsoft.Docs.Build
 
         public static Repository Create(string path)
         {
+            Debug.Assert(Path.IsPathRooted(path));
+
             var repoPath = GitUtility.FindRepo(path);
             return repoPath != null ? new Repository(repoPath) : null;
         }
