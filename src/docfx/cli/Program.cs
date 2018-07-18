@@ -83,9 +83,9 @@ namespace Microsoft.Docs.Build
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
-                // usage: docfx restore [docset] [--gitToken token]
+                // usage: docfx restore [docset] [--git-token token]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                syntax.DefineOption("gitToken", ref options.GitToken, "The git token used to restore dependency repositories");
+                syntax.DefineOption("git-token", ref options.GitToken, "The git token used to restore dependency repositories");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command
