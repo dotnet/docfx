@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, contribution, report);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, contribution);
             }
         }
 
