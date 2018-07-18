@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public string Repo;
         public string Branch;
+        public string GitToken;
 
         public JObject ToJObject() => new JObject
         {
