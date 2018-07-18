@@ -64,35 +64,91 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize From yaml string
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
+        public static (List<Error> errors, T) Deserialize<T>(string input, bool nullValidation = true)
         {
             return Deserialize<T>(new StringReader(input), nullValidation);
         }
 
         /// <summary>
+        /// Deserialize From yaml string and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, T) DeserializeAndValidateSchemaAgainstType<T>(string input, bool nullValidation = true)
+        {
+            return DeserializeAndValidateSchemaAgainstType<T>(new StringReader(input), nullValidation);
+        }
+
+        /// <summary>
         /// Deserialize From TextReader
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
+        public static (List<Error> errors, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
         {
             var (errors, json) = Deserialize(reader, nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
+        /// Deserialize From TextReader and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, T) DeserializeAndValidateSchemaAgainstType<T>(TextReader reader, bool nullValidation = true)
+        {
+            var (errors, json) = DeserializeAndValidateSchemaAgainstType(reader, typeof(T), nullValidation);
+            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+        }
+
+        /// <summary>
         /// Deserialize to JToken From string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
+        public static (List<Error> errors, JToken token) Deserialize(string input, bool nullValidation = true)
         {
             return Deserialize(new StringReader(input), nullValidation);
         }
 
         /// <summary>
+        /// Deserialize to JToken From string and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, JToken token) DeserializeAndValidateSchemaAgainstType(string input, Type type, bool nullValidation = true)
+        {
+            return DeserializeAndValidateSchemaAgainstType(new StringReader(input), type, nullValidation);
+        }
+
+        /// <summary>
         /// Deserialize to JToken from TextReader
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
+        public static (List<Error> errors, JToken token) Deserialize(TextReader reader, bool nullValidation = true)
+        {
+            var (errors, mappings, token) = Deserialize(reader);
+            if (nullValidation)
+            {
+                var nullErrors = new List<Error>();
+                (nullErrors, token) = token.ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            return (errors, token);
+        }
+
+        /// <summary>
+        /// Deserialize to JToken from TextReader and validate schema against type
+        /// </summary>
+        public static (List<Error> errors, JToken token) DeserializeAndValidateSchemaAgainstType(TextReader reader, Type type, bool nullValidation = true)
+        {
+            var (errors, mappings, token) = Deserialize(reader);
+            errors.AddRange(token.ValidateSchemaAgainstType(type));
+            if (nullValidation)
+            {
+                var nullErrors = new List<Error>();
+                (nullErrors, token) = token.ValidateNullValue(mappings);
+                errors.AddRange(nullErrors);
+                return (errors, token);
+            }
+            return (errors, token);
+        }
+
+        private static (List<Error> errors, JTokenSourceMap mappings, JToken token) Deserialize(TextReader reader)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
+            var mappings = new JTokenSourceMap();
 
             try
             {
@@ -109,28 +165,17 @@ namespace Microsoft.Docs.Build
 
             if (stream.Documents.Count == 0)
             {
-                return (errors, JValue.CreateNull());
+                return (errors, mappings, JValue.CreateNull());
             }
 
             if (stream.Documents.Count != 1)
             {
                 throw new NotSupportedException("Does not support mutiple YAML documents");
             }
-
-            if (nullValidation)
-            {
-                var mappings = new JTokenSourceMap();
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
-                errors.AddRange(nullErrors);
-                return (errors, token);
-            }
-            else
-            {
-                return (errors, ToJson(stream.Documents[0].RootNode));
-            }
+            return (errors, mappings, ToJson(stream.Documents[0].RootNode, mappings));
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
+        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -146,18 +191,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return SetMappings(mappings, scalar, new JValue(n));
+                        return new JValue(n);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return SetMappings(mappings, scalar, new JValue(d));
+                        return new JValue(d);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return SetMappings(mappings, scalar, new JValue(b));
+                        return new JValue(b);
                     }
                 }
-                return SetMappings(mappings, scalar, new JValue(scalar.Value));
+                return new JValue(scalar.Value);
             }
             if (node is YamlMappingNode map)
             {
@@ -190,9 +235,6 @@ namespace Microsoft.Docs.Build
 
         private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
         {
-            if (mappings == null)
-                return value;
-
             mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
             return value;
         }

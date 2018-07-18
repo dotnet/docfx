@@ -112,6 +112,12 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"{range} {name} contains null value");
 
+        public static Error JsonSchemaLicenseIssue(Exception ex)
+            => new Error(ErrorLevel.Warning, "json-schema-license", $"Encountered issue registering license for NewtonsoftJson.Schema: {ex.Message}");
+
+        public static Error SchemaError(string message)
+            => new Error(ErrorLevel.Error, "schema-error", message);
+
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);

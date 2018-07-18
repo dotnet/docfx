@@ -2,14 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -24,6 +28,8 @@ namespace Microsoft.Docs.Build
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver(),
         };
+
+        private static readonly ConcurrentDictionary<Type, JSchema> s_typeSchemas = new ConcurrentDictionary<Type, JSchema>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -78,18 +84,20 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
+        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool schemaValidation = false)
         {
             var (errors, token) = Deserialize(reader);
+            if (schemaValidation)
+                errors.AddRange(token.ValidateSchemaAgainstType(typeof(T)));
             return (errors, token.ToObject<T>(DefaultDeserializer));
         }
 
         /// <summary>
         /// Deserialize a string to an object
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string json)
+        public static (List<Error>, T) Deserialize<T>(string json, bool schemaValidation = false)
         {
-            return Deserialize<T>(new StringReader(json));
+            return Deserialize<T>(new StringReader(json), schemaValidation);
         }
 
         /// <summary>
@@ -133,6 +141,34 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        public static IEnumerable<Error> ValidateSchemaAgainstType(this JToken token, Type type)
+        {
+            // TODO: Get the license somewhere
+            var registerError = RegisterLicense(string.Empty);
+            if (registerError != null)
+                return new List<Error> { registerError };
+
+            JSchema schema = GetSchemaFromType(type);
+            if (!token.IsValid(schema, out IList<ValidationError> errors))
+            {
+                return errors.Select(error => Errors.SchemaError($"Path: '{error.Path}'. {error.Message}"));
+            }
+
+            return Enumerable.Empty<Error>();
+        }
+
+        private static JSchema GetSchemaFromType(Type type)
+        {
+            if (!s_typeSchemas.TryGetValue(type, out JSchema value))
+            {
+                var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver };
+                var schema = generator.Generate(type, true);
+                s_typeSchemas.TryAdd(type, schema);
+                return schema;
+            }
+            return value;
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -213,7 +249,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class JsonContractResolver : DefaultContractResolver
+        private static Error RegisterLicense(string license)
+        {
+            if (string.IsNullOrEmpty(license))
+            {
+                return null;
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+            }
+            catch (Exception ex)
+            {
+                return Errors.JsonSchemaLicenseIssue(ex);
+            }
+            return null;
+        }
+
+        private sealed class JsonContractResolver : CamelCasePropertyNamesContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {

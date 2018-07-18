@@ -332,6 +332,26 @@ items:
             });
         }
 
+        [Fact(Skip = "This test should only be run with newton json schema license")]
+        public void TestMissingRequiredValue()
+        {
+            var yaml = @"
+Name: 
+DisplayName: missing required name
+Href: 
+Items: []
+TocHref:
+TopicHref:
+";
+            var (errors, value) = YamlUtility.DeserializeAndValidateSchemaAgainstType<TableOfContentsInputItem>(yaml);
+            Assert.Collection(errors.Where(x => x.Level == ErrorLevel.Error), error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("schema-error", error.Code);
+                Assert.Contains("Path: 'Name'. Invalid type. Expected String but got Null.", error.Message);
+            });
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
