@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task RestoreGitWorkTrees()
         {
-            var docsetPath = ".restore_worktrees";
+            var docsetPath = "restore-worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
             Directory.CreateDirectory(docsetPath);
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
@@ -72,7 +72,7 @@ dependencies:
         public static async Task RestoreUrls()
         {
             // prepare versions
-            var docsetPath = ".restore_urls";
+            var docsetPath = "restore-urls";
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = RestoreUrl.GetRestoreRootDir(url);

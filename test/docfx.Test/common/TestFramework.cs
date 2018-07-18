@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
 
         protected override ITestFrameworkExecutor CreateExecutor(AssemblyName assemblyName)
         {
+            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("app-data"));
             MakeDebugAssertThrowException();
             return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }
