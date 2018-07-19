@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(
+        public static Manifest Build(
             Context context,
             List<Document> files,
             DependencyMap dependencies,
@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             };
 
             context.WriteJson(manifest, "build.manifest");
+            return manifest;
 
             FileManifest ToPublishManifest(Document doc)
             {

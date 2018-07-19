@@ -31,5 +31,8 @@ namespace Microsoft.Docs.Build
         // tell ops to use plugin for normalization
         [JsonProperty("skip_normalization")]
         public bool SkipNormalization { get; set; }
+
+        [JsonProperty("document_metadata")]
+        public object DocumentMetadata { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, List<Document> documents)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, Manifest manifest, List<Document> documents)
         {
             var convertedItems = new List<(LegacyManifestItem manifestItem, Document doc)>();
             foreach (var document in documents)
@@ -57,6 +57,8 @@ namespace Microsoft.Docs.Build
                     };
                 }
 
+                var fileManifest = manifest.Files.FirstOrDefault(doc => doc.SourcePath == document.FilePath);
+
                 var file = new LegacyManifestItem
                 {
                     SiteUrlRelativeToSiteBasePath = legacySitePathRelativeToBaseSitePath,
@@ -66,6 +68,7 @@ namespace Microsoft.Docs.Build
                     Type = GetType(document.ContentType),
                     Output = output,
                     SkipNormalization = !(document.ContentType == ContentType.Resource),
+                    DocumentMetadata = new { repo = fileManifest?.Repo, branch = fileManifest?.Branch },
                 };
 
                 convertedItems.Add((file, document));

@@ -28,11 +28,11 @@ namespace Microsoft.Docs.Build
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
-            BuildManifest.Build(context, files, sourceDependencies, contribution, options);
+            var manifest = BuildManifest.Build(context, files, sourceDependencies, contribution, options);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, manifest);
             }
         }
 
