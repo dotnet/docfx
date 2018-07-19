@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
-            return Task.FromResult((markup.Errors.Concat(repoErrors), (PageModel)model, dependencyMapBuilder.Build()));
+            return Task.FromResult((markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build()));
         }
     }
 }

@@ -57,9 +57,9 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
-        /// Gets a value indicating whether if the output is a web page.
+        /// Gets a value indicating whether if it master content
         /// </summary>
-        public bool IsPage { get; }
+        public bool IsMasterContent { get; }
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             SiteUrl = siteUrl;
             OutputPath = outputPath;
             ContentType = contentType;
-            IsPage = isMasterContent;
+            IsMasterContent = isMasterContent;
             RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
