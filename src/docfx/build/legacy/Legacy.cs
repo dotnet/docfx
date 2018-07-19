@@ -12,14 +12,15 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Document> documents,
             DependencyMap dependencyMap,
-            TableOfContentsMap tocMap)
+            TableOfContentsMap tocMap,
+            Manifest manifest)
         {
             using (Progress.Start("Converting to legacy"))
             {
                 Jint.Init(docset);
 
                 // generate manifest and corresponding files
-                var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
+                var legacyManifestItems = LegacyManifest.Convert(docset, context, manifest, documents);
                 LegacyOutput.Convert(docset, context, legacyManifestItems, tocMap);
 
                 // generate mappings
