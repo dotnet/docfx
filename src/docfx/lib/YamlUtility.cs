@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
 
         private class JTokenLineInfoReader : JsonReader, IJsonLineInfo
         {
-            public readonly JsonReader _reader;
+            private readonly JsonReader _reader;
             private readonly JToken _root;
             private readonly int _lineNumber;
             private readonly int _linePosition;
@@ -253,6 +253,8 @@ namespace Microsoft.Docs.Build
             }
 
             public bool HasLineInfo() => true;
+
+            public override string Path => _reader.Path;
 
             public override bool Read()
             {
@@ -425,8 +427,6 @@ namespace Microsoft.Docs.Build
             {
                 return value?.ToString();
             }
-
-            public override string Path => _reader.Path;
         }
     }
 }
