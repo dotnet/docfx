@@ -12,8 +12,7 @@ namespace Microsoft.Docs.Build
             Context context,
             List<Document> documents,
             DependencyMap dependencyMap,
-            TableOfContentsMap tocMap,
-            ContributionInfo contribution)
+            TableOfContentsMap tocMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
@@ -21,7 +20,7 @@ namespace Microsoft.Docs.Build
 
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-                LegacyOutput.Convert(docset, context, contribution, legacyManifestItems, tocMap);
+                LegacyOutput.Convert(docset, context, legacyManifestItems, tocMap);
 
                 // generate mappings
                 LegacyFileMap.Convert(docset, context, documents);

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -63,15 +64,16 @@ namespace Microsoft.Docs.Build
             var pathToParent = BuildPathToParentPath(files);
             var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
             var repo = OpenRepo(repoPath);
+            var repoName = Path.GetFileName(repoPath);
 
-            using (Progress.Start("Loading git commits"))
+            using (Progress.Start($"Loading git commits for '{repoPath}'"))
             {
                 commits = LoadCommits(repoPath, repo);
                 trees = LoadTrees(repo, commits, pathToParent, Progress.Update);
             }
 
             var (done, total, result) = (0, files.Count, new List<GitCommit>[files.Count]);
-            using (Progress.Start("Computing git commits"))
+            using (Progress.Start($"Computing git commits for '{repoPath}'"))
             {
                 Parallel.For(0, files.Count, i =>
                 {

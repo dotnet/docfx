@@ -8,7 +8,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildManifest
     {
-        public static void Build(Context context, List<Document> files, DependencyMap dependencies)
+        public static void Build(
+            Context context,
+            List<Document> files,
+            DependencyMap dependencies,
+            ContributionInfo contribution,
+            CommandLineOptions options)
         {
             var manifest = new Manifest
             {
@@ -25,18 +30,24 @@ namespace Microsoft.Docs.Build
             };
 
             context.WriteJson(manifest, "build.manifest");
-        }
 
-        private static FileManifest ToPublishManifest(Document doc)
-        {
-            var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
-
-            return new FileManifest
+            FileManifest ToPublishManifest(Document doc)
             {
-                SourcePath = doc.FilePath,
-                SiteUrl = doc.SiteUrl,
-                OutputPath = noOutput ? null : doc.OutputPath,
-            };
+                var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
+                var (repo, _, isDocsetRepo) = contribution.GetRepository(doc);
+                var overrideRepo = isDocsetRepo ? options.Repo : null;
+                var overrideBranch = isDocsetRepo ? options.Branch : null;
+
+                return new FileManifest
+                {
+                    SourcePath = doc.FilePath,
+                    SiteUrl = doc.SiteUrl,
+                    OutputPath = noOutput ? null : doc.OutputPath,
+                    Repo = overrideRepo ?? repo?.Name,
+                    Branch = overrideBranch ?? repo?.Branch,
+                    Commit = repo?.Commit,
+                };
+            }
         }
     }
 }
