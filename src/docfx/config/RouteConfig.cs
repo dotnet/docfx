@@ -29,6 +29,11 @@ namespace Microsoft.Docs.Build
 
             if (PathUtility.Match(path, Source))
             {
+                if (Source == "./")
+                {
+                    return Path.Combine(Destination, path);
+                }
+
                 if (Source.EndsWith('/'))
                 {
                     return Path.Combine(Destination, path.Substring(Source.Length));

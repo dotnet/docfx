@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static async Task ConcurrencyCreatingFileShouldNotThrowNoException()
         {
-            var fileName = $".process_test\\{Guid.NewGuid()}";
+            var fileName = $"process-test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(
                 i => ProcessUtility.CreateFileMutex(
                     fileName,

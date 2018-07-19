@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            if (path.EndsWith('/') && file.StartsWith(path, PathComparison))
+            if (path == "./" || (path.EndsWith('/') && file.StartsWith(path, PathComparison)))
             {
                 return true;
             }
