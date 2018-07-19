@@ -123,11 +123,11 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        public static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            token.Traverse(errors, mappings, nullNodes);
+            token.Traverse(errors, nullNodes);
             foreach (var node in nullNodes)
             {
                 node.Remove();
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, string name = null)
+        private static void Traverse(this JToken token, List<Error> errors, List<JToken> nullNodes, string name = null)
         {
             if (token is JArray array)
             {
@@ -171,12 +171,12 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(array, errors, mappings, name);
+                        LogInfoForNullValue(array, errors, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        Traverse(item, errors, mappings, nullNodes, name);
+                        Traverse(item, errors, nullNodes, name);
                     }
                 }
             }
@@ -187,30 +187,30 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(token, errors, mappings, prop.Name);
+                        LogInfoForNullValue(token, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.Traverse(errors, mappings, nullNodes, prop.Name);
+                        prop.Value.Traverse(errors, nullNodes, prop.Name);
                     }
                 }
             }
         }
 
-        // TODO: clean up logging only use JToken line info
-        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
+        private static void LogInfoForNullValue(JToken item, List<Error> errors, string name)
         {
-            if (mappings == null)
+            var lineInfo = item as IJsonLineInfo;
+            if (lineInfo.HasLineInfo())
             {
-                var lineInfo = item as IJsonLineInfo;
                 errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
             }
+
+            // If we set (1,1) as line info for the root, it will rewrite the line info of all.
+            // Take (1,1) as default value if no line info exists
             else
             {
-                Debug.Assert(mappings.ContainsKey(item));
-                var value = mappings[item];
-                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
+                errors.Add(Errors.NullValue(new Range(1, 1), name));
             }
         }
 

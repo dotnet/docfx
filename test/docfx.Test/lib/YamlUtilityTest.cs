@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using Xunit;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -311,7 +311,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("name contains null value", error.Message);
+                Assert.Contains("'name' contains null value", error.Message);
             });
         }
 
@@ -328,8 +328,27 @@ items:
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("items contains null value", error.Message);
+                Assert.Contains("'items' contains null value", error.Message);
             });
+        }
+
+        [Fact]
+        public void TestParsedJTokenHasLineInfo()
+        {
+            var yaml = @"
+name: List with null item
+items:
+  - name: 1
+";
+            var (errors, value) = YamlUtility.Deserialize(yaml);
+            Assert.Empty(errors);
+
+            var nameLineInfo = value["name"] as IJsonLineInfo;
+            var itemLineInfo = value["items"] as IJsonLineInfo;
+            Assert.Equal(2, nameLineInfo.LineNumber);
+            Assert.Equal(7, nameLineInfo.LinePosition);
+            Assert.Equal(4, itemLineInfo.LineNumber);
+            Assert.Equal(3, itemLineInfo.LinePosition);
         }
 
         public class BasicClass

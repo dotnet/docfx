@@ -121,8 +121,7 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var mappings = new JTokenSourceMap();
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
@@ -133,7 +132,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
+        private static JToken ToJson(YamlNode node)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -149,18 +148,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return PopulateLineInfoToJToken(new JValue(n), scalar);
+                        return new JValue(n);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return PopulateLineInfoToJToken(new JValue(d), scalar);
+                        return new JValue(d);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return PopulateLineInfoToJToken(new JValue(b), scalar);
+                        return new JValue(b);
                     }
                 }
-                return PopulateLineInfoToJToken(new JValue(scalar.Value), scalar);
+                return new JValue(scalar.Value);
             }
             if (node is YamlMappingNode map)
             {
@@ -169,17 +168,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        var jToken = ToJson(value, mappings);
-                        if (jToken != null)
+                        var token = ToJson(value);
+                        if (token != null)
                         {
-                            obj[scalarKey.Value] = PopulateLineInfoToJToken(jToken, value);
+                            token = PopulateLineInfoToJToken(token, value);
                         }
+                        obj[scalarKey.Value] = token;
                     }
                     else
                     {
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
+
                 return obj;
             }
             if (node is YamlSequenceNode seq)
@@ -187,38 +188,28 @@ namespace Microsoft.Docs.Build
                 var arr = new JArray();
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item, mappings));
+                    arr.Add(ToJson(item));
                 }
                 return arr;
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
-        {
-            if (mappings == null)
-                return value;
-
-            mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
-            return value;
-        }
-
         private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
         {
-            var reader = new JsonYamlReader(token.CreateReader(), token, node.Start.Line, node.Start.Column);
+            var reader = new JTokenLineInfoReader(token.CreateReader(), token, node.Start.Line, node.Start.Column);
             var result = JToken.Load(reader, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load });
             return result;
         }
 
-        public class JsonYamlReader : JsonReader, IJsonLineInfo
+        private class JTokenLineInfoReader : JsonReader, IJsonLineInfo
         {
             public readonly JsonReader _reader;
             private readonly JToken _root;
-            private readonly int _linePosition;
             private JToken _parent;
             private JToken _current;
 
-            public JsonYamlReader(JsonReader reader, JToken token, int lineNumber, int linePosition)
+            public JTokenLineInfoReader(JsonReader reader, JToken token, int lineNumber, int linePosition)
             {
                 Debug.Assert(token != null);
 

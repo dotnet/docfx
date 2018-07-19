@@ -29,7 +29,7 @@ outputs:
   docs/a.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 1, Character: 1) title contains null value","docs/a.md"]
+    ["info","null-value","(Line: 1, Character: 1) 'title' contains null value","docs/a.md",1,1]
 ---
 # Yaml header
 inputs:
