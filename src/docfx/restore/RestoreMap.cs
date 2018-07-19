@@ -44,17 +44,23 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public string GetUrlRestorePath(string remote)
+        public string GetUrlRestorePath(string docsetPath, string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            if (!HrefUtility.IsAbsoluteHref(path))
+            {
+                // directly return the relative path
+                return Path.Combine(docsetPath, path);
+            }
 
             // get the file path from restore map
-            if (TryGetUrlRestorePath(remote, out var restorePath) && File.Exists(restorePath))
+            if (TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
             {
                 return restorePath;
             }
 
-            throw Errors.UrlRestorePathNotFound(remote).ToException();
+            throw Errors.UrlRestorePathNotFound(path).ToException();
         }
     }
 }

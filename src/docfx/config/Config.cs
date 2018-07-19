@@ -67,6 +67,12 @@ namespace Microsoft.Docs.Build
         public readonly string BaseUrl = string.Empty;
 
         /// <summary>
+        /// The extend file addresses
+        /// The addresses can be absolute url or relative path
+        /// </summary>
+        public readonly string[] Extend = Array.Empty<string>();
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// </summary>
         public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
@@ -115,38 +121,36 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static Config Load(string docsetPath, CommandLineOptions options)
+        public static Config Load(string docsetPath, CommandLineOptions options, bool extend = true)
         {
             var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
-            return LoadCore(docsetPath, configPath, options);
+            return LoadCore(docsetPath, configPath, options, extend);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config, bool extend = true)
         {
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
-            config = exists ? LoadCore(docsetPath, configPath, options) : new Config();
+            config = exists ? LoadCore(docsetPath, configPath, options, extend) : new Config();
             return exists;
         }
 
-        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options = null)
+        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             Config config = null;
             try
             {
-                var configObject = JsonUtility.Merge(
-                    ExpandAndNormalize(LoadOriginalConfigObject(configPath, new List<string>(), true)),
-                    options?.ToJObject());
-
+                var optionConfigObject = options?.ToJObject();
+                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend), optionConfigObject));
                 config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
@@ -193,10 +197,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JObject LoadOriginalConfigObject(string configPath, List<string> parents, bool expand)
+        private static JObject LoadConfigObject(string docsetPath, string filePath, bool extend)
         {
-            // TODO: support URL
-            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(configPath));
+            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             if (errors.Any())
             {
                 throw errors[0].ToException();
@@ -204,45 +207,38 @@ namespace Microsoft.Docs.Build
 
             if (config == null)
                 config = new JObject();
-            if (!expand || !config.TryGetValue(ConfigConstants.Extend, out var objExtend))
+
+            if (!extend)
                 return config;
 
-            if (parents.Contains(configPath))
-                throw Errors.CircularReference(configPath, parents).ToException();
-
-            parents.Add(configPath);
-            var extendedConfig = new JObject();
-            foreach (var path in GetExtendConfigPaths(objExtend))
-            {
-                var extendConfigPath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(configPath), path));
-                extendedConfig.Merge(LoadOriginalConfigObject(extendConfigPath, parents, false));
-            }
-            extendedConfig.Merge(config);
-            parents.RemoveAt(parents.Count - 1);
-
-            return extendedConfig;
+            return ExtendConfigObject(docsetPath, config, new RestoreMap(docsetPath));
         }
 
-        private static IEnumerable<string> GetExtendConfigPaths(JToken objExtend)
+        private static JObject ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
         {
-            if (objExtend == null)
-                yield break;
-            if (objExtend is JValue strExtend)
+            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
+            if (!config.TryGetValue(ConfigConstants.Extend, out var objExtend) || objExtend == null)
             {
-                yield return strExtend.Value.ToString();
-                yield break;
+                return config;
             }
-            if (objExtend is JArray arrExtend)
+
+            if (!(objExtend is JArray arrayExtend))
             {
-                foreach (var path in arrExtend)
+                return config;
+            }
+
+            var extendedConfig = new JObject();
+            foreach (var extendPath in arrayExtend)
+            {
+                if (extendPath is JValue strExtendPath)
                 {
-                    if (!(path is JValue strPath))
-                        throw new Exception($"Expect to be string: {JsonUtility.Serialize(path)}");
-                    yield return strPath.Value.ToString();
+                    var filePath = restoreMap.GetUrlRestorePath(docsetPath, strExtendPath.Value<string>());
+                    var configObject = LoadConfigObject(docsetPath, filePath, false);
+                    extendedConfig = JsonUtility.Merge(extendedConfig, configObject);
                 }
-                yield break;
             }
-            throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(objExtend)}");
+
+            return JsonUtility.Merge(extendedConfig, config);
         }
 
         private static JObject ExpandAndNormalize(JObject config)
@@ -250,9 +246,37 @@ namespace Microsoft.Docs.Build
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             config[ConfigConstants.RedirectionsWithoutDocumentId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutDocumentId]);
             return config;
+        }
+
+        private static JToken ExpandExtend(JToken extend)
+        {
+            if (extend == null)
+                return null;
+
+            if (extend is JValue extendValue)
+            {
+                extend = new JArray(extendValue);
+            }
+
+            if (extend is JArray extendArray)
+            {
+                var result = new JArray();
+                foreach (var extendPath in extendArray)
+                {
+                    if (!(extendPath is JValue strExtendPath))
+                        throw new Exception($"Expect to be string: {JsonUtility.Serialize(extendPath)}");
+
+                    result.Add(strExtendPath);
+                }
+
+                return result;
+            }
+
+            throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(extend)}");
         }
 
         private static JToken NormalizeRedirections(JToken redirection)

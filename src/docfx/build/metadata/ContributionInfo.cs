@@ -38,24 +38,13 @@ namespace Microsoft.Docs.Build
 
             var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(GetFileFromConfig(docset, docset.Config.Contribution.GitCommitsTime, docset.RestoreMap)).ToDictionary();
+                : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
 
             var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
                 ? s_defaultProfilePath
-                : GetFileFromConfig(docset, docset.Config.Contribution.UserProfileCache, docset.RestoreMap);
+                : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache);
 
             return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
-        }
-
-        private static string GetFileFromConfig(Docset docset, string path, RestoreMap restoreMap)
-        {
-            if (!HrefUtility.IsAbsoluteHref(path))
-            {
-                // directly return the relative path
-                return Path.Combine(docset.DocsetPath, path);
-            }
-
-            return restoreMap.GetUrlRestorePath(path);
         }
 
         private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
