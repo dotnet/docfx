@@ -44,6 +44,7 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
+                PageType = "Conceptual",
                 Content = content,
                 Metadata = metadata,
                 Title = title,

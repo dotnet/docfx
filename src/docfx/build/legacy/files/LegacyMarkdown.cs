@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
                 docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
             var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
-            var content = pageModel.Content;
+            var content = (string)pageModel.Content;
 
             var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, legacyManifestOutput, tocMap);
 
