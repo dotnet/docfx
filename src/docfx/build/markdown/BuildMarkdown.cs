@@ -40,6 +40,8 @@ namespace Microsoft.Docs.Build
 
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
+            var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
+
             var model = new PageModel
             {
                 Content = content,
@@ -54,7 +56,9 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
-                EditLink = contribution.GetEditLink(file),
+                EditUrl = editUrl,
+                CommitUrl = commitUrl,
+                ContentUrl = contentUrl,
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 

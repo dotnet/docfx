@@ -14,37 +14,31 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
 
-        private readonly ConcurrentDictionary<string, GitRepoInfo> _folderRepoInfocache = new ConcurrentDictionary<string, GitRepoInfo>();
-
         private readonly UserProfileCache _userProfileCache;
 
         private readonly IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
 
         private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
 
-        private ContributionInfo(
-            IReadOnlyDictionary<string, List<GitCommit>> commitsByFile,
-            IReadOnlyDictionary<string, DateTime> updateTimeByCommit,
-            UserProfileCache userProfileCache)
+        private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
+
+        private ContributionInfo(Docset docset)
         {
-            _commitsByFile = commitsByFile;
-            _updateTimeByCommit = updateTimeByCommit;
-            _userProfileCache = userProfileCache;
+            _commitsByFile = LoadCommits(docset);
+
+            _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
+                ? new Dictionary<string, DateTime>()
+                : GitCommitsTime.Create(GetFileFromConfig(docset, docset.Config.Contribution.GitCommitsTime, docset.RestoreMap)).ToDictionary();
+
+            _userProfileCache = UserProfileCache.Create(
+                string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
+                    ? s_defaultProfilePath
+                    : GetFileFromConfig(docset, docset.Config.Contribution.UserProfileCache, docset.RestoreMap));
         }
 
         public static ContributionInfo Load(Docset docset)
         {
-            var commitsByFile = LoadCommits(docset);
-
-            var updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
-                ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(GetFileFromConfig(docset, docset.Config.Contribution.GitCommitsTime, docset.RestoreMap)).ToDictionary();
-
-            var userProfileCachePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
-                ? s_defaultProfilePath
-                : GetFileFromConfig(docset, docset.Config.Contribution.UserProfileCache, docset.RestoreMap);
-
-            return new ContributionInfo(commitsByFile, updateTimeByCommit, UserProfileCache.Create(userProfileCachePath));
+            return new ContributionInfo(docset);
         }
 
         private static string GetFileFromConfig(Docset docset, string path, RestoreMap restoreMap)
@@ -56,27 +50,6 @@ namespace Microsoft.Docs.Build
             }
 
             return restoreMap.GetUrlRestorePath(path);
-        }
-
-        private static IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
-        {
-            var repoRoot = GitUtility.FindRepo(Path.GetFullPath(docset.DocsetPath));
-
-            var files = docset.BuildScope
-                .Where(d => d.ContentType == ContentType.Markdown || d.ContentType == ContentType.SchemaDocument)
-                .ToList();
-
-            var filesFromRepoRoot = files
-                .Select(d => PathUtility.NormalizeFile(Path.GetRelativePath(repoRoot, Path.GetFullPath(Path.Combine(docset.DocsetPath, d.FilePath)))))
-                .ToList();
-
-            var commitsList = GitUtility.GetCommits(repoRoot, filesFromRepoRoot);
-            var result = new Dictionary<string, List<GitCommit>>();
-            for (var i = 0; i < files.Count; i++)
-            {
-                result[files[i].FilePath] = commitsList[i];
-            }
-            return result;
         }
 
         public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
@@ -139,61 +112,49 @@ namespace Microsoft.Docs.Build
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updateDateTime);
         }
 
-        public string GetEditLink(Document document)
+        public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
-            if (!document.Docset.Config.Contribution.Enabled)
-                return null;
+            var (repo, pathToRepo, _) = GetRepository(document);
 
-            var repoInfo = GetGitRepoInfo(document);
-            if (repoInfo?.Host != GitHost.GitHub)
-                return null;
+            var editBranch = document.Docset.Config.Contribution.Branch ?? "{branch}";
+            var editRepo = document.Docset.Config.Contribution.Repository ?? "{repo}";
 
-            var repo = string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository)
-                ? $"https://github.com/{repoInfo.Account}/{repoInfo.Name}"
-                : document.Docset.Config.Contribution.Repository;
-            var branch = string.IsNullOrEmpty(document.Docset.Config.Contribution.Branch)
-                ? repoInfo.Branch ?? repoInfo.Commit
-                : document.Docset.Config.Contribution.Branch;
-            var fullPath = Path.GetFullPath(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-            var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
+            var editUrl = document.Docset.Config.Contribution.Enabled
+                ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
+                : null;
 
-            return $"{repo}/blob/{branch}/{relPath}";
+            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
+                ? $"https://github.com/{{repo}}/blob/{commits[0].Sha}/{pathToRepo}"
+                : null;
+
+            var contentUrl = $"https://github.com/{{repo}}/blob/{{branch}}/{pathToRepo}";
+
+            return (editUrl, contentUrl, commitUrl);
         }
 
-        // TODO: make this private
-        public bool TryGetCommits(string filePath, out List<GitCommit> commits)
+        public (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
         {
-            return _commitsByFile.TryGetValue(filePath, out commits);
+            var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
+            var repo = GetRepository(fullPath);
+            if (repo == null)
+            {
+                return default;
+            }
+
+            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.RepositoryPath, PathUtility.PathComparison);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)), isDocsetRepo);
         }
 
-        // TODO: make this private
-        public GitRepoInfo GetGitRepoInfo(Document document)
+        private Repository GetRepository(string path)
         {
-            Debug.Assert(document != null);
+            if (GitUtility.IsRepo(path))
+                return Repository.Create(path);
 
-            return GetFolderGitRepoInfo(Path.GetDirectoryName(Path.Combine(document.Docset.DocsetPath, document.FilePath)));
-        }
-
-        private GitRepoInfo GetFolderGitRepoInfo(string folder)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(folder));
-            Debug.Assert(Directory.Exists(folder));
-
-            folder = PathUtility.NormalizeFile(folder);
-            return _folderRepoInfocache.GetOrAdd(folder, GetFolderGitRepoInfoCore);
-        }
-
-        private GitRepoInfo GetFolderGitRepoInfoCore(string folder)
-        {
-            if (GitUtility.IsRepo(folder))
-                return GitRepoInfo.Create(folder);
-
-            // TODO: add GitUtility.Discover repo
-            var parent = folder.Substring(0, folder.LastIndexOf("/"));
+            var parent = path.Substring(0, path.LastIndexOf("/"));
             return Directory.Exists(parent)
-                ? _folderRepoInfocache.GetOrAdd(parent, GetFolderGitRepoInfoCore)
+                ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
                 : null;
         }
 
@@ -209,6 +170,32 @@ namespace Microsoft.Docs.Build
                 Id = profile.Id,
                 ProfileUrl = profile.ProfileUrl,
             };
+        }
+
+        private IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
+        {
+            var result = new Dictionary<string, List<GitCommit>>();
+
+            var filesByRepo =
+                from file in docset.BuildScope
+                where file.ContentType == ContentType.Markdown || file.ContentType == ContentType.SchemaDocument
+                let fileInRepo = GetRepository(file)
+                where fileInRepo.repo != null
+                group (file, fileInRepo.pathToRepo) by fileInRepo.repo;
+
+            foreach (var group in filesByRepo)
+            {
+                var pathToDocset = group.Select(pair => pair.file.FilePath).ToList();
+                var pathToRepo = group.Select(pair => pair.pathToRepo).ToList();
+                var repoPath = group.Key.RepositoryPath;
+                var commitsList = GitUtility.GetCommits(repoPath, pathToRepo);
+                for (var i = 0; i < pathToDocset.Count; i++)
+                {
+                    result.Add(pathToDocset[i], commitsList[i]);
+                }
+            }
+
+            return result;
         }
     }
 }
