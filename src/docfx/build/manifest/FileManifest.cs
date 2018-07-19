@@ -14,5 +14,7 @@ namespace Microsoft.Docs.Build
         public string Repo { get; set; }
 
         public string Branch { get; set; }
+
+        public string Commit { get; set; }
     }
 }

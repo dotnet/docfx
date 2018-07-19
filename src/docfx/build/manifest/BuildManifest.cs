@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
                     OutputPath = noOutput ? null : doc.OutputPath,
                     Repo = overrideRepo ?? repo?.Name,
                     Branch = overrideBranch ?? repo?.Branch,
+                    Commit = repo?.Commit,
                 };
             }
         }
