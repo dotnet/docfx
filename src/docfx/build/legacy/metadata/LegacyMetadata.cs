@@ -44,7 +44,6 @@ namespace Microsoft.Docs.Build
             PageModel pageModel,
             Docset docset,
             Document file,
-            ContributionInfo contribution,
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
@@ -97,24 +96,17 @@ namespace Microsoft.Docs.Build
 
             if (file.ContentType != ContentType.Redirection)
             {
-                var repoInfo = contribution.GetGitRepoInfo(file);
-                if (repoInfo?.Host == GitHost.GitHub)
-                {
-                    var fullPath = Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath));
-                    var relPath = PathUtility.NormalizeFile(Path.GetRelativePath(repoInfo.RootPath, fullPath));
-                    rawMetadata["original_content_git_url"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{repoInfo.Branch ?? "master"}/{relPath}";
-                    if (contribution.TryGetCommits(file.FilePath, out var commits) && commits.Count > 0)
-                    {
-                        rawMetadata["gitcommit"] = $"https://github.com/{repoInfo.Account}/{repoInfo.Name}/blob/{commits[0].Sha}/{relPath}";
-                    }
-                }
-            }
-
-            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
-            if (file.ContentType != ContentType.Redirection)
+                rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
                 rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.Enabled;
-            if (!string.IsNullOrEmpty(pageModel.EditLink))
-                rawMetadata["content_git_url"] = pageModel.EditLink;
+
+                if (!string.IsNullOrEmpty(pageModel.EditUrl))
+                    rawMetadata["content_git_url"] = pageModel.EditUrl;
+
+                if (!string.IsNullOrEmpty(pageModel.CommitUrl))
+                    rawMetadata["gitcommit"] = pageModel.CommitUrl;
+                if (!string.IsNullOrEmpty(pageModel.ContentUrl))
+                    rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
+            }
 
             return rawMetadata;
         }
