@@ -5,7 +5,6 @@ using System;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -41,13 +40,13 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            using (var report = new Report())
+            var stopwatch = Stopwatch.StartNew();
+            var (command, docset, options) = ParseCommandLineOptions(args);
+
+            using (var report = new Report(options.Legacy))
             {
                 try
                 {
-                    var stopwatch = Stopwatch.StartNew();
-                    var (command, docset, options) = ParseCommandLineOptions(args);
-
                     switch (command)
                     {
                         case "restore":
@@ -84,8 +83,9 @@ namespace Microsoft.Docs.Build
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
-                // usage: docfx restore [docset]
+                // usage: docfx restore [docset] [--git-token token]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
+                syntax.DefineOption("git-token", ref options.GitToken, "The git token used to restore dependency repositories");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command
@@ -102,9 +102,9 @@ namespace Microsoft.Docs.Build
 
         private static void Done(TimeSpan duration)
         {
-            #pragma warning disable CA2002 // Do not lock on objects with weak identity
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
-            #pragma warning restore CA2002
+#pragma warning restore CA2002
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
