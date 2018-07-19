@@ -312,6 +312,8 @@ items:
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("'name' contains null value", error.Message);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(5, error.Column);
             });
         }
 
@@ -329,6 +331,8 @@ items:
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
                 Assert.Contains("'items' contains null value", error.Message);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(3, error.Column);
             });
         }
 
@@ -336,7 +340,7 @@ items:
         public void TestParsedJTokenHasLineInfo()
         {
             var yaml = @"
-name: List with null item
+name: line info
 items:
   - name: 1
 ";
@@ -345,10 +349,13 @@ items:
 
             var nameLineInfo = value["name"] as IJsonLineInfo;
             var itemLineInfo = value["items"] as IJsonLineInfo;
+            var nestedNameLineInfo = value["items"][0]["name"] as IJsonLineInfo;
             Assert.Equal(2, nameLineInfo.LineNumber);
             Assert.Equal(7, nameLineInfo.LinePosition);
             Assert.Equal(4, itemLineInfo.LineNumber);
             Assert.Equal(3, itemLineInfo.LinePosition);
+            Assert.Equal(4, nestedNameLineInfo.LineNumber);
+            Assert.Equal(11, nestedNameLineInfo.LinePosition);
         }
 
         public class BasicClass

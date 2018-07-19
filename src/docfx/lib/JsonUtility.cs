@@ -201,17 +201,7 @@ namespace Microsoft.Docs.Build
         private static void LogInfoForNullValue(JToken item, List<Error> errors, string name)
         {
             var lineInfo = item as IJsonLineInfo;
-            if (lineInfo.HasLineInfo())
-            {
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
-            }
-
-            // If we set (1,1) as line info for the root, it will rewrite the line info of all.
-            // Take (1,1) as default value if no line info exists
-            else
-            {
-                errors.Add(Errors.NullValue(new Range(1, 1), name));
-            }
+            errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver

@@ -121,7 +121,8 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
+                var root = stream.Documents[0].RootNode;
+                var (nullErrors, token) = PopulateLineInfoToJToken(ToJson(root), root).ValidateNullValue();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
@@ -181,7 +182,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return obj;
+                return PopulateLineInfoToJToken(obj, node);
             }
             if (node is YamlSequenceNode seq)
             {
@@ -206,6 +207,8 @@ namespace Microsoft.Docs.Build
         {
             public readonly JsonReader _reader;
             private readonly JToken _root;
+            private readonly int _lineNumber;
+            private readonly int _linePosition;
             private JToken _parent;
             private JToken _current;
 
@@ -215,18 +218,41 @@ namespace Microsoft.Docs.Build
 
                 _root = token;
                 _reader = reader;
-                LineNumber = lineNumber;
-                LinePosition = linePosition;
+                _lineNumber = lineNumber;
+                _linePosition = linePosition;
             }
 
-            public int LineNumber { get; }
-
-            public int LinePosition { get; }
-
-            public bool HasLineInfo()
+            public int LineNumber
             {
-                return true;
+                get
+                {
+                    if (_current == _root)
+                    {
+                        return _lineNumber;
+                    }
+                    else
+                    {
+                        return (_current as IJsonLineInfo).LineNumber;
+                    }
+                }
             }
+
+            public int LinePosition
+            {
+                get
+                {
+                    if (_current == _root)
+                    {
+                        return _linePosition;
+                    }
+                    else
+                    {
+                        return (_current as IJsonLineInfo).LinePosition;
+                    }
+                }
+            }
+
+            public bool HasLineInfo() => true;
 
             public override bool Read()
             {
