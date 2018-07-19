@@ -26,19 +26,26 @@ namespace Microsoft.Docs.Build
         /// Check if the file is same with or inside of the path
         /// Both path should be normalized
         /// </summary>
-        public static bool Match(this string file, string path)
+        public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string path)
         {
+            Debug.Assert(!file.EndsWith('/'));
+
             if (string.Equals(file, path, PathComparison))
             {
-                return true;
+                return (true, true, file);
             }
 
-            if (path == "./" || (path.EndsWith('/') && file.StartsWith(path, PathComparison)))
+            if (path == "./")
             {
-                return true;
+                return (true, false, file);
             }
 
-            return false;
+            if (path.EndsWith('/') && file.StartsWith(path, PathComparison))
+            {
+                return (true, false, Path.GetRelativePath(path, file));
+            }
+
+            return default;
         }
 
         /// <summary>

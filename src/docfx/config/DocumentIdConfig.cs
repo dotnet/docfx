@@ -9,9 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentIdConfig
     {
-        private readonly Lazy<Dictionary<string, string>> _reversedDepotMappings;
-        private readonly Lazy<Dictionary<string, string>> _reversedDirectoryMappings;
-
         /// <summary>
         /// The source base folder path, used by docs.com, for backward compatibility
         /// </summary>
@@ -26,24 +23,18 @@ namespace Microsoft.Docs.Build
         /// The mappings between depot and files/directory
         /// Used for backward compatibility
         /// </summary>
-        public Dictionary<string, List<string>> DepotMappings = new Dictionary<string, List<string>>();
+        public Dictionary<string, string> DepotMappings = new Dictionary<string, string>();
 
         /// <summary>
         /// The mappings between directory and files/directory
         /// Used for backward compatibility
         /// </summary>
-        public Dictionary<string, List<string>> DirectoryMappings = new Dictionary<string, List<string>>();
-
-        public DocumentIdConfig()
-        {
-            _reversedDepotMappings = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalizeMappings(DepotMappings));
-            _reversedDirectoryMappings = new Lazy<Dictionary<string, string>>(() => ReverseAndNormalizeMappings(DirectoryMappings));
-        }
+        public Dictionary<string, string> DirectoryMappings = new Dictionary<string, string>();
 
         public (string depotName, string pathRelativeToSourceBasePath) GetMapping(string normalizedFilePathToSourceBasePath)
         {
-            var (depotName, _) = GetReversedMapping(_reversedDepotMappings.Value, normalizedFilePathToSourceBasePath);
-            var (mappedDir, matchedDir) = GetReversedMapping(_reversedDirectoryMappings.Value, normalizedFilePathToSourceBasePath);
+            var (depotName, _) = GetReversedMapping(DepotMappings, normalizedFilePathToSourceBasePath);
+            var (mappedDir, matchedDir) = GetReversedMapping(DirectoryMappings, normalizedFilePathToSourceBasePath);
 
             var mappedPathRelativeToSourceBasePath = !string.IsNullOrEmpty(matchedDir)
                 ? PathUtility.NormalizeFile(Path.Combine(mappedDir, Path.GetRelativePath(matchedDir, normalizedFilePathToSourceBasePath)))
@@ -56,12 +47,15 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (path, value) in mappings)
             {
-                if (string.IsNullOrEmpty(path) || PathUtility.Match(normalizedFilePathToSourceBasePath, path))
+                var normalizedPath = path.EndsWith("/") || path.EndsWith("\\") ? PathUtility.NormalizeFolder(path) : PathUtility.NormalizeFile(path);
+                var (match, isFileMatch, _) = PathUtility.Match(normalizedFilePathToSourceBasePath, normalizedPath);
+                if (match)
                 {
-                    if (string.IsNullOrEmpty(path) || path.EndsWith('/'))
+                    if (!isFileMatch)
                     {
-                        return (value, path);
+                        return (value, normalizedPath);
                     }
+
                     var lastSlashIndex = normalizedFilePathToSourceBasePath.LastIndexOf("/");
                     var matchedDirectory = lastSlashIndex > 0 ? normalizedFilePathToSourceBasePath.Substring(0, lastSlashIndex) : string.Empty;
                     return (value, matchedDirectory);
@@ -69,22 +63,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (string.Empty, string.Empty);
-        }
-
-        private static Dictionary<string, string> ReverseAndNormalizeMappings(Dictionary<string, List<string>> mappings)
-        {
-            var reversedMapping = new Dictionary<string, string>();
-
-            foreach (var (key, value) in mappings)
-            {
-                foreach (var path in value)
-                {
-                    var normalizedPath = path.EndsWith("/") || path.EndsWith("\\") ? PathUtility.NormalizeFolder(path) : PathUtility.NormalizeFile(path);
-                    reversedMapping[normalizedPath] = key;
-                }
-            }
-
-            return reversedMapping;
         }
     }
 }

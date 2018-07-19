@@ -108,12 +108,10 @@ inputs:
     documentId:
       siteBasePath: azure
       depotMappings:
-        MSDN.microsoft-iot-central:
-          - articles/iot-central/
+        articles/iot-central/: MSDN.microsoft-iot-central
       directoryMappings:
-        articles:
-          - articles/iot-central/
-          - articles/billing/billing-add-change-azure-subscription-administrator.md
+        articles\iot-central/: articles
+        articles\billing/billing-add-change-azure-subscription-administrator.md: articles
     name: azure-documents
     product: Azure
     content: "**/*"

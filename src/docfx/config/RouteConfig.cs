@@ -27,19 +27,16 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            if (PathUtility.Match(path, Source))
+            var (match, isFileMatch, remainingPath) = PathUtility.Match(path, Source);
+
+            if (match)
             {
-                if (Source == "./")
+                if (isFileMatch)
                 {
-                    return Path.Combine(Destination, path);
+                    return Path.Combine(Destination, Path.GetFileName(path));
                 }
 
-                if (Source.EndsWith('/'))
-                {
-                    return Path.Combine(Destination, path.Substring(Source.Length));
-                }
-
-                return Path.Combine(Destination, Path.GetFileName(path));
+                return Path.Combine(Destination, remainingPath);
             }
 
             return null;
