@@ -23,6 +23,25 @@ namespace Microsoft.Docs.Build
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
         /// <summary>
+        /// Check if the file is same with or inside of the path
+        /// Both path should be normalized
+        /// </summary>
+        public static bool Match(this string file, string path)
+        {
+            if (string.Equals(file, path, PathComparison))
+            {
+                return true;
+            }
+
+            if (path.EndsWith('/') && file.StartsWith(path, PathComparison))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Create a relative path from one path to another file.
         /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
         /// <paramref name="fileRelativeTo"/> is a file.

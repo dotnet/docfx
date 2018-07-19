@@ -56,16 +56,15 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (path, value) in mappings)
             {
-                if (string.Equals(path, normalizedFilePathToSourceBasePath, PathUtility.PathComparison))
+                if (string.IsNullOrEmpty(path) || PathUtility.Match(normalizedFilePathToSourceBasePath, path))
                 {
+                    if (string.IsNullOrEmpty(path) || path.EndsWith('/'))
+                    {
+                        return (value, path);
+                    }
                     var lastSlashIndex = normalizedFilePathToSourceBasePath.LastIndexOf("/");
                     var matchedDirectory = lastSlashIndex > 0 ? normalizedFilePathToSourceBasePath.Substring(0, lastSlashIndex) : string.Empty;
                     return (value, matchedDirectory);
-                }
-
-                if (string.IsNullOrEmpty(path) || (path.EndsWith('/') && normalizedFilePathToSourceBasePath.StartsWith(path)))
-                {
-                    return (value, path);
                 }
             }
 
