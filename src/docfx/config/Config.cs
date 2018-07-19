@@ -253,32 +253,7 @@ namespace Microsoft.Docs.Build
             return config;
         }
 
-        private static JToken ExpandExtend(JToken extend)
-        {
-            if (extend == null)
-                return null;
-
-            if (extend is JValue extendValue)
-            {
-                extend = new JArray(extendValue);
-            }
-
-            if (extend is JArray extendArray)
-            {
-                var result = new JArray();
-                foreach (var extendPath in extendArray)
-                {
-                    if (!(extendPath is JValue strExtendPath))
-                        throw new Exception($"Expect to be string: {JsonUtility.Serialize(extendPath)}");
-
-                    result.Add(strExtendPath);
-                }
-
-                return result;
-            }
-
-            throw new Exception($"Expect 'extend' to be string or array: {JsonUtility.Serialize(extend)}");
-        }
+        private static JToken ExpandExtend(JToken extend) => ExpandStringArray(extend);
 
         private static JToken NormalizeRedirections(JToken redirection)
         {

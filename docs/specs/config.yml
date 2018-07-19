@@ -214,6 +214,16 @@ outputs:
   a.json:
   build.manifest:
 ---
+# relative path extend to itself
+inputs:
+  docfx.yml: |
+    extend: docfx.yml
+    content: a.md
+  a.md:
+outputs:
+  a.json:
+  build.manifest:
+---
 # absolute url extend
 inputs:
   docfx.yml: |

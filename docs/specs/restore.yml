@@ -60,7 +60,7 @@ restores:
         }
       ]
     }
-  restore-lock/02. Restore urls-*-lock.json: |
+  restore-lock/04. Restore urls with extends-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
   build.manifest:
@@ -72,7 +72,7 @@ inputs:
 restores:
   git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/01. Restore dependencies with their children-*-lock.json: |
+  restore-lock/05. Restore dependencies with extends-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
