@@ -60,24 +60,19 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
-        private static IEnumerable<string> GetRestoreUrls(Config config)
+        private static IEnumerable<string> GetRestorePaths(Config config)
         {
-            foreach (var url in GetRestorePaths())
+            yield return config.Contribution.GitCommitsTime;
+            yield return config.Contribution.UserProfileCache;
+        }
+
+        private static IEnumerable<string> GetRestoreUrls(IEnumerable<string> paths)
+        {
+            foreach (var url in paths)
             {
                 if (!string.IsNullOrEmpty(url) && HrefUtility.IsAbsoluteHref(url))
                 {
                     yield return url;
-                }
-            }
-
-            IEnumerable<string> GetRestorePaths()
-            {
-                yield return config.Contribution.UserProfileCache;
-                yield return config.Contribution.GitCommitsTime;
-
-                foreach (var extendPath in config.Extend)
-                {
-                    yield return extendPath;
                 }
             }
         }
@@ -86,19 +81,19 @@ namespace Microsoft.Docs.Build
         {
             var restoreLock = new RestoreLock();
 
-            // restore url firstly
+            // restore extend url firstly
             // no need to extend config
             var config = Config.Load(docsetPath, options, false);
-            var restoreUrls = GetRestoreUrls(config);
             var restoreUrlMappings = new ConcurrentDictionary<string, string>();
-            await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
-            {
-                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
-            });
-
+            await ParallelUtility.ForEach(
+                GetRestoreUrls(config.Extend),
+                async restoreUrl =>
+                {
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
-            // restore git dependnecy repositories
+            // restore other urls and git dependnecy repositories
             // extend the config before loading
             config = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
             var workTreeHeadMappings = await RestoreGit.Restore(config, restoreChild, token);
@@ -107,6 +102,15 @@ namespace Microsoft.Docs.Build
                 restoreLock.Git[href] = workTreeHead;
             }
 
+            await ParallelUtility.ForEach(
+            GetRestoreUrls(GetRestorePaths(config)),
+            async restoreUrl =>
+            {
+                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+            });
+
+            restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
+
             return restoreLock;
         }
 
@@ -114,7 +118,7 @@ namespace Microsoft.Docs.Build
         {
             await RestoreGit.GC(config, gcChild);
 
-            var restoreUrls = GetRestoreUrls(config);
+            var restoreUrls = GetRestoreUrls(GetRestorePaths(config).Concat(config.Extend));
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
                 await RestoreUrl.GC(restoreUrl);
