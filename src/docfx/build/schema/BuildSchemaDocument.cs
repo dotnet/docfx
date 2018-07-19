@@ -42,6 +42,8 @@ namespace Microsoft.Docs.Build
                 metadata.Value<string>("author"),
                 metadata.Value<DateTime?>("update_date"));
 
+            var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
+
             var title = metadata.Value<string>("title");
 
             var model = new PageModel
@@ -57,7 +59,9 @@ namespace Microsoft.Docs.Build
                 Author = author,
                 Contributors = contributors,
                 UpdatedAt = updatedAt,
-                EditLink = contribution.GetEditLink(file),
+                EditUrl = editUrl,
+                CommitUrl = commitUrl,
+                ContentUrl = contentUrl,
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
 
