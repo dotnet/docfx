@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TestConigWithGlobalMetadata()
         {
-            var docsetPath = "ConfigTest/ConfigWithGlobalMetadata";
+            var docsetPath = "config/ConfigWithGlobalMetadata";
             var configYaml = @"globalMetadata:
   key1: value
   key2: 2";
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TestConfigWithObjectFileMetadata()
         {
-            var docsetPath = "ConfigTest/ConfigWithObjectFileMetadata";
+            var docsetPath = "config/ConfigWithObjectFileMetadata";
             var configYaml = @"fileMetadata:
   folder/:
     key1: value1
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TestConfigWithArrayFileMetadata()
         {
-            var docsetPath = "ConfigTest/ConfigWithArrayFileMetadata";
+            var docsetPath = "config/ConfigWithArrayFileMetadata";
             var configYaml = @"fileMetadata:
 - include: folder1/**
   exclude: folder1/exclude/**
