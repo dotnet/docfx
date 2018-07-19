@@ -156,7 +156,6 @@ D: true
 - true
 - false
 ";
-            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(yaml));
             var (errors1, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.Empty(errors1);
             Assert.NotNull(value);
@@ -181,6 +180,7 @@ D: true
         [InlineData("### No-Yaml-Mime\r\n1\r\n...\r\n", null)]
         [InlineData("#YamlMime:a", "a")]
         [InlineData("###  YamlMime: LandingData ", "LandingData")]
+        [InlineData("#YamlMime:Test-Yaml-Mime", "Test-Yaml-Mime")]
         public void YamlMime(string yaml, string mime)
         {
             Assert.Equal(mime, YamlUtility.ReadMime(yaml));
