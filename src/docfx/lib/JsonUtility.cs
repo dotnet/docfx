@@ -197,10 +197,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void LogInfoForNullValue(JToken item, List<Error> errors, string name)
+        private static void LogInfoForNullValue(IJsonLineInfo token, List<Error> errors, string name)
         {
-            var lineInfo = item as IJsonLineInfo;
-            errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
+            errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver
