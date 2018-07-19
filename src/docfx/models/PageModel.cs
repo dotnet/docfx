@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public string PageType { get; set; }
 
+        public object Content { get; set; }
+
         public long WordCount { get; set; }
 
         public string Locale { get; set; }

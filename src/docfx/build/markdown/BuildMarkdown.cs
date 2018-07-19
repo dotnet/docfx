@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
 
-            var model = new PageModel<string>
+            var model = new PageModel
             {
                 PageType = "Conceptual",
                 Content = content,

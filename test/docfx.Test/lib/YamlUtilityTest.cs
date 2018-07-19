@@ -71,13 +71,12 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestBigInteger()
         {
-            var yaml = @"### YamlMime:Test-Yaml-Mime
+            var yaml = @"
 - 1234567890000
 - 9876543210000
 - 9223372036854775807
 - 18446744073709551615
 ";
-            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
             var (errors, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
@@ -118,11 +117,10 @@ B: *anchor
         [Fact]
         public void TestBasicClassWithNullCharactor()
         {
-            var yaml = @"### YamlMime:Test-Yaml-Mime
+            var yaml = @"
 C: ""~""
 D: ~
 ";
-            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
             var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
             Assert.Collection(errors, error =>
             {
@@ -138,12 +136,11 @@ D: ~
         [Fact]
         public void TestBasicClass()
         {
-            var yaml = @"### YamlMime:Test-Yaml-Mime
+            var yaml = @"
 B: 1
 C: Good!
 D: true
 ";
-            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlUtility.ReadMime(new StringReader(yaml)));
             var (errors, value) = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
             Assert.Empty(errors);
             Assert.NotNull(value);
@@ -155,7 +152,7 @@ D: true
         [Fact]
         public void TestBoolean()
         {
-            var yaml = @"### YamlMime:Test-Yaml-Mime
+            var yaml = @"
 - true
 - false
 ";
@@ -166,7 +163,7 @@ D: true
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"### YamlMime:Test-Yaml-Mime
+            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"
 - true
 - True
 - TRUE
@@ -179,11 +176,14 @@ D: true
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
         }
 
-        [Fact]
-        public void TestYamlMime_NoYamlMime()
+        [Theory]
+        [InlineData("", null)]
+        [InlineData("### No-Yaml-Mime\r\n1\r\n...\r\n", null)]
+        [InlineData("#YamlMime:a", "a")]
+        [InlineData("###  YamlMime: LandingData ", "LandingData")]
+        public void YamlMime(string yaml, string mime)
         {
-            var yaml = "### No-Yaml-Mime\r\n1\r\n...\r\n";
-            Assert.Null(YamlUtility.ReadMime(new StringReader(yaml)));
+            Assert.Equal(mime, YamlUtility.ReadMime(yaml));
         }
 
         [Fact]
@@ -303,7 +303,7 @@ Key1: 0
         {
             var yaml = @"name: List item with null value
 items:
-  - name: 
+  - name:
     displayName: 1
 ";
             var (errors, value) = YamlUtility.Deserialize(yaml);
@@ -320,7 +320,7 @@ items:
         {
             var yaml = @"name: List with null item
 items:
-  - 
+  -
   - name: 1
 ";
             var (errors, value) = YamlUtility.Deserialize(yaml);

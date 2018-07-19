@@ -1,0 +1,33 @@
+---
+# Support schema documents in YAML format
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:LandingData
+    title: my title
+    metadata:
+      key: value
+outputs:
+  docs/a.json: |
+    {
+      "content": { "title": "my title" },
+      "metadata": { "key": "value" }
+    }
+  build.manifest:
+---
+# Support schema documents in JSON format
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/LandingData.json",
+      "title": "my title",
+      "metadata": { "key": "value" }
+    }
+outputs:
+  docs/a.json: |
+    { 
+      "content": { "title": "my title" },
+      "metadata": { "key": "value" }
+    }
+  build.manifest:

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -12,11 +13,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildSchemaDocument
     {
         private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData) };
-        private static readonly IReadOnlyDictionary<string, (Type schemaType, Type pageType)> s_schemas =
-            s_schemaTypes.ToDictionary(
-                type => type.Name,
-                type => (type, typeof(PageModel<>).MakeGenericType(type)),
-                StringComparer.OrdinalIgnoreCase);
+        private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
 
         public static (IEnumerable<Error> errors, PageModel result, DependencyMap dependencies) Build(
             Document file,
@@ -31,6 +28,8 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.SchemaNotFound(schema).ToException();
             }
+
+            var content = token.ToObject(schemaType);
 
             // TODO: consolidate this with BuildMarkdown
             var locale = file.Docset.Config.Locale;
@@ -47,7 +46,9 @@ namespace Microsoft.Docs.Build
 
             var model = new PageModel
             {
-                Metadata = token.Value<JObject>("metadata"),
+                PageType = schema,
+                Content = content,
+                Metadata = metadata,
                 Title = title,
                 Locale = locale,
                 TocRelativePath = tocMap.FindTocRelativePath(file),
@@ -87,7 +88,10 @@ namespace Microsoft.Docs.Build
 
                 // TODO: be more strict
                 var schema = schemaUrl.Split('/').LastOrDefault();
-
+                if (schema != null)
+                {
+                    schema = Path.GetFileNameWithoutExtension(schema);
+                }
                 return (errors, token, schema);
             }
         }
