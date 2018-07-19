@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
                         break;
                     case ContentType.Redirection:
-                        model = BuildRedirectionItem(file);
+                        model = BuildRedirection(file);
                         break;
                 }
 
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static PageModel BuildRedirectionItem(Document file)
+        private static PageModel BuildRedirection(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 

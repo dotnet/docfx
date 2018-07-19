@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 docfxAppData = Path.GetFullPath(docfxAppData);
             }
 
-            return Path.Combine(!string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
+            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
         }
     }
 }
