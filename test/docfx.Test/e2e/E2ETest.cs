@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
             var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
-            var docsetPath = Path.Combine("specs.drop", specName.Replace("<", "").Replace(">", ""));
+            var docsetPath = Path.Combine("specs-drop", specName.Replace("<", "").Replace(">", ""));
 
             if (Directory.Exists(docsetPath))
             {
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(spec.Repo))
             {
-                var (remote, refspec) = Restore.GetGitRemoteInfo(spec.Repo);
+                var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 return (docsetPath, spec);
             }

@@ -10,9 +10,15 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
+        private readonly bool _legacy;
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
         private Dictionary<string, ErrorLevel> _rules;
+
+        public Report(bool legacy = false)
+        {
+            _legacy = legacy;
+        }
 
         public void Configure(string docsetPath, Config config)
         {
@@ -39,9 +45,10 @@ namespace Microsoft.Docs.Build
 
             if (_output != null)
             {
+                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
                 lock (_outputLock)
                 {
-                    _output.Value.WriteLine(error.ToString(level));
+                    _output.Value.WriteLine(line);
                 }
             }
 
@@ -59,6 +66,18 @@ namespace Microsoft.Docs.Build
                     _output.Value.Dispose();
                 }
             }
+        }
+
+        private static string LegacyReport(Error error, ErrorLevel level)
+        {
+            var message_severity = level;
+            var code = error.Code;
+            var message = error.Message;
+            var file = error.File;
+            var line = error.Line;
+            var date_time = DateTime.UtcNow;
+
+            return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time });
         }
 
         private static void ConsoleLog(ErrorLevel level, Error error)

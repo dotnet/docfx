@@ -13,17 +13,18 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreLocker
     {
-        public static Task Save(string docset, RestoreLock restoreLock)
+        public static async Task Save(string docset, Func<Task<RestoreLock>> updateAction)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var restoreLockFilePath = GetRestoreLockFilePath(docset);
-            return ProcessUtility.CreateFileMutex(
+            await ProcessUtility.CreateFileMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
-                () =>
+                async () =>
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(restoreLockFilePath));
 
+                    var restoreLock = await updateAction();
                     if (restoreLock.IsEmpty)
                     {
                         // clean up the restore lock file
@@ -33,8 +34,6 @@ namespace Microsoft.Docs.Build
                     {
                         File.WriteAllText(restoreLockFilePath, JsonUtility.Serialize(restoreLock));
                     }
-
-                    return Task.CompletedTask;
                 });
         }
 
@@ -59,7 +58,7 @@ namespace Microsoft.Docs.Build
             return restore;
         }
 
-        public static async Task<List<RestoreLock>> LoadAll(Func<string, bool> predicate = null)
+        public static async Task<List<RestoreLock>> LoadAll()
         {
             var restoreLocks = new ConcurrentBag<RestoreLock>();
             await ParallelUtility.ForEach(Directory.EnumerateFiles(AppData.RestoreLockDir, "*", SearchOption.TopDirectoryOnly), async restoreLockFilePath =>
@@ -70,10 +69,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (File.Exists(restoreLockFilePath))
                     {
-                        if (predicate == null || predicate(restoreLockFilePath))
-                        {
-                            restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
-                        }
+                        restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
                     }
 
                     return Task.CompletedTask;
@@ -86,7 +82,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
-            var docsetKey = Path.GetFileName(docset) + "-" + PathUtility.Encode(HashUtility.GetMd5String(docset));
+            var docsetKey = Path.GetFileName(docset) + "-" + HashUtility.GetSha1HashString(docset);
 
             return Path.Combine(AppData.RestoreLockDir, $"{docsetKey}-lock.json");
         }

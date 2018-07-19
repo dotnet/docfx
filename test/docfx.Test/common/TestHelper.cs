@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 Assert.IsType<JArray>(actual);
                 var actualArray = (JArray)actual;
-                Assert.Equal(expectedArray.Count, actualArray.Count);
+                Assert.True(expectedArray.Count == actualArray.Count, $"expected: {expected}\n got: {actual}");
                 for (var i = 0; i < expectedArray.Count; i++)
                 {
                     VerifyJsonContainEquals(expectedArray[i], actualArray[i]);
@@ -30,8 +30,15 @@ namespace Microsoft.Docs.Build
                 var actualObject = (JObject)actual;
                 foreach (var (key, value) in expectedObject)
                 {
-                    Assert.True(actualObject.ContainsKey(key), $"Key '{key}' expected: {actual}");
-                    VerifyJsonContainEquals(value, actualObject[key], key.ToString());
+                    if (key.StartsWith("!"))
+                    {
+                        Assert.False(actualObject.ContainsKey(key.Substring(1)), $"'{key.Substring(1)}' should not exist in {actual}");
+                    }
+                    else
+                    {
+                        Assert.True(actualObject.ContainsKey(key), $"Key '{key}' expected: {actual}");
+                        VerifyJsonContainEquals(value, actualObject[key], key.ToString());
+                    }
                 }
             }
             else

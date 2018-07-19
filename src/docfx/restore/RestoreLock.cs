@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,6 +16,8 @@ namespace Microsoft.Docs.Build
     {
         public Dictionary<string, string> Git { get; set; } = new Dictionary<string, string>();
 
-        public bool IsEmpty => !Git.Any();
+        public Dictionary<string, string> Url { get; set; } = new Dictionary<string, string>();
+
+        public bool IsEmpty => Git.Count == 0 && Url.Count == 0;
     }
 }

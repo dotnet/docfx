@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Jint;
@@ -16,16 +17,23 @@ namespace Microsoft.Docs.Build
     internal static class Jint
     {
         private static readonly Engine s_engine = new Engine();
-        private static readonly ThreadLocal<Func<JObject, JObject>> s_transform = new ThreadLocal<Func<JObject, JObject>>(LoadTransform);
+        private static ThreadLocal<Func<JObject, JObject>> s_transform = null;
+
+        public static void Init(Docset docset)
+        {
+            docset.RestoreMap.TryGetGitRestorePath("https://github.com/Microsoft/templates.docs.msft", out var restorePath);
+            s_transform = new ThreadLocal<Func<JObject, JObject>>(() => LoadTransform(restorePath));
+        }
 
         public static JObject Run(JObject input)
         {
+            Debug.Assert(s_transform != null);
             return s_transform.Value(input);
         }
 
-        private static Func<JObject, JObject> LoadTransform()
+        private static Func<JObject, JObject> LoadTransform(string templateRestorePath)
         {
-            var scriptPath = Path.Combine(AppData.RestoreDir, "github.com/Microsoft/templates.docs.msft/master/ContentTemplate/conceptual.mta.json.js");
+            var scriptPath = Path.Combine(templateRestorePath, "ContentTemplate/conceptual.mta.json.js");
 
             var exports = Load(scriptPath, new Dictionary<string, ObjectInstance>());
             var transform = exports.Get("transform");
