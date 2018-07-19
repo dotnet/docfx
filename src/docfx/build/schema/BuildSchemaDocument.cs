@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, token, schema) = Parse(file);
 
-            if (!s_schemas.TryGetValue(schema, out var schemaType))
+            if (schema == null || !s_schemas.TryGetValue(schema, out var schemaType))
             {
                 throw Errors.SchemaNotFound(schema).ToException();
             }

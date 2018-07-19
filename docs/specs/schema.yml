@@ -31,3 +31,27 @@ outputs:
       "metadata": { "key": "value" }
     }
   build.manifest:
+---
+# Throw error when schema is not specified
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    title: my title
+outputs:
+  build.manifest:
+  build.log: |
+   ["error","schema-not-found","Unknown schema ''","docs/a.yml"]
+---
+# Fallback to documentType when yaml mime is YamlDocument
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:YamlDocument
+    documentType: LandingData
+    title: my title
+outputs:
+  docs/a.json: |
+    {
+      "content": { "title": "my title" }
+    }
+  build.manifest:
