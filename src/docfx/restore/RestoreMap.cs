@@ -11,10 +11,15 @@ namespace Microsoft.Docs.Build
         private readonly RestoreLock _restoreLock;
 
         public RestoreMap(string docsetPath)
+            : this(RestoreLocker.Load(docsetPath).Result)
         {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
+        }
 
-            _restoreLock = RestoreLocker.Load(docsetPath).Result;
+        public RestoreMap(RestoreLock restoreLock)
+        {
+            Debug.Assert(restoreLock != null);
+
+            _restoreLock = restoreLock;
         }
 
         public bool TryGetGitRestorePath(string remote, out string restorePath)

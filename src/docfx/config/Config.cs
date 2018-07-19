@@ -121,36 +121,36 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static Config Load(string docsetPath, CommandLineOptions options, bool extend = true)
+        public static Config Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
             var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
             if (!File.Exists(configPath))
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
-            return LoadCore(docsetPath, configPath, options, extend);
+            return LoadCore(docsetPath, configPath, options, extend, restoreMap);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config, bool extend = true)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
-            config = exists ? LoadCore(docsetPath, configPath, options, extend) : new Config();
+            config = exists ? LoadCore(docsetPath, configPath, options, extend, restoreMap) : new Config();
             return exists;
         }
 
-        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend)
+        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             Config config = null;
             try
             {
                 var optionConfigObject = options?.ToJObject();
-                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend), optionConfigObject));
+                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend, restoreMap), optionConfigObject));
                 config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JObject LoadConfigObject(string docsetPath, string filePath, bool extend)
+        private static JObject LoadConfigObject(string docsetPath, string filePath, bool extend, RestoreMap restoreMap)
         {
             var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             if (errors.Any())
@@ -211,7 +211,8 @@ namespace Microsoft.Docs.Build
             if (!extend)
                 return config;
 
-            return ExtendConfigObject(docsetPath, config, new RestoreMap(docsetPath));
+            restoreMap = restoreMap ?? new RestoreMap(docsetPath);
+            return ExtendConfigObject(docsetPath, config, restoreMap);
         }
 
         private static JObject ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
@@ -233,7 +234,7 @@ namespace Microsoft.Docs.Build
                 if (extendPath is JValue strExtendPath)
                 {
                     var filePath = restoreMap.GetUrlRestorePath(docsetPath, strExtendPath.Value<string>());
-                    var configObject = LoadConfigObject(docsetPath, filePath, false);
+                    var configObject = LoadConfigObject(docsetPath, filePath, false, restoreMap); // only support first level extends
                     extendedConfig = JsonUtility.Merge(extendedConfig, configObject);
                 }
             }
