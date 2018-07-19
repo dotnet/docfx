@@ -28,6 +28,11 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
+            if (Source == "./")
+            {
+                return Path.Combine(Destination, path);
+            }
+
             if (Source.EndsWith('/'))
             {
                 if (path.StartsWith(Source, PathUtility.PathComparison))
