@@ -8,7 +8,7 @@
     <title>Walkthrough Part II: Adding API Documentation to the Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part II: Adding API Documentation to the Website | DocFX website ">
-    <meta name="generator" content="docfx 2.37.0.0">
+    <meta name="generator" content="docfx 2.37.1.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -166,6 +166,26 @@
 |- HelloDocfx.Class1.yml
 |- HelloDocfx.yml
 |- toc.yml
+</code></pre>
+<p>Also, note that if your csprojs are located outside of your docfx directory, and you need to use <code>../</code> you will need to use the <code>src</code> property:</p>
+<pre><code class="lang-json">&quot;metadata&quot;: [
+    {
+      &quot;src&quot;: [
+        {
+          &quot;src&quot;: &quot;../../&quot;,
+          &quot;files&quot;: [
+            &quot;somewhere/src/**.csproj&quot;
+          ],
+          &quot;exclude&quot;: [
+            &quot;**/bin/**&quot;,
+            &quot;**/obj/**&quot;,
+            &quot;_site/**&quot;
+          ]
+        }
+      ],
+      &quot;dest&quot;: &quot;api&quot;
+    }
+  ]
 </code></pre>
 <h2 id="step3-build-and-preview-our-website">Step3. Build and preview our website</h2>
 <p>Running the command <code>docfx</code>. <code>docfx</code> reads <code>docfx.json</code> and execute subcommands defined in the config file one by one. Our <code>docfx.json</code> defines <code>metadata</code> and <code>build</code>, so by running <code>docfx</code>, we are actually executing <code>docfx metadata</code> and <code>docfx build</code>, and thus generating the website.</p>

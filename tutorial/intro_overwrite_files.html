@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 2.37.0.0">
+    <meta name="generator" content="docfx 2.37.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -116,6 +116,10 @@ Footer for `microsoft.com/docfx/Contacts`
 footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;
 </code></pre>
 <p><code>uid</code> for an <em>Overwrite Model</em> stands for the Unique IDentifier of the <em>Model</em> it will overwrite. So it is allowed to have multiple <em>Overwrite Section</em>s with YAML Header containing the same <code>uid</code>. For one <em>Overwrite File</em>, the latter <em>Overwrite Section</em> overwrites the former one with the same <code>uid</code>. For different <em>Overwrite File</em>s, the order of overwrite is <strong>Undetermined</strong>. So it is suggested to have <em>Overwrite Sections</em> with the same <code>uid</code> in the same <em>Overwrite File</em>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Multiple <em>Overwrite Section</em>s in one file doesn't work in markdig markdown engine. You should remove <code>&quot;markdownEngineName&quot;: &quot;markdig&quot;,</code> from <code>docfx.json</code> to support this feature.</p>
+</div>
 <p>When processing <em>Conceptual File</em>s and <em>Metadata File</em>s, <em>Overwrite Model</em>s with the same <code>uid</code> are applied to the processed <em>Model</em>s. Different <em>Model</em>s have different overwrite principles, <a href="#overwrite-principles">Overwrite principles</a> section describes the them in detail.</p>
 <h2 id="apply-overwrite-files">Apply <em>Overwrite File</em>s</h2>
 <p>Inside <code>docfx.json</code>, <a href="docfx.exe_user_manual.html#32-properties-for-build"><code>overwrite</code></a> is used to specify the <em>Overwrite File</em>s.</p>
