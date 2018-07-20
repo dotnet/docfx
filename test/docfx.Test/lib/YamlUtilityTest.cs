@@ -336,26 +336,21 @@ items:
             });
         }
 
-        [Fact]
-        public void TestParsedJTokenHasLineInfo()
+        [Theory]
+        [InlineData("1", 1, 1)]
+        [InlineData("name: name", 1, 7)]
+        [InlineData(@"
+        items:
+          - name: 1", 3, 11)]
+        public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var yaml = @"
-name: line info
-items:
-  - name: 1
-";
             var (errors, value) = YamlUtility.Deserialize(yaml);
             Assert.Empty(errors);
 
-            var nameLineInfo = value["name"] as IJsonLineInfo;
-            var itemLineInfo = value["items"] as IJsonLineInfo;
-            var nestedNameLineInfo = value["items"][0]["name"] as IJsonLineInfo;
-            Assert.Equal(2, nameLineInfo.LineNumber);
-            Assert.Equal(7, nameLineInfo.LinePosition);
-            Assert.Equal(4, itemLineInfo.LineNumber);
-            Assert.Equal(3, itemLineInfo.LinePosition);
-            Assert.Equal(4, nestedNameLineInfo.LineNumber);
-            Assert.Equal(11, nestedNameLineInfo.LinePosition);
+            // Get the first JValue of the first JProperty if any
+            var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
+            Assert.Equal(expectedLine, lineInfo.LineNumber);
+            Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
         public class BasicClass

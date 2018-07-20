@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -20,6 +18,12 @@ namespace Microsoft.Docs.Build
     internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
+        private static readonly MethodInfo s_setLineInfo = typeof(JToken).GetMethod(
+            "SetLineInfo",
+            BindingFlags.NonPublic | BindingFlags.Instance,
+            null,
+            new[] { typeof(int), typeof(int) },
+            null);
 
         /// <summary>
         /// Get yaml mime type
@@ -105,8 +109,7 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var root = stream.Documents[0].RootNode;
-                var (nullErrors, token) = PopulateLineInfoToJToken(ToJson(root), root).ValidateNullValue();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
@@ -133,18 +136,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return new JValue(n);
+                        return PopulateLineInfoToJToken(new JValue(n), node);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return new JValue(d);
+                        return PopulateLineInfoToJToken(new JValue(d), node);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return new JValue(b);
+                        return PopulateLineInfoToJToken(new JValue(b), node);
                     }
                 }
-                return new JValue(scalar.Value);
+                return PopulateLineInfoToJToken(new JValue(scalar.Value), node);
             }
             if (node is YamlMappingNode map)
             {
@@ -154,10 +157,6 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var token = ToJson(value);
-                        if (token != null)
-                        {
-                            token = PopulateLineInfoToJToken(token, value);
-                        }
                         obj[scalarKey.Value] = token;
                     }
                     else
@@ -175,15 +174,17 @@ namespace Microsoft.Docs.Build
                 {
                     arr.Add(ToJson(item));
                 }
-                return arr;
+                return PopulateLineInfoToJToken(arr, node);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
         private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
         {
-            var m = typeof(JToken).GetMethod("SetLineInfo", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(int), typeof(int) }, null);
-            m.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
+            if (token is null)
+                return token;
+
+            s_setLineInfo.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
             return token;
         }
     }
