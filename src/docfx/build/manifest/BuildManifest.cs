@@ -11,9 +11,7 @@ namespace Microsoft.Docs.Build
         public static void Build(
             Context context,
             List<Document> files,
-            DependencyMap dependencies,
-            ContributionInfo contribution,
-            CommandLineOptions options)
+            DependencyMap dependencies)
         {
             var manifest = new Manifest
             {
@@ -34,18 +32,12 @@ namespace Microsoft.Docs.Build
             FileManifest ToPublishManifest(Document doc)
             {
                 var noOutput = doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources;
-                var (repo, _, isDocsetRepo) = contribution.GetRepository(doc);
-                var overrideRepo = isDocsetRepo ? options.Repo : null;
-                var overrideBranch = isDocsetRepo ? options.Branch : null;
 
                 return new FileManifest
                 {
                     SourcePath = doc.FilePath,
                     SiteUrl = doc.SiteUrl,
                     OutputPath = noOutput ? null : doc.OutputPath,
-                    Repo = overrideRepo ?? repo?.Name,
-                    Branch = overrideBranch ?? repo?.Branch,
-                    Commit = repo?.Commit,
                 };
             }
         }

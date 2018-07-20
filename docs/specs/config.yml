@@ -203,12 +203,31 @@ outputs:
   output/c.gif:
   build.manifest:
 ---
-# extend
+# relative path extend
 inputs:
   docfx.yml: |
     extend: _shared/extend.yml
   _shared/extend.yml: |
     content: a.md
+  a.md:
+outputs:
+  a.json:
+  build.manifest:
+---
+# relative path extend to itself
+inputs:
+  docfx.yml: |
+    extend: docfx.yml
+    content: a.md
+  a.md:
+outputs:
+  a.json:
+  build.manifest:
+---
+# absolute url extend
+inputs:
+  docfx.yml: |
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
   a.md:
 outputs:
   a.json:
@@ -231,9 +250,7 @@ inputs:
   docfx.yml: |
     extend:
     - extendB.yml
-    - extendA.yml
-  extendA.yml: |
-    content: a.md
+    - https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend1.yml
   extendB.yml: |
     content: invalid.md
   a.md:

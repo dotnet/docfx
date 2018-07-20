@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docset, options, report);
+                            await Restore.Run(docset, options);
                             Done(stopwatch.Elapsed);
                             break;
                         case "build":
@@ -96,8 +96,6 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                 syntax.DefineOption("log", ref options.Log, "Output build log path.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("repo", ref options.Repo, "Overrides the current git repo name guessed from remote URL.");
-                syntax.DefineOption("branch", ref options.Branch, "Overrides the current git branch name guessed.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });
 
