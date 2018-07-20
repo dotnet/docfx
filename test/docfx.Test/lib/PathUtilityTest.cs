@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a\\b\\.///c/d/../e", "a/b/c/e")]
         [InlineData("a.b//c", "a.b/c")]
         [InlineData("ab//c", "ab/c")]
+        [InlineData("a/", "a")]
         public static void NormalizeFile(string path, string expected)
             => Assert.Equal(expected, PathUtility.NormalizeFile(path));
 
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
         [InlineData("\\a", "/a/")]
         [InlineData("a\\b\\./c/d/../e", "a/b/c/e/")]
         [InlineData("/a\\b\\./c/d/../e", "/a/b/c/e/")]
+        [InlineData("a/", "a/")]
         public static void NormalizeFolder(string path, string expected)
             => Assert.Equal(expected, PathUtility.NormalizeFolder(path));
 
