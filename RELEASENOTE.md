@@ -1,8 +1,11 @@
-Version Notes (Current Version: v2.38)
+Version Notes (Current Version: v2.37.1)
 =======================================
 
-v2.38(Pre-release)
+v2.37.1
 -----------
+1. Defaults to TLS 1.2 when query from xref service and download xref map.
+2. Bug fix:
+    1. Fix FSharp project loading. (#2960)
 
 v2.37
 -----------
@@ -12,7 +15,7 @@ v2.36.2
 1. Bug fix:
     1. Improve download command error message. (#2805)
     2. Fix code indent issue. (#2830)
-    3. Fix error when generating metadata. (#2852)git s
+    3. Fix error when generating metadata. (#2852)
 
 v2.36.1
 -----------
