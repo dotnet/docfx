@@ -52,8 +52,10 @@ namespace Microsoft.Docs.Build
         [InlineData("c:/a", false)]
         [InlineData("c:\\a", false)]
         [InlineData("http://a", true)]
+        [InlineData("http://////a", false)]
         [InlineData("https://a.com", true)]
         [InlineData("https://a.com#b", true)]
+        [InlineData("https://////a.com", false)]
         public static void IsHttpHref(string href, bool expected)
             => Assert.Equal(expected, HrefUtility.IsHttpHref(href));
 
