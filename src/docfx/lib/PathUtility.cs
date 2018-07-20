@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         {
             path = path.Replace('\\', '/');
 
-            if (path.IndexOf('.') == -1 && !path.Contains("//"))
+            if (path.IndexOf('.') == -1 && !path.Contains("//") && !path.EndsWith('/'))
             {
                 return path;
             }
