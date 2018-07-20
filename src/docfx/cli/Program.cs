@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -94,6 +96,8 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                 syntax.DefineOption("log", ref options.Log, "Output build log path.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                syntax.DefineOption("repo", ref options.Repo, "Overrides the current git repo name guessed from remote URL.");
+                syntax.DefineOption("branch", ref options.Branch, "Overrides the current git branch name guessed.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });
 
@@ -138,7 +142,7 @@ docfx: `{GetDocfxVersion()}`
 cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
 git: `{GetGitVersion()}`
-
+{GetDocfxEnvironmentVariables()}
 ## repro steps
 
 ## callstack
@@ -156,9 +160,31 @@ git: `{GetGitVersion()}`
             Console.ResetColor();
         }
 
+        private static string GetDocfxEnvironmentVariables()
+        {
+            try
+            {
+                return string.Concat(
+                from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                where entry.Key.ToString().StartsWith("DOCFX_")
+                select $"{entry.Key}: `{entry.Value}`\n");
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         private static string GetDocfxVersion()
         {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            try
+            {
+                return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private static string GetDotnetInfo()
