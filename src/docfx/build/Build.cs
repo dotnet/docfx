@@ -28,11 +28,11 @@ namespace Microsoft.Docs.Build
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
-            BuildManifest.Build(context, files, sourceDependencies);
+            BuildManifest.Build(context, files, sourceDependencies, contribution, options);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, contribution);
+                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
                         break;
                     case ContentType.SchemaDocument:
-                        (errors, model, dependencies) = await BuildSchemaDocument.Build();
+                        (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);

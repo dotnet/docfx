@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            ContributionInfo contribution,
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
@@ -22,9 +21,9 @@ namespace Microsoft.Docs.Build
                 docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
             var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
-            var content = pageModel.Content;
+            var content = (string)pageModel.Content;
 
-            var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, contribution, legacyManifestOutput, tocMap);
+            var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, legacyManifestOutput, tocMap);
 
             rawMetadata = Jint.Run(rawMetadata);
             var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);

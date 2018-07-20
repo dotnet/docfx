@@ -77,6 +77,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from TextReader to an object
         /// </summary>
+        public static (List<Error>, JToken) Deserialize(string json)
+        {
+            return Deserialize(new StringReader(json));
+        }
+
+        /// <summary>
+        /// Deserialize from TextReader to an object
+        /// </summary>
         public static (List<Error>, T) Deserialize<T>(TextReader reader)
         {
             var (errors, token) = Deserialize(reader);

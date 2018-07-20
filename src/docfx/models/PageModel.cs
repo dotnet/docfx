@@ -8,7 +8,9 @@ namespace Microsoft.Docs.Build
 {
     internal class PageModel
     {
-        public string Content { get; set; }
+        public string PageType { get; set; }
+
+        public object Content { get; set; }
 
         public long WordCount { get; set; }
 
@@ -34,7 +36,11 @@ namespace Microsoft.Docs.Build
 
         public bool EnableContribution { get; set; }
 
-        public string EditLink { get; set; }
+        public string EditUrl { get; set; }
+
+        public string ContentUrl { get; set; }
+
+        public string CommitUrl { get; set; }
 
         public JObject Metadata { get; set; }
     }
