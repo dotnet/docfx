@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return (editUrl, contentUrl, commitUrl);
         }
 
-        public (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
+        private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var repo = GetRepository(fullPath);
