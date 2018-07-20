@@ -20,37 +20,16 @@ namespace Microsoft.Docs.Build
         public const string YamlMimePrefix = "YamlMime:";
 
         /// <summary>
-        /// Get YamlMime from TextReader
-        /// </summary>
-        public static string ReadMime(TextReader reader)
-        {
-            var content = ReadHeader(reader);
-            if (!content.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-            return content;
-        }
-
-        /// <summary>
-        /// Get the content of the first comment line
-        /// </summary>
-        public static string ReadHeader(TextReader reader)
-        {
-            var line = reader.ReadLine();
-            if (line == null || !line.StartsWith("#", StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-            return line.TrimStart('#').Trim();
-        }
-
-        /// <summary>
-        /// Get YamlMime from yaml string
+        /// Get yaml mime type
         /// </summary>
         public static string ReadMime(string yaml)
         {
-            return ReadMime(new StringReader(yaml));
+            var header = ReadHeader(yaml);
+            if (header == null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+            return header.Substring(YamlMimePrefix.Length).Trim();
         }
 
         /// <summary>
@@ -58,7 +37,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string ReadHeader(string yaml)
         {
-            return ReadHeader(new StringReader(yaml));
+            if (!yaml.StartsWith("#"))
+            {
+                return null;
+            }
+            var i = yaml.IndexOf('\n');
+            return yaml.Substring(0, i < 0 ? yaml.Length : i).TrimStart('#').Trim();
         }
 
         /// <summary>

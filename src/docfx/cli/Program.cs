@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -140,7 +142,7 @@ docfx: `{GetDocfxVersion()}`
 cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
 git: `{GetGitVersion()}`
-
+{GetDocfxEnvironmentVariables()}
 ## repro steps
 
 ## callstack
@@ -158,9 +160,31 @@ git: `{GetGitVersion()}`
             Console.ResetColor();
         }
 
+        private static string GetDocfxEnvironmentVariables()
+        {
+            try
+            {
+                return string.Concat(
+                from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                where entry.Key.ToString().StartsWith("DOCFX_")
+                select $"{entry.Key}: `{entry.Value}`\n");
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         private static string GetDocfxVersion()
         {
-            return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            try
+            {
+                return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private static string GetDotnetInfo()

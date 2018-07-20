@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
                         break;
                     case ContentType.SchemaDocument:
-                        (errors, model, dependencies) = await BuildSchemaDocument.Build();
+                        (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);

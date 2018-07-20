@@ -99,3 +99,29 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]
+---
+# generate document id with depot mapping and directory mapping
+# id = hash({mapped_depot_name}|{mapped_file_in_docset})
+# version_independent_id = hash({mapped_depot_name}|{file_path})
+inputs:
+  docfx.yml: |
+    documentId:
+      siteBasePath: azure
+      depotMappings:
+        articles/iot-central/: MSDN.microsoft-iot-central
+      directoryMappings:
+        articles\iot-central/: articles
+        articles\billing/billing-add-change-azure-subscription-administrator.md: articles
+    name: azure-documents
+    product: Azure
+    content: "**/*"
+    routes:
+      articles/: "azure/"
+  articles/iot-central/concepts-architecture.md:
+  articles/billing/billing-add-change-azure-subscription-administrator.md:
+outputs:
+  azure/iot-central/concepts-architecture.json: |
+    {"id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","versionIndependentId":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
+  azure/billing/billing-add-change-azure-subscription-administrator.json: |
+    {"id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","versionIndependentId":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
+  build.manifest:
