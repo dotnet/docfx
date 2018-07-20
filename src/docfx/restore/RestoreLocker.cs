@@ -43,6 +43,10 @@ namespace Microsoft.Docs.Build
 
             var restoreLockFilePath = GetRestoreLockFilePath(docset);
             var restore = new RestoreLock();
+
+            if (!File.Exists(restoreLockFilePath))
+                return restore;
+
             await ProcessUtility.CreateFileMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 () =>
