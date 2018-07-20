@@ -43,6 +43,21 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("a", false)]
+        [InlineData("a/b", false)]
+        [InlineData("a\\b", false)]
+        [InlineData("/a", false)]
+        [InlineData("\\a", false)]
+        [InlineData("#a", false)]
+        [InlineData("c:/a", false)]
+        [InlineData("c:\\a", false)]
+        [InlineData("http://a", true)]
+        [InlineData("https://a.com", true)]
+        [InlineData("https://a.com#b", true)]
+        public static void IsHttpHref(string href, bool expected)
+            => Assert.Equal(expected, HrefUtility.IsHttpHref(href));
+
+        [Theory]
         [InlineData("", "")]
         [InlineData("a&#/b\\.* d.png", "a%26%23/b/.%2A%20d.png")]
         public static void EscapeUrl(string path, string expected)
