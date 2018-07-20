@@ -56,37 +56,21 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input), nullValidation);
-        }
-
-        /// <summary>
-        /// Deserialize From TextReader
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
-        {
-            var (errors, json) = Deserialize(reader, nullValidation);
+            var (errors, json) = Deserialize(input, nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
-        /// Deserialize to JToken From string
+        /// Deserialize to JToken from string
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
-        {
-            return Deserialize(new StringReader(input), nullValidation);
-        }
-
-        /// <summary>
-        /// Deserialize to JToken from TextReader
-        /// </summary>
-        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
 
             try
             {
-                stream.Load(reader);
+                stream.Load(new StringReader(input));
             }
             catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
             {

@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 - 9223372036854775807
 - 18446744073709551615
 ";
-            var (errors, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<object[]>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(4, value.Length);
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
   - item2
 : value
 ";
-            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Deserialize(new StringReader(yaml)));
+            var exception = Assert.Throws<NotSupportedException>(() => YamlUtility.Deserialize(yaml));
 
             Assert.Equal("Not Supported: [ item1, item2 ] is not a primitive type", exception.Message);
         }
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
 A: &anchor test
 B: *anchor
 ";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value["A"]);
@@ -121,7 +121,7 @@ B: *anchor
 C: ""~""
 D: ~
 ";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
@@ -141,7 +141,7 @@ B: 1
 C: Good!
 D: true
 ";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -156,20 +156,20 @@ D: true
 - true
 - false
 ";
-            var (errors1, value) = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            var (errors1, value) = YamlUtility.Deserialize<object[]>(yaml);
             Assert.Empty(errors1);
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
             Assert.True((bool)value[0]);
             Assert.False((bool)value[1]);
-            var (errors2, value2) = YamlUtility.Deserialize(new StringReader(@"
+            var (errors2, value2) = YamlUtility.Deserialize(@"
 - true
 - True
 - TRUE
 - false
 - False
 - FALSE
-"));
+");
             Assert.Empty(errors2);
             Assert.NotNull(value2);
             Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
@@ -218,7 +218,7 @@ D: true
   C: Good9!
   D: true
 ";
-            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(new StringReader(yaml));
+            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -234,7 +234,7 @@ D: true
         public void TestClassWithReadOnlyField()
         {
             var yaml = $"B: test";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -260,7 +260,7 @@ ValueBasic:
   C: Good3!
   D: false
 ";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -282,7 +282,7 @@ ValueBasic:
         public void TestStringEmpty()
         {
             var yaml = String.Empty;
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(new StringReader(yaml));
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -347,7 +347,6 @@ items:
             var (errors, value) = YamlUtility.Deserialize(yaml);
             Assert.Empty(errors);
 
-            var json = JsonUtility.Serialize(value);
             // Get the first JValue of the first JProperty if any
             var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
             Assert.Equal(expectedLine, lineInfo.LineNumber);
