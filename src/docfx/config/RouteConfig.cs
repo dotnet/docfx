@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -28,20 +27,16 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            if (Source == "./")
-            {
-                return Path.Combine(Destination, path);
-            }
+            var (match, isFileMatch, remainingPath) = PathUtility.Match(path, Source);
 
-            if (Source.EndsWith('/'))
+            if (match)
             {
-                if (path.StartsWith(Source, PathUtility.PathComparison))
-                    return Path.Combine(Destination, path.Substring(Source.Length));
-            }
-            else
-            {
-                if (path.Equals(Source, PathUtility.PathComparison))
+                if (isFileMatch)
+                {
                     return Path.Combine(Destination, Path.GetFileName(path));
+                }
+
+                return Path.Combine(Destination, remainingPath);
             }
 
             return null;
