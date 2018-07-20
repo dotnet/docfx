@@ -3,6 +3,7 @@ Version Notes (Current Version: v2.38)
 
 v2.38(Pre-release)
 -----------
+1. Defaults to TLS 1.2 when query from xref service and download xref map.
 
 v2.37
 -----------
