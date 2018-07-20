@@ -75,28 +75,30 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, JToken) Deserialize(string json)
-        {
-            return Deserialize(new StringReader(json));
-        }
-
-        /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
-        {
-            var (errors, token) = Deserialize(reader);
-            return (errors, token.ToObject<T>(DefaultDeserializer));
-        }
-
-        /// <summary>
         /// Deserialize a string to an object
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string json)
         {
-            return Deserialize<T>(new StringReader(json));
+            var (errors, token) = Deserialize(json);
+            return (errors, (T)token.ToObject(typeof(T), DefaultDeserializer));
+        }
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(string json)
+        {
+            try
+            {
+                var (errors, token) = JToken.Parse(json, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load })
+                    .ValidateNullValue();
+                return (errors, token ?? JValue.CreateNull());
+            }
+            catch (Exception ex)
+            {
+                throw Errors.JsonSyntaxError(ex).ToException();
+            }
         }
 
         /// <summary>
@@ -148,26 +150,6 @@ namespace Microsoft.Docs.Build
                 (token == null) ||
                 (token.Type == JTokenType.Null) ||
                 (token.Type == JTokenType.Undefined);
-        }
-
-        /// <summary>
-        /// Parse a string to JToken.
-        /// Validate null value during the process.
-        /// </summary>
-        private static (List<Error>, JToken) Deserialize(TextReader reader)
-        {
-            try
-            {
-                using (JsonReader json = new JsonTextReader(reader))
-                {
-                    var (errors, token) = DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
-                    return (errors, token ?? JValue.CreateNull());
-                }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.JsonSyntaxError(ex).ToException();
-            }
         }
 
         private static void Traverse(this JToken token, List<Error> errors, List<JToken> nullNodes, string name = null)

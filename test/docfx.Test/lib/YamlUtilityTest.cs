@@ -340,13 +340,14 @@ items:
         [InlineData("1", 1, 1)]
         [InlineData("name: name", 1, 7)]
         [InlineData(@"
-        items:
-          - name: 1", 3, 11)]
+items:
+ - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
             var (errors, value) = YamlUtility.Deserialize(yaml);
             Assert.Empty(errors);
 
+            var json = JsonUtility.Serialize(value);
             // Get the first JValue of the first JProperty if any
             var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
             Assert.Equal(expectedLine, lineInfo.LineNumber);
