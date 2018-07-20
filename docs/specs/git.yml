@@ -96,41 +96,25 @@ outputs:
   build.manifest:
   dep.json:
 ---
-# Show editUrl, contentUrl and commitUrl as template, manifest contains repo info
+# Show editUrl, contentUrl and commitUrl
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
     {
       "enableContribution": true,
-      "editUrl": "https://github.com/{repo}/blob/{branch}/README.md",
-      "contentUrl": "https://github.com/{repo}/blob/{branch}/README.md",
-      "commitUrl": "https://github.com/{repo}/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
+      "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
+      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
     }
   testdata1.json: |
     {
       "enableContribution": true,
-      "editUrl": "https://github.com/{repo}/blob/{branch}/testdata1.md",
-      "contentUrl": "https://github.com/{repo}/blob/{branch}/testdata1.md",
-      "commitUrl": "https://github.com/{repo}/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
+      "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
+      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
     }
   dep.json:
-  build.manifest: |
-    {
-      "files": [
-        {
-          "repo": "docascode/docfx-test-dependencies",
-          "branch": "git-test-6"
-        },
-        {
-          "repo": "docascode/docfx-test-dependencies",
-          "branch": "git-test-6"
-        },
-        {
-          "repo": "docascode/docfx-test-dependencies",
-          "branch": "git-test-6"
-        },
-      ]
-    }
+  build.manifest:
 ---
 # Specify editLink repo and branch in config
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-config-repo-branch
@@ -138,8 +122,8 @@ outputs:
   README.json: |
     {
       "editUrl": "https://github.com/test-org/test-repo/blob/contribution/README.md",
-      "contentUrl": "https://github.com/{repo}/blob/{branch}/README.md",
-      "commitUrl": "https://github.com/{repo}/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
+      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-config-repo-branch/README.md",
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
     }
   testdata1.json:
   build.manifest:
@@ -158,31 +142,15 @@ outputs:
 ---
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
-commands:
-  - build --repo my-repo --branch my-branch
 outputs:
   README.json: |
     {
-      "commitUrl": "https://github.com/{repo}/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
       "updatedAt": "2018-04-23T03:23:37Z"
     }
   docfx-test-submodule/README.json: |
     {
-      "commitUrl": "https://github.com/{repo}/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
+      "commitUrl": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
       "updatedAt": "2018-07-18T05:03:26Z"
     }
-  build.manifest: |
-    {
-      "files": [
-        {
-          "siteUrl": "/docfx-test-submodule/README",
-          "repo": "docascode/docfx-test-submodule",
-          "!branch": ""
-        },
-        {
-          "siteUrl": "/README",
-          "repo": "my-repo",
-          "branch": "my-branch"
-        }
-      ]
-    }
+  build.manifest:
