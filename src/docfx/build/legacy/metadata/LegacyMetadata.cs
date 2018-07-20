@@ -94,9 +94,10 @@ namespace Microsoft.Docs.Build
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
+            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
+
             if (file.ContentType != ContentType.Redirection)
             {
-                rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
                 rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.Enabled;
 
                 if (!string.IsNullOrEmpty(pageModel.EditUrl))
