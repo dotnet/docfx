@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -18,6 +18,12 @@ namespace Microsoft.Docs.Build
     internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
+        private static readonly MethodInfo s_setLineInfo = typeof(JToken).GetMethod(
+            "SetLineInfo",
+            BindingFlags.NonPublic | BindingFlags.Instance,
+            null,
+            new[] { typeof(int), typeof(int) },
+            null);
 
         /// <summary>
         /// Get yaml mime type
@@ -50,37 +56,21 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            return Deserialize<T>(new StringReader(input), nullValidation);
-        }
-
-        /// <summary>
-        /// Deserialize From TextReader
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, bool nullValidation = true)
-        {
-            var (errors, json) = Deserialize(reader, nullValidation);
+            var (errors, json) = Deserialize(input, nullValidation);
             return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
         }
 
         /// <summary>
-        /// Deserialize to JToken From string
+        /// Deserialize to JToken from string
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
-        {
-            return Deserialize(new StringReader(input), nullValidation);
-        }
-
-        /// <summary>
-        /// Deserialize to JToken from TextReader
-        /// </summary>
-        public static (List<Error>, JToken) Deserialize(TextReader reader, bool nullValidation = true)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
 
             try
             {
-                stream.Load(reader);
+                stream.Load(new StringReader(input));
             }
             catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
             {
@@ -103,18 +93,18 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var mappings = new JTokenSourceMap();
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode, mappings).ValidateNullValue(mappings);
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
             else
             {
-                return (errors, ToJson(stream.Documents[0].RootNode));
+                var token = ToJson(stream.Documents[0].RootNode);
+                return (errors, token);
             }
         }
 
-        private static JToken ToJson(YamlNode node, JTokenSourceMap mappings = null)
+        private static JToken ToJson(YamlNode node)
         {
             if (node is YamlScalarNode scalar)
             {
@@ -130,18 +120,18 @@ namespace Microsoft.Docs.Build
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
-                        return SetMappings(mappings, scalar, new JValue(n));
+                        return PopulateLineInfoToJToken(new JValue(n), node);
                     }
                     if (double.TryParse(scalar.Value, out var d))
                     {
-                        return SetMappings(mappings, scalar, new JValue(d));
+                        return PopulateLineInfoToJToken(new JValue(d), node);
                     }
                     if (bool.TryParse(scalar.Value, out var b))
                     {
-                        return SetMappings(mappings, scalar, new JValue(b));
+                        return PopulateLineInfoToJToken(new JValue(b), node);
                     }
                 }
-                return SetMappings(mappings, scalar, new JValue(scalar.Value));
+                return PopulateLineInfoToJToken(new JValue(scalar.Value), node);
             }
             if (node is YamlMappingNode map)
             {
@@ -150,35 +140,36 @@ namespace Microsoft.Docs.Build
                 {
                     if (key is YamlScalarNode scalarKey)
                     {
-                        var jToken = ToJson(value, mappings);
-                        obj[scalarKey.Value] = jToken;
+                        var token = ToJson(value);
+                        obj[scalarKey.Value] = token;
                     }
                     else
                     {
                         throw new NotSupportedException($"Not Supported: {key} is not a primitive type");
                     }
                 }
-                return SetMappings(mappings, node, obj);
+
+                return PopulateLineInfoToJToken(obj, node);
             }
             if (node is YamlSequenceNode seq)
             {
                 var arr = new JArray();
                 foreach (var item in seq)
                 {
-                    arr.Add(ToJson(item, mappings));
+                    arr.Add(ToJson(item));
                 }
-                return SetMappings(mappings, node, arr);
+                return PopulateLineInfoToJToken(arr, node);
             }
             throw new NotSupportedException($"Unknown yaml node type {node.GetType()}");
         }
 
-        private static JToken SetMappings(JTokenSourceMap mappings, YamlNode scalar, JToken value)
+        private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
         {
-            if (mappings == null)
-                return value;
+            if (token is null)
+                return token;
 
-            mappings.Add(value, new Range(scalar.Start.Line, scalar.Start.Column));
-            return value;
+            s_setLineInfo.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
+            return token;
         }
     }
 }
