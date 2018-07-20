@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build
         public string Output;
         public string Log;
         public bool Legacy;
-        public string Repo;
-        public string Branch;
         public string GitToken;
 
         public JObject ToJObject() => new JObject

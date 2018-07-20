@@ -10,11 +10,5 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; set; }
 
         public string SourcePath { get; set; }
-
-        public string Repo { get; set; }
-
-        public string Branch { get; set; }
-
-        public string Commit { get; set; }
     }
 }
