@@ -774,6 +774,33 @@ items:
             Assert.Single(model.Items); // empty node is removed
         }
 
+        [Fact]
+        public void WarningShouldBeFromIncludedToc()
+        {
+            // Arrange
+            var masterContent = @"
+- name: TOC2
+  href: ../a2/toc.yml";
+            var includedContent = @"
+- name: Article2
+  href: not-existing2.md";
+            var files = new FileCollection(_inputFolder);
+            var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "a1");
+            var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "a2");
+            files.Add(DocumentType.Article, new[] { masterFile });
+
+            // Act
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidFileLink);
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            // TODO: Assert
+        }
+
         #region Helper methods
 
         private enum FileType

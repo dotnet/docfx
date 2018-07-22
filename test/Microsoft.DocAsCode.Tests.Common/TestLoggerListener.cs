@@ -46,6 +46,9 @@ namespace Microsoft.DocAsCode.Tests.Common
 
         #region Creators
 
+        public static TestLoggerListener CreateLoggerListenerWithCodeFilter(string code, LogLevel logLevel = LogLevel.Warning)
+            => new TestLoggerListener(i => i.LogLevel >= logLevel && i?.Code == code);
+
         public static TestLoggerListener CreateLoggerListenerWithPhaseStartFilter(string phase, LogLevel logLevel = LogLevel.Warning)
         {
             return new TestLoggerListener(iLogItem =>
