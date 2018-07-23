@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -57,7 +58,15 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
             var (errors, json) = Deserialize(input, nullValidation);
-            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+            try
+            {
+                var result = json.ToObject<T>(JsonUtility.DefaultDeserializer);
+                return (errors, result);
+            }
+            catch (JsonSerializationException ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -103,6 +112,11 @@ namespace Microsoft.Docs.Build
                 return (errors, token);
             }
         }
+
+        //private static Range GetLineInfoFromException(string exMessage)
+        //{
+        //    var paths = 
+        //}
 
         private static JToken ToJson(YamlNode node)
         {
