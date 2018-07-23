@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             var sw = new StringWriter();
             JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(0, value.B);
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Serialize(sw, new object[] { true, false });
             var json = sw.ToString();
             Assert.Equal("[true,false]", json);
-            var (errors, value) = JsonUtility.Deserialize<object[]>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<object[]>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var json = JsonUtility.Serialize(
                 (from i in Enumerable.Range(0, 10)
                  select new BasicClass { B = i, C = $"Good{i}!", D = (i % 2 == 0) ? true : false }).ToList());
-            var (errors, values) = JsonUtility.Deserialize<List<BasicClass>>(new StringReader(json));
+            var (errors, values) = JsonUtility.Deserialize<List<BasicClass>>(json);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
 {
     ""b"": ""test""
 }";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithReadOnlyField>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<ClassWithReadOnlyField>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(new StringReader(json));
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -235,17 +235,29 @@ namespace Microsoft.Docs.Build
         public void TestEmptyString()
         {
             var json = string.Empty;
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Empty(errors);
-            Assert.Equal("null", resultJsonString);
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize(json));
         }
 
         [Fact]
         public void TestNull()
         {
             string json = null;
-            var exception = Assert.Throws<ArgumentNullException>(() => JsonUtility.Deserialize<JToken>(json));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize(json));
+        }
+
+        [Theory]
+        [InlineData("1", 1, 1)]
+        [InlineData(@"{""key"":""value""}", 1, 14)]
+        [InlineData(@"{
+""list"":[{item: 1}]}", 2, 8)]
+        public void TestParsedJTokenHasLineInfo(string json, int expectedLine, int expectedColumn)
+        {
+            var value = JToken.Parse(json, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load });
+
+            // Get the first JValue of the first JProperty if any
+            var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
+            Assert.Equal(expectedLine, lineInfo.LineNumber);
+            Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
         public class BasicClass

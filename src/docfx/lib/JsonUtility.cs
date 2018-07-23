@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -76,28 +75,30 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, JToken) Deserialize(string json)
-        {
-            return Deserialize(new StringReader(json));
-        }
-
-        /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
-        {
-            var (errors, token) = Deserialize(reader);
-            return (errors, token.ToObject<T>(DefaultDeserializer));
-        }
-
-        /// <summary>
         /// Deserialize a string to an object
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string json)
         {
-            return Deserialize<T>(new StringReader(json));
+            var (errors, token) = Deserialize(json);
+            return (errors, (T)token.ToObject(typeof(T), DefaultDeserializer));
+        }
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(string json)
+        {
+            try
+            {
+                var (errors, token) = JToken.Parse(json, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load })
+                    .ValidateNullValue();
+                return (errors, token ?? JValue.CreateNull());
+            }
+            catch (Exception ex)
+            {
+                throw Errors.JsonSyntaxError(ex).ToException();
+            }
         }
 
         /// <summary>
@@ -131,11 +132,11 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        public static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            token.Traverse(errors, mappings, nullNodes);
+            token.Traverse(errors, nullNodes);
             foreach (var node in nullNodes)
             {
                 node.Remove();
@@ -151,27 +152,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        /// <summary>
-        /// Parse a string to JToken.
-        /// Validate null value during the process.
-        /// </summary>
-        private static (List<Error>, JToken) Deserialize(TextReader reader)
-        {
-            try
-            {
-                using (JsonReader json = new JsonTextReader(reader))
-                {
-                    var (errors, token) = DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
-                    return (errors, token ?? JValue.CreateNull());
-                }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.JsonSyntaxError(ex).ToException();
-            }
-        }
-
-        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, string name = null)
+        private static void Traverse(this JToken token, List<Error> errors, List<JToken> nullNodes, string name = null)
         {
             if (token is JArray array)
             {
@@ -179,12 +160,12 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(array, errors, mappings, name);
+                        LogInfoForNullValue(array, errors, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        Traverse(item, errors, mappings, nullNodes, name);
+                        Traverse(item, errors, nullNodes, name);
                     }
                 }
             }
@@ -195,30 +176,20 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(token, errors, mappings, prop.Name);
+                        LogInfoForNullValue(token, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.Traverse(errors, mappings, nullNodes, prop.Name);
+                        prop.Value.Traverse(errors, nullNodes, prop.Name);
                     }
                 }
             }
         }
 
-        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
+        private static void LogInfoForNullValue(IJsonLineInfo token, List<Error> errors, string name)
         {
-            if (mappings == null)
-            {
-                var lineInfo = item as IJsonLineInfo;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
-            }
-            else
-            {
-                Debug.Assert(mappings.ContainsKey(item));
-                var value = mappings[item];
-                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
-            }
+            errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
         private sealed class JsonContractResolver : DefaultContractResolver
