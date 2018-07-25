@@ -19,11 +19,17 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
-        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
+        public static readonly JsonSerializer MissingMemberErrorDeserializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver(),
             MissingMemberHandling = MissingMemberHandling.Error,
+        };
+
+        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new JsonContractResolver(),
         };
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
@@ -199,7 +205,6 @@ namespace Microsoft.Docs.Build
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var converter = GetConverter(member);
 
                 if (!prop.Writable)
                 {
@@ -208,55 +213,7 @@ namespace Microsoft.Docs.Build
                         prop.Writable = true;
                     }
                 }
-
-                if (converter != null)
-                {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
-                }
-
                 return prop;
-            }
-
-            private static SchemaValidationConverter GetConverter(MemberInfo member)
-            {
-                var validator = member.GetCustomAttribute<ValidationAttribute>();
-                return validator is null ? null : new SchemaValidationConverter(validator);
-            }
-        }
-
-        private sealed class SchemaValidationConverter : JsonConverter
-        {
-            private readonly ValidationAttribute _validator;
-
-            public SchemaValidationConverter(ValidationAttribute validator)
-            {
-                _validator = validator;
-            }
-
-            public override bool CanConvert(Type objectType) => true;
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                if (_validator != null && !_validator.IsValid(reader.Value))
-                {
-                    var lineInfo = reader as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    var validationResult = _validator.GetValidationResult(reader.Value, null);
-                    throw Errors.InValidSchema(range, validationResult.ErrorMessage).ToException();
-                }
-                return reader.Value;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
             }
         }
     }

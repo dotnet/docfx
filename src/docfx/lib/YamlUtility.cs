@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -60,12 +61,14 @@ namespace Microsoft.Docs.Build
             var (errors, json) = Deserialize(input, nullValidation);
             try
             {
-                var result = json.ToObject<T>(JsonUtility.DefaultDeserializer);
+                var result = json.ToObject<T>(JsonUtility.MissingMemberErrorDeserializer);
                 return (errors, result);
             }
             catch (JsonSerializationException ex)
             {
-                throw;
+                errors.Add(Errors.InValidSchema(ParseRangeFromExceptionMessage(ex.Message), ex.Message));
+                var result = json.ToObject<T>(JsonUtility.DefaultDeserializer);
+                return (errors, result);
             }
         }
 
@@ -113,10 +116,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        //private static Range GetLineInfoFromException(string exMessage)
-        //{
-        //    var paths = 
-        //}
+        private static Range ParseRangeFromExceptionMessage(string message)
+        {
+            var parts = message.Remove(message.Length - 1).Split(',');
+            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
+            var linePosition = int.Parse(parts.Last().Split(' ').Last());
+            return new Range(lineNumber, linePosition);
+        }
 
         private static JToken ToJson(YamlNode node)
         {
@@ -155,7 +161,8 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var token = ToJson(value);
-                        obj[scalarKey.Value] = token;
+                        var prop = PopulateLineInfoToJToken(new JProperty(scalarKey.Value, token), key);
+                        obj.Add(prop);
                     }
                     else
                     {

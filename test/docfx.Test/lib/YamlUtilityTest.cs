@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 
 using Newtonsoft.Json;
@@ -354,34 +353,30 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
-        [Fact]
-        public void TestRequiredField()
-        {
-            var yaml = "name: name";
-            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithRequiredField>(yaml));
-            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
-            Assert.Equal("invalid-schema", ex.Error.Code);
-        }
-
         [Theory]
-        [InlineData("mismatchType: name")]
-        [InlineData(@"ValueBasic:
-B: 1
-C: c
-E: e")]
-        public void TestMismatchingFieldType(string yaml)
+        [InlineData("mismatchType: name", 1, 1)]
+        [InlineData(@"
+ValueBasic:
+  B: 1
+  C: c
+  E: e", 5, 3)]
+        [InlineData(@"
+Items:
+  - B: 1
+    C: c
+    E: e", 5, 5)]
+        [InlineData(@"mismatchType1: name
+mismatchType2: name", 1, 1)]
+        public void TestMismatchingFieldType(string yaml, int expectedLine, int expectedColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<BasicClass>(yaml));
-            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
-            Assert.Equal("invalid-schema", ex.Error.Code);
-        }
-
-        public class ClassWithRequiredField
-        {
-            [Required]
-            public string Required { get; set; }
-
-            public string Name { get; set; }
+            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(expectedLine, error.Line);
+                Assert.Equal(expectedColumn, error.Column);
+            });
         }
 
         public class BasicClass
@@ -391,8 +386,6 @@ E: e")]
             public string C { get; set; }
 
             public bool D { get; set; }
-
-            public ClassWithReadOnlyField ReadOnlyField { get; set; }
         }
 
         public class ClassWithReadOnlyField
@@ -407,6 +400,8 @@ E: e")]
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            public List<BasicClass> Items { get; set; }
         }
     }
 }

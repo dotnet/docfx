@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "null-value", $"{range} '{name}' contains null value", line: range.StartLine, column: range.StartCharacter);
 
         public static Error InValidSchema(Range range, string message)
-            => new Error(ErrorLevel.Error, "invalid-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+            => new Error(ErrorLevel.Warning, "invalid-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
