@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             var editRepo = document.Docset.Config.Contribution.Repository ?? repo.Name;
             var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
 
-            var editUrl = document.Docset.Config.Contribution.Enabled
+            var editUrl = document.Docset.Config.Contribution.ShowEdit
                 ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
                 : null;
 
@@ -169,6 +169,11 @@ namespace Microsoft.Docs.Build
         private IReadOnlyDictionary<string, List<GitCommit>> LoadCommits(Docset docset)
         {
             var result = new Dictionary<string, List<GitCommit>>();
+
+            if (!docset.Config.Contribution.ShowContributors)
+            {
+                return result;
+            }
 
             var filesByRepo =
                 from file in docset.BuildScope

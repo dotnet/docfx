@@ -101,14 +101,14 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
     {
-      "enableContribution": true,
+      "showEdit": true,
       "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
       "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
       "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
     }
   testdata1.json: |
     {
-      "enableContribution": true,
+      "showEdit": true,
       "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
       "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
       "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
@@ -128,6 +128,24 @@ outputs:
   testdata1.json:
   build.manifest:
   dep.json:
+---
+# Don't load git commits when showContributors is set to false
+inputs:
+  docfx.yml: |
+    contribution:
+      showContributors: false
+  docs/a.md: |
+    ---
+    ms.date: 07/03/2018
+    ---
+outputs:
+  docs/a.json: |
+    {
+      "contributors": [],
+      "!commitUrl": "",
+      "updatedAt": "2018-07-03T00:00:00",
+    }
+  build.manifest:
 ---
 # Use commit's time when gitCommitsTime file not given
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4

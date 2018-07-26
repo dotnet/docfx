@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             var (repoErrors, author, contributors, updatedAt) = contribution.GetContributorInfo(
                 file,
                 metadata.Value<string>("author"),
-                metadata.Value<DateTime?>("update_date"));
+                metadata.Value<DateTime?>("ms.date"));
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 EditUrl = editUrl,
                 CommitUrl = commitUrl,
                 ContentUrl = contentUrl,
-                EnableContribution = file.Docset.Config.Contribution.Enabled,
+                ShowEdit = file.Docset.Config.Contribution.ShowEdit,
             };
 
             return (errors, model, DependencyMap.Empty);
