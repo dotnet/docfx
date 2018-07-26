@@ -184,13 +184,13 @@ namespace Microsoft.Docs.Build
         private static void ValidateContributorConfig(ContributionConfig config, string docsetPath)
         {
             if (!string.IsNullOrEmpty(config.UserProfileCache)
-                && !HrefUtility.IsAbsoluteHref(config.UserProfileCache)
+                && !HrefUtility.IsHttpHref(config.UserProfileCache)
                 && !File.Exists(Path.Combine(docsetPath, config.UserProfileCache)))
             {
                 throw Errors.UserProfileCacheNotFound(config.UserProfileCache).ToException();
             }
             if (!string.IsNullOrEmpty(config.GitCommitsTime)
-                && !HrefUtility.IsAbsoluteHref(config.GitCommitsTime)
+                && !HrefUtility.IsHttpHref(config.GitCommitsTime)
                 && !File.Exists(Path.Combine(docsetPath, config.GitCommitsTime)))
             {
                 throw Errors.GitCommitsTimeNotFound(config.GitCommitsTime).ToException();

@@ -379,6 +379,23 @@ mismatchType2: name", 1, 1)]
             });
         }
 
+        [Theory]
+        [InlineData("1", 1, 1)]
+        [InlineData("name: name", 1, 7)]
+        [InlineData(@"
+items:
+ - name: 1", 3, 2)]
+        public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
+        {
+            var (errors, value) = YamlUtility.Deserialize(yaml);
+            Assert.Empty(errors);
+
+            // Get the first JValue of the first JProperty if any
+            var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
+            Assert.Equal(expectedLine, lineInfo.LineNumber);
+            Assert.Equal(expectedColumn, lineInfo.LinePosition);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
