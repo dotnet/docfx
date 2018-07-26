@@ -51,12 +51,12 @@ namespace Microsoft.Docs.Build
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
-            rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
+            rawMetadata["toc_rel"] = pageModel.Toc ?? tocMap.FindTocRelativePath(file);
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
             rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.TitleHtml ?? "";
+            rawMetadata["rawTitle"] = pageModel.HtmlTitle ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 

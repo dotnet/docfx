@@ -11,19 +11,14 @@ namespace Microsoft.Docs.Build
         Unknown,
 
         /// <summary>
-        /// Markdown documents
+        /// Html pages generated from markdown documents or schema documents
         /// </summary>
-        Markdown,
+        Page,
 
         /// <summary>
         /// Table of contents
         /// </summary>
         TableOfContents,
-
-        /// <summary>
-        /// Schema driven document in yaml or json format
-        /// </summary>
-        SchemaDocument,
 
         /// <summary>
         /// Static resources copied to output

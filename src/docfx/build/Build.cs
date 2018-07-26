@@ -93,11 +93,8 @@ namespace Microsoft.Docs.Build
                     case ContentType.Resource:
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
-                    case ContentType.Markdown:
-                        (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
-                        break;
-                    case ContentType.SchemaDocument:
-                        (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
+                    case ContentType.Page:
+                        (errors, model, dependencies) = await BuildPage.Build(file, tocMap, contribution, buildChild);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);

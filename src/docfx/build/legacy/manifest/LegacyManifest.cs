@@ -46,8 +46,7 @@ namespace Microsoft.Docs.Build
                     };
                 }
 
-                if (document.ContentType == ContentType.Markdown ||
-                    document.ContentType == ContentType.SchemaDocument ||
+                if (document.ContentType == ContentType.Page ||
                     document.ContentType == ContentType.Redirection)
                 {
                     output.PageOutput = new LegacyManifestOutputItem
@@ -97,15 +96,13 @@ namespace Microsoft.Docs.Build
         {
             switch (type)
             {
-                case ContentType.Markdown:
+                case ContentType.Page:
                 case ContentType.Redirection: // todo: support reference redirection
                     return "Conceptual";
                 case ContentType.Resource:
                     return "Resource";
                 case ContentType.TableOfContents:
                     return "Toc";
-                case ContentType.SchemaDocument:
-                    return "Reference";
                 default:
                     return string.Empty;
             }
@@ -115,15 +112,13 @@ namespace Microsoft.Docs.Build
         {
             switch (type)
             {
-                case ContentType.Markdown:
+                case ContentType.Page:
                 case ContentType.Redirection: // todo: support reference redirection
                     return "Content";
                 case ContentType.Resource:
                     return "Resource";
                 case ContentType.TableOfContents:
                     return "Toc";
-                case ContentType.SchemaDocument:
-                    return "Reference";
                 default:
                     return string.Empty;
             }

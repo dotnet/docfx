@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
                 if (h1 != null && h1.Level == 1)
                 {
-                    Markup.Result.TitleHtml = RenderTitle(h1);
+                    Markup.Result.HtmlTitle = RenderTitle(h1);
                     document.Remove(h1);
                 }
             });

@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                     case ContentType.TableOfContents:
                         LegacyTableOfContents.Convert(docset, context, document, manifestItem.Output);
                         break;
-                    case ContentType.Markdown:
+                    case ContentType.Page:
                     case ContentType.Redirection:
                         LegacyMarkdown.Convert(docset, context, document, manifestItem.Output, tocMap);
                         break;
