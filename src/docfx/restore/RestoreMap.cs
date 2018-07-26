@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            if (!HrefUtility.IsAbsoluteHref(path))
+            if (!HrefUtility.IsHttpHref(path))
             {
                 // directly return the relative path
                 return Path.Combine(docsetPath, path);

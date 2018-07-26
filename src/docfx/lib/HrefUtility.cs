@@ -66,6 +66,10 @@ namespace Microsoft.Docs.Build
                 || Uri.TryCreate(str, UriKind.Absolute, out _);
         }
 
+        public static bool IsHttpHref(string str)
+            => !string.IsNullOrEmpty(str) && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
         public static string EscapeUrl(string path)
         {
             return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));

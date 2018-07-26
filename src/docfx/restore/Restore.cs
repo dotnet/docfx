@@ -70,8 +70,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var url in paths)
             {
-                // todo: add HrefUtility.IsHttp method, IsAbsolutePath behaves differently between windows and linux
-                if (!string.IsNullOrEmpty(url) && HrefUtility.IsAbsoluteHref(url))
+                if (!string.IsNullOrEmpty(url) && HrefUtility.IsHttpHref(url))
                 {
                     yield return url;
                 }
