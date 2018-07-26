@@ -261,24 +261,29 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchType"": ""name""}", 1, 16)]
+        [InlineData(@"{""mismatchType"": ""name""}", 1, 16, ErrorLevel.Warning, "invalid-schema")]
         [InlineData(@"{
 ""ValueBasic"":
   {""B"": 1,
   ""C"": ""c"",
-  ""E"": ""e""}}", 5, 6)]
+  ""E"": ""e""}}", 5, 6, ErrorLevel.Warning, "invalid-schema")]
         [InlineData(@"{
 ""Items"":
   [{ ""B"": 1,
     ""C"": ""c"",
-    ""E"": ""e""}]}", 5, 8)]
-        public void TestMismatchingFieldType(string json, int expectedLine, int expectedColumn)
+    ""E"": ""e""}]}", 5, 8, ErrorLevel.Warning, "invalid-schema")]
+        [InlineData(@"{
+""AnotherItems"":
+  [{ ""F"": 1,
+    ""G"": ""c"",
+    ""E"": ""e""}]}", 5, 8, ErrorLevel.Warning, "invalid-schema")]
+        internal void TestMismatchingFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedLine, error.Line);
                 Assert.Equal(expectedColumn, error.Column);
             });
@@ -318,6 +323,15 @@ namespace Microsoft.Docs.Build
             public bool D { get; set; }
         }
 
+        public class AnotherBasicClass
+        {
+            public int F { get; set; }
+
+            public string G { get; set; }
+
+            public bool H { get; set; }
+        }
+
         public class ClassWithReadOnlyField
         {
             public readonly string B;
@@ -332,6 +346,8 @@ namespace Microsoft.Docs.Build
             public BasicClass ValueBasic { get; set; }
 
             public List<BasicClass> Items { get; set; }
+
+            public List<AnotherBasicClass> AnotherItems { get; set; }
         }
     }
 }

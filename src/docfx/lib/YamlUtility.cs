@@ -56,16 +56,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
-            var (errors, json) = Deserialize(input, typeof(T), nullValidation);
-
-            var result = json.ToObject<T>(JsonUtility.DefaultDeserializer);
+            var (errors, json) = Deserialize(input, nullValidation);
+            var (mismatchingErrors, result) = json.ToObjectAndValidateMismatchingFieldType<T>();
+            errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Deserialize(string input, Type type = null, bool nullValidation = true)
+        public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
         {
             var errors = new List<Error>();
             var stream = new YamlStream();
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateMismatchingFieldTypeAndNullValue(type);
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
