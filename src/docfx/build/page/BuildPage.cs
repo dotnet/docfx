@@ -80,12 +80,12 @@ namespace Microsoft.Docs.Build
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadYaml(file, content, dependencies, buildChild);
+                return LoadYaml(content);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return LoadJson(file, content, dependencies, buildChild);
+                return LoadJson(content);
             }
         }
 
@@ -103,8 +103,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
-            LoadYaml(
-            Document file, string content, DependencyMapBuilder dependencies, Action<Document> buildChild)
+            LoadYaml(string content)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
             var schema = YamlUtility.ReadMime(content);
@@ -113,12 +112,11 @@ namespace Microsoft.Docs.Build
                 schema = token.Value<string>("documentType");
             }
 
-            return LoadSchemaDocument(errors, token, schema, file, dependencies, buildChild);
+            return LoadSchemaDocument(errors, token, schema);
         }
 
         private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
-            LoadJson(
-            Document file, string content, DependencyMapBuilder dependencies, Action<Document> buildChild)
+            LoadJson(string content)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
             var schemaUrl = token.Value<string>("$schema");
@@ -130,12 +128,12 @@ namespace Microsoft.Docs.Build
                 schema = Path.GetFileNameWithoutExtension(schema);
             }
 
-            return LoadSchemaDocument(errors, token, schema, file, dependencies, buildChild);
+            return LoadSchemaDocument(errors, token, schema);
         }
 
         private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
             LoadSchemaDocument(
-            List<Error> errors, JToken token, string schema, Document file, DependencyMapBuilder dependencies, Action<Document> buildChild)
+            List<Error> errors, JToken token, string schema)
         {
             if (schema == null || !s_schemas.TryGetValue(schema, out var schemaType))
             {
