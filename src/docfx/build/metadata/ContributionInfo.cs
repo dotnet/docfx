@@ -41,10 +41,7 @@ namespace Microsoft.Docs.Build
             return new ContributionInfo(docset);
         }
 
-        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
-            Document document,
-            string author,
-            DateTime? updateDate)
+        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(Document document, string author)
         {
             Debug.Assert(document != null);
 
@@ -82,11 +79,7 @@ namespace Microsoft.Docs.Build
             }
 
             DateTime updateDateTime;
-            if (updateDate != null)
-            {
-                updateDateTime = updateDate.Value;
-            }
-            else if (commits?.Count > 0)
+            if (commits?.Count > 0)
             {
                 if (_updateTimeByCommit.TryGetValue(commits[0].Sha, out var timeFromHistory))
                     updateDateTime = timeFromHistory;
