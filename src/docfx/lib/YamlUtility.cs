@@ -106,14 +106,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Range ParseRangeFromExceptionMessage(string message)
-        {
-            var parts = message.Remove(message.Length - 1).Split(',');
-            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
-            var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            return new Range(lineNumber, linePosition);
-        }
-
         private static JToken ToJson(YamlNode node)
         {
             if (node is YamlScalarNode scalar)
