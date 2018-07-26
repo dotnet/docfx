@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -260,6 +260,55 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"{""mismatchType"": ""name""}", 1, 16)]
+        [InlineData(@"{
+""ValueBasic"":
+  {""B"": 1,
+  ""C"": ""c"",
+  ""E"": ""e""}}", 5, 6)]
+        [InlineData(@"{
+""Items"":
+  [{ ""B"": 1,
+    ""C"": ""c"",
+    ""E"": ""e""}]}", 5, 8)]
+        public void TestMismatchingFieldType(string json, int expectedLine, int expectedColumn)
+        {
+            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(expectedLine, error.Line);
+                Assert.Equal(expectedColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipleMismatchingFieldType()
+        {
+            var yaml = @"{""mismatchType1"": ""name"",
+""mismatchType2"": ""name""}";
+            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(2, error.Column);
+                Assert.Equal("(Line: 1, Character: 2) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 2, Character: 1) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
+            });
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
@@ -281,6 +330,8 @@ namespace Microsoft.Docs.Build
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            public List<BasicClass> Items { get; set; }
         }
     }
 }

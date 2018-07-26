@@ -261,7 +261,7 @@ ValueBasic:
   D: false
 ";
             var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
@@ -365,8 +365,6 @@ Items:
   - B: 1
     C: c
     E: e", 5, 5)]
-        [InlineData(@"mismatchType1: name
-mismatchType2: name", 1, 1)]
         public void TestMismatchingFieldType(string yaml, int expectedLine, int expectedColumn)
         {
             var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
@@ -376,6 +374,32 @@ mismatchType2: name", 1, 1)]
                 Assert.Equal("invalid-schema", error.Code);
                 Assert.Equal(expectedLine, error.Line);
                 Assert.Equal(expectedColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipltMismatchingFieldType()
+        {
+            var yaml = @"mismatchType1: name
+mismatchType2: name";
+
+            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 2, Character: 1) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
             });
         }
 
