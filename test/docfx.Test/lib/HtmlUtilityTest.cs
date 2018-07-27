@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<p id='1'>a</p>", "a")]
         public void GetInnerText(string input, string output)
         {
-            Assert.Equal(output, HtmlUtility.GetInnerText(input));
+            Assert.Equal(output, HtmlUtility.GetInnerText(HtmlUtility.LoadHtml(input)));
         }
 
         [Theory]
@@ -90,6 +90,16 @@ namespace Microsoft.Docs.Build
         public static void CountWord(string html, long expectedCount)
         {
             Assert.Equal(expectedCount, HtmlUtility.CountWord(HtmlUtility.LoadHtml(html)));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("<h1 id='a'></h1>", "a")]
+        [InlineData("<h1 id='a'></h1><h2 id='b'></h2>", "a, b")]
+        [InlineData("<a id='a'></a>", "a")]
+        public static void GetBookmarks(string html, string expected)
+        {
+            Assert.Equal(expected, string.Join(", ", HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(html))));
         }
     }
 }

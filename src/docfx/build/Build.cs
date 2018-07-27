@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
+                var bookmarkValidator = new BookmarkValidator();
                 var filesBuilder = new DocumentListBuilder();
                 var filesWithErrors = new ConcurrentBag<Document>();
 
@@ -53,11 +54,13 @@ namespace Microsoft.Docs.Build
                 var files = filesBuilder.Build(context).OrderBy(file => file.FilePath).Except(filesWithErrors).ToList();
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
 
+                context.Report(bookmarkValidator.Validate());
+
                 return (files, new DependencyMap(allDependencies));
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, buildChild);
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, bookmarkValidator, buildChild);
                     if (hasError)
                     {
                         filesWithErrors.Add(file);
@@ -80,6 +83,7 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
+            BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
             try
@@ -94,7 +98,7 @@ namespace Microsoft.Docs.Build
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
                     case ContentType.Markdown:
-                        (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
+                        (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, bookmarkValidator, buildChild);
                         break;
                     case ContentType.SchemaDocument:
                         (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
