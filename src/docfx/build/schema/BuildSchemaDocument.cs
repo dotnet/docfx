@@ -29,7 +29,8 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var content = token.ToObject(schemaType);
+            var (mismatchingErrors, content) = token.ToObjectAndValidateMismatchingFieldType(schemaType);
+            errors.AddRange(mismatchingErrors);
 
             // TODO: consolidate this with BuildMarkdown
             var locale = file.Docset.Config.Locale;

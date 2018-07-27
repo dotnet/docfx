@@ -90,7 +90,13 @@ namespace Microsoft.Docs.Build
         /// And validate mismatching field types
         /// </summary>
         public static (List<Error>, T) ToObjectAndValidateMismatchingFieldType<T>(this JToken token)
-            => (token.ValidateMismatchingFieldType(typeof(T)), (T)token.ToObject(typeof(T), DefaultDeserializer));
+        {
+            var (errors, obj) = token.ToObjectAndValidateMismatchingFieldType(typeof(T));
+            return (errors, (T)obj);
+        }
+
+        public static (List<Error>, object) ToObjectAndValidateMismatchingFieldType(this JToken token, Type type)
+            => (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
 
         /// <summary>
         /// Parse a string to JToken.
