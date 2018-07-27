@@ -20,13 +20,13 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
-        private static readonly ConcurrentDictionary<Type, bool> s_cache = new ConcurrentDictionary<Type, bool>();
-
         public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver(),
         };
+
+        private static readonly ConcurrentDictionary<Type, bool> s_cache = new ConcurrentDictionary<Type, bool>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
