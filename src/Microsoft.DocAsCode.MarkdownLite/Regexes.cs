@@ -146,45 +146,45 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static class Lexers
         {
-            public static readonly Regex NormalizeNewLine = new Regex(@"\r\n|\r", RegexOptionCompiled);
-            public static readonly Regex WhiteSpaceLine = new Regex(@"^ +$", RegexOptions.Multiline | RegexOptionCompiled);
-            public static readonly Regex WhiteSpaces = new Regex(@"\s+", RegexOptionCompiled);
+            public static readonly Regex NormalizeNewLine = new Regex(@"\r\n|\r", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex WhiteSpaceLine = new Regex(@"^ +$", RegexOptions.Multiline | RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex WhiteSpaces = new Regex(@"\s+", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex LeadingWhiteSpaces = new Regex(@"^ {4}", RegexOptions.Multiline | RegexOptionCompiled);
-            public static readonly Regex TailingEmptyLine = new Regex(@"\n$", RegexOptionCompiled);
+            public static readonly Regex LeadingWhiteSpaces = new Regex(@"^ {4}", RegexOptions.Multiline | RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex TailingEmptyLine = new Regex(@"\n$", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex UselessTableHeader = new Regex(@"^ *| *\|? *$", RegexOptionCompiled);
-            public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled);
-            public static readonly Regex UselessTableRow = new Regex(@"^ *\| *| *\|? *$", RegexOptionCompiled);
-            public static readonly Regex UselessGfmTableCell = new Regex(@"(?: *\| *)?\n$", RegexOptionCompiled);
-            public static readonly Regex TableSplitter = new Regex(@" *(?<!\\)\| *", RegexOptionCompiled);
-            public static readonly Regex EndWithNewLine = new Regex(@"\n$", RegexOptionCompiled);
-            public static readonly Regex TableAlignRight = new Regex(@"^ *-+: *$", RegexOptionCompiled);
-            public static readonly Regex TableAlignCenter = new Regex(@"^ *:-+: *$", RegexOptionCompiled);
-            public static readonly Regex TableAlignLeft = new Regex(@"^ *:-+ *$", RegexOptionCompiled);
+            public static readonly Regex UselessTableHeader = new Regex(@"^ *|(?> *)\|? *$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex UselessTableRow = new Regex(@"^ *\| *|(?> *)\|? *$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex UselessGfmTableCell = new Regex(@"(?: *\| *)?\n$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex TableSplitter = new Regex(@" *(?<!\\)\| *", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex EndWithNewLine = new Regex(@"\n$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex TableAlignRight = new Regex(@"^ *-+: *$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex TableAlignCenter = new Regex(@"^ *:-+: *$", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex TableAlignLeft = new Regex(@"^ *:-+ *$", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex LeadingBlockquote = new Regex(@"^ *> ?", RegexOptions.Multiline | RegexOptionCompiled);
-            public static readonly Regex LeadingBullet = new Regex(@"^ *([*+-]|\d+\.) +", RegexOptionCompiled);
+            public static readonly Regex LeadingBlockquote = new Regex(@"^ *> ?", RegexOptions.Multiline | RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex LeadingBullet = new Regex(@"^ *([*+-]|\d+\.) +", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex StartHtmlLink = new Regex(@"^<a [\s\S]*(?<!\/)>$", RegexOptions.IgnoreCase | RegexOptionCompiled);
-            public static readonly Regex EndHtmlLink = new Regex(@"^<\/a>", RegexOptions.IgnoreCase | RegexOptionCompiled);
+            public static readonly Regex StartHtmlLink = new Regex(@"^<a [\s\S]*(?<!\/)>$", RegexOptions.IgnoreCase | RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex EndHtmlLink = new Regex(@"^<\/a>", RegexOptions.IgnoreCase | RegexOptionCompiled, RegexTimeOut);
         }
 
         public static class Helper
         {
-            public static readonly Regex HtmlEscapeWithEncode = new Regex(@"&", RegexOptionCompiled);
-            public static readonly Regex HtmlEscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptionCompiled);
+            public static readonly Regex HtmlEscapeWithEncode = new Regex(@"&", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex HtmlEscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
+            public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled, RegexTimeOut);
 
-            public static readonly Regex MarkdownUnescape = new Regex(@"\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled);
-            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>@[^_`{|}~\-\]]", RegexOptionCompiled);
-            public static readonly Regex MarkdownHrefEscape = new Regex(@"[()\\\""\']", RegexOptionCompiled);
+            public static readonly Regex MarkdownUnescape = new Regex(@"\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>@[^_`{|}~\-\]]", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex MarkdownHrefEscape = new Regex(@"[()\\\""\']", RegexOptionCompiled, RegexTimeOut);
 
             [Obsolete]
-            public static readonly Regex LegacyMarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>@])", RegexOptionCompiled);
+            public static readonly Regex LegacyMarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>@])", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex LegacyMarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
+            public static readonly Regex LegacyMarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled, RegexTimeOut);
         }
     }
 }
