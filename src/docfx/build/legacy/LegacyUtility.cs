@@ -24,7 +24,9 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
         {
-            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.SourceBasePath ?? ".", doc.FilePath));
+            return PathUtility.NormalizeFile(Path.GetRelativePath(
+                string.IsNullOrEmpty(docset.Config.SourceBasePath) ? "." : docset.Config.SourceBasePath,
+                doc.FilePath));
         }
 
         public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
@@ -51,7 +53,9 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
         {
-            return Path.Combine(docset.Config.SiteBasePath ?? string.Empty, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
+            return Path.Combine(
+                string.IsNullOrEmpty(docset.Config.SiteBasePath) ? "." : docset.Config.SiteBasePath,
+                legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
         }
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
