@@ -170,3 +170,25 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
   build.manifest:
+---
+# validate bookmarks in markdown documents
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # title 1
+    [link to title 2](#title-2)
+    [link to title 3](#title-3)
+    [link to yaml](c.yml#no-such-bookmark) does not warn
+    ## title 2
+  docs/b.md: |
+    [link to title 3](a.md#title-3)
+  docs/c.yml:
+outputs:
+  docs/a.json: |
+    { }
+  docs/b.json: |
+    { }
+  docs/c.json: |
+  build.log: |
+    []
+  build.manifest:
