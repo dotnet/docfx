@@ -112,10 +112,11 @@ namespace Microsoft.Docs.Build
                 ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
                 : null;
 
-            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
-                ? $"https://github.com/{repo.Name}/blob/{commits[0].Sha}/{pathToRepo}"
-                : null;
+            var commit = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
+                ? commits[0].Sha
+                : repo.Commit;
 
+            var commitUrl = commit != null ? $"https://github.com/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
             var contentUrl = $"https://github.com/{repo.Name}/blob/{branch}/{pathToRepo}";
 
             return (editUrl, contentUrl, commitUrl);

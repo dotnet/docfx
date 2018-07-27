@@ -1,6 +1,6 @@
 ---
 # Show git contribution info when userProfile & commitsTime is set to URL
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-5
+repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-url
 outputs:
   README.json: |
     {
@@ -12,23 +12,24 @@ outputs:
       },
       "contributors": [
         {
+          "name": "yufeih",
+          "profileUrl": "https://github.com/yufeih",
+          "displayName": "Yufei Huang",
+          "id": "511355"
+        },
+        {
           "name": "OsmondJiang",
           "profileUrl": "https://github.com/OsmondJiang",
           "displayName": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00"
-    }
-  testdata1.json: |
-    {
-      "updatedAt":"1874-01-01T00:00:00"
+      "updatedAt": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
-  dep.json:
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
+repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-file
 outputs:
   README.json: |
     {
@@ -40,20 +41,21 @@ outputs:
       },
       "contributors": [
         {
+          "name": "yufeih",
+          "profileUrl": "https://github.com/yufeih",
+          "displayName": "Yufei Huang",
+          "id": "511355"
+        },
+        {
           "name": "OsmondJiang",
           "profileUrl": "https://github.com/OsmondJiang",
           "displayName": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00"
-    }
-  testdata1.json: |
-    {
-      "updatedAt":"1874-01-01T00:00:00"
+      "updatedAt": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
-  dep.json:
 ---
 # Specify invalid author in YAML header should log warning
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-3
@@ -130,20 +132,12 @@ outputs:
   dep.json:
 ---
 # Don't load git commits when showContributors is set to false
-inputs:
-  docfx.yml: |
-    contribution:
-      showContributors: false
-  docs/a.md: |
-    ---
-    ms.date: 07/03/2018
-    ---
+repo: https://github.com/docascode/docfx-test-dependencies#git-no-contributors
 outputs:
-  docs/a.json: |
+  README.json: |
     {
       "contributors": [],
-      "!commitUrl": "",
-      "updatedAt": "2018-07-03T00:00:00",
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/c877f1eb84e4a3bd8a8a421b14f684c4f0de853d/README.md"
     }
   build.manifest:
 ---
