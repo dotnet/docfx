@@ -261,23 +261,28 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchType"": ""name""}", 1, 16, ErrorLevel.Warning, "invalid-schema")]
+        [InlineData(@"{""mismatchType"": ""name""}", 1, 16, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"{
-""ValueBasic"":
-  {""B"": 1,
-  ""C"": ""c"",
-  ""E"": ""e""}}", 5, 6, ErrorLevel.Warning, "invalid-schema")]
+        ""ValueBasic"":
+          {""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}}", 5, 14, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"{
-""Items"":
-  [{ ""B"": 1,
-    ""C"": ""c"",
-    ""E"": ""e""}]}", 5, 8, ErrorLevel.Warning, "invalid-schema")]
+        ""Items"":
+          [{ ""B"": 1,
+            ""C"": ""c"",
+            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"{
-""AnotherItems"":
-  [{ ""F"": 1,
+        ""AnotherItems"":
+          [{ ""F"": 1,
+            ""G"": ""c"",
+            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"{
+""NestedItems"":
+  [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]}", 5, 8, ErrorLevel.Warning, "invalid-schema")]
-        internal void TestMismatchingFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+    ""E"": ""e""}]]}", 5, 8, ErrorLevel.Warning, "unknown-field-type")]
+        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
@@ -290,28 +295,58 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestMultipleMismatchingFieldType()
+        public void TestMultipleUnknownFieldType()
         {
-            var yaml = @"{""mismatchType1"": ""name"",
+            var json = @"{""mismatchType1"": ""name"",
 ""mismatchType2"": ""name""}";
-            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Collection(errors,
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal("unknown-field-type", error.Code);
                 Assert.Equal(1, error.Line);
-                Assert.Equal(2, error.Column);
-                Assert.Equal("(Line: 1, Character: 2) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal(17, error.Column);
+                Assert.Equal("(Line: 1, Character: 17) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal("unknown-field-type", error.Code);
                 Assert.Equal(2, error.Line);
-                Assert.Equal(1, error.Column);
-                Assert.Equal("(Line: 2, Character: 1) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal(16, error.Column);
+                Assert.Equal("(Line: 2, Character: 16) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
             });
+        }
+
+        [Fact]
+        public void TestMismatchingPrimitiveFieldType()
+        {
+            var json = @"{
+""NumberList"":
+  [1, ""a""]}";
+            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
+            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
+            Assert.Equal("mismatching-field-type", ex.Error.Code);
+            Assert.Equal(3, ex.Error.Line);
+            Assert.Equal(9, ex.Error.Column);
+        }
+
+        [Theory]
+        [InlineData(@"{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}", typeof(ClassWithJsonExtensionData))]
+        [InlineData(@"{
+          ""Data"":{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}}", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        {
+            var (_, token) = JsonUtility.Deserialize(json);
+            var (errors, value) = JsonUtility.ToObject(token, type);
+            Assert.Empty(errors);
         }
 
         public class BasicClass
@@ -348,6 +383,21 @@ namespace Microsoft.Docs.Build
             public List<BasicClass> Items { get; set; }
 
             public List<AnotherBasicClass> AnotherItems { get; set; }
+
+            public List<List<AnotherBasicClass>> NestedItems { get; set; }
+
+            public List<int> NumberList { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public IDictionary<string, JToken> AdditionalData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
         }
     }
 }

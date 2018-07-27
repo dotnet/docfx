@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
             var (errors, json) = Deserialize(input, nullValidation);
-            var (mismatchingErrors, result) = json.ToObjectAndValidateMismatchingFieldType<T>();
+            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(json);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }

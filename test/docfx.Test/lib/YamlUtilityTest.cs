@@ -354,23 +354,23 @@ items:
         }
 
         [Theory]
-        [InlineData("mismatchType: name", 1, 1, ErrorLevel.Warning, "invalid-schema")]
+        [InlineData("mismatchType: name", 1, 1, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"
         ValueBasic:
           B: 1
           C: c
-          E: e", 5, 11, ErrorLevel.Warning, "invalid-schema")]
+          E: e", 5, 11, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"
         Items:
           - B: 1
             C: c
-            E: e", 5, 13, ErrorLevel.Warning, "invalid-schema")]
+            E: e", 5, 13, ErrorLevel.Warning, "unknown-field-type")]
         [InlineData(@"
         AnotherItems:
           - H: 1
             G: c
-            E: e", 5, 13, ErrorLevel.Warning, "invalid-schema")]
-        internal void TestMismatchingFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+            E: e", 5, 13, ErrorLevel.Warning, "unknown-field-type")]
+        internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Collection(errors, error =>
@@ -383,7 +383,7 @@ items:
         }
 
         [Fact]
-        public void TestMultipltMismatchingFieldType()
+        public void TestMultipltUnknownFieldType()
         {
             var yaml = @"mismatchType1: name
 mismatchType2: name";
@@ -393,7 +393,7 @@ mismatchType2: name";
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal("unknown-field-type", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
                 Assert.Equal("(Line: 1, Character: 1) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
@@ -401,7 +401,7 @@ mismatchType2: name";
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("invalid-schema", error.Code);
+                Assert.Equal("unknown-field-type", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(1, error.Column);
                 Assert.Equal("(Line: 2, Character: 1) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);

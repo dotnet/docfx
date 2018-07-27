@@ -2,8 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
@@ -18,6 +20,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
+        private static readonly ConcurrentDictionary<Type, bool> s_cache = new ConcurrentDictionary<Type, bool>();
+
         public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -80,7 +84,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string json)
         {
             var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = token.ToObjectAndValidateMismatchingFieldType<T>();
+            var (mismatchingErrors, result) = ToObject<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -89,14 +93,24 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate mismatching field types
         /// </summary>
-        public static (List<Error>, T) ToObjectAndValidateMismatchingFieldType<T>(this JToken token)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var (errors, obj) = token.ToObjectAndValidateMismatchingFieldType(typeof(T));
+            var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObjectAndValidateMismatchingFieldType(this JToken token, Type type)
-            => (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
+        public static (List<Error>, object) ToObject(JToken token, Type type)
+        {
+            try
+            {
+               return (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
+            }
+            catch (JsonReaderException ex)
+            {
+                var range = ParseRangeFromExceptionMessage(ex.Message);
+                throw Errors.MismatchingFieldType(range, ex.Message).ToException();
+            }
+        }
 
         /// <summary>
         /// Parse a string to JToken.
@@ -162,8 +176,16 @@ namespace Microsoft.Docs.Build
         internal static List<Error> ValidateMismatchingFieldType(this JToken token, Type type)
         {
             var errors = new List<Error>();
-            token.TraverseForMismatchingTypeValidation(errors, type);
+            token.TraverseForUnknownFieldType(errors, type);
             return errors;
+        }
+
+        private static Range ParseRangeFromExceptionMessage(string message)
+        {
+            var parts = message.Remove(message.Length - 1).Split(',');
+            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
+            var linePosition = int.Parse(parts.Last().Split(' ').Last());
+            return new Range(lineNumber, linePosition);
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -209,13 +231,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TraverseForMismatchingTypeValidation(this JToken token, List<Error> errors, Type type)
+        private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type)
         {
+            // if type contains JsonExtensionDataAttribute, additional properties are allowed
+            if (TypeContainsJsonExtensionData(type))
+                return;
+
             if (token is JArray array)
             {
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForMismatchingTypeValidation(errors, type);
+                    item.TraverseForUnknownFieldType(errors, type);
                 }
             }
             else if (token is JObject obj)
@@ -223,53 +249,68 @@ namespace Microsoft.Docs.Build
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
-                    Type nestedType;
-                    (nestedType, errors) = CheckFieldTypeNotExistingInSchema(type, prop, errors);
-                    prop.Value.TraverseForMismatchingTypeValidation(errors, nestedType);
+
+                    // skip the special property
+                    if (prop.Name.StartsWith('$'))
+                        continue;
+
+                    var nestedType = CheckForUnknownFieldType(type, prop, errors);
+                    prop.Value.TraverseForUnknownFieldType(errors, nestedType);
                 }
             }
         }
 
-        private static (Type, List<Error>) CheckFieldTypeNotExistingInSchema(Type type, JProperty prop, List<Error> errors)
+        private static bool TypeContainsJsonExtensionData(Type type)
         {
-            JsonContract contract = null;
-            if (type != null)
+            if (!s_cache.TryGetValue(type, out var containsJsonExtensionData))
             {
-                contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+                containsJsonExtensionData = type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null);
+                s_cache.TryAdd(type, containsJsonExtensionData);
             }
-            if (contract != null)
-            {
-                JsonPropertyCollection properties;
-                if (contract is JsonObjectContract objectContract)
-                {
-                    properties = objectContract.Properties;
-                }
-                else if (contract is JsonArrayContract arrayContract)
-                {
-                    properties = ((JsonObjectContract)DefaultDeserializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType)).Properties;
-                }
-                else
-                {
-                    return (type, errors);
-                }
+            return containsJsonExtensionData;
+        }
 
-                // if mismatching field type found, add error
-                // else, pass along with nested type
-                var matchingProperty = properties.GetClosestMatchProperty(prop.Name);
-                if (matchingProperty is null)
-                {
-                    var lineInfo = prop as IJsonLineInfo;
-                    errors.Add(Errors.InValidSchema(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition),
-                        $"Could not find member '{prop.Name}' on object of type '{type.Name}'"));
-                    return (type, errors);
-                }
-                else
-                {
-                    return (matchingProperty.PropertyType, errors);
-                }
+        private static Type CheckForUnknownFieldType(Type type, JProperty prop, List<Error> errors)
+        {
+            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+            JsonPropertyCollection jsonProperties;
+            if (contract is JsonObjectContract objectContract)
+            {
+                jsonProperties = objectContract.Properties;
             }
-            return (type, errors);
+            else if (contract is JsonArrayContract arrayContract)
+            {
+                jsonProperties = GetPropertiesFromJsonArrayContract(arrayContract);
+            }
+            else
+            {
+                return type;
+            }
+
+            // if mismatching field type found, add error
+            // else, pass along with nested type
+            var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
+            if (matchingProperty is null)
+            {
+                var lineInfo = prop as IJsonLineInfo;
+                errors.Add(Errors.UnknownFieldType(
+                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name));
+                return type;
+            }
+            else
+            {
+                return matchingProperty.PropertyType;
+            }
+        }
+
+        private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
+        {
+            var itemContract = DefaultDeserializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
+            if (itemContract is JsonObjectContract objectContract)
+                return objectContract.Properties;
+            else if (itemContract is JsonArrayContract contract)
+                return GetPropertiesFromJsonArrayContract(contract);
+            return null;
         }
 
         private static void LogInfoForNullValue(IJsonLineInfo token, List<Error> errors, string name)

@@ -112,8 +112,11 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"{range} '{name}' contains null value", line: range.StartLine, column: range.StartCharacter);
 
-        public static Error InValidSchema(Range range, string message)
-            => new Error(ErrorLevel.Warning, "invalid-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+        public static Error UnknownFieldType(Range range, string propName, string typeName)
+            => new Error(ErrorLevel.Warning, "unknown-field-type", $"{range} Could not find member '{propName}' on object of type '{typeName}'", line: range.StartLine, column: range.StartCharacter);
+
+        public static Error MismatchingFieldType(Range range, string message)
+            => new Error(ErrorLevel.Error, "mismatching-field-type", message, line: range.StartLine, column: range.StartCharacter);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
