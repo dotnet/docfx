@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
         {
             Paragraph,
             List,
+            Table,
+            Markdown,
+            Text,
         }
 
         internal class LandingDataSection
