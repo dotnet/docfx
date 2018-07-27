@@ -26,12 +26,6 @@ namespace Microsoft.Docs.Build
             List,
         }
 
-        internal enum LandingDataStyle
-        {
-            Icon48,
-            Cards,
-        }
-
         internal class LandingDataSection
         {
             public string Title { get; set; }
@@ -45,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             public string Text { get; set; }
 
-            public LandingDataStyle Style { get; set; }
+            public string Style { get; set; }
 
             public string ClassName { get; set; }
         }
