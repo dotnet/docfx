@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
                     var lineInfo = reader as IJsonLineInfo;
                     var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                     var validationResult = _validator.GetValidationResult(reader.Value, new ValidationContext(reader.Value, null));
-                    throw Errors.InValidSchema(range, validationResult.ErrorMessage).ToException();
+                    throw Errors.InvalidSchema(range, validationResult.ErrorMessage).ToException();
                 }
                 return reader.Value;
             }
