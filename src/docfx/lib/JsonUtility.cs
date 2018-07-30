@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using Newtonsoft.Json;
@@ -225,7 +226,7 @@ namespace Microsoft.Docs.Build
             private static SchemaValidationConverter GetConverter(MemberInfo member)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>();
-                return validators is null ? null : new SchemaValidationConverter(validators);
+                return !validators.Any() ? null : new SchemaValidationConverter(validators);
             }
         }
 
