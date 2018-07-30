@@ -418,9 +418,9 @@ mismatchType2: name";
         [Theory]
         [InlineData(@"numberList:
         - 1
-        - a", ErrorLevel.Error, "mismatching-field-type", 3, 11)]
+        - a", ErrorLevel.Error, "invalid-schema", 3, 11)]
         [InlineData(@"
-B: b", ErrorLevel.Error, "mismatching-field-type", 2, 4)]
+B: b", ErrorLevel.Error, "invalid-schema", 2, 4)]
         internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {

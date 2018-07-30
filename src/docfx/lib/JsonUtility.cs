@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             catch (JsonReaderException ex)
             {
                 var range = ParseRangeFromExceptionMessage(ex.Message);
-                throw Errors.MismatchingFieldType(range, ex.Message).ToException();
+                throw Errors.InvalidSchema(range, ex.Message).ToException();
             }
         }
 

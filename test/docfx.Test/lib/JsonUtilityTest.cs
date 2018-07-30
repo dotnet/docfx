@@ -322,8 +322,8 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(@"{
 ""NumberList"":
-  [1, ""a""]}", ErrorLevel.Error, "mismatching-field-type", 3, 9)]
-        [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "mismatching-field-type", 1, 10)]
+  [1, ""a""]}", ErrorLevel.Error, "invalid-schema", 3, 9)]
+        [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "invalid-schema", 1, 10)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
