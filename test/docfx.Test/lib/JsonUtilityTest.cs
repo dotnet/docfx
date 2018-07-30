@@ -319,17 +319,19 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        [Fact]
-        public void TestMismatchingPrimitiveFieldType()
-        {
-            var json = @"{
+        [Theory]
+        [InlineData(@"{
 ""NumberList"":
-  [1, ""a""]}";
+  [1, ""a""]}", ErrorLevel.Error, "mismatching-field-type", 3, 9)]
+        [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "mismatching-field-type", 1, 10)]
+        internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
             var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
-            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
-            Assert.Equal("mismatching-field-type", ex.Error.Code);
-            Assert.Equal(3, ex.Error.Line);
-            Assert.Equal(9, ex.Error.Column);
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
         }
 
         [Theory]

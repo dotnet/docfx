@@ -415,17 +415,20 @@ mismatchType2: name";
             });
         }
 
-        [Fact]
-        public void TestMismatchingPrimitiveFieldType()
+        [Theory]
+        [InlineData(@"numberList:
+        - 1
+        - a", ErrorLevel.Error, "mismatching-field-type", 3, 11)]
+        [InlineData(@"
+B: b", ErrorLevel.Error, "mismatching-field-type", 2, 4)]
+        internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
         {
-            var yaml = @"numberList:
-- 1
-- a";
             var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
-            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
-            Assert.Equal("mismatching-field-type", ex.Error.Code);
-            Assert.Equal(3, ex.Error.Line);
-            Assert.Equal(3, ex.Error.Column);
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
         }
 
         [Theory]
