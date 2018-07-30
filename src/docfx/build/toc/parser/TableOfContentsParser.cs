@@ -13,6 +13,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
+        private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
+        private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
+
         public delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
@@ -270,7 +273,15 @@ namespace Microsoft.Docs.Build
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    return Resolve("TOC.yml") ?? Resolve("TOC.json") ?? Resolve("TOC.md") ?? default;
+                    foreach (var tocFileName in s_tocFileNames)
+                    {
+                        var subToc = Resolve(tocFileName);
+                        if (subToc != null)
+                        {
+                            return subToc.Value;
+                        }
+                    }
+                    return default;
                 case TocHrefType.TocFile:
                     return resolveContent(filePath, href, isInclusion: true);
                 default:
@@ -303,9 +314,7 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if ("TOC.md".Equals(fileName, PathUtility.PathComparison) ||
-                "TOC.json".Equals(fileName, PathUtility.PathComparison) ||
-                "TOC.yml".Equals(fileName, PathUtility.PathComparison))
+            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
             {
                 return TocHrefType.TocFile;
             }
