@@ -18,9 +18,11 @@ dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.or
 ## Usage
 Please make sure all the source files and corresponding `docfx.yml` are stored in your `docset_path`.
 
+> We are still designing the template/theme system, so the outputs are some JSON files which contain `html` and `metadata`.
+
 ### Restore
 `restore` command helps you to restore all your [dependency repositories](docs/designs/config.md) into your local `%DOCFX_APPDATA_PATH%`.
-The default `%DOCFX_APPDATA_PATH%` is `{your user profile folder}/.docfx`, but you can reset it to any other place.
+The default `%DOCFX_APPDATA_PATH%` is `%USERPROFILE%/.docfx`, but you can reset it to any other place.
 
 ```powershell
 docfx restore <docset_path> [<options>]
