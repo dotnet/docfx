@@ -127,17 +127,17 @@ if ($prod -eq $true) {
 
     ProcessLastExitCode $lastexitcode "Get GIT commit information $commitInfo"
     if ($commitInfo.length -gt 1) {
-        $revision = $commitInfo[1].PadLeft(4, '0')
+        $revision = (Get-Date -UFormat "%Y%m%d").Substring(2) + $commitInfo[1].PadLeft(3, '0')
     }
- else {
-        $revision = '0000'
+    else {
+        $revision = '000000000'
     }
 
     $assemblyVersion = (($version + '0') -join '.').Substring(1)
     $assemblyFileVersion = (($version + $revision) -join '.').Substring(1)
     if ($branch -ne $releaseBranch) {
         $abbrev = $commitInfo[2]
-        $packageVersion = ((($version -join '.'), "alpha", $revision, $abbrev) -join '-').Substring(1)
+        $packageVersion = ((($version -join '.'), "b", $revision, $abbrev) -join '-').Substring(1)
     }
     else {
         $packageVersion = ($version -join ".").Substring(1)
