@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
@@ -260,6 +261,19 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "invalid-schema", 1, 22)]
+        [InlineData(@"{""minLengthValue"":""a""}", ErrorLevel.Error, "invalid-schema", 1, 21)]
+        internal void TestValidationAttribute(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
@@ -281,6 +295,12 @@ namespace Microsoft.Docs.Build
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2)]
+            public string MinLengthValue { get; set; }
         }
     }
 }

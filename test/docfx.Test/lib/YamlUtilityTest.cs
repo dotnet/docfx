@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
@@ -353,6 +354,19 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "invalid-schema", 1, 18)]
+        [InlineData(@"minLengthValue: a", ErrorLevel.Error, "invalid-schema", 1, 17)]
+        internal void TestValidationAttribute(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
@@ -374,6 +388,12 @@ items:
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2)]
+            public string MinLengthValue { get; set; }
         }
     }
 }
