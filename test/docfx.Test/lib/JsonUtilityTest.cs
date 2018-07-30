@@ -301,6 +301,9 @@ namespace Microsoft.Docs.Build
 
             [MinLength(2)]
             public string MinLengthValue { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> StringListValue { get; set; }
         }
     }
 }

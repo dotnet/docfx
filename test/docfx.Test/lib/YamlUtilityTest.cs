@@ -356,7 +356,8 @@ items:
 
         [Theory]
         [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "invalid-schema", 1, 18)]
-        [InlineData(@"minLengthValue: a", ErrorLevel.Error, "invalid-schema", 1, 17)]
+        [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "invalid-schema", 1, 29)]
+        [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "invalid-schema", 1, 29)]
         internal void TestValidationAttribute(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -392,8 +393,8 @@ items:
             [RegularExpression("[a-z]")]
             public string RegPatternValue { get; set; }
 
-            [MinLength(2)]
-            public string MinLengthValue { get; set; }
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
         }
     }
 }

@@ -224,30 +224,33 @@ namespace Microsoft.Docs.Build
 
             private static SchemaValidationConverter GetConverter(MemberInfo member)
             {
-                var validator = member.GetCustomAttribute<ValidationAttribute>();
-                return validator is null ? null : new SchemaValidationConverter(validator);
+                var validators = member.GetCustomAttributes<ValidationAttribute>();
+                return validators is null ? null : new SchemaValidationConverter(validators);
             }
         }
 
         private sealed class SchemaValidationConverter : JsonConverter
         {
-            private readonly ValidationAttribute _validator;
+            private readonly IEnumerable<ValidationAttribute> _validators;
 
-            public SchemaValidationConverter(ValidationAttribute validator)
+            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators)
             {
-                _validator = validator;
+                _validators = validators;
             }
 
             public override bool CanConvert(Type objectType) => true;
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                if (_validator != null && !_validator.IsValid(reader.Value))
+                foreach (var validator in _validators)
                 {
-                    var lineInfo = reader as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    var validationResult = _validator.GetValidationResult(reader.Value, new ValidationContext(reader.Value, null));
-                    throw Errors.InvalidSchema(range, validationResult.ErrorMessage).ToException();
+                    if (validator != null && !validator.IsValid(reader.Value))
+                    {
+                        var lineInfo = reader as IJsonLineInfo;
+                        var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                        var validationResult = validator.GetValidationResult(reader.Value, new ValidationContext(reader.Value, null));
+                        throw Errors.InvalidSchema(range, validationResult.ErrorMessage).ToException();
+                    }
                 }
                 return reader.Value;
             }
