@@ -137,7 +137,7 @@ if ($prod -eq $true) {
     $assemblyFileVersion = (($version + $revision) -join '.').Substring(1)
     if ($branch -ne $releaseBranch) {
         $abbrev = $commitInfo[2]
-        $packageVersion = ((($version -join '.'), "b", $revision, $abbrev) -join '-').Substring(1)
+        $packageVersion = ((($version -join '.'), "alpha", $revision, $abbrev) -join '-').Substring(1)
     }
     else {
         $packageVersion = ($version -join ".").Substring(1)
