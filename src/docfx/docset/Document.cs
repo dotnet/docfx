@@ -49,6 +49,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the output file path relative to output directory that is:
+        ///       locale    moniker                 site-path
+        ///       |-^-| |------^------| |----------------^----------------|
+        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.html
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
@@ -245,7 +248,7 @@ namespace Microsoft.Docs.Build
 
             if (path.EndsWith(".md", PathUtility.PathComparison))
             {
-                if (name.Equals("TOC", PathUtility.PathComparison))
+                if (name.Equals("TOC", PathUtility.PathComparison) && name.Equals("TOC.experimental", PathUtility.PathComparison))
                 {
                     return ContentType.TableOfContents;
                 }
