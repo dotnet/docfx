@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -370,6 +371,12 @@ items:
           - H: 1
             G: c
             E: e", 5, 13, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"
+        NestedItems:
+          -
+            - H: 1
+              G: c
+              E: e",6,15, ErrorLevel.Warning, "unknown-field-type")]
         internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
@@ -408,6 +415,36 @@ mismatchType2: name";
             });
         }
 
+        [Fact]
+        public void TestMismatchingPrimitiveFieldType()
+        {
+            var yaml = @"numberList:
+- 1
+- a";
+            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
+            Assert.Equal(ErrorLevel.Error, ex.Error.Level);
+            Assert.Equal("mismatching-field-type", ex.Error.Code);
+            Assert.Equal(3, ex.Error.Line);
+            Assert.Equal(3, ex.Error.Column);
+        }
+
+        [Theory]
+        [InlineData(@"
+B: 1
+C: c
+E: e", typeof(ClassWithJsonExtensionData))]
+        [InlineData(@"
+Data: 
+    B: 1
+    C: c
+    E: e", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        {
+            var (_, token) = YamlUtility.Deserialize(json);
+            var (errors, value) = JsonUtility.ToObject(token, type);
+            Assert.Empty(errors);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
@@ -442,6 +479,21 @@ mismatchType2: name";
             public List<BasicClass> Items { get; set; }
 
             public List<AnotherBasicClass> AnotherItems { get; set; }
+
+            public List<List<AnotherBasicClass>> NestedItems { get; set; }
+
+            public List<int> NumberList { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public IDictionary<string, JToken> AdditionalData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
         }
     }
 }
