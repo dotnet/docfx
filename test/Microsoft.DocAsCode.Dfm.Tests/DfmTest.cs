@@ -4,21 +4,12 @@
 namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System.Collections.Generic;
-    using System.Composition.Hosting;
     using System.Collections.Immutable;
-    using System.IO;
-    using System.Linq;
     using System.Xml;
 
     using Xunit;
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Dfm;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
-    using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Tests.Common;
 
     public class DfmTest
     {
@@ -673,10 +664,43 @@ tag started with alphabet should not be encode: <abc> <a-hello> <AC att='bcd'></
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
+        public void TestPathUtility_AbsoluteLinkWithBracketAndBracket()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
             var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"" data-raw-source=""[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)"">User-Defined Date/Time Formats (Format Function)</a></p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestTable_RegexPerfWithUselessTableHeaderAndUselessTableRow()
+        {
+            var source = @"ID | Category                                                                                                             | ER  | Addresses                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Ports            
+-- | -------------------------------------------------------------------------------------------------------------------- | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -----------------
+3  | Default<BR>Required                                                                                                  | No  | `r1.res.office365.com r3.res.office365.com r4.res.office365.com xsi.outlook.com`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | **TCP:** 443, 80 
+";
+            var expected = @"<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Category</th>
+<th>ER</th>
+<th>Addresses</th>
+<th>Ports</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>Default<BR>Required</td>
+<td>No</td>
+<td><code>r1.res.office365.com r3.res.office365.com r4.res.office365.com xsi.outlook.com</code></td>
+<td><strong>TCP:</strong> 443, 80</td>
+</tr>
+</tbody>
+</table>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
