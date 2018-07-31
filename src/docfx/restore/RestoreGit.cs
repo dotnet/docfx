@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
-                    await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token));
+                    await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token), "+refs/heads/*:refs/heads/*");
                 }
                 else
                 {
