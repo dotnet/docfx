@@ -265,6 +265,8 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "invalid-schema", 1, 22)]
         [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "invalid-schema", 1, 33)]
         [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "invalid-schema", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "invalid-schema", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "invalid-schema", 1, 35)]
         internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -302,6 +304,9 @@ namespace Microsoft.Docs.Build
 
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
         }
     }
 }

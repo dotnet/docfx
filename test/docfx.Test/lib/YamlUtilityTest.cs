@@ -358,6 +358,12 @@ items:
         [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "invalid-schema", 1, 18)]
         [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "invalid-schema", 1, 29)]
         [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "invalid-schema", 1, 29)]
+        [InlineData(@"ListValueWithLengthRestriction: []", ErrorLevel.Error, "invalid-schema", 1, 33)]
+        [InlineData(@"ListValueWithLengthRestriction:
+                        - a
+                        - b
+                        - c
+                        - d", ErrorLevel.Error, "invalid-schema", 2, 25)]
         internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -395,6 +401,9 @@ items:
 
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
         }
     }
 }
