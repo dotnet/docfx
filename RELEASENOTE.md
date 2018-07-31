@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.37.1)
+Version Notes (Current Version: v2.37.2)
 =======================================
+
+v2.37.2
+-----------
+1. Bug fix:
+    1. Refine regex for tables and add timeout (#3118)
 
 v2.37.1
 -----------
