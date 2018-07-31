@@ -355,15 +355,15 @@ items:
         }
 
         [Theory]
-        [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "invalid-schema", 1, 18)]
-        [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "invalid-schema", 1, 29)]
-        [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "invalid-schema", 1, 29)]
-        [InlineData(@"ListValueWithLengthRestriction: []", ErrorLevel.Error, "invalid-schema", 1, 33)]
+        [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "violate-schema", 1, 18)]
+        [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ListValueWithLengthRestriction: []", ErrorLevel.Error, "violate-schema", 1, 33)]
         [InlineData(@"ListValueWithLengthRestriction:
                         - a
                         - b
                         - c
-                        - d", ErrorLevel.Error, "invalid-schema", 2, 25)]
+                        - d", ErrorLevel.Error, "violate-schema", 2, 25)]
         internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {

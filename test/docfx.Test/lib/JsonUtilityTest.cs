@@ -262,11 +262,11 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "invalid-schema", 1, 22)]
-        [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "invalid-schema", 1, 33)]
-        [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "invalid-schema", 1, 36)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "invalid-schema", 1, 35)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "invalid-schema", 1, 35)]
+        [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "violate-schema", 1, 22)]
+        [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "violate-schema", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "violate-schema", 1, 35)]
         internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {

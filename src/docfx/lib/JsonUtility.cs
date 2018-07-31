@@ -225,8 +225,8 @@ namespace Microsoft.Docs.Build
 
             private static SchemaValidationConverter GetConverter(MemberInfo member)
             {
-                var validators = member.GetCustomAttributes<ValidationAttribute>(false);
-                return !validators.Any() ? null : new SchemaValidationConverter(validators);
+                var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
+                return validators.Count == 0 ? null : new SchemaValidationConverter(validators);
             }
         }
 
@@ -294,7 +294,7 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        throw Errors.InvalidSchema(range, validationResult.ErrorMessage).ToException();
+                        throw Errors.ViolateSchema(range, validationResult.ErrorMessage).ToException();
                     }
                 }
             }

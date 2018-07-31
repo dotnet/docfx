@@ -112,8 +112,8 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"{range} '{name}' contains null value", line: range.StartLine, column: range.StartCharacter);
 
-        public static Error InvalidSchema(Range range, string message)
-            => new Error(ErrorLevel.Error, "invalid-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+        public static Error ViolateSchema(Range range, string message)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
