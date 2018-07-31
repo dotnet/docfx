@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
-
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
@@ -57,7 +57,9 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
             var (errors, json) = Deserialize(input, nullValidation);
-            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(json);
+            errors.AddRange(mismatchingErrors);
+            return (errors, result);
         }
 
         /// <summary>
@@ -141,7 +143,8 @@ namespace Microsoft.Docs.Build
                     if (key is YamlScalarNode scalarKey)
                     {
                         var token = ToJson(value);
-                        obj[scalarKey.Value] = token;
+                        var prop = PopulateLineInfoToJToken(new JProperty(scalarKey.Value, token), key);
+                        obj.Add(prop);
                     }
                     else
                     {

@@ -3,10 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -261,7 +262,7 @@ ValueBasic:
   D: false
 ";
             var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
@@ -353,6 +354,100 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData("mismatchType: name", 1, 1, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"
+        ValueBasic:
+          B: 1
+          C: c
+          E: e", 5, 11, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"
+        Items:
+          - B: 1
+            C: c
+            E: e", 5, 13, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"
+        AnotherItems:
+          - H: 1
+            G: c
+            E: e", 5, 13, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"
+        NestedItems:
+          -
+            - H: 1
+              G: c
+              E: e",6,15, ErrorLevel.Warning, "unknown-field-type")]
+        internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+        {
+            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedLine, error.Line);
+                Assert.Equal(expectedColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipltUnknownFieldType()
+        {
+            var yaml = @"mismatchType1: name
+mismatchType2: name";
+
+            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field-type", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field-type", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 2, Character: 1) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"numberList:
+        - 1
+        - a", ErrorLevel.Error, "invalid-schema", 3, 11)]
+        [InlineData(@"
+B: b", ErrorLevel.Error, "invalid-schema", 2, 4)]
+        internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+        }
+
+        [Theory]
+        [InlineData(@"
+B: 1
+C: c
+E: e", typeof(ClassWithJsonExtensionData))]
+        [InlineData(@"
+Data: 
+    B: 1
+    C: c
+    E: e", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        {
+            var (_, token) = YamlUtility.Deserialize(json);
+            var (errors, value) = JsonUtility.ToObject(token, type);
+            Assert.Empty(errors);
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
@@ -360,6 +455,15 @@ items:
             public string C { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class AnotherBasicClass
+        {
+            public int F { get; set; }
+
+            public string G { get; set; }
+
+            public bool H { get; set; }
         }
 
         public class ClassWithReadOnlyField
@@ -374,6 +478,25 @@ items:
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            public List<BasicClass> Items { get; set; }
+
+            public List<AnotherBasicClass> AnotherItems { get; set; }
+
+            public List<List<AnotherBasicClass>> NestedItems { get; set; }
+
+            public List<int> NumberList { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public IDictionary<string, JToken> AdditionalData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
         }
     }
 }
