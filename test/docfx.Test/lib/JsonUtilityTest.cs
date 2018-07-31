@@ -267,6 +267,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "violate-schema", 1, 36)]
         [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "violate-schema", 1, 35)]
         [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}", ErrorLevel.Error, "violate-schema", 1, 53)]
         internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -307,6 +308,14 @@ namespace Microsoft.Docs.Build
 
             [MinLength(1), MaxLength(3)]
             public List<string> ListValueWithLengthRestriction { get; set; }
+
+            public NestedClass NestedMember { get; set; }
+        }
+
+        public class NestedClass
+        {
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
         }
     }
 }

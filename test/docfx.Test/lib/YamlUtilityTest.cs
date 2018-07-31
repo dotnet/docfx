@@ -364,6 +364,8 @@ items:
                         - b
                         - c
                         - d", ErrorLevel.Error, "violate-schema", 2, 25)]
+        [InlineData(@"NestedMember:
+                        ValueWithLengthRestriction: abcd", ErrorLevel.Error, "violate-schema", 2, 53)]
         internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -404,6 +406,14 @@ items:
 
             [MinLength(1), MaxLength(3)]
             public List<string> ListValueWithLengthRestriction { get; set; }
+
+            public NestedClass NestedMember { get; set; }
+        }
+
+        public class NestedClass
+        {
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
         }
     }
 }
