@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
 
             private static SchemaValidationConverter GetConverter(MemberInfo member)
             {
-                var validators = member.GetCustomAttributes<ValidationAttribute>();
+                var validators = member.GetCustomAttributes<ValidationAttribute>(false);
                 return !validators.Any() ? null : new SchemaValidationConverter(validators);
             }
         }

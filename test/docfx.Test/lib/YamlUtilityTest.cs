@@ -358,7 +358,7 @@ items:
         [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "invalid-schema", 1, 18)]
         [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "invalid-schema", 1, 29)]
         [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "invalid-schema", 1, 29)]
-        internal void TestValidationAttribute(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+        internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
             var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));

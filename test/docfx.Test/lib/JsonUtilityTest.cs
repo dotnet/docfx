@@ -263,8 +263,9 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "invalid-schema", 1, 22)]
-        [InlineData(@"{""minLengthValue"":""a""}", ErrorLevel.Error, "invalid-schema", 1, 21)]
-        internal void TestValidationAttribute(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+        [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "invalid-schema", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "invalid-schema", 1, 36)]
+        internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
             var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
@@ -299,11 +300,8 @@ namespace Microsoft.Docs.Build
             [RegularExpression("[a-z]")]
             public string RegPatternValue { get; set; }
 
-            [MinLength(2)]
-            public string MinLengthValue { get; set; }
-
-            [MinLength(1), MaxLength(3)]
-            public List<string> StringListValue { get; set; }
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
         }
     }
 }
