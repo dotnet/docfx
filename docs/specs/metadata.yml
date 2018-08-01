@@ -125,3 +125,67 @@ outputs:
   azure/billing/billing-add-change-azure-subscription-administrator.json: |
     {"id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","versionIndependentId":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
   build.manifest:
+---
+# yaml&json toc metadata
+inputs:
+  docfx.yml:
+  docs/json/TOC.json: |
+    {
+      "metadata": {"a":"b"},
+      "items": [{ "name": "title" }]
+    }
+  docs/yaml/TOC.yml: |
+    metadata:
+      a: b
+    items:
+      - name: title
+outputs:
+  docs/json/TOC.json: |
+    {  
+      "metadata": {"a": "b"},
+      "items":[{"toc_title":"title"}]
+    }
+  docs/yaml/TOC.json: |
+    {  
+      "metadata": {"a": "b"},
+      "items":[{"toc_title":"title"}]
+    }
+  build.manifest:
+---
+# yaml&json toc leaf metadata
+inputs:
+  docfx.yml:
+  docs/json/TOC.json: |
+    [{ "name": "title", "metadata": {"a": "b"} }]
+  docs/yaml/TOC.yml: |
+    - name: title
+      metadata:
+        a: b
+outputs:
+  docs/json/TOC.json: |
+    {  
+      "items":[{"toc_title":"title", "metadata": {"a": "b"}}]
+    }
+  docs/yaml/TOC.json: |
+    {  
+      "items":[{"toc_title":"title", "metadata": {"a": "b"}}]
+    }
+  build.manifest:
+---
+# yaml&json toc metadata inclusion
+inputs:
+  docfx.yml:
+  docs/json/TOC.json: |
+    {  
+      "metadata": {"a": "b"},
+      "items":[{"name":"title", "metadata": {"c": "d"},}]
+    }
+  docs/yaml/TOC.yml: |
+    - name: toc reference
+      tocHref: ../json/TOC.json
+outputs:
+  docs/yaml/TOC.json: |
+    {  
+      "items":[{"toc_title":"toc reference", "metadata": {"a": "b"}, "children": [{"toc_title":"title", "metadata": {"c": "d"}}]}]
+    }
+  build.manifest:
