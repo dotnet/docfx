@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TocParserLoadMarkdownToc()
         {
-            var toc = TableOfContentsParser.LoadMdTocModel(@"---
+            var (_, toc) = TableOfContentsParser.LoadMdTocModel(@"---
 a: b
 ---
 # [Article1](article1.md)

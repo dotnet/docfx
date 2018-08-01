@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             return (errors, inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), inputModel?.Metadata);
         }
 
-        public static TableOfContentsInputModel LoadMdTocModel(string tocContent, string filePath)
+        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, string filePath)
         {
             var content = tocContent.Replace("\r\n", "\n").Replace("\r", "\n");
             TableOfContentsParseState state = new InitialState(filePath);
@@ -41,15 +41,15 @@ namespace Microsoft.Docs.Build
             };
 
             int lineNumber = 1;
-            var metadata = ExtractMetadata();
+            var (errors, metadata) = ExtractMetadata();
             while (content.Length > 0)
             {
                 state = state.ApplyRules(rules, ref content, ref lineNumber);
             }
 
-            return new TableOfContentsInputModel { Items = state.Root, Metadata = metadata };
+            return (errors, new TableOfContentsInputModel { Items = state.Root, Metadata = metadata });
 
-            JObject ExtractMetadata()
+            (List<Error> errors, JObject metadata) ExtractMetadata()
             {
                 // todo: use markdig to parse markdown toc as well as markdown toc metadata
                 var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
@@ -59,16 +59,10 @@ namespace Microsoft.Docs.Build
                     var yamlContent = content.Substring(match.Groups[1].Index, match.Groups[1].Length);
                     content = content.Substring(match.Length);
                     lineNumber += match.Value.Count(ch => ch == '\n');
-                    var (errors, headMetadata) = ExtractYamlHeader.Extract(yamlContent);
-
-                    // todo: return errors once change to markdig
-                    if (errors.Any())
-                        throw errors.First().ToException();
-
-                    return headMetadata;
+                    return ExtractYamlHeader.Extract(yamlContent);
                 }
 
-                return default;
+                return (new List<Error>(), default);
             }
         }
 
@@ -87,7 +81,7 @@ namespace Microsoft.Docs.Build
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return (new List<Error>(), LoadMdTocModel(content, filePath));
+                return LoadMdTocModel(content, filePath);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
