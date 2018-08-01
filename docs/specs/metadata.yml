@@ -178,7 +178,7 @@ inputs:
   docs/json/TOC.json: |
     {  
       "metadata": {"a": "b"},
-      "items":[{"name":"title", "metadata": {"c": "d"},}]
+      "items":[{"name":"title", "metadata": {"c": "d"}}]
     }
   docs/yaml/TOC.yml: |
     - name: toc reference
@@ -187,5 +187,34 @@ outputs:
   docs/yaml/TOC.json: |
     {  
       "items":[{"toc_title":"toc reference", "metadata": {"a": "b"}, "children": [{"toc_title":"title", "metadata": {"c": "d"}}]}]
+    }
+  build.manifest:
+---
+# toc global metadata
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      a: b
+  docs/json/TOC.json: |
+    [{"name":"title"}]
+  docs/yaml/TOC.yml: |
+    metadata:
+      c: d
+    items:
+      - name: title
+  docs/md/TOC.md: |
+    # title
+outputs:
+  docs/yaml/TOC.json: |
+    {  
+      "items":[{"toc_title":"title"}], "metadata": {"a":"b", "c": "d"}
+    }
+  docs/json/TOC.json: |
+    {  
+      "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
+    }
+  docs/md/TOC.json: |
+    {  
+      "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }
   build.manifest:
