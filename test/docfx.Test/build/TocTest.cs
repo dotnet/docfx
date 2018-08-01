@@ -67,11 +67,13 @@ namespace Microsoft.Docs.Build
 # [Article7](article7.md)
 ## [External](http://www.microsoft.com)
 ", "TOC.md");
-            Assert.Equal(2, toc.Count);
-            Assert.Equal("Article1", toc[0].Name);
-            Assert.Equal("article1.md", toc[0].Href);
+
+            var tocItems = toc.Items;
+            Assert.Equal(2, tocItems.Count);
+            Assert.Equal("Article1", tocItems[0].Name);
+            Assert.Equal("article1.md", tocItems[0].Href);
             {
-                var toc0 = toc[0].Items;
+                var toc0 = tocItems[0].Items;
                 Assert.Equal(3, toc0.Count);
                 Assert.Equal("Container1", toc0[0].Name);
                 Assert.Null(toc0[0].Href);
@@ -101,10 +103,10 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("Article6", toc0[2].Name);
                 Assert.Equal("article6.md", toc0[2].Href);
             }
-            Assert.Equal("Article7", toc[1].Name);
-            Assert.Equal("article7.md", toc[1].Href);
+            Assert.Equal("Article7", tocItems[1].Name);
+            Assert.Equal("article7.md", tocItems[1].Href);
             {
-                var toc1 = toc[1].Items;
+                var toc1 = tocItems[1].Items;
                 Assert.Single(toc1);
                 Assert.Equal("External", toc1[0].Name);
                 Assert.Equal("http://www.microsoft.com", toc1[0].Href);
