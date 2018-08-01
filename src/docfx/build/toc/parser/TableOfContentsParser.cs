@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -40,12 +41,35 @@ namespace Microsoft.Docs.Build
             };
 
             int lineNumber = 1;
+            var metadata = ExtractMetadata();
             while (content.Length > 0)
             {
                 state = state.ApplyRules(rules, ref content, ref lineNumber);
             }
 
-            return new TableOfContentsInputModel { Items = state.Root };
+            return new TableOfContentsInputModel { Items = state.Root, Metadata = metadata };
+
+            JObject ExtractMetadata()
+            {
+                // todo: use markdig to parse markdown toc as well as markdown toc metadata
+                var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
+                var match = yamlHeaderRegex.Match(content);
+                if (match.Success)
+                {
+                    var yamlContent = content.Substring(match.Groups[1].Index, match.Groups[1].Length);
+                    content = content.Substring(match.Length);
+                    lineNumber += match.Value.Count(ch => ch == '\n');
+                    var (errors, headMetadata) = ExtractYamlHeader.Extract(yamlContent);
+
+                    // todo: return errors once change to markdig
+                    if (errors.Any())
+                        throw errors.First().ToException();
+
+                    return headMetadata;
+                }
+
+                return default;
+            }
         }
 
         private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(string content, string filePath)
