@@ -509,17 +509,6 @@ Data:
             public List<List<AnotherBasicClass>> NestedItems { get; set; }
 
             public List<int> NumberList { get; set; }
-        }
-
-        public class ClassWithJsonExtensionData : BasicClass
-        {
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
-        }
-
-        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
-        {
-            public ClassWithJsonExtensionData Data { get; set; }
 
             [RegularExpression("[a-z]")]
             public string RegPatternValue { get; set; }
@@ -531,6 +520,17 @@ Data:
             public List<string> ListValueWithLengthRestriction { get; set; }
 
             public NestedClass NestedMember { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public JObject AdditionalData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
         }
 
         public class NestedClass
