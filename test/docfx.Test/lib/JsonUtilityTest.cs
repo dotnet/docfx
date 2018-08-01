@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
@@ -260,6 +261,23 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "violate-schema", 1, 22)]
+        [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "violate-schema", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}", ErrorLevel.Error, "violate-schema", 1, 53)]
+        internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
+            Assert.Equal(expectedErrorLevel, ex.Error.Level);
+            Assert.Equal(expectedErrorCode, ex.Error.Code);
+            Assert.Equal(expectedErrorLine, ex.Error.Line);
+            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
@@ -281,6 +299,23 @@ namespace Microsoft.Docs.Build
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
+
+            public NestedClass NestedMember { get; set; }
+        }
+
+        public class NestedClass
+        {
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
         }
     }
 }
