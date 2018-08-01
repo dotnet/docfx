@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
         public string RedirectionUrl { get; }
 
         /// <summary>
-        /// Gets a value indicating whether if it's an experimental content
+        /// Gets a value indicating whether it's an experimental content
         /// </summary>
         public bool IsExperimental { get; }
 

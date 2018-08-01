@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
 
         private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
 
-        public TableOfContentsMap(List<Document> tocs, List<Document> experimentTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
+        public TableOfContentsMap(List<Document> tocs, List<Document> experimentalTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
-            _experimentalTocs = new HashSet<Document>(experimentTocs ?? throw new ArgumentNullException(nameof(experimentTocs)));
+            _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
         }
 

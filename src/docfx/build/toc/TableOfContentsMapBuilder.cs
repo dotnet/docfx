@@ -54,12 +54,12 @@ namespace Microsoft.Docs.Build
                 if (_referencedTocs.ContainsKey(toc))
                 {
                     // referenced toc's mapping will be ignored
-                    // experimental toc will be ignored
                     continue;
                 }
 
                 if (toc.IsExperimental)
                 {
+                    // experimental toc will be ignored
                     experimentalTocs.Add(toc);
                     continue;
                 }

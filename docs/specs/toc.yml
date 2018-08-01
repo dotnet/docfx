@@ -869,7 +869,7 @@ outputs:
   docs/f1/TOC.json:
   docs/f1/TOC.experimental.json:
 ---
-# Experimental TOC shoud be included using toc ref
+# Experimental TOC should be included using toc ref
 inputs:
   docfx.yml:
   docs/f1/TOC.experimental.md: |
@@ -883,7 +883,7 @@ outputs:
   docs/f1/TOC.json: |
     {"items":[{"toc_title":"TOC Reference","children":[{"toc_title": "Index Reference", "href": "../"}]}]}
 ---
-# Experimental TOC shoud be excluded using folder ref
+# Experimental TOC should be excluded using folder ref
 inputs:
   docfx.yml:
   docs/f2/TOC.experimental.md: |
