@@ -131,7 +131,6 @@ namespace Microsoft.Docs.Build
                 if (subChildren != null)
                 {
                     tocModelItem.Items = subChildren.Items;
-                    tocModelItem.Metadata = subChildren.Metadata;
                 }
             }
 

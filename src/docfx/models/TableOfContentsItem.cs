@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
-        [JsonProperty(PropertyName = "metadata")]
+        [JsonExtensionData]
         public JObject Metadata { get; set; }
 
         public List<TableOfContentsItem> Children;

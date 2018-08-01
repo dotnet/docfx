@@ -156,29 +156,29 @@ outputs:
 inputs:
   docfx.yml:
   docs/json/TOC.json: |
-    [{ "name": "title", "metadata": {"a": "b"} }]
+    [{ "name": "title", "a": "b" }]
   docs/yaml/TOC.yml: |
     - name: title
-      metadata:
-        a: b
+      a: b
 outputs:
   docs/json/TOC.json: |
     {  
-      "items":[{"toc_title":"title", "metadata": {"a": "b"}}]
+      "items":[{"toc_title":"title", "a": "b"}]
     }
   docs/yaml/TOC.json: |
     {  
-      "items":[{"toc_title":"title", "metadata": {"a": "b"}}]
+      "items":[{"toc_title":"title", "a": "b"}]
     }
   build.manifest:
 ---
 # yaml&json toc metadata inclusion
+# child's root metadata will be dropped
 inputs:
   docfx.yml:
   docs/json/TOC.json: |
     {  
       "metadata": {"a": "b"},
-      "items":[{"name":"title", "metadata": {"c": "d"}}]
+      "items":[{"name":"title", "c": "d"}]
     }
   docs/yaml/TOC.yml: |
     - name: toc reference
@@ -186,7 +186,7 @@ inputs:
 outputs:
   docs/yaml/TOC.json: |
     {  
-      "items":[{"toc_title":"toc reference", "metadata": {"a": "b"}, "children": [{"toc_title":"title", "metadata": {"c": "d"}}]}]
+      "items":[{"toc_title":"toc reference", "children": [{"toc_title":"title", "c": "d"}]}]
     }
   build.manifest:
 ---
