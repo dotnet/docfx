@@ -94,7 +94,8 @@ namespace Microsoft.Docs.Build
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
-                    await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token));
+                    // fetch bare reop: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
+                    await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token), "+refs/heads/*:refs/heads/*");
                 }
                 else
                 {
