@@ -490,7 +490,7 @@ Data:
         public class ClassWithJsonExtensionData : BasicClass
         {
             [JsonExtensionData]
-            public IDictionary<string, JToken> AdditionalData { get; set; }
+            public JObject AdditionalData { get; set; }
         }
 
         public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass

@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
                 return type;
             }
 
-            // if mismatching field type found, add error
+            // if mismatching field found, add error
             // else, pass along with nested type
             var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
             if (matchingProperty is null)
