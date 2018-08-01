@@ -261,27 +261,27 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchType"": ""name""}", 1, 16, ErrorLevel.Warning, "unknown-field-type")]
+        [InlineData(@"{""mismatchField"": ""name""}", 1, 17, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""ValueBasic"":
           {""B"": 1,
           ""C"": ""c"",
-          ""E"": ""e""}}", 5, 14, ErrorLevel.Warning, "unknown-field-type")]
+          ""E"": ""e""}}", 5, 14, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""Items"":
           [{ ""B"": 1,
             ""C"": ""c"",
-            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field-type")]
+            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""AnotherItems"":
           [{ ""F"": 1,
             ""G"": ""c"",
-            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field-type")]
+            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
 ""NestedItems"":
   [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]]}", 5, 8, ErrorLevel.Warning, "unknown-field-type")]
+    ""E"": ""e""}]]}", 5, 8, ErrorLevel.Warning, "unknown-field")]
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
@@ -297,25 +297,25 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestMultipleUnknownFieldType()
         {
-            var json = @"{""mismatchType1"": ""name"",
-""mismatchType2"": ""name""}";
+            var json = @"{""mismatchField1"": ""name"",
+""mismatchField2"": ""name""}";
             var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
             Assert.Collection(errors,
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field-type", error.Code);
+                Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
-                Assert.Equal(17, error.Column);
-                Assert.Equal("(Line: 1, Character: 17) Could not find member 'mismatchType1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal(18, error.Column);
+                Assert.Equal("(Line: 1, Character: 18) Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field-type", error.Code);
+                Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
-                Assert.Equal(16, error.Column);
-                Assert.Equal("(Line: 2, Character: 16) Could not find member 'mismatchType2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal(17, error.Column);
+                Assert.Equal("(Line: 2, Character: 17) Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
             });
         }
 

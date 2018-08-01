@@ -231,17 +231,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type)
+        private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
         {
             // if type contains JsonExtensionDataAttribute, additional properties are allowed
             if (TypeContainsJsonExtensionData(type))
                 return;
 
+            path = BuildPath(path, type);
             if (token is JArray array)
             {
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForUnknownFieldType(errors, type);
+                    item.TraverseForUnknownFieldType(errors, type, path);
                 }
             }
             else if (token is JObject obj)
@@ -254,10 +255,15 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = CheckForUnknownFieldType(type, prop, errors);
-                    prop.Value.TraverseForUnknownFieldType(errors, nestedType);
+                    var nestedType = CheckForUnknownField(type, prop, errors, path);
+                    prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
                 }
             }
+        }
+
+        private static string BuildPath(string path, Type type)
+        {
+            return path is null ? type.Name : $"{path}.{type.Name}";
         }
 
         private static bool TypeContainsJsonExtensionData(Type type)
@@ -270,7 +276,7 @@ namespace Microsoft.Docs.Build
             return containsJsonExtensionData;
         }
 
-        private static Type CheckForUnknownFieldType(Type type, JProperty prop, List<Error> errors)
+        private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             JsonPropertyCollection jsonProperties;
@@ -293,8 +299,8 @@ namespace Microsoft.Docs.Build
             if (matchingProperty is null)
             {
                 var lineInfo = prop as IJsonLineInfo;
-                errors.Add(Errors.UnknownFieldType(
-                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name));
+                errors.Add(Errors.UnknownField(
+                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
                 return type;
             }
             else
