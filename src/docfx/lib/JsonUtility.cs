@@ -104,12 +104,16 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-               return (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
+                return (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
             }
-            catch (JsonReaderException ex)
+            catch (JsonException ex)
             {
-                var range = ParseRangeFromExceptionMessage(ex.Message);
-                throw Errors.ViolateSchema(range, ex.Message).ToException();
+                if (ex is JsonSerializationException || ex is JsonReaderException)
+                {
+                    var range = ParseRangeFromExceptionMessage(ex.Message);
+                    throw Errors.ViolateSchema(range, ex.Message).ToException();
+                }
+                throw;
             }
         }
 

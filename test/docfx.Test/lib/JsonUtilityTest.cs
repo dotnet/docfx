@@ -325,6 +325,7 @@ namespace Microsoft.Docs.Build
 ""NumberList"":
   [1, ""a""]}", ErrorLevel.Error, "violate-schema", 3, 9)]
         [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{""ValueEnum"":""Four""}", ErrorLevel.Error, "violate-schema", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -418,6 +419,9 @@ namespace Microsoft.Docs.Build
             public List<string> ListValueWithLengthRestriction { get; set; }
 
             public NestedClass NestedMember { get; set; }
+
+            // make it nullable, so that json serializer would not make a default value
+            public BasicEnum? ValueEnum { get; set; }
         }
 
         public class ClassWithJsonExtensionData : BasicClass
@@ -435,6 +439,13 @@ namespace Microsoft.Docs.Build
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
+        }
+
+        public enum BasicEnum
+        {
+            One,
+            Two,
+            Three,
         }
     }
 }

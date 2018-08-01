@@ -422,6 +422,7 @@ mismatchField2: name";
         - a", ErrorLevel.Error, "violate-schema", 3, 11)]
         [InlineData(@"
 B: b", ErrorLevel.Error, "violate-schema", 2, 4)]
+        [InlineData(@"ValueEnum: Four", ErrorLevel.Error, "violate-schema", 1, 12)]
         internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
@@ -520,6 +521,8 @@ Data:
             public List<string> ListValueWithLengthRestriction { get; set; }
 
             public NestedClass NestedMember { get; set; }
+
+            public BasicEnum ValueEnum { get; set; }
         }
 
         public class ClassWithJsonExtensionData : BasicClass
@@ -537,6 +540,13 @@ Data:
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
+        }
+
+        public enum BasicEnum
+        {
+            One,
+            Two,
+            Three,
         }
     }
 }
