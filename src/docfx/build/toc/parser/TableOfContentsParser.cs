@@ -6,25 +6,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsParser
     {
+        private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
+        private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
+
         public delegate string ResolveHref(Document relativeTo, string href, Document resultRelativeTo);
 
         public delegate (string content, Document file) ResolveContent(Document relativeTo, string href, bool isInclusion);
 
-        public static (List<Error> errors, List<TableOfContentsItem> model) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
+        public static (List<Error> errors, List<TableOfContentsItem> items, JObject metadata) Load(string tocContent, Document filePath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var (errors, inputModel) = LoadInputModelItems(tocContent, filePath, filePath, resolveContent, resolveHref, new List<Document>());
 
-            return (errors, inputModel?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList());
+            return (errors, inputModel?.Items?.Select(r => TableOfContentsInputItem.ToTableOfContentsModel(r)).ToList(), inputModel?.Metadata);
         }
 
-        public static List<TableOfContentsInputItem> LoadMdTocModel(string tocContent, string filePath)
+        public static TableOfContentsInputModel LoadMdTocModel(string tocContent, string filePath)
         {
             var content = tocContent.Replace("\r\n", "\n").Replace("\r", "\n");
             TableOfContentsParseState state = new InitialState(filePath);
@@ -43,10 +45,10 @@ namespace Microsoft.Docs.Build
                 state = state.ApplyRules(rules, ref content, ref lineNumber);
             }
 
-            return state.Root;
+            return new TableOfContentsInputModel { Items = state.Root };
         }
 
-        private static (List<Error> errors, List<TableOfContentsInputItem>) LoadTocModel(string content, string filePath)
+        private static (List<Error> errors, TableOfContentsInputModel tocModel) LoadTocModel(string content, string filePath)
         {
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -67,27 +69,28 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static List<TableOfContentsInputItem> LoadTocModel(JToken tocToken)
+        private static TableOfContentsInputModel LoadTocModel(JToken tocToken)
         {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                return tocArray.ToObject<List<TableOfContentsInputItem>>();
+                return new TableOfContentsInputModel
+                {
+                    Items = tocArray.ToObject<List<TableOfContentsInputItem>>(),
+                };
             }
             else
             {
                 // toc root model
-                if (tocToken is JObject tocObject &&
-                    tocObject.TryGetValue("items", out var tocItemToken) &&
-                    tocItemToken is JArray tocItemArray)
+                if (tocToken is JObject tocObject)
                 {
-                    return tocItemArray.ToObject<List<TableOfContentsInputItem>>();
+                    return tocObject.ToObject<TableOfContentsInputModel>();
                 }
             }
-            return new List<TableOfContentsInputItem>();
+            return new TableOfContentsInputModel();
         }
 
-        private static (List<Error> errors, List<TableOfContentsInputItem> model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
+        private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
         {
             // add to parent path
             if (parents.Contains(filePath))
@@ -99,9 +102,9 @@ namespace Microsoft.Docs.Build
 
             var (errors, models) = LoadTocModel(tocContent, filePath.FilePath);
 
-            if (models.Any())
+            if (models.Items.Any())
             {
-                errors.AddRange(ResolveTocModelItems(models, parents, filePath, rootPath, resolveContent, resolveHref));
+                errors.AddRange(ResolveTocModelItems(models.Items, parents, filePath, rootPath, resolveContent, resolveHref));
                 parents.RemoveAt(parents.Count - 1);
             }
 
@@ -130,7 +133,7 @@ namespace Microsoft.Docs.Build
                 tocModelItem.TocHref = resolvedTocHref;
                 if (subChildren != null)
                 {
-                    tocModelItem.Items = subChildren;
+                    tocModelItem.Items = subChildren.Items;
                 }
             }
 
@@ -182,7 +185,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            (string resolvedTocHref, string resolvedTopicHref, List<TableOfContentsInputItem> subChildren) ProcessTocHref(string tocHref)
+            (string resolvedTocHref, string resolvedTopicHref, TableOfContentsInputModel subChildren) ProcessTocHref(string tocHref)
             {
                 if (string.IsNullOrEmpty(tocHref))
                 {
@@ -203,15 +206,15 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, tocHref, filePath, resolveContent);
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedTocItems) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
+                    var (subErrors, nestedToc) = LoadInputModelItems(referencedTocContent, referenceTocFilePath, rootPath, resolveContent, resolveHref, parents);
                     errors.AddRange(subErrors);
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
-                        return (default, GetFirstHref(nestedTocItems), default);
+                        return (default, GetFirstHref(nestedToc.Items), default);
                     }
                     else
                     {
-                        return (default, default, nestedTocItems);
+                        return (default, default, nestedToc);
                     }
                 }
 
@@ -270,7 +273,15 @@ namespace Microsoft.Docs.Build
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    return Resolve("TOC.yml") ?? Resolve("TOC.json") ?? Resolve("TOC.md") ?? default;
+                    foreach (var tocFileName in s_tocFileNames)
+                    {
+                        var subToc = Resolve(tocFileName);
+                        if (subToc != null)
+                        {
+                            return subToc.Value;
+                        }
+                    }
+                    return default;
                 case TocHrefType.TocFile:
                     return resolveContent(filePath, href, isInclusion: true);
                 default:
@@ -303,9 +314,7 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if ("TOC.md".Equals(fileName, PathUtility.PathComparison) ||
-                "TOC.json".Equals(fileName, PathUtility.PathComparison) ||
-                "TOC.yml".Equals(fileName, PathUtility.PathComparison))
+            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
             {
                 return TocHrefType.TocFile;
             }

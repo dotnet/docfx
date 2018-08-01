@@ -133,8 +133,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
-        public static Task Fetch(string cwd, string remoteWitToken)
-            => ExecuteNonQuery(cwd, $"fetch {remoteWitToken} '*:*'");
+        public static Task Fetch(string cwd, string remoteWitToken, string refSpec)
+            => ExecuteNonQuery(cwd, $"fetch {remoteWitToken} {refSpec}");
 
         /// <summary>
         /// List work trees for a given repo

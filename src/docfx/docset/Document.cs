@@ -30,6 +30,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets file path relative to site root that is:
+        ///       locale    moniker                 site-path
+        ///       |-^-| |------^------| |----------------^----------------|
+        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Docs not start with '/'
@@ -39,6 +42,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the Url relative to site root that is:
+        ///       locale    moniker                 site-url
+        ///       |-^-| |------^------| |----------------^----------------|
+        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
@@ -49,6 +55,10 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the output file path relative to output directory that is:
+        ///       |                output-path                            |
+        ///       locale    moniker                 site-path
+        ///       |-^-| |------^------| |----------------^----------------|
+        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
@@ -71,6 +81,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string RedirectionUrl { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether it's an experimental content
+        /// </summary>
+        public bool IsExperimental { get; }
+
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>
@@ -84,6 +99,7 @@ namespace Microsoft.Docs.Build
             string outputPath,
             ContentType contentType,
             bool isMasterContent,
+            bool isExperimental,
             string redirectionUrl = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
@@ -96,6 +112,7 @@ namespace Microsoft.Docs.Build
             OutputPath = outputPath;
             ContentType = contentType;
             IsMasterContent = isMasterContent;
+            IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
@@ -180,6 +197,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var type = GetContentType(filePath);
             var isMasterContent = type == ContentType.Markdown || type == ContentType.SchemaDocument;
+            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith("experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type);
@@ -192,7 +210,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent, isExperimental, redirectionUrl));
         }
 
         /// <summary>
@@ -245,7 +263,7 @@ namespace Microsoft.Docs.Build
 
             if (path.EndsWith(".md", PathUtility.PathComparison))
             {
-                if (name.Equals("TOC", PathUtility.PathComparison))
+                if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
                 {
                     return ContentType.TableOfContents;
                 }
@@ -255,7 +273,7 @@ namespace Microsoft.Docs.Build
             if (path.EndsWith(".yml", PathUtility.PathComparison) ||
                 path.EndsWith(".json", PathUtility.PathComparison))
             {
-                if (name.Equals("TOC", PathUtility.PathComparison))
+                if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
                 {
                     return ContentType.TableOfContents;
                 }
@@ -341,9 +359,7 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var sourcePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SourceBasePath)
-                ? FilePath
-                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
+            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
 
             var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
 
@@ -362,9 +378,7 @@ namespace Microsoft.Docs.Build
             // get set path from site path
             // site path doesn't contain version info according to the output spec
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
-            var sitePath = string.IsNullOrEmpty(Docset.Config.DocumentId.SiteBasePath)
-                ? PathUtility.NormalizeFile(sitePathWithoutExtension)
-                : PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
+            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
             return (HashUtility.GetMd5String($"{depotName}|{sourcePath.ToLowerInvariant()}"), HashUtility.GetMd5String($"{depotName}|{sitePath.ToLowerInvariant()}"));
         }
