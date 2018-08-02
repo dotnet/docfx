@@ -31,6 +31,11 @@ namespace Microsoft.Docs.Build
             {
                 return (ExceedRateLimit(), null);
             }
+            catch (NotFoundException)
+            {
+                // GitHub will return 404 "Not Found" if the user doesn't exist
+                return (errors, null);
+            }
 
             return (errors, ToUserProfile(user));
         }

@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                 file,
                 metadata.Value<string>("author"),
                 metadata.Value<DateTime?>("update_date"));
+            errors.AddRange(repoErrors);
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
