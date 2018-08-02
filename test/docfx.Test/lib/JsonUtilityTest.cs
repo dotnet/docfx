@@ -140,7 +140,8 @@ namespace Microsoft.Docs.Build
                         D = false,
                         B = 5,
                         C = "Amazing!",
-                    }
+                    },
+                    ValueRequired = "a",
                 }, formatting: Formatting.Indented);
             var json = sw.ToString();
             Assert.Equal(
@@ -159,6 +160,7 @@ namespace Microsoft.Docs.Build
     ""b"": 5,
     ""d"": false
   },
+  ""valueRequired"": ""a"",
   ""c"": ""Good!"",
   ""b"": 1,
   ""d"": true
@@ -262,27 +264,27 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchField"": ""name""}", 1, 17, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""ValueBasic"":
           {""B"": 1,
           ""C"": ""c"",
-          ""E"": ""e""}}", 5, 14, ErrorLevel.Warning, "unknown-field")]
+          ""E"": ""e""}, ""ValueRequired"": ""a""}", 5, 14, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""Items"":
           [{ ""B"": 1,
             ""C"": ""c"",
-            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field")]
+            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
         ""AnotherItems"":
           [{ ""F"": 1,
             ""G"": ""c"",
-            ""E"": ""e""}]}", 5, 16, ErrorLevel.Warning, "unknown-field")]
+            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"{
 ""NestedItems"":
   [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]]}", 5, 8, ErrorLevel.Warning, "unknown-field")]
+    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field")]
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
@@ -354,12 +356,12 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""regPatternValue"":""3""}", ErrorLevel.Error, "violate-schema", 1, 22)]
-        [InlineData(@"{""valueWithLengthRestriction"":""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
-        [InlineData(@"{""valueWithLengthRestriction"":""abcd""}", ErrorLevel.Error, "violate-schema", 1, 36)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}", ErrorLevel.Error, "violate-schema", 1, 53)]
+        [InlineData(@"{""regPatternValue"":""3"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22)]
+        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 53)]
         [InlineData(@"{""B"": 1}", ErrorLevel.Error, "violate-schema", 1, 1)]
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
