@@ -121,6 +121,9 @@ namespace Microsoft.Docs.Build
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
+        public static Error ExceedRateLimit()
+            => new Error(ErrorLevel.Warning, "exceed-rate-limit", "GitHub API rate limit exceeded, so that contribution information may be incomplete. You can pass authentication token with remaining rate limit to DocFX to fix it.");
+
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);

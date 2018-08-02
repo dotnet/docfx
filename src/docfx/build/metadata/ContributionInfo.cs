@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -41,7 +42,7 @@ namespace Microsoft.Docs.Build
             return new ContributionInfo(docset);
         }
 
-        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(
+        public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
             string author,
             DateTime? updateDate)
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
             UserProfile authorInfo = null;
             if (!string.IsNullOrEmpty(author))
             {
-                authorInfo = _userProfileCache.GetByUserName(author);
+                (errors, authorInfo) = await _userProfileCache.GetByUserName(author);
                 if (authorInfo == null)
                     errors.Add(Errors.AuthorNotFound(author));
             }

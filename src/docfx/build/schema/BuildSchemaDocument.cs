@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
         private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData) };
         private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
 
-        public static (IEnumerable<Error> errors, PageModel result, DependencyMap dependencies) Build(
+        public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution)
@@ -38,7 +39,7 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = contribution.GetContributorInfo(
+            var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(
                 file,
                 metadata.Value<string>("author"),
                 metadata.Value<DateTime?>("update_date"));
