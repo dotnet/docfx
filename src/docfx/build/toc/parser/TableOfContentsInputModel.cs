@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsInputModel
     {
-        public JObject Metadata { get; set; } = new JObject();
+        public JObject Metadata { get; set; }
 
         public List<TableOfContentsInputItem> Items { get; set; } = new List<TableOfContentsInputItem>();
     }
