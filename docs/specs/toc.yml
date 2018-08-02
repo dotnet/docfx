@@ -850,7 +850,7 @@ outputs:
   docs/f1/TOC.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}]}
 ---
-# Paired experimental TOCs' metadata
+# Paired experimental markdown TOCs' metadata
 inputs:
   docfx.yml:
   docs/f1/TOC.experimental.md: |
@@ -872,6 +872,26 @@ outputs:
     {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
   docs/f1/TOC.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+---
+# Paired experimental yml TOCs' metadata
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.yml: |
+    metadata:
+      experimental: false
+      experiment_id: "d1c17cc0-2ae0-4b"
+    items:
+      - name: title
+  docs/f1/TOC.yml: |
+    metadata:
+      experimental: true
+      experiment_id: "d1c17cc0-2ae0-4b"
+outputs:
+  build.manifest:
+  docs/f1/TOC.json: |
+    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+  docs/f1/TOC.experimental.json: |
+    {"items":[{"toc_title":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
 ---
 # Experimental TOC should be removed from toc map
 inputs:
