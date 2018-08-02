@@ -261,6 +261,7 @@ ValueBasic:
   B: 2
   C: Good3!
   D: false
+ValueRequired: a
 ";
             var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
@@ -356,28 +357,29 @@ items:
         }
 
         [Theory]
-        [InlineData("mismatchField: name", 1, 1, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"
-        ValueBasic:
-          B: 1
-          C: c
-          E: e", 5, 11, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"
-        Items:
-          - B: 1
-            C: c
-            E: e", 5, 13, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"
-        AnotherItems:
-          - H: 1
-            G: c
-            E: e", 5, 13, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"
-        NestedItems:
-          -
-            - H: 1
-              G: c
-              E: e", 6, 15, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"mismatchField: name
+ValueRequired: a", 1, 1, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+ValueBasic:
+  B: 1
+  C: c
+  E: e", 5, 3, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+Items:
+  - B: 1
+    C: c
+    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+AnotherItems:
+  - H: 1
+    G: c
+    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+NestedItems:
+  -
+    - H: 1
+      G: c
+      E: e", 6, 7, ErrorLevel.Warning, "unknown-field")]
         internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
             var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
@@ -451,18 +453,25 @@ Data:
         }
 
         [Theory]
-        [InlineData(@"regPatternValue: 3", ErrorLevel.Error, "violate-schema", 1, 18)]
-        [InlineData(@"ValueWithLengthRestriction: a", ErrorLevel.Error, "violate-schema", 1, 29)]
-        [InlineData(@"ValueWithLengthRestriction: abcd", ErrorLevel.Error, "violate-schema", 1, 29)]
-        [InlineData(@"ListValueWithLengthRestriction: []", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"regPatternValue: 3
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 18)]
+        [InlineData(@"ValueWithLengthRestriction: a
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ValueWithLengthRestriction: abcd
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ListValueWithLengthRestriction: []
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 33)]
         [InlineData(@"ListValueWithLengthRestriction:
                         - a
                         - b
                         - c
-                        - d", ErrorLevel.Error, "violate-schema", 2, 25)]
+                        - d
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 25)]
         [InlineData(@"NestedMember:
-                        ValueWithLengthRestriction: abcd", ErrorLevel.Error, "violate-schema", 2, 53)]
-        internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+                        ValueWithLengthRestriction: abcd
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
+        [InlineData(@"B: 1", ErrorLevel.Error, "violate-schema", 1, 1)]
+        internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
             var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
@@ -523,6 +532,9 @@ Data:
             public NestedClass NestedMember { get; set; }
 
             public BasicEnum ValueEnum { get; set; }
+
+            [JsonRequired]
+            public string ValueRequired { get; set; }
         }
 
         public class ClassWithJsonExtensionData : BasicClass
