@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Newtonsoft.Json.Linq;
@@ -18,23 +19,32 @@ namespace Microsoft.Docs.Build
                     if (node is YamlFrontMatterBlock yamlHeader)
                     {
                         // TODO: fix line info in yamlErrors is not accurate due to offset in markdown
-                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
+                        var (errors, metadata) = Extract(yamlHeader.Lines.ToString());
 
-                        if (yamlHeaderObj is JObject obj)
+                        if (metadata != null)
                         {
-                            Markup.Result.Metadata = obj;
-                        }
-                        else
-                        {
-                            Markup.Result.Errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                            Markup.Result.Metadata = metadata;
                         }
 
-                        Markup.Result.Errors.AddRange(yamlErrors);
+                        Markup.Result.Errors.AddRange(errors);
                         return true;
                     }
                     return false;
                 });
             });
+        }
+
+        public static (List<Error> errors, JObject metadata) Extract(string lines)
+        {
+            var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(lines);
+
+            if (yamlHeaderObj is JObject obj)
+            {
+                return (yamlErrors, obj);
+            }
+
+            yamlErrors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+            return (yamlErrors, default);
         }
     }
 }

@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -53,7 +54,9 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TocParserLoadMarkdownToc()
         {
-            var toc = TableOfContentsParser.LoadMdTocModel(@"
+            var (_, toc) = TableOfContentsParser.LoadMdTocModel(@"---
+a: b
+---
 # [Article1](article1.md)
 ## Container1 ##
 ### [Article2](article2.md ""Article 2"") ##
@@ -67,6 +70,10 @@ namespace Microsoft.Docs.Build
 # [Article7](article7.md)
 ## [External](http://www.microsoft.com)
 ", "TOC.md");
+
+            var tocMetadata = toc.Metadata;
+            Assert.NotNull(tocMetadata);
+            Assert.True(tocMetadata.TryGetValue("a", out var b) && b is JValue vb && b.Value<string>() == "b");
 
             var tocItems = toc.Items;
             Assert.Equal(2, tocItems.Count);
