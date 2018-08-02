@@ -108,8 +108,8 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonException ex) when (ex is JsonSerializationException || ex is JsonReaderException)
             {
-                var range = ParseRangeFromExceptionMessage(ex.Message);
-                throw Errors.ViolateSchema(range, ex.Message).ToException();
+                var (message, range) = ParseRangeFromExceptionMessage(ex.Message);
+                throw Errors.ViolateSchema(range, message).ToException();
             }
         }
 
@@ -181,12 +181,12 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static Range ParseRangeFromExceptionMessage(string message)
+        private static (string, Range) ParseRangeFromExceptionMessage(string message)
         {
             var parts = message.Remove(message.Length - 1).Split(',');
             var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
             var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            return new Range(lineNumber, linePosition);
+            return (message.Substring(0, message.IndexOf(".")), new Range(lineNumber, linePosition));
         }
 
         private static bool IsNullOrUndefined(this JToken token)

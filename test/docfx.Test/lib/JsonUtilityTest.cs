@@ -360,7 +360,8 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{""listValueWithLengthRestriction"":[]}", ErrorLevel.Error, "violate-schema", 1, 35)]
         [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""]}", ErrorLevel.Error, "violate-schema", 1, 35)]
         [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}", ErrorLevel.Error, "violate-schema", 1, 53)]
-        internal void TestDataAnnotation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+        [InlineData(@"{""B"": 1}", ErrorLevel.Error, "violate-schema", 1, 1)]
+        internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
             var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
@@ -422,6 +423,9 @@ namespace Microsoft.Docs.Build
 
             // make it nullable, so that json serializer would not make a default value
             public BasicEnum? ValueEnum { get; set; }
+
+            [JsonRequired]
+            public string ValueRequired { get; set; }
         }
 
         public class ClassWithJsonExtensionData : BasicClass

@@ -462,7 +462,8 @@ Data:
                         - d", ErrorLevel.Error, "violate-schema", 2, 25)]
         [InlineData(@"NestedMember:
                         ValueWithLengthRestriction: abcd", ErrorLevel.Error, "violate-schema", 2, 53)]
-        internal void TestDataAnnotation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+        [InlineData(@"B: 1", ErrorLevel.Error, "violate-schema", 1, 1)]
+        internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
             var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
@@ -523,6 +524,9 @@ Data:
             public NestedClass NestedMember { get; set; }
 
             public BasicEnum ValueEnum { get; set; }
+
+            [JsonRequired]
+            public string ValueRequired { get; set; }
         }
 
         public class ClassWithJsonExtensionData : BasicClass
