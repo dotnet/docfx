@@ -114,6 +114,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 item.Raw |= options.PreserveRawInlineComments;
                 item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
                 item.DisableGitFeatures |= options.DisableGitFeatures;
+                item.DisableDefaultFilter |= options.DisableDefaultFilter;
                 if (!string.IsNullOrEmpty(options.FilterConfigFile))
                 {
                     item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);
