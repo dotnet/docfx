@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -30,6 +31,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [ImportMany]
         internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
+
+        private const string FallbackFoldersKey = "fallbackFolders";
 
         private readonly string _intermediateFolder;
         private readonly CompositionHost _container;
@@ -163,18 +166,35 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
-                    FileAbstractLayerBuilder falBuilder;
+                    FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory);
+                    
+                    object obj = null;
+                    if (parameter.MarkdownEngineParameters?.TryGetValue(FallbackFoldersKey, out obj) == true)
+                    {
+                        try
+                        {
+                            var fallbackFolders = ((IEnumerable)obj).Cast<string>().ToList();
+
+                            foreach(var fallbackFolder in fallbackFolders)
+                            {
+                                var fallbackReader = new RealFileReader(fallbackFolder, ImmutableDictionary<string, string>.Empty);
+                                falBuilder = falBuilder.FallbackReadFromReader(fallbackReader);
+                            }
+                        }
+                        catch
+                        {
+                            // Swallow cast exception. 
+                        }
+                    }
+
                     if (_intermediateFolder == null)
                     {
-                        falBuilder = FileAbstractLayerBuilder.Default
-                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToRealFileSystem(parameter.OutputBaseDir);
+                        falBuilder = falBuilder.WriteToRealFileSystem(parameter.OutputBaseDir);
                     }
                     else
                     {
-                        falBuilder = FileAbstractLayerBuilder.Default
-                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
+                        falBuilder = falBuilder.WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
                     }
                     if (!string.IsNullOrEmpty(parameter.FALName))
                     {

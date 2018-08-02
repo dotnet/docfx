@@ -61,7 +61,7 @@ description: include file
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md", "~/r/b.md" };
+            var expectedDependency = new List<string> { "a.md", "b.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -96,7 +96,7 @@ This is a file A included by another file.
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a(x).md" };
+            var expectedDependency = new List<string> { "a(x).md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -131,7 +131,7 @@ This is a file A included by another file.
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -211,7 +211,7 @@ Test Escaped Inline Included File: \[!include[refa](~/r/a.md)].
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -264,7 +264,7 @@ block content in Inline Inclusion.";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -328,11 +328,12 @@ Paragraph1
             Assert.Equal(
                 new[]
                 {
-                    "~/r/a/refc.md",
-                    "~/r/b/linkAndRefRoot.md",
-                    "~/r/c/c.md",
-                    "~/r/empty.md",
-                    "~/r/link/link2.md",
+                    "a/refc.md",
+                    "b/linkAndRefRoot.md",
+                    "c/c.md",
+                    "empty.md",
+                    "link/link2.md",
+                    "root.md",
                 },
                 dependency.OrderBy(x => x).ToArray());
         }
@@ -380,14 +381,14 @@ Paragraph1
             var dependency = marked.Dependency;
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/r/b/token.md" },
+                new[] { "../b/token.md" },
                 dependency.OrderBy(x => x).ToArray());
 
             marked = TestUtility.MarkupWithoutSourceInfo(d, "r/c/d/d.md");
             dependency = marked.Dependency;
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/r/b/token.md" },
+                new[] { "../../b/token.md" },
                 dependency.OrderBy(x => x).ToArray());
 
             dependency.Clear();
@@ -395,7 +396,7 @@ Paragraph1
             dependency = marked.Dependency;
             Assert.Equal($@"{expected}{expected}", marked.Html);
             Assert.Equal(
-                new[] { "~/r/a/a.md", "~/r/b/token.md", "~/r/c/d/d.md" },
+                new[] { "a/a.md", "b/token.md", "c/d/d.md" },
                 dependency.OrderBy(x => x).ToArray());
         }
 
@@ -618,7 +619,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/ref1.md", "~/ref2.md", "~/ref3.md" },
+                new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
                 dependency.OrderBy(x => x).ToArray());
         }
 
@@ -651,7 +652,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             var dependency = marked.Dependency;
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
             Assert.Equal(
-              new[] { "~/inc1.md", "~/inc2.md", "~/inc3.md" },
+              new[] { "inc1.md", "inc2.md", "inc3.md" },
               dependency.OrderBy(x => x).ToArray());
         }
 
@@ -688,7 +689,7 @@ Test Include File
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            var expectedDependency = new List<string> { "../../include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -722,7 +723,7 @@ body";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            var expectedDependency = new List<string> { "../../include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 

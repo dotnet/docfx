@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common;
+    using System.Collections.Immutable;
 
     [Collection("docfx STA")]
     public class DocfxFlavoredMarkdownFallbackTest
@@ -59,8 +61,9 @@ markdown token1.md content end.";
 
             try
             {
-                EnvironmentContext.SetBaseDirectory($"{uniqueFolderName}/root_folder_{uniqueFolderName}");
                 var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
+                SetEnvironmentContext($"{uniqueFolderName}/root_folder_{uniqueFolderName}", fallbackFolders);
+
                 var dependency = new HashSet<string>();
                 var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
                 Assert.Equal($@"<p>1markdown root.md main content start.</p>
@@ -146,9 +149,8 @@ markdown a.md a.md content end.";
 
             try
             {
-                EnvironmentContext.SetBaseDirectory($"{uniqueFolderName}/root_folder");
                 var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder") } };
-
+                SetEnvironmentContext($"{uniqueFolderName}/root_folder", fallbackFolders);
                 // Verify root.md markup result
                 var rootDependency = new HashSet<string>();
                 var rootMarked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md", dependency: rootDependency);
@@ -199,6 +201,21 @@ markdown a.md a.md content end.";
                 Directory.CreateDirectory(dir);
             }
             File.WriteAllText(file, content);
+        }
+
+        private void SetEnvironmentContext(string baseDirectory, List<string> fallbackFolders)
+        {
+            EnvironmentContext.SetBaseDirectory(baseDirectory);
+            FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory);
+
+            foreach(var fallbackFolder in fallbackFolders)
+            {
+                var fallbackReader = new RealFileReader(fallbackFolder, ImmutableDictionary<string, string>.Empty);
+                falBuilder = falBuilder.FallbackReadFromReader(fallbackReader);
+            }
+
+            EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
         }
     }
 }

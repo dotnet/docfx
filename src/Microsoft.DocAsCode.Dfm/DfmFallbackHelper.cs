@@ -48,17 +48,32 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             var originalFullPath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
+
+            bool isFallback;
+            ReportFallbackToDependency(context, filePathToDocset, parentFileDirectoryToDocset, out isFallback);
+
             if (EnvironmentContext.FileAbstractLayer.Exists(filePathToDocset))
             {
-                return Tuple.Create((string)filePathToDocset, false);
+                return Tuple.Create((string)filePathToDocset, isFallback);
             }
-            else
+
+            throw new FileNotFoundException($"Couldn't find file {filePathToDocset} in folders: {string.Join(",", EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset))}", filePathToDocset);
+        }
+
+        private static void ReportFallbackToDependency(IMarkdownContext context, RelativePath filePathToDocset, string parentFileDirectoryToDocset, out bool isFallback)
+        {
+            var expectedPhysicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
+            isFallback = false;
+            foreach(var physicalPath in expectedPhysicalPath)
             {
-                return FindInFallbackFolders(
-                    context,
-                    filePathToDocset,
-                    parentFileDirectoryToDocset,
-                    originalFullPath);
+                if (isFallback)
+                {
+                    var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, physicalPath);
+                    context.ReportDependency(fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
+                }
+
+                if (File.Exists(physicalPath)) break;
+                isFallback = true;
             }
         }
 
