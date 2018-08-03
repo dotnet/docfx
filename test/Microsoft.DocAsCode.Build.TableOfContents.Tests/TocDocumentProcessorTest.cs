@@ -780,13 +780,13 @@ items:
             // Arrange
             var masterContent = @"
 - name: TOC2
-  href: ../a2/toc.yml";
+  href: ../included/toc.yml";
             var includedContent = @"
 - name: Article2
   href: not-existing2.md";
             var files = new FileCollection(_inputFolder);
-            var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "a1");
-            var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "a2");
+            var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "master");
+            var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "included");
             files.Add(DocumentType.Article, new[] { masterFile });
 
             // Act
@@ -798,7 +798,10 @@ items:
             }
             Logger.UnregisterListener(listener);
 
-            // TODO: Assert
+            // Assert
+            Assert.NotNull(listener.Items);
+            Assert.NotEmpty(listener.Items);
+            Assert.Equal("~/included/toc.yml", listener.Items[0].File);
         }
 
         #region Helper methods
