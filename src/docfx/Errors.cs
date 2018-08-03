@@ -46,8 +46,8 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
+        public static Error AuthorNotFound(string author, DocfxException ex)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Error.Message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -121,8 +121,11 @@ namespace Microsoft.Docs.Build
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
-        public static Error ExceedRateLimit()
-            => new Error(ErrorLevel.Warning, "exceed-rate-limit", "GitHub API rate limit exceeded, so that contribution information may be incomplete. You can pass authentication token with remaining rate limit to DocFX to fix it.");
+        public static Error ExceedGitHubRateLimit()
+            => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
+
+        public static Error GitHubUserNotFound(string name)
+            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find GitHub user: '{name}'");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

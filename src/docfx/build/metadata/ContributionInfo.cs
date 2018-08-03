@@ -53,9 +53,14 @@ namespace Microsoft.Docs.Build
             UserProfile authorInfo = null;
             if (!string.IsNullOrEmpty(author))
             {
-                (errors, authorInfo) = await _userProfileCache.GetByUserName(author);
-                if (authorInfo == null)
-                    errors.Add(Errors.AuthorNotFound(author));
+                try
+                {
+                    authorInfo = await _userProfileCache.GetByUserName(author);
+                }
+                catch (DocfxException ex)
+                {
+                    errors.Add(Errors.AuthorNotFound(author, ex));
+                }
             }
             var contributors = new List<UserProfile>();
 

@@ -3,24 +3,30 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Octokit;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitHubAccessor
+    internal static class GitHubAccessor
     {
-        private readonly GitHubClient _client = new GitHubClient(new ProductHeaderValue("DocFXv3"));
-        private readonly object _syncRoot = new object();
-        private bool _isRateLimitExceeded = false;
+        private static readonly GitHubClient _client = new GitHubClient(new ProductHeaderValue("DocFXv3"));
 
-        public async Task<(List<Error> errors, UserProfile profile)> GetUserProfileByName(string name)
+        // 0 for false, 1 for true.
+        private static int _isRateLimitExceeded = 0;
+
+        /// <summary>
+        /// Get user profile by user name from GitHub API
+        /// </summary>
+        /// <exception cref="DocfxException">Thrown when user doesn't exist or GitHub rate limit exceeded</exception>
+        public static async Task<UserProfile> GetUserProfileByName(string name)
         {
             Debug.Assert(!string.IsNullOrEmpty(name));
 
             var errors = new List<Error>();
-            if (_isRateLimitExceeded)
-                return (errors, null);
+            if (IsRateLimitExceeded())
+                throw Errors.ExceedGitHubRateLimit().ToException();
 
             User user;
             try
@@ -29,34 +35,34 @@ namespace Microsoft.Docs.Build
             }
             catch (RateLimitExceededException)
             {
-                return (ExceedRateLimit(), null);
+                ExceedRateLimit();
+                throw Errors.ExceedGitHubRateLimit().ToException();
             }
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
-                return (errors, null);
+                throw Errors.GitHubUserNotFound(name).ToException();
             }
 
-            return (errors, ToUserProfile(user));
+            return ToUserProfile(user);
         }
 
-        private List<Error> ExceedRateLimit()
+        private static bool IsRateLimitExceeded() => _isRateLimitExceeded == 1;
+
+        private static List<Error> ExceedRateLimit()
         {
-            if (!_isRateLimitExceeded)
+            if (!IsRateLimitExceeded())
             {
-                lock (_syncRoot)
+                if (Interlocked.Exchange(ref _isRateLimitExceeded, 1) == 0)
                 {
-                    if (!_isRateLimitExceeded)
-                    {
-                        _isRateLimitExceeded = true;
-                        return new List<Error> { Errors.ExceedRateLimit() };
-                    }
+                    _isRateLimitExceeded = 1;
+                    return new List<Error> { Errors.ExceedGitHubRateLimit() };
                 }
             }
             return new List<Error>();
         }
 
-        private UserProfile ToUserProfile(User user)
+        private static UserProfile ToUserProfile(User user)
         {
             if (user == null)
                 return null;

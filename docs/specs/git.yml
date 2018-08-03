@@ -154,3 +154,20 @@ outputs:
       "updatedAt": "2018-07-18T05:03:26Z"
     }
   build.manifest:
+---
+# Resolve user from GitHub API if missing in user profile cache
+repo: https://github.com/docascode/docfx-test-dependencies#incomplete-user-profile-cache
+outputs:
+  README.json: |
+    {
+      "author": {
+        "name": "superyyrrzz",
+        "profileUrl": "https://github.com/superyyrrzz",
+        "displayName": "Renze Yu",
+        "id": "3831744"
+      }
+    }
+  testdata1.json:
+  build.manifest:
+  dep.json:
+---

@@ -8,23 +8,22 @@ namespace Microsoft.Docs.Build
 {
     public class GitHubAccessorTest
     {
-        private readonly GitHubAccessor _github = new GitHubAccessor();
-
         [Fact]
         public async Task GetUserProfileByNameAsync()
         {
-            var (errors, profile) = await _github.GetUserProfileByName("docascode");
+            UserProfile profile;
 
-            if (errors.Count == 0)
+            try
             {
+                profile = await GitHubAccessor.GetUserProfileByName("docascode");
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
                 Assert.Equal("DocFX", profile.DisplayName);
                 Assert.Equal("docascode", profile.Name);
                 Assert.Equal("14800732", profile.Id);
             }
-            else
+            catch(DocfxException ex)
             {
-                Assert.Equal("exceed-rate-limit", errors[0].Code);
+                Assert.Equal("exceed-github-rate-limit", ex.Error.Code);
             }
         }
     }
