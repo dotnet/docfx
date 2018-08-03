@@ -54,10 +54,7 @@ namespace Microsoft.Docs.Build
             if (!IsRateLimitExceeded())
             {
                 if (Interlocked.Exchange(ref _isRateLimitExceeded, 1) == 0)
-                {
-                    _isRateLimitExceeded = 1;
                     return new List<Error> { Errors.ExceedGitHubRateLimit() };
-                }
             }
             return new List<Error>();
         }
