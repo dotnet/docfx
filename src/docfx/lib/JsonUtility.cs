@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly ConcurrentDictionary<Type, bool> s_cache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
         private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
         {
             // if type contains JsonExtensionDataAttribute, additional properties are allowed
-            if (TypeContainsJsonExtensionData(type))
+            if (CheckTypeContainsJsonExtensionData(type))
                 return;
 
             path = BuildPath(path, type);
@@ -267,14 +267,11 @@ namespace Microsoft.Docs.Build
             return path is null ? type.Name : $"{path}.{type.Name}";
         }
 
-        private static bool TypeContainsJsonExtensionData(Type type)
+        private static bool CheckTypeContainsJsonExtensionData(Type type)
         {
-            if (!s_cache.TryGetValue(type, out var containsJsonExtensionData))
-            {
-                containsJsonExtensionData = type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null);
-                s_cache.TryAdd(type, containsJsonExtensionData);
-            }
-            return containsJsonExtensionData;
+            return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
+                type,
+                new Lazy<bool>(() => type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
         private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
