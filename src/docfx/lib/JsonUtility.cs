@@ -12,6 +12,8 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -28,6 +30,7 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -179,6 +182,17 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             token.TraverseForUnknownFieldType(errors, type);
             return errors;
+        }
+
+        internal static JSchema GetJsonSchemaFromType(Type type)
+        {
+            return s_cacheTypeJsonSchema.GetOrAdd(
+                type,
+                new Lazy<JSchema>(() =>
+                {
+                    var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.DisallowNull };
+                    return generator.Generate(type, true);
+                })).Value;
         }
 
         private static (string, Range) ParseRangeFromExceptionMessage(string message)
