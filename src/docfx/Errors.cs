@@ -124,8 +124,8 @@ namespace Microsoft.Docs.Build
         public static Error ExceedGitHubRateLimit()
             => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
 
-        public static Error GitHubUserNotFound(string name)
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find GitHub user: '{name}'");
+        public static Error GitHubUserNotFound()
+            => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

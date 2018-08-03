@@ -63,7 +63,7 @@ outputs:
   build.manifest:
   dep.json:
   build.log: |
-    ["warning","author-not-found","Author 'invalid_user' cannot be recognized","README.md"]
+    ["warning","author-not-found","Author 'invalid_user' cannot be recognized: User not found on GitHub","README.md"]
 ---
 # Author should also exist in contributors, even hasn't contributed to the file before
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
