@@ -108,7 +108,7 @@ It references to the `toc.yml` file under folder `howto`, with the following con
   href: howto2.md
 ```
 
-DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into:
+DocFX processes these `toc.yml` files and expands the upper `toc.yml` file into:
 
 ```yaml
 - name: How-to tutorials
