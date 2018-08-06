@@ -13,8 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly GitHubClient _client = new GitHubClient(new ProductHeaderValue("DocFXv3"));
 
-        // 0 for false, 1 for true.
-        private static int _isRateLimitExceeded = 0;
+        private static bool _isRateLimitExceeded = false;
 
         /// <summary>
         /// Get user profile by user name from GitHub API
@@ -25,7 +24,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(name));
 
             var errors = new List<Error>();
-            if (IsRateLimitExceeded())
+            if (_isRateLimitExceeded)
                 throw Errors.ExceedGitHubRateLimit().ToException();
 
             User user;
@@ -35,7 +34,7 @@ namespace Microsoft.Docs.Build
             }
             catch (RateLimitExceededException)
             {
-                ExceedRateLimit();
+                _isRateLimitExceeded = true;
                 throw Errors.ExceedGitHubRateLimit().ToException();
             }
             catch (NotFoundException)
@@ -45,18 +44,6 @@ namespace Microsoft.Docs.Build
             }
 
             return ToUserProfile(user);
-        }
-
-        private static bool IsRateLimitExceeded() => _isRateLimitExceeded == 1;
-
-        private static List<Error> ExceedRateLimit()
-        {
-            if (!IsRateLimitExceeded())
-            {
-                if (Interlocked.Exchange(ref _isRateLimitExceeded, 1) == 0)
-                    return new List<Error> { Errors.ExceedGitHubRateLimit() };
-            }
-            return new List<Error>();
         }
 
         private static UserProfile ToUserProfile(User user)
