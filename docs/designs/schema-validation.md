@@ -1,5 +1,5 @@
 # Schema Validation
-Schema validation will be executed during SDP building. In v2 we used the Newtonsoft.Json.Schema package to validate the object against the json schema. The problem using the Newtonsoft.Json.Schema package is that the end user of docfx would need to purchase a license to be able to process the validation. So in v3, we decided to use [System.ComponentModel.DataAnnotations](https://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations(v=vs.110).aspx) which are attached to C# class to define the schema. 
+Schema validation will be executed during SDP building. In v2, we used Newtonsoft.Json.Schema package to validate an object against a json schema. The problem using the Newtonsoft.Json.Schema package is that the end user of docfx would need to purchase a license to be able to process the validation. So in v3, we decided to use [System.ComponentModel.DataAnnotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=netframework-4.7.2) which are attached to C# class to define the schema. 
 
 ## How it works
 ```
