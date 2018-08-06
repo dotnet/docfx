@@ -211,9 +211,9 @@ namespace Microsoft.DocAsCode.Common
                         fal.Copy(ofi.RelativePath, ofi.RelativePath);
                         ofi.LinkToPath = null;
                     }
-                    catch (PathTooLongException)
+                    catch (PathTooLongException ex)
                     {
-                        Logger.LogError($"Unable to dereference file: {ofi.RelativePath}.", file: ofi.RelativePath);
+                        Logger.LogError($"Unable to dereference file '{ofi.RelativePath}': {ex.Message}", file: ofi.RelativePath);
                     }
                 });
         }
