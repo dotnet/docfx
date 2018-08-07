@@ -32,9 +32,6 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
         private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
 
-        // 1 for schema generation enabled, 0 for disabled
-        private static int _schemaGenerationEnabled = 1;
-
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
@@ -63,6 +60,9 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
+        // 1 for schema generation enabled, 0 for disabled
+        private static int _schemaGenerationEnabled = 1;
 
         /// <summary>
         /// Serialize an object to TextWriter
