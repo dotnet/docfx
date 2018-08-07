@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var content = @"::: form action=""create-resource"" submitText=""Create"" :::";
             var expected = @"<form class=""chromeless-form"" data-action=""create-resource"">
 <div></div>
-<button disabled=""disabled"" type=""submit"">Create</button>
+<button class=""button is-primary"" disabled=""disabled"" type=""submit"">Create</button>
 </form>
 ".Replace("\r\n", "\n");
 
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var content = @"::: form model=""./devsandbox/ChromelessFormsTest.md"" action=""create-resource"" submitText=""Do it"" :::";
             var expected = @"<form class=""chromeless-form"" data-model=""./devsandbox/ChromelessFormsTest.md"" data-action=""create-resource"">
 <div></div>
-<button disabled=""disabled"" type=""submit"">Do it</button>
+<button class=""button is-primary"" disabled=""disabled"" type=""submit"">Do it</button>
 </form>
 ".Replace("\r\n", "\n");
 
@@ -96,7 +96,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var content = @"::: form submitText=""<script> >.< </script>"" action=""create-Resource"" :::";
             var expected = @"<form class=""chromeless-form"" data-action=""create-Resource"">
 <div></div>
-<button disabled=""disabled"" type=""submit"">&lt;script&gt; &gt;.&lt; &lt;/script&gt;</button>
+<button class=""button is-primary"" disabled=""disabled"" type=""submit"">&lt;script&gt; &gt;.&lt; &lt;/script&gt;</button>
 </form>
 ".Replace("\r\n", "\n");
 
@@ -136,5 +136,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             // Listener should have an error message and not output.
             Assert.NotEmpty(listener.Items.Where(x => x.Code == "invalid-form"));
         }
-    }
+
+		[Fact]
+		public void ChromelessFormsTestMultipleForms()
+		{
+			var content = @"
+::: form action=""create-Resource"" submitText=""Create""  :::
+
+::: form action=""update-Resource"" submitText=""Update"" :::
+";
+			var expected = @"<form class=""chromeless-form"" data-action=""create-Resource"">
+<div></div>
+<button class=""button is-primary"" disabled=""disabled"" type=""submit"">Create</button>
+</form>
+<form class=""chromeless-form"" data-action=""update-Resource"">
+<div></div>
+<button class=""button is-primary"" disabled=""disabled"" type=""submit"">Update</button>
+</form>
+".Replace("\r\n", "\n");
+
+			TestUtility.AssertEqual(expected, content, TestUtility.MarkupWithoutSourceInfo);
+		}
+	}
 }
