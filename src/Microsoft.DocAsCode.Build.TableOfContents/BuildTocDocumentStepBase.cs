@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private static LinkSourceInfo GetLinkSourceInfo(string path, string anchor, string source, string includedFrom)
         {
-            return new LinkSourceInfo()
+            return new LinkSourceInfo
             {
                 SourceFile = includedFrom ?? source,
                 Anchor = anchor,
