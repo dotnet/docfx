@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -31,14 +32,21 @@ namespace Microsoft.Docs.Build
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
         }
 
-        public UserProfile GetByUserName(string userName)
+        /// <summary>
+        /// Get user profile by user name from user profile cache or GitHub API
+        /// </summary>
+        /// <exception cref="DocfxException">Thrown when user doesn't exist or GitHub rate limit exceeded</exception>
+        public async Task<UserProfile> GetByUserName(string userName)
         {
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
-            if (_cacheByName.TryGetValue(userName, out var userProfile))
-                return userProfile;
-            else
-                return null;
+            if (!_cacheByName.TryGetValue(userName, out var userProfile))
+            {
+                userProfile = await GitHubAccessor.GetUserProfileByName(userName);
+                AddToCache(userProfile);
+            }
+
+            return userProfile;
         }
 
         public UserProfile GetByUserEmail(string userEmail)
@@ -71,6 +79,25 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 throw Errors.InvalidUserProfileCache(cachePath, ex).ToException(ex);
+            }
+        }
+
+        private void AddToCache(UserProfile profile)
+        {
+            if (profile == null)
+                return;
+
+            if (!string.IsNullOrEmpty(profile.Name))
+            {
+                _cacheByName.TryAdd(profile.Name, profile);
+            }
+
+            if (profile.UserEmails != null)
+            {
+                foreach (var email in profile.UserEmails.Split(";"))
+                {
+                    _cacheByEmail.TryAdd(email, profile);
+                }
             }
         }
     }
