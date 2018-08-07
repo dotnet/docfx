@@ -16,11 +16,13 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByEmail;
         private readonly string _cachePath;
+        private readonly GitHubAccessor _github;
 
-        public UserProfileCache(IDictionary<string, UserProfile> cache, string path)
+        public UserProfileCache(IDictionary<string, UserProfile> cache, string path, GitHubAccessor github)
         {
             Debug.Assert(cache != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(github != null);
 
             _cachePath = path;
             _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache);
@@ -30,6 +32,7 @@ namespace Microsoft.Docs.Build
                 from email in profile.UserEmails.Split(";")
                 group profile by email into g
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
+            _github = github;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (!_cacheByName.TryGetValue(userName, out var userProfile))
             {
-                userProfile = await GitHubAccessor.GetUserProfileByName(userName);
+                userProfile = await _github.GetUserProfileByName(userName);
                 AddToCache(userProfile);
             }
 
@@ -63,9 +66,11 @@ namespace Microsoft.Docs.Build
         /// Create an instance of <see cref="UserProfileCache"/> from local cache
         /// </summary>
         /// <param name="cachePath">the path of the cache file</param>
-        public static UserProfileCache Create(string cachePath)
+        /// <param name="gitToken">the GitHubAccessor to fetch information when missing in cache</param>
+        public static UserProfileCache Create(string cachePath, GitHubAccessor github)
         {
             Debug.Assert(!string.IsNullOrEmpty(cachePath));
+            Debug.Assert(github != null);
 
             var json = "{}";
             if (File.Exists(cachePath))
@@ -74,7 +79,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var (_, cache) = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
-                return new UserProfileCache(cache, cachePath);
+                return new UserProfileCache(cache, cachePath, github);
             }
             catch (Exception ex)
             {
