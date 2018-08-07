@@ -121,6 +121,12 @@ namespace Microsoft.Docs.Build
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
+        public static Error NewtonJsonSchemaLimitExceeded(string message)
+            => new Error(ErrorLevel.Warning, "newton-json-schema-limit-exceeded", message);
+
+        public static Error NewtonJsonSchemaLicenseRegistrationFailed(string message)
+            => new Error(ErrorLevel.Warning, "newton-json-schema-registraion-failed", $"Encountered issue while register license for Newtonsoft.Json.Schema: {message}");
+
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);

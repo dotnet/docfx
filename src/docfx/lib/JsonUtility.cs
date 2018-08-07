@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
 
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
         private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
+
+        // 1 for schema generation enabled, 0 for disabled
+        private static int _schemaGenerationEnabled = 1;
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -165,6 +168,26 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        /// <summary>
+        /// Generate Json schema from object type
+        /// </summary>
+        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type, string license = null)
+        {
+            var errors = new List<Error>();
+            var licenseRegistrationError = RegisterNewtonJsonSchemaLicense(license);
+            errors.AddRange(licenseRegistrationError);
+
+            var jSchema = s_cacheTypeJsonSchema.GetOrAdd(
+                type,
+                new Lazy<JSchema>(() =>
+                {
+                    var (generateErrors, schema) = GenerateJSchema(type);
+                    errors.AddRange(generateErrors);
+                    return schema;
+                })).Value;
+            return (errors, jSchema);
+        }
+
         internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
@@ -184,15 +207,49 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        internal static JSchema GetJsonSchemaFromType(Type type)
+        private static IList<Error> RegisterNewtonJsonSchemaLicense(string license)
         {
-            return s_cacheTypeJsonSchema.GetOrAdd(
-                type,
-                new Lazy<JSchema>(() =>
+            if (string.IsNullOrEmpty(license))
+            {
+                return new List<Error>();
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+                return new List<Error>();
+            }
+            catch (Exception ex)
+            {
+                return new List<Error>() { Errors.NewtonJsonSchemaLicenseRegistrationFailed(ex.Message) };
+            }
+        }
+
+        private static (List<Error>, JSchema) GenerateJSchema(Type type)
+        {
+            try
+            {
+                if (_schemaGenerationEnabled != 1)
+                    return (new List<Error>(), null);
+
+                var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
+                var schema = generator.Generate(type, true);
+
+                // If type contains JsonExtensinDataAttribute, additional properties are allowed
+                if (!CheckTypeContainsJsonExtensionData(type))
                 {
-                    var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.DisallowNull };
-                    return generator.Generate(type, true);
-                })).Value;
+                    schema.AllowAdditionalProperties = false;
+                }
+                return (new List<Error>(), schema);
+            }
+            catch (JSchemaException ex)
+            {
+                if (Interlocked.Exchange(ref _schemaGenerationEnabled, 0) == 1)
+                {
+                    return (new List<Error>() { Errors.NewtonJsonSchemaLimitExceeded(ex.Message) }, null);
+                }
+                return (new List<Error>(), null);
+            }
         }
 
         private static (string, Range) ParseRangeFromExceptionMessage(string message)
