@@ -56,6 +56,9 @@ outputs:
   dep.json:
 ---
 # Specify invalid author in YAML header should log warning
+# The warning message for author-not-found can one of the following:
+# - Author 'invalid_user' cannot be recognized: User not found on GitHub
+# - Author 'invalid_user' cannot be recognized: GitHub API rate limit exceeded
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-3
 outputs:
   README.json:
@@ -63,7 +66,7 @@ outputs:
   build.manifest:
   dep.json:
   build.log: |
-    ["warning","author-not-found","Author 'invalid_user' cannot be recognized: User not found on GitHub","README.md"]
+    ["warning","author-not-found","*","README.md"]
 ---
 # Author should also exist in contributors, even hasn't contributed to the file before
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4

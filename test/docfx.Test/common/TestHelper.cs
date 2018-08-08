@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -119,6 +121,52 @@ namespace Microsoft.Docs.Build
             string TrimWhiteSpace(string text)
             {
                 return Regex.Replace(text, @"\s+", " ").Trim();
+            }
+        }
+
+        public static void VerifyLogEquals(List<string> expectedLog, List<string> actualLog)
+        {
+            Assert.Equal(expectedLog.Count, actualLog.Count);
+
+            for (var i = 0; i < expectedLog.Count; i++)
+            {
+                var (_, expectedLogItem) = JsonUtility.Deserialize<JArray>(expectedLog[i]);
+                var (_, actualLogItem) = JsonUtility.Deserialize<JArray>(actualLog[i]);
+                VerifyLogItemEquals(expectedLogItem, actualLogItem);
+            }
+        }
+
+        private static void VerifyLogItemEquals(JArray expectedLogItem, JArray actualLogItem)
+        {
+            Assert.Equal(expectedLogItem.Count, actualLogItem.Count);
+            for (var i = 0; i < expectedLogItem.Count; i++)
+            {
+                var expectedValue = (JValue)expectedLogItem[i];
+                var actualValue = (JValue)actualLogItem[i];
+                switch (expectedValue.Type)
+                {
+                    case JTokenType.String:
+                        VerifyStringEqual(expectedValue, actualValue);
+                        break;
+                    default:
+                        Assert.Equal(expectedValue, actualValue);
+                        break;
+                }
+            }
+        }
+
+        private static void VerifyStringEqual(JValue expected, JValue actual)
+        {
+            Assert.Equal(JTokenType.String, actual.Type);
+            var expectedStr = expected.ToString();
+            var actualStr = actual.ToString();
+            switch (expectedStr)
+            {
+                case "*":
+                    break;
+                default:
+                    Assert.Equal(expectedStr, actualStr);
+                    break;
             }
         }
     }
