@@ -84,8 +84,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonIgnore]
         public string AggregatedHref { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "includedFrom")]
+        [JsonProperty("includedFrom")]
         public string IncludedFrom { get; set; }
 
         [YamlMember(Alias = "homepage")]

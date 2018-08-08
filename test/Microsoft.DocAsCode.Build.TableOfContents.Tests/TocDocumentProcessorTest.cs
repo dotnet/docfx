@@ -783,14 +783,17 @@ items:
   href: ../included/toc.yml";
             var includedContent = @"
 - name: Article2
-  href: not-existing2.md";
+  href: not-existing2.md
+- name: Article3ByUid
+  uid: not-existing-uid";
             var files = new FileCollection(_inputFolder);
             var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "master");
             var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "included");
             files.Add(DocumentType.Article, new[] { masterFile });
 
             // Act
-            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidFileLink);
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
+                new List<string> { WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound });
             Logger.RegisterListener(listener);
             using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
             {
@@ -800,8 +803,11 @@ items:
 
             // Assert
             Assert.NotNull(listener.Items);
-            Assert.NotEmpty(listener.Items);
+            Assert.Equal(2, listener.Items.Count);
+            Assert.Equal(WarningCodes.Build.InvalidFileLink, listener.Items[0].Code);
             Assert.Equal("~/included/toc.yml", listener.Items[0].File);
+            Assert.Equal(WarningCodes.Build.UidNotFound, listener.Items[1].Code);
+            Assert.Equal("~/included/toc.yml", listener.Items[1].File);
         }
 
         #region Helper methods

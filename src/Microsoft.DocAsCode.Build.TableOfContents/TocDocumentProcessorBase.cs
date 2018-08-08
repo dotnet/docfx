@@ -95,11 +95,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ConvertToObjectHelper.ConvertStrongTypeToObject(model);
         }
 
-        private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
+        private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context, string includedFrom = null)
         {
             if (toc.IsHrefUpdated) return;
 
-            ResolveUid(toc, model, context);
+            ResolveUid(toc, model, context, includedFrom);
 
             // Have to register TocMap after uid is resolved
             RegisterTocMapToContext(toc, model, context);
@@ -113,22 +113,23 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context, nameof(toc.TopicHref));
             toc.OriginalTopicHref = null;
 
+            includedFrom = toc.IncludedFrom ?? includedFrom;
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
                 {
-                    UpdateTocItemHref(item, model, context);
+                    UpdateTocItemHref(item, model, context, includedFrom);
                 }
             }
 
             toc.IsHrefUpdated = true;
         }
 
-        private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
+        private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context, string includedFrom)
         {
             if (item.TopicUid != null)
             {
-                var xref = GetXrefFromUid(item.TopicUid, model, context);
+                var xref = GetXrefFromUid(item.TopicUid, model, context, includedFrom);
                 if (xref != null)
                 {
                     item.Href = item.TopicHref = xref.Href;
@@ -149,14 +150,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context)
+        private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context, string includedFrom)
         {
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
                 Logger.LogWarning(
-                    $"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRoot}\"",
-                    code: WarningCodes.Build.UidNotFound);
+                    $"Unable to find file with uid \"{uid}\" referenced by TOC file \"{includedFrom ?? model.LocalPathFromRoot}\"",
+                    code: WarningCodes.Build.UidNotFound,
+                    file: includedFrom);
             }
             return xref;
         }
