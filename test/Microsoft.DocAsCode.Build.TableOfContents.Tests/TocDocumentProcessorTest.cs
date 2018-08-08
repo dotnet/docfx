@@ -404,6 +404,7 @@ items:
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
+                                IncludedFrom = "~/sub1/toc.md",
                                 Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
                                 TopicHref = null,
                                 Items = new TocViewModel
@@ -417,6 +418,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -437,6 +439,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -460,6 +463,7 @@ items:
                                 Name = "Topic1.2",
                                 Href = file1, // For referenced toc, href should be overwritten by homepage
                                 TopicHref = file1,
+                                IncludedFrom = "~/sub1/toc.md",
                                 Homepage = file1,
                                 Items = new TocViewModel
                                 {
@@ -472,6 +476,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -491,6 +496,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -514,6 +520,7 @@ items:
                     new TocItemViewModel
                     {
                         Name = "Topic2",
+                        IncludedFrom = "~/sub1/sub2/toc.yml",
                         Href = null,
                         Items = new TocViewModel
                         {
