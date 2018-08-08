@@ -945,7 +945,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: Duplicated keys
+    - name: Null value
       topicHref: f1/a.md
       tocHref: 
       href: f1/b.md
