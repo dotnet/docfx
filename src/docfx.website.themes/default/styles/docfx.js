@@ -387,13 +387,14 @@ $(function () {
               }
             } else {
               if (util.getAbsolutePath(href) === currentAbsPath) {
-                isActive = true;
+                var dropdown = $(e).attr('data-toggle') == "dropdown"
+                if (!dropdown) {
+                  isActive = true;
+                }
               }
             }
             if (isActive) {
-              if ((window.location.pathname != '/index.html') && (window.location.pathname != '/')) {
-                $(e).addClass(active);
-              }
+              $(e).addClass(active);
             }
           }
         });
