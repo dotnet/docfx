@@ -44,9 +44,9 @@ Comparing to `toc.md`, `toc.yml` represents a structured data model and conforms
 
 #### Data model for `toc.yml`
 
-The data model for `toc.yml` is either an **array** of *TOC Item Object*s, or an **object** consisting of two properties - "metadata": an **object** containing all metadata of the TOC, and "items": an **array** of *TOC Item Object*s.
+The data model for `toc.yml` is an **array** of *TOC Item Object*s.
 
-A sample `toc.yml` in array model is as below:
+A sample `toc.yml` is as below:
 
 ```yml
 - name: Topic1
@@ -56,21 +56,6 @@ A sample `toc.yml` in array model is as below:
   items:
     - name: Topic2_1
       href: Topic2_1.md
-```
-
-A sample `toc.yml` in object model is as below:
-
-```yml
-- metadata:
-    description: "This is one TOC file in object model."
-- items:
-  - name: Topic1
-    href: Topic1.md
-  - name: Topic2
-    href: Topic2.md
-    items:
-      - name: Topic2_1
-        href: Topic2_1.md
 ```
 
 #### *TOC Item Object*
@@ -109,9 +94,6 @@ Each case is described in detail below.
 ### Link to another *TOC File*
 
 If the *TOC Item* is linking to some other *TOC File* in relative path, it is considered as a placeholder of the referenced *TOC File*. DocFX will extract the array of *TOC Item Object* from that *TOC File* and insert into current *TOC Item* **recursively**.
-
-> [!Note]
-> If the referenced *TOC File* is in object model, the metadata property will be ignored when being inserted into the referencing *TOC File*.
 
 This technique is especially useful when you want DocFX to combine several *TOC File*s to build into one single TOC.
 
