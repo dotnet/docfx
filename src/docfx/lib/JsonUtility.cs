@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogInfoForNullValue(token, errors, prop.Name);
+                        LogInfoForNullValue(item, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
