@@ -104,7 +104,7 @@ If a *TOC Item* is linking to a relative path, there are three cases:
 2. Linking to a folder, which means, the value of the link ends with `/` explicitly, for example, `href: examples/`
 3. Linking to some local file.
 
-Each case is described in details below.
+Each case is described in detail below.
 
 ### Link to another *TOC File*
 
