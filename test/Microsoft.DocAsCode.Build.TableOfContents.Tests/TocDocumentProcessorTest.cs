@@ -404,6 +404,7 @@ items:
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
+                                IncludedFrom = "~/sub1/toc.md",
                                 Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
                                 TopicHref = null,
                                 Items = new TocViewModel
@@ -417,6 +418,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -437,6 +439,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -460,6 +463,7 @@ items:
                                 Name = "Topic1.2",
                                 Href = file1, // For referenced toc, href should be overwritten by homepage
                                 TopicHref = file1,
+                                IncludedFrom = "~/sub1/toc.md",
                                 Homepage = file1,
                                 Items = new TocViewModel
                                 {
@@ -472,6 +476,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
+                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -491,6 +496,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
+                                        IncludedFrom = "~/SUB1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -514,6 +520,7 @@ items:
                     new TocItemViewModel
                     {
                         Name = "Topic2",
+                        IncludedFrom = "~/sub1/sub2/toc.yml",
                         Href = null,
                         Items = new TocViewModel
                         {
@@ -772,6 +779,42 @@ items:
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
             Assert.Single(model.Items); // empty node is removed
+        }
+
+        [Fact]
+        public void WarningShouldBeFromIncludedToc()
+        {
+            // Arrange
+            var masterContent = @"
+- name: TOC2
+  href: ../included/toc.yml";
+            var includedContent = @"
+- name: Article2
+  href: not-existing2.md
+- name: Article3ByUid
+  uid: not-existing-uid";
+            var files = new FileCollection(_inputFolder);
+            var masterFile = _fileCreator.CreateFile(masterContent, FileType.YamlToc, "master");
+            var includedFile = _fileCreator.CreateFile(includedContent, FileType.YamlToc, "included");
+            files.Add(DocumentType.Article, new[] { masterFile });
+
+            // Act
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
+                new List<string> { WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound });
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+            }
+            Logger.UnregisterListener(listener);
+
+            // Assert
+            Assert.NotNull(listener.Items);
+            Assert.Equal(2, listener.Items.Count);
+            Assert.Equal(WarningCodes.Build.InvalidFileLink, listener.Items[0].Code);
+            Assert.Equal("~/included/toc.yml", listener.Items[0].File);
+            Assert.Equal(WarningCodes.Build.UidNotFound, listener.Items[1].Code);
+            Assert.Equal("~/included/toc.yml", listener.Items[1].File);
         }
 
         #region Helper methods

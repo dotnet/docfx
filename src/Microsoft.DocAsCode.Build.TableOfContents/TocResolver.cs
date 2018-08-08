@@ -219,6 +219,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
+                        item.IncludedFrom = item.Href;
+
                         var href = (RelativePath)item.Href;
                         var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
@@ -248,6 +250,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             item.TocHref = NormalizeHref(item.TocHref, relativeToFile);
             item.TopicHref = NormalizeHref(item.TopicHref, relativeToFile);
             item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
+            item.IncludedFrom = NormalizeHref(item.IncludedFrom, relativeToFile);
 
             wrapper.IsResolved = true;
 
