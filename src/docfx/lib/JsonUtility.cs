@@ -169,14 +169,32 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Register license for Newtonsoft.Json.Schema to avoid limit of generating json schema from object type
+        /// </summary>
+        public static IList<Error> RegisterNewtonsoftJsonSchemaLicense(string license)
+        {
+            if (string.IsNullOrEmpty(license))
+            {
+                return new List<Error>();
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+                return new List<Error>();
+            }
+            catch (Exception ex)
+            {
+                return new List<Error> { Errors.NewtonsoftJsonSchemaLicenseRegistrationFailed(ex.Message) };
+            }
+        }
+
+        /// <summary>
         /// Generate Json schema from object type
         /// </summary>
-        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type, string license = null)
+        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type)
         {
             var errors = new List<Error>();
-            var licenseRegistrationError = RegisterNewtonJsonSchemaLicense(license);
-            errors.AddRange(licenseRegistrationError);
-
             var jSchema = s_cacheTypeJsonSchema.GetOrAdd(
                 type,
                 new Lazy<JSchema>(() =>
@@ -207,24 +225,6 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static IList<Error> RegisterNewtonJsonSchemaLicense(string license)
-        {
-            if (string.IsNullOrEmpty(license))
-            {
-                return new List<Error>();
-            }
-
-            try
-            {
-                License.RegisterLicense(license);
-                return new List<Error>();
-            }
-            catch (Exception ex)
-            {
-                return new List<Error>() { Errors.NewtonJsonSchemaLicenseRegistrationFailed(ex.Message) };
-            }
-        }
-
         private static (List<Error>, JSchema) GenerateJSchema(Type type)
         {
             try
@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
                 if (_schemaGenerationEnabled != 1)
                     return (new List<Error>(), null);
 
-                var generator = new JSchemaGenerator() { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
+                var generator = new JSchemaGenerator { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
                 var schema = generator.Generate(type, true);
 
                 // If type contains JsonExtensinDataAttribute, additional properties are allowed
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _schemaGenerationEnabled, 0) == 1)
                 {
-                    return (new List<Error>() { Errors.NewtonJsonSchemaLimitExceeded(ex.Message) }, null);
+                    return (new List<Error> { Errors.NewtonsoftJsonSchemaLimitExceeded(ex.Message) }, null);
                 }
                 return (new List<Error>(), null);
             }
