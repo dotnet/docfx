@@ -23,23 +23,26 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private ContributionInfo(Docset docset)
+        private readonly GitHubAccessor _github;
+
+        private ContributionInfo(Docset docset, string gitToken)
         {
             _commitsByFile = LoadCommits(docset);
+            _github = new GitHubAccessor(gitToken);
 
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
                 : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
 
-            _userProfileCache = UserProfileCache.Create(
-                string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
+            var userProfilePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
                     ? s_defaultProfilePath
-                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache));
+                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache);
+            _userProfileCache = UserProfileCache.Create(userProfilePath, _github);
         }
 
-        public static ContributionInfo Load(Docset docset)
+        public static ContributionInfo Load(Docset docset, string gitToken)
         {
-            return new ContributionInfo(docset);
+            return new ContributionInfo(docset, gitToken);
         }
 
         public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
