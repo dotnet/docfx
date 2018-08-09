@@ -348,6 +348,10 @@ namespace Microsoft.Docs.Build
           ""B"": 1,
           ""C"": ""c"",
           ""E"": ""e""}}", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        [InlineData(@"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}]", typeof(List<ClassWithJsonExtensionData>))]
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);

@@ -342,7 +342,31 @@ namespace Microsoft.Docs.Build
         {
             return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
                 type,
-                new Lazy<bool>(() => type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
+                new Lazy<bool>(() => GetCollectionItemTypeIfArray(type)
+                        .GetProperties()
+                        .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
+        }
+
+        private static Type GetCollectionItemTypeIfArray(Type type)
+        {
+            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+            if (contract is JsonObjectContract)
+            {
+                return type;
+            }
+            else if (contract is JsonArrayContract arrayContract)
+            {
+                var itemType = arrayContract.CollectionItemType;
+                if (itemType is null)
+                {
+                    return type;
+                }
+                else
+                {
+                    return GetCollectionItemTypeIfArray(itemType);
+                }
+            }
+            return type;
         }
 
         private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
