@@ -8,10 +8,12 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -28,6 +30,7 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -57,6 +60,9 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
+        // 1 for schema generation enabled, 0 for disabled
+        private static int _schemaGenerationEnabled = 1;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -162,6 +168,44 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        /// <summary>
+        /// Register license for Newtonsoft.Json.Schema to avoid limit of generating json schema from object type
+        /// </summary>
+        public static IList<Error> RegisterNewtonsoftJsonSchemaLicense(string license)
+        {
+            if (string.IsNullOrEmpty(license))
+            {
+                return new List<Error>();
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+                return new List<Error>();
+            }
+            catch (Exception ex)
+            {
+                return new List<Error> { Errors.NewtonsoftJsonSchemaLicenseRegistrationFailed(ex.Message) };
+            }
+        }
+
+        /// <summary>
+        /// Generate Json schema from object type
+        /// </summary>
+        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type)
+        {
+            var errors = new List<Error>();
+            var jSchema = s_cacheTypeJsonSchema.GetOrAdd(
+                type,
+                new Lazy<JSchema>(() =>
+                {
+                    var (generateErrors, schema) = GenerateJSchema(type);
+                    errors.AddRange(generateErrors);
+                    return schema;
+                })).Value;
+            return (errors, jSchema);
+        }
+
         internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
@@ -179,6 +223,33 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             token.TraverseForUnknownFieldType(errors, type);
             return errors;
+        }
+
+        private static (List<Error>, JSchema) GenerateJSchema(Type type)
+        {
+            try
+            {
+                if (_schemaGenerationEnabled != 1)
+                    return (new List<Error>(), null);
+
+                var generator = new JSchemaGenerator { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
+                var schema = generator.Generate(type, true);
+
+                // If type contains JsonExtensinDataAttribute, additional properties are allowed
+                if (!CheckTypeContainsJsonExtensionData(type))
+                {
+                    schema.AllowAdditionalProperties = false;
+                }
+                return (new List<Error>(), schema);
+            }
+            catch (JSchemaException ex)
+            {
+                if (Interlocked.Exchange(ref _schemaGenerationEnabled, 0) == 1)
+                {
+                    return (new List<Error> { Errors.NewtonsoftJsonSchemaLimitExceeded(ex.Message) }, null);
+                }
+                return (new List<Error>(), null);
+            }
         }
 
         private static (string, Range) ParseRangeFromExceptionMessage(string message)
@@ -221,7 +292,7 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogInfoForNullValue(token, errors, prop.Name);
+                        LogInfoForNullValue(item, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else

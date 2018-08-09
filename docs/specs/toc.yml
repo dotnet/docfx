@@ -940,3 +940,22 @@ outputs:
   docs/f2/TOC.experimental.json:
   docs/f1/TOC.json: |
     {"items":[{"toc_title":"TOC Reference"}]}
+---
+# Toc with null value
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: Null value
+      topicHref: f1/a.md
+      tocHref: 
+      href: f1/b.md
+  docs/f1/a.md:
+  docs/f1/b.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  docs/TOC.json:
+  build.manifest:
+  build.log: |
+    ["info","null-value","(Line: 3, Character: 3) 'tocHref' contains null value","docs/TOC.yml",3,3]
+---
