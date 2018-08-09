@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool SelfClosing => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
-		private Queue<string> submitTextArray = new Queue<string>();
+        private Queue<string> submitTextArray = new Queue<string>();
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
         {
@@ -70,11 +70,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             htmlAttributes.AddProperty("data-action", action);
             htmlAttributes.AddClass("chromeless-form");
 
-			submitTextArray.Enqueue(submitText);
+            submitTextArray.Enqueue(submitText);
 
             RenderDelegate = (renderer, obj) =>
             {
-				var s = submitTextArray.Dequeue();
+                var s = submitTextArray.Dequeue();
 
                 renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
                 renderer.WriteLine("<div></div>");

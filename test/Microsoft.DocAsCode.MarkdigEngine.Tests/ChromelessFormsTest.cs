@@ -137,15 +137,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.NotEmpty(listener.Items.Where(x => x.Code == "invalid-form"));
         }
 
-		[Fact]
-		public void ChromelessFormsTestMultipleForms()
-		{
-			var content = @"
+        [Fact]
+        public void ChromelessFormsTestMultipleForms()
+        {
+            var content = @"
 ::: form action=""create-Resource"" submitText=""Create""  :::
 
 ::: form action=""update-Resource"" submitText=""Update"" :::
 ";
-			var expected = @"<form class=""chromeless-form"" data-action=""create-Resource"">
+            var expected = @"<form class=""chromeless-form"" data-action=""create-Resource"">
 <div></div>
 <button class=""button is-primary"" disabled=""disabled"" type=""submit"">Create</button>
 </form>
@@ -155,7 +155,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </form>
 ".Replace("\r\n", "\n");
 
-			TestUtility.AssertEqual(expected, content, TestUtility.MarkupWithoutSourceInfo);
-		}
-	}
+            TestUtility.AssertEqual(expected, content, TestUtility.MarkupWithoutSourceInfo);
+        }
+    }
 }
