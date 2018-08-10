@@ -309,7 +309,7 @@ namespace Microsoft.Docs.Build
             path = BuildPath(path, type);
             if (token is JArray array)
             {
-                var itemType = GetCollectionItemTypeFromArrayType(type);
+                var itemType = GetCollectionItemTypeIfArrayType(type);
                 foreach (var item in token.Children())
                 {
                     item.TraverseForUnknownFieldType(errors, itemType, path);
@@ -349,7 +349,7 @@ namespace Microsoft.Docs.Build
                         .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
-        private static Type GetCollectionItemTypeFromArrayType(Type type)
+        private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
@@ -365,7 +365,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    return GetCollectionItemTypeFromArrayType(itemType);
+                    return itemType;
                 }
             }
             return type;
