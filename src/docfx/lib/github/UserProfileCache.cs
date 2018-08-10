@@ -16,21 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByEmail;
         private readonly string _cachePath;
-
-        public UserProfileCache(IDictionary<string, UserProfile> cache, string path)
-        {
-            Debug.Assert(cache != null);
-            Debug.Assert(!string.IsNullOrEmpty(path));
-
-            _cachePath = path;
-            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache);
-            _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
-                from profile in cache.Values
-                where profile?.UserEmails != null
-                from email in profile.UserEmails.Split(";")
-                group profile by email into g
-                select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
-        }
+        private readonly GitHubAccessor _github;
 
         /// <summary>
         /// Get user profile by user name from user profile cache or GitHub API
@@ -42,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             if (!_cacheByName.TryGetValue(userName, out var userProfile))
             {
-                userProfile = await GitHubAccessor.GetUserProfileByName(userName);
+                userProfile = await _github.GetUserProfileByName(userName);
                 AddToCache(userProfile);
             }
 
@@ -63,9 +49,11 @@ namespace Microsoft.Docs.Build
         /// Create an instance of <see cref="UserProfileCache"/> from local cache
         /// </summary>
         /// <param name="cachePath">the path of the cache file</param>
-        public static UserProfileCache Create(string cachePath)
+        /// <param name="github">the GitHubAccessor to fetch information when missing in cache</param>
+        public static UserProfileCache Create(string cachePath, GitHubAccessor github)
         {
             Debug.Assert(!string.IsNullOrEmpty(cachePath));
+            Debug.Assert(github != null);
 
             var json = "{}";
             if (File.Exists(cachePath))
@@ -74,12 +62,29 @@ namespace Microsoft.Docs.Build
             try
             {
                 var (_, cache) = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
-                return new UserProfileCache(cache, cachePath);
+                return new UserProfileCache(cache, cachePath, github);
             }
             catch (Exception ex)
             {
                 throw Errors.InvalidUserProfileCache(cachePath, ex).ToException(ex);
             }
+        }
+
+        private UserProfileCache(IDictionary<string, UserProfile> cache, string path, GitHubAccessor github)
+        {
+            Debug.Assert(cache != null);
+            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(github != null);
+
+            _cachePath = path;
+            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache);
+            _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
+                from profile in cache.Values
+                where profile?.UserEmails != null
+                from email in profile.UserEmails.Split(";")
+                group profile by email into g
+                select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
+            _github = github;
         }
 
         private void AddToCache(UserProfile profile)

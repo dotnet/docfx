@@ -8,6 +8,8 @@ namespace Microsoft.Docs.Build
 {
     public class GitHubAccessorTest
     {
+        private GitHubAccessor _github = new GitHubAccessor();
+
         [Fact]
         public async Task GetUserProfileByNameAsync()
         {
@@ -15,7 +17,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                profile = await GitHubAccessor.GetUserProfileByName("docascode");
+                profile = await _github.GetUserProfileByName("docascode");
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
                 Assert.Equal("DocFX", profile.DisplayName);
                 Assert.Equal("docascode", profile.Name);
