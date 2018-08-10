@@ -431,7 +431,7 @@ namespace Microsoft.Docs.Build
         {
             private readonly List<Error> _errors;
 
-            public SchemaValidationJsonContractResolver(List<Error> errors = null)
+            public SchemaValidationJsonContractResolver(List<Error> errors)
             {
                 _errors = errors;
             }
