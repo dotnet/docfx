@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             if (!_cacheByName.TryGetValue(userName, out var userProfile))
             {
                 userProfile = await _github.GetUserProfileByName(userName);
-                AddToCache(userProfile);
+                TryAdd(userName, userProfile);
             }
 
             return userProfile;
@@ -70,6 +70,42 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public bool TryAdd(string userName, UserProfile profile)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(userName));
+            Debug.Assert(profile != null);
+
+            var result = _cacheByName.TryAdd(userName, profile);
+            foreach (var email in profile.GetUserEmails())
+            {
+                _cacheByEmail.TryAdd(email, profile);
+            }
+            return result;
+        }
+
+        public UserProfile AddOrUpdate(string userName, UserProfile value, Func<string, UserProfile, UserProfile> updateValueFactory)
+        {
+            var result = _cacheByName.AddOrUpdate(userName, value, updateValueFactory);
+            foreach (var email in result.GetUserEmails())
+            {
+                _cacheByEmail[email] = result;
+            }
+            return result;
+        }
+
+        public UserProfile AddOrUpdate(
+            string userName,
+            Func<string, UserProfile> addValueFactory,
+            Func<string, UserProfile, UserProfile> updateValueFactory)
+        {
+            var result = _cacheByName.AddOrUpdate(userName, addValueFactory, updateValueFactory);
+            foreach (var email in result.GetUserEmails())
+            {
+                _cacheByEmail[email] = result;
+            }
+            return result;
+        }
+
         private UserProfileCache(IDictionary<string, UserProfile> cache, string path, GitHubAccessor github)
         {
             Debug.Assert(cache != null);
@@ -87,23 +123,5 @@ namespace Microsoft.Docs.Build
             _github = github;
         }
 
-        private void AddToCache(UserProfile profile)
-        {
-            if (profile == null)
-                return;
-
-            if (!string.IsNullOrEmpty(profile.Name))
-            {
-                _cacheByName.TryAdd(profile.Name, profile);
-            }
-
-            if (profile.UserEmails != null)
-            {
-                foreach (var email in profile.UserEmails.Split(";"))
-                {
-                    _cacheByEmail.TryAdd(email, profile);
-                }
-            }
-        }
     }
 }

@@ -13,17 +13,32 @@ namespace Microsoft.Docs.Build
         [Fact]
         public async Task GetUserProfileByNameAsync()
         {
-            UserProfile profile;
-
             try
             {
-                profile = await _github.GetUserProfileByName("docascode");
+                var profile = await _github.GetUserProfileByName("docascode");
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
                 Assert.Equal("DocFX", profile.DisplayName);
                 Assert.Equal("docascode", profile.Name);
                 Assert.Equal("14800732", profile.Id);
             }
-            catch(DocfxException ex)
+            catch (DocfxException ex)
+            {
+                Assert.Equal("exceed-github-rate-limit", ex.Error.Code);
+            }
+        }
+
+        [Fact]
+        public async Task GetNameByCommitAsync()
+        {
+            try
+            {
+                var name = await _github.GetNameByCommit(
+                    "docascode",
+                    "docfx-test-dependencies",
+                    "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
+                Assert.Equal("OsmondJiang", name);
+            }
+            catch (DocfxException ex)
             {
                 Assert.Equal("exceed-github-rate-limit", ex.Error.Code);
             }

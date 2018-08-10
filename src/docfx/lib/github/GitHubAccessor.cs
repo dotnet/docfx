@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -50,6 +51,43 @@ namespace Microsoft.Docs.Build
             }
 
             return ToUserProfile(user);
+        }
+
+        /// <summary>
+        /// Get author by repo and commit from GitHub API
+        /// </summary>
+        /// <exception cref="DocfxException">Thrown when repo or commit doesn't exist, or GitHub rate limit exceeded</exception>"
+        /// <returns> The commit author's name on GitHub </returns>
+        public async Task<string> GetNameByCommit(string repoOwner, string repoName, string commitSha)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(repoOwner));
+            Debug.Assert(!string.IsNullOrEmpty(repoName));
+            Debug.Assert(!string.IsNullOrEmpty(commitSha));
+
+            GitHubCommit githubCommit;
+            Author author;
+            var errors = new List<Error>();
+            if (_isRateLimitExceeded)
+                throw Errors.ExceedGitHubRateLimit().ToException();
+
+            try
+            {
+                githubCommit = await _client.Repository.Commit.Get(repoOwner, repoName, commitSha);
+                author = githubCommit.Author;
+            }
+            catch (RateLimitExceededException)
+            {
+                _isRateLimitExceeded = true;
+                throw Errors.ExceedGitHubRateLimit().ToException();
+            }
+            catch (Exception)
+            {
+                // catch NotFoundException if owner/repo doesn't exist
+                // catch ApiValidationException if no commit found for SHA
+                throw Errors.GitHubCommitNotFound().ToException();
+            }
+
+            return author.Login;
         }
 
         private UserProfile ToUserProfile(User user)

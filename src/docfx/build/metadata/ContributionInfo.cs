@@ -83,9 +83,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 contributors = (from commit in commits
-                                where !string.IsNullOrEmpty(commit.AuthorEmail)
-                                let info = _userProfileCache.GetByUserEmail(commit.AuthorEmail)
-                                where info != null && !(authorInfo != null && info.Id == authorInfo.Id)
+                                let info = GetUserProfile(commit, document).Result
+                                where info != null && !ContributorIsAuthor(info, authorInfo)
                                 group info by info.Id into g
                                 select g.First()).ToList();
             }
@@ -108,6 +107,9 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updateDateTime);
+
+            bool ContributorIsAuthor(UserProfile contributorProfile, UserProfile authorProfile)
+                => contributorProfile.Id == authorProfile?.Id;
         }
 
         public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
@@ -121,7 +123,7 @@ namespace Microsoft.Docs.Build
             }
 
             var branch = repo.Branch ?? "master";
-            var editRepo = document.Docset.Config.Contribution.Repository ?? repo.Name;
+            var editRepo = document.Docset.Config.Contribution.Repository ?? repo.FullName;
             var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
 
             var editUrl = document.Docset.Config.Contribution.Enabled
@@ -129,10 +131,10 @@ namespace Microsoft.Docs.Build
                 : null;
 
             var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
-                ? $"https://github.com/{repo.Name}/blob/{commits[0].Sha}/{pathToRepo}"
+                ? $"https://github.com/{repo.FullName}/blob/{commits[0].Sha}/{pathToRepo}"
                 : null;
 
-            var contentUrl = $"https://github.com/{repo.Name}/blob/{branch}/{pathToRepo}";
+            var contentUrl = $"https://github.com/{repo.FullName}/blob/{branch}/{pathToRepo}";
 
             return (editUrl, contentUrl, commitUrl);
         }
@@ -196,6 +198,23 @@ namespace Microsoft.Docs.Build
                 {
                     result.Add(pathToDocset[i], commitsList[i]);
                 }
+            }
+
+            return result;
+        }
+
+        private async Task<UserProfile> GetUserProfile(GitCommit commit, Document document)
+        {
+            if (string.IsNullOrEmpty(commit.AuthorEmail))
+                return null;
+
+            var result = _userProfileCache.GetByUserEmail(commit.AuthorEmail);
+            if (result == null)
+            {
+                var (repo, _, _) = GetRepository(document);
+                var authorName = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
+                var profile = (await _github.GetUserProfileByName(authorName)).AddEmail(commit.AuthorEmail);
+                result = _userProfileCache.AddOrUpdate(authorName, profile, (k, v) => v.AddEmail(commit.AuthorEmail));
             }
 
             return result;

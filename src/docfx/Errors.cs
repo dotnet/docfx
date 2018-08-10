@@ -127,6 +127,9 @@ namespace Microsoft.Docs.Build
         public static Error GitHubUserNotFound()
             => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
 
+        public static Error GitHubCommitNotFound()
+            => new Error(ErrorLevel.Warning, "github-commit-not-found", $"Commit not found on GitHub");
+
         public static Error NewtonsoftJsonSchemaLimitExceeded(string message)
             => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-limit-exceeded", message);
 
