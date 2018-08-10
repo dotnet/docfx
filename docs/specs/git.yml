@@ -68,7 +68,7 @@ outputs:
   build.log: |
     ["warning","author-not-found","*","README.md"]
 ---
-# Author should **NOT** exist in contributors. Author can have no contribution to the file before.
+# Author should NOT exist in contributors. Author can have no contribution to the file before.
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 
 outputs:
