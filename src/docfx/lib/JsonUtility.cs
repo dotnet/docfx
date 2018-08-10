@@ -236,6 +236,7 @@ namespace Microsoft.Docs.Build
                 var schema = generator.Generate(type, true);
 
                 // If type contains JsonExtensinDataAttribute, additional properties are allowed
+                // TODO: Set AllowAdditionalProperties on nested type, not the entry type
                 if (!CheckTypeContainsJsonExtensionData(type))
                 {
                     schema.AllowAdditionalProperties = false;
@@ -305,20 +306,19 @@ namespace Microsoft.Docs.Build
 
         private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
         {
-            // if type contains JsonExtensionDataAttribute, additional properties are allowed
-            if (CheckTypeContainsJsonExtensionData(type))
-                return;
-
             path = BuildPath(path, type);
             if (token is JArray array)
             {
+                var itemType = GetCollectionItemTypeIfArrayType(type);
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForUnknownFieldType(errors, type, path);
+                    item.TraverseForUnknownFieldType(errors, itemType, path);
                 }
             }
             else if (token is JObject obj)
             {
+                var allowAddtionalProperties = CheckTypeContainsJsonExtensionData(type);
+
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
@@ -327,8 +327,11 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = CheckForUnknownField(type, prop, errors, path);
-                    prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path, allowAddtionalProperties);
+                    if (nestedType != null)
+                    {
+                        prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    }
                 }
             }
         }
@@ -342,10 +345,33 @@ namespace Microsoft.Docs.Build
         {
             return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
                 type,
-                new Lazy<bool>(() => type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
+                new Lazy<bool>(() => type.GetProperties()
+                        .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
-        private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
+        private static Type GetCollectionItemTypeIfArrayType(Type type)
+        {
+            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+            if (contract is JsonObjectContract)
+            {
+                return type;
+            }
+            else if (contract is JsonArrayContract arrayContract)
+            {
+                var itemType = arrayContract.CollectionItemType;
+                if (itemType is null)
+                {
+                    return type;
+                }
+                else
+                {
+                    return itemType;
+                }
+            }
+            return type;
+        }
+
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path, bool allowAdditionalProperties)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             JsonPropertyCollection jsonProperties;
@@ -359,7 +385,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return type;
+                return null;
             }
 
             // if mismatching field found, add error
@@ -367,10 +393,13 @@ namespace Microsoft.Docs.Build
             var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
             if (matchingProperty is null)
             {
-                var lineInfo = prop as IJsonLineInfo;
-                errors.Add(Errors.UnknownField(
-                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
-                return type;
+                if (!allowAdditionalProperties)
+                {
+                    var lineInfo = prop as IJsonLineInfo;
+                    errors.Add(Errors.UnknownField(
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
+                }
+                return null;
             }
             else
             {
