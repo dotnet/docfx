@@ -122,6 +122,5 @@ namespace Microsoft.Docs.Build
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
             _github = github;
         }
-
     }
 }
