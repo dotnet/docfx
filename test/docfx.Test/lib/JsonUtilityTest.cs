@@ -374,6 +374,39 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestMultipleSchemaViolation()
+        {
+            var json = @"{
+""NumberList"": [1, ""a""],
+""B"" : ""b"",
+""ValueEnum"":""Four"",
+""ValueRequired"": ""a""}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(9, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(18, error.Column);
+            });
+        }
+
+        [Fact]
         public void TestGenerateJsonSchemaFromType()
         {
             var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(ClassForJsonSchema));

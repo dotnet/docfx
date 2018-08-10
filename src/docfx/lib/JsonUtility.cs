@@ -109,20 +109,12 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
             var errors = new List<Error>();
-            try
-            {
-                var mismatchingErrors = token.ValidateMismatchingFieldType(type);
-                errors.AddRange(mismatchingErrors);
-                DefaultDeserializer.Error += HandleError;
-                var value = token.ToObject(type, DefaultDeserializer);
-                DefaultDeserializer.Error -= HandleError;
-                return (errors, value);
-            }
-            catch (JsonException ex)
-            {
-                // TODO: throw unhandled exception
-                throw;
-            }
+            var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+            errors.AddRange(mismatchingErrors);
+            DefaultDeserializer.Error += HandleError;
+            var value = token.ToObject(type, DefaultDeserializer);
+            DefaultDeserializer.Error -= HandleError;
+            return (errors, value);
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
@@ -510,6 +502,8 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
+
+                        // TODO: Aggregate the errors somewhere
                         throw Errors.ViolateSchema(range, validationResult.ErrorMessage).ToException();
                     }
                 }

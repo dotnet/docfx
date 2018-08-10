@@ -481,17 +481,6 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             Assert.Equal(expectedErrorColumn, ex.Error.Column);
         }
 
-        internal void TestMultipleSchemaViolation()
-        {
-            var yaml = @"
-regPatternValue: 3
-ValueWithLengthRestriction: a
-NestedMember:
-    ValueWithLengthRestriction: abcd
-ValueRequired: a";
-
-        }
-
         public class BasicClass
         {
             public int B { get; set; }
