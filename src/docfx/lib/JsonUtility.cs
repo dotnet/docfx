@@ -64,9 +64,6 @@ namespace Microsoft.Docs.Build
         // 1 for schema generation enabled, 0 for disabled
         private static int _schemaGenerationEnabled = 1;
 
-        [ThreadStatic]
-        private static List<Error> _schemaViolationErrors;
-
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
@@ -112,27 +109,18 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
             List<Error> errors = new List<Error>();
-            try
+            var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+            errors.AddRange(mismatchingErrors);
+            DefaultDeserializer.Error += HandleError;
+            var serializer = new JsonSerializer
             {
-                var mismatchingErrors = token.ValidateMismatchingFieldType(type);
-                errors.AddRange(mismatchingErrors);
-                DefaultDeserializer.Error += HandleError;
-                _schemaViolationErrors = new List<Error>();
-                var serializer = new JsonSerializer
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = new JsonContractResolver(errors),
-                };
-                serializer.Error += HandleError;
-                var value = token.ToObject(type, serializer);
-                errors.AddRange(_schemaViolationErrors);
-                DefaultDeserializer.Error -= HandleError;
-                return (errors, value);
-            }
-            finally
-            {
-                _schemaViolationErrors = null;
-            }
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new JsonContractResolver(errors),
+            };
+            serializer.Error += HandleError;
+            var value = token.ToObject(type, serializer);
+            DefaultDeserializer.Error -= HandleError;
+            return (errors, value);
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
