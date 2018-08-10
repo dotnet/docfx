@@ -359,6 +359,24 @@ namespace Microsoft.Docs.Build
             Assert.Empty(errors);
         }
 
+        [Fact]
+        public void TestNestedObjectTypeWithoutJsonExtensionData()
+        {
+            var yaml = @"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e"",
+          ""NestedMemberWithoutExtensionData"": {""Unknown"": 1}}]";
+            var (errors, value) = JsonUtility.Deserialize<List<ClassWithJsonExtensionData>>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(57, error.Column);
+            });
+        }
+
         [Theory]
         [InlineData(@"{""regPatternValue"":""3"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22)]
         [InlineData(@"{""valueWithLengthRestriction"":""a"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
@@ -460,6 +478,8 @@ namespace Microsoft.Docs.Build
         {
             [JsonExtensionData]
             public JObject AdditionalData { get; set; }
+
+            public NestedClass NestedMemberWithoutExtensionData { get; set; }
         }
 
         public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass

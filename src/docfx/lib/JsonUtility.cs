@@ -305,20 +305,19 @@ namespace Microsoft.Docs.Build
 
         private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
         {
-            // if type contains JsonExtensionDataAttribute, additional properties are allowed
-            if (CheckTypeContainsJsonExtensionData(type))
-                return;
-
             path = BuildPath(path, type);
             if (token is JArray array)
             {
+                var itemType = GetCollectionItemTypeFromArrayType(type);
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForUnknownFieldType(errors, type, path);
+                    item.TraverseForUnknownFieldType(errors, itemType, path);
                 }
             }
             else if (token is JObject obj)
             {
+                var allowAddtionalProperties = CheckTypeContainsJsonExtensionData(type);
+
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
@@ -327,8 +326,11 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = CheckForUnknownField(type, prop, errors, path);
-                    prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path, allowAddtionalProperties);
+                    if (nestedType != null)
+                    {
+                        prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    }
                 }
             }
         }
@@ -342,12 +344,11 @@ namespace Microsoft.Docs.Build
         {
             return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
                 type,
-                new Lazy<bool>(() => GetCollectionItemTypeIfArray(type)
-                        .GetProperties()
+                new Lazy<bool>(() => type.GetProperties()
                         .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
-        private static Type GetCollectionItemTypeIfArray(Type type)
+        private static Type GetCollectionItemTypeFromArrayType(Type type)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
@@ -363,13 +364,13 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    return GetCollectionItemTypeIfArray(itemType);
+                    return GetCollectionItemTypeFromArrayType(itemType);
                 }
             }
             return type;
         }
 
-        private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path, bool allowAdditionalProperties)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             JsonPropertyCollection jsonProperties;
@@ -383,7 +384,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return type;
+                return null;
             }
 
             // if mismatching field found, add error
@@ -391,10 +392,13 @@ namespace Microsoft.Docs.Build
             var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
             if (matchingProperty is null)
             {
-                var lineInfo = prop as IJsonLineInfo;
-                errors.Add(Errors.UnknownField(
-                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
-                return type;
+                if (!allowAdditionalProperties)
+                {
+                    var lineInfo = prop as IJsonLineInfo;
+                    errors.Add(Errors.UnknownField(
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
+                }
+                return null;
             }
             else
             {
