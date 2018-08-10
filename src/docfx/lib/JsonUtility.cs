@@ -108,14 +108,31 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
+            var errors = new List<Error>();
             try
             {
-                return (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
+                var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+                errors.AddRange(mismatchingErrors);
+                DefaultDeserializer.Error += HandleError;
+                var value = token.ToObject(type, DefaultDeserializer);
+                DefaultDeserializer.Error -= HandleError;
+                return (errors, value);
             }
-            catch (JsonException ex) when (ex is JsonSerializationException || ex is JsonReaderException)
+            catch (JsonException ex)
             {
-                var (message, range) = ParseRangeFromExceptionMessage(ex.Message);
-                throw Errors.ViolateSchema(range, message).ToException();
+                // TODO: throw unhandled exception
+                throw;
+            }
+
+            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+            {
+                if (args.CurrentObject == args.ErrorContext.OriginalObject
+                    && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                {
+                    var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
+                    errors.Add(Errors.ViolateSchema(range, message));
+                    args.ErrorContext.Handled = true;
+                }
             }
         }
 
