@@ -325,17 +325,21 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(@"{
 ""NumberList"":
-  [1, ""a""]}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{""ValueEnum"":""Four""}", ErrorLevel.Error, "violate-schema", 1, 19)]
+  [1, ""a""],
+""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 3, 9)]
+        [InlineData(@"{""B"" : ""b"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{""ValueEnum"":""Four"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         [Theory]
@@ -366,15 +370,18 @@ namespace Microsoft.Docs.Build
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         [Fact]
-        public void TestMultipleSchemaViolation()
+        public void TestMultipleSchemaViolationForPrimitiveType()
         {
             var json = @"{
 ""NumberList"": [1, ""a""],
@@ -403,6 +410,52 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(18, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipleSchemaViolation()
+        {
+            var json = @"{
+""regPatternValue"":""3"",
+""valueWithLengthRestriction"":""a"",
+""listValueWithLengthRestriction"":[],
+""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(32, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(34, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(52, error.Column);
             });
         }
 

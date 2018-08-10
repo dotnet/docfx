@@ -64,6 +64,9 @@ namespace Microsoft.Docs.Build
         // 1 for schema generation enabled, 0 for disabled
         private static int _schemaGenerationEnabled = 1;
 
+        [ThreadStatic]
+        private static List<Error> _schemaViolationErrors;
+
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
@@ -108,13 +111,22 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
-            var errors = new List<Error>();
-            var mismatchingErrors = token.ValidateMismatchingFieldType(type);
-            errors.AddRange(mismatchingErrors);
-            DefaultDeserializer.Error += HandleError;
-            var value = token.ToObject(type, DefaultDeserializer);
-            DefaultDeserializer.Error -= HandleError;
-            return (errors, value);
+            ThreadLocal<List<Error>> errors = new ThreadLocal<List<Error>>(() => new List<Error>());
+            try
+            {
+                var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+                errors.Value.AddRange(mismatchingErrors);
+                DefaultDeserializer.Error += HandleError;
+                _schemaViolationErrors = new List<Error>();
+                var value = token.ToObject(type, DefaultDeserializer);
+                errors.Value.AddRange(_schemaViolationErrors);
+                DefaultDeserializer.Error -= HandleError;
+                return (errors.Value, value);
+            }
+            finally
+            {
+                _schemaViolationErrors = null;
+            }
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
@@ -122,7 +134,7 @@ namespace Microsoft.Docs.Build
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
                     var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                    errors.Add(Errors.ViolateSchema(range, message));
+                    errors.Value.Add(Errors.ViolateSchema(range, message));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -502,9 +514,7 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-
-                        // TODO: Aggregate the errors somewhere
-                        throw Errors.ViolateSchema(range, validationResult.ErrorMessage).ToException();
+                        _schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
             }
