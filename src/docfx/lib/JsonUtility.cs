@@ -111,17 +111,23 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
-            ThreadLocal<List<Error>> errors = new ThreadLocal<List<Error>>(() => new List<Error>());
+            List<Error> errors = new List<Error>();
             try
             {
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
-                errors.Value.AddRange(mismatchingErrors);
+                errors.AddRange(mismatchingErrors);
                 DefaultDeserializer.Error += HandleError;
                 _schemaViolationErrors = new List<Error>();
-                var value = token.ToObject(type, DefaultDeserializer);
-                errors.Value.AddRange(_schemaViolationErrors);
+                var serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ContractResolver = new JsonContractResolver(errors),
+                };
+                serializer.Error += HandleError;
+                var value = token.ToObject(type, serializer);
+                errors.AddRange(_schemaViolationErrors);
                 DefaultDeserializer.Error -= HandleError;
-                return (errors.Value, value);
+                return (errors, value);
             }
             finally
             {
@@ -134,7 +140,7 @@ namespace Microsoft.Docs.Build
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
                     var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                    errors.Value.Add(Errors.ViolateSchema(range, message));
+                    errors.Add(Errors.ViolateSchema(range, message));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -416,18 +422,17 @@ namespace Microsoft.Docs.Build
 
         private sealed class JsonContractResolver : DefaultContractResolver
         {
+            private readonly List<Error> _errors;
+
+            public JsonContractResolver(List<Error> errors = null)
+            {
+                _errors = errors;
+            }
+
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var converter = GetConverter(member);
-
-                if (!prop.Writable)
-                {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                    {
-                        prop.Writable = true;
-                    }
-                }
+                var converter = GetConverter(member, _errors);
 
                 if (converter != null)
                 {
@@ -440,23 +445,33 @@ namespace Microsoft.Docs.Build
                         prop.Converter = converter;
                     }
                 }
+
+                if (!prop.Writable)
+                {
+                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                    {
+                        prop.Writable = true;
+                    }
+                }
                 return prop;
             }
 
-            private static SchemaValidationConverter GetConverter(MemberInfo member)
+            private static SchemaValidationConverter GetConverter(MemberInfo member, List<Error> errors)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
-                return validators.Count == 0 ? null : new SchemaValidationConverter(validators);
+                return validators.Count == 0 ? null : new SchemaValidationConverter(validators, errors);
             }
         }
 
         private sealed class SchemaValidationConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
+            private readonly List<Error> _errors;
 
-            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators, List<Error> errors)
             {
                 _validators = validators;
+                _errors = errors;
             }
 
             public override bool CanConvert(Type objectType) => true;
@@ -514,7 +529,7 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        _schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
+                        _errors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
             }
