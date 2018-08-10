@@ -111,15 +111,13 @@ namespace Microsoft.Docs.Build
             List<Error> errors = new List<Error>();
             var mismatchingErrors = token.ValidateMismatchingFieldType(type);
             errors.AddRange(mismatchingErrors);
-            DefaultDeserializer.Error += HandleError;
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new JsonContractResolver(errors),
+                ContractResolver = new SchemaValidationJsonContractResolver(errors),
             };
             serializer.Error += HandleError;
             var value = token.ToObject(type, serializer);
-            DefaultDeserializer.Error -= HandleError;
             return (errors, value);
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -408,11 +406,32 @@ namespace Microsoft.Docs.Build
             errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
+        private static void SetPropertyWritable(MemberInfo member, JsonProperty prop)
+        {
+            if (!prop.Writable)
+            {
+                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                {
+                    prop.Writable = true;
+                }
+            }
+        }
+
         private sealed class JsonContractResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+                SetPropertyWritable(member, prop);
+                return prop;
+            }
+        }
+
+        private sealed class SchemaValidationJsonContractResolver : DefaultContractResolver
         {
             private readonly List<Error> _errors;
 
-            public JsonContractResolver(List<Error> errors = null)
+            public SchemaValidationJsonContractResolver(List<Error> errors = null)
             {
                 _errors = errors;
             }
@@ -434,13 +453,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                if (!prop.Writable)
-                {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                    {
-                        prop.Writable = true;
-                    }
-                }
+                SetPropertyWritable(member, prop);
                 return prop;
             }
 
