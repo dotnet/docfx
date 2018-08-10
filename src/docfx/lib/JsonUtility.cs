@@ -236,6 +236,7 @@ namespace Microsoft.Docs.Build
                 var schema = generator.Generate(type, true);
 
                 // If type contains JsonExtensinDataAttribute, additional properties are allowed
+                // TODO: Set AllowAdditionalProperties on nested type, not the entry type
                 if (!CheckTypeContainsJsonExtensionData(type))
                 {
                     schema.AllowAdditionalProperties = false;
