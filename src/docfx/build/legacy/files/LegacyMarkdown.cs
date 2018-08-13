@@ -21,13 +21,8 @@ namespace Microsoft.Docs.Build
                 docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
             var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
+
             var content = (string)pageModel.Content;
-
-            var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, legacyManifestOutput, tocMap);
-
-            rawMetadata = Jint.Run(rawMetadata);
-            var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
-
             if (!string.IsNullOrEmpty(content))
             {
                 content = HtmlUtility.TransformHtml(
@@ -39,6 +34,11 @@ namespace Microsoft.Docs.Build
             {
                 content = "<div></div>";
             }
+
+            var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
+
+            rawMetadata = Jint.Run(rawMetadata);
+            var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
 
             var outputRootRelativePath =
                 PathUtility.NormalizeFolder(
