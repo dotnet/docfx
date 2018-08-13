@@ -22801,6 +22801,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Href
   nameWithType: TocItemViewModel.Href
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom
+  name: IncludedFrom
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_IncludedFrom
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom
+  nameWithType: TocItemViewModel.IncludedFrom
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom*
+  name: IncludedFrom
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_IncludedFrom_
+  commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IncludedFrom
+  nameWithType: TocItemViewModel.IncludedFrom
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IsHrefUpdated
   name: IsHrefUpdated
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_IsHrefUpdated
