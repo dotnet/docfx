@@ -21,10 +21,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("docascode", profile.Name);
                 Assert.Equal("14800732", profile.Id);
             }
-            catch (DocfxException ex)
-            {
-                Assert.Equal("exceed-github-rate-limit", ex.Error.Code);
-            }
+            catch (DocfxInternalException) { }
         }
 
         [Fact]
@@ -38,10 +35,7 @@ namespace Microsoft.Docs.Build
                     "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
                 Assert.Equal("OsmondJiang", name);
             }
-            catch (DocfxException ex)
-            {
-                Assert.Equal("exceed-github-rate-limit", ex.Error.Code);
-            }
+            catch (DocfxInternalException) { }
         }
     }
 }
