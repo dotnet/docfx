@@ -70,19 +70,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool TryAdd(string userName, UserProfile profile)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(userName));
-            Debug.Assert(profile != null);
-
-            var result = _cacheByName.TryAdd(userName, profile);
-            foreach (var email in profile.GetUserEmails())
-            {
-                _cacheByEmail.TryAdd(email, profile);
-            }
-            return result;
-        }
-
         public UserProfile AddOrUpdate(string userName, UserProfile value, Func<string, UserProfile, UserProfile> updateValueFactory)
         {
             var result = _cacheByName.AddOrUpdate(userName, value, updateValueFactory);
@@ -121,6 +108,19 @@ namespace Microsoft.Docs.Build
                 group profile by email into g
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
             _github = github;
+        }
+
+        private bool TryAdd(string userName, UserProfile profile)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(userName));
+            Debug.Assert(profile != null);
+
+            var result = _cacheByName.TryAdd(userName, profile);
+            foreach (var email in profile.GetUserEmails())
+            {
+                _cacheByEmail.TryAdd(email, profile);
+            }
+            return result;
         }
     }
 }

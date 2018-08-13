@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
             if (_isRateLimitExceeded)
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                throw Exceptions.ExceedGitHubRateLimit();
 
             User user;
             try
@@ -42,12 +42,12 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                throw Exceptions.ExceedGitHubRateLimit();
             }
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
-                throw Errors.GitHubUserNotFound().ToException();
+                throw Exceptions.GitHubUserNotFound(name);
             }
 
             return ToUserProfile(user);
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             Author author;
             var errors = new List<Error>();
             if (_isRateLimitExceeded)
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                throw Exceptions.ExceedGitHubRateLimit();
 
             try
             {
@@ -78,13 +78,13 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                throw Exceptions.ExceedGitHubRateLimit();
             }
             catch (Exception)
             {
                 // catch NotFoundException if owner/repo doesn't exist
                 // catch ApiValidationException if no commit found for SHA
-                throw Errors.GitHubCommitNotFound().ToException();
+                throw Exceptions.GitHubCommitNotFound(commitSha);
             }
 
             return author.Login;

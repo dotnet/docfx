@@ -57,8 +57,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="repoPath">The git repo root path</param>
         /// <param name="files">The collection of git repo files</param>
-        /// <returns>A collection of git commits</returns>
-        public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files)
+        public static unsafe (List<GitCommit>[] commitsByFile, GitCommit[] allCommits) GetCommits(string repoPath, List<string> files)
         {
             var (trees, commits) = default((TreeMap, List<Commit>));
             var pathToParent = BuildPathToParentPath(files);
@@ -83,7 +82,7 @@ namespace Microsoft.Docs.Build
             }
 
             NativeMethods.GitRepositoryFree(repo);
-            return result;
+            return (result, commits.Select(c => c.GitCommit).ToArray());
         }
 
         private static FileMap BuildPathToParentPath(List<string> files)

@@ -46,8 +46,11 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author, DocfxException ex)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Error.Message}");
+        public static Error AuthorNotFound(string author, DocfxInternalException ex)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Message}");
+
+        public static Error CommitInfoNotFound(string sha, DocfxInternalException ex)
+            => new Error(ErrorLevel.Warning, "commit-info-not-found", $"Cannot get commit infomation of '{sha}': {ex.Message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -120,15 +123,6 @@ namespace Microsoft.Docs.Build
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
-
-        public static Error ExceedGitHubRateLimit()
-            => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
-
-        public static Error GitHubUserNotFound()
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
-
-        public static Error GitHubCommitNotFound()
-            => new Error(ErrorLevel.Warning, "github-commit-not-found", $"Commit not found on GitHub");
 
         public static Error NewtonsoftJsonSchemaLimitExceeded(string message)
             => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-limit-exceeded", message);
