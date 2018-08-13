@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        await UpdateCache(_userProfileCache, commit, repo);
+                        await UpdateCache(commit, repo);
                     }
                     catch (DocfxInternalException ex)
                     {
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             _commitsByFile = result;
         }
 
-        private async Task UpdateCache(UserProfileCache cache, GitCommit commit, Repository repo)
+        private async Task UpdateCache(GitCommit commit, Repository repo)
         {
             var author = commit.AuthorEmail;
             if (string.IsNullOrEmpty(author) || _userProfileCache.GetByUserEmail(author) != null)
