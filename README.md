@@ -13,9 +13,16 @@
 
 * Running Status
 
-| Running Status| Windows with .NET Core v2.0.3| Windows with VS2017 | [Ubuntu Linux with Mono](https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile) | [Mac with Mono]() 
+| Running Status| Windows with .NET Core v2.0.3 | Windows with VS2017 | [Ubuntu Linux with Mono](https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile) | [Mac with Mono]() 
 | ---------- | ------------- |---------- | ------------- |---------- 
 | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)|[![Mac](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)
+
+## What's next?
+
+Check out the road map of DocFX [here](Roadmap.md).
+
+> **NOTE:**
+> For more information on DocFX v3, please visit the [v3 working branch](https://github.com/dotnet/docfx/tree/v3).
 
 ## Collecting feedbacks and proposals for DocFX
 
@@ -40,18 +47,18 @@ We currently support C# and VB projects.
 2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
 
 ## How do I play with *DocFX*?
-1. Option 1: install docfx through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
-2. Option 2: install docfx through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
-3. Option 3: play docfx inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
+1. Option 1: install DocFX through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
+2. Option 2: install DocFX through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
+3. Option 3: play DocFX inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
 
 For more information, please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
 ## Integrate with Continuous Integration environment
 
-1. Install docfx through [chocolatey package](https://chocolatey.org/packages/docfx)
+1. Install DocFX through [chocolatey package](https://chocolatey.org/packages/docfx)
 `choco install docfx -y`
 
-2. Call docfx
+2. Call DocFX
 `docfx docfx.json`
 
 [docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
@@ -76,7 +83,7 @@ This project has adopted the code of conduct defined by the [Contributor Covenan
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## Contributors & Thank You
-Thanks goes to our community of developers who helped improve the quality of *DocFX* through their code contributions.
+Many thanks go to our community of developers who helped improve the quality of *DocFX* through their code contributions.
 Contributors: 
 
 ## License

@@ -1,5 +1,11 @@
-Version Notes (Current Version: v2.37.2)
+Version Notes (Current Version: v2.38)
 =======================================
+
+v2.38
+-----------
+1. Support `--disableDefaultFilter` to disable default API visibility filter rule. (#2561)
+2. Improve warning message for invalid link in TOC inclusion (#3106)
+3. Support dropdowns in top navigation bar. (#3168)
 
 v2.37.2
 -----------

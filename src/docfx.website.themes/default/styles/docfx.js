@@ -387,7 +387,10 @@ $(function () {
               }
             } else {
               if (util.getAbsolutePath(href) === currentAbsPath) {
-                isActive = true;
+                var dropdown = $(e).attr('data-toggle') == "dropdown"
+                if (!dropdown) {
+                  isActive = true;
+                }
               }
             }
             if (isActive) {
