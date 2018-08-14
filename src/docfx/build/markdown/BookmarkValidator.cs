@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
             _bookmarksByFile.TryAdd(file, bookmarks);
         }
 
-        public List<Error> Validate()
+        public List<(Error error, Document file)> Validate()
         {
-            var result = new List<Error>();
+            var result = new List<(Error error, Document file)>();
 
             foreach (var (file, reference, bookmark) in _references)
             {
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                result.Add(Errors.BookmarkNotFound(file, reference, bookmark));
+                result.Add((Errors.BookmarkNotFound(file, reference, bookmark), file));
             }
 
             return result;

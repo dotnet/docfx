@@ -51,10 +51,10 @@ namespace Microsoft.Docs.Build
 
                 await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
-                var files = filesBuilder.Build(context).OrderBy(file => file.FilePath).Except(filesWithErrors).ToList();
-                var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
+                ValidateBookmarks();
 
-                context.Report(bookmarkValidator.Validate());
+                var files = filesBuilder.Build(context, filesWithErrors).OrderBy(file => file.FilePath).ToList();
+                var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
 
                 return (files, new DependencyMap(allDependencies));
 
@@ -74,6 +74,17 @@ namespace Microsoft.Docs.Build
                 bool ShouldBuildFile(Document file)
                 {
                     return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
+                }
+
+                void ValidateBookmarks()
+                {
+                    foreach (var (error, file) in bookmarkValidator.Validate())
+                    {
+                        if (context.Report(error))
+                        {
+                            filesWithErrors.Add(file);
+                        }
+                    }
                 }
             }
         }

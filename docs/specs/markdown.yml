@@ -198,6 +198,20 @@ outputs:
     ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md'","docs/a.md"]
   build.manifest:
 ---
+# do not output file if bookmark-not-found is treated as error
+inputs:
+  docfx.yml: |
+    rules:
+      bookmark-not-found: error
+  docs/a.md: |
+    [link to b](b.md#bookmark)
+  docs/b.md:
+outputs:
+  docs/b.json:
+  build.log: |
+    ["error","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
+  build.manifest:
+---
 # experimental pairs
 inputs:
   docfx.yml:

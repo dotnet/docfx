@@ -43,19 +43,6 @@ namespace Microsoft.Docs.Build
             return _report.Write(error);
         }
 
-        public bool Report(IEnumerable<Error> errors)
-        {
-            var hasErrors = false;
-            foreach (var error in errors)
-            {
-                if (_report.Write(error))
-                {
-                    hasErrors = true;
-                }
-            }
-            return hasErrors;
-        }
-
         /// <summary>
         /// Opens a write stream to write to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
