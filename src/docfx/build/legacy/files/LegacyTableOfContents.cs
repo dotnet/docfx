@@ -58,15 +58,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private class LegacyTableOfContentsItem : TableOfContentsItem
-        {
-            [JsonProperty(PropertyName = "pdf_absolute_path")]
-            public string PdfAbsolutePath { get; set; }
-
-            [JsonProperty(PropertyName = "pdf_name")]
-            public string PdfName { get; set; }
-        }
-
         private sealed class LegacyTableOfContentsMetadata
         {
             [JsonProperty(PropertyName = "pdf_absolute_path")]
@@ -79,7 +70,7 @@ namespace Microsoft.Docs.Build
         private class LegacyTableOfContentsModel
         {
             [JsonProperty(PropertyName = "items")]
-            public List<LegacyTableOfContentsItem> Items { get; set; }
+            public List<TableOfContentsItem> Items { get; set; }
 
             [JsonProperty(PropertyName = "metadata", NullValueHandling = NullValueHandling.Ignore)]
             public LegacyTableOfContentsMetadata Metadata { get; set; }
