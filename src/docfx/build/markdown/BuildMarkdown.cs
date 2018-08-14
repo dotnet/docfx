@@ -35,8 +35,7 @@ namespace Microsoft.Docs.Build
             // TODO: add check before to avoid case failure
             var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(
                 file,
-                metadata.Value<string>("author"),
-                metadata.Value<DateTime?>("update_date"));
+                metadata.Value<string>("author"));
 
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
