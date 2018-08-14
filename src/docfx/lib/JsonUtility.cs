@@ -8,10 +8,12 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -28,6 +30,7 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -57,6 +60,9 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
+        // 1 for schema generation enabled, 0 for disabled
+        private static int _schemaGenerationEnabled = 1;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -102,14 +108,27 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
-            try
+            List<Error> errors = new List<Error>();
+            var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+            errors.AddRange(mismatchingErrors);
+            var serializer = new JsonSerializer
             {
-                return (token.ValidateMismatchingFieldType(type), token.ToObject(type, DefaultDeserializer));
-            }
-            catch (JsonException ex) when (ex is JsonSerializationException || ex is JsonReaderException)
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new SchemaValidationJsonContractResolver(errors),
+            };
+            serializer.Error += HandleError;
+            var value = token.ToObject(type, serializer);
+            return (errors, value);
+
+            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
-                var (message, range) = ParseRangeFromExceptionMessage(ex.Message);
-                throw Errors.ViolateSchema(range, message).ToException();
+                if (args.CurrentObject == args.ErrorContext.OriginalObject
+                    && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                {
+                    var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
+                    errors.Add(Errors.ViolateSchema(range, message));
+                    args.ErrorContext.Handled = true;
+                }
             }
         }
 
@@ -162,6 +181,44 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        /// <summary>
+        /// Register license for Newtonsoft.Json.Schema to avoid limit of generating json schema from object type
+        /// </summary>
+        public static IList<Error> RegisterNewtonsoftJsonSchemaLicense(string license)
+        {
+            if (string.IsNullOrEmpty(license))
+            {
+                return new List<Error>();
+            }
+
+            try
+            {
+                License.RegisterLicense(license);
+                return new List<Error>();
+            }
+            catch (Exception ex)
+            {
+                return new List<Error> { Errors.NewtonsoftJsonSchemaLicenseRegistrationFailed(ex.Message) };
+            }
+        }
+
+        /// <summary>
+        /// Generate Json schema from object type
+        /// </summary>
+        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type)
+        {
+            var errors = new List<Error>();
+            var jSchema = s_cacheTypeJsonSchema.GetOrAdd(
+                type,
+                new Lazy<JSchema>(() =>
+                {
+                    var (generateErrors, schema) = GenerateJSchema(type);
+                    errors.AddRange(generateErrors);
+                    return schema;
+                })).Value;
+            return (errors, jSchema);
+        }
+
         internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
@@ -179,6 +236,34 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             token.TraverseForUnknownFieldType(errors, type);
             return errors;
+        }
+
+        private static (List<Error>, JSchema) GenerateJSchema(Type type)
+        {
+            try
+            {
+                if (_schemaGenerationEnabled != 1)
+                    return (new List<Error>(), null);
+
+                var generator = new JSchemaGenerator { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
+                var schema = generator.Generate(type, true);
+
+                // If type contains JsonExtensinDataAttribute, additional properties are allowed
+                // TODO: Set AllowAdditionalProperties on nested type, not the entry type
+                if (!CheckTypeContainsJsonExtensionData(type))
+                {
+                    schema.AllowAdditionalProperties = false;
+                }
+                return (new List<Error>(), schema);
+            }
+            catch (JSchemaException ex)
+            {
+                if (Interlocked.Exchange(ref _schemaGenerationEnabled, 0) == 1)
+                {
+                    return (new List<Error> { Errors.NewtonsoftJsonSchemaLimitExceeded(ex.Message) }, null);
+                }
+                return (new List<Error>(), null);
+            }
         }
 
         private static (string, Range) ParseRangeFromExceptionMessage(string message)
@@ -221,7 +306,7 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogInfoForNullValue(token, errors, prop.Name);
+                        LogInfoForNullValue(item, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
@@ -234,20 +319,19 @@ namespace Microsoft.Docs.Build
 
         private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
         {
-            // if type contains JsonExtensionDataAttribute, additional properties are allowed
-            if (CheckTypeContainsJsonExtensionData(type))
-                return;
-
             path = BuildPath(path, type);
             if (token is JArray array)
             {
+                var itemType = GetCollectionItemTypeIfArrayType(type);
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForUnknownFieldType(errors, type, path);
+                    item.TraverseForUnknownFieldType(errors, itemType, path);
                 }
             }
             else if (token is JObject obj)
             {
+                var allowAddtionalProperties = CheckTypeContainsJsonExtensionData(type);
+
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
@@ -256,8 +340,11 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = CheckForUnknownField(type, prop, errors, path);
-                    prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path, allowAddtionalProperties);
+                    if (nestedType != null)
+                    {
+                        prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                    }
                 }
             }
         }
@@ -271,10 +358,33 @@ namespace Microsoft.Docs.Build
         {
             return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
                 type,
-                new Lazy<bool>(() => type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
+                new Lazy<bool>(() => type.GetProperties()
+                        .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
-        private static Type CheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
+        private static Type GetCollectionItemTypeIfArrayType(Type type)
+        {
+            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+            if (contract is JsonObjectContract)
+            {
+                return type;
+            }
+            else if (contract is JsonArrayContract arrayContract)
+            {
+                var itemType = arrayContract.CollectionItemType;
+                if (itemType is null)
+                {
+                    return type;
+                }
+                else
+                {
+                    return itemType;
+                }
+            }
+            return type;
+        }
+
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path, bool allowAdditionalProperties)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
             JsonPropertyCollection jsonProperties;
@@ -288,7 +398,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return type;
+                return null;
             }
 
             // if mismatching field found, add error
@@ -296,10 +406,13 @@ namespace Microsoft.Docs.Build
             var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
             if (matchingProperty is null)
             {
-                var lineInfo = prop as IJsonLineInfo;
-                errors.Add(Errors.UnknownField(
-                    new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
-                return type;
+                if (!allowAdditionalProperties)
+                {
+                    var lineInfo = prop as IJsonLineInfo;
+                    errors.Add(Errors.UnknownField(
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
+                }
+                return null;
             }
             else
             {
@@ -322,20 +435,40 @@ namespace Microsoft.Docs.Build
             errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
+        private static void SetPropertyWritable(MemberInfo member, JsonProperty prop)
+        {
+            if (!prop.Writable)
+            {
+                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                {
+                    prop.Writable = true;
+                }
+            }
+        }
+
         private sealed class JsonContractResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
-                var converter = GetConverter(member);
+                SetPropertyWritable(member, prop);
+                return prop;
+            }
+        }
 
-                if (!prop.Writable)
-                {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                    {
-                        prop.Writable = true;
-                    }
-                }
+        private sealed class SchemaValidationJsonContractResolver : DefaultContractResolver
+        {
+            private readonly List<Error> _errors;
+
+            public SchemaValidationJsonContractResolver(List<Error> errors)
+            {
+                _errors = errors;
+            }
+
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+                var converter = GetConverter(member, _errors);
 
                 if (converter != null)
                 {
@@ -348,23 +481,27 @@ namespace Microsoft.Docs.Build
                         prop.Converter = converter;
                     }
                 }
+
+                SetPropertyWritable(member, prop);
                 return prop;
             }
 
-            private static SchemaValidationConverter GetConverter(MemberInfo member)
+            private static SchemaValidationConverter GetConverter(MemberInfo member, List<Error> errors)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
-                return validators.Count == 0 ? null : new SchemaValidationConverter(validators);
+                return validators.Count == 0 ? null : new SchemaValidationConverter(validators, errors);
             }
         }
 
         private sealed class SchemaValidationConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
+            private readonly List<Error> _errors;
 
-            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators, List<Error> errors)
             {
                 _validators = validators;
+                _errors = errors;
             }
 
             public override bool CanConvert(Type objectType) => true;
@@ -422,7 +559,7 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        throw Errors.ViolateSchema(range, validationResult.ErrorMessage).ToException();
+                        _errors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
             }
