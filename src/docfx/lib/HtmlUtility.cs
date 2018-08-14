@@ -103,6 +103,11 @@ namespace Microsoft.Docs.Build
                 {
                     yield return id;
                 }
+                var name = node.GetAttributeValue("name", "");
+                if (!string.IsNullOrEmpty(name))
+                {
+                    yield return name;
+                }
             }
         }
 

@@ -97,6 +97,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<h1 id='a'></h1>", "a")]
         [InlineData("<h1 id='a'></h1><h2 id='b'></h2>", "a, b")]
         [InlineData("<a id='a'></a>", "a")]
+        [InlineData("<a name='a'></a>", "a")]
         public static void GetBookmarks(string html, string expected)
         {
             Assert.Equal(expected, string.Join(", ", HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(html))));
