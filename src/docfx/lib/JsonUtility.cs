@@ -109,9 +109,9 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate schema
         /// </summary>
-        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
+        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(this JToken token)
         {
-            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
+            var (errors, obj) = token.ToObjectWithSchemaValidation(typeof(T));
             return (errors, (T)obj);
         }
 
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate schema
         /// </summary>
-        public static (List<Error>, object) ToObjectWithSchemaValidation(JToken token, Type type)
+        public static (List<Error>, object) ToObjectWithSchemaValidation(this JToken token, Type type)
         {
             List<Error> errors = new List<Error>();
             var mismatchingErrors = token.ValidateMismatchingFieldType(type);

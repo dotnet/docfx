@@ -359,7 +359,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
-            var (errors, value) = JsonUtility.ToObjectWithSchemaValidation(token, type);
+            var (errors, value) = token.ToObjectWithSchemaValidation(type);
             Assert.Empty(errors);
         }
 
