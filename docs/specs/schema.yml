@@ -55,3 +55,20 @@ outputs:
       "content": { "title": "my title" }
     }
   build.manifest:
+  ---
+# Support schema documents with Href content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:LandingData
+    title: Schema document with Href
+    metadata:
+      key: value
+outputs:
+  docs/a.json: |
+    {
+      "content": { "title": "my title" },
+      "metadata": { "key": "value" }
+    }
+  build.manifest:
+---

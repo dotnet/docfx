@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var (mismatchingErrors, content) = JsonUtility.ToObject(token, schemaType);
+            var (mismatchingErrors, content) = JsonUtility.ToObjectAndTransformContent(token, schemaType, file, TransformContent);
             errors.AddRange(mismatchingErrors);
 
             // TODO: consolidate this with BuildMarkdown
@@ -69,6 +69,26 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, model, DependencyMap.Empty);
+        }
+
+        private static (List<Error> errors, string) TransformContent(SchemaContentType type, string value, Document file)
+        {
+            var errors = new List<Error>();
+            switch (type)
+            {
+                case SchemaContentType.Href:
+                    var (error, href, fragment, doc) = Resolve.TryResolveHref(file, value, file);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    return (errors, href);
+                case SchemaContentType.Xref:
+                case SchemaContentType.None:
+                case SchemaContentType.Markdown:
+                default:
+                    return (errors, value);
+            }
         }
 
         private static (List<Error> errors, JToken token, string schema) Parse(Document file)

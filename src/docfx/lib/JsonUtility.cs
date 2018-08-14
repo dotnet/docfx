@@ -108,13 +108,24 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error>, object) ToObject(JToken token, Type type)
         {
-            List<Error> errors = new List<Error>();
+            var errors = new List<Error>();
+            return ToObject(errors, token, type, new SchemaValidationContractResolver(errors));
+        }
+
+        internal static (List<Error>, object) ToObjectAndTransformContent(JToken token, Type type, Document file, Func<SchemaContentType, string, Document, (List<Error>, string)> transformContent)
+        {
+            var errors = new List<Error>();
+            return ToObject(errors, token, type, new SchemaValidationAndTransformContractResolver(transformContent, errors, file));
+        }
+
+        private static (List<Error>, object) ToObject(List<Error> errors, JToken token, Type type, DefaultContractResolver contractResolver)
+        {
             var mismatchingErrors = token.ValidateMismatchingFieldType(type);
             errors.AddRange(mismatchingErrors);
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new SchemaValidationJsonContractResolver(errors),
+                ContractResolver = contractResolver,
             };
             serializer.Error += HandleError;
             var value = token.ToObject(type, serializer);
@@ -442,125 +453,6 @@ namespace Microsoft.Docs.Build
                 if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
                 {
                     prop.Writable = true;
-                }
-            }
-        }
-
-        private sealed class JsonContractResolver : DefaultContractResolver
-        {
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                var prop = base.CreateProperty(member, memberSerialization);
-                SetPropertyWritable(member, prop);
-                return prop;
-            }
-        }
-
-        private sealed class SchemaValidationJsonContractResolver : DefaultContractResolver
-        {
-            private readonly List<Error> _errors;
-
-            public SchemaValidationJsonContractResolver(List<Error> errors)
-            {
-                _errors = errors;
-            }
-
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                var prop = base.CreateProperty(member, memberSerialization);
-                var converter = GetConverter(member, _errors);
-
-                if (converter != null)
-                {
-                    if (prop.PropertyType.IsArray)
-                    {
-                        prop.ItemConverter = converter;
-                    }
-                    else
-                    {
-                        prop.Converter = converter;
-                    }
-                }
-
-                SetPropertyWritable(member, prop);
-                return prop;
-            }
-
-            private static SchemaValidationConverter GetConverter(MemberInfo member, List<Error> errors)
-            {
-                var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
-                return validators.Count == 0 ? null : new SchemaValidationConverter(validators, errors);
-            }
-        }
-
-        private sealed class SchemaValidationConverter : JsonConverter
-        {
-            private readonly IEnumerable<ValidationAttribute> _validators;
-            private readonly List<Error> _errors;
-
-            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators, List<Error> errors)
-            {
-                _validators = validators;
-                _errors = errors;
-            }
-
-            public override bool CanConvert(Type objectType) => true;
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonToken.StartObject:
-                        var obj = JObject.Load(reader);
-                        Validate(reader, obj);
-                        break;
-                    case JsonToken.StartArray:
-                        var array = JArray.Load(reader);
-                        Validate(reader, array);
-                        break;
-                    case JsonToken.StartConstructor:
-                        var constructor = JConstructor.Load(reader);
-                        Validate(reader, constructor);
-                        break;
-                    case JsonToken.Integer:
-                    case JsonToken.Float:
-                    case JsonToken.String:
-                    case JsonToken.Boolean:
-                    case JsonToken.Date:
-                    case JsonToken.Bytes:
-                    case JsonToken.Raw:
-                    case JsonToken.None:
-                    case JsonToken.Null:
-                    case JsonToken.Undefined:
-                        Validate(reader, reader.Value);
-                        break;
-                    case JsonToken.PropertyName:
-                    case JsonToken.Comment:
-                    case JsonToken.EndObject:
-                    case JsonToken.EndArray:
-                    case JsonToken.EndConstructor:
-                    default:
-                        break;
-                }
-                return reader.Value;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-
-            private void Validate(JsonReader reader, object value)
-            {
-                foreach (var validator in _validators)
-                {
-                    if (validator != null && !validator.IsValid(value))
-                    {
-                        var lineInfo = reader as IJsonLineInfo;
-                        var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        _errors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
-                    }
                 }
             }
         }
