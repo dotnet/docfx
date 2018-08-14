@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url" };
+        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude" };
 
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
 
         public static JObject GenerateLegacyRawMetadata(
             PageModel pageModel,
+            string content,
             Docset docset,
             Document file,
             LegacyManifestOutput legacyManifestOutput,
@@ -50,6 +51,7 @@ namespace Microsoft.Docs.Build
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
+            rawMetadata["conceptual"] = content;
             rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
             rawMetadata["toc_rel"] = pageModel.Toc ?? tocMap.FindTocRelativePath(file);
 
@@ -67,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
-            rawMetadata["_path"] = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
+            rawMetadata["_path"] = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
 
             rawMetadata["document_id"] = pageModel.Id;
             rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;

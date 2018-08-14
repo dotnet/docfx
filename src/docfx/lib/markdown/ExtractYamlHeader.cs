@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Extensions.Yaml;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -16,6 +17,11 @@ namespace Microsoft.Docs.Build
             {
                 document.Visit(node =>
                 {
+                    if (InclusionContext.IsInclude)
+                    {
+                        return false;
+                    }
+
                     if (node is YamlFrontMatterBlock yamlHeader)
                     {
                         // TODO: fix line info in yamlErrors is not accurate due to offset in markdown
