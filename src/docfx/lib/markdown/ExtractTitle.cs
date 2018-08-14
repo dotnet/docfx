@@ -7,6 +7,7 @@ using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,6 +23,10 @@ namespace Microsoft.Docs.Build
                 {
                     Markup.Result.TitleHtml = RenderTitle(h1);
                     document.Remove(h1);
+                }
+                else
+                {
+                    throw Errors.H1NotFound((Document)InclusionContext.File).ToException();
                 }
             });
         }
