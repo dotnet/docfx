@@ -382,7 +382,7 @@ NestedItems:
       E: e", 6, 7, ErrorLevel.Warning, "unknown-field")]
         internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
-            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, result) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -398,7 +398,7 @@ NestedItems:
             var yaml = @"mismatchField1: name
 mismatchField2: name";
 
-            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, result) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Collection(errors,
             error =>
             {
@@ -431,7 +431,7 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 12)]
         internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -454,7 +454,7 @@ Data:
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = YamlUtility.Deserialize(json);
-            var (errors, value) = JsonUtility.ToObject(token, type);
+            var (errors, value) = JsonUtility.ToObjectWithSchemaValidation(token, type);
             Assert.Empty(errors);
         }
 
@@ -480,7 +480,7 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
         internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);

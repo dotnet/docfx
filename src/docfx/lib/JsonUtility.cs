@@ -91,22 +91,35 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string json)
         {
             var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = ToObject<T>(token);
+            return (errors, token.ToObject<T>(DefaultDeserializer));
+        }
+
+        /// <summary>
+        /// Deserialize a input string to an object and validate schema
+        /// </summary>
+        public static (List<Error>, T) DeserializeWithSchemaValidation<T>(string json)
+        {
+            var (errors, token) = Deserialize(json);
+            var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
 
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken
-        /// And validate mismatching field types
+        /// And validate schema
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
         {
-            var (errors, obj) = ToObject(token, typeof(T));
+            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(JToken token, Type type)
+        /// <summary>
+        /// Creates an instance of the specified .NET type from the JToken
+        /// And validate schema
+        /// </summary>
+        public static (List<Error>, object) ToObjectWithSchemaValidation(JToken token, Type type)
         {
             List<Error> errors = new List<Error>();
             var mismatchingErrors = token.ValidateMismatchingFieldType(type);
@@ -114,7 +127,7 @@ namespace Microsoft.Docs.Build
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new SchemaValidationJsonContractResolver(errors),
+                ContractResolver = new SchemaValidationContractResolver(errors),
             };
             serializer.Error += HandleError;
             var value = token.ToObject(type, serializer);
@@ -456,11 +469,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class SchemaValidationJsonContractResolver : DefaultContractResolver
+        private sealed class SchemaValidationContractResolver : DefaultContractResolver
         {
             private readonly List<Error> _errors;
 
-            public SchemaValidationJsonContractResolver(List<Error> errors)
+            public SchemaValidationContractResolver(List<Error> errors)
             {
                 _errors = errors;
             }

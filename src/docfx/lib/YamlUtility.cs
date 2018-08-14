@@ -57,7 +57,16 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) Deserialize<T>(string input, bool nullValidation = true)
         {
             var (errors, json) = Deserialize(input, nullValidation);
-            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(json);
+            return (errors, json.ToObject<T>(JsonUtility.DefaultDeserializer));
+        }
+
+        /// <summary>
+        /// Deserialize From yaml string and validate schema
+        /// </summary>
+        public static (List<Error>, T) DeserializeWithSchemaValidation<T>(string input, bool nullValidation = true)
+        {
+            var (errors, json) = Deserialize(input, nullValidation);
+            var (mismatchingErrors, result) = JsonUtility.ToObjectWithSchemaValidation<T>(json);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
