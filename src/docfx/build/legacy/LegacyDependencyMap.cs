@@ -11,14 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyDependencyMap
     {
-        public static async Task Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
+        public static void Convert(Docset docset, Context context, List<Document> documemts, DependencyMap dependencyMap, TableOfContentsMap tocMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
                 var legacyDependencyMap = new ConcurrentBag<LegacyDependencyMapItem>();
 
                 // process toc map
-                await ParallelUtility.ForEach(
+                Parallel.ForEach(
                     documemts,
                     document =>
                     {
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                             document.ContentType == ContentType.Redirection ||
                             document.ContentType == ContentType.Unknown)
                         {
-                            return Task.CompletedTask;
+                            return;
                         }
                         var toc = tocMap.GetNearestToc(document);
                         legacyDependencyMap.Add(new LegacyDependencyMapItem
@@ -36,10 +36,7 @@ namespace Microsoft.Docs.Build
                             To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
                             Type = LegacyDependencyMapType.Metadata,
                         });
-
-                        return Task.CompletedTask;
-                    },
-                    Progress.Update);
+                    });
 
                 foreach (var (source, dependencies) in dependencyMap)
                 {

@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyFileMap
     {
-        public static async Task Convert(Docset docset, Context context, List<Document> documents)
+        public static void Convert(Docset docset, Context context, List<Document> documents)
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
                 var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
-                await ParallelUtility.ForEach(
+                Parallel.ForEach(
                     documents,
                     document =>
                     {
@@ -27,10 +27,7 @@ namespace Microsoft.Docs.Build
                         {
                             fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
                         }
-
-                        return Task.CompletedTask;
-                    },
-                    Progress.Update);
+                    });
 
                 Convert(docset, context, fileMapItems);
                 LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);

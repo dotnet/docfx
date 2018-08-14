@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static async Task<List<(LegacyManifestItem manifestItem, Document doc)>> Convert(Docset docset, Context context, List<Document> documents)
+        public static List<(LegacyManifestItem manifestItem, Document doc)> Convert(Docset docset, Context context, List<Document> documents)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
                 var convertedItems = new ConcurrentBag<(LegacyManifestItem manifestItem, Document doc)>();
-                await ParallelUtility.ForEach(
+                Parallel.ForEach(
                     documents,
                     document =>
                     {
@@ -75,10 +75,7 @@ namespace Microsoft.Docs.Build
                         };
 
                         convertedItems.Add((file, document));
-
-                        return Task.CompletedTask;
-                    },
-                    Progress.Update);
+                    });
 
                 context.WriteJson(
                 new

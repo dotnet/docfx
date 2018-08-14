@@ -8,11 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyOutput
     {
-        public static async Task Convert(Docset docset, Context context, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
+        public static void Convert(Docset docset, Context context, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
         {
             using (Progress.Start("Convert Legacy Files"))
             {
-                await ParallelUtility.ForEach(
+                Parallel.ForEach(
                     files,
                     file =>
                     {
@@ -31,10 +31,7 @@ namespace Microsoft.Docs.Build
                                 LegacyResource.Convert(docset, context, document, manifestItem.Output);
                                 break;
                         }
-
-                        return Task.CompletedTask;
-                    },
-                    Progress.Update);
+                    });
             }
         }
     }
