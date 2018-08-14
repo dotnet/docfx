@@ -47,8 +47,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
-            string author,
-            DateTime? updateDate)
+            string author)
         {
             Debug.Assert(document != null);
 
