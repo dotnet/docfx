@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
@@ -139,7 +140,8 @@ namespace Microsoft.Docs.Build
                         D = false,
                         B = 5,
                         C = "Amazing!",
-                    }
+                    },
+                    ValueRequired = "a",
                 }, formatting: Formatting.Indented);
             var json = sw.ToString();
             Assert.Equal(
@@ -158,13 +160,14 @@ namespace Microsoft.Docs.Build
     ""b"": 5,
     ""d"": false
   },
+  ""valueRequired"": ""a"",
   ""c"": ""Good!"",
   ""b"": 1,
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -260,6 +263,246 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{
+        ""ValueBasic"":
+          {""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}, ""ValueRequired"": ""a""}", 5, 14, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{
+        ""Items"":
+          [{ ""B"": 1,
+            ""C"": ""c"",
+            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{
+        ""AnotherItems"":
+          [{ ""F"": 1,
+            ""G"": ""c"",
+            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{
+""NestedItems"":
+  [[{ ""F"": 1,
+    ""G"": ""c"",
+    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field")]
+        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+        {
+            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedLine, error.Line);
+                Assert.Equal(expectedColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipleUnknownFieldType()
+        {
+            var json = @"{""mismatchField1"": ""name"",
+""mismatchField2"": ""name""}";
+            var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(18, error.Column);
+                Assert.Equal("(Line: 1, Character: 18) Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(17, error.Column);
+                Assert.Equal("(Line: 2, Character: 17) Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"{
+""NumberList"":
+  [1, ""a""],
+""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 3, 9)]
+        [InlineData(@"{""B"" : ""b"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{""ValueEnum"":""Four"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 19)]
+        internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}", typeof(ClassWithJsonExtensionData))]
+        [InlineData(@"{
+          ""Data"":{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}}", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        [InlineData(@"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}]", typeof(List<ClassWithJsonExtensionData>))]
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        {
+            var (_, token) = JsonUtility.Deserialize(json);
+            var (errors, value) = JsonUtility.ToObject(token, type);
+            Assert.Empty(errors);
+        }
+
+        [Fact]
+        public void TestNestedObjectTypeWithoutJsonExtensionData()
+        {
+            var yaml = @"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e"",
+          ""NestedMemberWithoutExtensionData"": {""Unknown"": 1}}]";
+            var (errors, value) = JsonUtility.Deserialize<List<ClassWithJsonExtensionData>>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(57, error.Column);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"{""regPatternValue"":""3"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22)]
+        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 36)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 53)]
+        [InlineData(@"{""B"": 1}", ErrorLevel.Error, "violate-schema", 1, 1)]
+        internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipleSchemaViolationForPrimitiveType()
+        {
+            var json = @"{
+""NumberList"": [1, ""a""],
+""B"" : ""b"",
+""ValueEnum"":""Four"",
+""ValueRequired"": ""a""}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(9, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(18, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipleSchemaViolation()
+        {
+            var json = @"{
+""regPatternValue"":""3"",
+""valueWithLengthRestriction"":""a"",
+""listValueWithLengthRestriction"":[],
+""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(32, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(34, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(52, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
+            });
+        }
+
+        [Fact]
+        public void TestGenerateJsonSchemaFromType()
+        {
+            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(ClassForJsonSchema));
+            Assert.Empty(errors);
+            Assert.Equal(new List<string>() { "ValueRequired" }, schema.Required);
+            Assert.Equal(2, schema.Properties["ValueWithLengthRestriction"].MinimumLength);
+            Assert.Equal(3, schema.Properties["ValueWithLengthRestriction"].MaximumLength);
+            Assert.Equal(1, schema.Properties["ListValueWithLengthRestriction"].MinimumItems);
+            Assert.Equal(3, schema.Properties["ListValueWithLengthRestriction"].MaximumItems);
+            Assert.Equal("[a-z]", schema.Properties["RegPatternValue"].Pattern);
+            Assert.True(schema.AllowAdditionalProperties);
+        }
+
+        [Fact]
+        public void TestGenerateJsonSchemaFromTypeWithoutJsonExtensionData()
+        {
+            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(BasicClass));
+            Assert.Empty(errors);
+            Assert.False(schema.AllowAdditionalProperties);
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
@@ -267,6 +510,15 @@ namespace Microsoft.Docs.Build
             public int B { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class AnotherBasicClass
+        {
+            public int F { get; set; }
+
+            public string G { get; set; }
+
+            public bool H { get; set; }
         }
 
         public class ClassWithReadOnlyField
@@ -281,6 +533,75 @@ namespace Microsoft.Docs.Build
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            public List<BasicClass> Items { get; set; }
+
+            public List<AnotherBasicClass> AnotherItems { get; set; }
+
+            public List<List<AnotherBasicClass>> NestedItems { get; set; }
+
+            public List<int> NumberList { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
+
+            public NestedClass NestedMember { get; set; }
+
+            // make it nullable, so that json serializer would not make a default value
+            public BasicEnum? ValueEnum { get; set; }
+
+            [JsonRequired]
+            public string ValueRequired { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public JObject AdditionalData { get; set; }
+
+            public NestedClass NestedMemberWithoutExtensionData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
+        }
+
+        public class NestedClass
+        {
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+        }
+
+        public class ClassForJsonSchema
+        {
+            [JsonRequired]
+            public string ValueRequired { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
+
+            [JsonExtensionData]
+            public JObject AdditionalData { get; set; }
+        }
+
+        public enum BasicEnum
+        {
+            One,
+            Two,
+            Three,
         }
     }
 }

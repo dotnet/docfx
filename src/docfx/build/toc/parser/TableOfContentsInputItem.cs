@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,6 +20,9 @@ namespace Microsoft.Docs.Build
         public string TopicHref { get; set; }
 
         public string TocHref { get; set; }
+
+        [JsonExtensionData]
+        public JObject Metadata { get; set; }
 
         public List<TableOfContentsInputItem> Items { get; set; }
 
@@ -35,6 +40,7 @@ namespace Microsoft.Docs.Build
 
                 // TODO: legacy only, we should not touch href
                 Href = decodedHref?.ToLowerInvariant(),
+                Metadata = inputModel.Metadata,
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
         }

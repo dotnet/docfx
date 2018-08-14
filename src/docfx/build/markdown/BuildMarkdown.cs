@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildMarkdown
     {
-        public static Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
+        public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
@@ -33,7 +33,11 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = contribution.GetContributorInfo(file, metadata.Value<string>("author"));
+            var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(
+                file,
+                metadata.Value<string>("author"),
+                metadata.Value<DateTime?>("update_date"));
+
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
@@ -58,7 +62,7 @@ namespace Microsoft.Docs.Build
                 ShowEdit = file.Docset.Config.Contribution.ShowEdit,
             };
 
-            return Task.FromResult((markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build()));
+            return (markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build());
         }
     }
 }

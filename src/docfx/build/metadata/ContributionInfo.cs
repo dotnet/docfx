@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,26 +23,32 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private ContributionInfo(Docset docset)
+        private readonly GitHubAccessor _github;
+
+        private ContributionInfo(Docset docset, string gitToken)
         {
             _commitsByFile = LoadCommits(docset);
+            _github = new GitHubAccessor(gitToken);
 
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
                 : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
 
-            _userProfileCache = UserProfileCache.Create(
-                string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
+            var userProfilePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
                     ? s_defaultProfilePath
-                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache));
+                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache);
+            _userProfileCache = UserProfileCache.Create(userProfilePath, _github);
         }
 
-        public static ContributionInfo Load(Docset docset)
+        public static ContributionInfo Load(Docset docset, string gitToken)
         {
-            return new ContributionInfo(docset);
+            return new ContributionInfo(docset, gitToken);
         }
 
-        public (List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt) GetContributorInfo(Document document, string author)
+        public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
+            Document document,
+            string author,
+            DateTime? updateDate)
         {
             Debug.Assert(document != null);
 
@@ -49,9 +56,14 @@ namespace Microsoft.Docs.Build
             UserProfile authorInfo = null;
             if (!string.IsNullOrEmpty(author))
             {
-                authorInfo = _userProfileCache.GetByUserName(author);
-                if (authorInfo == null)
-                    errors.Add(Errors.AuthorNotFound(author));
+                try
+                {
+                    authorInfo = await _userProfileCache.GetByUserName(author);
+                }
+                catch (DocfxException ex)
+                {
+                    errors.Add(Errors.AuthorNotFound(author, ex));
+                }
             }
             var contributors = new List<UserProfile>();
 

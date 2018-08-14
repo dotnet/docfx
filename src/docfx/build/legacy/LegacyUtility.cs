@@ -24,15 +24,15 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
         {
-            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.SourceBasePath ?? string.Empty, doc.FilePath));
+            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.SourceBasePath, doc.FilePath));
         }
 
         public static string ToLegacyOutputPathRelativeToBaseSitePath(this Document doc, Docset docset)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = doc.OutputPath;
+            var legacyOutputFilePathRelativeToSiteBasePath = doc.SitePath;
             if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith(docset.Config.SiteBasePath, PathUtility.PathComparison))
             {
-                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.OutputPath);
+                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, legacyOutputFilePathRelativeToSiteBasePath);
             }
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
@@ -40,18 +40,18 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacySiteUrlRelativeToBaseSitePath(this Document doc, Docset docset)
         {
-            var legacyOutputFilePathRelativeToSiteBasePath = doc.SiteUrl;
-            if (legacyOutputFilePathRelativeToSiteBasePath.StartsWith($"/{docset.Config.SiteBasePath}", PathUtility.PathComparison))
+            var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
+            if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.Config.SiteBasePath}", PathUtility.PathComparison))
             {
-                legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, doc.SiteUrl.Substring(1));
+                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(docset.Config.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
 
-            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacyOutputFilePathRelativeToSiteBasePath}/index" : legacyOutputFilePathRelativeToSiteBasePath);
+            return PathUtility.NormalizeFile(doc.FilePath.EndsWith("index.md", PathUtility.PathComparison) ? $"{legacySiteUrlRelativeToSiteBasePath}/index" : legacySiteUrlRelativeToSiteBasePath);
         }
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
         {
-            return Path.Combine(docset.Config.SiteBasePath ?? string.Empty, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
+            return Path.Combine(docset.Config.SiteBasePath, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
         }
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)

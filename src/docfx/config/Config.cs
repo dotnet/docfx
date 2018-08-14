@@ -49,12 +49,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Just for backward compatibility, the output site path prefix
         /// </summary>
-        public readonly string SiteBasePath = string.Empty;
+        public readonly string SiteBasePath = ".";
 
         /// <summary>
         /// Just for backward compatibility, the source path prefix
         /// </summary>
-        public readonly string SourceBasePath = string.Empty;
+        public readonly string SourceBasePath = ".";
 
         /// <summary>
         /// Just for backward compatibility, Indicate that whether generate pdf url template in medadata.
