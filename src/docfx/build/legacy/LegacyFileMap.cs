@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
             var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
             foreach (var document in documents)
             {
-                var relativeOutputFilePath = document.OutputPath;
                 var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
 
                 var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);

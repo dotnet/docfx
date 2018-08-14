@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,14 +23,14 @@ namespace Microsoft.Docs.Build
             }
 
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (errors, tocModel, refArticles, refTocs) = Load(file, dependencyMapBuilder);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(file, dependencyMapBuilder);
 
             foreach (var article in refArticles)
             {
                 buildChild(article);
             }
 
-            var model = new TableOfContentsModel { Items = tocModel };
+            var model = new TableOfContentsModel { Items = tocModel, Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), tocMetadata) };
 
             return (errors, model, dependencyMapBuilder.Build());
         }
@@ -60,7 +61,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+                var (errors, tocModel, _, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
 
@@ -75,7 +76,8 @@ namespace Microsoft.Docs.Build
 
         private static (
             List<Error> errors,
-            List<TableOfContentsItem> tocModel,
+            List<TableOfContentsItem> tocItems,
+            JObject metadata,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
@@ -84,7 +86,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
-            var (loadErrors, tocViewModel) = TableOfContentsParser.Load(
+            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 fileToBuild.ReadText(),
                 fileToBuild,
                 (file, href, isInclude) =>
@@ -120,7 +122,7 @@ namespace Microsoft.Docs.Build
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocViewModel, referencedDocuments, referencedTocs);
+            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
         }
     }
 }

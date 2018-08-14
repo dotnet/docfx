@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var contribution = ContributionInfo.Load(docset);
+            var contribution = ContributionInfo.Load(docset, options.GitToken);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, bookmarkValidator, buildChild);
                         break;
                     case ContentType.SchemaDocument:
-                        (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
+                        (errors, model, dependencies) = await BuildSchemaDocument.Build(file, tocMap, contribution);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);

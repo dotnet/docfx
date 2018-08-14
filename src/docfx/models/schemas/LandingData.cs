@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public LandingDataSection[] Sections { get; set; }
 
+        public string DocumentType { get; set; }
+
         internal class LandingDataAbstract
         {
             public string Description { get; set; }
