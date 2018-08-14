@@ -13,11 +13,14 @@ namespace Microsoft.Docs.Build
     {
         private readonly HashSet<Document> _tocs;
 
+        private readonly HashSet<Document> _experimentalTocs;
+
         private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
 
-        public TableOfContentsMap(List<Document> tocs, Dictionary<Document, HashSet<Document>> documentToTocs)
+        public TableOfContentsMap(List<Document> tocs, List<Document> experimentalTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
+            _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
         }
 
@@ -26,7 +29,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="toc">The toc to build</param>
         /// <returns>Whether contains toc or not</returns>
-        public bool Contains(Document toc) => _tocs.Contains(toc);
+        public bool Contains(Document toc) => _tocs.Contains(toc) || _experimentalTocs.Contains(toc);
 
         /// <summary>
         /// Find the toc relative path to document

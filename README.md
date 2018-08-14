@@ -15,6 +15,33 @@ To access docfx 3 preview, install `docfx` using the latest version of [.NET Cor
 dotnet tool install -g docfx --version 3.0.0-* --add-source https://www.myget.org/F/docfx-v3/api/v2
 ```
 
+## Usage
+Please make sure all the source files and corresponding `docfx.yml` are stored in your `docset_path`.
+
+> We are still designing the template/theme system, so the outputs are some JSON files which contain `html` and `metadata`.
+
+### Restore
+`restore` command helps you to restore all your [dependency repositories](docs/designs/config.md) into your local `%DOCFX_APPDATA_PATH%`.
+The default `%DOCFX_APPDATA_PATH%` is `%USERPROFILE%/.docfx`, but you can reset it to any other place.
+
+```powershell
+docfx restore <docset_path> [<options>]
+```
+- docset_path: The docset directory which contains the `docfx.yml`.
+- options:
+  - --git-token: The git access token for accessing dependency repositories defined in `docfx.yml` .
+
+### Build
+`build` command helps you to build your docs website.
+
+```powershell
+docfx build <docset_path> [<options>]
+```
+- docset_path: The docset directory which contains all files need to build and the `docfx.yml` config file.
+- options:
+  - -o/--output: The output directory in which to place built artifacts.
+  - --log: The output build log path.
+
 ## Contributing
 
 If you are interested in proposing ideas and fixing issues, see [How to Contribute](CONTRIBUTING.md).

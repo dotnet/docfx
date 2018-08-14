@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
             }
 
-            context.Delete(doc.OutputPath);
+            File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
             context.WriteJson(new { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }

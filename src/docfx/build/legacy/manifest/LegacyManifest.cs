@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             foreach (var document in documents)
             {
                 var legacyOutputPathRelativeToBaseSitePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
-                var legacySitePathRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
+                var legacySiteUrlRelativeToBaseSitePath = document.ToLegacySiteUrlRelativeToBaseSitePath(docset);
 
                 var output = new LegacyManifestOutput
                 {
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
 
                 var file = new LegacyManifestItem
                 {
-                    SiteUrlRelativeToSiteBasePath = legacySitePathRelativeToBaseSitePath,
+                    SiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToBaseSitePath,
                     FilePath = document.FilePath,
                     FilePathRelativeToSourceBasePath = document.ToLegacyPathRelativeToBasePath(docset),
                     OriginalType = GetOriginalType(document.ContentType),
