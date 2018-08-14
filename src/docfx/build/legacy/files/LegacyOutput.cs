@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -12,26 +13,20 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Files"))
             {
-                Parallel.ForEach(
-                    files,
-                    file =>
-                    {
-                        var document = file.document;
-                        var manifestItem = file.manifestItem;
-                        switch (document.ContentType)
-                        {
-                            case ContentType.TableOfContents:
-                                LegacyTableOfContents.Convert(docset, context, document, manifestItem.Output);
-                                break;
-                            case ContentType.Markdown:
-                            case ContentType.Redirection:
-                                LegacyMarkdown.Convert(docset, context, document, manifestItem.Output, tocMap);
-                                break;
-                            case ContentType.Resource:
-                                LegacyResource.Convert(docset, context, document, manifestItem.Output);
-                                break;
-                        }
-                    });
+                using (Progress.Start("Convert Legacy TOC Files"))
+                {
+                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.TableOfContents), file => LegacyTableOfContents.Convert(docset, context, file.document, file.manifestItem.Output));
+                }
+
+                using (Progress.Start("Convert Legacy Markdown/Redirection Files"))
+                {
+                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Markdown || f.document.ContentType == ContentType.Redirection), file => LegacyMarkdown.Convert(docset, context, file.document, file.manifestItem.Output, tocMap));
+                }
+
+                using (Progress.Start("Convert Legacy Resource Files"))
+                {
+                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Resource), file => LegacyResource.Convert(docset, context, file.document, file.manifestItem.Output));
+                }
             }
         }
     }
