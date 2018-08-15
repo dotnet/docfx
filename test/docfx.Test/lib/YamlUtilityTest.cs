@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -259,9 +261,10 @@ ValueBasic:
   B: 2
   C: Good3!
   D: false
+ValueRequired: a
 ";
             var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
@@ -353,6 +356,140 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
+        [Theory]
+        [InlineData(@"mismatchField: name
+ValueRequired: a", 1, 1, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+ValueBasic:
+  B: 1
+  C: c
+  E: e", 5, 3, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+Items:
+  - B: 1
+    C: c
+    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+AnotherItems:
+  - H: 1
+    G: c
+    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"ValueRequired: a
+NestedItems:
+  -
+    - H: 1
+      G: c
+      E: e", 6, 7, ErrorLevel.Warning, "unknown-field")]
+        internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+        {
+            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedLine, error.Line);
+                Assert.Equal(expectedColumn, error.Column);
+            });
+        }
+
+        [Fact]
+        public void TestMultipltUnknownFieldType()
+        {
+            var yaml = @"mismatchField1: name
+mismatchField2: name";
+
+            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 2, Character: 1) Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"numberList:
+        - 1
+        - a
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 3, 11)]
+        [InlineData(@"
+B: b
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 4)]
+        [InlineData(@"ValueEnum: Four
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 12)]
+        internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
+        }
+
+        [Theory]
+        [InlineData(@"
+B: 1
+C: c
+E: e", typeof(ClassWithJsonExtensionData))]
+        [InlineData(@"
+Data: 
+    B: 1
+    C: c
+    E: e", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        {
+            var (_, token) = YamlUtility.Deserialize(json);
+            var (errors, value) = JsonUtility.ToObject(token, type);
+            Assert.Empty(errors);
+        }
+
+        [Theory]
+        [InlineData(@"regPatternValue: A
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 18)]
+        [InlineData(@"ValueWithLengthRestriction: a
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ValueWithLengthRestriction: abcd
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
+        [InlineData(@"ListValueWithLengthRestriction: []
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 33)]
+        [InlineData(@"ListValueWithLengthRestriction:
+                        - a
+                        - b
+                        - c
+                        - d
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 25)]
+        [InlineData(@"NestedMember:
+                        ValueWithLengthRestriction: abcd
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
+        [InlineData(@"B: 1", ErrorLevel.Error, "violate-schema", 1, 1)]
+        internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
+            int expectedErrorLine, int expectedErrorColumn)
+        {
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
+        }
+
         public class BasicClass
         {
             public int B { get; set; }
@@ -360,6 +497,15 @@ items:
             public string C { get; set; }
 
             public bool D { get; set; }
+        }
+
+        public class AnotherBasicClass
+        {
+            public int F { get; set; }
+
+            public string G { get; set; }
+
+            public bool H { get; set; }
         }
 
         public class ClassWithReadOnlyField
@@ -374,6 +520,54 @@ items:
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
+
+            public List<BasicClass> Items { get; set; }
+
+            public List<AnotherBasicClass> AnotherItems { get; set; }
+
+            public List<List<AnotherBasicClass>> NestedItems { get; set; }
+
+            public List<int> NumberList { get; set; }
+
+            [RegularExpression("[a-z]")]
+            public string RegPatternValue { get; set; }
+
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+
+            [MinLength(1), MaxLength(3)]
+            public List<string> ListValueWithLengthRestriction { get; set; }
+
+            public NestedClass NestedMember { get; set; }
+
+            public BasicEnum ValueEnum { get; set; }
+
+            [JsonRequired]
+            public string ValueRequired { get; set; }
+        }
+
+        public class ClassWithJsonExtensionData : BasicClass
+        {
+            [JsonExtensionData]
+            public JObject AdditionalData { get; set; }
+        }
+
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        {
+            public ClassWithJsonExtensionData Data { get; set; }
+        }
+
+        public class NestedClass
+        {
+            [MinLength(2), MaxLength(3)]
+            public string ValueWithLengthRestriction { get; set; }
+        }
+
+        public enum BasicEnum
+        {
+            One,
+            Two,
+            Three,
         }
     }
 }

@@ -46,8 +46,8 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
+        public static Error AuthorNotFound(string author, DocfxException ex)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Error.Message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -109,11 +109,32 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
+        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark)
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
+
         public static Error NullValue(Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"{range} '{name}' contains null value", line: range.StartLine, column: range.StartCharacter);
 
+        public static Error UnknownField(Range range, string propName, string typeName, string path)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"{range} Path:{path} Could not find member '{propName}' on object of type '{typeName}'", line: range.StartLine, column: range.StartCharacter);
+
+        public static Error ViolateSchema(Range range, string message)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
+
+        public static Error ExceedGitHubRateLimit()
+            => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
+
+        public static Error GitHubUserNotFound()
+            => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
+
+        public static Error NewtonsoftJsonSchemaLimitExceeded(string message)
+            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-limit-exceeded", message);
+
+        public static Error NewtonsoftJsonSchemaLicenseRegistrationFailed(string message)
+            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-registraion-failed", $"Encountered issue while register license for Newtonsoft.Json.Schema: {message}");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

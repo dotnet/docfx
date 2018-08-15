@@ -196,6 +196,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     Link to [b](b.md)
+    # bookmark
   docs/b.md: |
     Link to [a](a.md#bookmark)
 outputs:
@@ -223,6 +224,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
+    # bookmark
     Link to [a](#bookmark) and [b](b.md#)
   docs/b.md:
 outputs:

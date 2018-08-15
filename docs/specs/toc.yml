@@ -814,3 +814,148 @@ outputs:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml"]
+---
+# Individual experimental TOC should be built
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f2/TOC.experimental.yml: |
+    - name: Index Reference
+      href: ../index.md
+  docs/f3/TOC.experimental.json: |
+    [{"name": "Index Reference", "href": "../index.md"}]
+  docs/index.md:
+outputs:
+  docs/index.json:
+  build.manifest:
+  docs/f1/TOC.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+  docs/f2/TOC.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+  docs/f3/TOC.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+---
+# Paired experimental TOC should be built 
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md:
+  docs/index.md:
+outputs:
+  docs/index.json:
+  build.manifest:
+  docs/f1/TOC.json:
+  docs/f1/TOC.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+---
+# Paired experimental markdown TOCs' metadata
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    ---
+    experimental: false
+    experiment_id: "d1c17cc0-2ae0-4b"
+    ---
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    ---
+    experimental: true
+    experiment_id: "d1c17cc0-2ae0-4b"
+    ---
+  docs/index.md:
+outputs:
+  docs/index.json:
+  build.manifest:
+  docs/f1/TOC.json: |
+    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+  docs/f1/TOC.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+---
+# Paired experimental yml TOCs' metadata
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.yml: |
+    metadata:
+      experimental: false
+      experiment_id: "d1c17cc0-2ae0-4b"
+    items:
+      - name: title
+  docs/f1/TOC.yml: |
+    metadata:
+      experimental: true
+      experiment_id: "d1c17cc0-2ae0-4b"
+outputs:
+  build.manifest:
+  docs/f1/TOC.json: |
+    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+  docs/f1/TOC.experimental.json: |
+    {"items":[{"toc_title":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+---
+# Experimental TOC should be removed from toc map
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+    # [File Reference](../a.md)
+  docs/f1/TOC.md:
+    # [Index Reference](../index.md)
+  docs/index.md:
+  docs/a.md:
+outputs:
+  docs/index.json: |
+    {"tocRelativePath": "f1/TOC.json"}
+  docs/a.json: |
+    {"tocRelativePath": "f1/TOC.json"}
+  build.manifest:
+  docs/f1/TOC.json:
+  docs/f1/TOC.experimental.json:
+---
+# Experimental TOC should be included using toc ref
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    # [TOC Reference](TOC.experimental.md)
+  docs/index.md:
+outputs:
+  docs/index.json:
+  build.manifest:
+  docs/f1/TOC.json: |
+    {"items":[{"toc_title":"TOC Reference","children":[{"toc_title": "Index Reference", "href": "../"}]}]}
+---
+# Experimental TOC should be excluded using folder ref
+inputs:
+  docfx.yml:
+  docs/f2/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    # [TOC Reference](../f2/)
+  docs/index.md:
+outputs:
+  docs/index.json:
+  build.manifest:
+  docs/f2/TOC.experimental.json:
+  docs/f1/TOC.json: |
+    {"items":[{"toc_title":"TOC Reference"}]}
+---
+# Toc with null value
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: Null value
+      topicHref: f1/a.md
+      tocHref: 
+      href: f1/b.md
+  docs/f1/a.md:
+  docs/f1/b.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  docs/TOC.json:
+  build.manifest:
+  build.log: |
+    ["info","null-value","(Line: 3, Character: 3) 'tocHref' contains null value","docs/TOC.yml",3,3]
+---

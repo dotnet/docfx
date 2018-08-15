@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public LandingDataSection[] Sections { get; set; }
 
+        public string DocumentType { get; set; }
+
         internal class LandingDataAbstract
         {
             public string Description { get; set; }
@@ -24,12 +26,9 @@ namespace Microsoft.Docs.Build
         {
             Paragraph,
             List,
-        }
-
-        internal enum LandingDataStyle
-        {
-            Icon48,
-            Cards,
+            Table,
+            Markdown,
+            Text,
         }
 
         internal class LandingDataSection
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             public string Text { get; set; }
 
-            public LandingDataStyle Style { get; set; }
+            public string Style { get; set; }
 
             public string ClassName { get; set; }
         }
