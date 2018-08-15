@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,6 +15,11 @@ namespace Microsoft.Docs.Build
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
         private Dictionary<string, ErrorLevel> _rules;
+
+        private int _errorCount;
+        private int _warningCount;
+
+        public (int err, int warn) Summary => (_errorCount, _warningCount);
 
         public Report(bool legacy = false)
         {
@@ -50,6 +56,15 @@ namespace Microsoft.Docs.Build
                 {
                     _output.Value.WriteLine(line);
                 }
+            }
+
+            if (level == ErrorLevel.Warning)
+            {
+                Interlocked.Increment(ref _warningCount);
+            }
+            else if (level == ErrorLevel.Error)
+            {
+                Interlocked.Increment(ref _errorCount);
             }
 
             ConsoleLog(level, error);
