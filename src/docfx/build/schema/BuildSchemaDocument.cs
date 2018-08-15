@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var (mismatchingErrors, content) = JsonUtility.ToObject(token, schemaType);
+            var (mismatchingErrors, content) = token.ToObjectWithSchemaValidation(schemaType);
             errors.AddRange(mismatchingErrors);
 
             // TODO: consolidate this with BuildMarkdown

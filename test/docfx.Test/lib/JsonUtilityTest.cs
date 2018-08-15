@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
     ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field")]
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
         {
-            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, result) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
         {
             var json = @"{""mismatchField1"": ""name"",
 ""mismatchField2"": ""name""}";
-            var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
+            var (errors, result) = JsonUtility.DeserializeWithSchemaValidation<BasicClass>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -332,7 +332,7 @@ namespace Microsoft.Docs.Build
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -359,7 +359,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
-            var (errors, value) = JsonUtility.ToObject(token, type);
+            var (errors, value) = token.ToObjectWithSchemaValidation(type);
             Assert.Empty(errors);
         }
 
@@ -371,7 +371,7 @@ namespace Microsoft.Docs.Build
           ""C"": ""c"",
           ""E"": ""e"",
           ""NestedMemberWithoutExtensionData"": {""Unknown"": 1}}]";
-            var (errors, value) = JsonUtility.Deserialize<List<ClassWithJsonExtensionData>>(yaml);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<List<ClassWithJsonExtensionData>>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
@@ -392,7 +392,7 @@ namespace Microsoft.Docs.Build
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -410,7 +410,7 @@ namespace Microsoft.Docs.Build
 ""B"" : ""b"",
 ""ValueEnum"":""Four"",
 ""ValueRequired"": ""a""}";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -443,7 +443,7 @@ namespace Microsoft.Docs.Build
 ""valueWithLengthRestriction"":""a"",
 ""listValueWithLengthRestriction"":[],
 ""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
