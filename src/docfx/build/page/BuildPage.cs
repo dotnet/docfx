@@ -20,13 +20,14 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
+            BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, pageType, content, htmlTitle, wordCount, fileMetadata) = Load(file, dependencies, buildChild);
+            var (errors, pageType, content, htmlTitle, wordCount, fileMetadata) = Load(file, dependencies, bookmarkValidator, buildChild);
 
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), fileMetadata);
@@ -35,8 +36,7 @@ namespace Microsoft.Docs.Build
             // TODO: add check before to avoid case failure
             var (repoErrors, author, contributors, updatedAt) = contribution.GetContributorInfo(
                 file,
-                metadata.Value<string>("author"),
-                metadata.Value<DateTime?>("update_date"));
+                metadata.Value<string>("author"));
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
@@ -71,12 +71,12 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
             Load(
-            Document file, DependencyMapBuilder dependencies, Action<Document> buildChild)
+            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var content = file.ReadText();
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(file, content, dependencies, buildChild);
+                return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild);
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -91,13 +91,17 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
             LoadMarkdown(
-            Document file, string content, DependencyMapBuilder dependencies, Action<Document> buildChild)
+            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
-            var (html, markup) = Markup.ToHtml(content, file, dependencies, buildChild);
+            var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
+            var titleHtmlDom = HtmlUtility.LoadHtml(markup.TitleHtml);
             var model = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(titleHtmlDom)).ToHashSet();
+
+            bookmarkValidator.AddBookmarks(file, bookmarks);
 
             return (markup.Errors, "Conceptual", model, markup.HtmlTitle, wordCount, markup.Metadata);
         }
