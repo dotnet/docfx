@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
             // TODO: add check before to avoid case failure
             var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(
                 file,
-                metadata.Value<string>("author"));
+                metadata.Value<string>("author"),
+                metadata.Value<DateTime?>("update_date"));
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
@@ -96,7 +97,7 @@ namespace Microsoft.Docs.Build
             var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            var titleHtmlDom = HtmlUtility.LoadHtml(markup.TitleHtml);
+            var titleHtmlDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
             var model = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(titleHtmlDom)).ToHashSet();
