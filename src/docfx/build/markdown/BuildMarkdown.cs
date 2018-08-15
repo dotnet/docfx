@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
+            BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.Markdown);
@@ -22,11 +23,13 @@ namespace Microsoft.Docs.Build
             var dependencyMapBuilder = new DependencyMapBuilder();
             var markdown = file.ReadText();
 
-            var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, buildChild);
+            var (html, markup) = Markup.ToHtml(markdown, file, dependencyMapBuilder, bookmarkValidator, buildChild);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
+            var titleHtmlDom = HtmlUtility.LoadHtml(markup.TitleHtml);
             var content = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(titleHtmlDom)).ToHashSet();
 
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), markup.Metadata);
@@ -38,7 +41,7 @@ namespace Microsoft.Docs.Build
                 metadata.Value<string>("author"),
                 metadata.Value<DateTime?>("update_date"));
 
-            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(markup.TitleHtml);
+            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(titleHtmlDom);
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
@@ -62,6 +65,8 @@ namespace Microsoft.Docs.Build
                 ContentUrl = contentUrl,
                 EnableContribution = file.Docset.Config.Contribution.Enabled,
             };
+
+            bookmarkValidator.AddBookmarks(file, bookmarks);
 
             return (markup.Errors.Concat(repoErrors), model, dependencyMapBuilder.Build());
         }
