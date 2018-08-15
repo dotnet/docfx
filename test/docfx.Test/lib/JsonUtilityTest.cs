@@ -449,6 +449,14 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
             },
@@ -470,14 +478,6 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(52, error.Column);
-            },
-            error =>
-            {
-                Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(1, error.Line);
-                Assert.Equal(1, error.Column);
-                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
             });
         }
 
