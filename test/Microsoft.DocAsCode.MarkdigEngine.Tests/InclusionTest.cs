@@ -30,16 +30,22 @@ Test Include File
 
 ";
 
-            var refa = @"
+            var refa = @"---
+title: include file
+description: include file
+---
+
 # Hello Include File A
 
-This is a file A included by another file.
-
-[!include[refb](b.md)]
+This is a file A included by another file. [!include[refb](b.md)]
 
 ";
 
-            var refb = @"
+            var refb = @"---
+title: include file
+description: include file
+---
+
 # Hello Include File B
 ";
             TestUtility.WriteToFile("r/root.md", root);
@@ -50,8 +56,7 @@ This is a file A included by another file.
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
-<p>This is a file A included by another file.</p>
-<h1 id=""hello-include-file-b"">Hello Include File B</h1>
+<p>This is a file A included by another file. # Hello Include File B</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 

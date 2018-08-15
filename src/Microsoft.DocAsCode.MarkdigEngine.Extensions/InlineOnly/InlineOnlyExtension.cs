@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig;
+    using Markdig.Extensions.Yaml;
     using Markdig.Parsers;
     using Markdig.Renderers;
 
@@ -14,6 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var paragraphBlockParser = pipeline.BlockParsers.FindExact<ParagraphBlockParser>() ?? new ParagraphBlockParser();
             pipeline.BlockParsers.Clear();
             pipeline.BlockParsers.Add(paragraphBlockParser);
+            pipeline.BlockParsers.Add(new YamlFrontMatterParser());
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
