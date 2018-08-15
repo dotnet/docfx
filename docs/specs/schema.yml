@@ -59,11 +59,12 @@ outputs:
 # Support schema documents with Href content
 inputs:
   docfx.yml:
+  docs/TOC.yml:
   docs/a.yml: |
-    #YamlMime:LandingData
-    title: Schema document with Href
-    metadata:
-      key: value
+    #YamlMime:ContextObject
+    brand: azure
+    breadcrumb_path: toc.yml
+    toc_rel: ../toc.yml
 outputs:
   docs/a.json: |
     {

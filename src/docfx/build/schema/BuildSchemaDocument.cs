@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildSchemaDocument
     {
-        private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData) };
+        private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData), typeof(ContextObject) };
         private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
 
         public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
