@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
                 using (Progress.Start("Convert Legacy Markdown/Redirection Files"))
                 {
-                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Markdown || f.document.ContentType == ContentType.Redirection), file => LegacyMarkdown.Convert(docset, context, file.document, file.manifestItem.Output, tocMap));
+                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection), file => LegacyMarkdown.Convert(docset, context, file.document, file.manifestItem.Output, tocMap));
                 }
 
                 using (Progress.Start("Convert Legacy Resource Files"))
