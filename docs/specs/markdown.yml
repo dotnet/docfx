@@ -88,6 +88,44 @@ outputs:
     }
   build.manifest:
 ---
+# Comments between yaml header and H1
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    <!-- This is comment -->
+
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+    }
+  build.manifest:
+---
+# Markdown block between yaml header and H1
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    hello
+
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "titleHtml": "",
+    }
+  build.manifest:
+---
 # include another file
 inputs:
   docfx.yml:
