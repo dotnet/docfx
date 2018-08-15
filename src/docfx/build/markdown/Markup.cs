@@ -36,12 +36,19 @@ namespace Microsoft.Docs.Build
         private static DependencyMapBuilder t_dependencyMap;
 
         [ThreadStatic]
+        private static BookmarkValidator t_bookmarkValidator;
+
+        [ThreadStatic]
         private static Action<Document> t_buildChild;
 
         public static MarkupResult Result => t_result;
 
         public static (string html, MarkupResult result) ToHtml(
-            string markdown, Document file, DependencyMapBuilder dependencyMap, Action<Document> buildChild)
+            string markdown,
+            Document file,
+            DependencyMapBuilder dependencyMap,
+            BookmarkValidator bookmarkValidator,
+            Action<Document> buildChild)
         {
             if (t_result != null)
             {
@@ -54,6 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     t_result = new MarkupResult();
                     t_dependencyMap = dependencyMap;
+                    t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
                     var html = Markdown.ToHtml(markdown, s_markdownPipeline);
                     return (html, t_result);
@@ -62,6 +70,7 @@ namespace Microsoft.Docs.Build
                 {
                     t_result = null;
                     t_dependencyMap = null;
+                    t_bookmarkValidator = null;
                     t_buildChild = null;
                 }
             }
@@ -117,7 +126,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(relativeTo is Document);
             Debug.Assert(resultRelativeTo is Document);
 
-            var (error, link, fragment, child) = ((Document)relativeTo).TryResolveHref(path, (Document)resultRelativeTo);
+            var self = (Document)relativeTo;
+            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
 
             if (error != null)
             {
@@ -127,8 +137,10 @@ namespace Microsoft.Docs.Build
             if (child != null)
             {
                 t_buildChild(child);
-                t_dependencyMap.AddDependencyItem((Document)relativeTo, child, HrefUtility.FragmentToDependencyType(fragment));
+                t_dependencyMap.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
             }
+
+            t_bookmarkValidator.AddBookmarkReference(self, child ?? self, fragment);
 
             return link;
         }

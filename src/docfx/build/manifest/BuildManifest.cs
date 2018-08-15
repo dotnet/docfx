@@ -13,21 +13,24 @@ namespace Microsoft.Docs.Build
             List<Document> files,
             DependencyMap dependencies)
         {
-            var manifest = new Manifest
+            using (Progress.Start("Building manifest"))
             {
-                Files = files.Select(ToPublishManifest).ToArray(),
+                var manifest = new Manifest
+                {
+                    Files = files.Select(ToPublishManifest).ToArray(),
 
-                Dependencies = dependencies.ToDictionary(
-                    d => d.Key.FilePath,
-                    d => d.Value.Select(v =>
-                    new DependencyManifestItem
-                    {
-                        Source = v.Dest.FilePath,
-                        Type = v.Type,
-                    }).ToArray()),
-            };
+                    Dependencies = dependencies.ToDictionary(
+                       d => d.Key.FilePath,
+                       d => d.Value.Select(v =>
+                       new DependencyManifestItem
+                       {
+                           Source = v.Dest.FilePath,
+                           Type = v.Type,
+                       }).ToArray()),
+                };
 
-            context.WriteJson(manifest, "build.manifest");
+                context.WriteJson(manifest, "build.manifest");
+            }
 
             FileManifest ToPublishManifest(Document doc)
             {

@@ -22,12 +22,17 @@ namespace Microsoft.Docs.Build
             var firstItem = toc?.Items?.FirstOrDefault();
             if (firstItem != null)
             {
-                firstItem.PdfAbsolutePath = PathUtility.NormalizeFile(
+                toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
+                toc.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(
                     $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
 
                 var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
-                firstItem.PdfName = PathUtility.NormalizeFile(
+                toc.Metadata.PdfName = PathUtility.NormalizeFile(
                     $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
+            }
+            else
+            {
+                toc.Metadata = null;
             }
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
@@ -53,7 +58,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private class LegacyTableOfContentsItem : TableOfContentsItem
+        private sealed class LegacyTableOfContentsMetadata
         {
             [JsonProperty(PropertyName = "pdf_absolute_path")]
             public string PdfAbsolutePath { get; set; }
@@ -65,7 +70,10 @@ namespace Microsoft.Docs.Build
         private class LegacyTableOfContentsModel
         {
             [JsonProperty(PropertyName = "items")]
-            public List<LegacyTableOfContentsItem> Items { get; set; }
+            public List<TableOfContentsItem> Items { get; set; }
+
+            [JsonProperty(PropertyName = "metadata", NullValueHandling = NullValueHandling.Ignore)]
+            public LegacyTableOfContentsMetadata Metadata { get; set; }
         }
     }
 }
