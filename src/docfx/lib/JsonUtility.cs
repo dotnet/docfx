@@ -122,14 +122,14 @@ namespace Microsoft.Docs.Build
                     ContractResolver = DefaultDeserializer.ContractResolver,
                 };
                 serializer.Error += HandleError;
-                s_schemaViolationErrors = new List<Error>();
+                t_schemaViolationErrors = new List<Error>();
                 var value = token.ToObject(type, serializer);
-                errors.AddRange(s_schemaViolationErrors);
+                errors.AddRange(t_schemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
-                s_schemaViolationErrors = null;
+                t_schemaViolationErrors = null;
             }
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -552,7 +552,7 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        s_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
             }
