@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
 
             var filePath = PathUtility.NormalizeFile(path);
             var type = GetContentType(filePath);
-            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith("experimental", PathUtility.PathComparison);
+            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type);
