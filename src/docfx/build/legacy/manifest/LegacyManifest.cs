@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                             };
                         }
 
-                        if (document.ContentType == ContentType.Page
+                        if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
                             output.PageOutput = new LegacyManifestOutputItem

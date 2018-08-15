@@ -27,7 +27,8 @@ namespace Microsoft.Docs.Build
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, pageType, content, htmlTitle, wordCount, fileMetadata) = Load(file, dependencies, bookmarkValidator, buildChild);
+            var (errors, pageType, content, fileMetadata) = Load(file, dependencies, bookmarkValidator, buildChild);
+            var conceptual = content as Conceptual;
 
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), fileMetadata);
@@ -41,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
-            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitle ?? "");
+            var title = metadata.Value<string>("title") ?? conceptual?.Title;
 
             // TODO: add toc spec test
             var toc = tocMap.FindTocRelativePath(file);
@@ -49,11 +50,11 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 PageType = pageType,
-                Content = content,
+                Content = conceptual?.Html ?? content,
                 Metadata = metadata,
                 Title = title,
-                HtmlTitle = htmlTitle,
-                WordCount = wordCount,
+                HtmlTitle = conceptual?.HtmlTitle,
+                WordCount = conceptual?.WordCount ?? 0,
                 Locale = locale,
                 Toc = toc,
                 Id = id,
@@ -70,7 +71,7 @@ namespace Microsoft.Docs.Build
             return (errors.Concat(repoErrors), model, dependencies.Build());
         }
 
-        private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
+        private static (List<Error> errors, string pageType, object content, JObject metadata)
             Load(
             Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -90,24 +91,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
+        private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadMarkdown(
             Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            var titleHtmlDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var model = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
+            var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
+            var title = HtmlUtility.GetInnerText(htmlTitleDom);
+            var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(titleHtmlDom)).ToHashSet();
+            var conceptual = new Conceptual { Html = finalHtml, WordCount = wordCount, HtmlTitle = markup.HtmlTitle, Title = title };
+
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
             bookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (markup.Errors, "Conceptual", model, markup.HtmlTitle, wordCount, markup.Metadata);
+            return (markup.Errors, "Conceptual", conceptual, markup.Metadata);
         }
 
-        private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
+        private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadYaml(string content)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
@@ -120,7 +124,7 @@ namespace Microsoft.Docs.Build
             return LoadSchemaDocument(errors, token, schema);
         }
 
-        private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
+        private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadJson(string content)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
@@ -136,7 +140,7 @@ namespace Microsoft.Docs.Build
             return LoadSchemaDocument(errors, token, schema);
         }
 
-        private static (List<Error> errors, string pageType, object content, string htmlTitle, long wordCount, JObject metadata)
+        private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadSchemaDocument(
             List<Error> errors, JToken token, string schema)
         {
@@ -147,7 +151,7 @@ namespace Microsoft.Docs.Build
 
             var content = token.ToObject(schemaType);
 
-            return (errors, schema, content, null, 0, token.Value<JObject>("metadata"));
+            return (errors, schema, content, token.Value<JObject>("metadata"));
         }
     }
 }
