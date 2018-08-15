@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    throw Errors.H1NotFound((Document)InclusionContext.File).ToException();
+                    Markup.Result.Errors.Add(Errors.H1NotFound((Document)InclusionContext.File));
                 }
             });
         }

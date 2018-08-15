@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Commands = new[] { "restore", "build" };
 
+        public readonly string[] SuppressedRules = new[] { "h1-not-found" };
+
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

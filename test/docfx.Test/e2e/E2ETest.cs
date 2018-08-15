@@ -7,15 +7,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
+        private static readonly string s_extendFileName = $"{Guid.NewGuid()}.yml";
+
+        private static readonly Regex ExtendConfigRegex = new Regex(@"^extend:(.*)", RegexOptions.Compiled | RegexOptions.Multiline);
+
         public static readonly TheoryData<string, int> Specs = FindTestSpecs();
 
         [Theory]
@@ -23,6 +30,7 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name, int ordinal)
         {
             var (docsetPath, spec) = await CreateDocset(name, ordinal);
+            AddExtendConfig(docsetPath, spec.SuppressedRules);
             var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                 os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
@@ -123,6 +131,60 @@ namespace Microsoft.Docs.Build
             }
 
             return (docsetPath, spec);
+        }
+
+        private static void AddExtendConfig(string docsetPath,  string[] suppressedRules)
+        {
+            var docfxConfigPath = Path.Combine(docsetPath, "docfx.yml");
+            if (File.Exists(docfxConfigPath))
+            {
+                string configContent = File.ReadAllText(docfxConfigPath);
+                if (string.IsNullOrWhiteSpace(configContent))
+                {
+                    GenerateSuppressedRulesFile(docfxConfigPath, suppressedRules);
+                    return;
+                }
+
+                var match = ExtendConfigRegex.Match(configContent);
+                if (match.Success)
+                {
+                    var orignalExtendValue = match.Groups[1].ToString().TrimStart(' ');
+                    var content = ExtendConfigRegex.Replace(configContent,
+                        $"extend:{Environment.NewLine}- {s_extendFileName}{(orignalExtendValue != string.Empty ? Environment.NewLine + "- " + orignalExtendValue : string.Empty)}");
+                    File.WriteAllText(docfxConfigPath, content);
+                }
+                else
+                {
+                    if (!configContent.EndsWith("\n"))
+                    {
+                        File.AppendAllText(docfxConfigPath, Environment.NewLine);
+                    }
+                    File.AppendAllText(docfxConfigPath, $"extend: {s_extendFileName}");
+                }
+
+                var extendFilePath = Path.Combine(docsetPath, s_extendFileName);
+                GenerateSuppressedRulesFile(extendFilePath, suppressedRules);
+            }
+            else
+            {
+                GenerateSuppressedRulesFile(docfxConfigPath, suppressedRules);
+            }
+        }
+
+        private static void GenerateSuppressedRulesFile(string filePath, string[] suppressedRules)
+        {
+            var content = "rules:";
+            foreach (var rule in suppressedRules)
+            {
+                content += $@"
+  {rule}: off";
+            }
+            content += $@"
+content:
+  exclude:
+  - {s_extendFileName}
+  - _site/**";
+            File.WriteAllText(filePath, content);
         }
 
         private static void DeleteDirectory(string targetDir)

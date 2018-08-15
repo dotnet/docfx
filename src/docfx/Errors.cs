@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
 
         public static Error H1NotFound(Document file)
-            => new Error(ErrorLevel.Error, "h1-not-found", $"Cannot find H1 with `#` or there are some non-comments block between yaml-header and H1", file.ToString());
+            => new Error(ErrorLevel.Warning, "h1-not-found", $"Cannot find H1 with `#` or there are some non-comments block between yaml-header and H1", file.ToString());
 
         public static Error FileNotFound(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());

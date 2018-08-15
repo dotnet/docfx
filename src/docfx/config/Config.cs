@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var optionConfigObject = options?.ToJObject();
-                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend, restoreMap), optionConfigObject));
+                var configObject = JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend, restoreMap), optionConfigObject);
                 config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
@@ -205,6 +205,8 @@ namespace Microsoft.Docs.Build
                 throw errors[0].ToException();
             }
 
+            config = ExpandAndNormalize(config);
+
             if (config == null)
                 config = new JObject();
 
@@ -217,7 +219,6 @@ namespace Microsoft.Docs.Build
 
         private static JObject ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
         {
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
             if (!config.TryGetValue(ConfigConstants.Extend, out var objExtend) || objExtend == null)
             {
                 return config;
