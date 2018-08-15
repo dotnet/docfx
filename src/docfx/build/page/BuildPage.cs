@@ -35,11 +35,7 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(
-                file,
-                metadata.Value<string>("author"),
-                metadata.Value<DateTime?>("update_date"));
-
+            var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, metadata.Value<string>("author"));
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
             var title = metadata.Value<string>("title") ?? conceptual?.Title;
@@ -65,7 +61,7 @@ namespace Microsoft.Docs.Build
                 EditUrl = editUrl,
                 CommitUrl = commitUrl,
                 ContentUrl = contentUrl,
-                EnableContribution = file.Docset.Config.Contribution.Enabled,
+                ShowEdit = file.Docset.Config.Contribution.ShowEdit,
             };
 
             return (errors.Concat(repoErrors), model, dependencies.Build());
