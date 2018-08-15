@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             lock (Console.Out)
             #pragma warning restore CA2002
             {
-                var output = (level == ErrorLevel.Error ? Console.Error : Console.Out);
+                var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
