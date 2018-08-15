@@ -60,7 +60,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>\n",
-      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "title from yaml header",
       "metadata": { "title": "title from yaml header" }
     }
@@ -79,7 +79,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>",
-      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "Title from H1",
       "metadata":
       {
@@ -126,7 +126,7 @@ outputs:
     {
       "content": "<p>body</p>",
       "title": "This is a title",
-      "titleHtml": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "htmlTitle": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
   build.manifest:

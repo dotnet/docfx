@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
 
             var filesByRepo =
                 from file in docset.BuildScope
-                where file.ContentType == ContentType.Markdown || file.ContentType == ContentType.SchemaDocument
+                where file.ContentType == ContentType.Page
                 let fileInRepo = GetRepository(file)
                 where fileInRepo.repo != null
                 group (file, fileInRepo.pathToRepo) by fileInRepo.repo;
