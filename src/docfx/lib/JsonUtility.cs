@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         private static int _schemaGenerationEnabled = 1;
 
         [ThreadStatic]
-        private static List<Error> s_schemaViolationErrors;
+        private static List<Error> t_schemaViolationErrors;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -124,7 +124,6 @@ namespace Microsoft.Docs.Build
                 serializer.Error += HandleError;
                 s_schemaViolationErrors = new List<Error>();
                 var value = token.ToObject(type, serializer);
-                serializer.Error -= HandleError;
                 errors.AddRange(s_schemaViolationErrors);
                 return (errors, value);
             }
