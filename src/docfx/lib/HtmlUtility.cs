@@ -25,11 +25,9 @@ namespace Microsoft.Docs.Build
             return transform(document.DocumentNode).OuterHtml;
         }
 
-        public static string GetInnerText(string html)
+        public static string GetInnerText(this HtmlNode html)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return doc.DocumentNode.InnerText;
+            return html.InnerText;
         }
 
         public static HtmlNode AddLinkType(this HtmlNode html, string locale)
@@ -94,6 +92,23 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return html;
+        }
+
+        public static IEnumerable<string> GetBookmarks(this HtmlNode html)
+        {
+            foreach (var node in html.DescendantsAndSelf())
+            {
+                var id = node.GetAttributeValue("id", "");
+                if (!string.IsNullOrEmpty(id))
+                {
+                    yield return id;
+                }
+                var name = node.GetAttributeValue("name", "");
+                if (!string.IsNullOrEmpty(name))
+                {
+                    yield return name;
+                }
+            }
         }
 
         public static string TransformLinks(this string html, Func<string, string> transform)
