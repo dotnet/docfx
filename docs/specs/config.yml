@@ -258,6 +258,17 @@ outputs:
   a.json:
   build.manifest:
 ---
+# exclude extend config from build
+inputs:
+  docfx.yml: |
+    extend:
+      - docs/a.yml
+      - docs/b.yml
+  docs/a.yml:
+  docs/b.yml:
+outputs:
+  build.manifest:
+---
 # `/` and `\` in path will be normalized
 inputs:
   docfx.yml: |

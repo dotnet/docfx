@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -188,7 +189,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!Path.IsPathRooted(path));
 
             var filePath = PathUtility.NormalizeFile(path);
-            var type = GetContentType(filePath);
+            var type = docset.Config.Extend.Contains(filePath, PathUtility.PathComparer) ? ContentType.Unknown : GetContentType(filePath);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
