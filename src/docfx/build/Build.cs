@@ -153,9 +153,6 @@ namespace Microsoft.Docs.Build
             {
                 RedirectionUrl = file.RedirectionUrl,
                 Locale = file.Docset.Config.Locale,
-                Id = file.Id.id,
-                VersionIndependentId = file.Id.versionIndependentId,
-                Metadata = Metadata.GetFromConfig(file),
             };
         }
     }
