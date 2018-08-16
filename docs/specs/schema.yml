@@ -73,4 +73,5 @@ outputs:
       "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
     }
   build.manifest:
+  build.log:
 ---
