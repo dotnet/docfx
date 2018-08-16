@@ -56,6 +56,7 @@ namespace Microsoft.Docs.Build
             public void Dispose()
             {
                 t_scope.Value = t_scope.Value.Pop(out var scope);
+                Console.WriteLine($"{scope.Name} done in {TimeSpan.FromSeconds(Stopwatch.ElapsedMilliseconds / 1000)}");
             }
         }
     }

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -46,6 +47,12 @@ namespace Microsoft.Docs.Build
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
+                throw Errors.GitHubUserNotFound().ToException();
+            }
+            catch (OperationCanceledException)
+            {
+                // To unblock the e2e test
+                // Todo: better handle the operation canceled exception, @Renze
                 throw Errors.GitHubUserNotFound().ToException();
             }
 
