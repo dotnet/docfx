@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var (mismatchingErrors, content) = JsonUtility.ToObjectAndTransformContent(token, schemaType, file, TransformContent);
-            errors.AddRange(mismatchingErrors);
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schemaType, TransformContent);
+            errors.AddRange(schemaViolationErrors);
 
             // TODO: consolidate this with BuildMarkdown
             var locale = file.Docset.Config.Locale;
@@ -69,25 +69,24 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, model, DependencyMap.Empty);
-        }
 
-        private static (List<Error> errors, string) TransformContent(SchemaContentType type, string value, Document file)
-        {
-            var errors = new List<Error>();
-            switch (type)
+            string TransformContent(SchemaContentType type, string value)
             {
-                case SchemaContentType.Href:
-                    var (error, href, fragment, doc) = Resolve.TryResolveHref(file, value, file);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
-                    return (errors, href);
-                case SchemaContentType.Xref:
-                case SchemaContentType.None:
-                case SchemaContentType.Markdown:
-                default:
-                    return (errors, value);
+                switch (type)
+                {
+                    case SchemaContentType.Href:
+                        var (error, href, fragment, doc) = Resolve.TryResolveHref(file, value, file);
+                        if (error != null)
+                        {
+                            errors.Add(error);
+                        }
+                        return href;
+                    case SchemaContentType.Xref:
+                    case SchemaContentType.None:
+                    case SchemaContentType.Markdown:
+                    default:
+                        return value;
+                }
             }
         }
 

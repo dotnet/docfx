@@ -55,10 +55,11 @@ outputs:
       "content": { "title": "my title" }
     }
   build.manifest:
-  ---
+---
 # Support schema documents with Href content
 inputs:
   docfx.yml:
+  TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
     #YamlMime:ContextObject
@@ -66,10 +67,10 @@ inputs:
     breadcrumb_path: toc.yml
     toc_rel: ../toc.yml
 outputs:
+  docs/TOC.json:
   docs/a.json: |
     {
-      "content": { "title": "my title" },
-      "metadata": { "key": "value" }
+      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
     }
   build.manifest:
 ---
