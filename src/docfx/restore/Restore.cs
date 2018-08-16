@@ -60,12 +60,6 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
-        private static IEnumerable<string> GetRestorePaths(Config config)
-        {
-            yield return config.Contribution.GitCommitsTime;
-            yield return config.Contribution.UserProfileCache;
-        }
-
         private static IEnumerable<string> GetRestoreUrls(IEnumerable<string> paths)
         {
             foreach (var url in paths)
@@ -103,11 +97,11 @@ namespace Microsoft.Docs.Build
             }
 
             await ParallelUtility.ForEach(
-            GetRestoreUrls(GetRestorePaths(config)),
-            async restoreUrl =>
-            {
-                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
-            });
+                GetRestoreUrls(config.GetExternalReferences()),
+                async restoreUrl =>
+                {
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -118,7 +112,7 @@ namespace Microsoft.Docs.Build
         {
             await RestoreGit.GC(config, gcChild);
 
-            var restoreUrls = GetRestoreUrls(GetRestorePaths(config).Concat(config.Extend));
+            var restoreUrls = GetRestoreUrls(config.GetExternalReferences().Concat(config.Extend));
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
                 await RestoreUrl.GC(restoreUrl);
