@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData) };
+        private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData), typeof(ContextObject) };
         private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
 
         public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
@@ -78,12 +78,12 @@ namespace Microsoft.Docs.Build
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadYaml(content);
+                return LoadYaml(content, file);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return LoadJson(content);
+                return LoadJson(content, file);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
-            LoadYaml(string content)
+            LoadYaml(string content, Document file)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
             var schema = YamlUtility.ReadMime(content);
@@ -117,11 +117,11 @@ namespace Microsoft.Docs.Build
                 schema = token.Value<string>("documentType");
             }
 
-            return LoadSchemaDocument(errors, token, schema);
+            return LoadSchemaDocument(errors, token, schema, file);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
-            LoadJson(string content)
+            LoadJson(string content, Document file)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
             var schemaUrl = token.Value<string>("$schema");
@@ -133,21 +133,40 @@ namespace Microsoft.Docs.Build
                 schema = Path.GetFileNameWithoutExtension(schema);
             }
 
-            return LoadSchemaDocument(errors, token, schema);
+            return LoadSchemaDocument(errors, token, schema, file);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadSchemaDocument(
-            List<Error> errors, JToken token, string schema)
+            List<Error> errors, JToken token, string schema, Document file)
         {
             if (schema == null || !s_schemas.TryGetValue(schema, out var schemaType))
             {
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var content = token.ToObject(schemaType);
-
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schemaType, TransformContent);
+            errors.AddRange(schemaViolationErrors);
             return (errors, schema, content, token.Value<JObject>("metadata"));
+
+            string TransformContent(SchemaContentType type, string value)
+            {
+                switch (type)
+                {
+                    case SchemaContentType.Href:
+                        var (error, href, fragment, doc) = Resolve.TryResolveHref(file, value, file);
+                        if (error != null)
+                        {
+                            errors.Add(error);
+                        }
+                        return href;
+                    case SchemaContentType.Xref:
+                    case SchemaContentType.None:
+                    case SchemaContentType.Markdown:
+                    default:
+                        return value;
+                }
+            }
         }
     }
 }
