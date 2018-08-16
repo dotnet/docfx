@@ -54,7 +54,7 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   sccm/mdm/index.json: |
-    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.manifest:
 ---
 # generate different document id and version id with 'redirection without document id'
@@ -73,7 +73,7 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "versionIndependentId": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
   sccm/mdm/index.json: |
-    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.manifest:
 ---
 # get conflicted redirection document id warning if two or more files redirect to the same file with document id
@@ -93,9 +93,9 @@ outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   sccm/mdm/index.json: |
-    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management"}
   sccm/mdm/index2.json: |
-    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management", "id": "573a60b3-e1f9-c2a1-6d92-47f36b55d89b", "versionIndependentId": "b0cc90bf-c553-6b04-e613-57559503e93c" }
+    { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.manifest:
   build.log: |
     ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]
