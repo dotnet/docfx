@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PageModel
+    public class PageModel
     {
         public string PageType { get; set; }
 
@@ -43,5 +43,16 @@ namespace Microsoft.Docs.Build
         public string CommitUrl { get; set; }
 
         public JObject Metadata { get; set; }
+    }
+
+    public class GitUserInfo
+    {
+        public string Name { get; set; }
+
+        public string ProfileUrl { get; set; }
+
+        public string DisplayName { get; set; }
+
+        public string Id { get; set; }
     }
 }

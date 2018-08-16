@@ -30,4 +30,8 @@
     <PackageReference Include="YamlDotNet" Version="5.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Docs.Template\Microsoft.Docs.Template.csproj" />
+  </ItemGroup>
+
 </Project>
