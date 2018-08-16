@@ -130,12 +130,6 @@ namespace Microsoft.Docs.Build
         public static Error GitHubUserNotFound()
             => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
 
-        public static Error NewtonsoftJsonSchemaLimitExceeded(string message)
-            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-limit-exceeded", message);
-
-        public static Error NewtonsoftJsonSchemaLicenseRegistrationFailed(string message)
-            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-registraion-failed", $"Encountered issue while register license for Newtonsoft.Json.Schema: {message}");
-
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
