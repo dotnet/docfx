@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
 
-            var content = (string)pageModel.Content;
+            var content = pageModel.Content as string;
             if (!string.IsNullOrEmpty(content))
             {
                 content = HtmlUtility.TransformHtml(
