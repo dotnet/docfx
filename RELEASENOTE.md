@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.38)
+Version Notes (Current Version: v2.38.1)
 =======================================
+
+v2.38.1
+-----------
+1. Bug fix:
+    1. Fix yamlheader in inline inclusion (#3203)
 
 v2.38
 -----------
