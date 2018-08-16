@@ -67,11 +67,6 @@ namespace Microsoft.Docs.Build
         public string OutputPath { get; }
 
         /// <summary>
-        /// Gets a value indicating whether if it master content
-        /// </summary>
-        public bool IsMasterContent { get; }
-
-        /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
         public (string id, string versionIndependentId) Id => _id.Value;
@@ -98,7 +93,6 @@ namespace Microsoft.Docs.Build
             string siteUrl,
             string outputPath,
             ContentType contentType,
-            bool isMasterContent,
             bool isExperimental,
             string redirectionUrl = null)
         {
@@ -111,7 +105,6 @@ namespace Microsoft.Docs.Build
             SiteUrl = siteUrl;
             OutputPath = outputPath;
             ContentType = contentType;
-            IsMasterContent = isMasterContent;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
 
@@ -196,8 +189,7 @@ namespace Microsoft.Docs.Build
 
             var filePath = PathUtility.NormalizeFile(path);
             var type = GetContentType(filePath);
-            var isMasterContent = type == ContentType.Markdown || type == ContentType.SchemaDocument;
-            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith("experimental", PathUtility.PathComparison);
+            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type);
@@ -205,12 +197,12 @@ namespace Microsoft.Docs.Build
             var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
-            if (contentType == ContentType.Redirection && !isMasterContent)
+            if (contentType == ContentType.Redirection && type != ContentType.Page)
             {
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isMasterContent, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isExperimental, redirectionUrl));
         }
 
         /// <summary>
@@ -259,40 +251,31 @@ namespace Microsoft.Docs.Build
 
         internal static ContentType GetContentType(string path)
         {
+            if (!path.EndsWith(".md", PathUtility.PathComparison) &&
+                !path.EndsWith(".json", PathUtility.PathComparison) &&
+                !path.EndsWith(".yml", PathUtility.PathComparison))
+            {
+                return ContentType.Resource;
+            }
+
             var name = Path.GetFileNameWithoutExtension(path);
-
-            if (path.EndsWith(".md", PathUtility.PathComparison))
+            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
             {
-                if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-                {
-                    return ContentType.TableOfContents;
-                }
-                return ContentType.Markdown;
+                return ContentType.TableOfContents;
+            }
+            if (name.Equals("docfx", PathUtility.PathComparison))
+            {
+                return ContentType.Unknown;
             }
 
-            if (path.EndsWith(".yml", PathUtility.PathComparison) ||
-                path.EndsWith(".json", PathUtility.PathComparison))
-            {
-                if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-                {
-                    return ContentType.TableOfContents;
-                }
-                if (name.Equals("docfx", PathUtility.PathComparison))
-                {
-                    return ContentType.Unknown;
-                }
-                return ContentType.SchemaDocument;
-            }
-
-            return ContentType.Resource;
+            return ContentType.Page;
         }
 
         internal static string FilePathToSitePath(string path, ContentType contentType)
         {
             switch (contentType)
             {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
+                case ContentType.Page:
                     if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                     {
                         return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
@@ -317,8 +300,7 @@ namespace Microsoft.Docs.Build
 
             switch (contentType)
             {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
+                case ContentType.Page:
                     var extensionIndex = url.LastIndexOf('.');
                     if (extensionIndex >= 0)
                     {
