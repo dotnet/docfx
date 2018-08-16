@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using HtmlAgilityPack;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
@@ -30,8 +29,7 @@ namespace Microsoft.Docs.Build
 
         private static HeadingBlock GetHeadingBlock(MarkdownDocument document)
         {
-            var firstAfterYamlBlock = GetAfterYamlChildren(document).SkipWhile(block => IsCommentsBlock(block)).FirstOrDefault();
-            return firstAfterYamlBlock as HeadingBlock;
+            return GetAfterYamlChildren(document).SkipWhile(IsCommentsBlock).FirstOrDefault() as HeadingBlock;
         }
 
         private static IEnumerable<Block> GetAfterYamlChildren(MarkdownDocument document)
@@ -43,11 +41,7 @@ namespace Microsoft.Docs.Build
         {
             var htmlBlock = block as HtmlBlock;
 
-            if (htmlBlock != null)
-            {
-                return htmlBlock.Type == HtmlBlockType.Comment;
-            }
-            return false;
+            return htmlBlock?.Type == HtmlBlockType.Comment;
         }
 
         private static string RenderTitle(HeadingBlock h1)
