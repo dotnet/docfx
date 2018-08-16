@@ -22,7 +22,7 @@ class Program
 
         if (Directory.Exists("schemas"))
         {
-            Directory.Delete("schemas");
+            Directory.Delete("schemas", recursive: true);
         }
         Directory.CreateDirectory("schemas");
 
