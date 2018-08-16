@@ -905,9 +905,9 @@ inputs:
   docs/a.md:
 outputs:
   docs/index.json: |
-    {"tocRelativePath": "f1/TOC.json"}
+    {"toc": "f1/TOC.json"}
   docs/a.json: |
-    {"tocRelativePath": "f1/TOC.json"}
+    {"toc": "f1/TOC.json"}
   build.manifest:
   docs/f1/TOC.json:
   docs/f1/TOC.experimental.json:

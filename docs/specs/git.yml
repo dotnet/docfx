@@ -1,6 +1,6 @@
 ---
 # Show git contribution info when userProfile & commitsTime is set to URL
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-5
+repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-url
 outputs:
   README.json: |
     {
@@ -12,23 +12,24 @@ outputs:
       },
       "contributors": [
         {
+          "name": "yufeih",
+          "profileUrl": "https://github.com/yufeih",
+          "displayName": "Yufei Huang",
+          "id": "511355"
+        },
+        {
           "name": "OsmondJiang",
           "profileUrl": "https://github.com/OsmondJiang",
           "displayName": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00"
-    }
-  testdata1.json: |
-    {
-      "updatedAt":"1874-01-01T00:00:00"
+      "updatedAt": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
-  dep.json:
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
+repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-file
 outputs:
   README.json: |
     {
@@ -40,20 +41,21 @@ outputs:
       },
       "contributors": [
         {
+          "name": "yufeih",
+          "profileUrl": "https://github.com/yufeih",
+          "displayName": "Yufei Huang",
+          "id": "511355"
+        },
+        {
           "name": "OsmondJiang",
           "profileUrl": "https://github.com/OsmondJiang",
           "displayName": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "2018-06-28T10:00:00"
-    }
-  testdata1.json: |
-    {
-      "updatedAt":"1874-01-01T00:00:00"
+      "updatedAt": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
-  dep.json:
 ---
 # Specify invalid author in YAML header should log warning
 # The warning message for author-not-found can one of the following:
@@ -104,14 +106,14 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
     {
-      "enableContribution": true,
+      "showEdit": true,
       "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
       "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
       "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
     }
   testdata1.json: |
     {
-      "enableContribution": true,
+      "showEdit": true,
       "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
       "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
       "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
@@ -131,6 +133,16 @@ outputs:
   testdata1.json:
   build.manifest:
   dep.json:
+---
+# Don't load git commits when showContributors is set to false
+repo: https://github.com/docascode/docfx-test-dependencies#git-no-contributors
+outputs:
+  README.json: |
+    {
+      "contributors": [],
+      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/c877f1eb84e4a3bd8a8a421b14f684c4f0de853d/README.md"
+    }
+  build.manifest:
 ---
 # Use commit's time when gitCommitsTime file not given
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4

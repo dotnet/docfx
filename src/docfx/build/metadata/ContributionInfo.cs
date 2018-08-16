@@ -47,8 +47,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
-            string author,
-            DateTime? updateDate)
+            string author)
         {
             Debug.Assert(document != null);
 
@@ -91,11 +90,7 @@ namespace Microsoft.Docs.Build
             }
 
             DateTime updateDateTime;
-            if (updateDate != null)
-            {
-                updateDateTime = updateDate.Value;
-            }
-            else if (commits?.Count > 0)
+            if (commits?.Count > 0)
             {
                 if (_updateTimeByCommit.TryGetValue(commits[0].Sha, out var timeFromHistory))
                     updateDateTime = timeFromHistory;
@@ -124,14 +119,15 @@ namespace Microsoft.Docs.Build
             var editRepo = document.Docset.Config.Contribution.Repository ?? repo.Name;
             var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
 
-            var editUrl = document.Docset.Config.Contribution.Enabled
+            var editUrl = document.Docset.Config.Contribution.ShowEdit
                 ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
                 : null;
 
-            var commitUrl = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
-                ? $"https://github.com/{repo.Name}/blob/{commits[0].Sha}/{pathToRepo}"
-                : null;
+            var commit = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
+                ? commits[0].Sha
+                : repo.Commit;
 
+            var commitUrl = commit != null ? $"https://github.com/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
             var contentUrl = $"https://github.com/{repo.Name}/blob/{branch}/{pathToRepo}";
 
             return (editUrl, contentUrl, commitUrl);
@@ -179,9 +175,14 @@ namespace Microsoft.Docs.Build
         {
             var result = new Dictionary<string, List<GitCommit>>();
 
+            if (!docset.Config.Contribution.ShowContributors)
+            {
+                return result;
+            }
+
             var filesByRepo =
                 from file in docset.BuildScope
-                where file.ContentType == ContentType.Markdown || file.ContentType == ContentType.SchemaDocument
+                where file.ContentType == ContentType.Page
                 let fileInRepo = GetRepository(file)
                 where fileInRepo.repo != null
                 group (file, fileInRepo.pathToRepo) by fileInRepo.repo;
