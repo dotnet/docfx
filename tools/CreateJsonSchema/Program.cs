@@ -43,7 +43,7 @@ class Program
         {
             Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
             Console.WriteLine("");
-            Console.WriteLine(status);
+            Process.Start("git", "diff schemas").WaitForExit();
             return 1;
         }
 
