@@ -53,14 +53,14 @@ namespace Microsoft.Docs.Build
                     {
                         case "restore":
                             await Restore.Run(docset, options);
-                            Done(stopwatch.Elapsed);
+                            Done(stopwatch.Elapsed, report.Summary);
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
-                            Done(stopwatch.Elapsed);
+                            Done(stopwatch.Elapsed, report.Summary);
                             break;
                     }
-                    return 0;
+                    return report.Summary.err > 0 ? 1 : 0;
                 }
                 catch (DocfxException ex)
                 {
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             return (command, docset, options);
         }
 
-        private static void Done(TimeSpan duration)
+        private static void Done(TimeSpan duration, (int, int) summary)
         {
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
@@ -112,6 +112,15 @@ namespace Microsoft.Docs.Build
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
+
+                var (err, warn) = summary;
+                if (err > 0 || warn > 0)
+                {
+                    Console.ForegroundColor = err > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
+                    Console.WriteLine();
+                    Console.WriteLine($"  {err} Error(s), {warn} Warning(s)");
+                }
+
                 Console.ResetColor();
             }
         }

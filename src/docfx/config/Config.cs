@@ -118,6 +118,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
+        public IEnumerable<string> GetExternalReferences()
+        {
+            yield return Contribution.GitCommitsTime;
+            yield return Contribution.UserProfileCache;
+        }
+
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>

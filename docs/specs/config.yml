@@ -258,6 +258,22 @@ outputs:
   a.json:
   build.manifest:
 ---
+# exclude config extend and external references from build
+inputs:
+  docfx.yml: |
+    extend:
+      - docs/a.yml
+      - docs/b.yml
+    contribution:
+      gitCommitsTime: docs/c.json
+      userProfileCache: docs/d.json
+  docs/a.yml:
+  docs/b.yml:
+  docs/c.json: '{}'
+  docs/d.json: '{}'
+outputs:
+  build.manifest:
+---
 # `/` and `\` in path will be normalized
 inputs:
   docfx.yml: |
