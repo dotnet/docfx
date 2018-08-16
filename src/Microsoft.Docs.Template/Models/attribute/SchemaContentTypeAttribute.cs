@@ -20,4 +20,18 @@ namespace Microsoft.Docs.Build
 
         public SchemaContentTypeAttribute(SchemaContentType contentType) => ContentType = contentType;
     }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class HrefAttribute : SchemaContentTypeAttribute
+    {
+        public HrefAttribute()
+            : base(SchemaContentType.Href) { }
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class MarkdownAttribute : SchemaContentTypeAttribute
+    {
+        public MarkdownAttribute()
+            : base(SchemaContentType.Markdown) { }
+    }
 }

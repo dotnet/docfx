@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContextObject
+    public class ContextObject
     {
         [JsonProperty("brand")]
         public string Brand { get; set; }
