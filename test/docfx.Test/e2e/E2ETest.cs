@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToList();
                     var actual = File.ReadAllLines(file).OrderBy(_ => _);
-                    Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*").Replace("\\?", ".") + "$", string.Join("\n", actual));
+                    Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
                     break;
                 default:
                     Assert.Equal(
