@@ -1,0 +1,332 @@
+{
+  "definitions": {
+    "ContributionConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "showContributors": {
+          "type": "boolean"
+        },
+        "showEdit": {
+          "type": "boolean"
+        },
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "userProfileCache": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gitCommitsTime": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "DocumentIdConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "sourceBasePath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "siteBasePath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "depotMappings": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "directoryMappings": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "FileConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "include": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "exclude": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "GlobConfig<JObject>": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "include": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "exclude": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "value": {},
+        "isGlob": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "OutputConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "copyResources": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RouteConfig": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "type": [
+    "object",
+    "null"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "product": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "locale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content": {
+      "$ref": "#/definitions/FileConfig"
+    },
+    "output": {
+      "$ref": "#/definitions/OutputConfig"
+    },
+    "globalMetadata": {},
+    "siteBasePath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sourceBasePath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "needGeneratePdfUrlTemplate": {
+      "type": "boolean"
+    },
+    "baseUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "extend": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "fileMetadata": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/definitions/GlobConfig<JObject>"
+      }
+    },
+    "routes": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/definitions/RouteConfig"
+      }
+    },
+    "contribution": {
+      "$ref": "#/definitions/ContributionConfig"
+    },
+    "dependencies": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "redirections": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "redirectionsWithoutId": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "documentId": {
+      "$ref": "#/definitions/DocumentIdConfig"
+    },
+    "rules": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  }
+}

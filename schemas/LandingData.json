@@ -1,0 +1,109 @@
+{
+  "definitions": {
+    "LandingDataAbstract": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "LandingDataItem": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "type": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "style": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "className": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "LandingDataSection": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "items": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/LandingDataItem"
+          }
+        }
+      }
+    }
+  },
+  "type": [
+    "object",
+    "null"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {},
+    "abstract": {
+      "$ref": "#/definitions/LandingDataAbstract"
+    },
+    "sections": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/definitions/LandingDataSection"
+      }
+    },
+    "documentType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
