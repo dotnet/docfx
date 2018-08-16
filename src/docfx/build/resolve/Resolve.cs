@@ -59,8 +59,8 @@ namespace Microsoft.Docs.Build
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
 
-            // Master content outside build scope, don't build the file, use relative href
-            if (error == null && file.IsMasterContent && !relativeTo.Docset.BuildScope.Contains(file))
+            // Pages outside build scope, don't build the file, use relative href
+            if (error == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
             {
                 return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + query + fragment, fragment, null);
             }

@@ -14,9 +14,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Document> _filesByUrl = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
 
-        public ICollection<Document> Build(Context context)
+        public ICollection<Document> Build(Context context, IEnumerable<Document> filesWithErrors)
         {
-            HandleConflicts(context);
+            HandleConflicts(context, filesWithErrors);
 
             return _filesByUrl.Values;
         }
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private void HandleConflicts(Context context)
+        private void HandleConflicts(Context context, IEnumerable<Document> filesWithErrors)
         {
             // Handle publish conflicts
             foreach (var (siteUrl, conflict) in _publishConflicts)
@@ -91,6 +91,15 @@ namespace Microsoft.Docs.Build
                 foreach (var conflictingFile in conflictingFiles)
                 {
                     context.Delete(conflictingFile.OutputPath);
+                }
+            }
+
+            // Handle files with errors
+            foreach (var file in filesWithErrors)
+            {
+                if (_filesByUrl.TryRemove(file.SiteUrl, out _))
+                {
+                    context.Delete(file.OutputPath);
                 }
             }
         }

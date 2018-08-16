@@ -53,12 +53,12 @@ namespace Microsoft.Docs.Build
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
             rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
-            rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
+            rawMetadata["toc_rel"] = pageModel.Toc ?? tocMap.FindTocRelativePath(file);
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
             rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.TitleHtml ?? "";
+            rawMetadata["rawTitle"] = pageModel.HtmlTitle ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 
@@ -96,11 +96,11 @@ namespace Microsoft.Docs.Build
             if (pageModel.UpdatedAt != default)
                 rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
 
-            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
+            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
 
             if (file.ContentType != ContentType.Redirection)
             {
-                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.Enabled;
+                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
 
                 if (!string.IsNullOrEmpty(pageModel.EditUrl))
                     rawMetadata["content_git_url"] = pageModel.EditUrl;

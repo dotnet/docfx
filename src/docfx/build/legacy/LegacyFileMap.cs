@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,20 +13,25 @@ namespace Microsoft.Docs.Build
     {
         public static void Convert(Docset docset, Context context, List<Document> documents)
         {
-            var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
-            foreach (var document in documents)
+            using (Progress.Start("Convert Legacy File Map"))
             {
-                var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
+                var fileMapItems = new ConcurrentBag<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
+                Parallel.ForEach(
+                    documents,
+                    document =>
+                    {
+                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
 
-                var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
-                if (fileItem != null)
-                {
-                    fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
-                }
+                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);
+                        if (fileItem != null)
+                        {
+                            fileMapItems.Add((document.ToLegacyPathRelativeToBasePath(docset), fileItem));
+                        }
+                    });
+
+                Convert(docset, context, fileMapItems);
+                LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);
             }
-
-            Convert(docset, context, fileMapItems);
-            LegacyAggregatedFileMap.Convert(docset, context, fileMapItems);
         }
 
         public static void Convert(Docset docset, Context context, IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items)
