@@ -40,13 +40,20 @@ namespace Microsoft.Docs.Build
             return newMetadata;
         }
 
+        public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
+            => new JObject
+            {
+                ["redirect_url"] = pageModel.RedirectionUrl,
+                ["locale"] = docset.Config.Locale,
+            };
+
         public static JObject GenerateLegacyRawMetadata(
-            PageModel pageModel,
-            string content,
-            Docset docset,
-            Document file,
-            LegacyManifestOutput legacyManifestOutput,
-            TableOfContentsMap tocMap)
+                PageModel pageModel,
+                string content,
+                Docset docset,
+                Document file,
+                LegacyManifestOutput legacyManifestOutput,
+                TableOfContentsMap tocMap)
         {
             var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
 

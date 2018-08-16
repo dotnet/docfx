@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -174,8 +175,10 @@ namespace Microsoft.Docs.Build
                     break;
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToList();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToList();
-                    TestHelper.VerifyLogEquals(expected, actual);
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
+                    // TODO: Configure github token in CI to get rid of github rate limit,
+                    // then we could remove the wildcard match
+                    Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
                     break;
                 default:
                     Assert.Equal(
