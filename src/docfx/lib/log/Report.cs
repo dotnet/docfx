@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,6 +15,11 @@ namespace Microsoft.Docs.Build
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
         private Dictionary<string, ErrorLevel> _rules;
+
+        private int _errorCount;
+        private int _warningCount;
+
+        public (int err, int warn) Summary => (_errorCount, _warningCount);
 
         public Report(bool legacy = false)
         {
@@ -50,6 +56,15 @@ namespace Microsoft.Docs.Build
                 {
                     _output.Value.WriteLine(line);
                 }
+            }
+
+            if (level == ErrorLevel.Warning)
+            {
+                Interlocked.Increment(ref _warningCount);
+            }
+            else if (level == ErrorLevel.Error)
+            {
+                Interlocked.Increment(ref _errorCount);
             }
 
             ConsoleLog(level, error);
@@ -89,10 +104,11 @@ namespace Microsoft.Docs.Build
             lock (Console.Out)
             #pragma warning restore CA2002
             {
+                var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
-                Console.Write(error.Code + " ");
+                output.Write(error.Code + " ");
                 Console.ResetColor();
-                Console.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+                output.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
             }
         }
 
