@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report.Summary);
                             break;
                     }
-                    return report.Summary.err > 0 ? 1 : 0;
+                    return 0;
                 }
                 catch (DocfxException ex)
                 {
