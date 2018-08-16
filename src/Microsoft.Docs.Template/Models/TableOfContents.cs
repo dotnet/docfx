@@ -7,7 +7,16 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsItem
+    public class TableOfContentsModel
+    {
+        [JsonProperty(PropertyName = "metadata")]
+        public JObject Metadata { get; set; }
+
+        [JsonProperty(PropertyName = "items")]
+        public List<TableOfContentsItem> Items { get; set; }
+    }
+
+    public class TableOfContentsItem
     {
         [JsonProperty(PropertyName = "toc_title")]
         public string TocTitle { get; set; }
@@ -15,9 +24,10 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
+        [JsonProperty(PropertyName = "children")]
+        public List<TableOfContentsItem> Children { get; set; }
+
         [JsonExtensionData]
         public JObject Metadata { get; set; }
-
-        public List<TableOfContentsItem> Children;
     }
 }

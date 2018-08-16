@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PageModel
+    public class PageModel
     {
         public string PageType { get; set; }
 

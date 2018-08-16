@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitUserInfo
+    public class GitUserInfo
     {
         public string Name { get; set; }
 
