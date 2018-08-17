@@ -481,28 +481,6 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        [Fact]
-        public void TestGenerateJsonSchemaFromType()
-        {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(ClassForJsonSchema));
-            Assert.Empty(errors);
-            Assert.Equal(new List<string>() { "ValueRequired" }, schema.Required);
-            Assert.Equal(2, schema.Properties["ValueWithLengthRestriction"].MinimumLength);
-            Assert.Equal(3, schema.Properties["ValueWithLengthRestriction"].MaximumLength);
-            Assert.Equal(1, schema.Properties["ListValueWithLengthRestriction"].MinimumItems);
-            Assert.Equal(3, schema.Properties["ListValueWithLengthRestriction"].MaximumItems);
-            Assert.Equal("[a-z]", schema.Properties["RegPatternValue"].Pattern);
-            Assert.True(schema.AllowAdditionalProperties);
-        }
-
-        [Fact]
-        public void TestGenerateJsonSchemaFromTypeWithoutJsonExtensionData()
-        {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(BasicClass));
-            Assert.Empty(errors);
-            Assert.False(schema.AllowAdditionalProperties);
-        }
-
         public class BasicClass
         {
             public string C { get; set; }
@@ -577,24 +555,6 @@ namespace Microsoft.Docs.Build
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
-        }
-
-        public class ClassForJsonSchema
-        {
-            [JsonRequired]
-            public string ValueRequired { get; set; }
-
-            [RegularExpression("[a-z]")]
-            public string RegPatternValue { get; set; }
-
-            [MinLength(2), MaxLength(3)]
-            public string ValueWithLengthRestriction { get; set; }
-
-            [MinLength(1), MaxLength(3)]
-            public List<string> ListValueWithLengthRestriction { get; set; }
-
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
         }
 
         public enum BasicEnum
