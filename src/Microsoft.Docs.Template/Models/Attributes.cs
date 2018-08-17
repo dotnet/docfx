@@ -12,19 +12,19 @@ namespace Microsoft.Docs.Build
     public class DataSchemaAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public abstract class SchemaContentTypeAttribute : Attribute
+    public abstract class DataTypeAttribute : Attribute
     {
         public Type RequiredType { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class HrefAttribute : SchemaContentTypeAttribute
+    public class HrefAttribute : DataTypeAttribute
     {
         public HrefAttribute() => RequiredType = typeof(string);
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class MarkdownAttribute : SchemaContentTypeAttribute
+    public class MarkdownAttribute : DataTypeAttribute
     {
         public MarkdownAttribute(Type type) => RequiredType = typeof(string);
     }

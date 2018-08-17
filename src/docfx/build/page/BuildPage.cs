@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaViolationErrors);
             return (errors, schema, content, token.Value<JObject>("metadata"));
 
-            object TransformContent(SchemaContentTypeAttribute attribute, JsonReader reader)
+            object TransformContent(DataTypeAttribute attribute, JsonReader reader)
             {
                 // Schema violation if the field is not what SchemaContentTypeAttribute required
                 if (reader.ValueType != attribute.RequiredType)

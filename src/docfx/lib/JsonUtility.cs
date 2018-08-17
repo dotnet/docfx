@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
         [ThreadStatic]
-        private static Func<SchemaContentTypeAttribute, JsonReader, object> t_transform;
+        private static Func<DataTypeAttribute, JsonReader, object> t_transform;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<SchemaContentTypeAttribute, JsonReader, object> transform = null)
+            Func<DataTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -115,7 +115,6 @@ namespace Microsoft.Docs.Build
                 t_transform = transform;
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
                 errors.AddRange(mismatchingErrors);
-                t_transform = transform;
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -137,15 +136,8 @@ namespace Microsoft.Docs.Build
                 if (args.CurrentObject == args.ErrorContext.OriginalObject
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
-                    if (ContainsLineInfo(args.ErrorContext.Error.Message))
-                    {
-                        var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                        errors.Add(Errors.ViolateSchema(range, message));
-                    }
-                    else
-                    {
-                        errors.Add(Errors.ViolateSchema(new Range(0, 0), args.ErrorContext.Error.Message));
-                    }
+                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -219,12 +211,19 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (string, Range) ParseRangeFromExceptionMessage(string message)
+        private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
+            if (message.IndexOf(',') == -1)
+            {
+                parsedMessage = message;
+                range = new Range(0, 0);
+                return;
+            }
             var parts = message.Remove(message.Length - 1).Split(',');
             var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
             var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            return (message.Substring(0, message.IndexOf(".")), new Range(lineNumber, linePosition));
+            parsedMessage = message.Substring(0, message.IndexOf("."));
+            range = new Range(lineNumber, linePosition);
         }
 
         private static bool ContainsLineInfo(string message)
@@ -430,7 +429,7 @@ namespace Microsoft.Docs.Build
             private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false);
-                var contentTypeAttribute = member.GetCustomAttribute<SchemaContentTypeAttribute>();
+                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
                 if (t_transform != null && contentTypeAttribute != null)
                 {
                     return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
@@ -446,9 +445,9 @@ namespace Microsoft.Docs.Build
         private sealed class SchemaValidationAndTransformConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
-            private readonly SchemaContentTypeAttribute _attribute;
+            private readonly DataTypeAttribute _attribute;
 
-            public SchemaValidationAndTransformConverter(SchemaContentTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
             {
                 _attribute = attribute;
                 _validators = validators;
