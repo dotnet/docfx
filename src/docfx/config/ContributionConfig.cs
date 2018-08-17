@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -41,8 +42,8 @@ namespace Microsoft.Docs.Build
         public readonly string GitCommitsTime = string.Empty;
 
         /// <summary>
-        /// The excluded contributors which you do want to show
+        /// The excluded contributors which you don't want to show
         /// </summary>
-        public readonly string[] ExcludedContributors = Array.Empty<string>();
+        public readonly HashSet<string> ExcludedContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 }

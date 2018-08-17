@@ -146,6 +146,7 @@ inputs:
       branch: contribution
       excludedContributors:
         - YUFEIH
+        - yufeih
 outputs:
   README.json: |
     {
