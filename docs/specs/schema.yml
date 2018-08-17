@@ -59,13 +59,14 @@ outputs:
 # Support schema documents with Href content
 inputs:
   docfx.yml:
+  # TODO: why is there no output for this toc file?
   TOC.yml:
   docs/TOC.yml:
   docs/a.yml: |
     #YamlMime:ContextObject
     brand: azure
-    breadcrumb_path: toc.yml
-    toc_rel: ../toc.yml
+    breadcrumb_path: TOC.yml
+    toc_rel: ../TOC.yml
 outputs:
   docs/TOC.json:
   docs/a.json: |
@@ -73,5 +74,4 @@ outputs:
       "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
     }
   build.manifest:
-  build.log:
 ---
