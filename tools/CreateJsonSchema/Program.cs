@@ -1,8 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Docs.Build;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
@@ -11,7 +11,7 @@ using Newtonsoft.Json.Serialization;
 
 class Program
 {
-    static int Main(string[] args)
+    static async Task<int> Main(string[] args)
     {
         var license = Environment.GetEnvironmentVariable("JSON_SCHEMA_LICENSE");
         if (!string.IsNullOrEmpty(license))
@@ -37,15 +37,7 @@ class Program
             }
         }
 
-        var git = Process.Start(new ProcessStartInfo
-        {
-            FileName = "git",
-            Arguments = "diff --ignore-all-space --ignore-blank-lines schemas",
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-        });
-        git.WaitForExit();
-        var diff = git.StandardOutput.ReadToEnd().Trim();
+        var diff = await ProcessUtility.Execute("git", "diff --ignore-all-space --ignore-blank-lines schemas");
         if (!string.IsNullOrEmpty(diff))
         {
             Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
@@ -61,12 +53,15 @@ class Program
     {
         var generator = new JSchemaGenerator
         {
+            DefaultRequired = Required.DisallowNull,
             ContractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new CamelCaseNamingStrategy()
             },
-            DefaultRequired = Required.Default
         };
+
+        generator.GenerationProviders.Add(new StringEnumGenerationProvider { CamelCaseText = true });
+
         var schema = generator.Generate(type, true);
 
         // If type contains JsonExtensinDataAttribute, additional properties are allowed

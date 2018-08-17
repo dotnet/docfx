@@ -1,72 +1,45 @@
 {
   "definitions": {
     "LandingDataAbstract": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     },
     "LandingDataItem": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "type": {
-          "type": "integer",
+          "type": "string",
           "enum": [
-            0,
-            1,
-            2,
-            3,
-            4
+            "paragraph",
+            "list",
+            "table",
+            "markdown",
+            "text"
           ]
         },
         "text": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "style": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "className": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     },
     "LandingDataSection": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "title": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "items": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
             "$ref": "#/definitions/LandingDataItem"
           }
@@ -81,29 +54,20 @@
   "additionalProperties": false,
   "properties": {
     "title": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "metadata": {},
     "abstract": {
       "$ref": "#/definitions/LandingDataAbstract"
     },
     "sections": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": "array",
       "items": {
         "$ref": "#/definitions/LandingDataSection"
       }
     },
     "documentType": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     }
   }
 }

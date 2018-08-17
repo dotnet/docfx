@@ -1,10 +1,7 @@
 {
   "definitions": {
     "ContributionConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "showContributors": {
           "type": "boolean"
@@ -13,135 +10,72 @@
           "type": "boolean"
         },
         "repository": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "branch": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "userProfileCache": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "gitCommitsTime": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     },
     "DocumentIdConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "sourceBasePath": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "siteBasePath": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "depotMappings": {
-          "type": [
-            "object",
-            "null"
-          ],
+          "type": "object",
           "additionalProperties": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "directoryMappings": {
-          "type": [
-            "object",
-            "null"
-          ],
+          "type": "object",
           "additionalProperties": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         }
       }
     },
     "FileConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "include": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "exclude": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         }
       }
     },
     "GlobConfig<JObject>": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "include": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "exclude": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "value": {},
@@ -152,16 +86,10 @@
       }
     },
     "OutputConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "path": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "copyResources": {
           "type": "boolean"
@@ -169,22 +97,13 @@
       }
     },
     "RouteConfig": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "source": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "destination": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     }
@@ -196,22 +115,13 @@
   "additionalProperties": false,
   "properties": {
     "product": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "name": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "locale": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "content": {
       "$ref": "#/definitions/FileConfig"
@@ -221,52 +131,31 @@
     },
     "globalMetadata": {},
     "siteBasePath": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "sourceBasePath": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "needGeneratePdfUrlTemplate": {
       "type": "boolean"
     },
     "baseUrl": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     "extend": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": "array",
       "items": {
-        "type": [
-          "string",
-          "null"
-        ]
+        "type": "string"
       }
     },
     "fileMetadata": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": "array",
       "items": {
         "$ref": "#/definitions/GlobConfig<JObject>"
       }
     },
     "routes": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": "array",
       "items": {
         "$ref": "#/definitions/RouteConfig"
       }
@@ -275,56 +164,35 @@
       "$ref": "#/definitions/ContributionConfig"
     },
     "dependencies": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "additionalProperties": {
-        "type": [
-          "string",
-          "null"
-        ]
+        "type": "string"
       }
     },
     "redirections": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "additionalProperties": {
-        "type": [
-          "string",
-          "null"
-        ]
+        "type": "string"
       }
     },
     "redirectionsWithoutId": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "additionalProperties": {
-        "type": [
-          "string",
-          "null"
-        ]
+        "type": "string"
       }
     },
     "documentId": {
       "$ref": "#/definitions/DocumentIdConfig"
     },
     "rules": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "additionalProperties": {
-        "type": "integer",
+        "type": "string",
         "enum": [
-          0,
-          1,
-          2,
-          3
+          "off",
+          "info",
+          "warning",
+          "error"
         ]
       }
     }

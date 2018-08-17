@@ -1,46 +1,25 @@
 {
   "definitions": {
     "TableOfContentsInputItem": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "name": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "displayName": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "href": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "topicHref": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "tocHref": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "items": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
             "$ref": "#/definitions/TableOfContentsInputItem"
           }
@@ -56,10 +35,7 @@
   "properties": {
     "metadata": {},
     "items": {
-      "type": [
-        "array",
-        "null"
-      ],
+      "type": "array",
       "items": {
         "$ref": "#/definitions/TableOfContentsInputItem"
       }
