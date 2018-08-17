@@ -25,8 +25,6 @@ namespace Microsoft.Docs.Build
 
         private readonly GitHubAccessor _github;
 
-        private readonly HashSet<string> _excludedContributorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
         private ContributionInfo(Docset docset, string gitToken)
         {
             _commitsByFile = LoadCommits(docset);
@@ -35,8 +33,6 @@ namespace Microsoft.Docs.Build
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
                 : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
-
-            _excludedContributorNames = new HashSet<string>(docset.Config.Contribution.ExcludedContributors, StringComparer.OrdinalIgnoreCase);
 
             var userProfilePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
                     ? s_defaultProfilePath
@@ -56,8 +52,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             _commitsByFile.TryGetValue(document.FilePath, out var commits);
-            var (errors, authorInfo) = await GetAuthor(author, commits);
-            var contributors = GetContributors(authorInfo, commits);
+            var (errors, authorInfo) = await GetAuthor(document, author, commits);
+            var contributors = GetContributors(document, authorInfo, commits);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
             return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedDateTime);
@@ -91,11 +87,11 @@ namespace Microsoft.Docs.Build
             return (editUrl, contentUrl, commitUrl);
         }
 
-        private async Task<(List<Error> errors, UserProfile author)> GetAuthor(string authorName, List<GitCommit> fileCommits)
+        private async Task<(List<Error> errors, UserProfile author)> GetAuthor(Document doc, string authorName, List<GitCommit> fileCommits)
         {
             UserProfile authorProfile = null;
             var errors = new List<Error>();
-            if (!string.IsNullOrEmpty(authorName) && !_excludedContributorNames.Contains(authorName))
+            if (!string.IsNullOrEmpty(authorName) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
             {
                 try
                 {
@@ -116,7 +112,7 @@ namespace Microsoft.Docs.Build
                         if (!string.IsNullOrEmpty(fileCommits[i].AuthorEmail))
                         {
                             authorProfile = _userProfileCache.GetByUserEmail(fileCommits[i].AuthorEmail);
-                            if (authorProfile != null && !_excludedContributorNames.Contains(authorName))
+                            if (authorProfile != null && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
                                 break;
                         }
                     }
@@ -126,7 +122,7 @@ namespace Microsoft.Docs.Build
             return (errors, authorProfile);
         }
 
-        private List<UserProfile> GetContributors(UserProfile authorInfo, List<GitCommit> fileCommits)
+        private List<UserProfile> GetContributors(Document doc, UserProfile authorInfo, List<GitCommit> fileCommits)
         {
             if (fileCommits == null || fileCommits.Count == 0)
             {
@@ -136,7 +132,7 @@ namespace Microsoft.Docs.Build
             return (from commit in fileCommits
                     where !string.IsNullOrEmpty(commit.AuthorEmail)
                     let info = _userProfileCache.GetByUserEmail(commit.AuthorEmail)
-                    where info != null && !(authorInfo != null && info.Id == authorInfo.Id) && !_excludedContributorNames.Contains(info.Name)
+                    where info != null && !(authorInfo != null && info.Id == authorInfo.Id) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(info.Name)
                     group info by info.Id into g
                     select g.First()).ToList();
         }
