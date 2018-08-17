@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docset, options);
+                            await Restore.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report.Summary);
                             break;
                         case "build":
