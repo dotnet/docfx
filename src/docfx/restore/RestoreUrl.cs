@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
     public static class RestoreUrl
     {
         private const int MaxVersionCount = 5;
+        private const int RetryCount = 3;
+        private const int RetryInterval = 1000;
 
         private static readonly HttpClient s_httpClient = new HttpClient();
 
@@ -92,19 +94,31 @@ namespace Microsoft.Docs.Build
 
         private static async Task<string> DownloadToTempFile(string address)
         {
-            var response = await s_httpClient.GetAsync(new Uri(address));
-            if (!response.IsSuccessStatusCode)
-            {
-                throw Errors.DownloadFailed(address, (int)response.StatusCode).ToException();
-            }
-
             Directory.CreateDirectory(AppData.UrlRestoreDir);
             var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+
+            for (var i = 0; i < RetryCount; i++)
             {
-                await stream.CopyToAsync(file);
+                var response = await s_httpClient.GetAsync(new Uri(address));
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (i < RetryCount - 1)
+                    {
+                        await Task.Delay(RetryInterval);
+                        continue;
+                    }
+                    throw Errors.DownloadFailed(address, (int)response.StatusCode).ToException();
+                }
+
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await stream.CopyToAsync(file);
+                }
+                return tempFile;
             }
+
+            Debug.Fail("should never reach here");
             return tempFile;
         }
 

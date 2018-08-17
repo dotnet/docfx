@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
         public static Error DownloadFailed(string url, int code)
-            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed with status code {code}");
+            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed with status code '{code}'");
 
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
