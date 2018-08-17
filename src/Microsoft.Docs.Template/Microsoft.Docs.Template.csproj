@@ -8,4 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\attribute\" />
+  </ItemGroup>
 </Project>

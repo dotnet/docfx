@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -150,23 +151,29 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaViolationErrors);
             return (errors, schema, content, token.Value<JObject>("metadata"));
 
-            string TransformContent(SchemaContentType type, string value)
+            object TransformContent(SchemaContentTypeAttribute attribute, JsonReader reader)
             {
-                switch (type)
+                // Schema violation if the field is not what SchemaContentTypeAttribute required
+                if (reader.ValueType != attribute.RequiredType)
                 {
-                    case SchemaContentType.Href:
-                        var (error, href, fragment, doc) = Resolve.TryResolveHref(file, value, file);
-                        if (error != null)
-                        {
-                            errors.Add(error);
-                        }
-                        return href;
-                    case SchemaContentType.Xref:
-                    case SchemaContentType.None:
-                    case SchemaContentType.Markdown:
-                    default:
-                        return value;
+                    var lineInfo = reader as IJsonLineInfo;
+                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                    errors.Add(Errors.ViolateSchema(range, $"Field with attribute '{attribute.GetType().ToString()}' should be of type {attribute.RequiredType.ToString()}."));
+                    return null;
                 }
+
+                if (attribute is HrefAttribute)
+                {
+                    var (error, href, fragment, doc) = Resolve.TryResolveHref(file, reader.Value.ToString(), file);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    return href;
+                }
+
+                // TODO: handle other attributes
+                return reader.Value;
             }
         }
     }

@@ -75,3 +75,20 @@ outputs:
     }
   build.manifest:
 ---
+# schema documents with Href content but wrong type
+inputs:
+  docfx.yml:
+  # TODO: why is there no output for this toc file?
+  TOC.yml:
+  docs/TOC.yml:
+  docs/a.yml: |
+    #YamlMime:ContextObject
+    brand: azure
+    breadcrumb_path: 1
+    toc_rel: ../TOC.yml
+outputs:
+  docs/TOC.json:
+  build.manifest:
+  build.log: |
+   ["error","violate-schema","(Line: 3, Character: 18) Field with attribute 'Microsoft.Docs.Build.HrefAttribute' should be of type System.String.","docs/a.yml",3,18]
+---

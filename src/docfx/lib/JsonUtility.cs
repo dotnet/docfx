@@ -56,9 +56,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
-
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
+        [ThreadStatic]
+        private static Func<SchemaContentTypeAttribute, JsonReader, object> t_transform;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -105,26 +106,29 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<SchemaContentType, string, string> transform = null)
+            Func<SchemaContentTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
+                t_schemaViolationErrors = new List<Error>();
+                t_transform = transform;
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
                 errors.AddRange(mismatchingErrors);
+                t_transform = transform;
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = new JsonContractResolver(transform),
+                    ContractResolver = DefaultDeserializer.ContractResolver,
                 };
                 serializer.Error += HandleError;
-                t_schemaViolationErrors = new List<Error>();
                 var value = token.ToObject(type, serializer);
                 errors.AddRange(t_schemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
+                t_transform = null;
                 t_schemaViolationErrors = null;
             }
 
@@ -133,8 +137,15 @@ namespace Microsoft.Docs.Build
                 if (args.CurrentObject == args.ErrorContext.OriginalObject
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
-                    var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                    errors.Add(Errors.ViolateSchema(range, message));
+                    if (ContainsLineInfo(args.ErrorContext.Error.Message))
+                    {
+                        var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
+                        errors.Add(Errors.ViolateSchema(range, message));
+                    }
+                    else
+                    {
+                        errors.Add(Errors.ViolateSchema(new Range(0, 0), args.ErrorContext.Error.Message));
+                    }
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -214,6 +225,11 @@ namespace Microsoft.Docs.Build
             var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
             var linePosition = int.Parse(parts.Last().Split(' ').Last());
             return (message.Substring(0, message.IndexOf(".")), new Range(lineNumber, linePosition));
+        }
+
+        private static bool ContainsLineInfo(string message)
+        {
+            return message.IndexOf(',') != -1;
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -390,13 +406,6 @@ namespace Microsoft.Docs.Build
 
         private sealed class JsonContractResolver : DefaultContractResolver
         {
-            private readonly Func<SchemaContentType, string, string> _transform;
-
-            public JsonContractResolver(Func<SchemaContentType, string, string> transform = null)
-            {
-                _transform = transform;
-            }
-
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
@@ -421,14 +430,14 @@ namespace Microsoft.Docs.Build
             private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false);
-                var contentType = member.GetCustomAttribute<SchemaContentTypeAttribute>();
-                if (_transform != null && contentType != null && contentType.ContentType != SchemaContentType.None)
+                var contentTypeAttribute = member.GetCustomAttribute<SchemaContentTypeAttribute>();
+                if (t_transform != null && contentTypeAttribute != null)
                 {
-                    return new SchemaValidationAndTransformConverter(validators, _transform, contentType.ContentType);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
                 }
                 else if (validators.Any())
                 {
-                    return new SchemaValidationAndTransformConverter(validators);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
                 }
                 return null;
             }
@@ -437,31 +446,35 @@ namespace Microsoft.Docs.Build
         private sealed class SchemaValidationAndTransformConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
-            private readonly Func<SchemaContentType, string, string> _transform;
-            private readonly SchemaContentType _type;
+            private readonly SchemaContentTypeAttribute _attribute;
 
-            public SchemaValidationAndTransformConverter(
-                IEnumerable<ValidationAttribute> validators,
-                Func<SchemaContentType, string, string> transform = null,
-                SchemaContentType type = SchemaContentType.None)
+            public SchemaValidationAndTransformConverter(SchemaContentTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
             {
+                _attribute = attribute;
                 _validators = validators;
-                _transform = transform;
-                _type = type;
             }
 
             public override bool CanConvert(Type objectType) => true;
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                // Schema violation if the field is not string when SchemaContentTypeAttribute exists
-                if (_type != SchemaContentType.None && reader.TokenType != JsonToken.String)
-                {
-                    var lineInfo = reader as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    t_schemaViolationErrors.Add(Errors.ViolateSchema(range, $"Field with attribute '{_type}' should be of string type."));
-                }
+                SchemaValidation(reader);
 
+                if (t_transform != null)
+                {
+                    var transform = t_transform(_attribute, reader);
+                    return transform;
+                }
+                return reader.Value;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                throw new NotImplementedException();
+            }
+
+            private void SchemaValidation(JsonReader reader)
+            {
                 switch (reader.TokenType)
                 {
                     case JsonToken.StartObject:
@@ -477,13 +490,6 @@ namespace Microsoft.Docs.Build
                         Validate(reader, constructor);
                         break;
                     case JsonToken.String:
-                        Validate(reader, reader.Value);
-                        if (_transform != null)
-                        {
-                            var transform = _transform(_type, (string)reader.Value);
-                            return transform;
-                        }
-                        break;
                     case JsonToken.Integer:
                     case JsonToken.Float:
                     case JsonToken.Boolean:
@@ -503,12 +509,6 @@ namespace Microsoft.Docs.Build
                     default:
                         break;
                 }
-                return reader.Value;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
             }
 
             private void Validate(JsonReader reader, object value)
