@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [DataSchema]
     public class LandingData
     {
         public string Title { get; set; }

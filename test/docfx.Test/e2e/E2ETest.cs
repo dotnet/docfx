@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                await Assert.ThrowsAnyAsync<AssertActualExpectedException>(() => RunCore(docsetPath, spec));
+                await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
             }
         }
 
@@ -42,6 +42,19 @@ namespace Microsoft.Docs.Build
             foreach (var command in spec.Commands)
             {
                 await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
+            }
+
+            // Verify output
+            var docsetOutputPath = Path.Combine(docsetPath, "_site");
+            Assert.True(Directory.Exists(docsetOutputPath));
+
+            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
+
+            // Show build.log content if actual output has errors or warnings.
+            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            {
+                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
             // Verify restored files
@@ -54,12 +67,6 @@ namespace Microsoft.Docs.Build
             }
 
             // Verify output
-            var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetOutputPath));
-
-            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
-
             Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)

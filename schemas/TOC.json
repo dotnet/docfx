@@ -1,0 +1,41 @@
+{
+  "definitions": {
+    "TableOfContentsInputItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "topicHref": {
+          "type": "string"
+        },
+        "tocHref": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TableOfContentsInputItem"
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {},
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TableOfContentsInputItem"
+      }
+    }
+  }
+}

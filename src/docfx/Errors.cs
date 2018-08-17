@@ -55,6 +55,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
+        public static Error DownloadFailed(string url, string message)
+            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
 
@@ -129,12 +132,6 @@ namespace Microsoft.Docs.Build
 
         public static Error GitHubUserNotFound()
             => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
-
-        public static Error NewtonsoftJsonSchemaLimitExceeded(string message)
-            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-limit-exceeded", message);
-
-        public static Error NewtonsoftJsonSchemaLicenseRegistrationFailed(string message)
-            => new Error(ErrorLevel.Warning, "newtonsoft-json-schema-registraion-failed", $"Encountered issue while register license for Newtonsoft.Json.Schema: {message}");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
