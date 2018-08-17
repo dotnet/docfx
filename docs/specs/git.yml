@@ -100,7 +100,7 @@ outputs:
   build.manifest:
   dep.json:
 ---
-#Contributors can be excluded
+# Contributors can be excluded, it's case insensitive
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 inputs:
   docfx.yml: |
@@ -111,7 +111,7 @@ inputs:
       repository: https://gitlab.com/test-org/test-repo
       branch: contribution
       excludedContributors:
-        - superyyrrzz
+        - superyyrrZZ
 outputs:
   README.json: |
     {
@@ -134,7 +134,7 @@ outputs:
   build.manifest:
   dep.json:
 ---
-#Author can be excluded
+# Author can be excluded, it's case insensitive
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 inputs:
   docfx.yml: |
@@ -145,7 +145,7 @@ inputs:
       repository: https://gitlab.com/test-org/test-repo
       branch: contribution
       excludedContributors:
-        - yufeih
+        - YUFEIH
 outputs:
   README.json: |
     {
