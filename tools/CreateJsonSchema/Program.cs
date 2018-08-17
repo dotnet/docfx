@@ -37,14 +37,19 @@ class Program
             }
         }
 
-        var git = Process.Start(new ProcessStartInfo { FileName = "git", Arguments = "status schemas --porcelain", RedirectStandardOutput = true });
+        var git = Process.Start(new ProcessStartInfo
+        {
+            FileName = "git",
+            Arguments = "diff --ignore-all-space --ignore-blank-lines schemas",
+            RedirectStandardOutput = true
+        });
         git.WaitForExit();
-        var status = git.StandardOutput.ReadToEnd().Trim();
-        if (!string.IsNullOrEmpty(status))
+        var diff = git.StandardOutput.ReadToEnd().Trim();
+        if (!string.IsNullOrEmpty(diff))
         {
             Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
             Console.WriteLine("");
-            Console.WriteLine(status);
+            Console.WriteLine(diff);
             return 1;
         }
 
