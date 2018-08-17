@@ -41,7 +41,8 @@ class Program
         {
             FileName = "git",
             Arguments = "diff --ignore-all-space --ignore-blank-lines schemas",
-            RedirectStandardOutput = true
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
         });
         git.WaitForExit();
         var diff = git.StandardOutput.ReadToEnd().Trim();
