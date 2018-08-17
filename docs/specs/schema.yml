@@ -71,7 +71,7 @@ outputs:
   docs/TOC.json:
   docs/a.json: |
     {
-      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
+      "content": { "brand": "azure", "breadcrumb_path": "TOC.json", "toc_rel": "../TOC.json" },
     }
   build.manifest:
 ---
