@@ -80,6 +80,7 @@ outputs:
   build.manifest:
 ---
 # Show error when download failed
+os: windows
 inputs:
   docfx.yml: |
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
