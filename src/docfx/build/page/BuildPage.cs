@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static readonly Type[] s_schemaTypes = new[] { typeof(LandingData), typeof(ContextObject) };
+        private static readonly Type[] s_schemaTypes = typeof(PageModel).Assembly.ExportedTypes.Where(type => type.GetCustomAttribute<DataSchemaAttribute>() != null).ToArray();
         private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
 
         public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(

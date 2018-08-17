@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
+    [DataSchema]
     public class ContextObject
     {
         [JsonProperty("brand")]
