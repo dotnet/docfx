@@ -44,15 +44,6 @@ namespace Microsoft.Docs.Build
                 await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
             }
 
-            // Verify restored files
-            foreach (var (file, content) in spec.Restores)
-            {
-                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
-                Assert.NotNull(restoredFile);
-                Assert.True(File.Exists(restoredFile));
-                VerifyFile(restoredFile, content);
-            }
-
             // Verify output
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
             Assert.True(Directory.Exists(docsetOutputPath));
@@ -71,6 +62,15 @@ namespace Microsoft.Docs.Build
             foreach (var (filename, content) in spec.Outputs)
             {
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
+            }
+
+            // Verify restored files
+            foreach (var (file, content) in spec.Restores)
+            {
+                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
+                Assert.NotNull(restoredFile);
+                Assert.True(File.Exists(restoredFile));
+                VerifyFile(restoredFile, content);
             }
         }
 
