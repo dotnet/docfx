@@ -99,21 +99,24 @@ namespace Microsoft.Docs.Build
 
             for (var i = 0; i < RetryCount; i++)
             {
-                var response = await s_httpClient.GetAsync(new Uri(address));
-                if (!response.IsSuccessStatusCode)
+                try
+                {
+                    var response = await s_httpClient.GetAsync(new Uri(address));
+
+                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
+                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        await stream.CopyToAsync(file);
+                    }
+                }
+                catch (HttpRequestException ex)
                 {
                     if (i < RetryCount - 1)
                     {
                         await Task.Delay(RetryInterval);
                         continue;
                     }
-                    throw Errors.DownloadFailed(address, (int)response.StatusCode).ToException();
-                }
-
-                using (var stream = await response.Content.ReadAsStreamAsync())
-                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await stream.CopyToAsync(file);
+                    throw Errors.DownloadFailed(address, ex.Message).ToException();
                 }
                 return tempFile;
             }
