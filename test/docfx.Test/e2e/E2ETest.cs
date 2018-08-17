@@ -60,6 +60,12 @@ namespace Microsoft.Docs.Build
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
 
+            // Show build.log content if actual output has errors or warnings.
+            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            {
+                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
+            }
+
             Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
