@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,6 +14,8 @@ namespace Microsoft.Docs.Build
     public static class RestoreUrl
     {
         private const int MaxVersionCount = 5;
+
+        private static readonly HttpClient s_httpClient = new HttpClient();
 
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
@@ -89,20 +92,19 @@ namespace Microsoft.Docs.Build
 
         private static async Task<string> DownloadToTempFile(string address)
         {
-            var tempFile = Path.GetTempFileName();
-            using (var client = new HttpClient())
+            var response = await s_httpClient.GetAsync(new Uri(address));
+            if (!response.IsSuccessStatusCode)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                using (var request = new HttpRequestMessage(HttpMethod.Get, address))
-                {
-                    using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(),
-                        stream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Write))
-                    {
-                        await contentStream.CopyToAsync(stream);
-                    }
-                }
+                throw Errors.DownloadFailed(address, (int)response.StatusCode).ToException();
             }
 
+            Directory.CreateDirectory(AppData.UrlRestoreDir);
+            var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await stream.CopyToAsync(file);
+            }
             return tempFile;
         }
 
