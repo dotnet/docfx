@@ -62,16 +62,24 @@ class Program
 
         generator.GenerationProviders.Add(new StringEnumGenerationProvider { CamelCaseText = true });
 
-        var schema = generator.Generate(type, true);
-
-        // If type contains JsonExtensinDataAttribute, additional properties are allowed
-        // TODO: Set AllowAdditionalProperties on nested type, not the entry type
-        if (!HasJsonExtensionData(type))
+        try
         {
-            schema.AllowAdditionalProperties = false;
-        }
+            var schema = generator.Generate(type, rootSchemaNullable: false);
 
-        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
+            // If type contains JsonExtensinDataAttribute, additional properties are allowed
+            // TODO: Set AllowAdditionalProperties on nested type, not the entry type
+            if (!HasJsonExtensionData(type))
+            {
+                schema.AllowAdditionalProperties = false;
+            }
+
+            File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
+        }
+        catch (JSchemaException)
+        {
+            Console.Error.WriteLine("Json schema rate limit exceeded");
+            Environment.Exit(0);
+        }
     }
 
     static bool HasJsonExtensionData(Type type)
