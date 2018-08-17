@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                await Assert.ThrowsAnyAsync<AssertActualExpectedException>(() => RunCore(docsetPath, spec));
+                await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
             }
         }
 
