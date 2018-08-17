@@ -113,7 +113,6 @@ namespace Microsoft.Docs.Build
                 var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-                return (docsetPath, spec);
             }
 
             foreach (var (file, content) in spec.Inputs)

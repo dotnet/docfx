@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Microsoft.Docs.Build
 {
     internal class ContributionConfig
@@ -37,5 +39,10 @@ namespace Microsoft.Docs.Build
         /// It should be an absolute url or a relative path
         /// </summary>
         public readonly string GitCommitsTime = string.Empty;
+
+        /// <summary>
+        /// The excluded contributors which you do want to show
+        /// </summary>
+        public readonly string[] ExcludedContributors = Array.Empty<string>();
     }
 }
