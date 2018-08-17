@@ -475,39 +475,14 @@ namespace Microsoft.Docs.Build
 
             private void SchemaValidation(JsonReader reader)
             {
-                switch (reader.TokenType)
+                if (reader.TokenType is JsonToken.StartArray)
                 {
-                    case JsonToken.StartObject:
-                        var obj = JObject.Load(reader);
-                        Validate(reader, obj);
-                        break;
-                    case JsonToken.StartArray:
-                        var array = JArray.Load(reader);
-                        Validate(reader, array);
-                        break;
-                    case JsonToken.StartConstructor:
-                        var constructor = JConstructor.Load(reader);
-                        Validate(reader, constructor);
-                        break;
-                    case JsonToken.String:
-                    case JsonToken.Integer:
-                    case JsonToken.Float:
-                    case JsonToken.Boolean:
-                    case JsonToken.Date:
-                    case JsonToken.Bytes:
-                    case JsonToken.Raw:
-                    case JsonToken.None:
-                    case JsonToken.Null:
-                    case JsonToken.Undefined:
-                        Validate(reader, reader.Value);
-                        break;
-                    case JsonToken.PropertyName:
-                    case JsonToken.Comment:
-                    case JsonToken.EndObject:
-                    case JsonToken.EndArray:
-                    case JsonToken.EndConstructor:
-                    default:
-                        break;
+                    var array = JArray.Load(reader);
+                    Validate(reader, array);
+                }
+                else
+                {
+                    Validate(reader, reader.Value);
                 }
             }
 
