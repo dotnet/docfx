@@ -26,13 +26,14 @@ class Program
         }
         Directory.CreateDirectory("schemas");
 
-        GenerateJSchema(typeof(Config));
+        GenerateJSchema(typeof(Config), "docfx");
+        GenerateJSchema(typeof(TableOfContentsInputModel), "TOC");
 
         foreach (var type in typeof(PageModel).Assembly.ExportedTypes)
         {
             if (type.GetCustomAttribute<DataSchemaAttribute>() != null)
             {
-                GenerateJSchema(type);
+                GenerateJSchema(type, type.Name);
             }
         }
 
@@ -43,21 +44,21 @@ class Program
         {
             Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
             Console.WriteLine("");
-            Process.Start("git", "diff schemas").WaitForExit();
+            Console.WriteLine(status);
             return 1;
         }
 
         return 0;
     }
 
-    static void GenerateJSchema(Type type)
+    static void GenerateJSchema(Type type, string name)
     {
         var generator = new JSchemaGenerator
         {
             ContractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new CamelCaseNamingStrategy()
-            }, 
+            },
             DefaultRequired = Required.Default
         };
         var schema = generator.Generate(type, true);
@@ -69,7 +70,7 @@ class Program
             schema.AllowAdditionalProperties = false;
         }
 
-        File.WriteAllText(Path.Combine("schemas", type.Name + ".json"), schema.ToString());
+        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
     }
 
     static bool HasJsonExtensionData(Type type)
