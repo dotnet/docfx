@@ -57,13 +57,6 @@ namespace Microsoft.Docs.Build
                 Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
-            Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
-
-            foreach (var (filename, content) in spec.Outputs)
-            {
-                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
-            }
-
             // Verify restored files
             foreach (var (file, content) in spec.Restores)
             {
@@ -71,6 +64,14 @@ namespace Microsoft.Docs.Build
                 Assert.NotNull(restoredFile);
                 Assert.True(File.Exists(restoredFile));
                 VerifyFile(restoredFile, content);
+            }
+
+            // Verify output
+            Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
+
+            foreach (var (filename, content) in spec.Outputs)
+            {
+                VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
         }
 
