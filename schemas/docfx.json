@@ -20,6 +20,12 @@
         },
         "gitCommitsTime": {
           "type": "string"
+        },
+        "excludedContributors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
