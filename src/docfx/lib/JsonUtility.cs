@@ -56,9 +56,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
-
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
+        [ThreadStatic]
+        private static Func<DataTypeAttribute, JsonReader, object> t_transform;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -102,11 +103,16 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(JToken token, Type type)
+        public static (List<Error>, object) ToObject(
+            JToken token,
+            Type type,
+            Func<DataTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
+                t_schemaViolationErrors = new List<Error>();
+                t_transform = transform;
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
                 errors.AddRange(mismatchingErrors);
                 var serializer = new JsonSerializer
@@ -115,13 +121,13 @@ namespace Microsoft.Docs.Build
                     ContractResolver = DefaultDeserializer.ContractResolver,
                 };
                 serializer.Error += HandleError;
-                t_schemaViolationErrors = new List<Error>();
                 var value = token.ToObject(type, serializer);
                 errors.AddRange(t_schemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
+                t_transform = null;
                 t_schemaViolationErrors = null;
             }
 
@@ -130,8 +136,8 @@ namespace Microsoft.Docs.Build
                 if (args.CurrentObject == args.ErrorContext.OriginalObject
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
-                    var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                    errors.Add(Errors.ViolateSchema(range, message));
+                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -205,12 +211,24 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (string, Range) ParseRangeFromExceptionMessage(string message)
+        private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
+            if (message.IndexOf(',') == -1)
+            {
+                parsedMessage = message;
+                range = new Range(0, 0);
+                return;
+            }
             var parts = message.Remove(message.Length - 1).Split(',');
             var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
             var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            return (message.Substring(0, message.IndexOf(".")), new Range(lineNumber, linePosition));
+            parsedMessage = message.Substring(0, message.IndexOf("."));
+            range = new Range(lineNumber, linePosition);
+        }
+
+        private static bool ContainsLineInfo(string message)
+        {
+            return message.IndexOf(',') != -1;
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -408,19 +426,30 @@ namespace Microsoft.Docs.Build
                 return prop;
             }
 
-            private SchemaValidationConverter GetConverter(MemberInfo member)
+            private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
-                var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
-                return validators.Count == 0 ? null : new SchemaValidationConverter(validators);
+                var validators = member.GetCustomAttributes<ValidationAttribute>(false);
+                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
+                if (t_transform != null && contentTypeAttribute != null)
+                {
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                }
+                else if (validators.Any())
+                {
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                }
+                return null;
             }
         }
 
-        private sealed class SchemaValidationConverter : JsonConverter
+        private sealed class SchemaValidationAndTransformConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
+            private readonly DataTypeAttribute _attribute;
 
-            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
             {
+                _attribute = attribute;
                 _validators = validators;
             }
 
@@ -428,39 +457,12 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                switch (reader.TokenType)
+                SchemaValidation(reader);
+
+                if (t_transform != null)
                 {
-                    case JsonToken.StartObject:
-                        var obj = JObject.Load(reader);
-                        Validate(reader, obj);
-                        break;
-                    case JsonToken.StartArray:
-                        var array = JArray.Load(reader);
-                        Validate(reader, array);
-                        break;
-                    case JsonToken.StartConstructor:
-                        var constructor = JConstructor.Load(reader);
-                        Validate(reader, constructor);
-                        break;
-                    case JsonToken.Integer:
-                    case JsonToken.Float:
-                    case JsonToken.String:
-                    case JsonToken.Boolean:
-                    case JsonToken.Date:
-                    case JsonToken.Bytes:
-                    case JsonToken.Raw:
-                    case JsonToken.None:
-                    case JsonToken.Null:
-                    case JsonToken.Undefined:
-                        Validate(reader, reader.Value);
-                        break;
-                    case JsonToken.PropertyName:
-                    case JsonToken.Comment:
-                    case JsonToken.EndObject:
-                    case JsonToken.EndArray:
-                    case JsonToken.EndConstructor:
-                    default:
-                        break;
+                    var transform = t_transform(_attribute, reader);
+                    return transform;
                 }
                 return reader.Value;
             }
@@ -468,6 +470,19 @@ namespace Microsoft.Docs.Build
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 throw new NotImplementedException();
+            }
+
+            private void SchemaValidation(JsonReader reader)
+            {
+                if (reader.TokenType is JsonToken.StartArray)
+                {
+                    var array = JArray.Load(reader);
+                    Validate(reader, array);
+                }
+                else
+                {
+                    Validate(reader, reader.Value);
+                }
             }
 
             private void Validate(JsonReader reader, object value)

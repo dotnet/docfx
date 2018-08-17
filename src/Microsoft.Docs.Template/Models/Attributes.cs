@@ -10,4 +10,22 @@ namespace Microsoft.Docs.Build
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class DataSchemaAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public abstract class DataTypeAttribute : Attribute
+    {
+        public Type RequiredType { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class HrefAttribute : DataTypeAttribute
+    {
+        public HrefAttribute() => RequiredType = typeof(string);
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class MarkdownAttribute : DataTypeAttribute
+    {
+        public MarkdownAttribute(Type type) => RequiredType = typeof(string);
+    }
 }
