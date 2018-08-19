@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var expandedFileMapping = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
 
             inputModel.Files = expandedFileMapping.Items.SelectMany(s => s.Files).ToList();
-            inputModel.References = expandedFileMapping.Items.SelectMany(s => s.References).ToList();
+            inputModel.References = expandedFileMapping.Items.Where(s => s.References != null).SelectMany(s => s.References).ToList();
 
             return inputModel;
         }
