@@ -66,7 +66,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 paths.Add(typeof(object).Assembly.Location);
                 var assemblies = (from path in paths
                                   select MetadataReference.CreateFromFile(path)).ToList();
-                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies);
+                var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies, options);
                 return complilation;
             }
             catch (Exception e)
@@ -76,7 +77,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public static IEnumerable<Tuple<MetadataReference, IAssemblySymbol>> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
+        public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
         {
             foreach(var reference in assemblyCompilation.References)
             {
@@ -92,10 +93,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (assembly.Identity?.Name == "mscorlib")
                     {
                         Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
-                        yield break;
+                        continue;
                     }
 
-                    yield return Tuple.Create(reference, assembly);
+                    if (reference is PortableExecutableReference portableReference &&
+                        assemblyPaths.Contains(portableReference.FilePath))
+                    {
+                        yield return (reference, assembly);
+                    }
                 }
             }
         }

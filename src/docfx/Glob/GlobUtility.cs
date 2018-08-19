@@ -36,11 +36,13 @@ namespace Microsoft.DocAsCode
                     Logger.LogInfo($"No files are found with glob pattern {StringExtension.ToDelimitedString(item.Files) ?? "<none>"}, excluding {StringExtension.ToDelimitedString(item.Exclude) ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }
+                var references = FileGlob.GetFiles(src, item.References, item.ExcludeReferences, options).ToArray();
                 expandedFileMapping.Add(
                     new FileMappingItem
                     {
                         SourceFolder = src,
                         Files = new FileItems(files),
+                        References = new FileItems(references),
                         DestinationFolder = item.DestinationFolder
                     });
             }
