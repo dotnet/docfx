@@ -198,6 +198,9 @@
           "error"
         ]
       }
+    },
+    "warningsAsErrors": {
+      "type": "boolean"
     }
   }
 }
