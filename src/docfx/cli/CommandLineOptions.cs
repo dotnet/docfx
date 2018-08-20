@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
             ["output"] = new JObject
             {
                 ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-                ["logPath"] = Log != null ? (JValue)Log : JValue.CreateNull(),
             },
         };
     }

@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 .Select(group => Errors.RedirectionDocumentIdConflict(group, group.Key)));
 
             // load redirections without document id
-            AddRedirections(docset.Config.RedirectionsWithoutId);
+            AddRedirections(docset.Config.RedirectionsWithoutDocumentId);
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath, PathUtility.PathComparer);
 
