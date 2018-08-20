@@ -2800,6 +2800,8 @@ namespace Test1
         public void TestGenerateMetadataAsyncWithTupleEnumerableParameter()
         {
             string code = @"
+using System.Collections.Generic;
+
 namespace Test1
 {
     public class Foo
@@ -2817,7 +2819,7 @@ namespace Test1
             Assert.Equal("Test1.Foo", foo.Name);
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
-            Assert.Equal("Test1.Foo.Bar(IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
+            Assert.Equal("Test1.Foo.Bar(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
             Assert.Equal("public int Bar(IEnumerable<(string prefix, string uri)> namespaces)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
@@ -2907,6 +2909,8 @@ namespace Test1
         public void TestGenerateMetadataAsyncWithEnumerableTupleResult()
         {
             string code = @"
+using System.Collections.Generic;
+
 namespace Test1
 {
     public class Foo
