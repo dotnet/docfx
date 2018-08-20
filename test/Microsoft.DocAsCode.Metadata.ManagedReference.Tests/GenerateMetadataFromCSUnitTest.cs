@@ -2663,6 +2663,7 @@ namespace Test1
         }
 
         [Fact]
+        [Trait("Related", "Generic")]
         public void TestCSharpFeature_Default_7_1Class()
         {
             string code = @"
@@ -2685,6 +2686,138 @@ namespace Test1
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
             Assert.Equal("public int Bar(int x = default(int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string prefix, string uri) @namespace) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
+            Assert.Equal("public int Bar((string prefix, string uri)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleArrayParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar((string prefix, string uri)[] namespaces) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String}[])", bar.Name);
+            Assert.Equal("public int Bar((string prefix, string uri)[] namespaces)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleEnumerableParameter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar(IEnumerable<(string prefix, string uri)> namespaces) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
+            Assert.Equal("public int Bar(IEnumerable<(string prefix, string uri)> namespaces)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleResult()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public (string prefix, string uri) Bar() => (string.Empty, string.Empty);
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
+            Assert.Equal("public (string prefix, string uri)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithEnumerableTupleResult()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public IEnumerable<(string prefix, string uri)> Bar() => new (string.Empty, string.Empty)[0];
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            Assert.Equal("public IEnumerable<(string prefix, string uri)> Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
