@@ -490,38 +490,10 @@ namespace Microsoft.Docs.Build
                     {
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, RefineErrorMessage(validationResult.ErrorMessage, value)));
+                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null) { DisplayName = _fieldName });
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
-            }
-
-            private string RefineErrorMessage(string message, object value)
-            {
-                if (value is JArray)
-                {
-                    return RefineForLengthConstraint(message, new string[] { "Array", "element" });
-                }
-                else if (value is string)
-                {
-                    return RefineForLengthConstraint(message, new string[] { "String", "character" });
-                }
-                return message;
-            }
-
-            private string RefineForLengthConstraint(string message, string[] types)
-            {
-                if (message.Contains("minimum"))
-                {
-                    var minLength = message.Split("'").Skip(1).First();
-                    return $"{types[0]} '{_fieldName}' should contain at least {minLength} {types[1]}(s)";
-                }
-                else if (message.Contains("maximum"))
-                {
-                    var maxLength = message.Split("'").Skip(1).First();
-                    return $"{types[0]} '{_fieldName}' should contain at most {maxLength} {types[1]}(s)";
-                }
-                return message;
             }
         }
     }
