@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
-        private Dictionary<string, ErrorLevel> _rules;
+        private Config _config;
 
         private int _errorCount;
         private int _warningCount;
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
-            _rules = config.Rules;
+            _config = config;
             _output = new Lazy<TextWriter>(() =>
             {
                 var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
@@ -43,10 +43,15 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error)
         {
-            var level = _rules != null && _rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
+            var level = _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
             if (level == ErrorLevel.Off)
             {
                 return false;
+            }
+
+            if (_config != null && _config.WarningsAsErrors && level == ErrorLevel.Warning)
+            {
+                level = ErrorLevel.Error;
             }
 
             if (_output != null)

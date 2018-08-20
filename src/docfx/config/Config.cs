@@ -118,6 +118,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
+        /// <summary>
+        /// Gets whether warnings should be treated as errors.
+        /// </summary>
+        public readonly bool WarningsAsErrors;
+
         public IEnumerable<string> GetExternalReferences()
         {
             yield return Contribution.GitCommitsTime;
