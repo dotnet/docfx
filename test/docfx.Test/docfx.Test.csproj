@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="../../docs/specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="docfx.test.yml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
