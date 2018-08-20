@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Common
         private static AsyncLogListener _asyncListener = new AsyncLogListener();
         private static int _warningCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
+        public volatile static bool WarningsAsErrors = false;
 
         public static void RegisterListener(ILoggerListener listener)
         {
@@ -93,6 +94,11 @@ namespace Microsoft.DocAsCode.Common
 
             if (item.LogLevel == LogLevel.Warning)
             {
+                if (WarningsAsErrors)
+                {
+                    HasError = true;
+                }
+
                 var count = Interlocked.Increment(ref _warningCount);
                 if (count > WarningThrottling)
                 {
