@@ -1409,6 +1409,248 @@ Public Class TestAttribute
 Public Sub New(o As Object)", ctor.Syntax.Content[SyntaxLanguage.VB]);
         }
 
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleParameter()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Sub Bar(tuple As (prefix As String, uri As String))
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Sub Bar(tuple As(prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithUnnamedTupleParameter()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Sub Bar(tuple As (String, String))
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Sub Bar(tuple As(String, String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithPartiallyUnnamedTupleParameter()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Sub Bar(tuple As (String, uri As String))
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
+            Assert.Equal("Public Sub Bar(tuple As(String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleArrayParameter()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Sub Bar(tuples As (String, String)())
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String}[])", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Sub Bar(tuples As(String, String)())", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleEnumerableParameter()
+        {
+            string code = @"
+Imports System.Collections.Generic
+
+Namespace Test1
+    Public Class Foo
+        Public Sub Bar(tuples As IEnumerable(Of (prefix As String, uri As String)))
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Sub Bar(tuples As IEnumerable(Of(prefix As String, uri As String)))", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithTupleResult()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Function Bar As (prefix As String, uri As String)
+            Return (string.Empty, string.Empty)
+        End Function
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Function Bar As(prefix As String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithUnnamedTupleResult()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Function Bar As (String, String)
+            Return (string.Empty, string.Empty)
+        End Function
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Function Bar As(String, String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithPartiallyUnnamedTupleResult()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+        Public Function Bar As (String, uri As String)
+            Return (string.Empty, string.Empty)
+        End Function
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Function Bar As(String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
+        [Fact]
+        [Trait("Related", "ValueTuple")]
+        public void TestGenerateMetadataAsyncWithEnumerableTupleResult()
+        {
+            string code = @"
+Imports System.Collections.Generic
+
+Namespace Test1
+    Public Class Foo
+        Public Function Bar As IEnumerable(Of (prefix As String, uri As String))
+            Return Null
+        End Function
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Single(foo.Items);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar", bar.Name);
+            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
+            Assert.Equal("Public Function Bar As IEnumerable(Of(prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
         private static Compilation CreateCompilationFromVBCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromVBCode(code, "test.dll", references);
