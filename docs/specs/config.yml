@@ -306,10 +306,9 @@ inputs:
   docs/a.md: |
     [b](b.md)
 outputs:
-  docs/a.json:
   build.manifest:
   build.log: |
-    []
+    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md"]
 ---
 # Invalid redirection file
 inputs:
