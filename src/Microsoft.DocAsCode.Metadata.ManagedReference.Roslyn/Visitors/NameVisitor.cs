@@ -149,7 +149,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         }
                         var tupleElement = symbol.TupleElements[i];
                         tupleElement.Type.Accept(this);
-                        if (tupleElement.Name != null)
+                        if (!tupleElement.IsImplicitlyDeclared)
                         {
                             Append(" ");
                             Append(tupleElement.Name);
@@ -578,7 +578,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             Append(", ");
                         }
                         var tupleElement = symbol.TupleElements[i];
-                        if (tupleElement.Name != null)
+                        if (!tupleElement.IsImplicitlyDeclared)
                         {
                             Append(tupleElement.Name);
                             Append(" As ");
