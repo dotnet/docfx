@@ -491,12 +491,12 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, RefineErrorMessage(validationResult.ErrorMessage, value, validator)));
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, RefineErrorMessage(validationResult.ErrorMessage, value)));
                     }
                 }
             }
 
-            private string RefineErrorMessage(string message, object value, ValidationAttribute validator)
+            private string RefineErrorMessage(string message, object value)
             {
                 if (value is JArray)
                 {
