@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool SelfClosing => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
-        private Queue<string> submitTextArray = new Queue<string>();
-
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
         {
             return RenderDelegate != null
@@ -24,10 +22,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
         {
             htmlAttributes = null;
-            var model = string.Empty;
+			renderProperties = new Dictionary<string, string>();
+			var model = string.Empty;
             var action = string.Empty;
             var submitText = string.Empty;
             foreach (var attribute in attributes)
@@ -62,6 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
+
             htmlAttributes = new HtmlAttributes();
             if (model != string.Empty)
             {
@@ -70,19 +70,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             htmlAttributes.AddProperty("data-action", action);
             htmlAttributes.AddClass("chromeless-form");
 
-            submitTextArray.Enqueue(submitText);
+			renderProperties.Add(new KeyValuePair<string, string>("submitText", submitText));
 
-            RenderDelegate = (renderer, obj) =>
-            {
-                var s = submitTextArray.Dequeue();
+			RenderDelegate = (renderer, obj) =>
+			{
+				var buttonText = "Submit";
+				obj.RenderProperties.TryGetValue("submitText", out buttonText);
 
-                renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine("<div></div>");
-                renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{s}</button>");
-                renderer.WriteLine("</form>");
+				renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
+				renderer.WriteLine("<div></div>");
+				renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{buttonText}</button>");
+				renderer.WriteLine("</form>");
 
-                return true;
-            };
+				return true;
+			};
 
             return true;
         }
@@ -90,5 +91,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             return true;
         }
-    }
+	}
 }

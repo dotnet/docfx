@@ -22,9 +22,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 			return false;
 		}
 
-		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
+		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
         {
             htmlAttributes = null;
+			renderProperties = null;
             var target = string.Empty;
             var pivot = string.Empty;
             foreach (var attribute in attributes)

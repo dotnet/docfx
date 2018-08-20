@@ -41,12 +41,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             ITripleColonExtensionInfo extension;
             IDictionary<string, string> attributes;
             HtmlAttributes htmlAttributes;
+			IDictionary<string, string> renderProperties;
             Action<string> logError = (string message) => _context.LogError($"invalid-{extensionName}", $"Invalid {extensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}", line: processor.LineIndex);
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
                 || !TryMatchAttributes(ref slice, out attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out htmlAttributes, logError))
+                || !extension.TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logError))
             {
                 return BlockState.None;
             }
@@ -55,7 +56,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
-                Extension = extension
+                Extension = extension,
+				RenderProperties = renderProperties
             };
 
             if (htmlAttributes != null)
