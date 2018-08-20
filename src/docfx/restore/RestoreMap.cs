@@ -55,6 +55,7 @@ namespace Microsoft.Docs.Build
 
             if (!HrefUtility.IsHttpHref(path))
             {
+                // TODO: show error if the files path does not exit
                 // directly return the relative path
                 return Path.Combine(basePath, path);
             }

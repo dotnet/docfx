@@ -1,0 +1,3 @@
+# override config used for all docfx tests
+rules:
+  heading-not-found: off

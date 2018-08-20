@@ -258,6 +258,18 @@ outputs:
   a.json:
   build.manifest:
 ---
+# config from command line takes precedence over docfx.yml
+commands:
+  - 'build --config docfx-config-test.yml'
+inputs:
+  docfx.yml: |
+    content: a.md
+  a.md:
+  b.md:
+outputs:
+  b.json:
+  build.manifest:
+---
 # exclude config extend and external references from build
 inputs:
   docfx.yml: |

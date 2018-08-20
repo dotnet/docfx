@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         public readonly string Repo;
 
-        public readonly string[] Commands = new[] { "restore --config docfx.test.yml", "build --config docfx.test.yml" };
+        public readonly string[] Commands = new[] { "restore --config docfx-test.yml", "build --config docfx-test.yml" };
 
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
