@@ -457,32 +457,27 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                SchemaValidation(reader);
-
-                if (t_transform != null)
+                if (reader.TokenType is JsonToken.StartArray)
                 {
-                    var transform = t_transform(_attribute, reader);
-                    return transform;
+                    var array = JArray.Load(reader);
+                    Validate(reader, array);
+                    return array.ToObject(objectType);
                 }
-                return reader.Value;
+                else
+                {
+                    Validate(reader, reader.Value);
+                    if (t_transform != null)
+                    {
+                        var transform = t_transform(_attribute, reader);
+                        return transform;
+                    }
+                    return reader.Value;
+                }
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 throw new NotImplementedException();
-            }
-
-            private void SchemaValidation(JsonReader reader)
-            {
-                if (reader.TokenType is JsonToken.StartArray)
-                {
-                    var array = JArray.Load(reader);
-                    Validate(reader, array);
-                }
-                else
-                {
-                    Validate(reader, reader.Value);
-                }
             }
 
             private void Validate(JsonReader reader, object value)
