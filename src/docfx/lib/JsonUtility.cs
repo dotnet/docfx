@@ -432,11 +432,11 @@ namespace Microsoft.Docs.Build
                 var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
                 if (t_transform != null && contentTypeAttribute != null)
                 {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
                 }
                 else if (validators.Any())
                 {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
                 }
                 return null;
             }
@@ -446,11 +446,13 @@ namespace Microsoft.Docs.Build
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
             private readonly DataTypeAttribute _attribute;
+            private readonly string _fieldName;
 
-            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators, string fieldName)
             {
                 _attribute = attribute;
                 _validators = validators;
+                _fieldName = fieldName;
             }
 
             public override bool CanConvert(Type objectType) => true;
@@ -489,9 +491,37 @@ namespace Microsoft.Docs.Build
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, RefineErrorMessage(validationResult.ErrorMessage, value, validator)));
                     }
                 }
+            }
+
+            private string RefineErrorMessage(string message, object value, ValidationAttribute validator)
+            {
+                if (value is JArray)
+                {
+                    return RefineForLengthConstraint(message, new string[] { "Array", "element" });
+                }
+                else if (value is string)
+                {
+                    return RefineForLengthConstraint(message, new string[] { "String", "character" });
+                }
+                return message;
+            }
+
+            private string RefineForLengthConstraint(string message, string[] types)
+            {
+                if (message.Contains("minimum"))
+                {
+                    var minLength = message.Split("'").Skip(1).First();
+                    return $"{types[0]} '{_fieldName}' should contain at least {minLength} {types[1]}(s)";
+                }
+                else if (message.Contains("maximum"))
+                {
+                    var maxLength = message.Split("'").Skip(1).First();
+                    return $"{types[0]} '{_fieldName}' should contain at most {maxLength} {types[1]}(s)";
+                }
+                return message;
             }
         }
     }

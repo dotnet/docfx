@@ -466,12 +466,14 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
+                Assert.Equal("(Line: 3, Character: 32) String 'ValueWithLengthRestriction' should contain at least 2 character(s)", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
+                Assert.Equal("(Line: 4, Character: 34) Array 'ListValueWithLengthRestriction' should contain at least 1 element(s)", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);

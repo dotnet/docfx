@@ -977,5 +977,5 @@ outputs:
   build.log: |
     ["info","null-value","(Line: 2, Character: 3) 'tocHref' contains null value","docs/TOC.yml",2,3]
     ["error","violate-schema","(Line: 1, Character: 3) Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
-    ["error","violate-schema","(Line: 5, Character: 10) The field JArray must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
+    ["error","violate-schema","(Line: 5, Character: 10) Array 'Items' should contain at least 1 element(s)","docs/TOC.yml",5,10]
 ---
