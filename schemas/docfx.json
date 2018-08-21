@@ -178,7 +178,7 @@
         "type": "string"
       }
     },
-    "redirectionsWithoutId": {
+    "redirectionsWithoutDocumentId": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
