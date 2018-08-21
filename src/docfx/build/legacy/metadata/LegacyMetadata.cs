@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude" };
+        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude", "f1_keywords" };
 
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
@@ -96,6 +96,7 @@ namespace Microsoft.Docs.Build
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
                     ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                    ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
-            return rawMetadata;
+            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata));
         }
 
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
@@ -166,6 +167,17 @@ namespace Microsoft.Docs.Build
             metadataOutput["is_dynamic_rendering"] = true;
 
             return metadataOutput;
+        }
+
+        private static JObject RemoveUpdatedAtDateTime(JObject rawMetadata)
+        {
+            JToken gitContributorInformation;
+            if (rawMetadata.TryGetValue("_op_gitContributorInformation", out gitContributorInformation)
+                && ((JObject)gitContributorInformation).ContainsKey("updated_at_date_time"))
+            {
+                ((JObject)rawMetadata["_op_gitContributorInformation"]).Remove("updated_at_date_time");
+            }
+            return rawMetadata;
         }
 
         private static JObject ToJObject(this GitUserInfo info)
