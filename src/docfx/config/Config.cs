@@ -150,9 +150,16 @@ namespace Microsoft.Docs.Build
         {
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
-            var (loadErrors, value) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
-            errors.AddRange(loadErrors);
-            config = exists ? value : new Config();
+            if (exists)
+            {
+                var (loadErrors, value) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+                errors.AddRange(loadErrors);
+                config = value;
+            }
+            else
+            {
+                config = new Config();
+            }
             return exists;
         }
 
