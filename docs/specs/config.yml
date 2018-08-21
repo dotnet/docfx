@@ -258,6 +258,18 @@ outputs:
   a.json:
   build.manifest:
 ---
+# config from command line takes precedence over docfx.yml
+commands:
+  - 'build --config docfx-config-test.yml'
+inputs:
+  docfx.yml: |
+    content: a.md
+  a.md:
+  b.md:
+outputs:
+  b.json:
+  build.manifest:
+---
 # exclude config extend and external references from build
 inputs:
   docfx.yml: |
@@ -272,6 +284,22 @@ inputs:
   docs/c.json: '{}'
   docs/d.json: '{}'
 outputs:
+  build.manifest:
+---
+# expand config before merge
+inputs:
+  docfx.yml: |
+    content: '**/*.md'
+    extend:
+      extend.yml
+  extend.yml: |
+    content: 
+      include: a.md
+      exclude: b.md
+  a.md:
+  b.md:
+outputs:
+  a.json:
   build.manifest:
 ---
 # `/` and `\` in path will be normalized

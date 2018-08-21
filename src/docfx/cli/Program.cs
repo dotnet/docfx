@@ -88,15 +88,16 @@ namespace Microsoft.Docs.Build
                 // usage: docfx restore [docset] [--git-token token]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                 syntax.DefineOption("git-token", ref options.GitToken, "The git token used to restore dependency repositories");
+                syntax.DefineOptionList("config", ref options.Configs, "Extend docfx.yml with additional configs");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // Build command
                 // usage: docfx build [docset] [-o/--output output] [--log log] [--legacy] [--git-token token]
                 syntax.DefineCommand("build", ref command, "Builds a docset.");
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                syntax.DefineOption("log", ref options.Log, "Output build log path.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineOption("git-token", ref options.GitToken, "The git token used to get contribution information from GitHub API");
+                syntax.DefineOptionList("config", ref options.Configs, "Extend docfx.yml with additional configs");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });
 

@@ -49,14 +49,15 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public string GetUrlRestorePath(string docsetPath, string path)
+        public string GetUrlRestorePath(string basePath, string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
             if (!HrefUtility.IsHttpHref(path))
             {
+                // TODO: show error if the files path does not exit
                 // directly return the relative path
-                return Path.Combine(docsetPath, path);
+                return Path.Combine(basePath, path);
             }
 
             // get the file path from restore map
