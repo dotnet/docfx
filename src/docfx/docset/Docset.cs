@@ -57,20 +57,23 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
             RestoreMap = new RestoreMap(DocsetPath);
-            DependentDocset = LoadDependencies(Config, RestoreMap);
+            var configErrors = new List<Error>();
+            (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
+                errors.AddRange(configErrors);
                 context.Report("docfx.yml", errors);
                 return map;
             });
         }
 
-        private Dictionary<string, Docset> LoadDependencies(Config config, RestoreMap restoreMap)
+        private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)
         {
+            var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
@@ -81,10 +84,11 @@ namespace Microsoft.Docs.Build
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
-                Config.LoadIfExists(dir, _options, out var subConfig);
+                Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
+                errors.AddRange(loadErrors);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options));
             }
-            return result;
+            return (errors, result);
         }
 
         private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
