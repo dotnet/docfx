@@ -147,6 +147,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
+            var references = configModel.References;
             var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
             var inputModel = new ExtractMetadataInputModel
             {
@@ -162,10 +163,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             };
 
-            var expandedFileMapping = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
+            var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
+            var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
-            inputModel.Files = expandedFileMapping.Items.SelectMany(s => s.Files).ToList();
-            inputModel.References = expandedFileMapping.Items.Where(s => s.References != null).SelectMany(s => s.References).ToList();
+            inputModel.Files = expandedFiles.Items.SelectMany(s => s.Files).ToList();
+            inputModel.References = expandedReferences?.Items.SelectMany(s => s.Files).ToList();
 
             return inputModel;
         }

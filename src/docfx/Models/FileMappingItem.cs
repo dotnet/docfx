@@ -31,22 +31,10 @@ namespace Microsoft.DocAsCode
         public FileItems Files { get; set; }
 
         /// <summary>
-        /// The reference glob pattern collection, with path relative to property `src`/`cwd` is value is set
-        /// </summary>
-        [JsonProperty("references")]
-        public FileItems References { get; set; }
-
-        /// <summary>
         /// The file glob pattern collection for files that should be excluded, with path relative to property `src`/`cwd` is value is set
         /// </summary>
         [JsonProperty("exclude")]
         public FileItems Exclude { get; set; }
-
-        /// <summary>
-        /// The file glob pattern collection for references that should be excluded, with path relative to property `src`/`cwd` is value is set
-        /// </summary>
-        [JsonProperty("excludeReferences")]
-        public FileItems ExcludeReferences { get; set; }
 
         /// <summary>
         /// `src` defines the root folder for the source files, it has the same meaning as `cwd`
