@@ -252,7 +252,9 @@ namespace Microsoft.Docs.Build
                     if (extend is JValue value && value.Value is string str)
                     {
                         var filePath = restoreMap.GetUrlRestorePath(docsetPath, str);
-                        result.Merge(LoadConfigObject(filePath), JsonUtility.MergeSettings);
+                        var (extendErros, extendConfigObject) = LoadConfigObject(filePath);
+                        errors.AddRange(extendErros);
+                        result.Merge(extendConfigObject, JsonUtility.MergeSettings);
                     }
                 }
             }
