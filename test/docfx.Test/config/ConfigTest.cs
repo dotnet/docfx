@@ -18,9 +18,10 @@ namespace Microsoft.Docs.Build
   key2: 2";
             Prepare(docsetPath, configYaml);
 
-            var config = Config.Load(docsetPath, new CommandLineOptions());
+            var (errors, config) = Config.Load(docsetPath, new CommandLineOptions());
 
             var expected = new JObject() { ["key1"] = "value", ["key2"] = 2 };
+            Assert.Empty(errors);
             AssertObjectEqual(expected, config.GlobalMetadata);
         }
 
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
     key3: value3";
             Prepare(docsetPath, configYaml);
 
-            var config = Config.Load(docsetPath, new CommandLineOptions());
+            var (errors, config) = Config.Load(docsetPath, new CommandLineOptions());
 
             var expected = new GlobConfig<JObject>[]
             {
@@ -45,6 +46,7 @@ namespace Microsoft.Docs.Build
                 new GlobConfig<JObject>(new []{ "file"}, null, new JObject(){["key2"] = "value2"}, false),
                 new GlobConfig<JObject>(new []{ "special/chars/allowed{,}"}, null, new JObject(){["key3"] = "value3"}, false),
             };
+            Assert.Empty(errors);
             AssertObjectEqual(expected, config.FileMetadata);
         }
 
@@ -65,13 +67,14 @@ namespace Microsoft.Docs.Build
 ";
             Prepare(docsetPath, configYaml);
 
-            var config = Config.Load(docsetPath, new CommandLineOptions());
+            var (errors, config) = Config.Load(docsetPath, new CommandLineOptions());
 
             var expected = new GlobConfig<JObject>[]
             {
                 new GlobConfig<JObject>(new []{ "folder1/**"}, new []{ "folder1/exclude/**" }, new JObject(){["key1"] = "value1"}),
                 new GlobConfig<JObject>(new []{ "folder21/**", "folder22/**" }, null, new JObject(){["key2"] = "value2"}),
             };
+            Assert.Empty(errors);
             AssertObjectEqual(expected, config.FileMetadata);
         }
 

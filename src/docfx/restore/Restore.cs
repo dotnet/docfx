@@ -23,16 +23,17 @@ namespace Microsoft.Docs.Build
                 restoredDocsets.TryAdd(docsetPath, 0);
 
                 // Root docset must have a config
-                var config = Config.Load(docsetPath, options, extend: false);
+                var (configErrors, config) = Config.Load(docsetPath, options, extend: false);
+                ReportErrors(report, configErrors);
                 report.Configure(docsetPath, config);
 
-                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(docsetPath, options, config, RestoreDocset, options.GitToken));
+                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset, options.GitToken));
 
                 async Task RestoreDocset(string docset)
                 {
-                    if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var childConfig, false))
+                    if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var loadErrors, out var childConfig, false))
                     {
-                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docset, options, childConfig, RestoreDocset, options.GitToken));
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(report, docset, options, childConfig, RestoreDocset, options.GitToken));
                     }
                 }
             }
@@ -45,8 +46,9 @@ namespace Microsoft.Docs.Build
 
                 async Task GCDocset(string docset)
                 {
-                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var config))
+                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var errors, out var config))
                     {
+                        ReportErrors(report, errors);
                         await GCOneDocset(config, GCDocset);
                     }
                 }
@@ -65,6 +67,14 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
+        private static void ReportErrors(Report report, List<Error> errors)
+        {
+            foreach (var error in errors)
+            {
+                report.Write(error);
+            }
+        }
+
         private static IEnumerable<string> GetRestoreUrls(IEnumerable<string> paths)
         {
             foreach (var url in paths)
@@ -76,7 +86,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, string token)
+        private static async Task<RestoreLock> RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, string token)
         {
             var restoreLock = new RestoreLock();
 
@@ -93,7 +103,8 @@ namespace Microsoft.Docs.Build
 
             // restore other urls and git dependnecy repositories
             // extend the config before loading
-            var extendedConfig = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
+            var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
+            ReportErrors(report, errors);
             var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, token);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {

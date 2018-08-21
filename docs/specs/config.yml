@@ -274,6 +274,22 @@ inputs:
 outputs:
   build.manifest:
 ---
+# expand config before merge
+inputs:
+  docfx.yml: |
+    content: '**/*.md'
+    extend:
+      extend.yml
+  extend.yml: |
+    content: 
+      include: a.md
+      exclude: b.md
+  a.md:
+  b.md:
+outputs:
+  a.json:
+  build.manifest:
+---
 # `/` and `\` in path will be normalized
 inputs:
   docfx.yml: |
@@ -332,3 +348,19 @@ outputs:
   build.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
   build.manifest:
+---
+# Multiple errors
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/TOC.md: /absolute/path
+      docs/a.md: /absolute/path1
+    redirectionsWithoutId:
+      docs/a.md: /absolute/path2
+outputs:
+  docs/a.json:
+  build.log: |
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
+  build.manifest:
+---
