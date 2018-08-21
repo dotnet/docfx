@@ -254,6 +254,13 @@ namespace Microsoft.Docs.Build
             }
 
             var extendedConfig = new JObject();
+            var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
+            if (!string.IsNullOrEmpty(configExtend))
+            {
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
+                extendedConfig = LoadConfigObject(docsetPath, filePath, false, restoreMap);
+            }
+
             foreach (var extendPath in arrayExtend)
             {
                 if (extendPath is JValue strExtendPath)

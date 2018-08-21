@@ -18,13 +18,23 @@
         "tocHref": {
           "type": "string"
         },
+        "maintainContext": {
+          "type": "boolean"
+        },
+        "expanded": {
+          "type": "boolean"
+        },
         "items": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/TableOfContentsInputItem"
-          }
+          },
+          "minItems": 1
         }
-      }
+      },
+      "required": [
+        "name"
+      ]
     }
   },
   "type": "object",
