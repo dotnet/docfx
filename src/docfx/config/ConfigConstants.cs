@@ -16,6 +16,6 @@ namespace Microsoft.Docs.Build
         internal const string Destination = "destination";
         internal const string Extend = "extend";
         internal const string Redirections = "redirections";
-        internal const string RedirectionsWithoutDocumentId = "redirectionsWithoutDocumentId";
+        internal const string RedirectionsWithoutId = "redirectionsWithoutId";
     }
 }
