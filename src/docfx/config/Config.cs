@@ -229,6 +229,13 @@ namespace Microsoft.Docs.Build
         {
             var result = new JObject();
 
+            var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
+            if (!string.IsNullOrEmpty(configExtend))
+            {
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
+                result = LoadConfigObject(filePath);
+            }
+
             if (config[ConfigConstants.Extend] is JArray extends)
             {
                 foreach (var extend in extends)
@@ -242,7 +249,6 @@ namespace Microsoft.Docs.Build
             }
 
             result.Merge(config, JsonUtility.MergeSettings);
-
             return result;
         }
 
