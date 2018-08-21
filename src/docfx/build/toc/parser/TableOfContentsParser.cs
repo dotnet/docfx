@@ -71,13 +71,16 @@ namespace Microsoft.Docs.Build
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 var (errors, tocToken) = YamlUtility.Deserialize(content);
-
-                return (errors, LoadTocModel(tocToken));
+                var (loadErrors, toc) = LoadTocModel(tocToken);
+                errors.AddRange(loadErrors);
+                return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = JsonUtility.Deserialize<JToken>(content);
-                return (errors, LoadTocModel(tocToken));
+                var (errors, tocToken) = JsonUtility.Deserialize(content);
+                var (loadErrors, toc) = LoadTocModel(tocToken);
+                errors.AddRange(loadErrors);
+                return (errors, toc);
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
@@ -87,25 +90,26 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
         }
 
-        private static TableOfContentsInputModel LoadTocModel(JToken tocToken)
+        private static (List<Error>, TableOfContentsInputModel) LoadTocModel(JToken tocToken)
         {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                return new TableOfContentsInputModel
+                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsInputItem>>(tocArray);
+                return (errors, new TableOfContentsInputModel
                 {
-                    Items = tocArray.ToObject<List<TableOfContentsInputItem>>(),
-                };
+                    Items = items,
+                });
             }
             else
             {
                 // toc root model
                 if (tocToken is JObject tocObject)
                 {
-                    return tocObject.ToObject<TableOfContentsInputModel>();
+                    return JsonUtility.ToObject<TableOfContentsInputModel>(tocToken);
                 }
             }
-            return new TableOfContentsInputModel();
+            return (new List<Error>(), new TableOfContentsInputModel());
         }
 
         private static (List<Error> errors, TableOfContentsInputModel model) LoadInputModelItems(string tocContent, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref, List<Document> parents)
