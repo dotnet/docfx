@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
                 if (extend)
                 {
-                    finalConfigObject = ExtendConfigs(finalConfigObject, options, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                    finalConfigObject = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
                 }
 
                 config = finalConfigObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             return ExpandAndNormalize(config ?? new JObject());
         }
 
-        private static JObject ExtendConfigs(JObject config, CommandLineOptions options, string docsetPath, RestoreMap restoreMap)
+        private static JObject ExtendConfigs(JObject config, string docsetPath, RestoreMap restoreMap)
         {
             var result = new JObject();
 
