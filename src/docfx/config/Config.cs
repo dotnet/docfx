@@ -168,10 +168,26 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var errors = new List<Error>();
             Config config = null;
-            var optionConfigObject = options?.ToJObject();
+            try
+            {
+                var configObject = LoadConfigObject(configPath);
+                var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+                var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
-            var (loadErrors, value) = LoadConfigObject(docsetPath, configPath, extend, restoreMap);
-            errors.AddRange(loadErrors);
+                if (extend)
+                {
+                    finalConfigObject = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                }
+
+                config = finalConfigObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
+            }
+            catch (Exception e)
+            {
+                throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
+            }
+
+            // TODO: validate using DataAnnotation and extensions
+            Validate(config, docsetPath);
 
             var configObject = ExpandAndNormalize(JsonUtility.Merge(value, optionConfigObject));
             var deserializeErrors = new List<Error>();
@@ -223,49 +239,41 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (List<Error>, JObject) LoadConfigObject(string docsetPath, string filePath, bool extend, RestoreMap restoreMap)
+        private static JObject LoadConfigObject(string filePath)
         {
             var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
-
-            if (config == null)
-                config = new JObject();
-
-            if (!extend)
-                return (errors, config);
-
-            restoreMap = restoreMap ?? new RestoreMap(docsetPath);
-            var (extendErrors, extendedConfig) = ExtendConfigObject(docsetPath, config, restoreMap);
-            errors.AddRange(extendErrors);
-            return (errors, extendedConfig);
+            if (errors.Any())
+            {
+                throw errors[0].ToException();
+            }
+            return ExpandAndNormalize(config ?? new JObject());
         }
 
-        private static (List<Error>, JObject) ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
+        private static JObject ExtendConfigs(JObject config, string docsetPath, RestoreMap restoreMap)
         {
-            var errors = new List<Error>();
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
-            if (!config.TryGetValue(ConfigConstants.Extend, out var objExtend) || objExtend == null)
+            var result = new JObject();
+
+            var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
+            if (!string.IsNullOrEmpty(configExtend))
             {
-                return (errors, config);
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
+                result = LoadConfigObject(filePath);
             }
 
-            if (!(objExtend is JArray arrayExtend))
+            if (config[ConfigConstants.Extend] is JArray extends)
             {
-                return (errors, config);
-            }
-
-            var extendedConfig = new JObject();
-            foreach (var extendPath in arrayExtend)
-            {
-                if (extendPath is JValue strExtendPath)
+                foreach (var extend in extends)
                 {
-                    var filePath = restoreMap.GetUrlRestorePath(docsetPath, strExtendPath.Value<string>());
-                    var (extendErrors, configObject) = LoadConfigObject(docsetPath, filePath, false, restoreMap); // only support first level extends
-                    errors.AddRange(extendErrors);
-                    extendedConfig = JsonUtility.Merge(extendedConfig, configObject);
+                    if (extend is JValue value && value.Value is string str)
+                    {
+                        var filePath = restoreMap.GetUrlRestorePath(docsetPath, str);
+                        result.Merge(LoadConfigObject(filePath), JsonUtility.MergeSettings);
+                    }
                 }
             }
 
-            return (errors, JsonUtility.Merge(extendedConfig, config));
+            result.Merge(config, JsonUtility.MergeSettings);
+            return result;
         }
 
         private static JObject ExpandAndNormalize(JObject config)
@@ -273,13 +281,11 @@ namespace Microsoft.Docs.Build
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
+            config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
             return config;
         }
-
-        private static JToken ExpandExtend(JToken extend) => ExpandStringArray(extend);
 
         private static JToken NormalizeRedirections(JToken redirection)
         {

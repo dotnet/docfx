@@ -8,16 +8,18 @@ namespace Microsoft.Docs.Build
     internal class CommandLineOptions
     {
         public string Output;
-        public string Log;
         public bool Legacy;
         public string GitToken;
 
-        public JObject ToJObject() => new JObject
+        public JObject ToJObject()
         {
-            ["output"] = new JObject
+            return new JObject
             {
-                ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-            },
-        };
+                ["output"] = new JObject
+                {
+                    ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
+                },
+            };
+        }
     }
 }

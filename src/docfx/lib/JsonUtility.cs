@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
-
-        private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
+        public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
+
+        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
 
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
@@ -56,6 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
         [ThreadStatic]
@@ -161,20 +162,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        /// <summary>
-        /// Merge multiple JSON objects.
-        /// The latter value overwrites the former value for a given key.
-        /// </summary>
-        public static JObject Merge(params JObject[] objs)
+        public static JObject Merge(JObject a, JObject b)
         {
             var result = new JObject();
-            foreach (var obj in objs)
-            {
-                if (obj != null)
-                {
-                    result.Merge(obj, s_defaultMergeSettings);
-                }
-            }
+            result.Merge(a, MergeSettings);
+            result.Merge(b, MergeSettings);
             return result;
         }
 
@@ -186,7 +178,7 @@ namespace Microsoft.Docs.Build
             {
                 if (obj != null)
                 {
-                    result.Merge(obj, s_defaultMergeSettings);
+                    result.Merge(obj, MergeSettings);
                 }
             }
             return result;
@@ -432,11 +424,11 @@ namespace Microsoft.Docs.Build
                 var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
                 if (t_transform != null && contentTypeAttribute != null)
                 {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
                 }
                 else if (validators.Any())
                 {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
                 }
                 return null;
             }
@@ -446,43 +438,40 @@ namespace Microsoft.Docs.Build
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
             private readonly DataTypeAttribute _attribute;
+            private readonly string _fieldName;
 
-            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators, string fieldName)
             {
                 _attribute = attribute;
                 _validators = validators;
+                _fieldName = fieldName;
             }
 
             public override bool CanConvert(Type objectType) => true;
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                SchemaValidation(reader);
-
-                if (t_transform != null)
+                if (reader.TokenType is JsonToken.StartArray)
                 {
-                    var transform = t_transform(_attribute, reader);
-                    return transform;
+                    var array = JArray.Load(reader);
+                    Validate(reader, array);
+                    return array.ToObject(objectType);
                 }
-                return reader.Value;
+                else
+                {
+                    Validate(reader, reader.Value);
+                    if (t_transform != null)
+                    {
+                        var transform = t_transform(_attribute, reader);
+                        return transform;
+                    }
+                    return reader.Value;
+                }
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 throw new NotImplementedException();
-            }
-
-            private void SchemaValidation(JsonReader reader)
-            {
-                if (reader.TokenType is JsonToken.StartArray)
-                {
-                    var array = JArray.Load(reader);
-                    Validate(reader, array);
-                }
-                else
-                {
-                    Validate(reader, reader.Value);
-                }
             }
 
             private void Validate(JsonReader reader, object value)
@@ -493,7 +482,7 @@ namespace Microsoft.Docs.Build
                     {
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
+                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null) { DisplayName = _fieldName });
                         t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }
