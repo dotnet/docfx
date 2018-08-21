@@ -8,12 +8,9 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -30,7 +27,6 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
-        private static readonly ConcurrentDictionary<Type, Lazy<JSchema>> s_cacheTypeJsonSchema = new ConcurrentDictionary<Type, Lazy<JSchema>>();
 
         private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
         {
@@ -60,12 +56,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
-
-        // 1 for schema generation enabled, 0 for disabled
-        private static int _schemaGenerationEnabled = 1;
-
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
+        [ThreadStatic]
+        private static Func<DataTypeAttribute, JsonReader, object> t_transform;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -109,11 +103,16 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(JToken token, Type type)
+        public static (List<Error>, object) ToObject(
+            JToken token,
+            Type type,
+            Func<DataTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
+                t_schemaViolationErrors = new List<Error>();
+                t_transform = transform;
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
                 errors.AddRange(mismatchingErrors);
                 var serializer = new JsonSerializer
@@ -122,13 +121,13 @@ namespace Microsoft.Docs.Build
                     ContractResolver = DefaultDeserializer.ContractResolver,
                 };
                 serializer.Error += HandleError;
-                t_schemaViolationErrors = new List<Error>();
                 var value = token.ToObject(type, serializer);
                 errors.AddRange(t_schemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
+                t_transform = null;
                 t_schemaViolationErrors = null;
             }
 
@@ -137,8 +136,8 @@ namespace Microsoft.Docs.Build
                 if (args.CurrentObject == args.ErrorContext.OriginalObject
                     && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
                 {
-                    var (message, range) = ParseRangeFromExceptionMessage(args.ErrorContext.Error.Message);
-                    errors.Add(Errors.ViolateSchema(range, message));
+                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -193,44 +192,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        /// <summary>
-        /// Register license for Newtonsoft.Json.Schema to avoid limit of generating json schema from object type
-        /// </summary>
-        public static IList<Error> RegisterNewtonsoftJsonSchemaLicense(string license)
-        {
-            if (string.IsNullOrEmpty(license))
-            {
-                return new List<Error>();
-            }
-
-            try
-            {
-                License.RegisterLicense(license);
-                return new List<Error>();
-            }
-            catch (Exception ex)
-            {
-                return new List<Error> { Errors.NewtonsoftJsonSchemaLicenseRegistrationFailed(ex.Message) };
-            }
-        }
-
-        /// <summary>
-        /// Generate Json schema from object type
-        /// </summary>
-        public static (List<Error>, JSchema) GetJsonSchemaFromType(Type type)
-        {
-            var errors = new List<Error>();
-            var jSchema = s_cacheTypeJsonSchema.GetOrAdd(
-                type,
-                new Lazy<JSchema>(() =>
-                {
-                    var (generateErrors, schema) = GenerateJSchema(type);
-                    errors.AddRange(generateErrors);
-                    return schema;
-                })).Value;
-            return (errors, jSchema);
-        }
-
         internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();
@@ -250,40 +211,24 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (List<Error>, JSchema) GenerateJSchema(Type type)
+        private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
-            try
+            if (message.IndexOf(',') == -1)
             {
-                if (_schemaGenerationEnabled != 1)
-                    return (new List<Error>(), null);
-
-                var generator = new JSchemaGenerator { ContractResolver = DefaultDeserializer.ContractResolver, DefaultRequired = Required.Default };
-                var schema = generator.Generate(type, true);
-
-                // If type contains JsonExtensinDataAttribute, additional properties are allowed
-                // TODO: Set AllowAdditionalProperties on nested type, not the entry type
-                if (!CheckTypeContainsJsonExtensionData(type))
-                {
-                    schema.AllowAdditionalProperties = false;
-                }
-                return (new List<Error>(), schema);
+                parsedMessage = message;
+                range = new Range(0, 0);
+                return;
             }
-            catch (JSchemaException ex)
-            {
-                if (Interlocked.Exchange(ref _schemaGenerationEnabled, 0) == 1)
-                {
-                    return (new List<Error> { Errors.NewtonsoftJsonSchemaLimitExceeded(ex.Message) }, null);
-                }
-                return (new List<Error>(), null);
-            }
-        }
-
-        private static (string, Range) ParseRangeFromExceptionMessage(string message)
-        {
             var parts = message.Remove(message.Length - 1).Split(',');
             var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
             var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            return (message.Substring(0, message.IndexOf(".")), new Range(lineNumber, linePosition));
+            parsedMessage = message.Substring(0, message.IndexOf("."));
+            range = new Range(lineNumber, linePosition);
+        }
+
+        private static bool ContainsLineInfo(string message)
+        {
+            return message.IndexOf(',') != -1;
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -342,7 +287,7 @@ namespace Microsoft.Docs.Build
             }
             else if (token is JObject obj)
             {
-                var allowAddtionalProperties = CheckTypeContainsJsonExtensionData(type);
+                var allowAddtionalProperties = HasJsonExtensionData(type);
 
                 foreach (var item in token.Children())
                 {
@@ -366,7 +311,7 @@ namespace Microsoft.Docs.Build
             return path is null ? type.Name : $"{path}.{type.Name}";
         }
 
-        private static bool CheckTypeContainsJsonExtensionData(Type type)
+        private static bool HasJsonExtensionData(Type type)
         {
             return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
                 type,
@@ -481,61 +426,55 @@ namespace Microsoft.Docs.Build
                 return prop;
             }
 
-            private SchemaValidationConverter GetConverter(MemberInfo member)
+            private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
-                var validators = member.GetCustomAttributes<ValidationAttribute>(false).ToList();
-                return validators.Count == 0 ? null : new SchemaValidationConverter(validators);
+                var validators = member.GetCustomAttributes<ValidationAttribute>(false);
+                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
+                if (t_transform != null && contentTypeAttribute != null)
+                {
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
+                }
+                else if (validators.Any())
+                {
+                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
+                }
+                return null;
             }
         }
 
-        private sealed class SchemaValidationConverter : JsonConverter
+        private sealed class SchemaValidationAndTransformConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
+            private readonly DataTypeAttribute _attribute;
+            private readonly string _fieldName;
 
-            public SchemaValidationConverter(IEnumerable<ValidationAttribute> validators)
+            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators, string fieldName)
             {
+                _attribute = attribute;
                 _validators = validators;
+                _fieldName = fieldName;
             }
 
             public override bool CanConvert(Type objectType) => true;
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                switch (reader.TokenType)
+                if (reader.TokenType is JsonToken.StartArray)
                 {
-                    case JsonToken.StartObject:
-                        var obj = JObject.Load(reader);
-                        Validate(reader, obj);
-                        break;
-                    case JsonToken.StartArray:
-                        var array = JArray.Load(reader);
-                        Validate(reader, array);
-                        break;
-                    case JsonToken.StartConstructor:
-                        var constructor = JConstructor.Load(reader);
-                        Validate(reader, constructor);
-                        break;
-                    case JsonToken.Integer:
-                    case JsonToken.Float:
-                    case JsonToken.String:
-                    case JsonToken.Boolean:
-                    case JsonToken.Date:
-                    case JsonToken.Bytes:
-                    case JsonToken.Raw:
-                    case JsonToken.None:
-                    case JsonToken.Null:
-                    case JsonToken.Undefined:
-                        Validate(reader, reader.Value);
-                        break;
-                    case JsonToken.PropertyName:
-                    case JsonToken.Comment:
-                    case JsonToken.EndObject:
-                    case JsonToken.EndArray:
-                    case JsonToken.EndConstructor:
-                    default:
-                        break;
+                    var array = JArray.Load(reader);
+                    Validate(reader, array);
+                    return array.ToObject(objectType);
                 }
-                return reader.Value;
+                else
+                {
+                    Validate(reader, reader.Value);
+                    if (t_transform != null)
+                    {
+                        var transform = t_transform(_attribute, reader);
+                        return transform;
+                    }
+                    return reader.Value;
+                }
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -551,7 +490,7 @@ namespace Microsoft.Docs.Build
                     {
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null));
+                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null) { DisplayName = _fieldName });
                         t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
                     }
                 }

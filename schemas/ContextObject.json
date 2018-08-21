@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "brand": {
+      "type": "string"
+    },
+    "breadcrumb_path": {
+      "type": "string"
+    },
+    "chromeless": {
+      "type": "boolean"
+    },
+    "searchScope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "toc_rel": {
+      "type": "string"
+    },
+    "uhfheaderId": {
+      "type": "string"
+    }
+  }
+}

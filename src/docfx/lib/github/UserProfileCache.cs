@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(github != null);
 
             _cachePath = path;
-            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache);
+            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache, StringComparer.OrdinalIgnoreCase);
             _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
                 from profile in cache.Values
                 where profile?.UserEmails != null

@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docset, options);
+                            await Restore.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report.Summary);
                             break;
                         case "build":
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report.Summary);
                             break;
                     }
-                    return report.Summary.err > 0 ? 1 : 0;
+                    return 0;
                 }
                 catch (DocfxException ex)
                 {

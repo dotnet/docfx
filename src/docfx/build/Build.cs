@@ -145,17 +145,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static PageModel BuildRedirection(Document file)
+        private static RedirectionModel BuildRedirection(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            return new PageModel
+            return new RedirectionModel
             {
                 RedirectionUrl = file.RedirectionUrl,
                 Locale = file.Docset.Config.Locale,
-                Id = file.Id.id,
-                VersionIndependentId = file.Id.versionIndependentId,
-                Metadata = Metadata.GetFromConfig(file),
             };
         }
     }

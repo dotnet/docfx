@@ -466,12 +466,14 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
+                Assert.Equal("(Line: 3, Character: 32) The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
+                Assert.Equal("(Line: 4, Character: 34) The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -479,28 +481,6 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(5, error.Line);
                 Assert.Equal(52, error.Column);
             });
-        }
-
-        [Fact]
-        public void TestGenerateJsonSchemaFromType()
-        {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(ClassForJsonSchema));
-            Assert.Empty(errors);
-            Assert.Equal(new List<string>() { "ValueRequired" }, schema.Required);
-            Assert.Equal(2, schema.Properties["ValueWithLengthRestriction"].MinimumLength);
-            Assert.Equal(3, schema.Properties["ValueWithLengthRestriction"].MaximumLength);
-            Assert.Equal(1, schema.Properties["ListValueWithLengthRestriction"].MinimumItems);
-            Assert.Equal(3, schema.Properties["ListValueWithLengthRestriction"].MaximumItems);
-            Assert.Equal("[a-z]", schema.Properties["RegPatternValue"].Pattern);
-            Assert.True(schema.AllowAdditionalProperties);
-        }
-
-        [Fact]
-        public void TestGenerateJsonSchemaFromTypeWithoutJsonExtensionData()
-        {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(BasicClass));
-            Assert.Empty(errors);
-            Assert.False(schema.AllowAdditionalProperties);
         }
 
         public class BasicClass
@@ -577,24 +557,6 @@ namespace Microsoft.Docs.Build
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
-        }
-
-        public class ClassForJsonSchema
-        {
-            [JsonRequired]
-            public string ValueRequired { get; set; }
-
-            [RegularExpression("[a-z]")]
-            public string RegPatternValue { get; set; }
-
-            [MinLength(2), MaxLength(3)]
-            public string ValueWithLengthRestriction { get; set; }
-
-            [MinLength(1), MaxLength(3)]
-            public List<string> ListValueWithLengthRestriction { get; set; }
-
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
         }
 
         public enum BasicEnum

@@ -72,7 +72,6 @@ outputs:
 ---
 # Author should also exist in contributors, even hasn't contributed to the file before
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
-
 outputs:
   README.json: |
     {
@@ -82,6 +81,75 @@ outputs:
         "displayName": "Yufei Huang",
         "id": "511355"
       },
+      "contributors": [
+        {
+          "name": "superyyrrzz",
+          "profileUrl": "https://github.com/superyyrrzz",
+          "displayName": "Renze Yu",
+          "id": "3831744"
+        },
+        {
+          "name": "OsmondJiang",
+          "profileUrl": "https://github.com/OsmondJiang",
+          "displayName": "Osmond Jiang",
+          "id": "19990166"
+        }
+      ],
+    }
+  testdata1.json:
+  build.manifest:
+  dep.json:
+---
+# Author is case-insensitive
+# Contributors can be excluded, it's case insensitive
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+inputs:
+  README.md: |
+    ---
+    author: OSMONDJIANG
+    ---
+  docfx.yml: |
+    name: docfx-git-test
+    content: "*.md"
+    contribution:
+      userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-4/user_profile.json
+      repository: https://gitlab.com/test-org/test-repo
+      branch: contribution
+      excludedContributors:
+        - superyyrrZZ
+outputs:
+  README.json: |
+    {
+      "author":  {
+        "name": "OsmondJiang",
+        "profileUrl": "https://github.com/OsmondJiang",
+        "displayName": "Osmond Jiang",
+        "id": "19990166"
+      },
+      "contributors": [
+      ],
+    }
+  testdata1.json:
+  build.manifest:
+  dep.json:
+---
+# Author can be excluded, it's case insensitive
+repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+inputs:
+  docfx.yml: |
+    name: docfx-git-test
+    content: "*.md"
+    contribution:
+      userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-4/user_profile.json
+      repository: https://gitlab.com/test-org/test-repo
+      branch: contribution
+      excludedContributors:
+        - YUFEIH
+        - yufeih
+outputs:
+  README.json: |
+    {
+      "!author": null,
       "contributors": [
         {
           "name": "superyyrrzz",

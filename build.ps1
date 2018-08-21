@@ -11,6 +11,10 @@ $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
 $version = "3.0.0-alpha-$revision-$commitSha"
 
+# Disable appveyor xunit test adaptor https://github.com/appveyor/ci/issues/997
+$env:APPVEYOR_API_URL = ''
+
+exec "dotnet run -p tools/CreateJsonSchema"
 exec "dotnet test test\docfx.Test"
 exec "dotnet test test\docfx.Test -c Release"
 exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version /p:PackAsTool=true"
