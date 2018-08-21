@@ -325,7 +325,7 @@ inputs:
   docfx.yml: |
     redirections:
       docs/a.md: /absolute/path1
-    redirectionsWithoutDocumentId:
+    redirectionsWithoutId:
       docs/a.md: /absolute/path2
 outputs:
   docs/a.json:
@@ -339,7 +339,7 @@ inputs:
     redirections:
       docs/TOC.md: /absolute/path
       docs/a.md: /absolute/path1
-    redirectionsWithoutDocumentId:
+    redirectionsWithoutId:
       docs/a.md: /absolute/path2
 outputs:
   docs/a.json:

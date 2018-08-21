@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.Build
         /// The default value is empty mappings
         /// The redirection doesn't transfer the document id
         /// </summary>
-        public readonly Dictionary<string, string> RedirectionsWithoutDocumentId = new Dictionary<string, string>(PathUtility.PathComparer);
+        public readonly Dictionary<string, string> RedirectionsWithoutId = new Dictionary<string, string>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the document id configuration section
@@ -146,18 +147,17 @@ namespace Microsoft.Docs.Build
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(List<Error> errors, string docsetPath, CommandLineOptions options, out Config config, bool extend = true, RestoreMap restoreMap = null)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
             var configPath = Path.Combine(docsetPath, "docfx.yml");
             var exists = File.Exists(configPath);
             if (exists)
             {
-                var (loadErrors, value) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
-                errors.AddRange(loadErrors);
-                config = value;
+                (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
             }
             else
             {
+                errors = new List<Error>();
                 config = new Config();
             }
             return exists;
@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
             {
                 var culture = new CultureInfo(config.Locale);
             }
-            catch (CultureNotFoundException e)
+            catch (CultureNotFoundException)
             {
                 errors.Add(Errors.InvalidLocale(config.Locale));
             }
@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
-            config[ConfigConstants.RedirectionsWithoutDocumentId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutDocumentId]);
+            config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
             return config;
         }
 
