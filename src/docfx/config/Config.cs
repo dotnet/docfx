@@ -168,33 +168,21 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var errors = new List<Error>();
             Config config = null;
-            try
-            {
-                var configObject = LoadConfigObject(configPath);
-                var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
-                var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+            var (loadErrors, configObject) = LoadConfigObject(configPath);
+            var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+            var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
-                if (extend)
-                {
-                    finalConfigObject = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
-                }
-
-                config = finalConfigObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
-            }
-            catch (Exception e)
+            if (extend)
             {
-                throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
+                var extendErros = new List<Error>();
+                (extendErros, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                errors.AddRange(extendErros);
             }
+
+            var deserializeErrors = new List<Error>();
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
 
             // TODO: validate using DataAnnotation and extensions
-            Validate(config, docsetPath);
-
-            var configObject = ExpandAndNormalize(JsonUtility.Merge(value, optionConfigObject));
-            var deserializeErrors = new List<Error>();
-
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
-            errors.AddRange(deserializeErrors);
-
             errors.AddRange(Validate(config, docsetPath));
             return (errors, config);
         }
@@ -239,25 +227,22 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static JObject LoadConfigObject(string filePath)
+        private static (List<Error>, JObject) LoadConfigObject(string filePath)
         {
             var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
-            if (errors.Any())
-            {
-                throw errors[0].ToException();
-            }
-            return ExpandAndNormalize(config ?? new JObject());
+            return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
-        private static JObject ExtendConfigs(JObject config, string docsetPath, RestoreMap restoreMap)
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath, RestoreMap restoreMap)
         {
             var result = new JObject();
+            var errors = new List<Error>();
 
             var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
             if (!string.IsNullOrEmpty(configExtend))
             {
                 var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
-                result = LoadConfigObject(filePath);
+                (errors, result) = LoadConfigObject(filePath);
             }
 
             if (config[ConfigConstants.Extend] is JArray extends)
@@ -273,7 +258,7 @@ namespace Microsoft.Docs.Build
             }
 
             result.Merge(config, JsonUtility.MergeSettings);
-            return result;
+            return (errors, result);
         }
 
         private static JObject ExpandAndNormalize(JObject config)
