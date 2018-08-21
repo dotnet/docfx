@@ -156,19 +156,26 @@ namespace Microsoft.Docs.Build
 
         private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml
             Config config = null;
             try
             {
-                var optionConfigObject = options?.ToJObject();
-                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend, restoreMap), optionConfigObject));
-                config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
+                var configObject = LoadConfigObject(configPath);
+                var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+                var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+
+                if (extend)
+                {
+                    finalConfigObject = ExtendConfigs(finalConfigObject, options, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                }
+
+                config = finalConfigObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
             }
             catch (Exception e)
             {
                 throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
             }
 
+            // TODO: validate using DataAnnotation and extensions
             Validate(config, docsetPath);
 
             return config;
@@ -208,49 +215,35 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JObject LoadConfigObject(string docsetPath, string filePath, bool extend, RestoreMap restoreMap)
+        private static JObject LoadConfigObject(string filePath)
         {
             var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             if (errors.Any())
             {
                 throw errors[0].ToException();
             }
-
-            if (config == null)
-                config = new JObject();
-
-            if (!extend)
-                return config;
-
-            restoreMap = restoreMap ?? new RestoreMap(docsetPath);
-            return ExtendConfigObject(docsetPath, config, restoreMap);
+            return ExpandAndNormalize(config ?? new JObject());
         }
 
-        private static JObject ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
+        private static JObject ExtendConfigs(JObject config, CommandLineOptions options, string docsetPath, RestoreMap restoreMap)
         {
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
-            if (!config.TryGetValue(ConfigConstants.Extend, out var objExtend) || objExtend == null)
-            {
-                return config;
-            }
+            var result = new JObject();
 
-            if (!(objExtend is JArray arrayExtend))
+            if (config[ConfigConstants.Extend] is JArray extends)
             {
-                return config;
-            }
-
-            var extendedConfig = new JObject();
-            foreach (var extendPath in arrayExtend)
-            {
-                if (extendPath is JValue strExtendPath)
+                foreach (var extend in extends)
                 {
-                    var filePath = restoreMap.GetUrlRestorePath(docsetPath, strExtendPath.Value<string>());
-                    var configObject = LoadConfigObject(docsetPath, filePath, false, restoreMap); // only support first level extends
-                    extendedConfig = JsonUtility.Merge(extendedConfig, configObject);
+                    if (extend is JValue value && value.Value is string str)
+                    {
+                        var filePath = restoreMap.GetUrlRestorePath(docsetPath, str);
+                        result.Merge(LoadConfigObject(filePath), JsonUtility.MergeSettings);
+                    }
                 }
             }
 
-            return JsonUtility.Merge(extendedConfig, config);
+            result.Merge(config, JsonUtility.MergeSettings);
+
+            return result;
         }
 
         private static JObject ExpandAndNormalize(JObject config)
@@ -258,13 +251,11 @@ namespace Microsoft.Docs.Build
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
             config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
+            config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             config[ConfigConstants.RedirectionsWithoutDocumentId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutDocumentId]);
             return config;
         }
-
-        private static JToken ExpandExtend(JToken extend) => ExpandStringArray(extend);
 
         private static JToken NormalizeRedirections(JToken redirection)
         {
