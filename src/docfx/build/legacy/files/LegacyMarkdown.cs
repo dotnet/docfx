@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                rawMetadata = Jint.Run(LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap));
+                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
                 var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
                 context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
