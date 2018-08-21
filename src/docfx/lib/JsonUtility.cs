@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
-
-        private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
+        public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
+
+        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
 
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
@@ -56,6 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
+
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
         [ThreadStatic]
@@ -161,20 +162,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        /// <summary>
-        /// Merge multiple JSON objects.
-        /// The latter value overwrites the former value for a given key.
-        /// </summary>
-        public static JObject Merge(params JObject[] objs)
+        public static JObject Merge(JObject a, JObject b)
         {
             var result = new JObject();
-            foreach (var obj in objs)
-            {
-                if (obj != null)
-                {
-                    result.Merge(obj, s_defaultMergeSettings);
-                }
-            }
+            result.Merge(a, MergeSettings);
+            result.Merge(b, MergeSettings);
             return result;
         }
 
@@ -186,7 +178,7 @@ namespace Microsoft.Docs.Build
             {
                 if (obj != null)
                 {
-                    result.Merge(obj, s_defaultMergeSettings);
+                    result.Merge(obj, MergeSettings);
                 }
             }
             return result;
