@@ -97,6 +97,11 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(PathUtility.PathComparer);
 
         /// <summary>
+        /// Gets whether links to redirected files are resolved as redirected url
+        /// </summary>
+        public readonly bool FollowRedirect = true;
+
+        /// <summary>
         /// Gets the redirection mappings
         /// The default value is empty mappings
         /// The redirection always transfer the document id
