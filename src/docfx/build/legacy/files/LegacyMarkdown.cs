@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             var themesRelativePathToOutputRoot = "_themes/";
 
-            var rawMetadata = new JObject();
+            JObject rawMetadata;
             if (!string.IsNullOrEmpty(doc.RedirectionUrl))
             {
                 rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
