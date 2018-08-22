@@ -185,6 +185,8 @@ namespace Microsoft.Docs.Build
         private static unsafe ConcurrentDictionary<long, Dictionary<string, long>> LoadTrees(
             IntPtr repo, List<Commit> commits, HashSet<string> lookup, Action<int, int> progress)
         {
+            // Reduce memory footprint by using `long` over `git_oid`
+            // azure-docs-pr has 483947 distinct blobs, their first 8 bytes are also distinct.
             var done = 0;
             var total = commits.Count;
             var trees = new ConcurrentDictionary<long, Dictionary<string, long>>();
