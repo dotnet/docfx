@@ -88,6 +88,42 @@ outputs:
     }
   build.manifest:
 ---
+# No H1
+inputs:
+  docfx.yml: |
+    rules:
+      heading-not-found: warning
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    hello
+outputs:
+  docs/a.json:
+  build.manifest:
+  build.log: |
+    ["warning","heading-not-found","Cannot find heading with `#` or there are some non-comments block between yaml-header and H1","docs/a.md"]
+---
+# Non-comments block between yaml-header and H1
+inputs:
+  docfx.yml: |
+    rules:
+      heading-not-found: warning
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    hello
+
+    # Heading
+outputs:
+  docs/a.json:
+  build.manifest:
+  build.log: |
+    ["warning","heading-not-found","Cannot find heading with `#` or there are some non-comments block between yaml-header and H1","docs/a.md"]
+---
 # Comments between yaml header and H1
 inputs:
   docfx.yml:
