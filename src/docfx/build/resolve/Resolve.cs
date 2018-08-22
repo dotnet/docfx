@@ -122,7 +122,13 @@ namespace Microsoft.Docs.Build
                 //
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
-                return (null, null, redirectTo, null, null);
+                if (relativeTo.Docset.Config.FollowRedirect)
+                {
+                    return (null, null, redirectTo, query, fragment);
+                }
+
+                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
+                return (error, redirectFile, null, query, fragment);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);

@@ -208,6 +208,21 @@ outputs:
   docs/redirect.json: |
     {"redirectionUrl":"relative/path"}
 ---
+# Preserve original link when followRedirect is false
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: relative/path
+    followRedirect: false
+  docs/a.md: |
+    [redirect](redirect.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"redirect\">redirect</a></p>"}
+  docs/redirect.json: |
+    {"redirectionUrl":"relative/path"}
+---
 # Show warning if inclusion is a redirection file
 inputs:
   docfx.yml: |
