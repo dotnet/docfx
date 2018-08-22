@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
                     return (null, null, redirectTo, query, fragment);
                 }
 
-                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset, redirectTo);
+                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
                 return (error, redirectFile, null, query, fragment);
             }
 
