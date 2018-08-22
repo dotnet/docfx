@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
+        [Locale]
         public readonly string Locale = "en-us";
 
         /// <summary>
@@ -183,51 +184,9 @@ namespace Microsoft.Docs.Build
             }
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
-
-            // TODO: validate using DataAnnotation and extensions
-            errors.AddRange(Validate(config, docsetPath));
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject, docsetPath);
+            errors.AddRange(deserializeErrors);
             return (errors, config);
-        }
-
-        private static List<Error> Validate(Config config, string docsetPath)
-        {
-            var errors = new List<Error>();
-            errors.AddRange(ValidateLocale(config));
-            errors.AddRange(ValidateContributorConfig(config.Contribution, docsetPath));
-            return errors;
-        }
-
-        private static List<Error> ValidateLocale(Config config)
-        {
-            var errors = new List<Error>();
-            try
-            {
-                var culture = new CultureInfo(config.Locale);
-            }
-            catch (CultureNotFoundException)
-            {
-                errors.Add(Errors.InvalidLocale(config.Locale));
-            }
-            return errors;
-        }
-
-        private static List<Error> ValidateContributorConfig(ContributionConfig config, string docsetPath)
-        {
-            var errors = new List<Error>();
-            if (!string.IsNullOrEmpty(config.UserProfileCache)
-                && !HrefUtility.IsHttpHref(config.UserProfileCache)
-                && !File.Exists(Path.Combine(docsetPath, config.UserProfileCache)))
-            {
-                errors.Add(Errors.UserProfileCacheNotFound(config.UserProfileCache));
-            }
-            if (!string.IsNullOrEmpty(config.GitCommitsTime)
-                && !HrefUtility.IsHttpHref(config.GitCommitsTime)
-                && !File.Exists(Path.Combine(docsetPath, config.GitCommitsTime)))
-            {
-                errors.Add(Errors.GitCommitsTimeNotFound(config.GitCommitsTime));
-            }
-            return errors;
         }
 
         private static (List<Error>, JObject) LoadConfigObject(string filePath)
