@@ -47,7 +47,9 @@ namespace Microsoft.Docs.Build
         /// Return the nearest toc relative to the current file
         /// "near" means less subdirectory count
         /// when subdirectory counts are same, "near" means less parent directory count
-        /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
+        /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
+        /// when the file is not referenced, return only toc in the same folder or parents folder.
+        /// i.e. relativePath only contains "..".
         /// </summary>
         public Document GetNearestToc(Document file)
         {
@@ -55,7 +57,7 @@ namespace Microsoft.Docs.Build
             var hasReferencedToc = _documentToTocs.TryGetValue(file, out var referencedTocFiles);
             var filteredTocFiles = hasReferencedToc ? (IEnumerable<Document>)referencedTocFiles : _tocs;
 
-            var nearstToc = (Document)null;
+            var nearestToc = (Document)null;
             var nearestSubDirCount = 0;
             var nearestParentDirCount = 0;
             foreach (var toc in filteredTocFiles)
@@ -67,16 +69,16 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
                 var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
-                if (nearstToc == null || distance > 0 ||
-                    (distance == 0 && string.Compare(nearstToc.SitePath, toc.SitePath, PathUtility.PathComparison) > 0))
+                if (nearestToc == null || distance > 0 ||
+                    (distance == 0 && string.Compare(nearestToc.SitePath, toc.SitePath, PathUtility.PathComparison) > 0))
                 {
-                    nearstToc = toc;
+                    nearestToc = toc;
                     nearestSubDirCount = subDirCount;
                     nearestParentDirCount = parentDirCount;
                 }
             }
 
-            return nearstToc;
+            return nearestToc;
         }
 
         private static int Compare(int xSubDirCount, int xParentDirCount, int ySubDirCount, int yParentDirCount)
