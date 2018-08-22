@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(schema).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schemaType, TransformContent);
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schemaType, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
             return (errors, schema, content, token.Value<JObject>("metadata"));
 

@@ -61,6 +61,8 @@ namespace Microsoft.Docs.Build
         private static List<Error> t_schemaViolationErrors;
         [ThreadStatic]
         private static Func<DataTypeAttribute, JsonReader, object> t_transform;
+        [ThreadStatic]
+        private static Dictionary<object, object> t_validationContextItems;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -98,22 +100,24 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate mismatching field types
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static (List<Error>, T) ToObject<T>(JToken token, Dictionary<object, object> items = null)
         {
-            var (errors, obj) = ToObject(token, typeof(T));
+            var (errors, obj) = ToObject(token, typeof(T), items);
             return (errors, (T)obj);
         }
 
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
+            Dictionary<object, object> items = null,
             Func<DataTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
-                t_schemaViolationErrors = new List<Error>();
+                t_validationContextItems = items;
                 t_transform = transform;
+                t_schemaViolationErrors = new List<Error>();
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
                 errors.AddRange(mismatchingErrors);
                 var serializer = new JsonSerializer
@@ -128,6 +132,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
+                t_validationContextItems = null;
                 t_transform = null;
                 t_schemaViolationErrors = null;
             }
@@ -478,12 +483,19 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var validator in _validators)
                 {
-                    if (validator != null && !validator.IsValid(value))
+                    try
+                    {
+                        validator.Validate(value, new ValidationContext(value, t_validationContextItems) { DisplayName = _fieldName });
+                    }
+                    catch (DocfxException e)
+                    {
+                        t_schemaViolationErrors.Add(e.Error);
+                    }
+                    catch (Exception e)
                     {
                         var lineInfo = reader as IJsonLineInfo;
                         var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                        var validationResult = validator.GetValidationResult(value, new ValidationContext(value, null) { DisplayName = _fieldName });
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, validationResult.ErrorMessage));
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message));
                     }
                 }
             }

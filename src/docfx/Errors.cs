@@ -19,12 +19,6 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 
-        public static Error InvalidConfig(string configPath, string message, Exception ex = null)
-            => new Error(ErrorLevel.Error, "invalid-config", $"Error parsing docset config: {message ?? ex.Message}", configPath);
-
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Local {locale} is not supported ");
-
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
@@ -126,6 +120,9 @@ namespace Microsoft.Docs.Build
 
         public static Error ViolateSchema(Range range, string message)
             => new Error(ErrorLevel.Error, "violate-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+
+        public static Error ValidationContextMissing(string name)
+            => new Error(ErrorLevel.Error, "validation-context-missing", $"{name} is missing from validation context");
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
