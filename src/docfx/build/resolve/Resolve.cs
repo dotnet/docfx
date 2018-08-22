@@ -28,9 +28,9 @@ namespace Microsoft.Docs.Build
             var (error, file, redirectTo, query, fragment) = TryResolveFile(relativeTo, href);
 
             // Redirection
-            if (!string.IsNullOrEmpty(redirectTo))
+            if (redirectTo != null && relativeTo.Docset.Config.FollowRedirect)
             {
-                return (error, redirectTo, fragment, file);
+                return (error, redirectTo, fragment, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -60,12 +60,12 @@ namespace Microsoft.Docs.Build
             var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
 
             // Pages outside build scope, don't build the file, use relative href
-            if (error == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
+            if (error == null && redirectTo == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
             {
                 return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + query + fragment, fragment, null);
             }
 
-            return (error, relativeUrl + query + fragment, fragment, file);
+            return (error, relativeUrl + query + fragment, fragment, redirectTo == null ? file : null);
         }
 
         private static (Error error, Document file, string redirectTo, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
@@ -122,13 +122,8 @@ namespace Microsoft.Docs.Build
                 //
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
-                if (relativeTo.Docset.Config.FollowRedirect)
-                {
-                    return (null, null, redirectTo, query, fragment);
-                }
-
                 var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                return (error, redirectFile, null, query, fragment);
+                return (error, redirectFile, redirectTo, query, fragment);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
