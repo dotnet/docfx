@@ -33,12 +33,14 @@ namespace Microsoft.Docs.Build
         /// The address of user profile cache, used for generating authoer and contributors.
         /// It should be an absolute url or a relative path
         /// </summary>
+        [ExternalFile]
         public readonly string UserProfileCache = string.Empty;
 
         /// <summary>
         /// The address of commit time history file, which contains the time each commit being pushed.
         /// It should be an absolute url or a relative path
         /// </summary>
+        [ExternalFile]
         public readonly string GitCommitsTime = string.Empty;
 
         /// <summary>

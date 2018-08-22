@@ -15,12 +15,14 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            var config = Config.Load(docsetPath, options);
+            var (errors, config) = Config.Load(docsetPath, options);
 
             report.Configure(docsetPath, config);
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
+            context.Report("docfx.yml", errors);
+
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);

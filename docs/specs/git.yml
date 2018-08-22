@@ -97,9 +97,14 @@ outputs:
   build.manifest:
   dep.json:
 ---
+# Author is case-insensitive
 # Contributors can be excluded, it's case insensitive
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 inputs:
+  README.md: |
+    ---
+    author: OSMONDJIANG
+    ---
   docfx.yml: |
     name: docfx-git-test
     content: "*.md"
@@ -113,18 +118,12 @@ outputs:
   README.json: |
     {
       "author":  {
-        "name": "yufeih",
-        "profileUrl": "https://github.com/yufeih",
-        "displayName": "Yufei Huang",
-        "id": "511355"
+        "name": "OsmondJiang",
+        "profileUrl": "https://github.com/OsmondJiang",
+        "displayName": "Osmond Jiang",
+        "id": "19990166"
       },
       "contributors": [
-        {
-          "name": "OsmondJiang",
-          "profileUrl": "https://github.com/OsmondJiang",
-          "displayName": "Osmond Jiang",
-          "id": "19990166"
-        }
       ],
     }
   testdata1.json:

@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             var themesRelativePathToOutputRoot = "_themes/";
 
-            var rawMetadata = new JObject();
+            JObject rawMetadata;
             if (!string.IsNullOrEmpty(doc.RedirectionUrl))
             {
                 rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                rawMetadata = Jint.Run(LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap));
+                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
                 var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
                 context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
             }
