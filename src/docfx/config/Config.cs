@@ -2,12 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -118,6 +116,11 @@ namespace Microsoft.Docs.Build
         /// Gets the rules for error levels by error code.
         /// </summary>
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
+
+        /// <summary>
+        /// Gets whether should disable resolving redirection file link
+        /// </summary>
+        public readonly bool DisableResolveRedirectionLink = false;
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.

@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
     {
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var (error, file, redirect, _, _) = TryResolveFile(relativeTo, href);
+            var (error, file, _, _) = TryResolveFile(relativeTo, href);
 
-            if (redirect != null)
+            if (file?.RedirectionUrl != null)
             {
                 return (Errors.IncludeRedirection(relativeTo, href), null, null);
             }
@@ -25,18 +25,18 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            var (error, file, redirectTo, query, fragment) = TryResolveFile(relativeTo, href);
-
-            // Redirection
-            if (!string.IsNullOrEmpty(redirectTo))
-            {
-                return (error, redirectTo, fragment, file);
-            }
+            var (error, file, query, fragment) = TryResolveFile(relativeTo, href);
 
             // Cannot resolve the file, leave href as is
             if (file == null)
             {
                 return (error, href, fragment, null);
+            }
+
+            // Redirection
+            if (!string.IsNullOrEmpty(file.RedirectionUrl) && !relativeTo.Docset.Config.DisableResolveRedirectionLink)
+            {
+                return (error, file.RedirectionUrl + query + fragment, fragment, null);
             }
 
             // Self reference, don't build the file, leave href as is
@@ -59,6 +59,11 @@ namespace Microsoft.Docs.Build
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
 
+            if (!string.IsNullOrEmpty(file.RedirectionUrl) && file.Docset.Config.DisableResolveRedirectionLink)
+            {
+                return (error, relativeUrl + query + fragment, fragment, null);
+            }
+
             // Pages outside build scope, don't build the file, use relative href
             if (error == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
             {
@@ -68,11 +73,11 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private static (Error error, Document file, string redirectTo, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
@@ -81,7 +86,7 @@ namespace Microsoft.Docs.Build
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return (null, relativeTo, null, query, fragment);
+                return (null, relativeTo, query, fragment);
             }
 
             // Leave absolute URL as is
@@ -93,7 +98,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null);
             }
 
             // Leave absolute URL path as is
@@ -116,18 +121,16 @@ namespace Microsoft.Docs.Build
             // resolve from redirection files
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (relativeTo.Docset.Redirections.TryGetRedirectionUrl(pathToDocset, out var redirectTo))
+            if (relativeTo.Docset.Redirections.TryGetRedirectionFile(pathToDocset, out var file))
             {
-                // redirectTo always is absolute href
-                //
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
-                return (null, null, redirectTo, null, null);
+                return (null, file, query, fragment);
             }
 
-            var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
+            file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, query, fragment);
         }
     }
 }

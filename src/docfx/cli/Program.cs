@@ -95,6 +95,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineCommand("build", ref command, "Builds a docset.");
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+                syntax.DefineOption("disable-resolve-redirection-link", ref options.DisableResolveRedirectionLink, "Disable resolving redireciton file link");
                 syntax.DefineOption("git-token", ref options.GitToken, "The git token used to get contribution information from GitHub API");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
             });

@@ -303,6 +303,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
+                case ContentType.Redirection:
                     var extensionIndex = url.LastIndexOf('.');
                     if (extensionIndex >= 0)
                     {
