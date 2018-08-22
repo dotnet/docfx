@@ -184,12 +184,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static JObject ValidateNullValue(this JObject graph)
-        {
-            var (_, jtoken) = ((JToken)graph).ValidateNullValue();
-            return (JObject)jtoken;
-        }
-
         internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
         {
             var errors = new List<Error>();

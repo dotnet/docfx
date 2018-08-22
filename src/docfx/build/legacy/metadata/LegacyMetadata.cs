@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 ["tutorial_allContributors"] = "all {0} contributors",
             };
 
-            return newMetadata.ValidateNullValue();
+            return newMetadata.RemoveNulls();
         }
 
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             {
                 ["redirect_url"] = pageModel.RedirectionUrl,
                 ["locale"] = docset.Config.Locale,
-            }.ValidateNullValue();
+            }.RemoveNulls();
 
         public static JObject GenerateLegacyRawMetadata(
                 PageModel pageModel,
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
-            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata)).ValidateNullValue();
+            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata)).RemoveNulls();
         }
 
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
@@ -167,6 +167,12 @@ namespace Microsoft.Docs.Build
             metadataOutput["is_dynamic_rendering"] = true;
 
             return metadataOutput;
+        }
+
+        private static JObject RemoveNulls(this JObject graph)
+        {
+            var (_, jtoken) = ((JToken)graph).ValidateNullValue();
+            return (JObject)jtoken;
         }
 
         private static JObject RemoveUpdatedAtDateTime(JObject rawMetadata)
