@@ -92,7 +92,10 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            File.Delete(destinationPath);
+            if (File.Exists(destinationPath))
+            {
+                File.Delete(destinationPath);
+            }
         }
     }
 }

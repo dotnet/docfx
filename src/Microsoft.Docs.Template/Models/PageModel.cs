@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PageModel
+    public class PageModel
     {
         public string PageType { get; set; }
 
@@ -16,11 +16,11 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; set; }
 
-        public string TocRelativePath { get; set; }
+        public string Toc { get; set; }
 
         public string Title { get; set; }
 
-        public string TitleHtml { get; set; }
+        public string HtmlTitle { get; set; }
 
         public string RedirectionUrl { get; set; }
 
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public DateTime UpdatedAt { get; set; }
 
-        public bool EnableContribution { get; set; }
+        public bool ShowEdit { get; set; }
 
         public string EditUrl { get; set; }
 
@@ -43,5 +43,16 @@ namespace Microsoft.Docs.Build
         public string CommitUrl { get; set; }
 
         public JObject Metadata { get; set; }
+    }
+
+    public class GitUserInfo
+    {
+        public string Name { get; set; }
+
+        public string ProfileUrl { get; set; }
+
+        public string DisplayName { get; set; }
+
+        public string Id { get; set; }
     }
 }

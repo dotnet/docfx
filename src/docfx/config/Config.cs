@@ -119,6 +119,17 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
         /// <summary>
+        /// Gets whether warnings should be treated as errors.
+        /// </summary>
+        public readonly bool WarningsAsErrors;
+
+        public IEnumerable<string> GetExternalReferences()
+        {
+            yield return Contribution.GitCommitsTime;
+            yield return Contribution.UserProfileCache;
+        }
+
+        /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static Config Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)

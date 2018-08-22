@@ -78,3 +78,12 @@ restores:
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
   build.manifest:
+---
+# Show error when download failed
+os: windows
+inputs:
+  docfx.yml: |
+    extend: https://this-url-does-not-exit.com/this-is-a-bad-url
+outputs:
+  build.log: |
+    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: No such host is known"]

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,13 +22,8 @@ namespace Microsoft.Docs.Build
                 docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
             var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
-            var content = (string)pageModel.Content;
 
-            var rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, docset, doc, legacyManifestOutput, tocMap);
-
-            rawMetadata = Jint.Run(rawMetadata);
-            var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
-
+            var content = pageModel.Content as string;
             if (!string.IsNullOrEmpty(content))
             {
                 content = HtmlUtility.TransformHtml(
@@ -48,9 +44,20 @@ namespace Microsoft.Docs.Build
 
             var themesRelativePathToOutputRoot = "_themes/";
 
-            var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
+            var rawMetadata = new JObject();
+            if (!string.IsNullOrEmpty(doc.RedirectionUrl))
+            {
+                rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
+                context.WriteJson(new { outputRootRelativePath, content, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+            }
+            else
+            {
+                rawMetadata = Jint.Run(LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap));
+                var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
+                context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+            }
 
-            context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+            var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
             context.WriteJson(metadate, metadataOutputPath);
         }
     }

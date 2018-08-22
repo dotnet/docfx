@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -32,7 +33,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                await Assert.ThrowsAnyAsync<AssertActualExpectedException>(() => RunCore(docsetPath, spec));
+                await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
             }
         }
 
@@ -41,6 +42,19 @@ namespace Microsoft.Docs.Build
             foreach (var command in spec.Commands)
             {
                 await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
+            }
+
+            // Verify output
+            var docsetOutputPath = Path.Combine(docsetPath, "_site");
+            Assert.True(Directory.Exists(docsetOutputPath));
+
+            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
+
+            // Show build.log content if actual output has errors or warnings.
+            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            {
+                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
             // Verify restored files
@@ -53,12 +67,6 @@ namespace Microsoft.Docs.Build
             }
 
             // Verify output
-            var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetOutputPath));
-
-            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
-
             Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
@@ -112,7 +120,6 @@ namespace Microsoft.Docs.Build
                 var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-                return (docsetPath, spec);
             }
 
             foreach (var (file, content) in spec.Inputs)
@@ -174,8 +181,10 @@ namespace Microsoft.Docs.Build
                     break;
                 case ".log":
                     var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToList();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToList();
-                    TestHelper.VerifyLogEquals(expected, actual);
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
+                    // TODO: Configure github token in CI to get rid of github rate limit,
+                    // then we could remove the wildcard match
+                    Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
                     break;
                 default:
                     Assert.Equal(

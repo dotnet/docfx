@@ -325,17 +325,21 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(@"{
 ""NumberList"":
-  [1, ""a""]}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{""B"" : ""b""}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{""ValueEnum"":""Four""}", ErrorLevel.Error, "violate-schema", 1, 19)]
+  [1, ""a""],
+""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 3, 9)]
+        [InlineData(@"{""B"" : ""b"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{""ValueEnum"":""Four"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         [Theory]
@@ -348,11 +352,33 @@ namespace Microsoft.Docs.Build
           ""B"": 1,
           ""C"": ""c"",
           ""E"": ""e""}}", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+        [InlineData(@"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e""}]", typeof(List<ClassWithJsonExtensionData>))]
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
             Assert.Empty(errors);
+        }
+
+        [Fact]
+        public void TestNestedObjectTypeWithoutJsonExtensionData()
+        {
+            var yaml = @"[{
+          ""B"": 1,
+          ""C"": ""c"",
+          ""E"": ""e"",
+          ""NestedMemberWithoutExtensionData"": {""Unknown"": 1}}]";
+            var (errors, value) = JsonUtility.Deserialize<List<ClassWithJsonExtensionData>>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Warning, error.Level);
+                Assert.Equal("unknown-field", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(57, error.Column);
+            });
         }
 
         [Theory]
@@ -366,33 +392,93 @@ namespace Microsoft.Docs.Build
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithMoreMembers>(json));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         [Fact]
-        public void TestGenerateJsonSchemaFromType()
+        public void TestMultipleSchemaViolationForPrimitiveType()
         {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(ClassForJsonSchema));
-            Assert.Empty(errors);
-            Assert.Equal(new List<string>() { "ValueRequired" }, schema.Required);
-            Assert.Equal(2, schema.Properties["ValueWithLengthRestriction"].MinimumLength);
-            Assert.Equal(3, schema.Properties["ValueWithLengthRestriction"].MaximumLength);
-            Assert.Equal(1, schema.Properties["ListValueWithLengthRestriction"].MinimumItems);
-            Assert.Equal(3, schema.Properties["ListValueWithLengthRestriction"].MaximumItems);
-            Assert.Equal("[a-z]", schema.Properties["RegPatternValue"].Pattern);
-            Assert.True(schema.AllowAdditionalProperties);
+            var json = @"{
+""NumberList"": [1, ""a""],
+""B"" : ""b"",
+""ValueEnum"":""Four"",
+""ValueRequired"": ""a""}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(9, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(18, error.Column);
+            });
         }
 
         [Fact]
-        public void TestGenerateJsonSchemaFromTypeWithoutJsonExtensionData()
+        public void TestMultipleSchemaViolation()
         {
-            var (errors, schema) = JsonUtility.GetJsonSchemaFromType(typeof(BasicClass));
-            Assert.Empty(errors);
-            Assert.False(schema.AllowAdditionalProperties);
+            var json = @"{
+""regPatternValue"":""3"",
+""valueWithLengthRestriction"":""a"",
+""listValueWithLengthRestriction"":[],
+""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(1, error.Line);
+                Assert.Equal(1, error.Column);
+                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(21, error.Column);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(3, error.Line);
+                Assert.Equal(32, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(34, error.Column);
+            }, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(52, error.Column);
+            });
         }
 
         public class BasicClass
@@ -456,6 +542,8 @@ namespace Microsoft.Docs.Build
         {
             [JsonExtensionData]
             public JObject AdditionalData { get; set; }
+
+            public NestedClass NestedMemberWithoutExtensionData { get; set; }
         }
 
         public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
@@ -467,24 +555,6 @@ namespace Microsoft.Docs.Build
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
-        }
-
-        public class ClassForJsonSchema
-        {
-            [JsonRequired]
-            public string ValueRequired { get; set; }
-
-            [RegularExpression("[a-z]")]
-            public string RegPatternValue { get; set; }
-
-            [MinLength(2), MaxLength(3)]
-            public string ValueWithLengthRestriction { get; set; }
-
-            [MinLength(1), MaxLength(3)]
-            public List<string> ListValueWithLengthRestriction { get; set; }
-
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
         }
 
         public enum BasicEnum

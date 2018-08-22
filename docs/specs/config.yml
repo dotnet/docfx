@@ -258,6 +258,22 @@ outputs:
   a.json:
   build.manifest:
 ---
+# exclude config extend and external references from build
+inputs:
+  docfx.yml: |
+    extend:
+      - docs/a.yml
+      - docs/b.yml
+    contribution:
+      gitCommitsTime: docs/c.json
+      userProfileCache: docs/d.json
+  docs/a.yml:
+  docs/b.yml:
+  docs/c.json: '{}'
+  docs/d.json: '{}'
+outputs:
+  build.manifest:
+---
 # `/` and `\` in path will be normalized
 inputs:
   docfx.yml: |
@@ -282,6 +298,17 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"b.md\">b</a></p>" }
   build.manifest:
+---
+# Treat warnings as errors
+inputs:
+  docfx.yml: |
+    warningsAsErrors: true
+  docs/a.md: |
+    [b](b.md)
+outputs:
+  build.manifest:
+  build.log: |
+    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md"]
 ---
 # Invalid redirection file
 inputs:

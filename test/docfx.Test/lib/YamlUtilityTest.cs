@@ -421,18 +421,24 @@ mismatchField2: name";
         [Theory]
         [InlineData(@"numberList:
         - 1
-        - a", ErrorLevel.Error, "violate-schema", 3, 11)]
+        - a
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 3, 11)]
         [InlineData(@"
-B: b", ErrorLevel.Error, "violate-schema", 2, 4)]
-        [InlineData(@"ValueEnum: Four", ErrorLevel.Error, "violate-schema", 1, 12)]
+B: b
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 4)]
+        [InlineData(@"ValueEnum: Four
+ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 12)]
         internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         [Theory]
@@ -453,7 +459,7 @@ Data:
         }
 
         [Theory]
-        [InlineData(@"regPatternValue: 3
+        [InlineData(@"regPatternValue: A
 ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 18)]
         [InlineData(@"ValueWithLengthRestriction: a
 ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
@@ -474,11 +480,14 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
         internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var ex = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<ClassWithMoreMembers>(yaml));
-            Assert.Equal(expectedErrorLevel, ex.Error.Level);
-            Assert.Equal(expectedErrorCode, ex.Error.Code);
-            Assert.Equal(expectedErrorLine, ex.Error.Line);
-            Assert.Equal(expectedErrorColumn, ex.Error.Column);
+            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Line);
+                Assert.Equal(expectedErrorColumn, error.Column);
+            });
         }
 
         public class BasicClass

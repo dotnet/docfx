@@ -13,21 +13,26 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options)
+        public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
             using (Progress.Start("Restore dependencies"))
             {
                 var restoredDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
+                restoredDocsets.TryAdd(docsetPath, 0);
 
-                await RestoreDocset(docsetPath);
+                // Root docset must have a config
+                var config = Config.Load(docsetPath, options, extend: false);
+                report.Configure(docsetPath, config);
+
+                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(docsetPath, options, config, RestoreDocset, options.GitToken));
 
                 async Task RestoreDocset(string docset)
                 {
-                    if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out _, false))
+                    if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var childConfig, false))
                     {
-                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docset, options, RestoreDocset, options.GitToken));
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(docset, options, childConfig, RestoreDocset, options.GitToken));
                     }
                 }
             }
@@ -40,9 +45,9 @@ namespace Microsoft.Docs.Build
 
                 async Task GCDocset(string docset)
                 {
-                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var docsetConfig))
+                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var config))
                     {
-                        await GCOneDocset(docsetConfig, GCDocset);
+                        await GCOneDocset(config, GCDocset);
                     }
                 }
             }
@@ -60,12 +65,6 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFolder(dir);
         }
 
-        private static IEnumerable<string> GetRestorePaths(Config config)
-        {
-            yield return config.Contribution.GitCommitsTime;
-            yield return config.Contribution.UserProfileCache;
-        }
-
         private static IEnumerable<string> GetRestoreUrls(IEnumerable<string> paths)
         {
             foreach (var url in paths)
@@ -77,13 +76,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, CommandLineOptions options, Func<string, Task> restoreChild, string token)
+        private static async Task<RestoreLock> RestoreOneDocset(string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, string token)
         {
             var restoreLock = new RestoreLock();
 
             // restore extend url firstly
             // no need to extend config
-            var config = Config.Load(docsetPath, options, false);
             var restoreUrlMappings = new ConcurrentDictionary<string, string>();
             await ParallelUtility.ForEach(
                 GetRestoreUrls(config.Extend),
@@ -95,19 +93,19 @@ namespace Microsoft.Docs.Build
 
             // restore other urls and git dependnecy repositories
             // extend the config before loading
-            config = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
-            var workTreeHeadMappings = await RestoreGit.Restore(config, restoreChild, token);
+            var extendedConfig = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
+            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, token);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;
             }
 
             await ParallelUtility.ForEach(
-            GetRestoreUrls(GetRestorePaths(config)),
-            async restoreUrl =>
-            {
-                restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
-            });
+                GetRestoreUrls(extendedConfig.GetExternalReferences()),
+                async restoreUrl =>
+                {
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -118,7 +116,7 @@ namespace Microsoft.Docs.Build
         {
             await RestoreGit.GC(config, gcChild);
 
-            var restoreUrls = GetRestoreUrls(GetRestorePaths(config).Concat(config.Extend));
+            var restoreUrls = GetRestoreUrls(config.GetExternalReferences().Concat(config.Extend));
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
             {
                 await RestoreUrl.GC(restoreUrl);

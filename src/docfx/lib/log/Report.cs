@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,7 +14,12 @@ namespace Microsoft.Docs.Build
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
         private Lazy<TextWriter> _output;
-        private Dictionary<string, ErrorLevel> _rules;
+        private Config _config;
+
+        private int _errorCount;
+        private int _warningCount;
+
+        public (int err, int warn) Summary => (_errorCount, _warningCount);
 
         public Report(bool legacy = false)
         {
@@ -24,7 +30,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(_output == null, "Cannot change report output path");
 
-            _rules = config.Rules;
+            _config = config;
             _output = new Lazy<TextWriter>(() =>
             {
                 var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
@@ -37,10 +43,15 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error)
         {
-            var level = _rules != null && _rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
+            var level = _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
             if (level == ErrorLevel.Off)
             {
                 return false;
+            }
+
+            if (_config != null && _config.WarningsAsErrors && level == ErrorLevel.Warning)
+            {
+                level = ErrorLevel.Error;
             }
 
             if (_output != null)
@@ -50,6 +61,15 @@ namespace Microsoft.Docs.Build
                 {
                     _output.Value.WriteLine(line);
                 }
+            }
+
+            if (level == ErrorLevel.Warning)
+            {
+                Interlocked.Increment(ref _warningCount);
+            }
+            else if (level == ErrorLevel.Error)
+            {
+                Interlocked.Increment(ref _errorCount);
             }
 
             ConsoleLog(level, error);
@@ -89,10 +109,11 @@ namespace Microsoft.Docs.Build
             lock (Console.Out)
             #pragma warning restore CA2002
             {
+                var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
-                Console.Write(error.Code + " ");
+                output.Write(error.Code + " ");
                 Console.ResetColor();
-                Console.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+                output.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
             }
         }
 

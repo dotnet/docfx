@@ -1,2 +1,5 @@
 build_script:
   - ps: ./build.ps1
+environment:
+  JSON_SCHEMA_LICENSE:
+    secure: 4lzd2xtK+oxCL8mcVXyUxFzLqiYFqLA4PrRbyoxWbUHASzWf+7yFaREWdNu2p4lkt4vE+ymv0tAbPw7EIz8ebwdcSh2TGNt3AVUBW9HKQnEiRtjwfeRGtXVbA1oq8TiG1GBTBnk920Xn5T9+L8YpVzc4k85Us1DP6QUbQBpgXmsXiSAJA6frZxv1hR4iKQc+dqqwStmlJgqXWQjXkvFZBTbLCf7r4rnkp3FaTSzzvL6wIm+s8Q3jmNy3YHP97ytaTWg0ySnQUcb/jcaVc8v5TVR8zIS8ogGBeO13+Zp6t1KZRJ/uabdpbhKvTGl5KGcd9sWYlpE4+3o0QxDMqnZ5YeegKmIvgVwFDn4Ge7WHkcoEBBMPh6DAPptj6E8NyTWU

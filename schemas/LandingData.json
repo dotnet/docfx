@@ -1,0 +1,70 @@
+{
+  "definitions": {
+    "LandingDataAbstract": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataItem": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "paragraph",
+            "list",
+            "table",
+            "markdown",
+            "text"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string"
+        },
+        "className": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataSection": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataItem"
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "metadata": {},
+    "abstract": {
+      "$ref": "#/definitions/LandingDataAbstract"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LandingDataSection"
+      }
+    },
+    "documentType": {
+      "type": "string"
+    }
+  }
+}

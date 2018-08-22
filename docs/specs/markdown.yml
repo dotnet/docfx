@@ -60,7 +60,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>\n",
-      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "title from yaml header",
       "metadata": { "title": "title from yaml header" }
     }
@@ -79,12 +79,50 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>",
-      "titleHtml": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "Title from H1",
       "metadata":
       {
           "Title": "Title from yaml header"
       }
+    }
+  build.manifest:
+---
+# Comments between yaml header and H1
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    <!-- This is comment -->
+
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+    }
+  build.manifest:
+---
+# Markdown block between yaml header and H1
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Title: Title from yaml header
+    ---
+
+    hello
+
+    # Title from H1
+    hello
+outputs:
+  docs/a.json: |
+    {
+      "htmlTitle": "",
     }
   build.manifest:
 ---
@@ -126,7 +164,7 @@ outputs:
     {
       "content": "<p>body</p>",
       "title": "This is a title",
-      "titleHtml": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "htmlTitle": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
   build.manifest:
@@ -169,6 +207,52 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
+  build.manifest:
+---
+# validate bookmarks in markdown documents
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # title 1
+    [link to title 1](#title-1)
+    [link to title 2](#title-2)
+    [link to title 3](#title-3)
+    [link to html title](#html-title)
+    [link to yaml](c.yml#no-such-bookmark) does not warn
+    ## title 2
+    <h2 id="html-title">title</h2>
+    [!include[](d.md)]
+  docs/b.md: |
+    [link to title 2](a.md#title-2)
+    [link to title 3](a.md#title-3)
+  docs/c.yml: |
+    #YamlMime:LandingData
+    title: test
+  docs/d.md: |
+    [link to title 3](a.md#title-3)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:
+  build.log: |
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md'","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md'","docs/a.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md'","docs/d.md"]
+  build.manifest:
+---
+# do not output file if bookmark-not-found is treated as error
+inputs:
+  docfx.yml: |
+    rules:
+      bookmark-not-found: error
+  docs/a.md: |
+    [link to b](b.md#bookmark)
+  docs/b.md:
+outputs:
+  docs/b.json:
+  build.log: |
+    ["error","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
   build.manifest:
 ---
 # experimental pairs
