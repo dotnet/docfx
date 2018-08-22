@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace Microsoft.Docs.Build
 {
     internal static partial class GitUtility
