@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <exception cref="DocfxException">Thrown when repo or commit doesn't exist, or GitHub rate limit exceeded</exception>"
         /// <returns> The commit author's name on GitHub </returns>
-        public async Task<(List<Error> errors, string name)> GetNameByCommit(string repoOwner, string repoName, string commitSha)
+        public async Task<(Error error, string name)> GetNameByCommit(string repoOwner, string repoName, string commitSha)
         {
             Debug.Assert(!string.IsNullOrEmpty(repoOwner));
             Debug.Assert(!string.IsNullOrEmpty(repoName));
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             GitHubCommit githubCommit;
             Author author;
             if (_isRateLimitExceeded)
-                return (new List<Error> { Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage) }, null);
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage), null);
 
             try
             {
@@ -82,16 +82,16 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                return (new List<Error> { Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage) }, null);
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage), null);
             }
             catch (Exception)
             {
                 // catch NotFoundException if owner/repo doesn't exist
                 // catch ApiValidationException if no commit found for SHA
-                return (new List<Error>(), null);
+                return (null, null);
             }
 
-            return (new List<Error>(), author.Login);
+            return (null, author.Login);
         }
 
         private UserProfile ToUserProfile(User user)

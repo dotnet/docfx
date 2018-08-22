@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             foreach (var commit in commits)
             {
-                errors.AddRange(await UpdateCacheByCommit(commit, repo));
+                await UpdateCacheByCommit(commit, repo, errors);
             }
             return errors;
         }
@@ -86,26 +86,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task<List<Error>> UpdateCacheByCommit(GitCommit commit, Repository repo)
+        private async Task UpdateCacheByCommit(GitCommit commit, Repository repo, List<Error> errors)
         {
-            var errors = new List<Error>();
             var author = commit.AuthorEmail;
             if (string.IsNullOrEmpty(author) || GetByUserEmail(author) != null)
-                return new List<Error>();
+                return;
 
-            var (getNameErrors, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
-            errors.AddRange(getNameErrors);
+            var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
+            errors.Add(authorError);
             if (authorName == null)
-                return errors;
+                return;
 
             var (getProfileErrors, profile) = await _github.GetUserProfileByName(authorName);
             errors.AddRange(getProfileErrors);
             if (profile == null)
-                return errors;
+                return;
 
             profile.AddEmail(author);
             AddOrUpdate(authorName, profile, (k, v) => v.AddEmail(author));
-            return errors;
+            return;
         }
 
         private UserProfile AddOrUpdate(string userName, UserProfile value, Func<string, UserProfile, UserProfile> updateValueFactory)

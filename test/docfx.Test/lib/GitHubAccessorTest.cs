@@ -30,17 +30,17 @@ namespace Microsoft.Docs.Build
         [Fact]
         public async Task GetNameByCommitAsync()
         {
-            var (errors, name) = await _github.GetNameByCommit(
+            var (error, name) = await _github.GetNameByCommit(
                 "docascode",
                 "docfx-test-dependencies",
                 "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
-            if (errors.Count == 0)
+            if (error == null)
             {
                 Assert.Equal("OsmondJiang", name);
             }
             else
             {
-                Assert.Equal("resolve-commit-failed", errors[0].Code);
+                Assert.Equal("resolve-commit-failed", error.Code);
             }
         }
     }
