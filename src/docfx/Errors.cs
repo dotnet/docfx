@@ -19,20 +19,8 @@ namespace Microsoft.Docs.Build
         public static Error ConfigNotFound(string docsetPath)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
 
-        public static Error InvalidConfig(string configPath, string message, Exception ex = null)
-            => new Error(ErrorLevel.Error, "invalid-config", $"Error parsing docset config: {message ?? ex.Message}", configPath);
-
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Local {locale} is not supported ");
-
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
-
-        public static Error UserProfileCacheNotFound(string userProfilePath)
-          => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache file at '{userProfilePath}'");
-
-        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
-            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time file at '{gitCommitsTimePath}'");
 
         public static Error UrlRestorePathNotFound(string url)
             => new Error(ErrorLevel.Error, "url-restore-path-not-found", $"The restore path of url `{url}` can't be found, make sure the `restore` command was executed");
