@@ -46,11 +46,14 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author, DocfxInternalException ex)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Message}");
+        public static Error AuthorNotFound(string author)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");
 
-        public static Error CommitInfoNotFound(string sha, DocfxInternalException ex)
-            => new Error(ErrorLevel.Warning, "commit-info-not-found", $"Cannot get commit infomation of '{sha}': {ex.Message}");
+        public static Error ResolveAuthorFailed(string author, string message)
+            => new Error(ErrorLevel.Warning, "resolve-author-failed", $"Resolve user '{author}' from GitHub failed: {message}");
+
+        public static Error ResolveCommitFailed(string sha, string repo, string message)
+            => new Error(ErrorLevel.Warning, "resolve-commit-failed", $"Resolve commit '{sha}' of repository '{repo}' from GitHub failed: {message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());

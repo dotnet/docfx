@@ -48,6 +48,8 @@ namespace Microsoft.Docs.Build
                 {
                     newEmail,
                 };
+
+                // TODO: avoid split+join multiple times
                 return string.Join(';', result);
             }
         }

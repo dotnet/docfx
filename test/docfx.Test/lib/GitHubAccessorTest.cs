@@ -13,29 +13,35 @@ namespace Microsoft.Docs.Build
         [Fact]
         public async Task GetUserProfileByNameAsync()
         {
-            try
+            var (errors, profile) = await _github.GetUserProfileByName("docascode");
+            if (errors.Count == 0)
             {
-                var profile = await _github.GetUserProfileByName("docascode");
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
                 Assert.Equal("DocFX", profile.DisplayName);
                 Assert.Equal("docascode", profile.Name);
                 Assert.Equal("14800732", profile.Id);
             }
-            catch (DocfxInternalException) { }
+            else
+            {
+                Assert.Equal("resolve-author-failed", errors[0].Code);
+            }
         }
 
         [Fact]
         public async Task GetNameByCommitAsync()
         {
-            try
+            var (errors, name) = await _github.GetNameByCommit(
+                "docascode",
+                "docfx-test-dependencies",
+                "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
+            if (errors.Count == 0)
             {
-                var name = await _github.GetNameByCommit(
-                    "docascode",
-                    "docfx-test-dependencies",
-                    "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
                 Assert.Equal("OsmondJiang", name);
             }
-            catch (DocfxInternalException) { }
+            else
+            {
+                Assert.Equal("resolve-commit-failed", errors[0].Code);
+            }
         }
     }
 }

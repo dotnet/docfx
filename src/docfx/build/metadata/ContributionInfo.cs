@@ -25,11 +25,11 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
 
-        public static async Task<ContributionInfo> Load(Docset docset, string gitToken)
+        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset, string gitToken)
         {
             var result = new ContributionInfo(docset, gitToken);
-            await result.LoadCommits(docset);
-            return result;
+            var errors = await result.LoadCommits(docset);
+            return (errors, result);
         }
 
         public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
@@ -94,14 +94,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(authorName) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
             {
-                try
-                {
-                    authorProfile = await _userProfileCache.GetByUserName(authorName);
-                }
-                catch (DocfxInternalException ex)
-                {
-                    errors.Add(Errors.AuthorNotFound(authorName, ex));
-                }
+                (errors, authorProfile) = await _userProfileCache.GetByUserName(authorName);
             }
 
             if (fileCommits != null && fileCommits.Count != 0)
@@ -188,9 +181,8 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task LoadCommits(Docset docset)
+        private async Task<List<Error>> LoadCommits(Docset docset)
         {
-            // TODO: report errors
             var errors = new List<Error>();
             var result = new Dictionary<string, List<GitCommit>>();
 
@@ -214,32 +206,13 @@ namespace Microsoft.Docs.Build
                     {
                         result.Add(pathToDocset[i], commitsByFile[i]);
                     }
-                    foreach (var commit in allCommits)
-                    {
-                        try
-                        {
-                            await UpdateCache(commit, repo);
-                        }
-                        catch (DocfxInternalException ex)
-                        {
-                            errors.Add(Errors.CommitInfoNotFound(commit.Sha, ex));
-                        }
-                    }
+
+                    errors.AddRange(await _userProfileCache.AddUsersForCommits(allCommits, repo));
                 }
             }
 
             _commitsByFile = result;
-        }
-
-        private async Task UpdateCache(GitCommit commit, Repository repo)
-        {
-            var author = commit.AuthorEmail;
-            if (string.IsNullOrEmpty(author) || _userProfileCache.GetByUserEmail(author) != null)
-                return;
-
-            var authorName = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
-            var profile = (await _github.GetUserProfileByName(authorName)).AddEmail(author);
-            _userProfileCache.AddOrUpdate(authorName, profile, (k, v) => v.AddEmail(author));
+            return errors;
         }
     }
 }
