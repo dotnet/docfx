@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             // Redirection
             if (redirectTo != null && relativeTo.Docset.Config.FollowRedirect)
             {
+                // TODO: append query and fragment
                 return (error, redirectTo, fragment, null);
             }
 
@@ -59,13 +60,18 @@ namespace Microsoft.Docs.Build
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
 
+            if (redirectTo != null)
+            {
+                return (error, relativeUrl + query + fragment, fragment, null);
+            }
+
             // Pages outside build scope, don't build the file, use relative href
-            if (error == null && redirectTo == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
+            if (error == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
             {
                 return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + query + fragment, fragment, null);
             }
 
-            return (error, relativeUrl + query + fragment, fragment, redirectTo == null ? file : null);
+            return (error, relativeUrl + query + fragment, fragment, file);
         }
 
         private static (Error error, Document file, string redirectTo, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
