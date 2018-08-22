@@ -186,11 +186,11 @@ inputs:
     redirections:
       docs/redirect.md: /absolute/path
   docs/a.md: |
-    [redirect](redirect.md)
+    [redirect](redirect.md?a#b)
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>"}
+    {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
   docs/redirect.json: |
     {"redirectionUrl":"/absolute/path"}
 ---
