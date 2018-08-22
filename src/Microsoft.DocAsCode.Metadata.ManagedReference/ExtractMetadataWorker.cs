@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private const string XmlCommentFileExtension = "xml";
         private readonly Dictionary<FileType, List<FileInformation>> _files;
+        private readonly List<string> _references;
         private readonly bool _rebuild;
         private readonly bool _useCompatibilityFileName;
         private readonly string _outputFolder;
@@ -52,6 +53,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _files = input.Files?.Select(s => new FileInformation(s))
                 .GroupBy(f => f.Type)
                 .ToDictionary(s => s.Key, s => s.Distinct().ToList());
+            _references = input.References?.Select(s => new FileInformation(s))
+                .Select(f => f.NormalizedPath)
+                .Distinct()
+                .ToList();
             _rebuild = input.ForceRebuild;
 
             var msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
@@ -338,7 +343,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (assemblyFiles.Count > 0)
             {
-                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles);
+                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles.Concat(_references));
                 if (assemblyCompilation != null)
                 {
                     var commentFiles = (from file in assemblyFiles
@@ -346,14 +351,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                         where File.Exists(xmlFile)
                                         select xmlFile).ToList();
 
-                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation).ToList();
+                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation, assemblyFiles).ToList();
                     // TODO: why not merge with compilation's extension methods?
-                    var assemblyExtension = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.Item2));
+                    var assemblyExtension = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.assembly));
                     options.RoslynExtensionMethods = assemblyExtension;
-                    foreach (var assembly in referencedAssemblyList)
+                    foreach (var (reference, assembly) in referencedAssemblyList)
                     {
-                        var input = new AssemblyFileInputParameters(options, assembly.Item1.Display);
-                        var controller = new RoslynSourceFileBuildController(assemblyCompilation, assembly.Item2);
+                        var input = new AssemblyFileInputParameters(options, reference.Display);
+                        var controller = new RoslynSourceFileBuildController(assemblyCompilation, assembly);
 
                         var mta = GetMetadataFromProjectLevelCache(controller, input);
                         

@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         public List<string> Files { get; set; }
 
+        public List<string> References { get; set; }
+
         public string OutputFolder { get; set; }
 
         public bool PreserveRawInlineComments { get; set; }
