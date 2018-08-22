@@ -21,14 +21,13 @@ namespace Microsoft.Docs.Build
             _redirectionsByRedirectionUrl = redirectionsByRedirectionUrl;
         }
 
-        public bool TryGetRedirectionUrl(string sourcePath, out string redirectionUrl)
+        public bool TryGetRedirectionFile(string sourcePath, out Document file)
         {
-            if (_redirectionsBySourcePath.TryGetValue(sourcePath, out var file))
+            if (_redirectionsBySourcePath.TryGetValue(sourcePath, out file))
             {
-                redirectionUrl = file.RedirectionUrl;
                 return true;
             }
-            redirectionUrl = null;
+            file = null;
             return false;
         }
 

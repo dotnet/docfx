@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public string GitToken;
+        public bool DisableResolveRedirectionLink;
 
         public JObject ToJObject()
         {
@@ -19,6 +20,7 @@ namespace Microsoft.Docs.Build
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                 },
+                ["disableResolveRedirectionLink"] = DisableResolveRedirectionLink,
             };
         }
     }
