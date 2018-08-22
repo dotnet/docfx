@@ -105,6 +105,15 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestValidateNullValue()
+        {
+            string test = null;
+            var json = JObject.FromObject(new { test });
+            Assert.Equal("{\"test\":null}", JsonUtility.Serialize(json));
+            Assert.Equal(@"{}", JsonUtility.Serialize(json.ValidateNullValue()));
+        }
+
+        [Fact]
         public void TestClassWithReadOnlyField()
         {
             var json = @"

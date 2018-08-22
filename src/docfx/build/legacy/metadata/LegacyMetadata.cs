@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 ["tutorial_allContributors"] = "all {0} contributors",
             };
 
-            return newMetadata;
+            return newMetadata.ValidateNullValue();
         }
 
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             {
                 ["redirect_url"] = pageModel.RedirectionUrl,
                 ["locale"] = docset.Config.Locale,
-            };
+            }.ValidateNullValue();
 
         public static JObject GenerateLegacyRawMetadata(
                 PageModel pageModel,
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
-            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata));
+            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata)).ValidateNullValue();
         }
 
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
