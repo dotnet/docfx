@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
             }
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject, new Dictionary<object, object>() { { "docsetPath", docsetPath } });
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject, docsetPath);
             errors.AddRange(deserializeErrors);
             return (errors, config);
         }

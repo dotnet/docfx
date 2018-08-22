@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         [ThreadStatic]
         private static Func<DataTypeAttribute, JsonReader, object> t_transform;
         [ThreadStatic]
-        private static Dictionary<object, object> t_validationContextItems;
+        private static string t_docsetPath;
 
         /// <summary>
         /// Serialize an object to TextWriter
@@ -100,22 +100,22 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate mismatching field types
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token, Dictionary<object, object> items = null)
+        public static (List<Error>, T) ToObject<T>(JToken token, string docsetPath = null)
         {
-            var (errors, obj) = ToObject(token, typeof(T), items);
+            var (errors, obj) = ToObject(token, typeof(T), docsetPath);
             return (errors, (T)obj);
         }
 
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Dictionary<object, object> items = null,
+            string docsetPath = null,
             Func<DataTypeAttribute, JsonReader, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
-                t_validationContextItems = items;
+                t_docsetPath = docsetPath;
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
                 var mismatchingErrors = token.ValidateMismatchingFieldType(type);
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_validationContextItems = null;
+                t_docsetPath = null;
                 t_transform = null;
                 t_schemaViolationErrors = null;
             }
@@ -485,11 +485,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        validator.Validate(value, new ValidationContext(value, t_validationContextItems) { DisplayName = _fieldName });
-                    }
-                    catch (DocfxException e)
-                    {
-                        t_schemaViolationErrors.Add(e.Error);
+                        validator.Validate(value, new ValidationContext(value, new Dictionary<object, object>() { { "docsetPath", t_docsetPath } }) { DisplayName = _fieldName });
                     }
                     catch (Exception e)
                     {

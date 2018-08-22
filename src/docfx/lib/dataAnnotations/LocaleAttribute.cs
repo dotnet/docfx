@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             }
             catch (CultureNotFoundException)
             {
-                return new ValidationResult($"Locale {value.ToString()} is not supported", null);
+                return new ValidationResult($"Locale '{value.ToString()}' is not supported", null);
             }
         }
     }

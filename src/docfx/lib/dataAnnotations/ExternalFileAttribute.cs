@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -12,10 +13,8 @@ namespace Microsoft.Docs.Build
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (!validationContext.Items.TryGetValue("docsetPath", out var docsetPath))
-            {
-                throw Errors.ValidationContextMissing(nameof(docsetPath)).ToException();
-            }
+            validationContext.Items.TryGetValue("docsetPath", out var docsetPath);
+            Debug.Assert(docsetPath != null);
 
             if (!string.IsNullOrEmpty(value.ToString())
                 && !HrefUtility.IsHttpHref(value.ToString())

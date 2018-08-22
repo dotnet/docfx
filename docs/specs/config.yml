@@ -365,11 +365,12 @@ outputs:
   build.manifest:
 ---
 # Wrong locale
+os: windows
 inputs:
   docfx.yml: |
     locale: wrong/wrong
 outputs:
   build.log: |
-    ["error","violate-schema","(Line: 0, Character: 0) Locale wrong/wrong is not supported","docfx.yml"]
+    ["error","violate-schema","(Line: 0, Character: 0) Locale 'wrong/wrong' is not supported","docfx.yml"]
   build.manifest:
 ---
