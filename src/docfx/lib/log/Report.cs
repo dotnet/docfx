@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             var code = error.Code;
             var message = error.Message;
             var file = error.File;
-            var line = error.Line;
+            var line = error.Range?.StartLine;
             var date_time = DateTime.UtcNow;
 
             return JsonUtility.Serialize(new { message_severity, code, message, file, line, date_time });
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = GetColor(level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
-                output.WriteLine($"{error.File}({error.Line},{error.Column}): {error.Message}");
+                output.WriteLine($"{error.File}({error.Range?.StartLine},{error.Range?.StartCharacter}): {error.Message}");
             }
         }
 

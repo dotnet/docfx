@@ -794,7 +794,7 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml"]
+    ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml",3,3]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -957,7 +957,7 @@ outputs:
   docs/TOC.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 3, Character: 3) 'tocHref' contains null value","docs/TOC.yml",3,3]
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",3,3]
 ---
 # Toc with schema vliolation
 inputs:
@@ -975,7 +975,7 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 2, Character: 3) 'tocHref' contains null value","docs/TOC.yml",2,3]
-    ["error","violate-schema","(Line: 1, Character: 3) Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
-    ["error","violate-schema","(Line: 5, Character: 10) The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
+    ["error","violate-schema","Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
+    ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
 ---
