@@ -1,1 +1,3 @@
 # default config for specs in docfx
+rules:
+  heading-not-found: off
