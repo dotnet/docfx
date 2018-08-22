@@ -52,15 +52,20 @@ namespace Microsoft.Docs.Build
         public Document GetNearestToc(Document file)
         {
             // fallback to all tocs if no toc files reference this file
-            var filteredTocFiles = _documentToTocs.TryGetValue(file, out var referencedTocFiles) ? (IEnumerable<Document>)referencedTocFiles : _tocs;
+            var hasReferencedToc = _documentToTocs.TryGetValue(file, out var referencedTocFiles);
+            var filteredTocFiles = hasReferencedToc ? (IEnumerable<Document>)referencedTocFiles : _tocs;
 
             var nearstToc = (Document)null;
             var nearestSubDirCount = 0;
             var nearestParentDirCount = 0;
             foreach (var toc in filteredTocFiles)
             {
-                var relativePath = PathUtility.GetRelativePathToFile(toc.SitePath, file.SitePath);
+                var relativePath = PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath);
                 var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
+                if (!hasReferencedToc && subDirCount != 0)
+                {
+                    continue;
+                }
                 var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
                 if (nearstToc == null || distance > 0 ||
                     (distance == 0 && string.Compare(nearstToc.SitePath, toc.SitePath, PathUtility.PathComparison) > 0))
@@ -106,7 +111,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            subDirectoryCount = relativePathParts.Length - parentDirectoryCount;
+            subDirectoryCount = relativePathParts.Length - parentDirectoryCount - 1;
             return (subDirectoryCount, parentDirectoryCount);
         }
     }
