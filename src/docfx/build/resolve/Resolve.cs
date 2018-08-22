@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             if (redirectTo != null && relativeTo.Docset.Config.FollowRedirect)
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
-                return (error, redirectTo + query + fragment, fragment, null);
+                return (error, redirectTo + query + fragment, null, null);
             }
 
             // Cannot resolve the file, leave href as is
