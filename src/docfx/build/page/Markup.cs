@@ -97,12 +97,12 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, string doc, int line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, line));
+            Result.Errors.Add(new Error(ErrorLevel.Error, code, message, doc, new Range(line, 0)));
         }
 
         private static void LogWarning(string code, string message, string doc, int line)
         {
-            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, line));
+            Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
         private static (string content, object file) ReadFile(string path, object relativeTo)

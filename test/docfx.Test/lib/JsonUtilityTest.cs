@@ -310,7 +310,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("(Line: 1, Character: 18) Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
             },
             error =>
             {
@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(17, error.Column);
-                Assert.Equal("(Line: 2, Character: 17) Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
             });
         }
 
@@ -451,7 +451,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("(Line: 1, Character: 1) Required property 'ValueRequired' not found in JSON", error.Message);
+                Assert.Equal("Required property 'ValueRequired' not found in JSON", error.Message);
             },
             error =>
             {
@@ -466,14 +466,14 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
-                Assert.Equal("(Line: 3, Character: 32) The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
+                Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
-                Assert.Equal("(Line: 4, Character: 34) The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
+                Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);

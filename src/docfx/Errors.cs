@@ -53,7 +53,10 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
 
         public static Error YamlDuplicateKey(YamlException ex)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", RedefineDuplicateKeyErrorMessage(ex));
+        {
+            var (range, message) = RedefineDuplicateKeyErrorMessage(ex);
+            return new Error(ErrorLevel.Error, "yaml-duplicate-key", message, range: range);
+        }
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
@@ -107,13 +110,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
 
         public static Error NullValue(Range range, string name)
-            => new Error(ErrorLevel.Info, "null-value", $"{range} '{name}' contains null value", line: range.StartLine, column: range.StartCharacter);
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);
 
         public static Error UnknownField(Range range, string propName, string typeName, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"{range} Path:{path} Could not find member '{propName}' on object of type '{typeName}'", line: range.StartLine, column: range.StartCharacter);
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Path:{path} Could not find member '{propName}' on object of type '{typeName}'", range: range);
 
         public static Error ViolateSchema(Range range, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{range} {message}", line: range.StartLine, column: range.StartCharacter);
+            => new Error(ErrorLevel.Error, "violate-schema", message, range: range);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
@@ -129,13 +132,13 @@ namespace Microsoft.Docs.Build
             return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
         }
 
-        private static string RedefineDuplicateKeyErrorMessage(YamlException ex)
+        private static (Range, string) RedefineDuplicateKeyErrorMessage(YamlException ex)
         {
             var range = ParseRangeFromYamlSyntaxException(ex);
             var innerMessage = ex.InnerException.Message;
             var keyIndex = innerMessage.LastIndexOf(':');
             var key = innerMessage.Substring(keyIndex + 2, innerMessage.Length - keyIndex - 2);
-            return $"{range}: Key '{key}' is already defined, remove the duplicate key.";
+            return (range, $"Key '{key}' is already defined, remove the duplicate key.");
         }
     }
 }
