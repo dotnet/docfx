@@ -794,7 +794,7 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml"]
+    ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml",3,3]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -899,7 +899,7 @@ inputs:
   docs/f1/TOC.experimental.md: |
     # [Index Reference](../index.md)
     # [File Reference](../a.md)
-  docs/f1/TOC.md:
+  docs/f1/TOC.md: |
     # [Index Reference](../index.md)
   docs/index.md:
   docs/a.md:
@@ -907,7 +907,7 @@ outputs:
   docs/index.json: |
     {"toc": "f1/TOC.json"}
   docs/a.json: |
-    {"toc": "f1/TOC.json"}
+    {"!toc": null}
   build.manifest:
   docs/f1/TOC.json:
   docs/f1/TOC.experimental.json:
@@ -957,9 +957,9 @@ outputs:
   docs/TOC.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 3, Character: 3) 'tocHref' contains null value","docs/TOC.yml",3,3]
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",3,3]
 ---
-# Toc with schema vliolation
+# Toc with schema violation
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -975,7 +975,41 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 2, Character: 3) 'tocHref' contains null value","docs/TOC.yml",2,3]
-    ["error","violate-schema","(Line: 1, Character: 3) Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
-    ["error","violate-schema","(Line: 5, Character: 10) The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
+    ["error","violate-schema","Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
+    ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
 ---
+# Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
+inputs:
+  docfx.yml: 
+  docs/dir1/TOC.md:
+  docs/file-with-no-toc.md:
+  docs/dir1/dir2/file-with-toc.md:
+outputs:
+  docs/dir1/TOC.json:
+  docs/file-with-no-toc.json: |
+    {"!toc": null}
+  docs/dir1/dir2/file-with-toc.json: |
+    {"toc": "../TOC.json"}
+  build.manifest:
+---
+# File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
+inputs:
+  docfx.yml: 
+  docs/dir1/a/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/b/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/aa/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/c/file1.md:
+outputs:
+  docs/dir1/a/TOC.json:
+  docs/dir1/b/TOC.json:
+  docs/dir1/aa/TOC.json:
+  docs/dir1/c/file1.json: |
+    {"toc": "../a/TOC.json"}
+  build.manifest:

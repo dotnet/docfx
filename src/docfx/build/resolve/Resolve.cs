@@ -28,9 +28,10 @@ namespace Microsoft.Docs.Build
             var (error, file, redirectTo, query, fragment) = TryResolveFile(relativeTo, href);
 
             // Redirection
-            if (!string.IsNullOrEmpty(redirectTo))
+            if (redirectTo != null && relativeTo.Docset.Config.FollowRedirect)
             {
-                return (error, redirectTo, fragment, file);
+                // TODO: append query and fragment to an absolute url with query and fragments may cause problems
+                return (error, redirectTo + query + fragment, null, null);
             }
 
             // Cannot resolve the file, leave href as is
@@ -58,6 +59,11 @@ namespace Microsoft.Docs.Build
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
             var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
+
+            if (redirectTo != null)
+            {
+                return (error, relativeUrl + query + fragment, fragment, null);
+            }
 
             // Pages outside build scope, don't build the file, use relative href
             if (error == null && file.ContentType == ContentType.Page && !relativeTo.Docset.BuildScope.Contains(file))
@@ -122,7 +128,8 @@ namespace Microsoft.Docs.Build
                 //
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
-                return (null, null, redirectTo, null, null);
+                var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
+                return (error, redirectFile, redirectTo, query, fragment);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,14 +10,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-using FileMap = System.Collections.Generic.Dictionary<string, (string file, string parent)>;
-using TreeMap = System.Collections.Concurrent.ConcurrentDictionary<long, System.Collections.Generic.Dictionary<string, long>>;
-
 namespace Microsoft.Docs.Build
 {
-    /// <summary>
-    /// Git utility using native methods
-    /// </summary>
     internal static partial class GitUtility
     {
         /// <summary>
@@ -53,30 +48,31 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get git commits group by files
+        /// Bulk get git commits for a list of files in a repo.
         /// </summary>
         /// <param name="repoPath">The git repo root path</param>
         /// <param name="files">The collection of git repo files</param>
         public static unsafe (List<GitCommit>[] commitsByFile, GitCommit[] allCommits) GetCommits(string repoPath, List<string> files)
         {
-            var (trees, commits) = default((TreeMap, List<Commit>));
-            var pathToParent = BuildPathToParentPath(files);
-            var pathToParentByRef = pathToParent.ToDictionary(p => p.Key, p => p.Value, RefComparer.Instance);
+            var (trees, commits) = default((ConcurrentDictionary<long, Dictionary<string, long>>, List<Commit>));
+            var (paths, lookup) = CreatePathForReferenceEqualsLookup(files);
+
             var repo = OpenRepo(repoPath);
             var repoName = Path.GetFileName(repoPath);
 
             using (Progress.Start($"Loading git commits for '{repoPath}'"))
             {
                 commits = LoadCommits(repoPath, repo);
-                trees = LoadTrees(repo, commits, pathToParent, Progress.Update);
+                trees = LoadTrees(repo, commits, lookup, Progress.Update);
             }
 
-            var (done, total, result) = (0, files.Count, new List<GitCommit>[files.Count]);
+            var (done, total, result) = (0, paths.Length, new List<GitCommit>[paths.Length]);
+
             using (Progress.Start($"Computing git commits for '{repoPath}'"))
             {
-                Parallel.For(0, files.Count, i =>
+                Parallel.For(0, paths.Length, i =>
                 {
-                    result[i] = GetCommitsByPath(files[i], trees, pathToParentByRef, commits);
+                    result[i] = GetCommitsByPath(paths[i], trees, commits);
                     Progress.Update(Interlocked.Increment(ref done), total);
                 });
             }
@@ -85,30 +81,30 @@ namespace Microsoft.Docs.Build
             return (result, commits.Select(c => c.GitCommit).ToArray());
         }
 
-        private static FileMap BuildPathToParentPath(List<string> files)
+        private static (PathString[] paths, HashSet<string> lookup) CreatePathForReferenceEqualsLookup(List<string> files)
         {
-            var res = new HashSet<string>(files.Count + 128);
-            foreach (var file in files)
+            var lookup = new HashSet<string>(files.Count * 2);
+            var paths = new PathString[files.Count];
+
+            for (var i = 0; i < files.Count; i++)
             {
-                for (var i = file.Length - 1; i >= 0; i--)
+                var segments = files[i].Split('/');
+                var refEqualsSegments = new string[segments.Length];
+
+                for (var n = 0; n < segments.Length; n++)
                 {
-                    if (file[i] == '/')
+                    var segment = segments[n];
+                    if (!lookup.TryGetValue(segment, out var refEqualsSegment))
                     {
-                        res.Add(file.Substring(0, i + 1));
+                        lookup.Add(refEqualsSegment = segment);
                     }
-                }
-                res.Add(file);
-            }
-            return res.ToDictionary(file => file, file =>
-            {
-                var i = file.Length - 2;
-                while (i >= 0 && file[i] != '/')
-                {
-                    i--;
+                    refEqualsSegments[n] = refEqualsSegment;
                 }
 
-                return (file, i >= 0 && res.TryGetValue(file.Substring(0, i + 1), out var parent) ? parent : null);
-            });
+                paths[i] = new PathString { Segments = refEqualsSegments };
+            }
+
+            return (paths, lookup);
         }
 
         private static unsafe IntPtr OpenRepo(string path)
@@ -188,83 +184,76 @@ namespace Microsoft.Docs.Build
             return commits;
         }
 
-        private static unsafe TreeMap LoadTrees(IntPtr repo, List<Commit> commits, FileMap pathToParent, Action<int, int> progress)
+        private static unsafe ConcurrentDictionary<long, Dictionary<string, long>> LoadTrees(
+            IntPtr repo, List<Commit> commits, HashSet<string> lookup, Action<int, int> progress)
         {
-            // Reduce memory footprint by using `long` over `git_oid`.
+            // Reduce memory footprint by using `long` over `git_oid`
             // azure-docs-pr has 483947 distinct blobs, their first 8 bytes are also distinct.
-            var trees = new TreeMap();
             var done = 0;
             var total = commits.Count;
+            var trees = new ConcurrentDictionary<long, Dictionary<string, long>>();
 
             Parallel.ForEach(commits, commit =>
             {
                 var tree = commit.Tree;
-                var blobs = new Dictionary<string, long>(RefComparer.Instance);
-                if (trees.TryAdd(tree.A, blobs))
-                {
-                    WalkTree(&tree, "", blobs);
-                }
+                WalkTree(&tree);
                 progress?.Invoke(Interlocked.Increment(ref done), total);
             });
 
-            return trees;
-
-            void WalkTree(NativeMethods.GitOid* treeId, string path, Dictionary<string, long> blobs)
+            void WalkTree(NativeMethods.GitOid* treeId)
             {
+                var blobs = new Dictionary<string, long>(RefComparer.Instance);
+                if (!trees.TryAdd(treeId->A, blobs))
+                {
+                    return;
+                }
+
                 NativeMethods.GitObjectLookup(out var tree, repo, treeId, NativeMethods.GitObjectType.Tree);
+
                 var n = NativeMethods.GitTreeEntrycount(tree);
+
                 for (var p = IntPtr.Zero; p != n; p = p + 1)
                 {
                     var entry = NativeMethods.GitTreeEntryByindex(tree, p);
-                    var name = path + NativeMethods.FromUtf8Native(NativeMethods.GitTreeEntryName(entry));
-                    var type = NativeMethods.GitTreeEntryType(entry);
-                    if (type == 2 /* GIT_OBJ_TREE */)
-                    {
-                        name += '/';
-                    }
+                    var name = NativeMethods.FromUtf8Native(NativeMethods.GitTreeEntryName(entry));
 
-                    if (!pathToParent.TryGetValue(name, out var file))
+                    if (lookup.TryGetValue(name, out var segment))
                     {
-                        continue;
-                    }
+                        var blob = NativeMethods.GitTreeEntryId(entry);
 
-                    var blob = NativeMethods.GitTreeEntryId(entry);
-                    blobs[file.file] = blob->A;
+                        blobs[segment] = blob->A;
 
-                    if (type == 2 /* GIT_OBJ_TREE */ && trees.TryAdd(blob->A, blobs))
-                    {
-                        WalkTree(blob, file.file, blobs);
+                        if (NativeMethods.GitTreeEntryType(entry) == 2 /* GIT_OBJ_TREE */)
+                        {
+                            WalkTree(blob);
+                        }
                     }
                 }
+
                 NativeMethods.GitObjectFree(tree);
             }
+
+            return trees;
         }
 
-        private static long GetBlob(TreeMap trees, FileMap pathToParent, long tree, string file)
+        private static long GetBlob(ConcurrentDictionary<long, Dictionary<string, long>> trees, long tree, PathString file)
         {
-            var dict = trees[tree];
-            if (dict.TryGetValue(file, out var blob))
+            var blob = tree;
+
+            for (var i = 0; i < file.Segments.Length; i++)
             {
-                return blob;
+                if (!trees.TryGetValue(blob, out var files) ||
+                    !files.TryGetValue(file.Segments[i], out blob))
+                {
+                    return default;
+                }
             }
 
-            var parent = pathToParent[file].parent;
-            while (parent != null)
-            {
-                if (parent != null && dict.TryGetValue(parent, out var parentTree))
-                {
-                    if (parentTree == tree)
-                    {
-                        return 0;
-                    }
-                    return GetBlob(trees, pathToParent, parentTree, file);
-                }
-                parent = pathToParent[parent].parent;
-            }
-            return 0;
+            return blob;
         }
 
-        private static unsafe List<GitCommit> GetCommitsByPath(string file, TreeMap trees, FileMap pathToParent, List<Commit> commits)
+        private static unsafe List<GitCommit> GetCommitsByPath(
+            PathString file, ConcurrentDictionary<long, Dictionary<string, long>> trees, List<Commit> commits)
         {
             const int MaxParentBlob = 32;
 
@@ -272,7 +261,7 @@ namespace Microsoft.Docs.Build
             if (commits.Count <= 0)
                 return contributors;
 
-            var commitsToFollow = new List<(Commit commit, long blob)> { (commits[0], GetBlob(trees, pathToParent, commits[0].Tree.A, file)) };
+            var commitsToFollow = new List<(Commit commit, long blob)> { (commits[0], GetBlob(trees, commits[0].Tree.A, file)) };
             var parentBlobs = stackalloc long[MaxParentBlob];
 
             foreach (var commit in commits)
@@ -301,7 +290,7 @@ namespace Microsoft.Docs.Build
 
                 for (var i = 0; i < parentCount; i++)
                 {
-                    parentBlobs[i] = GetBlob(trees, pathToParent, commit.Parents[i].Tree.A, file);
+                    parentBlobs[i] = GetBlob(trees, commit.Parents[i].Tree.A, file);
                     if (parentBlobs[i] == blob)
                     {
                         // and it was TREESAME to one parent, follow only that parent.
@@ -344,6 +333,13 @@ namespace Microsoft.Docs.Build
             public GitCommit GitCommit { get; set; }
 
             public override string ToString() => Sha.ToString();
+        }
+
+        private struct PathString
+        {
+            public string[] Segments;
+
+            public override string ToString() => string.Join('/', Segments);
         }
 
         private class RefComparer : EqualityComparer<string>
