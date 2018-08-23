@@ -899,7 +899,7 @@ inputs:
   docs/f1/TOC.experimental.md: |
     # [Index Reference](../index.md)
     # [File Reference](../a.md)
-  docs/f1/TOC.md:
+  docs/f1/TOC.md: |
     # [Index Reference](../index.md)
   docs/index.md:
   docs/a.md:
@@ -907,7 +907,7 @@ outputs:
   docs/index.json: |
     {"toc": "f1/TOC.json"}
   docs/a.json: |
-    {"toc": "f1/TOC.json"}
+    {"!toc": null}
   build.manifest:
   docs/f1/TOC.json:
   docs/f1/TOC.experimental.json:
@@ -993,7 +993,7 @@ outputs:
     {"toc": "../TOC.json"}
   build.manifest:
 ---
-# File referenced by multiple toc with same parent and subdir count, use order alphabetical
+# File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
   docfx.yml: 
   docs/dir1/a/TOC.yml: |
@@ -1007,33 +1007,9 @@ inputs:
       href: ../c/file1.md
   docs/dir1/c/file1.md:
 outputs:
-  docs/dir1/a/TOC.json: |
-    {
-      "items": [
-        {
-          "toc_title": "TOC Ref",
-          "href": "../c/file1"
-        }
-      ]
-    }
-  docs/dir1/b/TOC.json: |
-    {
-      "items": [
-        {
-          "toc_title": "TOC Ref",
-          "href": "../c/file1"
-        }
-      ]
-    }
-  docs/dir1/aa/TOC.json: |
-    {
-      "items": [
-        {
-          "toc_title": "TOC Ref",
-          "href": "../c/file1"
-        }
-      ]
-    }
+  docs/dir1/a/TOC.json:
+  docs/dir1/b/TOC.json:
+  docs/dir1/aa/TOC.json:
   docs/dir1/c/file1.json: |
     {"toc": "../a/TOC.json"}
   build.manifest:
