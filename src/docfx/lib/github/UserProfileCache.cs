@@ -21,18 +21,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get user profile by user name from user profile cache or GitHub API
         /// </summary>
-        public async Task<(List<Error> errors, UserProfile profile)> GetByUserName(string userName)
+        public async Task<(Error error, UserProfile profile)> GetByUserName(string userName)
         {
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
-            var errors = new List<Error>();
+            Error error = null;
             if (!_cacheByName.TryGetValue(userName, out var userProfile))
             {
-                (errors, userProfile) = await _github.GetUserProfileByName(userName);
+                (error, userProfile) = await _github.GetUserProfileByName(userName);
                 TryAdd(userName, userProfile);
             }
 
-            return (errors, userProfile);
+            return (error, userProfile);
         }
 
         public UserProfile GetByUserEmail(string userEmail)
@@ -93,12 +93,14 @@ namespace Microsoft.Docs.Build
                 return;
 
             var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
-            errors.Add(authorError);
+            if (authorError != null)
+                errors.Add(authorError);
             if (authorName == null)
                 return;
 
-            var (getProfileErrors, profile) = await _github.GetUserProfileByName(authorName);
-            errors.AddRange(getProfileErrors);
+            var (getProfileError, profile) = await _github.GetUserProfileByName(authorName);
+            if (getProfileError != null)
+                errors.Add(getProfileError);
             if (profile == null)
                 return;
 

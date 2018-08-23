@@ -32,18 +32,18 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        public async Task<(List<Error> errors, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
+        public async Task<(Error error, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
             string author)
         {
             Debug.Assert(document != null);
 
             _commitsByFile.TryGetValue(document.FilePath, out var commits);
-            var (errors, authorInfo) = await GetAuthor(document, author, commits);
+            var (error, authorInfo) = await GetAuthor(document, author, commits);
             var contributors = GetContributors(document, authorInfo, commits);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            return (errors, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedDateTime);
+            return (error, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedDateTime);
         }
 
         public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
@@ -88,13 +88,14 @@ namespace Microsoft.Docs.Build
             _userProfileCache = UserProfileCache.Create(userProfilePath, _github);
         }
 
-        private async Task<(List<Error> errors, UserProfile author)> GetAuthor(Document doc, string authorName, List<GitCommit> fileCommits)
+        private async Task<(Error error, UserProfile author)> GetAuthor(Document doc, string authorName, List<GitCommit> fileCommits)
         {
+            Error error = null;
             UserProfile authorProfile = null;
             var errors = new List<Error>();
             if (!string.IsNullOrEmpty(authorName) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
             {
-                (errors, authorProfile) = await _userProfileCache.GetByUserName(authorName);
+                (error, authorProfile) = await _userProfileCache.GetByUserName(authorName);
             }
 
             if (fileCommits != null && fileCommits.Count != 0)
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, authorProfile);
+            return (error, authorProfile);
         }
 
         private List<UserProfile> GetContributors(Document doc, UserProfile authorInfo, List<GitCommit> fileCommits)

@@ -13,8 +13,8 @@ namespace Microsoft.Docs.Build
         [Fact]
         public async Task GetUserProfileByNameAsync()
         {
-            var (errors, profile) = await _github.GetUserProfileByName("docascode");
-            if (errors.Count == 0)
+            var (error, profile) = await _github.GetUserProfileByName("docascode");
+            if (error == null)
             {
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
                 Assert.Equal("DocFX", profile.DisplayName);
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Assert.Equal("resolve-author-failed", errors[0].Code);
+                Assert.Equal("resolve-author-failed", error.Code);
             }
         }
 

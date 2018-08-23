@@ -11,14 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubAccessor
     {
-        private const string _rateLimitExceededMessage = "GitHub API rate limit exceeded";
+        private const string RateLimitExceededMessage = "GitHub API rate limit exceeded";
 
         private readonly GitHubClient _client;
         private volatile bool _isRateLimitExceeded = false;
 
         public GitHubAccessor(string gitToken = null)
         {
-            _client = new GitHubClient(new ProductHeaderValue("DocFXv3"));
+            _client = new GitHubClient(new ProductHeaderValue("DocFX"));
             if (!string.IsNullOrEmpty(gitToken))
                 _client.Credentials = new Credentials(gitToken);
         }
@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get user profile by user name from GitHub API
         /// </summary>
-        public async Task<(List<Error> errors, UserProfile profile)> GetUserProfileByName(string name)
+        public async Task<(Error error, UserProfile profile)> GetUserProfileByName(string name)
         {
             Debug.Assert(!string.IsNullOrEmpty(name));
 
             if (_isRateLimitExceeded)
-                return (new List<Error> { Errors.ResolveAuthorFailed(name, _rateLimitExceededMessage) }, null);
+                return (Errors.ResolveAuthorFailed(name, RateLimitExceededMessage), null);
 
             User user;
             try
@@ -41,21 +41,20 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                return (new List<Error> { Errors.ResolveAuthorFailed(name, _rateLimitExceededMessage) }, null);
+                return (Errors.ResolveAuthorFailed(name, RateLimitExceededMessage), null);
             }
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
-                return (new List<Error> { Errors.AuthorNotFound(name) }, null);
+                return (Errors.AuthorNotFound(name), null);
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                // To unblock the e2e test
                 // Todo: better handle the operation canceled exception, @Renze
-                return (new List<Error> { Errors.ResolveAuthorFailed(name, "Operation cancelled when calling GitHub") }, null);
+                return (Errors.ResolveAuthorFailed(name, ex.Message), null);
             }
 
-            return (new List<Error>(), ToUserProfile(user));
+            return (null, ToUserProfile(user));
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace Microsoft.Docs.Build
             GitHubCommit githubCommit;
             Author author;
             if (_isRateLimitExceeded)
-                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage), null);
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", RateLimitExceededMessage), null);
 
             try
             {
@@ -82,13 +81,17 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", _rateLimitExceededMessage), null);
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", RateLimitExceededMessage), null);
             }
-            catch (Exception)
+            catch (Exception ex) when (ex is NotFoundException || ex is ApiValidationException)
             {
                 // catch NotFoundException if owner/repo doesn't exist
                 // catch ApiValidationException if no commit found for SHA
                 return (null, null);
+            }
+            catch (Exception ex)
+            {
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", ex.Message), null);
             }
 
             return (null, author.Login);
