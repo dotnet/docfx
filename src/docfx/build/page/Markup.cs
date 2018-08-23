@@ -43,8 +43,6 @@ namespace Microsoft.Docs.Build
 
         public static MarkupResult Result => t_result;
 
-        public static bool HasTitle => !string.IsNullOrEmpty(t_result.HtmlTitle);
-
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
@@ -66,7 +64,7 @@ namespace Microsoft.Docs.Build
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
                     var html = Markdown.ToHtml(markdown, s_markdownPipeline);
-                    if (!HasTitle)
+                    if (!t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
                     }

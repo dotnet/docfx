@@ -15,5 +15,9 @@ namespace Microsoft.Docs.Build
         public JObject Metadata;
 
         public List<Error> Errors = new List<Error>();
+
+        public bool IsWaitingForInclusionHeading = false;
+
+        public bool HasTitle => !string.IsNullOrEmpty(HtmlTitle);
     }
 }

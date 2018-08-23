@@ -15,9 +15,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractTitle
     {
-        [ThreadStatic]
-        private static bool s_waitingForInclusionHeading = false;
-
         public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
@@ -27,7 +24,7 @@ namespace Microsoft.Docs.Build
 
                 if (InclusionContext.IsInclude)
                 {
-                    if (!Markup.HasTitle && s_waitingForInclusionHeading)
+                    if (!Markup.Result.HasTitle && Markup.Result.IsWaitingForInclusionHeading)
                     {
                         TryGetHeading();
                     }
@@ -49,14 +46,7 @@ namespace Microsoft.Docs.Build
 
                 void SetWaitingForInclusionHeading()
                 {
-                    if (firstBlock is InclusionBlock)
-                    {
-                        s_waitingForInclusionHeading = true;
-                    }
-                    else
-                    {
-                        s_waitingForInclusionHeading = false;
-                    }
+                    Markup.Result.IsWaitingForInclusionHeading = firstBlock is InclusionBlock;
                 }
             });
         }
