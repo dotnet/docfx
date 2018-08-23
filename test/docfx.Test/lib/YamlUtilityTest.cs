@@ -406,7 +406,7 @@ mismatchField2: name";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("(Line: 1, Character: 1) Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
             },
             error =>
             {
@@ -414,7 +414,7 @@ mismatchField2: name";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("(Line: 2, Character: 1) Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
             });
         }
 
