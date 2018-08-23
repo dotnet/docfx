@@ -27,6 +27,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         [ThreadStatic]
         private static ImmutableHashSet<object> t_dependencies;
 
+        [ThreadStatic]
+        public static Dictionary<string, object> Extensions;
+
         /// <summary>
         /// Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.
         /// </summary>
