@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 var actualValue = ((JValue)actual).Value;
 
                 if (expectedValue is string expectedHtml && actualValue is string actualHtml &&
-                    expectedHtml.StartsWith('<') && expectedHtml.EndsWith('>') && parentKey == "content")
+                    expectedHtml.StartsWith('<') && expectedHtml.EndsWith('>'))
                 {
                     // Treat `content` as html if the expected value looks like: <blablabla>
                     Assert.Equal(TestHelper.NormalizeHtml(expectedHtml), TestHelper.NormalizeHtml(actualHtml));
