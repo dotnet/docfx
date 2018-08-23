@@ -133,7 +133,7 @@ a: b
 
             Assert.Equal(2, errors.Count);
             Assert.Equal("The toc syntax '[bad]()' is invalided", errors[0].Message);
-            Assert.Equal("The toc syntax '>_<\r\n>_<\r\n>_<' is invalided", errors[1].Message);
+            Assert.Equal("The toc syntax '>_<\r\n>_<\r\n>_<' is invalided".Replace("\r\n", "\n"), errors[1].Message.Replace("\r\n", "\n"));
             Assert.Equal("(Line: 2, Character: 0)", errors[0].Range.ToString());
             Assert.Equal("(Line: 3, Character: 0)", errors[1].Range.ToString());
         }
