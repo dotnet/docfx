@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void TocParserLoadMarkdownToc()
         {
-            var (_, toc) = TableOfContentsParser.LoadMdTocModel(@"---
+            var (_, toc) = MarkdownTocMarkup.LoadMdTocModel(@"---
 a: b
 ---
 # [Article1](article1.md)
@@ -123,18 +123,30 @@ a: b
         [Fact]
         public static void TocParserLoadBadMarkdownToc()
         {
-            var ex = Assert.Throws<FormatException>(() =>
-                TableOfContentsParser.LoadMdTocModel(@"
-#[good](test.md)
+            var (errors, model) = MarkdownTocMarkup.LoadMdTocModel(@"
+# [good](test.md)
 [bad]()
 >_<
 >_<
 >_<
-", "TOC.md"));
-            Assert.Equal(@"Invalid toc file, FilePath: TOC.md, Details: Unknown syntax at line 3:
-[bad]()
->_<
->_<".Replace("\r\n", "\n"), ex.Message.Replace("\r\n", "\n"));
+", "TOC.md");
+
+            Assert.Equal(2, errors.Count);
+            Assert.Equal("The toc syntax '[bad]()' is invalided", errors[0].Message);
+            Assert.Equal("The toc syntax '>_<\r\n>_<\r\n>_<' is invalided", errors[1].Message);
+            Assert.Equal("(Line: 2, Character: 0)", errors[0].Range.ToString());
+            Assert.Equal("(Line: 3, Character: 0)", errors[1].Range.ToString());
+        }
+
+        [Fact]
+        public static void TocParserLoadSkipLevelToc()
+        {
+            var (errors, model) = MarkdownTocMarkup.LoadMdTocModel(@"
+# level1
+### level3", "TOC.md");
+
+            Assert.Single(errors);
+            Assert.Equal("invalid-toc-level", errors[0].Code);
         }
     }
 }
