@@ -186,11 +186,11 @@ inputs:
     redirections:
       docs/redirect.md: /absolute/path
   docs/a.md: |
-    [redirect](redirect.md)
+    [redirect](redirect.md?a#b)
 outputs:
   build.manifest:
   docs/a.json: |
-    {"content":"<p><a href=\"/absolute/path\">redirect</a></p>"}
+    {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
   docs/redirect.json: |
     {"redirectionUrl":"/absolute/path"}
 ---
@@ -205,6 +205,21 @@ outputs:
   build.manifest:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
+  docs/redirect.json: |
+    {"redirectionUrl":"relative/path"}
+---
+# Use file link when followRedirect is false
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/redirect.md: relative/path
+    followRedirect: false
+  docs/a.md: |
+    [redirect](redirect.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p><a href=\"redirect\">redirect</a></p>"}
   docs/redirect.json: |
     {"redirectionUrl":"relative/path"}
 ---
@@ -236,7 +251,7 @@ outputs:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md <redirection>', 'docs/redirect.md'"]
 ---
-# Show warning if link to a master content outside build scope
+# Show warning if link to a page outside build scope
 inputs:
   docfx.yml:
   docs/a.md: 'Link to [c](../c.md)'
@@ -252,7 +267,7 @@ outputs:
     ["warning","bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md"]
   build.manifest:
 ---
-# Don't show warning if link to a non-master content outside build scope
+# Don't show warning if link to a resource outside build scope
 inputs:
   docfx.yml:
   docs/a.md: '[a](../b.png)'
@@ -263,7 +278,7 @@ outputs:
   b.png:
   build.manifest:
 ---
-# Don't show warning if include a master content outside build scope
+# Don't show warning if include a page outside build scope
 inputs:
   docfx.yml:
   docs/a.md: '[!include[a](../b.md)]'
