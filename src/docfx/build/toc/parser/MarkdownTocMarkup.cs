@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (headingBlocks[i + 1].Level - currentLevel > 1)
                         {
-                            throw Errors.InvalidTocLevel(filePath).ToException();
+                            throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                         }
 
                         var (children, count) = ConvertTo(filePath, headingBlocks, i + 1);

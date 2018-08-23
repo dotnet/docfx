@@ -46,8 +46,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocSyntax(Range range, string filePath, string syntax)
             => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalided", filePath, range);
 
-        public static Error InvalidTocLevel(string filePath)
-            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped", filePath);
+        public static Error InvalidTocLevel(string filePath, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
 
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
