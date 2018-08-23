@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         {
             return Report(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column));
+                    : new Error(error.Level, error.Code, error.Message, file, error.Range));
         }
 
         public bool Report(Error error)

@@ -29,7 +29,7 @@ outputs:
   docs/a.json:
   build.manifest:
   build.log: |
-    ["info","null-value","(Line: 1, Character: 1) 'title' contains null value","docs/a.md",1,1]
+    ["info","null-value","'title' contains null value","docs/a.md",1,1]
 ---
 # Yaml header
 inputs:
@@ -218,7 +218,7 @@ outputs:
   docs/b.json:
   build.manifest:
   build.log: |
-    ["error","yaml-duplicate-key","(Line: 2, Character: 1) - (Line: 2, Character: 2): Key 'a' is already defined, remove the duplicate key.","docs/a.md"]
+    ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",2,1]
 ---
 # do not allow custom js, styles and css
 inputs:
