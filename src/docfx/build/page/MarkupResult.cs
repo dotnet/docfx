@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public List<Error> Errors = new List<Error>();
 
-        public bool IsWaitingForInclusionHeading = false;
+        public bool FirstBlockIsInclusionBlock = false;
 
         public bool HasTitle => !string.IsNullOrEmpty(HtmlTitle);
     }

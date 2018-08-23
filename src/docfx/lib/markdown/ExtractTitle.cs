@@ -19,35 +19,21 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
+                if (InclusionContext.IsInclude
+                    && (Markup.Result.HasTitle || !Markup.Result.FirstBlockIsInclusionBlock))
+                {
+                    return;
+                }
+
                 var firstBlock = GetFirstVisibleBlock(document);
                 var heading = firstBlock as HeadingBlock;
 
-                if (InclusionContext.IsInclude)
+                if (heading != null && heading.Level == 1)
                 {
-                    if (!Markup.Result.HasTitle && Markup.Result.IsWaitingForInclusionHeading)
-                    {
-                        TryGetHeading();
-                    }
+                    Markup.Result.HtmlTitle = RenderTitle(heading);
+                    document.Remove(heading);
                 }
-                else
-                {
-                    TryGetHeading();
-                }
-
-                void TryGetHeading()
-                {
-                    if (heading != null && heading.Level == 1)
-                    {
-                        Markup.Result.HtmlTitle = RenderTitle(heading);
-                        document.Remove(heading);
-                    }
-                    SetWaitingForInclusionHeading();
-                }
-
-                void SetWaitingForInclusionHeading()
-                {
-                    Markup.Result.IsWaitingForInclusionHeading = firstBlock is InclusionBlock;
-                }
+                Markup.Result.FirstBlockIsInclusionBlock = firstBlock is InclusionBlock;
             });
         }
 
