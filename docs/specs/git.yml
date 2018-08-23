@@ -58,7 +58,8 @@ outputs:
   build.manifest:
 ---
 # Specify invalid author in YAML header should log warning
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-3
+# the warning code can be author-not-found(expected) or resolve-author-failed(GitHub rate limit exceeded)
+repo: https://github.com/docascode/docfx-test-dependencies#author-not-found
 outputs:
   README.json:
   testdata1.json:
