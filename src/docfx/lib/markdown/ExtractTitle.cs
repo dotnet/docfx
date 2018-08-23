@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,23 +19,27 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var h1 = GetHeadingBlock(document);
+                if (InclusionContext.IsInclude
+                    && (Markup.Result.HasTitle || !Markup.Result.FirstBlockIsInclusionBlock))
+                {
+                    return;
+                }
 
-                if (h1 != null && h1.Level == 1)
+                var firstBlock = GetFirstVisibleBlock(document);
+                var heading = firstBlock as HeadingBlock;
+
+                if (heading != null && heading.Level == 1)
                 {
-                    Markup.Result.HtmlTitle = RenderTitle(h1);
-                    document.Remove(h1);
+                    Markup.Result.HtmlTitle = RenderTitle(heading);
+                    document.Remove(heading);
                 }
-                else
-                {
-                    Markup.Result.Errors.Add(Errors.HeadingNotFound((Document)InclusionContext.File));
-                }
+                Markup.Result.FirstBlockIsInclusionBlock = firstBlock is InclusionBlock;
             });
         }
 
-        private static HeadingBlock GetHeadingBlock(MarkdownDocument document)
+        private static Block GetFirstVisibleBlock(MarkdownDocument document)
         {
-            return GetAfterYamlChildren(document).SkipWhile(IsCommentsBlock).FirstOrDefault() as HeadingBlock;
+            return GetAfterYamlChildren(document).SkipWhile(IsCommentsBlock).FirstOrDefault();
         }
 
         private static IEnumerable<Block> GetAfterYamlChildren(MarkdownDocument document)
