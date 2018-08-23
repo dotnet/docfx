@@ -16,64 +16,52 @@ namespace Microsoft.Docs.Build
     internal static class ExtractTitle
     {
         [ThreadStatic]
-        private static bool s_headingFound = false;
-
-        [ThreadStatic]
         private static bool s_waitingForInclusionHeading = false;
 
         public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
-                var firstBlock = GetAfterYamlFirstNonCommentsBlock(document);
+                var firstBlock = GetFirstVisibleBlock(document);
                 var heading = firstBlock as HeadingBlock;
 
                 if (InclusionContext.IsInclude)
                 {
-                    if (!s_headingFound && s_waitingForInclusionHeading)
+                    if (!Markup.HasTitle && s_waitingForInclusionHeading)
                     {
-                        if (heading != null && heading.Level == 1)
-                        {
-                            Markup.Result.HtmlTitle = RenderTitle(heading);
-                            document.Remove(heading);
-                            s_headingFound = true;
-                        }
-                        else
-                        {
-                            if (!(firstBlock is InclusionBlock))
-                            {
-                                Markup.Result.Errors.Add(Errors.HeadingNotFound((Document)InclusionContext.File));
-                                s_waitingForInclusionHeading = false;
-                            }
-                        }
+                        TryGetHeading();
                     }
                 }
                 else
+                {
+                    TryGetHeading();
+                }
+
+                void TryGetHeading()
                 {
                     if (heading != null && heading.Level == 1)
                     {
                         Markup.Result.HtmlTitle = RenderTitle(heading);
                         document.Remove(heading);
-                        s_headingFound = true;
+                    }
+                    SetWaitingForInclusionHeading();
+                }
+
+                void SetWaitingForInclusionHeading()
+                {
+                    if (firstBlock is InclusionBlock)
+                    {
+                        s_waitingForInclusionHeading = true;
                     }
                     else
                     {
-                        s_headingFound = false;
-                        if (firstBlock is InclusionBlock)
-                        {
-                            s_waitingForInclusionHeading = true;
-                        }
-                        else
-                        {
-                            Markup.Result.Errors.Add(Errors.HeadingNotFound((Document)InclusionContext.File));
-                            s_waitingForInclusionHeading = false;
-                        }
+                        s_waitingForInclusionHeading = false;
                     }
                 }
             });
         }
 
-        private static Block GetAfterYamlFirstNonCommentsBlock(MarkdownDocument document)
+        private static Block GetFirstVisibleBlock(MarkdownDocument document)
         {
             return GetAfterYamlChildren(document).SkipWhile(IsCommentsBlock).FirstOrDefault();
         }
