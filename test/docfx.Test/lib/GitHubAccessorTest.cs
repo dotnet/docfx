@@ -28,6 +28,14 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public async Task GetUserProfileByNameNotFoundAsync()
+        {
+            var (error, profile) = await _github.GetUserProfileByName("N1o2t3E4x5i6s7t8N9a0m9e");
+            Assert.NotNull(error);
+            Assert.Matches("(author-not-found)|(resolve-author-failed)", error.Code);
+        }
+
+        [Fact]
         public async Task GetNameByCommitAsync()
         {
             var (error, name) = await _github.GetNameByCommit(
@@ -37,6 +45,23 @@ namespace Microsoft.Docs.Build
             if (error == null)
             {
                 Assert.Equal("OsmondJiang", name);
+            }
+            else
+            {
+                Assert.Equal("resolve-commit-failed", error.Code);
+            }
+        }
+
+        [Fact]
+        public async Task GetNameByCommitNotFoundAsync()
+        {
+            var (error, name) = await _github.GetNameByCommit(
+                "docascode",
+                "docfx-test-dependencies",
+                "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
+            if (error == null)
+            {
+                Assert.Null(name);
             }
             else
             {
