@@ -18,6 +18,8 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="1.0.226" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.38.0-alpha-0018-ga5c5db6" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
