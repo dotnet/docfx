@@ -9,6 +9,12 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
+    public enum MarkdownPipelineType
+    {
+        Markdown,
+        InlineMarkdown,
+    }
+
     internal static class Markup
     {
         // In docfx 2, a localized text is prepended to quotes beginning with
@@ -50,7 +56,7 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild,
-            bool inline = false)
+            MarkdownPipelineType pipelineType)
         {
             if (t_result != null)
             {
@@ -65,7 +71,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = inline ? Markdown.ToHtml(markdown, s_inlineMarkdownPipeline) : Markdown.ToHtml(markdown, s_markdownPipeline);
+                    var html = ToHtml(markdown, pipelineType);
                     if (!t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -79,6 +85,18 @@ namespace Microsoft.Docs.Build
                     t_bookmarkValidator = null;
                     t_buildChild = null;
                 }
+            }
+        }
+
+        private static string ToHtml(string markdown, MarkdownPipelineType pipelineType)
+        {
+            switch (pipelineType)
+            {
+                case MarkdownPipelineType.InlineMarkdown:
+                    return Markdown.ToHtml(markdown, s_inlineMarkdownPipeline);
+                case MarkdownPipelineType.Markdown:
+                default:
+                    return Markdown.ToHtml(markdown, s_markdownPipeline);
             }
         }
 
@@ -101,13 +119,11 @@ namespace Microsoft.Docs.Build
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
-                .UseInlineOnly()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseExtractYamlHeader()
-                .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .UseInlineOnly()
                 .Build();
         }
 

@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             LoadMarkdown(
             Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
-            var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild);
+            var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
@@ -176,14 +176,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild);
+                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild, inline: true);
+                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
