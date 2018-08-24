@@ -41,8 +41,13 @@ namespace Microsoft.Docs.Build
         {
             return new TestServer(
                 new WebHostBuilder()
-                    .ConfigureServices(services => services.AddMvc())
+                    .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
+
+            void ConfigureServices(IServiceCollection services)
+            {
+                services.AddMvc();
+            }
 
             void Configure(IApplicationBuilder app)
             {

@@ -1,2 +1,2 @@
 @using Newtonsoft.Json
-<div>@JsonConvert.SerializeObject(Model)</div>
+<div>@JsonConvert.SerializeObject(Model, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore })</div>
