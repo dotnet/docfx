@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             var (error, name) = await _github.GetNameByCommit(
                 "docascode",
                 "docfx-test-dependencies",
-                "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
+                "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
             if (error == null)
             {
                 Assert.Null(name);
