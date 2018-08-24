@@ -1,7 +1,7 @@
 namespace Microsoft.Docs.Build
 {
     [DataSchema]
-    public class MarkdownTestModel
+    public class TestModel
     {
         [Markdown]
         public string Description { get; set; }
