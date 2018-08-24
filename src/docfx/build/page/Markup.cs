@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Markdig;
+using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -29,6 +30,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
 
+        private static readonly MarkdownPipeline s_tocPipeline = CreateTocPipeline();
+
         [ThreadStatic]
         private static MarkupResult t_result;
 
@@ -42,6 +45,26 @@ namespace Microsoft.Docs.Build
         private static Action<Document> t_buildChild;
 
         public static MarkupResult Result => t_result;
+
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
+        {
+            if (t_result != null)
+            {
+                throw new NotImplementedException("Nested call to Markup.ToHtml");
+            }
+
+            try
+            {
+                t_result = new MarkupResult();
+                var ast = Markdown.Parse(content, s_tocPipeline);
+
+                return (ast, t_result);
+            }
+            finally
+            {
+                t_result = null;
+            }
+        }
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
@@ -87,6 +110,17 @@ namespace Microsoft.Docs.Build
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateTocPipeline()
+        {
+            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
                 .Build();
         }
 

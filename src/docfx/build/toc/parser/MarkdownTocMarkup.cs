@@ -5,44 +5,28 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
-
         private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
-
-        [ThreadStatic]
-        private static List<Error> t_errors;
-
-        [ThreadStatic]
-        private static TableOfContentsInputModel t_model;
 
         public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, string filePath)
         {
-            t_errors = new List<Error>();
-            t_model = new TableOfContentsInputModel();
-            var blockContainer = Markdown.Parse(tocContent, s_markdownPipeline);
-
-            var tocModel = new TableOfContentsInputModel
-            {
-                Metadata = t_model.Metadata,
-            };
-
+            var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            foreach (var block in blockContainer)
+
+            var (ast, result) = Markup.Parse(tocContent);
+            errors.AddRange(result.Errors);
+            foreach (var block in ast)
             {
                 if (!s_blockWhiteList.Contains(block.GetType()))
                 {
-                    t_errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
                 }
 
                 if (block is HeadingBlock headingBlock)
@@ -51,19 +35,24 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var tocModel = new TableOfContentsInputModel
+            {
+                Metadata = result.Metadata,
+            };
+
             try
             {
-                tocModel.Items = ConvertTo(filePath, headingBlocks.ToArray()).children;
+                tocModel.Items = ConvertTo(filePath, headingBlocks.ToArray(), errors).children;
             }
             catch (DocfxException ex)
             {
-                t_errors.Add(ex.Error);
+                errors.Add(ex.Error);
             }
 
-            return (t_errors, tocModel);
+            return (errors, tocModel);
         }
 
-        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string filePath, HeadingBlock[] headingBlocks, int startIndex = 0)
+        private static (List<TableOfContentsInputItem> children, int count) ConvertTo(string filePath, HeadingBlock[] headingBlocks, List<Error> errors, int startIndex = 0)
         {
             if (headingBlocks.Length == 0)
             {
@@ -78,27 +67,24 @@ namespace Microsoft.Docs.Build
             do
             {
                 var item = GetItem(headingBlocks[i]);
-                if (item != null)
+                items.Add(item);
+                var currentLevel = headingBlocks[i].Level;
+                if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level > currentLevel)
                 {
-                    items.Add(item);
-                    var currentLevel = headingBlocks[i].Level;
-                    if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level > currentLevel)
+                    if (headingBlocks[i + 1].Level - currentLevel > 1)
                     {
-                        if (headingBlocks[i + 1].Level - currentLevel > 1)
-                        {
-                            throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
-                        }
-
-                        var (children, count) = ConvertTo(filePath, headingBlocks, i + 1);
-                        item.Items = children;
-                        i += count;
-                        childrenCount += count;
+                        throw Errors.InvalidTocLevel(filePath, currentLevel, headingBlocks[i + 1].Level).ToException();
                     }
 
-                    if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level < currentLevel)
-                    {
-                        break;
-                    }
+                    var (children, count) = ConvertTo(filePath, headingBlocks, errors, i + 1);
+                    item.Items = children;
+                    i += count;
+                    childrenCount += count;
+                }
+
+                if (i + 1 < headingBlocks.Length && headingBlocks[i + 1].Level < currentLevel)
+                {
+                    break;
                 }
             }
             while (++i < headingBlocks.Length);
@@ -109,28 +95,33 @@ namespace Microsoft.Docs.Build
             {
                 if (block.Inline == null || !block.Inline.Any())
                 {
-                    return null;
+                    errors.Add(Errors.MissingTocHead(new Range(block.Line, block.Column), filePath));
+                    return new TableOfContentsInputItem();
                 }
 
                 string name = null;
                 string displayName = null;
                 string href = null;
-
-                if (block.Inline.First() is LinkInline linkInline)
+                var link = block.Inline.FirstOrDefault(l => l is LinkInline);
+                if (link != null && link is LinkInline linkInline)
                 {
                     if (!string.IsNullOrEmpty(linkInline.Url))
                         href = linkInline.Url;
                     if (!string.IsNullOrEmpty(linkInline.Title))
                         displayName = linkInline.Title;
-
-                    if (linkInline.Any() && linkInline.First() is LiteralInline literalInline)
+                    var literal = linkInline.FirstOrDefault(l => l is LiteralInline);
+                    if (literal != null && literal is LiteralInline literalInline)
                     {
                         name = literalInline.Content.ToString();
                     }
                 }
-                else if (block.Inline.First() is LiteralInline literalInline)
+                else
                 {
-                    name = literalInline.Content.ToString();
+                    var literal = block.Inline.FirstOrDefault(l => l is LiteralInline);
+                    if (literal != null && literal is LiteralInline literalInline)
+                    {
+                        name = literalInline.Content.ToString();
+                    }
                 }
 
                 var currentItem = new TableOfContentsInputItem
@@ -141,69 +132,6 @@ namespace Microsoft.Docs.Build
                 };
 
                 return currentItem;
-            }
-        }
-
-        private static MarkdownPipeline CreateMarkdownPipeline()
-        {
-            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
-
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
-                .UseExtractTocYamlHeader()
-                .Build();
-        }
-
-        private static void LogError(string code, string message, string doc, int line)
-        {
-            t_errors.Add(new Error(ErrorLevel.Error, code, message, doc, new Range(line, 0)));
-        }
-
-        private static void LogWarning(string code, string message, string doc, int line)
-        {
-            t_errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
-        }
-
-        private static MarkdownPipelineBuilder UseExtractTocYamlHeader(this MarkdownPipelineBuilder builder)
-        {
-            return builder.Use(document =>
-            {
-                document.Visit(node =>
-                {
-                    if (InclusionContext.IsInclude)
-                    {
-                        return false;
-                    }
-
-                    if (node is YamlFrontMatterBlock yamlHeader)
-                    {
-                        // TODO: fix line info in yamlErrors is not accurate due to offset in markdown
-                        var (errors, metadata) = Extract(yamlHeader.Lines.ToString());
-
-                        if (metadata != null)
-                        {
-                            t_model.Metadata = metadata;
-                        }
-
-                        t_errors.AddRange(errors);
-                        return true;
-                    }
-                    return false;
-                });
-            });
-
-            (List<Error> errors, JObject metadata) Extract(string lines)
-            {
-                var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(lines);
-
-                if (yamlHeaderObj is JObject obj)
-                {
-                    return (yamlErrors, obj);
-                }
-
-                yamlErrors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
-                return (yamlErrors, default);
             }
         }
     }
