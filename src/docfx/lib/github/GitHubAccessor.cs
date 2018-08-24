@@ -11,13 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubAccessor
     {
-        private readonly GitHubClient _client;
+        private const string RateLimitExceededMessage = "GitHub API rate limit exceeded";
 
-        private bool _isRateLimitExceeded = false;
+        private readonly GitHubClient _client;
+        private volatile bool _isRateLimitExceeded = false;
 
         public GitHubAccessor(string gitToken = null)
         {
-            _client = new GitHubClient(new ProductHeaderValue("DocFXv3"));
+            _client = new GitHubClient(new ProductHeaderValue("DocFX"));
             if (!string.IsNullOrEmpty(gitToken))
                 _client.Credentials = new Credentials(gitToken);
         }
@@ -25,14 +26,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get user profile by user name from GitHub API
         /// </summary>
-        /// <exception cref="DocfxException">Thrown when user doesn't exist or GitHub rate limit exceeded</exception>
-        public async Task<UserProfile> GetUserProfileByName(string name)
+        public async Task<(Error error, UserProfile profile)> GetUserProfileByName(string name)
         {
             Debug.Assert(!string.IsNullOrEmpty(name));
 
-            var errors = new List<Error>();
             if (_isRateLimitExceeded)
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                return (Errors.ResolveAuthorFailed(name, RateLimitExceededMessage), null);
 
             User user;
             try
@@ -42,21 +41,60 @@ namespace Microsoft.Docs.Build
             catch (RateLimitExceededException)
             {
                 _isRateLimitExceeded = true;
-                throw Errors.ExceedGitHubRateLimit().ToException();
+                return (Errors.ResolveAuthorFailed(name, RateLimitExceededMessage), null);
             }
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
-                throw Errors.GitHubUserNotFound().ToException();
+                return (Errors.AuthorNotFound(name), null);
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                // To unblock the e2e test
                 // Todo: better handle the operation canceled exception, @Renze
-                throw Errors.GitHubUserNotFound().ToException();
+                return (Errors.ResolveAuthorFailed(name, ex.Message), null);
             }
 
-            return ToUserProfile(user);
+            return (null, ToUserProfile(user));
+        }
+
+        /// <summary>
+        /// Get author by repo and commit from GitHub API
+        /// </summary>
+        /// <exception cref="DocfxException">Thrown when repo or commit doesn't exist, or GitHub rate limit exceeded</exception>"
+        /// <returns> The commit author's name on GitHub </returns>
+        public async Task<(Error error, string name)> GetNameByCommit(string repoOwner, string repoName, string commitSha)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(repoOwner));
+            Debug.Assert(!string.IsNullOrEmpty(repoName));
+            Debug.Assert(!string.IsNullOrEmpty(commitSha));
+
+            GitHubCommit githubCommit;
+            Author author;
+            if (_isRateLimitExceeded)
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", RateLimitExceededMessage), null);
+
+            try
+            {
+                githubCommit = await _client.Repository.Commit.Get(repoOwner, repoName, commitSha);
+                author = githubCommit.Author;
+            }
+            catch (RateLimitExceededException)
+            {
+                _isRateLimitExceeded = true;
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", RateLimitExceededMessage), null);
+            }
+            catch (Exception ex) when (ex is NotFoundException || ex is ApiValidationException)
+            {
+                // catch NotFoundException if owner/repo doesn't exist
+                // catch ApiValidationException if no commit found for SHA
+                return (null, null);
+            }
+            catch (Exception ex)
+            {
+                return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", ex.Message), null);
+            }
+
+            return (null, author.Login);
         }
 
         private UserProfile ToUserProfile(User user)

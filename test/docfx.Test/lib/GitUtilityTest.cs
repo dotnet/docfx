@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             var pathToRepo = PathUtility.NormalizeFile(file);
 
             var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
-            var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo })[0].ToList();
+            var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo }).commitsByFile[0].ToList();
 
             Assert.Equal(
                 exe.Replace("\r", ""),

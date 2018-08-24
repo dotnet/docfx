@@ -8,5 +8,8 @@ namespace Microsoft.Docs.Build
     {
         [Markdown]
         public string Description { get; set; }
+
+        [InlineMarkdown]
+        public string InlineDescription { get; set; }
     }
 }
