@@ -11,11 +11,14 @@ namespace Microsoft.Docs.Build
     public class TemplateTest
     {
         [Theory]
-        [InlineData(typeof(Conceptual), "{'html':'hello'}", "hello")]
+        [InlineData(typeof(TestModel), "{'description':'hello'}", "<div>hello</div>")]
         public async Task RenderTemplate(Type pageType, string json, string html)
         {
             var model = JsonConvert.DeserializeObject(json.Replace('\'', '"'), pageType);
-            Assert.Equal(html, await Template.Render(pageType.Name, model));
+
+            Assert.Equal(
+                TestHelper.NormalizeHtml(html),
+                TestHelper.NormalizeHtml(await Template.Render(pageType.Name, model)));
         }
     }
 }

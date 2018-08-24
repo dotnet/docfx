@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TemplateController : Controller
+    public class TemplateController : Controller
     {
         public IActionResult Get()
         {

@@ -18,6 +18,9 @@
     <None Include="../../docs/specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />
+
+    <!-- Force razor views to be copied to test output -->
+    <None Include="../../src/docfx/bin/$(Configuration)/$(TargetFramework)/docfx.Views.dll" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
