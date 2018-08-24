@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Bulk get git commits for a list of files in a repo.
         /// </summary>
-        public static unsafe List<GitCommit>[] GetCommits(string repoPath, List<string> files)
+        /// <param name="repoPath">The git repo root path</param>
+        /// <param name="files">The collection of git repo files</param>
+        public static unsafe (List<GitCommit>[] commitsByFile, GitCommit[] allCommits) GetCommits(string repoPath, List<string> files)
         {
             var (trees, commits) = default((ConcurrentDictionary<long, Dictionary<string, long>>, List<Commit>));
             var (paths, lookup) = CreatePathForReferenceEqualsLookup(files);
@@ -75,7 +78,7 @@ namespace Microsoft.Docs.Build
             }
 
             NativeMethods.GitRepositoryFree(repo);
-            return result;
+            return (result, commits.Select(c => c.GitCommit).ToArray());
         }
 
         private static (PathString[] paths, HashSet<string> lookup) CreatePathForReferenceEqualsLookup(List<string> files)
