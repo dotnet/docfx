@@ -181,6 +181,13 @@ namespace Microsoft.Docs.Build
                     return html;
                 }
 
+                if (attribute is InlineMarkdownAttribute)
+                {
+                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild, inline: true);
+                    errors.AddRange(markup.Errors);
+                    return html;
+                }
+
                 // TODO: handle other attributes
                 return reader.Value;
             }

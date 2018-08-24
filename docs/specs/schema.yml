@@ -116,3 +116,18 @@ outputs:
   build.log: |
     ["info","null-value","'description' contains null value","docs/a.yml",2,1]
 ---
+# Support schema documents with inline Markdown content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestModel
+    inlineDescription: >
+      This is a list:
+        - Item 1
+        - Item 2
+        - `Item 3`
+outputs:
+  build.manifest:
+  docs/a.json: |
+    { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>" } }
+---

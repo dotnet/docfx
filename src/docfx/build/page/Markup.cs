@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         };
 
         private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
+        private static readonly MarkdownPipeline s_inlineMarkdownPipeline = CreateInlineMarkdownPipeline();
 
         [ThreadStatic]
         private static MarkupResult t_result;
@@ -48,7 +49,8 @@ namespace Microsoft.Docs.Build
             Document file,
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            bool inline = false)
         {
             if (t_result != null)
             {
@@ -63,7 +65,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = Markdown.ToHtml(markdown, s_markdownPipeline);
+                    var html = inline ? Markdown.ToHtml(markdown, s_inlineMarkdownPipeline) : Markdown.ToHtml(markdown, s_markdownPipeline);
                     if (!t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -85,6 +87,21 @@ namespace Microsoft.Docs.Build
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
+                .UseExtractTitle()
+                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveXref(ResolveXref)
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateInlineMarkdownPipeline()
+        {
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
+
+            return new MarkdownPipelineBuilder()
+                .UseInlineOnly()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
