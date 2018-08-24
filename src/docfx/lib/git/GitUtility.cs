@@ -186,9 +186,10 @@ namespace Microsoft.Docs.Build
             => ExecuteNonQuery(cwd, $"worktree prune");
 
         /// <summary>
-        /// Turn core.longpaths to true in current git repository.
+        /// Set core.longpaths to true in current git repository.
         /// </summary>
         /// <param name="cwd">The current working directory</param>
+        /// <param name="on"> core.longpaths on/off</param>
         public static Task SetCoreLongPaths(string cwd, bool on)
             => ExecuteNonQuery(cwd, $"config core.longpaths {on}");
 
