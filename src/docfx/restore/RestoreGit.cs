@@ -93,8 +93,11 @@ namespace Microsoft.Docs.Build
             {
                 if (GitUtility.IsRepo(restoreDir))
                 {
+                    // turn on core.longpaths before fetch
+                    await GitUtility.SetCoreLongPaths(restorePath, true);
+
                     // already exists, just pull the new updates from remote
-                    // fetch bare reop: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
+                    // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
                     await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token), "+refs/heads/*:refs/heads/*");
                 }
                 else

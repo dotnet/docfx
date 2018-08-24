@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -118,15 +119,20 @@ namespace Microsoft.Docs.Build
         public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false)
         {
             Directory.CreateDirectory(cwd);
+
+            // clone with configuration core.longpaths turned-on
+            // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone {remote} \"{path.Replace("\\", "/")}\""
-                : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+                ? $"clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
+                : $"clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             if (bare)
                 cmd += " --bare";
 
             return ExecuteNonQuery(cwd, cmd);
         }
+
+
 
         /// <summary>
         /// Fetch update from remote
@@ -178,6 +184,13 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         public static Task PruneWorkTrees(string cwd)
             => ExecuteNonQuery(cwd, $"worktree prune");
+
+        /// <summary>
+        /// Turn core.longpaths to true in current git repository.
+        /// </summary>
+        /// <param name="cwd">The current working directory</param>
+        public static Task SetCoreLongPaths(string cwd, bool on)
+            => ExecuteNonQuery(cwd, $"config core.longpaths {on}");
 
         /// <summary>
         /// Retrieve git head version
