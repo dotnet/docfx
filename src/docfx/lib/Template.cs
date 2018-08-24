@@ -2,10 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -46,7 +54,13 @@ namespace Microsoft.Docs.Build
 
             void ConfigureServices(IServiceCollection services)
             {
-                services.AddMvc();
+                services.AddMvc()
+                        .ConfigureApplicationPartManager(parts =>
+                        {
+                            // Ensure we only have one private TemplateController
+                            parts.FeatureProviders.Remove(parts.FeatureProviders.First(fp => fp is IApplicationFeatureProvider<ControllerFeature>));
+                            parts.FeatureProviders.Add(new TemplateControllerProvider());
+                        });
             }
 
             void Configure(IApplicationBuilder app)
@@ -56,6 +70,28 @@ namespace Microsoft.Docs.Build
                         name: "content",
                         template: "{*url}",
                         defaults: new { controller = "Template", action = "Get" }));
+            }
+        }
+
+        private class TemplateControllerProvider : IApplicationFeatureProvider<ControllerFeature>
+        {
+            public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
+            {
+                feature.Controllers.Add(typeof(TemplateController).GetTypeInfo());
+            }
+        }
+
+        private class TemplateController : Controller
+        {
+            public IActionResult Get()
+            {
+                var template = (string)HttpContext.Items["template"];
+                var model = HttpContext.Items["model"];
+
+                Debug.Assert(template != null);
+                Debug.Assert(model != null);
+
+                return View(template, model);
             }
         }
     }
