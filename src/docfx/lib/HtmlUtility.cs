@@ -30,9 +30,9 @@ namespace Microsoft.Docs.Build
             return html.InnerText;
         }
 
-        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale, bool shouldToLowerCase = true)
         {
-            AddLinkType(html, "a", "href", locale);
+            AddLinkType(html, "a", "href", locale, shouldToLowerCase);
             AddLinkType(html, "img", "src", locale);
             return html;
         }
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale, bool shouldToLowerCase = true)
         {
             foreach (var node in html.Descendants(tag))
             {
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
                 }
                 if (href[0] == '/' || href[0] == '\\')
                 {
-                    node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
+                    node.SetAttributeValue(attribute, AddLocaleIfMissing(shouldToLowerCase ? HrefToLower(href) : href, locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
                     continue;
                 }
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "external");
                     continue;
                 }
-                node.SetAttributeValue(attribute, HrefToLower(href));
+                node.SetAttributeValue(attribute, shouldToLowerCase ? HrefToLower(href) : href);
                 node.SetAttributeValue("data-linktype", "relative-path");
             }
         }

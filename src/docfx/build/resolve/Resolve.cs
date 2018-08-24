@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
-            var (error, file, redirect, _, _) = TryResolveFile(relativeTo, href);
+            var (error, file, redirect, _, _, _) = TryResolveFile(relativeTo, href);
 
             if (redirect != null)
             {
@@ -25,10 +25,10 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(resultRelativeTo != null);
 
-            var (error, file, redirectTo, query, fragment) = TryResolveFile(relativeTo, href);
+            var (error, file, redirectTo, query, fragment, isSelfBookmark) = TryResolveFile(relativeTo, href);
 
             // Redirection
-            if (redirectTo != null && relativeTo.Docset.Config.FollowRedirect)
+            if (redirectTo != null && !relativeTo.Docset.Config.Legacy)
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
                 return (error, redirectTo + query + fragment, null, null);
@@ -43,6 +43,15 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == relativeTo)
             {
+                if (relativeTo.Docset.Config.Legacy)
+                {
+                    if (isSelfBookmark)
+                    {
+                        return (error, query + fragment, fragment, null);
+                    }
+                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(href), file.ContentType));
+                    return (error, selfUrl + query + fragment, fragment, null);
+                }
                 if (string.IsNullOrEmpty(fragment))
                 {
                     fragment = "#";
@@ -74,11 +83,11 @@ namespace Microsoft.Docs.Build
             return (error, relativeUrl + query + fragment, fragment, file);
         }
 
-        private static (Error error, Document file, string redirectTo, string query, string fragment) TryResolveFile(this Document relativeTo, string href)
+        private static (Error error, Document file, string redirectTo, string query, string fragment, bool isSelfBookmark) TryResolveFile(this Document relativeTo, string href)
         {
             if (string.IsNullOrEmpty(href))
             {
-                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null);
+                return (Errors.LinkIsEmpty(relativeTo), null, null, null, null, false);
             }
 
             var (path, query, fragment) = HrefUtility.SplitHref(href);
@@ -87,7 +96,7 @@ namespace Microsoft.Docs.Build
             // Self bookmark link
             if (string.IsNullOrEmpty(path))
             {
-                return (null, relativeTo, null, query, fragment);
+                return (null, relativeTo, null, query, fragment, true);
             }
 
             // Leave absolute URL as is
@@ -99,7 +108,7 @@ namespace Microsoft.Docs.Build
             // Leave absolute file path as is
             if (Path.IsPathRooted(path))
             {
-                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null);
+                return (Errors.AbsoluteFilePath(relativeTo, path), null, null, null, null, false);
             }
 
             // Leave absolute URL path as is
@@ -129,12 +138,12 @@ namespace Microsoft.Docs.Build
                 // TODO: In case of file rename, we should warn if the content is not inside build scope.
                 //       But we should not warn or do anything with absolute URLs.
                 var (error, redirectFile) = Document.TryCreate(relativeTo.Docset, pathToDocset);
-                return (error, redirectFile, redirectTo, query, fragment);
+                return (error, redirectFile, redirectTo, query, fragment, false);
             }
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment);
+            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment, false);
         }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -130,6 +131,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
                 {
+                    string key = HttpUtility.HtmlEncode(item.Key);
                     string content;
                     if (item.Value is JArray)
                     {
@@ -143,9 +145,16 @@ namespace Microsoft.Docs.Build
                     {
                         content = item.Value.ToString();
                     }
-                    if (!string.IsNullOrEmpty(content))
+
+                    if (key.Equals("robots", StringComparison.OrdinalIgnoreCase))
                     {
-                        pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item.Key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+                        // Add to the first line
+                        key = "ROBOTS";
+                        pageMetadataOutput.Insert(0, $"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />{Environment.NewLine}");
+                    }
+                    else
+                    {
+                        pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
                     }
                 }
             }

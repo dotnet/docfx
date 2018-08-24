@@ -49,6 +49,11 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
+        /// Just for backward compatibility, Indicate that whether enable legacy output.
+        /// </summary>
+        public readonly bool Legacy = false;
+
+        /// <summary>
         /// Just for backward compatibility, the output site path prefix
         /// </summary>
         public readonly string SiteBasePath = ".";
@@ -95,11 +100,6 @@ namespace Microsoft.Docs.Build
         /// The default value is empty mappings
         /// </summary>
         public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets whether links to redirected files are resolved as redirected url
-        /// </summary>
-        public readonly bool FollowRedirect = true;
 
         /// <summary>
         /// Gets the redirection mappings

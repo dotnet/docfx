@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 content = HtmlUtility.TransformHtml(
                     content,
-                    node => node.AddLinkType(docset.Config.Locale)
+                    node => node.AddLinkType(docset.Config.Locale, !docset.Config.Legacy)
                                 .RemoveRerunCodepenIframes());
             }
             else
