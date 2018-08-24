@@ -30,12 +30,15 @@ namespace Microsoft.Docs.Build
                             return;
                         }
                         var toc = tocMap.GetNearestToc(document);
-                        legacyDependencyMap.Add(new LegacyDependencyMapItem
+                        if (toc != null)
                         {
-                            From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
-                            To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
-                            Type = LegacyDependencyMapType.Metadata,
-                        });
+                            legacyDependencyMap.Add(new LegacyDependencyMapItem
+                            {
+                                From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
+                                To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
+                                Type = LegacyDependencyMapType.Metadata,
+                            });
+                        }
                     });
 
                 foreach (var (source, dependencies) in dependencyMap)

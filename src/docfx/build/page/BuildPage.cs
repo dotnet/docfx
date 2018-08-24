@@ -37,7 +37,9 @@ namespace Microsoft.Docs.Build
             var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
 
             // TODO: add check before to avoid case failure
-            var (repoErrors, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, metadata.Value<string>("author"));
+            var (repoError, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, metadata.Value<string>("author"));
+            if (repoError != null)
+                errors.Add(repoError);
             var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
             var title = metadata.Value<string>("title") ?? conceptual?.Title;
@@ -66,7 +68,7 @@ namespace Microsoft.Docs.Build
                 ShowEdit = file.Docset.Config.Contribution.ShowEdit,
             };
 
-            return (errors.Concat(repoErrors), model, dependencies.Build());
+            return (errors, model, dependencies.Build());
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
@@ -80,12 +82,12 @@ namespace Microsoft.Docs.Build
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadYaml(content, file);
+                return LoadYaml(content, file, dependencies, bookmarkValidator, buildChild);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return LoadJson(content, file);
+                return LoadJson(content, file, dependencies, bookmarkValidator, buildChild);
             }
         }
 
@@ -110,7 +112,8 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
-            LoadYaml(string content, Document file)
+            LoadYaml(
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
             var schema = YamlUtility.ReadMime(content);
@@ -119,11 +122,12 @@ namespace Microsoft.Docs.Build
                 schema = token.Value<string>("documentType");
             }
 
-            return LoadSchemaDocument(errors, token, schema, file);
+            return LoadSchemaDocument(errors, token, schema, file, dependencies, bookmarkValidator, buildChild);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
-            LoadJson(string content, Document file)
+            LoadJson(
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
             var schemaUrl = token.Value<string>("$schema");
@@ -135,12 +139,12 @@ namespace Microsoft.Docs.Build
                 schema = Path.GetFileNameWithoutExtension(schema);
             }
 
-            return LoadSchemaDocument(errors, token, schema, file);
+            return LoadSchemaDocument(errors, token, schema, file, dependencies, bookmarkValidator, buildChild);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadSchemaDocument(
-            List<Error> errors, JToken token, string schema, Document file)
+            List<Error> errors, JToken token, string schema, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             if (schema == null || !s_schemas.TryGetValue(schema, out var schemaType))
             {
@@ -170,6 +174,13 @@ namespace Microsoft.Docs.Build
                         errors.Add(error);
                     }
                     return href;
+                }
+
+                if (attribute is MarkdownAttribute)
+                {
+                    var (html, markup) = Markup.ToHtml(reader.Value.ToString(), file, dependencies, bookmarkValidator, buildChild);
+                    errors.AddRange(markup.Errors);
+                    return html;
                 }
 
                 // TODO: handle other attributes

@@ -103,7 +103,7 @@ outputs:
   docs/a.json:
   build.manifest:
   build.log: |
-    ["warning","heading-not-found","Cannot find heading with `#` or there are some non-comments block between yaml-header and H1","docs/a.md"]
+    ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
 # Non-comments block between yaml-header and H1
 inputs:
@@ -122,7 +122,7 @@ outputs:
   docs/a.json:
   build.manifest:
   build.log: |
-    ["warning","heading-not-found","Cannot find heading with `#` or there are some non-comments block between yaml-header and H1","docs/a.md"]
+    ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
 # Comments between yaml header and H1
 inputs:
@@ -173,6 +173,52 @@ outputs:
   docs/b.json: |
     { "content": "<p>b</p>" }
   build.manifest:
+---
+# heading in included file
+inputs:
+  docfx.yml: |
+    content: docs/a.md
+    rules:
+      heading-not-found: warning
+  docs/a.md: |
+    [!INCLUDE[B](b.md)]
+    [!INCLUDE[C](c.md)]
+  docs/b.md: |
+    [!INCLUDE[D](d.md)]
+  docs/c.md: |
+    # Heading from C
+  docs/d.md: |
+    # Heading from D
+outputs:
+  docs/a.json: |
+    {
+      "content": "<h1 id=\"heading-from-c\">Heading from C</h1>",
+      "htmlTitle": "<h1 id=\"heading-from-d\">Heading from D</h1>"
+    }
+  build.manifest:
+---
+# No heading in include file
+inputs:
+  docfx.yml: |
+    content: docs/a.md
+    rules:
+      heading-not-found: warning
+  docs/a.md: |
+    [!INCLUDE[B](b.md)]
+    [!INCLUDE[C](c.md)]
+  docs/b.md: |
+    Hello
+  docs/c.md: |
+    # Heading from C
+outputs:
+  docs/a.json: |
+    {
+      "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
+      "htmlTitle": ""
+    }
+  build.manifest:
+  build.log: |
+    ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
 # note
 inputs:
