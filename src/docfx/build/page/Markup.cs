@@ -64,6 +64,10 @@ namespace Microsoft.Docs.Build
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
                     var html = Markdown.ToHtml(markdown, s_markdownPipeline);
+                    if (!t_result.HasTitle)
+                    {
+                        t_result.Errors.Add(Errors.HeadingNotFound(file));
+                    }
                     return (html, t_result);
                 }
                 finally
