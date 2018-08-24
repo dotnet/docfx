@@ -34,8 +34,14 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author, DocfxException ex)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Error.Message}");
+        public static Error AuthorNotFound(string author)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");
+
+        public static Error ResolveAuthorFailed(string author, string message)
+            => new Error(ErrorLevel.Warning, "resolve-author-failed", $"Resolve user '{author}' from GitHub failed: {message}");
+
+        public static Error ResolveCommitFailed(string sha, string repo, string message)
+            => new Error(ErrorLevel.Warning, "resolve-commit-failed", $"Resolve commit '{sha}' of repository '{repo}' from GitHub failed: {message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -120,12 +126,6 @@ namespace Microsoft.Docs.Build
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
-
-        public static Error ExceedGitHubRateLimit()
-            => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
-
-        public static Error GitHubUserNotFound()
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

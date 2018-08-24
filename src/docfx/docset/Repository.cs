@@ -16,7 +16,11 @@ namespace Microsoft.Docs.Build
 
         public GitHost Host { get; }
 
+        public string Owner { get; }
+
         public string Name { get; }
+
+        public string FullName => $"{Owner}/{Name}";
 
         public string Branch { get; }
 
@@ -45,7 +49,8 @@ namespace Microsoft.Docs.Build
             }
 
             Host = host;
-            Name = $"{account}/{repository}";
+            Owner = account;
+            Name = repository;
             Branch = branch;
             Commit = commit;
             RepositoryPath = PathUtility.NormalizeFolder(path);

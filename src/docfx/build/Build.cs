@@ -15,18 +15,19 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            var (errors, config) = Config.Load(docsetPath, options);
+            var errors = new List<Error>();
 
+            var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
-
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
-            context.Report("docfx.yml", errors);
+            context.Report("docfx.yml", configErrors);
 
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var contribution = ContributionInfo.Load(docset, options.GitToken);
+            var (contributionErrors, contribution) = await ContributionInfo.Load(docset, options.GitToken);
+            errors.AddRange(contributionErrors);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
@@ -36,6 +37,8 @@ namespace Microsoft.Docs.Build
             {
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
+
+            errors.ForEach(e => context.Report(e));
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
