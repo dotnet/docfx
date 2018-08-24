@@ -33,8 +33,11 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
-        private static readonly MarkdownPipeline s_inlineMarkdownPipeline = CreateInlineMarkdownPipeline();
+        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
+        {
+            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+            { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+        };
 
         [ThreadStatic]
         private static MarkupResult t_result;
@@ -49,6 +52,8 @@ namespace Microsoft.Docs.Build
         private static Action<Document> t_buildChild;
 
         public static MarkupResult Result => t_result;
+
+        public static MarkdownPipeline GetPipeline(MarkdownPipelineType pipelineType) => s_pipelineMapping[pipelineType];
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
@@ -71,7 +76,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = ToHtml(markdown, pipelineType);
+                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (!t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -85,18 +90,6 @@ namespace Microsoft.Docs.Build
                     t_bookmarkValidator = null;
                     t_buildChild = null;
                 }
-            }
-        }
-
-        private static string ToHtml(string markdown, MarkdownPipelineType pipelineType)
-        {
-            switch (pipelineType)
-            {
-                case MarkdownPipelineType.InlineMarkdown:
-                    return Markdown.ToHtml(markdown, s_inlineMarkdownPipeline);
-                case MarkdownPipelineType.Markdown:
-                default:
-                    return Markdown.ToHtml(markdown, s_markdownPipeline);
             }
         }
 
