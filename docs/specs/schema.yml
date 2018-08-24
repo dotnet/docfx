@@ -96,7 +96,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.yml: |
-    #YamlMime:MarkdownTestModel
+    #YamlMime:TestModel
     description: Hello `docfx`!
 outputs:
   build.manifest:
@@ -107,7 +107,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.yml: |
-    #YamlMime:MarkdownTestModel
+    #YamlMime:TestModel
     description:
 outputs:
   build.manifest:
