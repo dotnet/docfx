@@ -329,7 +329,6 @@ outputs:
                       }
                   ],
                   "toc_title":"Topic1.2 Language Java",
-                  "href": ""
                 }
             ],
             "toc_title":"Topic1",
@@ -1012,4 +1011,56 @@ outputs:
   docs/dir1/aa/TOC.json:
   docs/dir1/c/file1.json: |
     {"toc": "../a/TOC.json"}
+  build.manifest:
+---
+# Bad Toc markdown
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # [good](test.md)
+    [bad1]()
+    #[bad2](test.md)
+    >_<
+    #bad4
+  docs/test.md:
+outputs:
+  docs/test.json:
+  build.manifest:
+  build.log: |
+    ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)' is invalided","docs/TOC.md",1]
+    ["error","invalid-toc-syntax","The toc syntax '>_<\n#bad4' is invalided","docs/TOC.md",3]
+---
+# Skip-level Toc markdown
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # level 1
+    ### level 3
+outputs:
+  build.manifest:
+  build.log: |
+    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md"]
+---
+# Missing TOC head name
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # Title
+    ##
+outputs:
+  build.manifest:
+  build.log: |
+    ["error","missing-toc-head","The toc head name is missing","docs/TOC.md",1]
+---
+# Multiple Toc head names, following the below picking up order
+# 1. link inlie display name
+# 1. link inline name
+# 2. literal inline name
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # Title **Title2** [Title3](https://github.com/docfx)
+outputs:
+  docs/TOC.json: |
+    {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
   build.manifest:
