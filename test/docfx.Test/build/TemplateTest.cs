@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     public class TemplateTest
     {
         [Theory]
-        [InlineData(typeof(TestModel), "{'description':'hello'}", "<div>hello</div>")]
+        [InlineData(typeof(TestModel), "{'description':'hello'}", "<div>{&quot;Description&quot;:&quot;hello&quot;}</div>")]
         public async Task RenderTemplate(Type pageType, string json, string html)
         {
             var model = JsonConvert.DeserializeObject(json.Replace('\'', '"'), pageType);
