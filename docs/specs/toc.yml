@@ -1012,6 +1012,7 @@ outputs:
   docs/dir1/c/file1.json: |
     {"toc": "../a/TOC.json"}
   build.manifest:
+---
 # Bad Toc markdown
 inputs:
   docfx.yml:
