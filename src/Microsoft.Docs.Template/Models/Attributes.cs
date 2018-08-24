@@ -28,4 +28,10 @@ namespace Microsoft.Docs.Build
     {
         public MarkdownAttribute() => RequiredType = typeof(string);
     }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class InlineMarkdownAttribute : DataTypeAttribute
+    {
+        public InlineMarkdownAttribute() => RequiredType = typeof(string);
+    }
 }

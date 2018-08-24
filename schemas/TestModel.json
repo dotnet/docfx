@@ -4,6 +4,9 @@
   "properties": {
     "description": {
       "type": "string"
+    },
+    "inlineDescription": {
+      "type": "string"
     }
   }
 }
