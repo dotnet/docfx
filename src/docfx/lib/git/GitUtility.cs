@@ -132,8 +132,6 @@ namespace Microsoft.Docs.Build
             return ExecuteNonQuery(cwd, cmd);
         }
 
-
-
         /// <summary>
         /// Fetch update from remote
         /// </summary>
