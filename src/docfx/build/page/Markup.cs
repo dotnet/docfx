@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Markdig;
+using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -13,6 +14,7 @@ namespace Microsoft.Docs.Build
     {
         Markdown,
         InlineMarkdown,
+        TocMarkdown,
     }
 
     internal static class Markup
@@ -37,6 +39,7 @@ namespace Microsoft.Docs.Build
         {
             { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
             { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+            { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
         };
 
         [ThreadStatic]
@@ -53,7 +56,25 @@ namespace Microsoft.Docs.Build
 
         public static MarkupResult Result => t_result;
 
-        public static MarkdownPipeline GetPipeline(MarkdownPipelineType pipelineType) => s_pipelineMapping[pipelineType];
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
+        {
+            if (t_result != null)
+            {
+                throw new NotImplementedException("Nested call to Markup.ToHtml");
+            }
+
+            try
+            {
+                t_result = new MarkupResult();
+                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
+
+                return (ast, t_result);
+            }
+            finally
+            {
+                t_result = null;
+            }
+        }
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
@@ -117,6 +138,17 @@ namespace Microsoft.Docs.Build
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
                 .UseInlineOnly()
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateTocPipeline()
+        {
+            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
                 .Build();
         }
 

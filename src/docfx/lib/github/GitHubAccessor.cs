@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.ResolveCommitFailed(commitSha, $"{repoOwner}/{repoName}", ex.Message), null);
             }
 
-            return (null, author.Login);
+            return (null, author?.Login);
         }
 
         private UserProfile ToUserProfile(User user)

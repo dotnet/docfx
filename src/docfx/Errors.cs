@@ -49,6 +49,15 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
+        public static Error MissingTocHead(Range range, string filePath)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
+
+        public static Error InvalidTocSyntax(Range range, string filePath, string syntax)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalided", filePath, range);
+
+        public static Error InvalidTocLevel(string filePath, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
+
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
