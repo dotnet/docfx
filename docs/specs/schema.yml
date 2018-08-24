@@ -92,3 +92,27 @@ outputs:
   build.log: |
    ["error","violate-schema","Field with attribute 'Microsoft.Docs.Build.HrefAttribute' should be of type System.String.","docs/a.yml",3,18]
 ---
+# Support schema documents with Markdown content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestModel
+    description: Hello `docfx`!
+outputs:
+  build.manifest:
+  docs/a.json: |
+    { "content": { "description": "<p>Hello <code>docfx</code>!</p>" } }
+---
+# Markdown content with null value
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestModel
+    description:
+outputs:
+  build.manifest:
+  docs/a.json: |
+    { "content": {} }
+  build.log: |
+    ["info","null-value","'description' contains null value","docs/a.yml",2,1]
+---
