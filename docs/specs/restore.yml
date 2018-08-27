@@ -87,3 +87,21 @@ inputs:
 outputs:
   build.log: |
     ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: No such host is known"]
+---
+# Restore longpath repo
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
+  docs/test.md: 
+    "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
+    file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
+    t-for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
+    for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long\
+    -path-file-test-for-long-path-file-test-fo/for-long-path-test.md)]"
+outputs:
+  docs/test.json: |
+    {
+      "content": "<p>for long file path test.</p>"
+    }
+  build.manifest:

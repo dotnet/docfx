@@ -172,9 +172,6 @@
         "type": "string"
       }
     },
-    "followRedirect": {
-      "type": "boolean"
-    },
     "redirections": {
       "type": "object",
       "additionalProperties": {

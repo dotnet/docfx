@@ -187,6 +187,7 @@ namespace Microsoft.Docs.Build
         private static string HrefToLower(string href)
         {
             // TODO: legacy only, should not touch href
+            // TODO: not all href need tolower.
             var i = href.IndexOfAny(new[] { '#', '?' });
             return i >= 0 ? href.Substring(0, i).ToLowerInvariant() + href.Substring(i) : href.ToLowerInvariant();
         }
