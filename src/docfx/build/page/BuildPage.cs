@@ -130,7 +130,8 @@ namespace Microsoft.Docs.Build
             LoadSchemaDocument(
             List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
-            // For backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
+            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
+            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
             var obj = token as JObject;
             var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
             if (schema == null)
