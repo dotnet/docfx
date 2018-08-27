@@ -87,3 +87,11 @@ inputs:
 outputs:
   build.log: |
     ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: No such host is known"]
+---
+# Restore longpath repo
+inputs:
+  docfx.yml: |
+    dependencies:
+      docfx-test-dependencies: https://github.com/docascode/docfx-test-dependencies#restore/long-path
+outputs:
+  build.manifest:
