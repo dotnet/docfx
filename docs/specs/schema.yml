@@ -96,7 +96,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.yml: |
-    #YamlMime:TestModel
+    #YamlMime:TestPage
     description: Hello `docfx`!
 outputs:
   build.manifest:
@@ -107,7 +107,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.yml: |
-    #YamlMime:TestModel
+    #YamlMime:TestPage
     description:
 outputs:
   build.manifest:
@@ -120,7 +120,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.yml: |
-    #YamlMime:TestModel
+    #YamlMime:TestPage
     inlineDescription: >
       This is a list:
         - Item 1
@@ -132,4 +132,21 @@ outputs:
   build.manifest:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
+---
+# Output data schema to json, output page schema to html
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    link to [data.yml]
+    link to [page.yml]
+  docs/data.yml: |
+    #YamlMime:TestData
+  docs/page.yml: |
+    #YamlMime:TestPage
+outputs:
+  docs/a.json: |
+    { "content": { "" } }
+  docs/data.json:
+  docs/page.json:
+  build.manifest:
 ---

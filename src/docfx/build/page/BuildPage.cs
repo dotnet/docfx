@@ -15,9 +15,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static readonly Type[] s_schemaTypes = typeof(PageModel).Assembly.ExportedTypes.Where(type => type.GetCustomAttribute<DataSchemaAttribute>() != null).ToArray();
-        private static readonly IReadOnlyDictionary<string, Type> s_schemas = s_schemaTypes.ToDictionary(type => type.Name);
-
         public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
@@ -116,13 +113,8 @@ namespace Microsoft.Docs.Build
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
-            var schema = YamlUtility.ReadMime(content);
-            if (schema == "YamlDocument")
-            {
-                schema = token.Value<string>("documentType");
-            }
 
-            return LoadSchemaDocument(errors, token, schema, file, dependencies, bookmarkValidator, buildChild);
+            return LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
@@ -130,30 +122,24 @@ namespace Microsoft.Docs.Build
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
-            var schemaUrl = token.Value<string>("$schema");
 
-            // TODO: be more strict
-            var schema = schemaUrl.Split('/').LastOrDefault();
-            if (schema != null)
-            {
-                schema = Path.GetFileNameWithoutExtension(schema);
-            }
-
-            return LoadSchemaDocument(errors, token, schema, file, dependencies, bookmarkValidator, buildChild);
+            return LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
         }
 
         private static (List<Error> errors, string pageType, object content, JObject metadata)
             LoadSchemaDocument(
-            List<Error> errors, JToken token, string schema, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
-            if (schema == null || !s_schemas.TryGetValue(schema, out var schemaType))
+            // For backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
+            var schema = file.Schema ?? DataSchema.GetSchema(token.Value<string>("documentType"));
+            if (schema == null)
             {
-                throw Errors.SchemaNotFound(schema).ToException();
+                throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schemaType, transform: TransformContent);
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
-            return (errors, schema, content, token.Value<JObject>("metadata"));
+            return (errors, schema.Name, content, token.Value<JObject>("metadata"));
 
             object TransformContent(DataTypeAttribute attribute, JsonReader reader)
             {

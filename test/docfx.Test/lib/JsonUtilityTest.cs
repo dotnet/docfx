@@ -16,6 +16,20 @@ namespace Microsoft.Docs.Build
     public class JsonUtilityTest
     {
         [Theory]
+        [InlineData("", null)]
+        [InlineData("[]", null)]
+        [InlineData("{}", null)]
+        [InlineData("true", null)]
+        [InlineData(" { \"$schema\"  : \"schema\"", "schema")]
+        [InlineData(" { \"$schema\": \"sche\"ma\"", "sche")]
+        [InlineData(" { \"$schema\" : \"sche\\\"ma\"", "sche\"ma")]
+        [InlineData(" { \"$schema\" : \"https://a.com/b.json\" }", "b")]
+        public void TestReadMime(string input, string schema)
+        {
+            Assert.Equal(schema, JsonUtility.ReadMime(new StringReader(input)));
+        }
+
+        [Theory]
         [InlineData(" Add --globalMetadata, --globalMetadataFile and --fileMetadataFile\n")]
         [InlineData("\r\n Hello\n")]
         [InlineData("  \r\n Hello\n")]
