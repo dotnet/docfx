@@ -22,9 +22,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
         {
             htmlAttributes = null;
+            renderProperties = new Dictionary<string, string>();
             var model = string.Empty;
             var action = string.Empty;
             var submitText = string.Empty;
@@ -60,6 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
+
             htmlAttributes = new HtmlAttributes();
             if (model != string.Empty)
             {
@@ -68,11 +70,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             htmlAttributes.AddProperty("data-action", action);
             htmlAttributes.AddClass("chromeless-form");
 
+            renderProperties.Add(new KeyValuePair<string, string>("submitText", submitText));
+
             RenderDelegate = (renderer, obj) =>
             {
+                var buttonText = "Submit";
+                obj.RenderProperties.TryGetValue("submitText", out buttonText);
+
                 renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
                 renderer.WriteLine("<div></div>");
-                renderer.WriteLine($"<button disabled=\"disabled\" type=\"submit\">{submitText}</button>");
+                renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{buttonText}</button>");
                 renderer.WriteLine("</form>");
 
                 return true;
