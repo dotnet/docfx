@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             {
                 var filePath = Path.Combine(docsetPath, file);
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                File.WriteAllText(filePath, content);
+                File.WriteAllText(filePath, content?.Replace("\n", Environment.NewLine));
             }
 
             return (docsetPath, spec);

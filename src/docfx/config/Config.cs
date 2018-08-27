@@ -49,11 +49,6 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
-        /// Just for backward compatibility, Indicate that whether enable legacy output.
-        /// </summary>
-        public readonly bool Legacy = false;
-
-        /// <summary>
         /// Just for backward compatibility, the output site path prefix
         /// </summary>
         public readonly string SiteBasePath = ".";

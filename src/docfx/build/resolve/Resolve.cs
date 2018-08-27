@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var (error, file, redirectTo, query, fragment, isSelfBookmark) = TryResolveFile(relativeTo, href);
 
             // Redirection
-            if (redirectTo != null && !relativeTo.Docset.Config.Legacy)
+            if (redirectTo != null && !relativeTo.Docset.Legacy)
             {
                 // TODO: append query and fragment to an absolute url with query and fragments may cause problems
                 return (error, redirectTo + query + fragment, null, null);
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == relativeTo)
             {
-                if (relativeTo.Docset.Config.Legacy)
+                if (relativeTo.Docset.Legacy)
                 {
                     if (isSelfBookmark)
                     {

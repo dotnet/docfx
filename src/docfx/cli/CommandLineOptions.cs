@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                 },
-                ["legacy"] = Legacy,
             };
         }
     }
