@@ -34,14 +34,29 @@ namespace Microsoft.Docs.Build
         public static Error DependenyRepoNotFound(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
 
-        public static Error AuthorNotFound(string author, DocfxException ex)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized: {ex.Error.Message}");
+        public static Error AuthorNotFound(string author)
+            => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");
+
+        public static Error ResolveAuthorFailed(string author, string message)
+            => new Error(ErrorLevel.Warning, "resolve-author-failed", $"Resolve user '{author}' from GitHub failed: {message}");
+
+        public static Error ResolveCommitFailed(string sha, string repo, string message)
+            => new Error(ErrorLevel.Warning, "resolve-commit-failed", $"Resolve commit '{sha}' of repository '{repo}' from GitHub failed: {message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
 
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
+
+        public static Error MissingTocHead(Range range, string filePath)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
+
+        public static Error InvalidTocSyntax(Range range, string filePath, string syntax)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalided", filePath, range);
+
+        public static Error InvalidTocLevel(string filePath, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
 
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
@@ -120,12 +135,6 @@ namespace Microsoft.Docs.Build
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
-
-        public static Error ExceedGitHubRateLimit()
-            => new Error(ErrorLevel.Warning, "exceed-github-rate-limit", "GitHub API rate limit exceeded");
-
-        public static Error GitHubUserNotFound()
-            => new Error(ErrorLevel.Warning, "github-user-not-found", $"User not found on GitHub");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {

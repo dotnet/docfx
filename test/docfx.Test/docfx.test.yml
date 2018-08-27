@@ -1,3 +1,5 @@
 # default config for specs in docfx
 rules:
   heading-not-found: off
+  resolve-author-failed: off
+  resolve-commit-failed: off

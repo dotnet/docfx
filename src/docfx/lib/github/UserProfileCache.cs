@@ -21,18 +21,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get user profile by user name from user profile cache or GitHub API
         /// </summary>
-        /// <exception cref="DocfxException">Thrown when user doesn't exist or GitHub rate limit exceeded</exception>
-        public async Task<UserProfile> GetByUserName(string userName)
+        public async Task<(Error error, UserProfile profile)> GetByUserName(string userName)
         {
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
+            Error error = null;
             if (!_cacheByName.TryGetValue(userName, out var userProfile))
             {
-                userProfile = await _github.GetUserProfileByName(userName);
-                AddToCache(userProfile);
+                (error, userProfile) = await _github.GetUserProfileByName(userName);
+                TryAdd(userName, userProfile);
             }
 
-            return userProfile;
+            return (error, userProfile);
         }
 
         public UserProfile GetByUserEmail(string userEmail)
@@ -43,6 +43,22 @@ namespace Microsoft.Docs.Build
                 return userProfile;
             else
                 return null;
+        }
+
+        /// <summary>
+        /// Add user profiles of all authors of commits to cache if not exist before
+        /// </summary>
+        public async Task<List<Error>> AddUsersForCommits(GitCommit[] commits, Repository repo)
+        {
+            Debug.Assert(commits != null);
+            Debug.Assert(repo != null);
+
+            var errors = new List<Error>();
+            foreach (var commit in commits)
+            {
+                await UpdateCacheByCommit(commit, repo, errors);
+            }
+            return errors;
         }
 
         /// <summary>
@@ -70,6 +86,52 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private async Task UpdateCacheByCommit(GitCommit commit, Repository repo, List<Error> errors)
+        {
+            var author = commit.AuthorEmail;
+            if (string.IsNullOrEmpty(author) || GetByUserEmail(author) != null)
+                return;
+
+            var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
+            if (authorError != null)
+                errors.Add(authorError);
+            if (authorName == null)
+                return;
+
+            var (getProfileError, profile) = await _github.GetUserProfileByName(authorName);
+            if (getProfileError != null)
+                errors.Add(getProfileError);
+            if (profile == null)
+                return;
+
+            profile.AddEmail(author);
+            AddOrUpdate(authorName, profile, (k, v) => v.AddEmail(author));
+            return;
+        }
+
+        private UserProfile AddOrUpdate(string userName, UserProfile value, Func<string, UserProfile, UserProfile> updateValueFactory)
+        {
+            var result = _cacheByName.AddOrUpdate(userName, value, updateValueFactory);
+            foreach (var email in result.GetUserEmails())
+            {
+                _cacheByEmail[email] = result;
+            }
+            return result;
+        }
+
+        private UserProfile AddOrUpdate(
+            string userName,
+            Func<string, UserProfile> addValueFactory,
+            Func<string, UserProfile, UserProfile> updateValueFactory)
+        {
+            var result = _cacheByName.AddOrUpdate(userName, addValueFactory, updateValueFactory);
+            foreach (var email in result.GetUserEmails())
+            {
+                _cacheByEmail[email] = result;
+            }
+            return result;
+        }
+
         private UserProfileCache(IDictionary<string, UserProfile> cache, string path, GitHubAccessor github)
         {
             Debug.Assert(cache != null);
@@ -87,22 +149,17 @@ namespace Microsoft.Docs.Build
             _github = github;
         }
 
-        private void AddToCache(UserProfile profile)
+        private void TryAdd(string userName, UserProfile profile)
         {
             if (profile == null)
                 return;
 
-            if (!string.IsNullOrEmpty(profile.Name))
-            {
-                _cacheByName.TryAdd(profile.Name, profile);
-            }
+            Debug.Assert(!string.IsNullOrEmpty(userName));
 
-            if (profile.UserEmails != null)
+            var result = _cacheByName.TryAdd(userName, profile);
+            foreach (var email in profile.GetUserEmails())
             {
-                foreach (var email in profile.UserEmails.Split(";"))
-                {
-                    _cacheByEmail.TryAdd(email, profile);
-                }
+                _cacheByEmail.TryAdd(email, profile);
             }
         }
     }

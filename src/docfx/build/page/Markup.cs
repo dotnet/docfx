@@ -5,10 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Markdig;
+using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
+    public enum MarkdownPipelineType
+    {
+        Markdown,
+        InlineMarkdown,
+        TocMarkdown,
+    }
+
     internal static class Markup
     {
         // In docfx 2, a localized text is prepended to quotes beginning with
@@ -27,7 +35,12 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        private static readonly MarkdownPipeline s_markdownPipeline = CreateMarkdownPipeline();
+        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
+        {
+            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+            { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+            { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
+        };
 
         [ThreadStatic]
         private static MarkupResult t_result;
@@ -43,12 +56,33 @@ namespace Microsoft.Docs.Build
 
         public static MarkupResult Result => t_result;
 
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
+        {
+            if (t_result != null)
+            {
+                throw new NotImplementedException("Nested call to Markup.ToHtml");
+            }
+
+            try
+            {
+                t_result = new MarkupResult();
+                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
+
+                return (ast, t_result);
+            }
+            finally
+            {
+                t_result = null;
+            }
+        }
+
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            MarkdownPipelineType pipelineType)
         {
             if (t_result != null)
             {
@@ -63,7 +97,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = Markdown.ToHtml(markdown, s_markdownPipeline);
+                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (!t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -91,6 +125,30 @@ namespace Microsoft.Docs.Build
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateInlineMarkdownPipeline()
+        {
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveXref(ResolveXref)
+                .UseInlineOnly()
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateTocPipeline()
+        {
+            var markdownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
                 .Build();
         }
 
