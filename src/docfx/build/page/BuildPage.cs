@@ -131,7 +131,8 @@ namespace Microsoft.Docs.Build
             List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             // For backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            var schema = file.Schema ?? Schema.GetSchema(token.Value<string>("documentType"));
+            var obj = token as JObject;
+            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
             if (schema == null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
@@ -139,7 +140,10 @@ namespace Microsoft.Docs.Build
 
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
-            return (errors, schema.Name, content, token.Value<JObject>("metadata"));
+
+            var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
+
+            return (errors, schema.Name, content, metadata);
 
             object TransformContent(DataTypeAttribute attribute, JsonReader reader)
             {

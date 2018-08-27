@@ -137,15 +137,14 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    link to [data.yml]
-    link to [page.yml]
+    link to [data](data.yml) or [page](page.yml)
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
 outputs:
   docs/a.json: |
-    { "content": { "" } }
+    { "content": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
   docs/data.json:
   docs/page.json:
   build.manifest:
