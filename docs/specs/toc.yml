@@ -1064,3 +1064,16 @@ outputs:
   docs/TOC.json: |
     {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
   build.manifest:
+---
+# Expanded and MaintainContext
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - href: https://github.com/docfx
+      maintainContext: true
+      expanded: true
+      name: "test"
+outputs:
+  docs/TOC.json: |
+    {"items": [{"maintainContext": true, "expanded": true}]}
+  build.manifest:
