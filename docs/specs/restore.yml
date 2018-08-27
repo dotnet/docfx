@@ -93,8 +93,6 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
-    rules:
-      heading-not-found: false
   docs/test.md: 
     "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
     file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
