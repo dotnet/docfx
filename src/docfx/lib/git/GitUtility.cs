@@ -118,9 +118,12 @@ namespace Microsoft.Docs.Build
         public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false)
         {
             Directory.CreateDirectory(cwd);
+
+            // clone with configuration core.longpaths turned-on
+            // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone {remote} \"{path.Replace("\\", "/")}\""
-                : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+                ? $"clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
+                : $"clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             if (bare)
                 cmd += " --bare";
