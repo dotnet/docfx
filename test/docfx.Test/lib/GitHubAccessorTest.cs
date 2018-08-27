@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             if (error == null)
             {
                 Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
-                Assert.Equal("DocFX", profile.DisplayName);
+                Assert.NotEmpty(profile.DisplayName);
                 Assert.Equal("docascode", profile.Name);
                 Assert.Equal("14800732", profile.Id);
             }
