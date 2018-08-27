@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                     {
                         return (error, query + fragment, fragment, null);
                     }
-                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(href), file.ContentType));
+                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(href), file.ContentType, file.Schema));
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
-            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType));
+            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema));
 
             if (redirectTo != null)
             {

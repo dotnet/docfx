@@ -6,10 +6,16 @@ using System;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Exports a type to be used for schema document processing
+    /// Exports a type to be processed by build pipeline into a JSON model.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class DataSchemaAttribute : Attribute { }
+    public class DataSchemaAttribute : Attribute{ }
+
+    /// <summary>
+    /// Exports a type to be processed by build pipeline into an HTML page.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class PageSchemaAttribute : DataSchemaAttribute { }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class DataTypeAttribute : Attribute
