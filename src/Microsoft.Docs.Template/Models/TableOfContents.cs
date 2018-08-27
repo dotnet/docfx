@@ -24,6 +24,12 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
+        [JsonProperty(PropertyName = "expanded")]
+        public bool? Expanded { get; set; }
+
+        [JsonProperty(PropertyName = "maintainContext")]
+        public bool? MaintainContext { get; set; }
+
         [JsonProperty(PropertyName = "children")]
         public List<TableOfContentsItem> Children { get; set; }
 

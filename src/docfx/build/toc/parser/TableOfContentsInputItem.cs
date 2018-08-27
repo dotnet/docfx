@@ -26,9 +26,9 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject Metadata { get; set; }
 
-        public bool MaintainContext { get; set; }
+        public bool? MaintainContext { get; set; }
 
-        public bool Expanded { get; set; }
+        public bool? Expanded { get; set; }
 
         [MinLength(1)]
         public List<TableOfContentsInputItem> Items { get; set; }
@@ -47,6 +47,8 @@ namespace Microsoft.Docs.Build
 
                 // TODO: legacy only, we should not touch href
                 Href = decodedHref?.ToLowerInvariant(),
+                MaintainContext = inputModel.MaintainContext,
+                Expanded = inputModel.Expanded,
                 Metadata = inputModel.Metadata,
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
