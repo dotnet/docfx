@@ -47,6 +47,8 @@ namespace Microsoft.Docs.Build
 
                 // TODO: legacy only, we should not touch href
                 Href = decodedHref?.ToLowerInvariant(),
+                MaintainContext = inputModel.MaintainContext,
+                Expanded = inputModel.Expanded,
                 Metadata = inputModel.Metadata,
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
