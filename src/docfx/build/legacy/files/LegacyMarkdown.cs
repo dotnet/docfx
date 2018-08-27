@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMarkdown
     {
-        public static void Convert(
+        public static async void Convert(
             Docset docset,
             Context context,
             Document doc,
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                content = "<div></div>";
+                content = await Template.Render(doc.Schema.Name, content);
             }
 
             var outputRootRelativePath =
