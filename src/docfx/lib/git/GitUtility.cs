@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -182,14 +181,6 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         public static Task PruneWorkTrees(string cwd)
             => ExecuteNonQuery(cwd, $"worktree prune");
-
-        /// <summary>
-        /// Set core.longpaths config in current git repository.
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="on"> core.longpaths on/off</param>
-        public static Task SetCoreLongPaths(string cwd, bool on)
-            => ExecuteNonQuery(cwd, $"config core.longpaths {on}");
 
         /// <summary>
         /// Retrieve git head version
