@@ -24,6 +24,11 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
+        /// Gets a value indicating whether enable legacy output.
+        /// </summary>
+        public bool Legacy => _options.Legacy;
+
+        /// <summary>
         /// Gets the dependent docsets
         /// </summary>
         public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
