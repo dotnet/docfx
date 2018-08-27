@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class Error
     {
+        public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
+
         public ErrorLevel Level { get; }
 
         public string Code { get; }
@@ -19,18 +21,18 @@ namespace Microsoft.Docs.Build
 
         public string File { get; }
 
-        public Range? Range { get; }
+        public Range Range { get; }
 
-        public int Line => Range?.StartLine ?? 0;
+        public int Line => Range.StartLine;
 
-        public int Column => Range?.StartCharacter ?? 0;
+        public int Column => Range.StartCharacter;
 
         public Error(
             ErrorLevel level,
             string code,
             string message,
             string file = null,
-            Range? range = null)
+            Range range = default)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
@@ -60,6 +62,34 @@ namespace Microsoft.Docs.Build
         public DocfxException ToException(Exception innerException = null)
         {
             return new DocfxException(this, innerException);
+        }
+
+        private class EqualityComparer : IEqualityComparer<Error>
+        {
+            public bool Equals(Error x, Error y)
+            {
+                return x.Level == y.Level &&
+                       x.Code == y.Code &&
+                       x.Message == y.Message &&
+                       x.File == y.File &&
+                       x.Range.StartLine == y.Range.StartLine &&
+                       x.Range.StartCharacter == y.Range.StartCharacter &&
+                       x.Range.EndLine == y.Range.EndLine &&
+                       x.Range.EndCharacter == y.Range.EndCharacter;
+            }
+
+            public int GetHashCode(Error obj)
+            {
+                return HashCode.Combine(
+                    obj.Level,
+                    obj.Code,
+                    obj.Message,
+                    obj.File,
+                    obj.Range.StartLine,
+                    obj.Range.StartCharacter,
+                    obj.Range.EndLine,
+                    obj.Range.EndCharacter);
+            }
         }
     }
 }

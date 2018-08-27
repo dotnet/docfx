@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -11,13 +11,18 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
+        private static readonly int s_maxErrors = int.TryParse(Environment.GetEnvironmentVariable("DOCFX_MAX_ERRORS"), out var n) ? n : 1000;
+
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
+        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
+
         private Lazy<TextWriter> _output;
         private Config _config;
 
         private int _errorCount;
         private int _warningCount;
+        private int _logCount;
 
         public (int err, int warn) Summary => (_errorCount, _warningCount);
 
@@ -54,13 +59,23 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            if (_output != null)
+            // NOTE:
+            // - When error count exceed DOCFX_MAX_ERRORS, duplicated errors will not be deduped
+            //   in that case the final error count and warning count may be bigger than expected.
+            //
+            // - Level override does not participate in error dedup, because level override can be determined from error code.
+            if (_logCount < s_maxErrors && _errors.TryAdd(error) && Interlocked.Increment(ref _logCount) <= s_maxErrors)
             {
-                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
-                lock (_outputLock)
+                if (_output != null)
                 {
-                    _output.Value.WriteLine(line);
+                    var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
+                    lock (_outputLock)
+                    {
+                        _output.Value.WriteLine(line);
+                    }
                 }
+
+                ConsoleLog(level, error);
             }
 
             if (level == ErrorLevel.Warning)
@@ -71,8 +86,6 @@ namespace Microsoft.Docs.Build
             {
                 Interlocked.Increment(ref _errorCount);
             }
-
-            ConsoleLog(level, error);
 
             return level == ErrorLevel.Error;
         }
@@ -105,9 +118,9 @@ namespace Microsoft.Docs.Build
             // https://github.com/dotnet/corefx/issues/2808
             // Do not lock on objects with weak identity,
             // but since this is the only way to synchronize console color
-            #pragma warning disable CA2002
+#pragma warning disable CA2002
             lock (Console.Out)
-            #pragma warning restore CA2002
+#pragma warning restore CA2002
             {
                 var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
