@@ -1,0 +1,170 @@
+@using Microsoft.Docs.Build
+@model LandingDataItem
+
+@if (@Model.Style == "unordered")
+{
+    <ul class="@Model.ClassName">
+        @foreach (var subItem in @Model.Items)
+        {
+            var listItem = subItem as LandingDataListItem;
+            <li>
+                @if (!string.IsNullOrEmpty(listItem.Content))
+                {
+                    @listItem.Content
+                }
+                else if (string.IsNullOrEmpty(listItem.Html))
+                {
+                    @listItem.Html
+                }
+                else
+                {
+                    @listItem.Text
+                }
+            </li>
+        }
+    </ul>
+}
+else if (@Model.Style == "ordered")
+{
+    <ol>
+        @foreach (var subItem in @Model.Items)
+        {
+            var listItem = subItem as LandingDataListItem;
+            <li>
+                @if (!string.IsNullOrEmpty(listItem.Content))
+                {
+                    @listItem.Content
+                }
+                else if (string.IsNullOrEmpty(listItem.Html))
+                {
+                    @listItem.Html
+                }
+                else
+                {
+                    @listItem.Text
+                }
+            </li>
+        }
+    </ol>
+}
+else if (Model.Style == "cards")
+{
+    string className = "";
+    if (Model.ClassName == "cardsF" || Model.ClassName == "cardsM")
+    {
+        className = "panelContent " + Model.ClassName;
+        if (Model.ClassName == "cardsM")
+        {
+            className += " cols cols" + (Model.Columns is null ? 4 : Model.Columns.Length).ToString();
+        }
+    }
+    else
+    {
+        className = "panelContent";
+    }
+    <ul class="@className">
+        @if (Model.Items != null)
+        {
+            @foreach (var subItem in @Model.Items)
+            {
+                var listItem = subItem as LandingDataListItem;
+                @if (@Model.ClassName == "cardsM")
+                {
+                    <li>
+                        <a classs="card" href="@listItem.Href">
+                            @if (listItem.Image?.Src != null)
+                            {
+                                <img class="cardImage" role="presentation" alt="@listItem.Image.Alt" src="@listItem.Image.Src">
+                                <div class="cardText">
+                                    <h3>@listItem.Title</h3>
+                                    @if (!string.IsNullOrEmpty(listItem.Text))
+                                    {
+                                        <p>@listItem.Text</p>
+                                    }
+                                    else if (!string.IsNullOrEmpty(listItem.Html))
+                                    {
+                                        // TODO: remove html tags
+                                        <p>@listItem.Html</p>
+                                    }
+                                </div>
+                            }
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <div class="cardSize">
+                            <div class="cardPaddinng">
+                                <div class="card">
+                                    @if (listItem.Image != null)
+                                    {
+                                        <div class="cardImageOuter">
+                                            <div class="cardImage">
+                                                @if (!string.IsNullOrEmpty(listItem.Image.Href))
+                                                {
+                                                    <a href="@listItem.Image.Href">
+                                                        <img alt="@listItem.Image.Alt" src="@listItem.Image.Src">
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="cardText">
+                                        @if (!string.IsNullOrEmpty(listItem.Title))
+                                        {
+                                            if (!string.IsNullOrEmpty(listItem.Href))
+                                            {
+                                                <h3>
+                                                    <a href="@listItem.Href" />
+                                                </h3>
+                                            }
+                                            else
+                                            {
+                                                <h3>@listItem.Title</h3>
+                                            }
+                                        }
+                                        @if (!string.IsNullOrEmpty(listItem.Content))
+                                        {
+                                            @listItem.Content
+                                        }
+                                        else if (!string.IsNullOrEmpty(listItem.Html))
+                                        {
+                                            @listItem.Html
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            }
+        }
+
+    </ul>
+}
+else if (@Model.Style == "icon48")
+{
+    <div class="'icon48'+'Case halfStack'">
+        @if (@Model.Items != null)
+        {
+            @foreach (var subItem in @Model.Items)
+            {
+                var listItem = subItem as LandingDataListItem;
+                @if (listItem.Image != null)
+                {
+                    <div class="48Link">
+                        @if (!string.IsNullOrEmpty(listItem.Title))
+                        {
+                            <h3>@listItem.Title</h3>
+                        }
+                        <a href="@listItem.Href">
+                            <img src="@listItem.Image.Src" height="48" width="48" role="presentation" alt="@listItem.Text" />
+                            <span>@listItem.Text</span>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    </div>
+}

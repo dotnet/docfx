@@ -5,6 +5,60 @@
       "properties": {
         "description": {
           "type": "string"
+        },
+        "aside": {
+          "$ref": "#/definitions/LandingDataAside"
+        },
+        "menu": {
+          "$ref": "#/definitions/LandingDataMenu"
+        }
+      }
+    },
+    "LandingDataAside": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/LandingDataImage"
+        }
+      }
+    },
+    "LandingDataColumn": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/LandingDataImage"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataImage": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "role": {
+          "type": "string"
         }
       }
     },
@@ -16,9 +70,9 @@
           "enum": [
             "paragraph",
             "list",
+            "grid",
             "table",
-            "markdown",
-            "text"
+            "markdown"
           ]
         },
         "text": {
@@ -28,6 +82,61 @@
           "type": "string"
         },
         "className": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "boolean",
+              "object",
+              "array"
+            ]
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataColumn"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataRow"
+          }
+        }
+      }
+    },
+    "LandingDataMenu": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataRow": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataRowValue"
+          }
+        }
+      }
+    },
+    "LandingDataRowValue": {
+      "type": "object",
+      "properties": {
+        "href": {
           "type": "string"
         }
       }
