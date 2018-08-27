@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    [DataSchema]
+    [PageSchema]
     public class LandingData
     {
         public string Title { get; set; }

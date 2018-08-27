@@ -25,6 +25,11 @@ namespace Microsoft.Docs.Build
             new[] { typeof(int), typeof(int) },
             null);
 
+        public static string ReadMime(TextReader reader)
+        {
+            return ReadMime(reader.ReadLine());
+        }
+
         /// <summary>
         /// Get yaml mime type
         /// </summary>

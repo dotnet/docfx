@@ -21,6 +21,16 @@ namespace Microsoft.Docs.Build
         public ContentType ContentType { get; }
 
         /// <summary>
+        /// Gets the MIME type specifed in YAML header or JSON $schema.
+        /// </summary>
+        public string Mime { get; }
+
+        /// <summary>
+        /// Gets the schema identified by <see cref="Mime"/>.
+        /// </summary>
+        public Schema Schema { get; }
+
+        /// <summary>
         /// Gets the source file path relative to docset folder that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -94,6 +104,8 @@ namespace Microsoft.Docs.Build
             string siteUrl,
             string outputPath,
             ContentType contentType,
+            string mime,
+            Schema schema,
             bool isExperimental,
             string redirectionUrl = null)
         {
@@ -106,6 +118,8 @@ namespace Microsoft.Docs.Build
             SiteUrl = siteUrl;
             OutputPath = outputPath;
             ContentType = contentType;
+            Mime = mime;
+            Schema = schema;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
 
@@ -191,11 +205,12 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetExternalReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
+            var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type);
-            var siteUrl = PathToAbsoluteUrl(sitePath, type);
+            var sitePath = FilePathToSitePath(routedFilePath, type, schema);
+            var siteUrl = PathToAbsoluteUrl(sitePath, type, schema);
             var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
@@ -204,7 +219,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, mime, schema, isExperimental, redirectionUrl));
         }
 
         /// <summary>
@@ -273,14 +288,17 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        internal static string FilePathToSitePath(string path, ContentType contentType)
+        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema)
         {
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
+                    if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
-                        return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
+                        if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
+                        {
+                            return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
+                        }
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
@@ -290,31 +308,34 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string PathToAbsoluteUrl(string path, ContentType contentType)
+        internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema)
         {
-            var url = PathToRelativeUrl(path, contentType);
+            var url = PathToRelativeUrl(path, contentType, schema);
             return url == "." ? "/" : "/" + url;
         }
 
-        internal static string PathToRelativeUrl(string path, ContentType contentType)
+        internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema)
         {
             var url = path.Replace('\\', '/');
 
             switch (contentType)
             {
                 case ContentType.Page:
-                    var extensionIndex = url.LastIndexOf('.');
-                    if (extensionIndex >= 0)
+                    if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
-                        url = url.Substring(0, extensionIndex);
-                    }
-                    if (url.Equals("index", PathUtility.PathComparison))
-                    {
-                        return ".";
-                    }
-                    if (url.EndsWith("/index", PathUtility.PathComparison))
-                    {
-                        return url.Substring(0, url.Length - 5);
+                        var extensionIndex = url.LastIndexOf('.');
+                        if (extensionIndex >= 0)
+                        {
+                            url = url.Substring(0, extensionIndex);
+                        }
+                        if (url.Equals("index", PathUtility.PathComparison))
+                        {
+                            return ".";
+                        }
+                        if (url.EndsWith("/index", PathUtility.PathComparison))
+                        {
+                            return url.Substring(0, url.Length - 5);
+                        }
                     }
                     return url;
                 default:

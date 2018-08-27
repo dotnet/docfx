@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -63,6 +64,70 @@ namespace Microsoft.Docs.Build
         private static Func<DataTypeAttribute, JsonReader, object> t_transform;
         [ThreadStatic]
         private static string t_docsetPath;
+
+        /// <summary>
+        /// Fast pass to read MIME from $schema attribute.
+        /// </summary>
+        public static string ReadMime(TextReader reader)
+        {
+            var schema = ReadSchema(reader);
+            if (schema == null)
+                return null;
+
+            // TODO: be more strict
+            var mime = schema.Split('/').LastOrDefault();
+            if (mime != null)
+                return Path.GetFileNameWithoutExtension(schema);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Fast pass to read the value of $schema specified in JSON.
+        /// $schema must be the first attribute in the root object.
+        /// Assume input is a valid JSON. Bad input will be process though Json.NET
+        /// </summary>
+        public static string ReadSchema(TextReader reader)
+        {
+            SkipSpaces();
+
+            if (reader.Read() != '{')
+                return null;
+
+            SkipSpaces();
+
+            foreach (var expect in "\"$schema\"")
+            {
+                if (reader.Read() != expect)
+                    return null;
+            }
+
+            SkipSpaces();
+
+            if (reader.Read() != ':')
+                return null;
+
+            SkipSpaces();
+
+            if (reader.Peek() != '\"')
+                return null;
+
+            return new JsonTextReader(reader).ReadAsString();
+
+            void SkipSpaces()
+            {
+                while (true)
+                {
+                    var ch = reader.Peek();
+                    if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')
+                    {
+                        reader.Read();
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
 
         /// <summary>
         /// Serialize an object to TextWriter
