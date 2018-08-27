@@ -9,46 +9,52 @@ using System.Reflection;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DataSchema
+    internal class Schema
     {
         public Type Type { get; }
 
-        public DataSchemaAttribute Schema { get; }
+        public DataSchemaAttribute Attribute { get; }
 
         public string Name => Type.Name;
 
-        private DataSchema(Type type)
+        private Schema(Type type)
         {
             Type = type;
-            Schema = type.GetCustomAttribute<DataSchemaAttribute>();
+            Attribute = type.GetCustomAttribute<DataSchemaAttribute>();
         }
 
-        private static readonly IReadOnlyDictionary<string, DataSchema> s_schemas =
+        private static readonly IReadOnlyDictionary<string, Schema> s_schemas =
             typeof(PageModel).Assembly.ExportedTypes
             .Where(type => type.GetCustomAttribute<DataSchemaAttribute>() != null)
-            .ToDictionary(item => item.Name, item => new DataSchema(item), StringComparer.OrdinalIgnoreCase);
+            .ToDictionary(item => item.Name, item => new Schema(item), StringComparer.OrdinalIgnoreCase);
 
-        public static DataSchema GetSchema(string mime)
+        public static Schema GetSchema(string mime)
         {
-            return s_schemas.TryGetValue(mime, out var result) ? result : null;
+            return mime != null && s_schemas.TryGetValue(mime, out var result) ? result : null;
         }
 
-        public static (string mime, DataSchema schema) ReadFromFile(string filePath)
+        public static (string mime, Schema schema) ReadFromFile(string filePath)
         {
             string mime = null;
 
             if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                using (var reader = new StreamReader(filePath))
+                if (File.Exists(filePath))
                 {
-                    mime = JsonUtility.ReadMime(reader);
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = JsonUtility.ReadMime(reader);
+                    }
                 }
             }
             else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                using (var reader = new StreamReader(filePath))
+                if (File.Exists(filePath))
                 {
-                    mime = YamlUtility.ReadMime(reader);
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        mime = YamlUtility.ReadMime(reader);
+                    }
                 }
             }
 

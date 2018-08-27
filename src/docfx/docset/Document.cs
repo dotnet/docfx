@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the schema identified by <see cref="Mime"/>.
         /// </summary>
-        public DataSchema Schema { get; }
+        public Schema Schema { get; }
 
         /// <summary>
         /// Gets the source file path relative to docset folder that is:
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             string outputPath,
             ContentType contentType,
             string mime,
-            DataSchema schema,
+            Schema schema,
             bool isExperimental,
             string redirectionUrl = null)
         {
@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetExternalReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var (mime, schema) = type == ContentType.Page ? DataSchema.ReadFromFile(filePath) : default;
+            var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(filePath) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
@@ -288,12 +288,12 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        internal static string FilePathToSitePath(string path, ContentType contentType, DataSchema schema)
+        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema)
         {
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema == null || schema.Schema is PageSchemaAttribute)
+                    if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
@@ -308,20 +308,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string PathToAbsoluteUrl(string path, ContentType contentType, DataSchema schema)
+        internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema)
         {
             var url = PathToRelativeUrl(path, contentType, schema);
             return url == "." ? "/" : "/" + url;
         }
 
-        internal static string PathToRelativeUrl(string path, ContentType contentType, DataSchema schema)
+        internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema)
         {
             var url = path.Replace('\\', '/');
 
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (schema == null || schema.Schema is PageSchemaAttribute)
+                    if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
                         var extensionIndex = url.LastIndexOf('.');
                         if (extensionIndex >= 0)

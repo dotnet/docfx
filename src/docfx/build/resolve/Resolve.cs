@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                     {
                         return (error, query + fragment, fragment, null);
                     }
-                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(href), file.ContentType));
+                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(href), file.ContentType, file.Schema));
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))

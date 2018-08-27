@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
             List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             // For backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-            var schema = file.Schema ?? DataSchema.GetSchema(token.Value<string>("documentType"));
+            var schema = file.Schema ?? Schema.GetSchema(token.Value<string>("documentType"));
             if (schema == null)
             {
                 throw Errors.SchemaNotFound(file.Mime).ToException();
