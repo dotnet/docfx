@@ -20,13 +20,14 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            bool legacy)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, pageType, content, fileMetadata) = Load(file, dependencies, bookmarkValidator, buildChild);
+            var (errors, pageType, content, fileMetadata) = await Load(file, dependencies, bookmarkValidator, buildChild, legacy);
             var conceptual = content as Conceptual;
 
             var locale = file.Docset.Config.Locale;
@@ -68,9 +69,9 @@ namespace Microsoft.Docs.Build
             return (errors, model, dependencies.Build());
         }
 
-        private static (List<Error> errors, string pageType, object content, JObject metadata)
+        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
             Load(
-            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, bool legacy)
         {
             var content = file.ReadText();
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -79,12 +80,12 @@ namespace Microsoft.Docs.Build
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadYaml(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild, legacy);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return LoadJson(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild, legacy);
             }
         }
 
@@ -108,27 +109,27 @@ namespace Microsoft.Docs.Build
             return (markup.Errors, "Conceptual", conceptual, markup.Metadata);
         }
 
-        private static (List<Error> errors, string pageType, object content, JObject metadata)
+        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
             LoadYaml(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, bool legacy)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
 
-            return LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, legacy);
         }
 
-        private static (List<Error> errors, string pageType, object content, JObject metadata)
+        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
             LoadJson(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, bool legacy)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
 
-            return LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, legacy);
         }
 
-        private static (List<Error> errors, string pageType, object content, JObject metadata)
+        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, bool legacy)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -141,6 +142,11 @@ namespace Microsoft.Docs.Build
 
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
+
+            if (legacy)
+            {
+                content = await Template.Render(schema.Name, content);
+            }
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
 

@@ -58,7 +58,6 @@ namespace Microsoft.Docs.Build
     {
         Paragraph,
         List,
-        Grid,
         Table,
         Markdown,
     }
@@ -80,7 +79,7 @@ namespace Microsoft.Docs.Build
 
         public string ClassName { get; set; }
 
-        public object[] Items { get; set; }
+        public LandingDataListItem[] Items { get; set; }
 
         public LandingDataColumn[] Columns { get; set; }
 

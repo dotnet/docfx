@@ -26,9 +26,9 @@ namespace Microsoft.Docs.Build
         public string Mime { get; }
 
         /// <summary>
-        /// Gets the schema identified by <see cref="Mime"/>.
+        /// Gets or sets the schema identified by <see cref="Mime"/>.
         /// </summary>
-        public Schema Schema { get; }
+        public Schema Schema { get; set; }
 
         /// <summary>
         /// Gets the source file path relative to docset folder that is:

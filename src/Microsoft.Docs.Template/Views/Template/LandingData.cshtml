@@ -1,7 +1,5 @@
 @using Microsoft.Docs.Build;
 @model LandingData
-UpdateAbstract();
-
 @functions
 {
 private void UpdateAbstract()
@@ -17,25 +15,27 @@ private void UpdateAbstract()
     }
 }
 }
-
+@{
+    UpdateAbstract();
+}
 <div class="abstractHolder">
     <div class="abstract">
         <p>@Model.Abstract.Description</p>
     </div>
     <div class="menu">
-        <div class="abstract-title">@Model.Abstract.Menu.Title</div>
+        <div class="abstract-title">@Model?.Abstract?.Menu?.Title</div>
     </div>
     <div class="aside">
-        <a href="@Model.Abstract.Aside.Href">
-            <img src="@Model.Abstract.Aside.Image.Src" alt="@Model.Abstract.Aside.Image.Alt" />
+        <a href="@Model?.Abstract?.Aside?.Href">
+            <img src="@Model?.Abstract?.Aside?.Image?.Src" alt="@Model?.Abstract?.Aside?.Image?.Alt" />
         </a>
-        <a href="@Model.Abstract.Aside.Href">@Model.Abstract.Aside.Title</a>
+        <a href="@Model?.Abstract?.Aside?.Href">@Model?.Abstract?.Aside?.Title</a>
     </div>
 </div>
-@foreach (var section in Model.Sections)
+@foreach (var sect in Model.Sections)
 {
-    <h2>section.Title</h2>
-    @foreach (var item in section.Items)
+    <h2>@sect?.Title</h2>
+    @foreach (var item in sect.Items)
     {
         @if (item.Type == LandingDataType.Paragraph)
         {
@@ -44,24 +44,6 @@ private void UpdateAbstract()
         else if (item.Type == LandingDataType.List)
         {
             @await Html.PartialAsync("BuildItemListPartial", item)
-        }
-        else if (item.Type == LandingDataType.Grid)
-        {
-            @if (item.Style == "columns")
-            {
-                <div class="columnHolder">
-                    @if (item.Items != null)
-                    {
-                        foreach (var subItem in item.Items)
-                        {
-                            var listItem = subItem as LandingDataListItem;
-                            <div class="@item.ClassName">
-                                @await Html.PartialAsync("BuildItemListPartial", subItem)
-                            </div>
-                        }
-                    }
-                </div>
-            }
         }
         else if (item.Type == LandingDataType.Table)
         {
@@ -75,10 +57,13 @@ private void UpdateAbstract()
                             @for (var i = 0; i < item.Columns.Length; i++)
                             {
                                 var column = item.Columns[i];
+                                var role = column.Image.Role ?? "";
+                                var width = column.Image.Width ?? 48;
+                                var alt = column.Title ?? $"column + {i + 2}";
                                 if (column.Image != null)
                                 {
                                     <th>
-                                        <img role="@column.Image.Role ?? ''" alt="@column.Title ?? 'column ' + i + 2" src="@column.Image.Src" width="@column.Image.Width ?? 48">
+                                        <img role="@role" alt="@alt" src="@column.Image.Src" width="@width">
                                         @column.Title != null ? <span>@column.Title</span> : ""
                                     </th>
                                 }

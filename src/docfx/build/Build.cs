@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var (contributionErrors, contribution) = await ContributionInfo.Load(docset, options.GitToken);
             errors.AddRange(contributionErrors);
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
+            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution, options.Legacy);
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
             Context context,
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution)
+            ContributionInfo contribution,
+            bool legacy)
         {
             using (Progress.Start("Building files"))
             {
@@ -65,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, bookmarkValidator, buildChild);
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, bookmarkValidator, buildChild, legacy);
                     if (hasError)
                     {
                         filesWithErrors.Add(file);
@@ -100,7 +101,8 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            bool legacy)
         {
             try
             {
@@ -114,7 +116,7 @@ namespace Microsoft.Docs.Build
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
                     case ContentType.Page:
-                        (errors, model, dependencies) = await BuildPage.Build(file, tocMap, contribution, bookmarkValidator, buildChild);
+                        (errors, model, dependencies) = await BuildPage.Build(file, tocMap, contribution, bookmarkValidator, buildChild, legacy);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
