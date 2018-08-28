@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
+        private static readonly Regex s_uriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
 
         public static HtmlNode LoadHtml(string html)
         {
