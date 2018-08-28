@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
         public void AddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.AddLinkType("zh-cn"));
