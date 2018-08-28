@@ -380,6 +380,12 @@ namespace Microsoft.Docs.Build
                 ? sourcePath
                 : mappedSourcePath;
 
+            // if source ended with index.yml, changed it to index.mda
+            if ("index.yml".Equals(Path.GetFileName(sourcePath).ToLowerInvariant()))
+            {
+                sourcePath = Path.ChangeExtension(sourcePath, ".md");
+            }
+
             // get set path from site path
             // site path doesn't contain version info according to the output spec
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));

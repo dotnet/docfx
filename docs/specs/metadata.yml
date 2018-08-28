@@ -239,3 +239,25 @@ outputs:
   azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.json:
   azure/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.json:
   build.manifest:
+---
+# index.yml is treated as index.md when calculating document id
+# id: 
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|articles/active-directory-b2c/index.md")))).ToString()
+# versionIndependentId : 
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|active-directory-b2c/index")))).ToString()
+inputs:
+  docfx.yml: |
+    product: Azure
+    name: azure-documents
+    documentId:
+      siteBasePath: articles
+    content: "**/*"
+    redirections:
+      articles/active-directory-b2c/index.yml : /test/file
+  test/file.md:
+outputs:
+  articles/active-directory-b2c/index.json: |
+    { "redirectionUrl" : "/test/file" }
+  build.manifest:
+  test/file.json: |
+    {"id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "versionIndependentId": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
