@@ -146,7 +146,6 @@ namespace Microsoft.Docs.Build
             _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache, StringComparer.OrdinalIgnoreCase);
             _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
                 from profile in cache.Values
-                where profile?.UserEmails != null
                 from email in profile.UserEmails
                 group profile by email into g
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
