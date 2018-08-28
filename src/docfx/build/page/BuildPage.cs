@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
 
-            if (legacy)
+            if (legacy && schema.Attribute is PageSchemaAttribute)
             {
                 content = await Template.Render(schema.Name, content);
             }

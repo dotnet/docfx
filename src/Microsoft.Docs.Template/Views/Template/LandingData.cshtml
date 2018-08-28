@@ -4,12 +4,12 @@
 {
 private void UpdateAbstract()
 {
-    if (Model?.Abstract?.Aside?.Title != null && Model?.Abstract?.Aside?.Image != null && string.IsNullOrEmpty(Model?.Abstract?.Aside?.Image?.Alt))
+    if (Model.Abstract?.Aside?.Title != null && Model.Abstract?.Aside?.Image != null && string.IsNullOrEmpty(Model.Abstract?.Aside?.Image?.Alt))
     {
         Model.Abstract.Aside.Image.Alt = Model.Abstract.Aside.Title;
     }
 
-    if (Model?.Abstract != null && Model?.Abstract?.Menu != null)
+    if (Model.Abstract?.Menu != null)
     {
         Model.Abstract.Aside = null;
     }
@@ -20,90 +20,96 @@ private void UpdateAbstract()
 }
 <div class="abstractHolder">
     <div class="abstract">
-        <p>@Html.Raw(Model.Abstract.Description)</p>
+        <p>@Html.Raw(Model.Abstract?.Description)</p>
     </div>
     <div class="menu">
-        <div class="abstract-title">@Model?.Abstract?.Menu?.Title</div>
+        <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
     </div>
     <div class="aside">
-        <a href="@Model?.Abstract?.Aside?.Href">
-            <img src="@Model?.Abstract?.Aside?.Image?.Src" alt="@Model?.Abstract?.Aside?.Image?.Alt" />
+        <a href="@Model.Abstract?.Aside?.Href">
+            <img src="@Model.Abstract?.Aside?.Image?.Src" alt="@Model.Abstract?.Aside?.Image?.Alt" />
         </a>
-        <a href="@Model?.Abstract?.Aside?.Href">@Model?.Abstract?.Aside?.Title</a>
+        <a href="@Model.Abstract?.Aside?.Href">@Model.Abstract?.Aside?.Title</a>
     </div>
 </div>
-@foreach (var sect in Model.Sections)
+@if (Model.Sections != null)
 {
-    <h2>@sect?.Title</h2>
-    @foreach (var item in sect.Items)
+    @foreach (var sect in Model.Sections)
     {
-        @if (item.Type == LandingDataType.Paragraph)
+        <h2>@sect.Title</h2>
+        if (sect.Items != null)
         {
-            <p>@item.Text</p>
-        }
-        else if (item.Type == LandingDataType.List)
-        {
-            @await Html.PartialAsync("BuildItemListPartial", item)
-        }
-        else if (item.Type == LandingDataType.Table)
-        {
-            if (item.Style == "dataMatrix")
+            @foreach (var item in sect.Items)
             {
-                <table class="dataMatrix">
-                    @if (item.Columns != null)
+                @if (item.Type == LandingDataType.Paragraph)
+                {
+                    <p>@item.Text</p>
+                }
+                else if (item.Type == LandingDataType.List)
+                {
+                    @await Html.PartialAsync("BuildItemListPartial", item)
+                }
+                else if (item.Type == LandingDataType.Table)
+                {
+                    if (item.Style == "dataMatrix")
                     {
-                        <tr>
-                            <th></th>
-                            @for (var i = 0; i < item.Columns.Length; i++)
+                        <table class="dataMatrix">
+                            @if (item.Columns != null)
                             {
-                                var column = item.Columns[i];
-                                var role = column.Image.Role ?? "";
-                                var width = column.Image.Width ?? 48;
-                                var alt = column.Title ?? $"column + {i + 2}";
-                                if (column.Image != null)
+                                <tr>
+                                    <th></th>
+                                    @for (var i = 0; i < item.Columns.Length; i++)
+                                    {
+                                        var column = item.Columns[i];
+                                        var role = column.Image.Role ?? "";
+                                        var width = column.Image.Width ?? 48;
+                                        var alt = column.Title ?? $"column + {i + 2}";
+                                        if (column.Image != null)
+                                        {
+                                            <th>
+                                                <img role="@role" alt="@alt" src="@column.Image.Src" width="@width">
+                                                @column.Title != null ? <span>@column.Title</span> : ""
+                                            </th>
+                                        }
+                                    }
+                                </tr>
+                            }
+                            @if (item.Rows != null)
+                            {
+                                foreach (var row in item.Rows)
                                 {
-                                    <th>
-                                        <img role="@role" alt="@alt" src="@column.Image.Src" width="@width">
-                                        @column.Title != null ? <span>@column.Title</span> : ""
-                                    </th>
+                                    <tr>
+                                        <td>@row.Title</td>
+                                        @if (item.Columns != null)
+                                        {
+                                            <td>
+                                                @for (var i = 0; i < item.Columns.Length; i++)
+                                                {
+                                                    @if (row.Values != null && row.Values.Length > i && row.Values[i]?.Href != null)
+                                                    {
+                                                        var title = row.Title;
+                                                        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(item.Columns[i].Title))
+                                                        {
+                                                            title = item.Columns[i].Title + " " + title;
+                                                        }
+                                                        <a href="@row.Values[i].Href" aria-lable="@title">
+                                                            <span rolw="presentation" class="docons docon-external-link" aria-hidden="true"></span>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
                                 }
                             }
-                        </tr>
+                        </table>
                     }
-                    @if (item.Rows != null)
-                    {
-                        foreach (var row in item.Rows)
-                        {
-                            <tr>
-                                <td>@row.Title</td>
-                                @if (item.Columns != null)
-                                {
-                                    <td>
-                                        @for (var i = 0; i < item.Columns.Length; i++)
-                                        {
-                                            @if (row.Values != null && row.Values[i]?.Href != null)
-                                            {
-                                                var title = row.Title;
-                                                if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(item.Columns[i].Title))
-                                                {
-                                                    title = item.Columns[i].Title + " " + title;
-                                                }
-                                                <a href="@row.Values[i].Href" aria-lable="@title">
-                                                    <span rolw="presentation" class="docons docon-external-link" aria-hidden="true"></span>
-                                                </a>
-                                            }
-                                        }
-                                    </td>
-                                }
-                            </tr>
-                        }
-                    }
-                </table>
+                }
+                else if (item.Type == LandingDataType.Markdown)
+                {
+                    @item.Text
+                }
             }
-        }
-        else if (item.Type == LandingDataType.Markdown)
-        {
-            @item.Text
         }
     }
 }
