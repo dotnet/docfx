@@ -35,7 +35,7 @@ else if (@Model.Style == "ordered")
                 }
                 else if (!string.IsNullOrEmpty(listItem?.Html))
                 {
-                    @listItem?.Html
+                    @Html.Raw(listItem?.Html)
                 }
                 else
                 {
@@ -76,12 +76,12 @@ else if (Model.Style == "cards")
                                     <h3>@listItem.Title</h3>
                                     @if (!string.IsNullOrEmpty(listItem.Text))
                                     {
-                                        <p>@listItem.Text</p>
+                                        <p>listItem.Text</p>
                                     }
                                     else if (!string.IsNullOrEmpty(listItem.Html))
                                     {
                                         // TODO: remove html tags
-                                        <p>@listItem.Html</p>
+                                        <p>@Html.Raw(listItem.Html)</p>
                                     }
                                 </div>
                             }
@@ -127,7 +127,7 @@ else if (Model.Style == "cards")
                                         }
                                         else if (!string.IsNullOrEmpty(listItem?.Html))
                                         {
-                                            @listItem?.Html
+                                            @Html.Raw(listItem?.Html)
                                         }
                                     </div>
                                 </div>

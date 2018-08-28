@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMarkdown
     {
-        public static async void Convert(
+        public static void Convert(
             Docset docset,
             Context context,
             Document doc,
@@ -30,10 +30,6 @@ namespace Microsoft.Docs.Build
                     content,
                     node => node.AddLinkType(docset.Config.Locale)
                                 .RemoveRerunCodepenIframes());
-            }
-            else
-            {
-                content = await Template.Render(doc.Schema.Name, content);
             }
 
             var outputRootRelativePath =

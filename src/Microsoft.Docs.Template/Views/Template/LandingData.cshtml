@@ -20,7 +20,7 @@ private void UpdateAbstract()
 }
 <div class="abstractHolder">
     <div class="abstract">
-        <p>@Model.Abstract.Description</p>
+        <p>@Html.Raw(Model.Abstract.Description)</p>
     </div>
     <div class="menu">
         <div class="abstract-title">@Model?.Abstract?.Menu?.Title</div>
