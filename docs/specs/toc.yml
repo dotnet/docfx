@@ -169,7 +169,7 @@ inputs:
     # [Index Reference](index.md)
     ## Absolute File Reference
     ### [Reference Absolute path 1](https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906)
-    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=/help/breadcrumb/TOC.json)
+    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
 outputs:
   docs/index.json:
   docs/TOC.json: |
@@ -181,11 +181,11 @@ outputs:
                   "children":[  
                       {  
                         "toc_title":"Reference Absolute path 1",
-                        "href":"https://worldready.cloudapp.net/styleguide/read?id=2700&topicid=26906"
+                        "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906"
                       },
                       {  
                         "toc_title":"Reference Absolute Path 2",
-                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/toc.json&bc=/help/breadcrumb/toc.json"
+                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json"
                       }
                   ],
                   "toc_title":"Absolute File Reference"
