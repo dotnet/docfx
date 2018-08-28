@@ -82,11 +82,11 @@ namespace Microsoft.Docs.Build
                 switch (level)
                 {
                     case ErrorLevel.Error:
-                        return _errorCount >= MaxErrors;
+                        return Volatile.Read(ref _errorCount) >= MaxErrors;
                     case ErrorLevel.Warning:
-                        return _warningCount >= MaxErrors;
+                        return Volatile.Read(ref _warningCount) >= MaxErrors;
                     default:
-                        return _infoCount >= MaxErrors;
+                        return Volatile.Read(ref _infoCount) >= MaxErrors;
                 }
             }
 
