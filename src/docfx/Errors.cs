@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
         public static Error ExceedMaxErrors(int maxErrors)
-            => new Error(ErrorLevel.Error, "exceed-max-errors", $"Errors or warnings exceed maximum allowed count '{maxErrors}'.");
+            => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
         private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
         {
