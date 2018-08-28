@@ -24,9 +24,11 @@ namespace Microsoft.Docs.Build
         private int _warningCount;
         private int _infoCount;
 
-        public int Errors => _errorCount;
+        private int _maxExceeded;
 
-        public int Warnings => _warningCount;
+        public int ErrorCount => _errorCount;
+
+        public int WarningCount => _warningCount;
 
         public Report(bool legacy = false)
         {
@@ -61,23 +63,21 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            if (!ReachedMaxErrors() && _errors.TryAdd(error) && !IncrementReachedMaxErrors())
+            if (ReachMaxErrors())
             {
-                if (_output != null)
+                if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
-                    lock (_outputLock)
-                    {
-                        _output.Value.WriteLine(line);
-                    }
+                    WriteCore(Errors.ExceedMaxErrors(MaxErrors), level);
                 }
-
-                ConsoleLog(level, error);
+            }
+            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
+            {
+                WriteCore(error, level);
             }
 
             return level == ErrorLevel.Error;
 
-            bool ReachedMaxErrors()
+            bool ReachMaxErrors()
             {
                 switch (level)
                 {
@@ -90,18 +90,32 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            bool IncrementReachedMaxErrors()
+            bool IncrementExceedMaxErrors()
             {
                 switch (level)
                 {
                     case ErrorLevel.Error:
-                        return Interlocked.Increment(ref _errorCount) >= MaxErrors;
+                        return Interlocked.Increment(ref _errorCount) > MaxErrors;
                     case ErrorLevel.Warning:
-                        return Interlocked.Increment(ref _warningCount) >= MaxErrors;
+                        return Interlocked.Increment(ref _warningCount) > MaxErrors;
                     default:
-                        return Interlocked.Increment(ref _infoCount) >= MaxErrors;
+                        return Interlocked.Increment(ref _infoCount) > MaxErrors;
                 }
             }
+        }
+
+        private void WriteCore(Error error, ErrorLevel level)
+        {
+            if (_output != null)
+            {
+                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
+                lock (_outputLock)
+                {
+                    _output.Value.WriteLine(line);
+                }
+            }
+
+            ConsoleLog(level, error);
         }
 
         public void Dispose()

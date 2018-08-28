@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
                 report.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
                 report.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
 
-                Assert.Equal(1, report.Errors);
-                Assert.Equal(1, report.Warnings);
+                Assert.Equal(1, report.ErrorCount);
+                Assert.Equal(1, report.WarningCount);
             }
         }
 
@@ -31,10 +31,10 @@ namespace Microsoft.Docs.Build
                     report.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
                 }
 
-                Assert.Equal(Report.MaxErrors, report.Errors);
+                Assert.Equal(Report.MaxErrors, report.ErrorCount);
 
                 report.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-                Assert.Equal(Report.MaxErrors, report.Errors);
+                Assert.Equal(Report.MaxErrors, report.ErrorCount);
             }
         }
     }

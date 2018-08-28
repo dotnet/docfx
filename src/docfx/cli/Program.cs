@@ -112,11 +112,11 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
 
-                if (report.Errors > 0 || report.Warnings > 0)
+                if (report.ErrorCount > 0 || report.WarningCount > 0)
                 {
-                    Console.ForegroundColor = report.Errors > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
+                    Console.ForegroundColor = report.ErrorCount > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
                     Console.WriteLine();
-                    Console.WriteLine($"  {report.Errors} Error(s), {report.Warnings} Warning(s)");
+                    Console.WriteLine($"  {report.ErrorCount} Error(s), {report.WarningCount} Warning(s)");
                 }
 
                 Console.ResetColor();
