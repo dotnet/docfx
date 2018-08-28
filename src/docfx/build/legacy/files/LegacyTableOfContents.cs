@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             context.WriteJson(new { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
 
-        private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentItem> items)
+        private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
         {
             if (items == null)
             {
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     // that's breadcrumbs
                     Debug.Assert(HrefUtility.IsAbsoluteHref(item.TocHref));
                     item.HomePage = item.Href; // href is got from topic href or href of input model
-                    item.Href = item.TocHref; // set href to toc href for backward compatible
+                    item.Href = item.TocHref; // set href to toc href for backward compatibility
                 }
 
                 ConvertLegacyItems(item.Children);
@@ -79,19 +79,19 @@ namespace Microsoft.Docs.Build
         private class LegacyTableOfContentsModel
         {
             [JsonProperty(PropertyName = "items")]
-            public List<LegacyTableOfContentItem> Items { get; set; }
+            public List<LegacyTableOfContentsItem> Items { get; set; }
 
             [JsonProperty(PropertyName = "metadata", NullValueHandling = NullValueHandling.Ignore)]
             public LegacyTableOfContentsMetadata Metadata { get; set; }
         }
 
-        private class LegacyTableOfContentItem : TableOfContentsItem
+        private class LegacyTableOfContentsItem : TableOfContentsItem
         {
             [JsonProperty(PropertyName = "homepage")]
             public string HomePage { get; set; }
 
             [JsonProperty(PropertyName = "children")]
-            public new List<LegacyTableOfContentItem> Children { get; set; }
+            public new List<LegacyTableOfContentsItem> Children { get; set; }
         }
     }
 }
