@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -94,7 +93,7 @@ namespace Microsoft.Docs.Build
             return (errors, models);
         }
 
-        // tod: uid support
+        // todo: uid support
         private static List<Error> ResolveTocModelItems(List<TableOfContentsInputItem> tocModelItems, List<Document> parents, Document filePath, Document rootPath, ResolveContent resolveContent, ResolveHref resolveHref)
         {
             var errors = new List<Error>();
