@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{$"{docset.Config.Product}.{docset.Config.Name}"}/{{branchName}}";
             }
 
-            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : pageModel.PageType;
+            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
             rawMetadata["_path"] = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
 
