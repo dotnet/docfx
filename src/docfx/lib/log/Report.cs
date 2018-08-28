@@ -104,6 +104,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void Dispose()
+        {
+            lock (_outputLock)
+            {
+                if (_output != null && _output.IsValueCreated)
+                {
+                    _output.Value.Dispose();
+                }
+            }
+        }
+
         private void WriteCore(Error error, ErrorLevel level)
         {
             if (_output != null)
@@ -116,17 +127,6 @@ namespace Microsoft.Docs.Build
             }
 
             ConsoleLog(level, error);
-        }
-
-        public void Dispose()
-        {
-            lock (_outputLock)
-            {
-                if (_output != null && _output.IsValueCreated)
-                {
-                    _output.Value.Dispose();
-                }
-            }
         }
 
         private static string LegacyReport(Error error, ErrorLevel level)
