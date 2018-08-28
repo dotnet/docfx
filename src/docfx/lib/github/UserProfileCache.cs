@@ -163,6 +163,7 @@ namespace Microsoft.Docs.Build
             var result = _cacheByName.TryAdd(userName, profile);
             foreach (var email in profile.UserEmails)
             {
+                Debug.Assert(!string.IsNullOrEmpty(email));
                 _cacheByEmail.TryAdd(email, profile);
             }
         }
