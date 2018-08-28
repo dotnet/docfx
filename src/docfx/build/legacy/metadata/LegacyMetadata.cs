@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{$"{docset.Config.Product}.{docset.Config.Name}"}/{{branchName}}";
             }
 
-            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
+            rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : pageModel.PageType;
 
             rawMetadata["_path"] = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
 
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
-            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata)).RemoveNulls();
+            return RemoveUpdatedAtDateTime(LegacySchema.Transform(Jint.Run(rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)
