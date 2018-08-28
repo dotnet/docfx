@@ -218,3 +218,24 @@ outputs:
       "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }
   build.manifest:
+---
+# redirect to redirect
+inputs:
+  docfx.yml: |
+    documentId:
+      siteBasePath: azure
+    name: azure-documents
+    product: Azure
+    content: "**/*"
+    routes:
+      articles/: "azure/"
+    redirections:
+      articles/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.md: /azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial
+      articles/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.md: /azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial
+  articles/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.md:
+outputs:
+  azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.json: |
+    {"id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","versionIndependentId":"bde2976d-40d3-f729-128d-0caa664da662"}
+  azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.json:
+  azure/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.json:
+  build.manifest:
