@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
                 }
                 if (href[0] == '/' || href[0] == '\\')
                 {
-                    node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
+                    node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
                     continue;
                 }
@@ -179,17 +179,9 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "external");
                     continue;
                 }
-                node.SetAttributeValue(attribute, HrefToLower(href));
+                node.SetAttributeValue(attribute, href);
                 node.SetAttributeValue("data-linktype", "relative-path");
             }
-        }
-
-        private static string HrefToLower(string href)
-        {
-            // TODO: legacy only, should not touch href
-            // TODO: not all href need tolower.
-            var i = href.IndexOfAny(new[] { '#', '?' });
-            return i >= 0 ? href.Substring(0, i).ToLowerInvariant() + href.Substring(i) : href.ToLowerInvariant();
         }
 
         private static string AddLocaleIfMissing(string href, string locale)
