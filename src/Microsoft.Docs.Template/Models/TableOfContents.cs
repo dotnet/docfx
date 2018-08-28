@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
+        [JsonProperty(PropertyName = "toc_href")]
+        public string TocHref { get; set; }
+
         [JsonProperty(PropertyName = "expanded", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
 

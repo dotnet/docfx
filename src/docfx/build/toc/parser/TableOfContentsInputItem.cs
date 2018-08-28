@@ -41,12 +41,15 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = inputModel.Href == null ? null : HttpUtility.UrlDecode(inputModel.Href);
+            var decodedTocHref = inputModel.TocHref == null ? null : HttpUtility.UrlDecode(inputModel.TocHref);
+
             return new TableOfContentsItem
             {
                 TocTitle = inputModel.DisplayName ?? inputModel.Name,
 
                 // TODO: legacy only, we should not touch href
                 Href = decodedHref?.ToLowerInvariant(),
+                TocHref = decodedTocHref?.ToLowerInvariant(), // only breadcrumb toc will set the toc href
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
                 Metadata = inputModel.Metadata,
