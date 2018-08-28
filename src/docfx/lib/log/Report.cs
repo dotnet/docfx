@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
-        private static readonly int s_maxErrors = int.TryParse(Environment.GetEnvironmentVariable("DOCFX_MAX_ERRORS"), out var n) ? n : 1000;
+        public static readonly int MaxErrors = int.TryParse(Environment.GetEnvironmentVariable("DOCFX_MAX_ERRORS"), out var n) ? n : 1000;
 
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
@@ -22,9 +22,11 @@ namespace Microsoft.Docs.Build
 
         private int _errorCount;
         private int _warningCount;
-        private int _logCount;
+        private int _infoCount;
 
-        public (int err, int warn) Summary => (_errorCount, _warningCount);
+        public int Errors => _errorCount;
+
+        public int Warnings => _warningCount;
 
         public Report(bool legacy = false)
         {
@@ -59,12 +61,7 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            // NOTE:
-            // - When error count exceed DOCFX_MAX_ERRORS, duplicated errors will not be deduped
-            //   in that case the final error count and warning count may be bigger than expected.
-            //
-            // - Level override does not participate in error dedup, because level override can be determined from error code.
-            if (_logCount < s_maxErrors && _errors.TryAdd(error) && Interlocked.Increment(ref _logCount) <= s_maxErrors)
+            if (!ReachedMaxErrors() && _errors.TryAdd(error) && !IncrementReachedMaxErrors())
             {
                 if (_output != null)
                 {
@@ -78,16 +75,33 @@ namespace Microsoft.Docs.Build
                 ConsoleLog(level, error);
             }
 
-            if (level == ErrorLevel.Warning)
+            return level == ErrorLevel.Error;
+
+            bool ReachedMaxErrors()
             {
-                Interlocked.Increment(ref _warningCount);
-            }
-            else if (level == ErrorLevel.Error)
-            {
-                Interlocked.Increment(ref _errorCount);
+                switch (level)
+                {
+                    case ErrorLevel.Error:
+                        return _errorCount >= MaxErrors;
+                    case ErrorLevel.Warning:
+                        return _warningCount >= MaxErrors;
+                    default:
+                        return _infoCount >= MaxErrors;
+                }
             }
 
-            return level == ErrorLevel.Error;
+            bool IncrementReachedMaxErrors()
+            {
+                switch (level)
+                {
+                    case ErrorLevel.Error:
+                        return Interlocked.Increment(ref _errorCount) >= MaxErrors;
+                    case ErrorLevel.Warning:
+                        return Interlocked.Increment(ref _warningCount) >= MaxErrors;
+                    default:
+                        return Interlocked.Increment(ref _infoCount) >= MaxErrors;
+                }
+            }
         }
 
         public void Dispose()
