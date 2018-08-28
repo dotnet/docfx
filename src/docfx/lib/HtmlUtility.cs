@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         private static bool IsUri(string href, bool legacy = false)
         {
             return legacy
-                ? UriWithProtocol.IsMatch(href)
+                ? s_uriWithProtocol.IsMatch(href)
                 : Uri.TryCreate(href, UriKind.Absolute, out _);
         }
 
