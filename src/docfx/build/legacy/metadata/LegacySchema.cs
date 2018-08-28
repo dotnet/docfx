@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
                     metadata["page_type"] = "landingdata";
                     break;
 
+                case "Conceptual":
                 case "ContextObject":
                     break;
 
