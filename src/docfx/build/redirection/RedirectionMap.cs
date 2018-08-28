@@ -32,14 +32,15 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public bool TryGetDocumentId(Document file, ref (string id, string versionIndependentId) id)
+        public bool TryGetDocumentId(Document file, out (string id, string versionIndependentId) id)
         {
-            if (_redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var docId))
+            if (_redirectionsByRedirectionUrl.TryGetValue(file.SiteUrl, out var doc))
             {
-                id = docId.Id;
-                return TryGetDocumentId(docId, ref id) || true;
+                id = TryGetDocumentId(doc, out var docId) ? docId : doc.Id;
+                return true;
             }
 
+            id = default;
             return false;
         }
 

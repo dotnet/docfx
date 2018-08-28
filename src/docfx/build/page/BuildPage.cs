@@ -34,8 +34,7 @@ namespace Microsoft.Docs.Build
 
             var locale = file.Docset.Config.Locale;
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), fileMetadata);
-            var docId = file.Id;
-            file.Docset.Redirections.TryGetDocumentId(file, ref docId);
+            var docId = file.Docset.Redirections.TryGetDocumentId(file, out var id) ? id : file.Id;
 
             // TODO: add check before to avoid case failure
             var (repoError, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, metadata.Value<string>("author"));
