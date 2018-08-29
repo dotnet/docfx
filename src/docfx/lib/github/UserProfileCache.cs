@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -77,7 +78,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var (_, cache) = JsonUtility.Deserialize<Dictionary<string, UserProfile>>(json);
+                var (_, jObject) = JsonUtility.Deserialize<JObject>(json);
+                var (_, cache) = JsonUtility.ToObject<Dictionary<string, UserProfile>>(Normalize(jObject));
                 return new UserProfileCache(cache, cachePath, github);
             }
             catch (Exception ex)
@@ -86,10 +88,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static JObject Normalize(JObject cache)
+        {
+            foreach (var pair in cache)
+            {
+                if (pair.Value is JObject profile
+                    && profile.TryGetValue("user_emails", out var userEmails)
+                    && userEmails is JValue userEmailsValue)
+                {
+                    profile["user_emails"] = new JArray(userEmailsValue.ToString().Split(';'));
+                }
+            }
+            return cache;
+        }
+
         private async Task UpdateCacheByCommit(GitCommit commit, Repository repo, List<Error> errors)
         {
-            var author = commit.AuthorEmail;
-            if (string.IsNullOrEmpty(author) || GetByUserEmail(author) != null)
+            var email = commit.AuthorEmail;
+            if (string.IsNullOrEmpty(email) || GetByUserEmail(email) != null)
                 return;
 
             var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
@@ -98,38 +114,26 @@ namespace Microsoft.Docs.Build
             if (authorName == null)
                 return;
 
+            if (_cacheByName.TryGetValue(authorName, out var existingProfile))
+            {
+                AddEmailToUserProfile(email, existingProfile);
+                return;
+            }
+
             var (getProfileError, profile) = await _github.GetUserProfileByName(authorName);
             if (getProfileError != null)
                 errors.Add(getProfileError);
             if (profile == null)
                 return;
 
-            profile.AddEmail(author);
-            AddOrUpdate(authorName, profile, (k, v) => v.AddEmail(author));
-            return;
+            TryAdd(authorName, profile);
+            AddEmailToUserProfile(email, profile);
         }
 
-        private UserProfile AddOrUpdate(string userName, UserProfile value, Func<string, UserProfile, UserProfile> updateValueFactory)
+        private void AddEmailToUserProfile(string email, UserProfile profile)
         {
-            var result = _cacheByName.AddOrUpdate(userName, value, updateValueFactory);
-            foreach (var email in result.GetUserEmails())
-            {
-                _cacheByEmail[email] = result;
-            }
-            return result;
-        }
-
-        private UserProfile AddOrUpdate(
-            string userName,
-            Func<string, UserProfile> addValueFactory,
-            Func<string, UserProfile, UserProfile> updateValueFactory)
-        {
-            var result = _cacheByName.AddOrUpdate(userName, addValueFactory, updateValueFactory);
-            foreach (var email in result.GetUserEmails())
-            {
-                _cacheByEmail[email] = result;
-            }
-            return result;
+            profile.UserEmails.Add(email);
+            _cacheByEmail[email] = profile;
         }
 
         private UserProfileCache(IDictionary<string, UserProfile> cache, string path, GitHubAccessor github)
@@ -142,8 +146,7 @@ namespace Microsoft.Docs.Build
             _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache, StringComparer.OrdinalIgnoreCase);
             _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
                 from profile in cache.Values
-                where profile?.UserEmails != null
-                from email in profile.UserEmails.Split(";")
+                from email in profile.UserEmails
                 group profile by email into g
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
             _github = github;
@@ -157,8 +160,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
             var result = _cacheByName.TryAdd(userName, profile);
-            foreach (var email in profile.GetUserEmails())
+            foreach (var email in profile.UserEmails)
             {
+                Debug.Assert(!string.IsNullOrEmpty(email));
                 _cacheByEmail.TryAdd(email, profile);
             }
         }
