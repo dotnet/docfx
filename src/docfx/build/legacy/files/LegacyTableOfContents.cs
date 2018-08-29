@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,25 +21,17 @@ namespace Microsoft.Docs.Build
             var (_, toc) = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
             ConvertLegacyItems(toc.Items);
 
-            var firstItem = toc?.Items?.FirstOrDefault();
-            if (firstItem != null)
-            {
-                toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
-                toc.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(
-                    $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
+            toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
+            toc.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(
+                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
 
-                var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
-                toc.Metadata.PdfName = PathUtility.NormalizeFile(
-                    $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
-            }
-            else
-            {
-                toc.Metadata = null;
-            }
+            var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
+            toc.Metadata.PdfName = PathUtility.NormalizeFile(
+                $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
-            context.WriteJson(new { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(toc.Metadata.Metadata ?? new JObject { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
 
         private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
@@ -74,6 +67,9 @@ namespace Microsoft.Docs.Build
 
             [JsonProperty(PropertyName = "pdf_name")]
             public string PdfName { get; set; }
+
+            [JsonExtensionData]
+            public JObject Metadata { get; set; }
         }
 
         private class LegacyTableOfContentsModel
