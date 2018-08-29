@@ -5,6 +5,60 @@
       "properties": {
         "description": {
           "type": "string"
+        },
+        "aside": {
+          "$ref": "#/definitions/LandingDataAside"
+        },
+        "menu": {
+          "$ref": "#/definitions/LandingDataMenu"
+        }
+      }
+    },
+    "LandingDataAside": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/LandingDataImage"
+        }
+      }
+    },
+    "LandingDataColumn": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/LandingDataImage"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataImage": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "width": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
         }
       }
     },
@@ -17,8 +71,7 @@
             "paragraph",
             "list",
             "table",
-            "markdown",
-            "text"
+            "markdown"
           ]
         },
         "text": {
@@ -28,6 +81,77 @@
           "type": "string"
         },
         "className": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataListItem"
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataColumn"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataRow"
+          }
+        }
+      }
+    },
+    "LandingDataListItem": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "html": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/LandingDataImage"
+        }
+      }
+    },
+    "LandingDataMenu": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "LandingDataRow": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandingDataRowValue"
+          }
+        }
+      }
+    },
+    "LandingDataRowValue": {
+      "type": "object",
+      "properties": {
+        "href": {
           "type": "string"
         }
       }

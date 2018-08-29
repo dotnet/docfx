@@ -1,0 +1,145 @@
+@* Copyright (c) Microsoft. All rights reserved.
+   Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
+@using Microsoft.Docs.Build;
+@model LandingData
+@functions
+{
+private void UpdateAbstract()
+{
+    if (Model.Abstract?.Aside?.Title != null && Model.Abstract?.Aside?.Image != null && string.IsNullOrEmpty(Model.Abstract?.Aside?.Image?.Alt))
+    {
+        Model.Abstract.Aside.Image.Alt = Model.Abstract.Aside.Title;
+    }
+
+    if (Model.Abstract?.Menu != null)
+    {
+        Model.Abstract.Aside = null;
+    }
+}
+}
+@{
+    UpdateAbstract();
+}
+@if (Model.Abstract != null)
+{
+    <div class="abstractHolder">
+        <div class="abstract">
+            <p>@Html.Raw(Model.Abstract?.Description)</p>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title))
+        {
+            <div class="menu">
+                <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+            </div>
+        }
+        @if (Model.Abstract?.Aside != null)
+        {
+            <div class="aside">
+                @if (Model.Abstract?.Aside?.Image != null)
+                {
+                    <a href="@Model.Abstract?.Aside?.Href">
+                        <img src="@Model.Abstract?.Aside?.Image?.Src" alt="@Model.Abstract?.Aside?.Image?.Alt" />
+                    </a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Abstract?.Aside?.Title))
+                {
+                    <a href="@Model.Abstract?.Aside?.Href">@Model.Abstract?.Aside?.Title</a>
+                }
+            </div>
+        }
+    </div>
+}
+@if (Model.Sections != null)
+{
+    @foreach (var sect in Model.Sections)
+    {
+        if (!string.IsNullOrEmpty(sect.Title))
+        {
+            <h2>@sect.Title</h2>
+        }
+        if (sect.Items != null)
+        {
+            @foreach (var item in sect.Items)
+            {
+                @if (item.Type == LandingDataType.Paragraph)
+                {
+                    @Html.Raw(item.Text)
+                }
+                else if (item.Type == LandingDataType.List)
+                {
+                    @await Html.PartialAsync("BuildItemListPartial", item)
+                }
+                else if (item.Type == LandingDataType.Table)
+                {
+                    if (item.Style == "dataMatrix")
+                    {
+                        <table class="dataMatrix">
+                            @if (item.Columns != null)
+                            {
+                                <tr>
+                                    <th></th>
+                                    @for (var i = 0; i < item.Columns.Length; i++)
+                                    {
+                                        var column = item.Columns[i];
+                                        var width = column.Image.Width ?? "48px";
+                                        var alt = column.Title ?? $"column {i + 2}";
+                                        if (column.Image != null)
+                                        {
+                                            <th>
+                                                @if (!string.IsNullOrEmpty(column.Image.Role))
+                                                {
+                                                    <img role="@column.Image.Role" alt="@alt" src="@column.Image.Src" width="@width">
+                                                }
+                                                else if (!string.IsNullOrEmpty(column.Title))
+                                                {
+                                                    <img role="presentation" alt="@alt" src="@column.Image.Src" width="@width">
+                                                    <span>@column.Title</span>
+                                                }
+                                                else
+                                                {
+                                                    <img alt="@alt" src="@column.Image.Src" width="@width">
+                                                }
+                                            </th>
+                                        }
+                                    }
+                                </tr>
+                            }
+                            @if (item.Rows != null)
+                            {
+                                foreach (var row in item.Rows)
+                                {
+                                    <tr>
+                                        <td>@row.Title</td>
+                                        @if (item.Columns != null)
+                                        {
+                                            @for (var i = 0; i < item.Columns.Length; i++)
+                                            {
+                                                <td>
+                                                    @if (row.Values != null && row.Values.Length > i && row.Values[i]?.Href != null)
+                                                    {
+                                                        var title = row.Title;
+                                                        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(item.Columns[i].Title))
+                                                        {
+                                                            title = item.Columns[i].Title + " " + title;
+                                                        }
+                                                        <a href="@row.Values[i].Href" aria-label="@title">
+                                                            <span role="presentation" class="docons docon-external-link" aria-hidden="true"></span>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    }
+                }
+                else if (item.Type == LandingDataType.Markdown)
+                {
+                    @item.Text
+                }
+            }
+        }
+    }
+}
