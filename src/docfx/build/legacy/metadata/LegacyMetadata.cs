@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
             rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.HtmlTitle ?? $"<h1>{pageModel.Title}</h1>";
+            rawMetadata["rawTitle"] = pageModel.HtmlTitle ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 

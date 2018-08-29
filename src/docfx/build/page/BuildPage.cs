@@ -59,6 +59,9 @@ namespace Microsoft.Docs.Build
 
                 if (pageSchema.GitUrl)
                 {
+                    // TODO: we could avoid calculating git commit history for this file
+                    //       if `Contributors` is set to false, but git commit history also affect commitUrl.
+                    //       we may be ignore the difference after impact testing is done.
                     var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
                     model.EditUrl = editUrl;
@@ -159,13 +162,14 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaViolationErrors);
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = obj?.Value<string>("title") ?? metadata.Value<string>("title");
+            var title = metadata.Value<string>("title");
 
             var model = new PageModel
             {
                 Content = content,
                 Metadata = metadata,
                 Title = title,
+                HtmlTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
             };
 
             return (errors, schema, model);
