@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
                 EmailAddress = user.Email,
 
                 // UserEmails can only be obtained with current user's OAuth token, so we only get the user's public email
-                UserEmails = user.Email,
+                UserEmails = string.IsNullOrEmpty(user.Email) ? new List<string>() : new List<string> { user.Email },
             };
         }
     }
