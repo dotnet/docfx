@@ -31,10 +31,6 @@ namespace Microsoft.Docs.Build
                     node => node.AddLinkType(docset.Config.Locale, docset.Legacy)
                                 .RemoveRerunCodepenIframes());
             }
-            else
-            {
-                content = "<div></div>";
-            }
 
             var outputRootRelativePath =
                 PathUtility.NormalizeFolder(

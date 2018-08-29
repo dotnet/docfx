@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
-            context.WriteJson(toc.Metadata.Metadata ?? new JObject { }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(new LegacyTableOfContentsExperimentMetadata { Experimental = toc.Metadata.Experimental, ExperimentId = toc.Metadata.ExperimentId }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
 
         private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
@@ -60,16 +60,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private sealed class LegacyTableOfContentsMetadata
+        private sealed class LegacyTableOfContentsMetadata : LegacyTableOfContentsExperimentMetadata
         {
             [JsonProperty(PropertyName = "pdf_absolute_path")]
             public string PdfAbsolutePath { get; set; }
 
             [JsonProperty(PropertyName = "pdf_name")]
             public string PdfName { get; set; }
+        }
 
-            [JsonExtensionData]
-            public JObject Metadata { get; set; }
+        private class LegacyTableOfContentsExperimentMetadata
+        {
+            [JsonProperty(PropertyName = "experiment_id")]
+            public string ExperimentId { get; set; }
+
+            [JsonProperty(PropertyName = "experimental")]
+            public bool? Experimental { get; set; }
         }
 
         private class LegacyTableOfContentsModel
