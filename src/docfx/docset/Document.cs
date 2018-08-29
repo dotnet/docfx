@@ -380,7 +380,7 @@ namespace Microsoft.Docs.Build
                 ? sourcePath
                 : mappedSourcePath;
 
-            // if source ended with index.yml, changed it to index.mda
+            // if source ends with index.yml, change it to index.mda
             if ("index.yml".Equals(Path.GetFileName(sourcePath).ToLowerInvariant()))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
