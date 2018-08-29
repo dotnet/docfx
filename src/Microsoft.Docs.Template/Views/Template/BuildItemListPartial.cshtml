@@ -11,9 +11,9 @@
                 {
                     @listItem.Content
                 }
-                else if (string.IsNullOrEmpty(listItem.Html))
+                else if (!string.IsNullOrEmpty(listItem.Html))
                 {
-                    @listItem.Html
+                    @Html.Raw(listItem.Html)
                 }
                 else
                 {
@@ -48,12 +48,19 @@ else if (@Model.Style == "ordered")
 else if (Model.Style == "cards")
 {
     string className = "";
-    if (Model.ClassName == "cardsF" || Model.ClassName == "cardsM")
+    if (!string.IsNullOrEmpty(Model.ClassName))
     {
-        className = "panelContent " + Model.ClassName;
-        if (Model.ClassName == "cardsM")
+        if (Model.ClassName == "cardsF" || Model.ClassName == "cardsM")
         {
-            className += " cols cols" + (Model.Columns is null ? 4 : Model.Columns.Length).ToString();
+            className = "panelContent " + Model.ClassName;
+            if (Model.ClassName == "cardsM")
+            {
+                className += " cols cols" + (Model.Columns is null ? 4 : Model.Columns.Length).ToString();
+            }
+        }
+        else
+        {
+            className = "panelContent " + Model.ClassName;
         }
     }
     else
@@ -68,10 +75,10 @@ else if (Model.Style == "cards")
                 @if (@Model.ClassName == "cardsM")
                 {
                     <li>
-                        <a classs="card" href="@listItem.Href">
+                        <a class="card" href="@listItem.Href">
                             @if (listItem.Image?.Src != null)
                             {
-                                <img class="cardImage" role="presentation" alt="@listItem.Image.Alt" src="@listItem.Image.Src">
+                                <img class="cardImage" role="presentation" src="@listItem.Image.Src">
                                 <div class="cardText">
                                     <h3>@listItem.Title</h3>
                                     @if (!string.IsNullOrEmpty(listItem.Text))
@@ -92,7 +99,7 @@ else if (Model.Style == "cards")
                 {
                     <li>
                         <div class="cardSize">
-                            <div class="cardPaddinng">
+                            <div class="cardPadding">
                                 <div class="card">
                                     @if (listItem?.Image != null)
                                     {
@@ -113,7 +120,7 @@ else if (Model.Style == "cards")
                                             if (!string.IsNullOrEmpty(listItem?.Href))
                                             {
                                                 <h3>
-                                                    <a href="@listItem?.Href" />
+                                                    <a href="@listItem?.Href">@listItem?.Title</a>
                                                 </h3>
                                             }
                                             else
@@ -140,22 +147,37 @@ else if (Model.Style == "cards")
 
     </ul>
 }
-else if (@Model.Style == "icon48")
+else if (Model.Style.StartsWith("icon"))
 {
-    <div class="'icon48'+'Case halfStack'">
+    string outerClass = "";
+    string innerClass = "";
+    string heightWidth = "";
+    if (Model.Style == "icon48")
+    {
+        outerClass = "ico48Case halfStack";
+        innerClass = "ico48Link";
+        heightWidth = "48px";
+    }
+    else if (Model.Style == "icon64")
+    {
+        outerClass = "ico64Case halfStack";
+        innerClass = "ico64Link";
+        heightWidth = "64px";
+    }
+    <div class="@outerClass">
         @if (@Model.Items != null)
         {
             @foreach (var listItem in @Model.Items)
             {
                 @if (listItem?.Image != null)
                 {
-                    <div class="48Link">
+                    <div class="@innerClass">
                         @if (!string.IsNullOrEmpty(listItem?.Title))
                         {
                             <h3>@listItem?.Title</h3>
                         }
                         <a href="@listItem?.Href">
-                            <img src="@listItem?.Image?.Src" height="48" width="48" role="presentation" alt="@listItem?.Text" />
+                            <img src="@listItem?.Image?.Src" height=@heightWidth width=@heightWidth role="presentation" alt="@listItem?.Text" />
                             <span>@listItem?.Text</span>
                         </a>
                     </div>

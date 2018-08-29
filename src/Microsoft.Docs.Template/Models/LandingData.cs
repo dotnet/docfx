@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         public string Alt { get; set; }
 
-        public int? Width { get; set; }
+        public string Width { get; set; }
 
         public string Role { get; set; }
     }
@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
     {
         public LandingDataType Type { get; set; }
 
+        [Markdown]
         public string Text { get; set; }
 
         public string Style { get; set; }

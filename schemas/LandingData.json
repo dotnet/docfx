@@ -55,7 +55,7 @@
           "type": "string"
         },
         "width": {
-          "type": "integer"
+          "type": "string"
         },
         "role": {
           "type": "string"
