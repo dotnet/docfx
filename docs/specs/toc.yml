@@ -169,7 +169,7 @@ inputs:
     # [Index Reference](index.md)
     ## Absolute File Reference
     ### [Reference Absolute path 1](https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906)
-    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=/help/breadcrumb/TOC.json)
+    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
 outputs:
   docs/index.json:
   docs/TOC.json: |
@@ -181,11 +181,11 @@ outputs:
                   "children":[  
                       {  
                         "toc_title":"Reference Absolute path 1",
-                        "href":"https://worldready.cloudapp.net/styleguide/read?id=2700&topicid=26906"
+                        "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906"
                       },
                       {  
                         "toc_title":"Reference Absolute Path 2",
-                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/toc.json&bc=/help/breadcrumb/toc.json"
+                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json"
                       }
                   ],
                   "toc_title":"Absolute File Reference"
@@ -486,7 +486,6 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
-    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
 ---
 # Topic href can replace href
 inputs:
@@ -657,7 +656,6 @@ outputs:
   build.log: |
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/TOC.yml"]
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
   build.manifest:
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
@@ -756,7 +754,6 @@ outputs:
   build.log: |
     ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml"]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
-    ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
 ---
 # Toc href cannot reference a local file
 inputs:
@@ -774,7 +771,6 @@ outputs:
   docs/f1/a.json:
   build.manifest:
   build.log: |
-    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
 ---
 # Toc syntax error with duplicated keys

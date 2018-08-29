@@ -53,11 +53,11 @@ namespace Microsoft.Docs.Build
                     {
                         case "restore":
                             await Restore.Run(docset, options, report);
-                            Done(stopwatch.Elapsed, report.Summary);
+                            Done(stopwatch.Elapsed, report);
                             break;
                         case "build":
                             await Build.Run(docset, options, report);
-                            Done(stopwatch.Elapsed, report.Summary);
+                            Done(stopwatch.Elapsed, report);
                             break;
                     }
                     return 0;
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             return (command, docset, options);
         }
 
-        private static void Done(TimeSpan duration, (int, int) summary)
+        private static void Done(TimeSpan duration, Report report)
         {
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
             lock (Console.Out)
@@ -112,12 +112,11 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
 
-                var (err, warn) = summary;
-                if (err > 0 || warn > 0)
+                if (report.ErrorCount > 0 || report.WarningCount > 0)
                 {
-                    Console.ForegroundColor = err > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
+                    Console.ForegroundColor = report.ErrorCount > 0 ? ConsoleColor.Red : ConsoleColor.Yellow;
                     Console.WriteLine();
-                    Console.WriteLine($"  {err} Error(s), {warn} Warning(s)");
+                    Console.WriteLine($"  {report.ErrorCount} Error(s), {report.WarningCount} Warning(s)");
                 }
 
                 Console.ResetColor();
