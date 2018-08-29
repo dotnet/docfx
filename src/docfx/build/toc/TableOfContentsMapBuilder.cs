@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         /// Tracks toc files which are included by other toc files
         /// Included toc files are excluded when finding nearest toc for an article.
         /// </summary>
-        private readonly ConcurrentDictionary<Document, byte> _referencedTocs = new ConcurrentDictionary<Document, byte>();
+        private readonly ConcurrentHashSet<Document> _referencedTocs = new ConcurrentHashSet<Document>();
 
         /// <summary>
         /// Mappings between toc and a collection of document
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             _tocToDocuments.TryAdd(tocFile, referencedDocuments);
             foreach (var referencedToc in referencedTocs)
             {
-                _referencedTocs.TryAdd(referencedToc, 0);
+                _referencedTocs.TryAdd(referencedToc);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             var experimentalTocs = new List<Document>();
             foreach (var (toc, documents) in _tocToDocuments)
             {
-                if (_referencedTocs.ContainsKey(toc))
+                if (_referencedTocs.Contains(toc))
                 {
                     // referenced toc's mapping will be ignored
                     continue;
