@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     // TODO: we could avoid calculating git commit history for this file
                     //       if `Contributors` is set to false, but git commit history also affect commitUrl.
-                    //       we may be ignore the difference after impact testing is done.
+                    //       we may ignore the difference after impact testing is done.
                     var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
 
                     model.EditUrl = editUrl;

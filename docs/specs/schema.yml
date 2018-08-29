@@ -156,5 +156,5 @@ inputs:
     #YamlMime:TestPage
 outputs:
   docs/a.json: |
-    { "!contributors": null, "!author": null, "!updatedAt": null }
+    { "!contributors": null, "!author": null }
   build.manifest:
