@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "self-bookmark");
                     continue;
                 }
-                if (href[0] == '/' || href[0] == '\\')
+                if ((href[0] == '/' || href[0] == '\\') && !href.StartsWith("//"))
                 {
                     node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
         private static bool IsUri(string href, bool legacy = false)
         {
             return legacy
-                ? s_uriWithProtocol.IsMatch(href)
+                ? href.StartsWith("//") || s_uriWithProtocol.IsMatch(href)
                 : Uri.TryCreate(href, UriKind.Absolute, out _);
         }
 
