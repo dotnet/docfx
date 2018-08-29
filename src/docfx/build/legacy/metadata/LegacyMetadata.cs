@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
             }
 
-            return RemoveUpdatedAtDateTime(Jint.Run(rawMetadata)).RemoveNulls();
+            return RemoveUpdatedAtDateTime(LegacySchema.Transform(Jint.Run(rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static string GenerateLegacyPageMetadata(JObject rawMetadata)

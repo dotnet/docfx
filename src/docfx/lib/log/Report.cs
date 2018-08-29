@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -11,15 +11,24 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
+        public static readonly int MaxErrors = int.TryParse(Environment.GetEnvironmentVariable("DOCFX_MAX_ERRORS"), out var n) ? n : 1000;
+
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
+        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
+
         private Lazy<TextWriter> _output;
         private Config _config;
 
         private int _errorCount;
         private int _warningCount;
+        private int _infoCount;
 
-        public (int err, int warn) Summary => (_errorCount, _warningCount);
+        private int _maxExceeded;
+
+        public int ErrorCount => _errorCount;
+
+        public int WarningCount => _warningCount;
 
         public Report(bool legacy = false)
         {
@@ -54,27 +63,45 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            if (_output != null)
+            if (ReachMaxErrors())
             {
-                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
-                lock (_outputLock)
+                if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    _output.Value.WriteLine(line);
+                    WriteCore(Errors.ExceedMaxErrors(MaxErrors), level);
+                }
+            }
+            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
+            {
+                WriteCore(error, level);
+            }
+
+            return level == ErrorLevel.Error;
+
+            bool ReachMaxErrors()
+            {
+                switch (level)
+                {
+                    case ErrorLevel.Error:
+                        return Volatile.Read(ref _errorCount) >= MaxErrors;
+                    case ErrorLevel.Warning:
+                        return Volatile.Read(ref _warningCount) >= MaxErrors;
+                    default:
+                        return Volatile.Read(ref _infoCount) >= MaxErrors;
                 }
             }
 
-            if (level == ErrorLevel.Warning)
+            bool IncrementExceedMaxErrors()
             {
-                Interlocked.Increment(ref _warningCount);
+                switch (level)
+                {
+                    case ErrorLevel.Error:
+                        return Interlocked.Increment(ref _errorCount) > MaxErrors;
+                    case ErrorLevel.Warning:
+                        return Interlocked.Increment(ref _warningCount) > MaxErrors;
+                    default:
+                        return Interlocked.Increment(ref _infoCount) > MaxErrors;
+                }
             }
-            else if (level == ErrorLevel.Error)
-            {
-                Interlocked.Increment(ref _errorCount);
-            }
-
-            ConsoleLog(level, error);
-
-            return level == ErrorLevel.Error;
         }
 
         public void Dispose()
@@ -86,6 +113,20 @@ namespace Microsoft.Docs.Build
                     _output.Value.Dispose();
                 }
             }
+        }
+
+        private void WriteCore(Error error, ErrorLevel level)
+        {
+            if (_output != null)
+            {
+                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
+                lock (_outputLock)
+                {
+                    _output.Value.WriteLine(line);
+                }
+            }
+
+            ConsoleLog(level, error);
         }
 
         private static string LegacyReport(Error error, ErrorLevel level)
@@ -105,9 +146,9 @@ namespace Microsoft.Docs.Build
             // https://github.com/dotnet/corefx/issues/2808
             // Do not lock on objects with weak identity,
             // but since this is the only way to synchronize console color
-            #pragma warning disable CA2002
+#pragma warning disable CA2002
             lock (Console.Out)
-            #pragma warning restore CA2002
+#pragma warning restore CA2002
             {
                 var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
