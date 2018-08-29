@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByEmail;
+        private readonly HashSet<string> _unboundEmails = new HashSet<string>();
         private readonly string _cachePath;
         private readonly GitHubAccessor _github;
 
@@ -105,14 +106,17 @@ namespace Microsoft.Docs.Build
         private async Task UpdateCacheByCommit(GitCommit commit, Repository repo, List<Error> errors)
         {
             var email = commit.AuthorEmail;
-            if (string.IsNullOrEmpty(email) || GetByUserEmail(email) != null)
+            if (string.IsNullOrEmpty(email) || GetByUserEmail(email) != null || _unboundEmails.Contains(email))
                 return;
 
             var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
             if (authorError != null)
                 errors.Add(authorError);
             if (authorName == null)
+            {
+                _unboundEmails.Add(email);
                 return;
+            }
 
             if (_cacheByName.TryGetValue(authorName, out var existingProfile))
             {
