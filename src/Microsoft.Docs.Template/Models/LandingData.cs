@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    [PageSchema]
+    [PageSchema(contributors: false)]
     public class LandingData
     {
         public string Title { get; set; }

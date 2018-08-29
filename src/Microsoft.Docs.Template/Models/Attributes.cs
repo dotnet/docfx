@@ -9,35 +9,47 @@ namespace Microsoft.Docs.Build
     /// Exports a type to be processed by build pipeline into a JSON model.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class DataSchemaAttribute : Attribute{ }
+    public class DataSchemaAttribute : Attribute { }
 
     /// <summary>
     /// Exports a type to be processed by build pipeline into an HTML page.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class PageSchemaAttribute : DataSchemaAttribute { }
+    public class PageSchemaAttribute : DataSchemaAttribute
+    {
+        public bool Contributors { get; }
+
+        public bool GitUrl { get; }
+
+        public bool DocumentId { get; }
+
+        public bool Toc { get; }
+
+        public PageSchemaAttribute(
+            bool contributors = true,
+            bool gitUrl = true,
+            bool documentId = true,
+            bool toc = true)
+        {
+            Contributors = contributors;
+            GitUrl = gitUrl;
+            DocumentId = documentId;
+            Toc = toc;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public abstract class SchemaFeatureAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class DataTypeAttribute : Attribute
     {
-        public Type RequiredType { get; set; }
+        public virtual Type TargetType => typeof(string);
     }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class HrefAttribute : DataTypeAttribute
-    {
-        public HrefAttribute() => RequiredType = typeof(string);
-    }
+    public class HrefAttribute : DataTypeAttribute { }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class MarkdownAttribute : DataTypeAttribute
-    {
-        public MarkdownAttribute() => RequiredType = typeof(string);
-    }
+    public class MarkdownAttribute : DataTypeAttribute { }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class InlineMarkdownAttribute : DataTypeAttribute
-    {
-        public InlineMarkdownAttribute() => RequiredType = typeof(string);
-    }
+    public class InlineMarkdownAttribute : DataTypeAttribute { }
 }

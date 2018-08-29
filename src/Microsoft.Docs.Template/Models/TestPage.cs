@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    [PageSchema]
+    [PageSchema(contributors: false)]
     public class TestPage
     {
         [Markdown]

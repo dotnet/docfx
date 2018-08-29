@@ -149,3 +149,12 @@ outputs:
   docs/page.json:
   build.manifest:
 ---
+# Do not include contributors in output when schema says so
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+outputs:
+  docs/a.json: |
+    { "!contributors": null, "!author": null, "!updatedAt": null }
+  build.manifest:
