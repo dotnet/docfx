@@ -252,12 +252,10 @@ inputs:
     documentId:
       siteBasePath: articles
     content: "**/*"
-    redirections:
-      articles/active-directory-b2c/index.yml : /test/file
-  test/file.md:
+  articles/active-directory-b2c/index.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
 outputs:
   articles/active-directory-b2c/index.json: |
-    { "redirectionUrl" : "/test/file" }
+    { "id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "versionIndependentId": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
   build.manifest:
-  test/file.json: |
-    {"id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "versionIndependentId": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
