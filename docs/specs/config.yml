@@ -358,7 +358,7 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be build because it is not included in docfx.yml"]
+    ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be built because it is not included in docfx.yml"]
   build.manifest:
 ---
 # Multiple errors

@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
             // pass on the command line options to its children
-            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files, _context));
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Context context)
+        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
         {
             using (Progress.Start("Globbing files"))
             {
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        context.Report(Errors.RedirectionOutOfScope(redirection));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection));
                     }
                 }
 

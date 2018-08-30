@@ -6,7 +6,7 @@ namespace Microsoft.Docs.Build
     internal enum ContentType
     {
         /// <summary>
-        /// Unknown content, will not be build
+        /// Unknown content, will not be built
         /// </summary>
         Unknown,
 
