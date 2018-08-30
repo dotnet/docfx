@@ -16,6 +16,9 @@ namespace Microsoft.Docs.Build
                     metadata["_op_layout"] = "LandingPage";
                     metadata["layout"] = "LandingPage";
                     metadata["page_type"] = "landingdata";
+
+                    metadata.Remove("_op_gitContributorInformation");
+                    metadata.Remove("_op_allContributorsStr");
                     break;
 
                 case "Conceptual":
