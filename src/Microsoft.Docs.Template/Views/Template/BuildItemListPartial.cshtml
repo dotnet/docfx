@@ -1,7 +1,8 @@
 @* Copyright (c) Microsoft. All rights reserved.
-   Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
 
-@using Microsoft.Docs.Build
+@using Microsoft.Docs.Build;
+@using Newtonsoft.Json.Linq;
 @model LandingDataItem
 
 @if (@Model.Style == "unordered")
@@ -58,7 +59,17 @@ else if (Model.Style == "cards")
             className = "panelContent " + Model.ClassName;
             if (Model.ClassName == "cardsM")
             {
-                className += " cols cols" + (Model.Columns is null ? 4 : Model.Columns.Length).ToString();
+                if (Model.Columns is JValue value)
+                {
+                    if (int.TryParse(value.ToString(), out var i))
+                    {
+                        className += " cols cols" + i.ToString();
+                    }
+                    else
+                    {
+                        className += " cols cols4";
+                    }
+                }
             }
         }
         else
