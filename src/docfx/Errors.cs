@@ -83,10 +83,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
 
         public static Error LinkOutOfScope(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be build because it is not included in docfx.yml", relativeTo.ToString());
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in docfx.yml", relativeTo.ToString());
+
+        public static Error RedirectionOutOfScope(Document redirection)
+            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in docfx.yml");
 
         public static Error LinkIsDependency(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be build because it is from a dependency docset", relativeTo.ToString());
+            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
 
         public static Error AbsoluteFilePath(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
