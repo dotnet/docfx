@@ -151,3 +151,20 @@ outputs:
   docs/page.json:
   build.manifest:
 ---
+# Markdown field with heading should not be  removed
+inputs:
+  docfx.yml:
+  docs/data.yml: |
+    #YamlMime:TestData
+  docs/page.yml: |
+    #YamlMime:TestPage
+    description: >
+      # Heading
+outputs:
+  docs/data.json:
+  docs/page.json: |
+    {
+      "content": { "description": "<h1 id=\"heading\">Heading</h1>" }
+    }
+  build.manifest:
+---

@@ -12,9 +12,10 @@ namespace Microsoft.Docs.Build
 {
     public enum MarkdownPipelineType
     {
-        Markdown,
+        ConceptualMarkdown,
         InlineMarkdown,
         TocMarkdown,
+        Markdown,
     }
 
     internal static class Markup
@@ -37,9 +38,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
         {
-            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+            { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
             { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
             { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
+            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
         };
 
         [ThreadStatic]
@@ -114,7 +116,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline()
+        private static MarkdownPipeline CreateConceptualMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -123,6 +125,19 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
                 .UseExtractTitle()
+                .UseResolveHtmlLinks(markdownContext)
+                .UseResolveXref(ResolveXref)
+                .Build();
+        }
+
+        private static MarkdownPipeline CreateMarkdownPipeline()
+        {
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
+
+            return new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UseDocfxExtensions(markdownContext)
+                .UseExtractYamlHeader()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
                 .Build();
