@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LegacyMarkdown
+    internal static class LegacyPage
     {
         public static void Convert(
             Docset docset,

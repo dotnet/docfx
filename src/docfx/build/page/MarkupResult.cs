@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         public bool HasHtml;
 
-        public JObject Metadata;
+        public JObject Metadata = new JObject();
 
         public List<Error> Errors = new List<Error>();
 
