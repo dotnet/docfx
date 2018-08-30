@@ -50,7 +50,7 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be build because it is not included in docfx.yml","docs/TOC.md"]
+    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be built because it is not included in docfx.yml","docs/TOC.md"]
   build.manifest:
 ---
 # TOC can be a json file
@@ -616,7 +616,7 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/TOC.yml"]
+    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml"]
   build.manifest:
 ---
 # Combine topic href and href(toc) => href + children
@@ -654,8 +654,8 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/TOC.yml"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
   build.manifest:
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
