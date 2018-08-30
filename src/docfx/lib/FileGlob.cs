@@ -4,24 +4,34 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class FileGlob
+    internal class FileGlob
     {
-        public static IEnumerable<string> GetFiles(string cwd, string[] patterns, string[] excludePatterns)
+        private readonly List<GlobMatcher> _includeGlobs;
+        private readonly List<GlobMatcher> _excludeGlobs;
+
+        public FileGlob(string[] patterns, string[] excludePatterns)
+        {
+            Debug.Assert(patterns != null);
+            Debug.Assert(excludePatterns != null);
+
+            var options = PathUtility.IsCaseSensitive ? GlobMatcher.DefaultCaseSensitiveOptions : GlobMatcher.DefaultOptions;
+            _includeGlobs = patterns.Select(s => new GlobMatcher(s, options)).ToList();
+            _excludeGlobs = excludePatterns.Select(s => new GlobMatcher(s, options)).ToList();
+        }
+
+        public IEnumerable<string> GetFiles(string cwd)
         {
             if (!Directory.Exists(cwd))
             {
                 return Array.Empty<string>();
             }
-
-            var options = PathUtility.IsCaseSensitive ? GlobMatcher.DefaultCaseSensitiveOptions : GlobMatcher.DefaultOptions;
-            var includeGlobs = patterns.Select(s => new GlobMatcher(s, options)).ToList();
-            var excludeGlobs = excludePatterns.Select(s => new GlobMatcher(s, options)).ToList();
             var result = new ConcurrentBag<string>();
             Parallel.ForEach(Directory.EnumerateFiles(cwd, "*.*", SearchOption.AllDirectories), MatchFile);
             return result;
@@ -37,25 +47,31 @@ namespace Microsoft.Docs.Build
                     result.Add(Path.GetFullPath(file));
                 }
             }
+        }
 
-            bool IsMatch(string path)
+        public bool IsMatch(string relativePath)
+        {
+            foreach (var glob in _includeGlobs)
             {
-                foreach (var glob in includeGlobs)
+                if (glob.Match(relativePath, false))
                 {
-                    if (glob.Match(path, false))
+                    foreach (var exclude in _excludeGlobs)
                     {
-                        foreach (var exclude in excludeGlobs)
+                        if (exclude.Match(relativePath, false))
                         {
-                            if (exclude.Match(path, false))
-                            {
-                                return false;
-                            }
+                            return false;
                         }
-                        return true;
                     }
+                    return true;
                 }
-                return false;
             }
+            return false;
+        }
+
+        public static IEnumerable<string> GetFiles(string cwd, string[] patterns, string[] excludePatterns)
+        {
+            var fileGlob = new FileGlob(patterns, excludePatterns);
+            return fileGlob.GetFiles(cwd);
         }
     }
 }

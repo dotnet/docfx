@@ -100,10 +100,22 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
-                               .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
-                               .Concat(redirections)
-                               .ToHashSet();
+                var fileGlob = new FileGlob(Config.Content.Include, Config.Content.Exclude);
+                var files = fileGlob.GetFiles(DocsetPath).Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file))).ToHashSet();
+
+                foreach (var redirection in redirections)
+                {
+                    if (fileGlob.IsMatch(redirection.FilePath))
+                    {
+                        files.Add(redirection);
+                    }
+                    else
+                    {
+                        _context.Report(Errors.RedirectionOutOfScope(redirection));
+                    }
+                }
+
+                return files;
             }
         }
     }
