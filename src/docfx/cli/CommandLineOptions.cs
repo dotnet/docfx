@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public string GitToken;
+        public string GithubToken;
 
         public JObject ToJObject()
         {
