@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,53 +20,33 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
+            Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, pageType, content, fileMetadata) = await Load(file, dependencies, bookmarkValidator, buildChild);
-            var conceptual = content as Conceptual;
+            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild);
+            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
 
-            var locale = file.Docset.Config.Locale;
-            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), fileMetadata);
-            var docId = file.Docset.Redirections.TryGetDocumentId(file, out var id) ? id : file.Id;
+            model.PageType = schema.Name;
+            model.Locale = file.Docset.Config.Locale;
+            model.Metadata = metadata;
+            model.ShowEdit = file.Docset.Config.Contribution.ShowEdit;
+            model.Toc = tocMap.FindTocRelativePath(file);
+
+            (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
 
             // TODO: add check before to avoid case failure
-            var (repoError, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, metadata.Value<string>("author"));
-            if (repoError != null)
-                errors.Add(repoError);
-            var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
-
-            var title = metadata.Value<string>("title") ?? conceptual?.Title;
-
-            // TODO: add toc spec test
-            var toc = tocMap.FindTocRelativePath(file);
-
-            var model = new PageModel
-            {
-                PageType = pageType,
-                Content = conceptual?.Html ?? content,
-                Metadata = metadata,
-                Title = title,
-                HtmlTitle = conceptual?.HtmlTitle,
-                WordCount = conceptual?.WordCount ?? 0,
-                Locale = locale,
-                Toc = toc,
-                Id = docId.id,
-                VersionIndependentId = docId.versionIndependentId,
-                Author = author,
-                Contributors = contributors,
-                UpdatedAt = updatedAt,
-                EditUrl = editUrl,
-                CommitUrl = commitUrl,
-                ContentUrl = contentUrl,
-                ShowEdit = file.Docset.Config.Contribution.ShowEdit,
-            };
+            var authorName = metadata.Value<string>("author");
+            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, authorName);
+            if (error != null)
+                errors.Add(error);
 
             return (errors, model, dependencies.Build());
         }
 
-        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             Load(
             Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -88,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error> errors, string pageType, object content, JObject metadata)
+        private static (List<Error> errors, Schema schema, PageModel model)
             LoadMarkdown(
             Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -96,19 +74,27 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var title = HtmlUtility.GetInnerText(htmlTitleDom);
+            var title = markup.Metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
             var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
-            var conceptual = new Conceptual { Html = finalHtml, WordCount = wordCount, HtmlTitle = markup.HtmlTitle, Title = title };
+
+            var model = new PageModel
+            {
+                Content = finalHtml,
+                Metadata = markup.Metadata,
+                Title = title,
+                HtmlTitle = markup.HtmlTitle,
+                WordCount = wordCount,
+            };
 
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
 
             bookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (markup.Errors, "Conceptual", conceptual, markup.Metadata);
+            return (markup.Errors, Schema.Conceptual, model);
         }
 
-        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadYaml(
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -117,7 +103,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
         }
 
-        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadJson(
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -126,7 +112,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
         }
 
-        private static async Task<(List<Error> errors, string pageType, object content, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadSchemaDocument(
             List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
@@ -148,17 +134,26 @@ namespace Microsoft.Docs.Build
             }
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
+            var title = metadata.Value<string>("title");
 
-            return (errors, schema.Name, content, metadata);
+            var model = new PageModel
+            {
+                Content = content,
+                Metadata = metadata,
+                Title = title,
+                HtmlTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
+            };
+
+            return (errors, schema, model);
 
             object TransformContent(DataTypeAttribute attribute, JsonReader reader)
             {
                 // Schema violation if the field is not what SchemaContentTypeAttribute required
-                if (reader.ValueType != attribute.RequiredType)
+                if (reader.ValueType != attribute.TargetType)
                 {
                     var lineInfo = reader as IJsonLineInfo;
                     var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    errors.Add(Errors.ViolateSchema(range, $"Field with attribute '{attribute.GetType().ToString()}' should be of type {attribute.RequiredType.ToString()}."));
+                    errors.Add(Errors.ViolateSchema(range, $"Field with attribute '{attribute.GetType()}' should be of type {attribute.TargetType}."));
                     return null;
                 }
 

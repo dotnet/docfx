@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class Schema
     {
+        public static readonly Schema Conceptual = new Schema(typeof(Conceptual));
+
         public Type Type { get; }
 
         public DataSchemaAttribute Attribute { get; }
