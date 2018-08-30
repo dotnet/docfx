@@ -160,11 +160,14 @@ outputs:
 # Prefer relative url to file when there is a matching folder name
 inputs:
   docfx.yml:
-  docs/a/index.md: Link to [a](../a.md)
+  docs/a/index.md: Link to [1](../a.md) [2](a.md)
+  docs/a/a.md: Link to [index](index.md)
   docs/a.md: Link to [index](a/index.md)
 outputs:
   docs/a/index.json: |
-    { "content": "<p>Link to <a href=\"../a\">a</a></p>" }
+    { "content": "<p>Link to <a href=\"../a\">1</a> <a href=\"a\">2</a></p>" }
+  docs/a/a.json: |
+    { "content": "<p>Link to <a href=\".\">index</a></p>" }
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
   build.manifest:

@@ -95,13 +95,15 @@ outputs:
 # Support schema documents with Markdown content
 inputs:
   docfx.yml:
-  docs/a.yml: |
+  docs/index.yml: |
     #YamlMime:TestPage
-    description: Hello `docfx`!
+    description: Hello `docfx`! <a href="a.md">a</a>
+  docs/a.md:
 outputs:
+  docs/index.json: |
+    { "content": { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" } }
+  docs/a.json:
   build.manifest:
-  docs/a.json: |
-    { "content": { "description": "<p>Hello <code>docfx</code>!</p>" } }
 ---
 # Markdown content with null value
 inputs:
