@@ -17,9 +17,6 @@ namespace Microsoft.Docs.Build
     [AttributeUsage(AttributeTargets.Class)]
     public class PageSchemaAttribute : DataSchemaAttribute { }
 
-    [AttributeUsage(AttributeTargets.Class)]
-    public abstract class SchemaFeatureAttribute : Attribute { }
-
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class DataTypeAttribute : Attribute
     {

@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static readonly Schema s_conceptual = Schema.GetSchema("Conceptual");
-
         public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
@@ -93,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             bookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (markup.Errors, s_conceptual, model);
+            return (markup.Errors, Schema.Conceptual, model);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
