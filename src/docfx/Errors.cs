@@ -85,6 +85,9 @@ namespace Microsoft.Docs.Build
         public static Error LinkOutOfScope(Document relativeTo, Document file, string href)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be build because it is not included in docfx.yml", relativeTo.ToString());
 
+        public static Error RedirectionOutOfScope(Document redirection)
+            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be build because it is not included in docfx.yml");
+
         public static Error LinkIsDependency(Document relativeTo, Document file, string href)
             => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be build because it is from a dependency docset", relativeTo.ToString());
 

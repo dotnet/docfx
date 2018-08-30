@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
             // pass on the command line options to its children
-            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
+            _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files, _context));
             _redirections = new Lazy<RedirectionMap>(() =>
             {
                 var (errors, map) = RedirectionMap.Create(this);
@@ -96,14 +96,26 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections)
+        private HashSet<Document> CreateBuildScope(IEnumerable<Document> redirections, Context context)
         {
             using (Progress.Start("Globbing files"))
             {
-                return FileGlob.GetFiles(DocsetPath, Config.Content.Include, Config.Content.Exclude)
-                               .Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file)))
-                               .Concat(redirections)
-                               .ToHashSet();
+                var fileGlob = new FileGlob(Config.Content.Include, Config.Content.Exclude);
+                var files = fileGlob.GetFiles(DocsetPath).Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file))).ToHashSet();
+
+                foreach (var redirection in redirections)
+                {
+                    if (fileGlob.IsMatch(redirection.FilePath))
+                    {
+                        files.Add(redirection);
+                    }
+                    else
+                    {
+                        context.Report(Errors.RedirectionOutOfScope(redirection));
+                    }
+                }
+
+                return files;
             }
         }
     }
