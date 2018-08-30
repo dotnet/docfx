@@ -147,13 +147,23 @@ namespace Microsoft.Docs.Build
             Debug.Assert(github != null);
 
             _cachePath = path;
-            _cacheByName = new ConcurrentDictionary<string, UserProfile>(cache, StringComparer.OrdinalIgnoreCase);
+            _cacheByName = ToIgnoreCaseConcurrentDictionary(cache);
             _cacheByEmail = new ConcurrentDictionary<string, UserProfile>(
                 from profile in cache.Values
                 from email in profile.UserEmails
                 group profile by email into g
                 select new KeyValuePair<string, UserProfile>(g.Key, g.First()));
             _github = github;
+
+            ConcurrentDictionary<string, UserProfile> ToIgnoreCaseConcurrentDictionary(IDictionary<string, UserProfile> original)
+            {
+                var result = new ConcurrentDictionary<string, UserProfile>(StringComparer.OrdinalIgnoreCase);
+                foreach (var pair in original)
+                {
+                    result[pair.Key] = pair.Value;
+                }
+                return result;
+            }
         }
 
         private void TryAdd(string userName, UserProfile profile)
