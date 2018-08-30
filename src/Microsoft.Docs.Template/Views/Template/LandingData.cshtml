@@ -1,6 +1,7 @@
 @* Copyright (c) Microsoft. All rights reserved.
-   Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
 @using Microsoft.Docs.Build;
+@using Newtonsoft.Json.Linq;
 @model LandingData
 @functions
 {
@@ -74,13 +75,14 @@ private void UpdateAbstract()
                     if (item.Style == "dataMatrix")
                     {
                         <table class="dataMatrix">
-                            @if (item.Columns != null)
+                            @if (item.Columns != null && item.Columns is JArray array)
                             {
+                                var columns = array.ToObject<LandingDataColumn[]>();
                                 <tr>
                                     <th></th>
-                                    @for (var i = 0; i < item.Columns.Length; i++)
+                                    @for (var i = 0; i < columns.Length; i++)
                                     {
-                                        var column = item.Columns[i];
+                                        var column = columns[i];
                                         var width = column.Image.Width ?? "48px";
                                         var alt = column.Title ?? $"column {i + 2}";
                                         if (column.Image != null)
@@ -103,24 +105,21 @@ private void UpdateAbstract()
                                         }
                                     }
                                 </tr>
-                            }
-                            @if (item.Rows != null)
-                            {
-                                foreach (var row in item.Rows)
+                                @if (item.Rows != null)
                                 {
-                                    <tr>
-                                        <td>@row.Title</td>
-                                        @if (item.Columns != null)
-                                        {
-                                            @for (var i = 0; i < item.Columns.Length; i++)
+                                    foreach (var row in item.Rows)
+                                    {
+                                        <tr>
+                                            <td>@row.Title</td>
+                                            @for (var i = 0; i < columns.Length; i++)
                                             {
                                                 <td>
                                                     @if (row.Values != null && row.Values.Length > i && row.Values[i]?.Href != null)
                                                     {
                                                         var title = row.Title;
-                                                        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(item.Columns[i].Title))
+                                                        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(columns[i].Title))
                                                         {
-                                                            title = item.Columns[i].Title + " " + title;
+                                                            title = columns[i].Title + " " + title;
                                                         }
                                                         <a href="@row.Values[i].Href" aria-label="@title">
                                                             <span role="presentation" class="docons docon-external-link" aria-hidden="true"></span>
@@ -128,8 +127,8 @@ private void UpdateAbstract()
                                                     }
                                                 </td>
                                             }
-                                        }
-                                    </tr>
+                                        </tr>
+                                    }
                                 }
                             }
                         </table>

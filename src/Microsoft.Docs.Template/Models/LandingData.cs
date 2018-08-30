@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
         public LandingDataListItem[] Items { get; set; }
 
-        public LandingDataColumn[] Columns { get; set; }
+        public JToken Columns { get; set; }
 
         public LandingDataRow[] Rows { get; set; }
     }
