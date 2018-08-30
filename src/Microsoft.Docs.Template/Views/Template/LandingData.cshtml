@@ -24,7 +24,7 @@ private void UpdateAbstract()
 {
     <div class="abstractHolder">
         <div class="abstract">
-            <p>@Html.Raw(Model.Abstract?.Description)</p>
+            <p>@Model.Abstract?.Description</p>
         </div>
         @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title))
         {
@@ -61,9 +61,9 @@ private void UpdateAbstract()
         {
             @foreach (var item in sect.Items)
             {
-                @if (item.Type == LandingDataType.Paragraph)
+                @if (item.Type == LandingDataType.Paragraph || item.Type == LandingDataType.Markdown)
                 {
-                    @Html.Raw(item.Text)
+                    @item.Text
                 }
                 else if (item.Type == LandingDataType.List)
                 {
@@ -134,10 +134,6 @@ private void UpdateAbstract()
                             }
                         </table>
                     }
-                }
-                else if (item.Type == LandingDataType.Markdown)
-                {
-                    @item.Text
                 }
             }
         }
