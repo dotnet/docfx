@@ -28,20 +28,6 @@
         }
       }
     },
-    "LandingDataColumn": {
-      "type": "object",
-      "properties": {
-        "image": {
-          "$ref": "#/definitions/LandingDataImage"
-        },
-        "title": {
-          "type": "string"
-        },
-        "text": {
-          "type": "string"
-        }
-      }
-    },
     "LandingDataImage": {
       "type": "object",
       "properties": {
@@ -71,7 +57,8 @@
             "paragraph",
             "list",
             "table",
-            "markdown"
+            "markdown",
+            "text"
           ]
         },
         "text": {
@@ -89,17 +76,15 @@
             "$ref": "#/definitions/LandingDataListItem"
           }
         },
-        "columns": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LandingDataColumn"
-          }
-        },
+        "columns": {},
         "rows": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/LandingDataRow"
           }
+        },
+        "html": {
+          "type": "string"
         }
       }
     },

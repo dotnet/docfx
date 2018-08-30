@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
 
     public class LandingDataAbstract
     {
+        [Markdown]
         public string Description { get; set; }
 
         public LandingDataAside Aside { get; set; }
@@ -63,6 +64,7 @@ namespace Microsoft.Docs.Build
         List,
         Table,
         Markdown,
+        Text,
     }
 
     public class LandingDataSection
@@ -88,6 +90,8 @@ namespace Microsoft.Docs.Build
         public JToken Columns { get; set; }
 
         public LandingDataRow[] Rows { get; set; }
+
+        public string Html { get; set; }
     }
 
     public class LandingDataColumn
