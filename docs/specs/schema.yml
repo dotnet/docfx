@@ -151,7 +151,7 @@ outputs:
   docs/page.json:
   build.manifest:
 ---
-# Markdown field with heading should not be  removed
+# Markdown field with heading should not be removed
 inputs:
   docfx.yml:
   docs/data.yml: |
