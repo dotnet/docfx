@@ -15,28 +15,7 @@ namespace Microsoft.Docs.Build
     /// Exports a type to be processed by build pipeline into an HTML page.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class PageSchemaAttribute : DataSchemaAttribute
-    {
-        public bool Contributors { get; }
-
-        public bool GitUrl { get; }
-
-        public bool DocumentId { get; }
-
-        public bool Toc { get; }
-
-        public PageSchemaAttribute(
-            bool contributors = true,
-            bool gitUrl = true,
-            bool documentId = true,
-            bool toc = true)
-        {
-            Contributors = contributors;
-            GitUrl = gitUrl;
-            DocumentId = documentId;
-            Toc = toc;
-        }
-    }
+    public class PageSchemaAttribute : DataSchemaAttribute { }
 
     [AttributeUsage(AttributeTargets.Class)]
     public abstract class SchemaFeatureAttribute : Attribute { }

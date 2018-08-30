@@ -22,59 +22,28 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
+            Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
             var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild);
+            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Config.Locale;
-            model.Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
+            model.Metadata = metadata;
             model.ShowEdit = file.Docset.Config.Contribution.ShowEdit;
+            model.Toc = tocMap.FindTocRelativePath(file);
 
-            if (schema.Attribute is PageSchemaAttribute pageSchema)
-            {
-                if (pageSchema.DocumentId)
-                {
-                    var (id, versionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
 
-                    model.Id = id;
-                    model.VersionIndependentId = versionIndependentId;
-                }
-
-                if (pageSchema.Contributors)
-                {
-                    // TODO: add check before to avoid case failure
-                    var authorName = model.Metadata.Value<string>("author");
-                    var (error, author, contributors, updatedAt) = await contribution.GetContributorInfo(file, authorName);
-
-                    if (error != null)
-                        errors.Add(error);
-
-                    model.Author = author;
-                    model.Contributors = contributors;
-                    model.UpdatedAt = updatedAt;
-                }
-
-                if (pageSchema.GitUrl)
-                {
-                    // TODO: we could avoid calculating git commit history for this file
-                    //       if `Contributors` is set to false, but git commit history also affect commitUrl.
-                    //       we may ignore the difference after impact testing is done.
-                    var (editUrl, contentUrl, commitUrl) = contribution.GetGitUrls(file);
-
-                    model.EditUrl = editUrl;
-                    model.ContentUrl = contentUrl;
-                    model.CommitUrl = commitUrl;
-                }
-
-                if (pageSchema.Toc)
-                {
-                    // TODO: add toc spec test
-                    model.Toc = tocMap.FindTocRelativePath(file);
-                }
-            }
+            // TODO: add check before to avoid case failure
+            var authorName = metadata.Value<string>("author");
+            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, authorName);
+            if (error != null)
+                errors.Add(error);
 
             return (errors, model, dependencies.Build());
         }
