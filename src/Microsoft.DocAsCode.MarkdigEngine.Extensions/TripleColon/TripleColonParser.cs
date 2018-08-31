@@ -93,6 +93,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
+                ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
@@ -102,6 +103,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!ExtensionsHelper.MatchStart(ref slice, extensionName) || !ExtensionsHelper.MatchStart(ref slice, "-end"))
             {
+                ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
