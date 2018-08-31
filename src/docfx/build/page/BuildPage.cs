@@ -192,12 +192,12 @@ namespace Microsoft.Docs.Build
 
                     var self = (Document)relativeTo;
 
-                    // TODO: handle fragment and doc
-                    var (error, link, fragment, doc) = self.TryResolveHref(path, (Document)resultRelativeTo);
+                    var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
                     if (error != null)
                     {
                         errors.Add(error);
                     }
+                    dependencies.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
                     return link;
                 }
             }
