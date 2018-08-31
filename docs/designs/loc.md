@@ -29,5 +29,3 @@ DocFX build supports localization contents, there are a few features need to be 
   - Overwrite the configurations you want or use source configuration by default  
   - Focus the Loc publishing configuration controlling, like bilingual or contribution.  
   - Source configuration changing will be immediately applied to Loc, no more manually sync.
-  - No more repo level configs, all configurations are branch level configuration.  
-  - One configuration dashboard to support maintain all configurations.  
