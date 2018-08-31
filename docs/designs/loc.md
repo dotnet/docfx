@@ -29,3 +29,17 @@ DocFX build supports localization contents, there are a few features need to be 
   - Overwrite the configurations you want or use source configuration by default  
   - Focus the Loc publishing configuration controlling, like bilingual or contribution.  
   - Source configuration changing will be immediately applied to Loc, no more manually sync.
+
+### [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
+
+Follow the spec defined at [here](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema).
+
+### Mappings between source content and loc content
+
+Below kinds of mappings are considered to be supported:
+  - SXS mapping like [mypage.md and mypage.ja-jp.md](https://github.com/dotnet/docfx/issues/803)
+  - Folder mapping like en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
+  - Repo mapping like https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.de-de
+  - Repo + folder mapping like
+    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
+    - en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
