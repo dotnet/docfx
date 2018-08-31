@@ -57,6 +57,26 @@ outputs:
     { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.manifest:
 ---
+# generate same document id and version id with 'redirection with document id' even it's out of build scope
+# A => B, A is out of build scope, B's ids should be same with A's
+inputs:
+  docfx.yml: |
+    documentId:
+      sourceBasePath: sccm
+      siteBasePath: sccm
+    name: sccm
+    product: Win
+    content: "sccm/mdm/understand/hybrid-mobile-device-management.md"
+    redirections:
+      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+  sccm/mdm/understand/hybrid-mobile-device-management.md:
+outputs:
+  sccm/mdm/understand/hybrid-mobile-device-management.json: |
+    { "id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "versionIndependentId": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  build.log: |
+    ["warning","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in docfx.yml"]
+  build.manifest:
+---
 # generate different document id and version id with 'redirection without document id'
 inputs:
   docfx.yml: |
@@ -258,4 +278,25 @@ inputs:
 outputs:
   articles/active-directory-b2c/index.json: |
     { "id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "versionIndependentId": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
+  build.manifest:
+---
+# index.yml's document id also follows the redirection rules
+inputs:
+  docfx.yml: |
+    product: Azure
+    name: azure-documents
+    documentId:
+      siteBasePath: azure
+    content: "**/*"
+    routes:
+      articles/: "azure/"
+    redirections:
+      articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/
+  articles/app-service/index.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+outputs:
+  azure/app-service/index.json: |
+    { "id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "versionIndependentId": "41d29d50-009e-41b4-ab51-371ed5bba821"}
+  azure/virtual-machines/windows/classic/web-app-visual-studio.json:
   build.manifest:
