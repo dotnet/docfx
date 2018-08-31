@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
         InlineMarkdown,
         TocMarkdown,
         Markdown,
-        Html,
     }
 
     internal static class Markup
@@ -43,7 +42,6 @@ namespace Microsoft.Docs.Build
             { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
             { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
             { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
-            { MarkdownPipelineType.Html, CreateHtmlPipeline() },
         };
 
         [ThreadStatic]
@@ -166,15 +164,6 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
-                .Build();
-        }
-
-        private static MarkdownPipeline CreateHtmlPipeline()
-        {
-            var mardownContext = new MarkdownContext(null, LogWarning, LogError, null, null);
-
-            return new MarkdownPipelineBuilder()
-                .UseResolveHtmlLinks(mardownContext)
                 .Build();
         }
 

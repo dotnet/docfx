@@ -159,12 +159,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HrefAttribute)
                 {
-                    var (error, href, fragment, doc) = Resolve.TryResolveHref(file, reader.Value.ToString(), file);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
-                    return href;
+                    return GetLink((string)reader.Value, file, file);
                 }
 
                 if (attribute is MarkdownAttribute)
@@ -183,13 +178,28 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HtmlAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Html);
-                    errors.AddRange(markup.Errors);
+                    var html = HtmlUtility.TransformLinks((string)reader.Value, href => GetLink(href, file, file));
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html));
                 }
 
                 // TODO: handle other attributes
                 return reader.Value;
+
+                string GetLink(string path, object relativeTo, object resultRelativeTo)
+                {
+                    Debug.Assert(relativeTo is Document);
+                    Debug.Assert(resultRelativeTo is Document);
+
+                    var self = (Document)relativeTo;
+
+                    // TODO: handle fragment and doc
+                    var (error, link, fragment, doc) = self.TryResolveHref(path, (Document)resultRelativeTo);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    return link;
+                }
             }
         }
     }
