@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
-using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
