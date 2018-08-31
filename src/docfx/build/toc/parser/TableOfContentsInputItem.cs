@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 TocHref = inputModel.TocHref, // only breadcrumb toc will set the toc href
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
-                Metadata = inputModel.ExtensionData,
+                ExtensionData = inputModel.ExtensionData,
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
         }
