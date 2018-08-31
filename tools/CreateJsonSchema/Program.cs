@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Docs.Build;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
