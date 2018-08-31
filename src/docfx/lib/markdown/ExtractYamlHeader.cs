@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseExtractYamlHeader(this MarkdownPipelineBuilder builder)
         {
-            return builder.Use(new ExtractYamlHeaderExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument ));
+            return builder.Use(new ExtractYamlHeaderExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
 
             void ProcessDocument(MarkdownDocument document)
             {
