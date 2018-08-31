@@ -159,12 +159,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HrefAttribute)
                 {
-                    var (error, href, fragment, doc) = Resolve.TryResolveHref(file, reader.Value.ToString(), file);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
-                    return href;
+                    return GetLink((string)reader.Value, file, file);
                 }
 
                 if (attribute is MarkdownAttribute)
@@ -181,8 +176,30 @@ namespace Microsoft.Docs.Build
                     return html;
                 }
 
+                if (attribute is HtmlAttribute)
+                {
+                    var html = HtmlUtility.TransformLinks((string)reader.Value, href => GetLink(href, file, file));
+                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html));
+                }
+
                 // TODO: handle other attributes
                 return reader.Value;
+
+                string GetLink(string path, object relativeTo, object resultRelativeTo)
+                {
+                    Debug.Assert(relativeTo is Document);
+                    Debug.Assert(resultRelativeTo is Document);
+
+                    var self = (Document)relativeTo;
+
+                    var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    dependencies.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
+                    return link;
+                }
             }
         }
     }
