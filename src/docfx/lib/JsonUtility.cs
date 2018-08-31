@@ -345,7 +345,7 @@ namespace Microsoft.Docs.Build
             }
             else if (token is JObject obj)
             {
-                var allowAddtionalProperties = type.IsSealed;
+                var allowAddtionalProperties = !type.IsSealed;
 
                 foreach (var item in token.Children())
                 {
