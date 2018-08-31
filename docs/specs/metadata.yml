@@ -57,7 +57,7 @@ outputs:
     { "redirectionUrl":"/sccm/mdm/understand/hybrid-mobile-device-management" }
   build.manifest:
 ---
-# generate same document id and version id with 'redirection with document id' evem it's out of build scope
+# generate same document id and version id with 'redirection with document id' even it's out of build scope
 # A => B, A is out of build scope, B's ids should be same with A's
 inputs:
   docfx.yml: |
