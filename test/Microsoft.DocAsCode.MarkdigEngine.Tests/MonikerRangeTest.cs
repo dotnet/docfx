@@ -112,19 +112,14 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MonikerRangeWithCodeIndent()
         {
-            //arange
             var source = @"::: moniker range=""start""
     console.log(""hehe"")
 ::: moniker-end";
-
-            // assert
             var expected = @"<div range=""start"">
 <pre><code>console.log(&quot;hehe&quot;)
 </code></pre>
 </div>
 ";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
-
             TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
         }
     }
