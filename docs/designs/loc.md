@@ -9,7 +9,7 @@ DocFX build supports localization contents, there are a few features need to be 
 
 ## Design
 
-- Treats localization content as the replacing content of source content, they are not independent repo for publishing but only stores the corresponding loc content.
+- Treats localization content as the replacing content of source, they are not independent repo for publishing but only stores the corresponding loc content.
 - Localization publishing mixes the loc content and source content, loc content has higher priority to replace the source content.
 - Localization publishing uses source configuration and localization overwrite configuration
 
