@@ -88,6 +88,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return index == startString.Length;
         }
 
+        public static void ResetLineIndent(BlockProcessor processor)
+        {
+            processor.GoToColumn(processor.ColumnBeforeIndent);
+        }
+
         public static bool MatchStart(BlockProcessor processor, string startString, bool isCaseSensitive = true)
         {
             var c = processor.CurrentChar;

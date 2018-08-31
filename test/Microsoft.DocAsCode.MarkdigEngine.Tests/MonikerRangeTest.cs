@@ -108,5 +108,19 @@ Inline ::: should not end moniker zone.</p>
             Assert.Single(listener.Items);
             Assert.Equal("No \"::: moniker-end\" found for \"start\", MonikerRange does not end explictly.", listener.Items[0].Message);
         }
+
+        [Fact]
+        public void MonikerRangeWithCodeIndent()
+        {
+            var source = @"::: moniker range=""start""
+    console.log(""hehe"")
+::: moniker-end";
+            var expected = @"<div range=""start"">
+<pre><code>console.log(&quot;hehe&quot;)
+</code></pre>
+</div>
+";
+            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+        }
     }
 }

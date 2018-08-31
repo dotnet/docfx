@@ -108,6 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
             {
+                ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
@@ -115,6 +116,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!ExtensionsHelper.MatchStart(ref slice, "moniker-end", false))
             {
+                ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
