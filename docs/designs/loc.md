@@ -13,4 +13,4 @@ DocFX build supports localization contents, there are a few features need to be 
 
 
 ## Workflow
-![Localization Publishing And Build](resource/loc_build_publish.PNG)
+![Localization Publishing And Build](images/loc_build_publish.PNG)
