@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RouteConfig
+    internal sealed class RouteConfig
     {
         /// <summary>
         /// The source file name of source folder name.

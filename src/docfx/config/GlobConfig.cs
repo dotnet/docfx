@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GlobConfig<T>
+    internal sealed class GlobConfig<T>
     {
         /// <summary>
         /// Gets the include patterns of files.

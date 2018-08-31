@@ -349,7 +349,7 @@ namespace Microsoft.Docs.Build
             }
             else if (token is JObject obj)
             {
-                var allowAddtionalProperties = HasJsonExtensionData(type);
+                var allowAddtionalProperties = type.IsSealed;
 
                 foreach (var item in token.Children())
                 {
@@ -371,14 +371,6 @@ namespace Microsoft.Docs.Build
         private static string BuildPath(string path, Type type)
         {
             return path is null ? type.Name : $"{path}.{type.Name}";
-        }
-
-        private static bool HasJsonExtensionData(Type type)
-        {
-            return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
-                type,
-                new Lazy<bool>(() => type.GetProperties()
-                        .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)

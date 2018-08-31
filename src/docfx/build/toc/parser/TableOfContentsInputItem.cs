@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,7 +23,7 @@ namespace Microsoft.Docs.Build
         public string TocHref { get; set; }
 
         [JsonExtensionData]
-        public JObject Metadata { get; set; }
+        public JObject ExtensionData { get; set; }
 
         public bool MaintainContext { get; set; }
 
@@ -48,7 +47,7 @@ namespace Microsoft.Docs.Build
                 TocHref = inputModel.TocHref, // only breadcrumb toc will set the toc href
                 MaintainContext = inputModel.MaintainContext,
                 Expanded = inputModel.Expanded,
-                Metadata = inputModel.Metadata,
+                Metadata = inputModel.ExtensionData,
                 Children = inputModel.Items?.Select(l => ToTableOfContentsModel(l)).ToList(),
             };
         }

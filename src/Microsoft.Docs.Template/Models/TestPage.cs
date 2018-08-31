@@ -4,7 +4,7 @@
 namespace Microsoft.Docs.Build
 {
     [PageSchema]
-    public class TestPage
+    public sealed class TestPage
     {
         [Markdown]
         public string Description { get; set; }

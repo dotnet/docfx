@@ -85,30 +85,6 @@ class Program
         };
 
         generator.GenerationProviders.Add(new StringEnumGenerationProvider { CamelCaseText = true });
-        generator.GenerationProviders.Add(new JsonExtensionDataGenerationProvider());
         return generator;
-    }
-
-    static bool HasJsonExtensionData(Type type)
-    {
-        return type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null);
-    }
-
-    class JsonExtensionDataGenerationProvider : JSchemaGenerationProvider
-    {
-        public override bool CanGenerateSchema(JSchemaTypeGenerationContext context) => true;
-
-        public override JSchema GetSchema(JSchemaTypeGenerationContext context)
-        {
-            var result = context.Generator.Generate(context.ObjectType);
-            result.Title = context.SchemaTitle;
-            result.Description = context.SchemaDescription;
-            /*
-            if (result.Type == JSchemaType.Object)
-            {
-                result.AllowAdditionalProperties = HasJsonExtensionData(context.ObjectType);
-            }*/
-            return result;
-        }
     }
 }
