@@ -101,13 +101,7 @@ namespace Microsoft.Docs.Build
             return obj;
         }
 
-        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)
-        {
-            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
-            return builder;
-        }
-
-        private class DelegatingExtension : IMarkdownExtension
+        internal class DelegatingExtension : IMarkdownExtension
         {
             private readonly Action<MarkdownPipelineBuilder> _setupPipeline;
 

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -13,7 +14,9 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context)
         {
-            return builder.Use(document =>
+            return builder.Use(new ResolveHtmlLinksExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
+
+            void ProcessDocument(MarkdownDocument document)
             {
                 document.Visit(node =>
                 {
@@ -29,11 +32,19 @@ namespace Microsoft.Docs.Build
                     }
                     return false;
                 });
-            });
+            }
 
             string ResolveLinks(string html)
             {
                 return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile));
+            }
+        }
+
+        internal class ResolveHtmlLinksExtension : MarkdigUtility.DelegatingExtension
+        {
+            public ResolveHtmlLinksExtension(Action<MarkdownPipelineBuilder> setupPipeline)
+                : base(setupPipeline)
+            {
             }
         }
     }

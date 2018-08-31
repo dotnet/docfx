@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Extensions.Yaml;
+using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +15,9 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseExtractYamlHeader(this MarkdownPipelineBuilder builder)
         {
-            return builder.Use(document =>
+            return builder.Use(new ExtractYamlHeaderExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument ));
+
+            void ProcessDocument(MarkdownDocument document)
             {
                 document.Visit(node =>
                 {
@@ -37,7 +41,7 @@ namespace Microsoft.Docs.Build
                     }
                     return false;
                 });
-            });
+            }
         }
 
         public static (List<Error> errors, JObject metadata) Extract(string lines)
@@ -51,6 +55,14 @@ namespace Microsoft.Docs.Build
 
             yamlErrors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
             return (yamlErrors, default);
+        }
+
+        internal class ExtractYamlHeaderExtension : MarkdigUtility.DelegatingExtension
+        {
+            public ExtractYamlHeaderExtension(Action<MarkdownPipelineBuilder> setupPipeline)
+                : base(setupPipeline)
+            {
+            }
         }
     }
 }

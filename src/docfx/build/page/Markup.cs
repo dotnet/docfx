@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -99,8 +100,9 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
-                    if (!t_result.HasTitle)
+                    var pipeline = s_pipelineMapping[pipelineType];
+                    var html = Markdown.ToHtml(markdown, pipeline);
+                    if (pipeline.Extensions.Contains<ExtractTitle.ExtractTitleExtension>() && !t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
                     }

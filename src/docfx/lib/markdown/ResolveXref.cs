@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -14,7 +15,9 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, string> resolveXref)
         {
-            return builder.Use(document =>
+            return builder.Use(new ResolveXrefExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
+
+            void ProcessDocument(MarkdownDocument document)
             {
                 document.Replace(node =>
                 {
@@ -34,7 +37,15 @@ namespace Microsoft.Docs.Build
                     }
                     return node;
                 });
-            });
+            }
+        }
+
+        internal class ResolveXrefExtension : MarkdigUtility.DelegatingExtension
+        {
+            public ResolveXrefExtension(Action<MarkdownPipelineBuilder> setupPipeline)
+                : base(setupPipeline)
+            {
+            }
         }
     }
 }

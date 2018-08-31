@@ -120,7 +120,9 @@ outputs:
 ---
 # Support schema documents with inline Markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    rules:
+      heading-not-found: error
   docs/a.yml: |
     #YamlMime:TestPage
     inlineDescription: >
