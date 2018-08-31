@@ -28,4 +28,6 @@ namespace Microsoft.Docs.Build
     public class MarkdownAttribute : DataTypeAttribute { }
 
     public class InlineMarkdownAttribute : DataTypeAttribute { }
+
+    public class HtmlAttribute : DataTypeAttribute { }
 }

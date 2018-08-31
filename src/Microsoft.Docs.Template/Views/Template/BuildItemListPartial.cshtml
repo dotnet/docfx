@@ -56,19 +56,19 @@ else if (Model.Style == "cards")
     {
         if (Model.ClassName == "cardsF" || Model.ClassName == "cardsM")
         {
-            className = "panelContent " + Model.ClassName;
-            if (Model.ClassName == "cardsM")
+            if (Model.ClassName == "cardsF")
             {
-                if (Model.Columns is JValue value)
+                className = "panelContent " + Model.ClassName;
+            }
+            if (Model.Columns is JValue value)
+            {
+                if (int.TryParse(value.ToString(), out var i))
                 {
-                    if (int.TryParse(value.ToString(), out var i))
-                    {
-                        className += " cols cols" + i.ToString();
-                    }
-                    else
-                    {
-                        className += " cols cols4";
-                    }
+                    className = Model.ClassName + " cols cols" + i.ToString();
+                }
+                else
+                {
+                    className += Model.ClassName + " cols cols4";
                 }
             }
         }
