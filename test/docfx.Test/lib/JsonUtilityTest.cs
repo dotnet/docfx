@@ -370,7 +370,7 @@ namespace Microsoft.Docs.Build
           ""B"": 1,
           ""C"": ""c"",
           ""E"": ""e""}]", typeof(List<ClassWithJsonExtensionData>))]
-        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        public void TestSealedObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
@@ -554,7 +554,7 @@ namespace Microsoft.Docs.Build
             public string ValueRequired { get; set; }
         }
 
-        public class ClassWithJsonExtensionData : BasicClass
+        public sealed class ClassWithJsonExtensionData : BasicClass
         {
             [JsonExtensionData]
             public JObject AdditionalData { get; set; }
@@ -562,7 +562,7 @@ namespace Microsoft.Docs.Build
             public NestedClass NestedMemberWithoutExtensionData { get; set; }
         }
 
-        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        public sealed class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
         {
             public ClassWithJsonExtensionData Data { get; set; }
         }
