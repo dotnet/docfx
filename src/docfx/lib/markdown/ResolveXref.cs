@@ -15,9 +15,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, string> resolveXref)
         {
-            return builder.Use(new ResolveXrefExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
-
-            void ProcessDocument(MarkdownDocument document)
+            return builder.Use(document =>
             {
                 document.Replace(node =>
                 {
@@ -37,15 +35,7 @@ namespace Microsoft.Docs.Build
                     }
                     return node;
                 });
-            }
-        }
-
-        internal class ResolveXrefExtension : MarkdigUtility.DelegatingExtension
-        {
-            public ResolveXrefExtension(Action<MarkdownPipelineBuilder> setupPipeline)
-                : base(setupPipeline)
-            {
-            }
+            });
         }
     }
 }

@@ -15,9 +15,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseExtractYamlHeader(this MarkdownPipelineBuilder builder)
         {
-            return builder.Use(new ExtractYamlHeaderExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
-
-            void ProcessDocument(MarkdownDocument document)
+            return builder.Use(document =>
             {
                 document.Visit(node =>
                 {
@@ -41,7 +39,7 @@ namespace Microsoft.Docs.Build
                     }
                     return false;
                 });
-            }
+            });
         }
 
         public static (List<Error> errors, JObject metadata) Extract(string lines)
@@ -55,14 +53,6 @@ namespace Microsoft.Docs.Build
 
             yamlErrors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
             return (yamlErrors, default);
-        }
-
-        internal class ExtractYamlHeaderExtension : MarkdigUtility.DelegatingExtension
-        {
-            public ExtractYamlHeaderExtension(Action<MarkdownPipelineBuilder> setupPipeline)
-                : base(setupPipeline)
-            {
-            }
         }
     }
 }

@@ -17,9 +17,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder)
         {
-            return builder.Use(new ExtractTitleExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
-
-            void ProcessDocument(MarkdownDocument document)
+            return builder.Use(document =>
             {
                 if (InclusionContext.IsInclude
                     && (Markup.Result.HasTitle || !Markup.Result.FirstBlockIsInclusionBlock))
@@ -36,15 +34,7 @@ namespace Microsoft.Docs.Build
                     document.Remove(heading);
                 }
                 Markup.Result.FirstBlockIsInclusionBlock = firstBlock is InclusionBlock;
-            }
-        }
-
-        internal class ExtractTitleExtension : MarkdigUtility.DelegatingExtension
-        {
-            public ExtractTitleExtension(Action<MarkdownPipelineBuilder> setupPipeline)
-                : base(setupPipeline)
-            {
-            }
+            });
         }
 
         private static Block GetFirstVisibleBlock(MarkdownDocument document)

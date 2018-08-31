@@ -181,6 +181,13 @@ namespace Microsoft.Docs.Build
                     return html;
                 }
 
+                if (attribute is HtmlAttribute)
+                {
+                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Html);
+                    errors.AddRange(markup.Errors);
+                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html));
+                }
+
                 // TODO: handle other attributes
                 return reader.Value;
             }

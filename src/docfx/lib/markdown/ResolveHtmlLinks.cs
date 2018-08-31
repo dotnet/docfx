@@ -14,9 +14,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseResolveHtmlLinks(this MarkdownPipelineBuilder builder, MarkdownContext context)
         {
-            return builder.Use(new ResolveHtmlLinksExtension(pipeline => pipeline.DocumentProcessed += ProcessDocument));
-
-            void ProcessDocument(MarkdownDocument document)
+            return builder.Use(document =>
             {
                 document.Visit(node =>
                 {
@@ -32,19 +30,11 @@ namespace Microsoft.Docs.Build
                     }
                     return false;
                 });
-            }
+            });
 
             string ResolveLinks(string html)
             {
                 return HtmlUtility.TransformLinks(html, href => context.GetLink(href, InclusionContext.File, InclusionContext.RootFile));
-            }
-        }
-
-        internal class ResolveHtmlLinksExtension : MarkdigUtility.DelegatingExtension
-        {
-            public ResolveHtmlLinksExtension(Action<MarkdownPipelineBuilder> setupPipeline)
-                : base(setupPipeline)
-            {
             }
         }
     }
