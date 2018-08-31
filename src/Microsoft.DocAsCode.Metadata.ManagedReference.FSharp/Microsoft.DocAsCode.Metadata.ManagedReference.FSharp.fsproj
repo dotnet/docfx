@@ -26,13 +26,15 @@
     <PackageReference Include="Dotnet.ProjInfo" version="0.9.0" />
     <PackageReference Include="FSharp.Compiler.Service" version="17.0.1" />
     <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" version="17.0.1" />
+    <PackageReference Update="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Runtime" />
   </ItemGroup>
+
 </Project>

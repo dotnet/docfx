@@ -52,6 +52,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     Logger.LogLevelThreshold = logOption.LogLevel.Value;
                 }
 
+                Logger.WarningsAsErrors = logOption.WarningsAsErrors;
+
                 if (!string.IsNullOrEmpty(logOption.CorrelationId))
                 {
                     if (AmbientContext.CurrentContext == null)

@@ -131,7 +131,37 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Append(".");
                 }
             }
-            Append(symbol.Name);
+            if (symbol.IsTupleType)
+            {
+                if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+                {
+                    Append("ValueTuple");
+                    symbol = symbol.TupleUnderlyingType;
+                }
+                else
+                {
+                    Append("(");
+                    for (var i = 0; i < symbol.TupleElements.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            Append(", ");
+                        }
+                        var tupleElement = symbol.TupleElements[i];
+                        tupleElement.Type.Accept(this);
+                        if (!tupleElement.IsImplicitlyDeclared)
+                        {
+                            Append(" ");
+                            Append(tupleElement.Name);
+                        }
+                    }
+                    Append(")");
+                }
+            }
+            else
+            {
+                Append(symbol.Name);
+            }
             if ((Options & NameOptions.WithTypeGenericParameter) == NameOptions.WithTypeGenericParameter &&
                 symbol.TypeParameters.Length > 0)
             {
@@ -531,7 +561,38 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Append(".");
                 }
             }
-            Append(symbol.Name);
+            if (symbol.IsTupleType)
+            {
+                if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+                {
+                    Append("ValueTuple");
+                    symbol = symbol.TupleUnderlyingType;
+                }
+                else
+                {
+                    Append("(");
+                    for (var i = 0; i < symbol.TupleElements.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            Append(", ");
+                        }
+                        var tupleElement = symbol.TupleElements[i];
+                        if (!tupleElement.IsImplicitlyDeclared)
+                        {
+                            Append(tupleElement.Name);
+                            Append(" As ");
+                        }
+                        tupleElement.Type.Accept(this);
+                    }
+                    Append(")");
+                }
+            }
+            else
+            {
+                Append(symbol.Name);
+            }
+
             if ((Options & NameOptions.WithTypeGenericParameter) == NameOptions.WithTypeGenericParameter &&
                 symbol.TypeParameters.Length > 0)
             {

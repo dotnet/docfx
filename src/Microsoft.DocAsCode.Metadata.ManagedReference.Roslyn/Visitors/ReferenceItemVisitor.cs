@@ -27,6 +27,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitNamedType(INamedTypeSymbol symbol)
         {
+            if (symbol.IsTupleType)
+            {
+                symbol = symbol.TupleUnderlyingType;
+            }
             if (symbol.IsGenericType)
             {
                 if (symbol.IsUnboundGenericType)

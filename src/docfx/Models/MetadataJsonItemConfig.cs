@@ -24,6 +24,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("raw")]
         public bool? Raw { get; set; }
 
+        [JsonProperty("references")]
+        public FileMapping References { get; set; }
+
         [JsonProperty("filter")]
         public string FilterConfigFile { get; set; }
 
