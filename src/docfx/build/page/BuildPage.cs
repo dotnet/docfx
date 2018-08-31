@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             }
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = metadata.Value<string>("title");
+            var title = metadata.Value<string>("title") ?? obj?.Value<string>("title");
 
             var model = new PageModel
             {
