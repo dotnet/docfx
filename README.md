@@ -41,6 +41,7 @@ docfx build <docset_path> [<options>]
 - options:
   - -o/--output: The output directory in which to place built artifacts.
   - --log: The output build log path.
+  - --github-token: The github token used to get contribution information from GitHub API
 
 ## Contributing
 
