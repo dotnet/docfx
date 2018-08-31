@@ -451,7 +451,7 @@ Data:
     B: 1
     C: c
     E: e", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
-        public void TestSealedObjectTypeWithJsonExtensionData(string json, Type type)
+        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = YamlUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
@@ -546,13 +546,13 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public string ValueRequired { get; set; }
         }
 
-        public sealed class ClassWithJsonExtensionData : BasicClass
+        public class ClassWithJsonExtensionData : BasicClass
         {
             [JsonExtensionData]
             public JObject AdditionalData { get; set; }
         }
 
-        public sealed class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
         {
             public ClassWithJsonExtensionData Data { get; set; }
         }

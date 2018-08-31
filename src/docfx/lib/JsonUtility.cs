@@ -345,8 +345,6 @@ namespace Microsoft.Docs.Build
             }
             else if (token is JObject obj)
             {
-                var allowAddtionalProperties = !type.IsSealed;
-
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
@@ -355,7 +353,7 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path, allowAddtionalProperties);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path);
                     if (nestedType != null)
                     {
                         prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
@@ -391,40 +389,29 @@ namespace Microsoft.Docs.Build
             return type;
         }
 
-        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path, bool allowAdditionalProperties)
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
-            JsonPropertyCollection jsonProperties;
+
             if (contract is JsonObjectContract objectContract)
             {
-                jsonProperties = objectContract.Properties;
-            }
-            else if (contract is JsonArrayContract arrayContract)
-            {
-                jsonProperties = GetPropertiesFromJsonArrayContract(arrayContract);
-            }
-            else
-            {
-                return null;
-            }
-
-            // if mismatching field found, add error
-            // else, pass along with nested type
-            var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
-            if (matchingProperty is null)
-            {
-                if (!allowAdditionalProperties)
+                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
+                if (matchingProperty == null && objectContract.ExtensionDataGetter == null)
                 {
                     var lineInfo = prop as IJsonLineInfo;
                     errors.Add(Errors.UnknownField(
                         new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
                 }
-                return null;
+                return matchingProperty?.PropertyType;
             }
-            else
+
+            if (contract is JsonArrayContract arrayContract)
             {
-                return matchingProperty.PropertyType;
+                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
+                return matchingProperty?.PropertyType;
             }
+
+            return null;
         }
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
