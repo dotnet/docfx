@@ -73,7 +73,21 @@ outputs:
     {
       "content": { "brand": "azure", "breadcrumb_path": "TOC.json", "toc_rel": "../TOC.json" },
     }
-  build.manifest:
+  build.manifest: |
+    {  
+       "dependencies":{  
+          "docs/a.yml":[  
+             {
+               "source": "docs/TOC.yml",
+               "type": "link"
+             },
+             {  
+                "source":"TOC.yml",
+                "type":"link"
+             }
+          ]
+       }
+    }
 ---
 # schema documents with Href content but wrong type
 inputs:
@@ -120,7 +134,9 @@ outputs:
 ---
 # Support schema documents with inline Markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    rules:
+      heading-not-found: error
   docs/a.yml: |
     #YamlMime:TestPage
     inlineDescription: >
