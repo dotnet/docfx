@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Docs.Build;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
@@ -26,9 +27,11 @@ class Program
             Directory.CreateDirectory("schemas");
         }
 
+        var generator = CreateGenerator();
+
         foreach (var (type, name) in schemas.Skip(skip).Take(take))
         {
-            GenerateJSchema(type, name);
+            GenerateJSchema(generator, type, name);
         }
 
         if (skip + take >= schemas.Count)
@@ -63,7 +66,14 @@ class Program
         }
     }
 
-    static void GenerateJSchema(Type type, string name)
+    static void GenerateJSchema(JSchemaGenerator generator, Type type, string name)
+    {
+        var schema = generator.Generate(type, rootSchemaNullable: false);
+
+        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
+    }
+
+    private static JSchemaGenerator CreateGenerator()
     {
         var generator = new JSchemaGenerator
         {
@@ -75,21 +85,30 @@ class Program
         };
 
         generator.GenerationProviders.Add(new StringEnumGenerationProvider { CamelCaseText = true });
-
-        var schema = generator.Generate(type, rootSchemaNullable: false);
-
-        // If type contains JsonExtensinDataAttribute, additional properties are allowed
-        // TODO: Set AllowAdditionalProperties on nested type, not the entry type
-        if (!HasJsonExtensionData(type))
-        {
-            schema.AllowAdditionalProperties = false;
-        }
-
-        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
+        generator.GenerationProviders.Add(new JsonExtensionDataGenerationProvider());
+        return generator;
     }
 
     static bool HasJsonExtensionData(Type type)
     {
         return type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null);
+    }
+
+    class JsonExtensionDataGenerationProvider : JSchemaGenerationProvider
+    {
+        public override bool CanGenerateSchema(JSchemaTypeGenerationContext context) => true;
+
+        public override JSchema GetSchema(JSchemaTypeGenerationContext context)
+        {
+            var result = context.Generator.Generate(context.ObjectType);
+            result.Title = context.SchemaTitle;
+            result.Description = context.SchemaDescription;
+            /*
+            if (result.Type == JSchemaType.Object)
+            {
+                result.AllowAdditionalProperties = HasJsonExtensionData(context.ObjectType);
+            }*/
+            return result;
+        }
     }
 }
