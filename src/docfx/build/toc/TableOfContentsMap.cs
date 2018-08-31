@@ -3,6 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,49 +62,65 @@ namespace Microsoft.Docs.Build
             var filteredTocFiles = hasReferencedToc ? (IEnumerable<Document>)referencedTocFiles : _tocs;
 
             var nearestToc = (Document)null;
-            var nearestSubDirCount = 0;
-            var nearestParentDirCount = 0;
-            foreach (var toc in filteredTocFiles)
-            {
-                var relativePath = PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath);
-                var (subDirCount, parentDirCount) = GetDirectoryCount(relativePath);
-                if (!hasReferencedToc && subDirCount != 0)
-                {
-                    continue;
-                }
-                var distance = Compare(nearestSubDirCount, nearestParentDirCount, subDirCount, parentDirCount);
-                if (nearestToc == null || distance > 0 ||
-                    (distance == 0 && string.Compare(nearestToc.SitePath, toc.SitePath, PathUtility.PathComparison) > 0))
-                {
-                    nearestToc = toc;
-                    nearestSubDirCount = subDirCount;
-                    nearestParentDirCount = parentDirCount;
-                }
-            }
 
-            return nearestToc;
-        }
-
-        private static int Compare(int xSubDirCount, int xParentDirCount, int ySubDirCount, int yParentDirCount)
-        {
-            if (xSubDirCount == ySubDirCount)
+            if (!hasReferencedToc)
             {
-                return xParentDirCount - yParentDirCount;
+                // filter toc files by relative path: subdircount = 0, min parentdir
+                // get default nonreferenced toc
+                nearestToc = (from toc in filteredTocFiles
+                              let dirInfo = GetRelativeDirectoryInfo(file, toc)
+                              where dirInfo.subDirectoryCount == 0
+                              orderby dirInfo.parentDirectoryCount
+                              select toc)
+                             .FirstOrDefault();
             }
             else
             {
-                return xSubDirCount - ySubDirCount;
+                // from referenced pick the nearest one
+                // 1. sub count
+                // 2. sub nearest.
+                // 3. parent nearest
+                // 4. sub-name nearest
+                // 5. sub-name lexicographical nearest
+                var tocCandidates = (from toc in filteredTocFiles
+                                     let dirInfo = GetRelativeDirectoryInfo(file, toc)
+                                     orderby dirInfo.subDirectoryCount,
+                                             dirInfo.parentDirectoryCount
+                                     select new
+                                     {
+                                         toc,
+                                         dirInfo,
+                                     }).Take(50).ToList();
+ 
+                Debug.Assert(tocCandidates != null && tocCandidates.Count > 0);
+                var nearestCandidate = tocCandidates.First();
+                var leftCandidates = (from tocInfo in tocCandidates
+                                      where tocInfo.dirInfo.parentDirectoryCount == nearestCandidate.dirInfo.parentDirectoryCount
+                                      && tocInfo.dirInfo.subDirectoryCount == nearestCandidate.dirInfo.subDirectoryCount
+                                      select tocInfo).ToList();
+                nearestToc = leftCandidates.Count == 1 ? leftCandidates.First().toc
+                    : leftCandidates.OrderBy(tocInfo => Path.GetFileNameWithoutExtension(file.SitePath).LevenshteinDistance(tocInfo.dirInfo.path))
+                        .ThenBy(tocInfo => tocInfo.toc.SitePath).First().toc;
             }
+            return nearestToc;
         }
 
-        private static (int subDirectoryCount, int parentDirectoryCount) GetDirectoryCount(string relativePath)
+        private static (int subDirectoryCount, int parentDirectoryCount, string path)
+            GetRelativeDirectoryInfo(Document file, Document toc)
         {
-            relativePath = PathUtility.NormalizeFile(relativePath);
+            var relativePath = PathUtility.NormalizeFile(
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath)));
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                return default;
+            }
 
             // todo: perf optimization, don't split '/' here again.
             var relativePathParts = relativePath.Split('/');
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
+            var emptyCount = 0;
+            var sb = new StringBuilder();
             foreach (var part in relativePathParts)
             {
                 switch (part)
@@ -108,13 +128,16 @@ namespace Microsoft.Docs.Build
                     case "..":
                         parentDirectoryCount++;
                         break;
+                    case "":
+                        emptyCount++;
+                        break;
                     default:
+                        sb.Append(part);
                         break;
                 }
             }
-
-            subDirectoryCount = relativePathParts.Length - parentDirectoryCount - 1;
-            return (subDirectoryCount, parentDirectoryCount);
+            subDirectoryCount = relativePathParts.Length - parentDirectoryCount - emptyCount;
+            return (subDirectoryCount, parentDirectoryCount, sb.ToString());
         }
     }
 }
