@@ -36158,6 +36158,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.PreserveRawInlineComments
   nameWithType: ExtractMetadataInputModel.PreserveRawInlineComments
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References
+  name: References
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_References
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References
+  nameWithType: ExtractMetadataInputModel.References
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References*
+  name: References
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_References_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.References
+  nameWithType: ExtractMetadataInputModel.References
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.ShouldSkipMarkup
   name: ShouldSkipMarkup
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_ShouldSkipMarkup
@@ -40201,6 +40214,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.Raw
   nameWithType: MetadataJsonItemConfig.Raw
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.References
+  name: References
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_References
+  commentId: P:Microsoft.DocAsCode.MetadataJsonItemConfig.References
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.References
+  nameWithType: MetadataJsonItemConfig.References
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.References*
+  name: References
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_References_
+  commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.References
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.References
+  nameWithType: MetadataJsonItemConfig.References
 - uid: Microsoft.DocAsCode.MetadataJsonItemConfig.ShouldSkipMarkup
   name: ShouldSkipMarkup
   href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_ShouldSkipMarkup
