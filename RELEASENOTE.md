@@ -1,8 +1,17 @@
 Version Notes (Current Version: v2.39)
 =======================================
 
-v2.39 (Pre-release)
+v2.39
 -----------
+1. Support warnings as errors by `--warningsAsErrors true`. (#3229)
+2. Support for value tuples in documentation. (#2512 #3211)
+3. Upgrade to net462 and support long path. (#3183)
+4. Upgrade Microsoft.Build to work with VS 15.8. (#3158 #3225 #3231)
+
+v2.38.1
+-----------
+1. Bug fix:
+    1. Fix yamlheader in inline inclusion (#3203)
 
 v2.38
 -----------
