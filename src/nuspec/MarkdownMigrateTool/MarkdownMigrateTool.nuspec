@@ -7,7 +7,7 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
     <description>This is a DocFX tool to migrate markdown.</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>

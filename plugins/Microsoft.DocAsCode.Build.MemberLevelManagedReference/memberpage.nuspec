@@ -7,7 +7,7 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
     <description>This is a template for DocFX to split ManagedReference classes into member level pages. Members with the same overload name are grouped into one page, members with no overload are splited to one page per member.</description>
     <releaseNotes>The initial version to split class pages to member level.</releaseNotes>
