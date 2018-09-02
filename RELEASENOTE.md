@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.39)
+Version Notes (Current Version: v2.40)
 =======================================
+
+v2.40 (Pre-release)
+-----------
 
 v2.39
 -----------
