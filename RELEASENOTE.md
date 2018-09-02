@@ -1,4 +1,3 @@
-
 Version Notes (Current Version: v2.39)
 =======================================
 
