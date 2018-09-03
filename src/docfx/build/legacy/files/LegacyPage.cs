@@ -15,6 +15,15 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
+            if (legacyManifestOutput.TocOutput != null)
+            {
+                var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset);
+                var (_, model) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
+                context.Delete(doc.OutputPath);
+                context.WriteJson(model.Content, outputPath);
+                return;
+            }
+
             var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
             var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
             LegacyUtility.MoveFileSafe(
