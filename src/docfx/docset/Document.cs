@@ -92,6 +92,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsExperimental { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the current document is schema data
+        /// </summary>
+        public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
+
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>

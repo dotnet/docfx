@@ -55,11 +55,22 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            output.PageOutput = new LegacyManifestOutputItem
+                            if (document.IsSchemaData)
                             {
-                                IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
-                            };
+                                output.TocOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    OutputPathRelativeToSiteBasePath = legacyOutputPathRelativeToBaseSitePath,
+                                };
+                            }
+                            else
+                            {
+                                output.PageOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    OutputPathRelativeToSiteBasePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
+                                };
+                            }
                         }
 
                         var file = new LegacyManifestItem
@@ -71,6 +82,7 @@ namespace Microsoft.Docs.Build
                             Type = GetType(document.ContentType),
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
+                            SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
                         };
 
                         convertedItems.Add((file, document));
