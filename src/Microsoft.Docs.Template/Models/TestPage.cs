@@ -11,5 +11,11 @@ namespace Microsoft.Docs.Build
 
         [InlineMarkdown]
         public string InlineDescription { get; set; }
+
+        [Html]
+        public string Html { get; set; }
+
+        [Href]
+        public string Href { get; set; }
     }
 }
