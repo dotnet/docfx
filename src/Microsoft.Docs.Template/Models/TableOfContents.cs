@@ -37,6 +37,6 @@ namespace Microsoft.Docs.Build
         public List<TableOfContentsItem> Children { get; set; }
 
         [JsonExtensionData]
-        public JObject Metadata { get; set; }
+        public JObject ExtensionData { get; set; }
     }
 }

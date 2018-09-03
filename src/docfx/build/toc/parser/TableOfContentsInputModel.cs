@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsInputModel
+    internal sealed class TableOfContentsInputModel
     {
         public JObject Metadata { get; set; }
 

@@ -2,6 +2,7 @@
   "definitions": {
     "LandingDataAbstract": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "description": {
           "type": "string"
@@ -16,6 +17,7 @@
     },
     "LandingDataAside": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "title": {
           "type": "string"
@@ -30,6 +32,7 @@
     },
     "LandingDataImage": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "href": {
           "type": "string"
@@ -50,6 +53,7 @@
     },
     "LandingDataItem": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "type": {
           "type": "string",
@@ -90,6 +94,7 @@
     },
     "LandingDataListItem": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "text": {
           "type": "string"
@@ -113,6 +118,7 @@
     },
     "LandingDataMenu": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "title": {
           "type": "string"
@@ -121,6 +127,7 @@
     },
     "LandingDataRow": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "title": {
           "type": "string"
@@ -135,6 +142,7 @@
     },
     "LandingDataRowValue": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "href": {
           "type": "string"
@@ -143,6 +151,7 @@
     },
     "LandingDataSection": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "title": {
           "type": "string"
