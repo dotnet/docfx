@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Buffers;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,10 +33,9 @@ namespace Microsoft.Docs.Build
                 return srcLength;
             }
 
-            // ;new int[srcLength + 1, targetLength + 1];
             int[] matrix = s_arrayPool.Rent((srcLength + 1) * (targetLength + 1));
-
             matrix[0] = 0;
+
             // source prefixes can be transformed into empty string by
             // dropping all characters
             for (int i = 1; i <= srcLength; i++)
@@ -56,15 +55,14 @@ namespace Microsoft.Docs.Build
                 for (int i = 1; i <= srcLength; i++)
                 {
                     int cost = src[i - 1] == target[j - 1] ? 0 : 1;
-                    matrix[(j * (srcLength + 1)) + i] = new int[]
-                    {
-                        matrix[(j * (srcLength + 1)) + i - 1] + 1,
+                    matrix[(j * (srcLength + 1)) + i] = Math.Min(
+                        matrix[(j * (srcLength + 1)) + i - 1] + 1, Math.Min(
                         matrix[((j - 1) * (srcLength + 1)) + i] + 1,
-                        matrix[((j - 1) * (srcLength + 1)) + i - 1] + cost,
-                    }.Min();
+                        matrix[((j - 1) * (srcLength + 1)) + i - 1] + cost));
                 }
             }
             int distance = matrix[((srcLength + 1) * (targetLength + 1)) - 1];
+
             s_arrayPool.Return(matrix);
 
             return distance;

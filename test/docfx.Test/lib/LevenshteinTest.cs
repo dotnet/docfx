@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public static class StringUtilityTest
+    public static class LevenshteinTest
     {
         [Theory]
         // zero if both of the string is null or empty
