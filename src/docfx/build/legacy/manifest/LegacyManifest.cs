@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            if (document.Schema != null && document.Schema.Attribute as PageSchemaAttribute == null)
+                            if (document.IsSchemaData)
                             {
                                 output.TocOutput = new LegacyManifestOutputItem
                                 {
