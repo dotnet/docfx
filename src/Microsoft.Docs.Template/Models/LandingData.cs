@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 namespace Microsoft.Docs.Build
 {
     [PageSchema]
-    public class LandingData
+    public sealed class LandingData
     {
         public string Title { get; set; }
 
@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public string DocumentType { get; set; }
     }
 
-    public class LandingDataAbstract
+    public sealed class LandingDataAbstract
     {
         [Markdown]
         public string Description { get; set; }
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         public LandingDataMenu Menu { get; set; }
     }
 
-    public class LandingDataAside
+    public sealed class LandingDataAside
     {
         public string Title { get; set; }
 
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         public LandingDataImage Image { get; set; }
     }
 
-    public class LandingDataImage
+    public sealed class LandingDataImage
     {
         [Href]
         public string Href { get; set; }
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         public string Role { get; set; }
     }
 
-    public class LandingDataMenu
+    public sealed class LandingDataMenu
     {
         public string Title { get; set; }
     }
@@ -67,14 +67,14 @@ namespace Microsoft.Docs.Build
         Text,
     }
 
-    public class LandingDataSection
+    public sealed class LandingDataSection
     {
         public string Title { get; set; }
 
         public LandingDataItem[] Items { get; set; }
     }
 
-    public class LandingDataItem
+    public sealed class LandingDataItem
     {
         public LandingDataType Type { get; set; }
 
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         public string Html { get; set; }
     }
 
-    public class LandingDataColumn
+    public sealed class LandingDataColumn
     {
         public LandingDataImage Image { get; set; }
 
@@ -104,20 +104,20 @@ namespace Microsoft.Docs.Build
         public string Text { get; set; }
     }
 
-    public class LandingDataRow
+    public sealed class LandingDataRow
     {
         public string Title { get; set; }
 
         public LandingDataRowValue[] Values { get; set; }
     }
 
-    public class LandingDataRowValue
+    public sealed class LandingDataRowValue
     {
         [Href]
         public string Href { get; set; }
     }
 
-    public class LandingDataListItem
+    public sealed class LandingDataListItem
     {
         public string Text { get; set; }
 

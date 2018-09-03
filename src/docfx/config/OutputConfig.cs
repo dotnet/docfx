@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class OutputConfig
+    internal sealed class OutputConfig
     {
         /// <summary>
         /// Gets the build output directory. Could be absolute or relative.

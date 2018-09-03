@@ -26,9 +26,11 @@ class Program
             Directory.CreateDirectory("schemas");
         }
 
+        var generator = CreateGenerator();
+
         foreach (var (type, name) in schemas.Skip(skip).Take(take))
         {
-            GenerateJSchema(type, name);
+            GenerateJSchema(generator, type, name);
         }
 
         if (skip + take >= schemas.Count)
@@ -36,7 +38,9 @@ class Program
             var diff = await ProcessUtility.Execute("git", "diff --ignore-all-space --ignore-blank-lines schemas");
             if (!string.IsNullOrEmpty(diff))
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Json schema change detected. Run ./build.ps1 locally and commit these json schema changes:");
+                Console.ResetColor();
                 Console.WriteLine("");
                 Console.WriteLine(diff);
                 return 1;
@@ -63,7 +67,53 @@ class Program
         }
     }
 
-    static void GenerateJSchema(Type type, string name)
+    static void GenerateJSchema(JSchemaGenerator generator, Type type, string name)
+    {
+        var schema = generator.Generate(type, rootSchemaNullable: false);
+
+        VerifyContract(generator.ContractResolver, type);
+
+        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
+    }
+
+    private static void VerifyContract(IContractResolver resolver, Type type, HashSet<Type> set = null)
+    {
+        set = set ?? new HashSet<Type>();
+        if (!set.Add(type))
+        {
+            return;
+        }
+
+        var contract = resolver.ResolveContract(type);
+        if (contract is JsonObjectContract objectContract)
+        {
+            if (!type.IsSealed && objectContract.ExtensionDataGetter == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Seal '{type}' to disable additional properties in JSON schema, or add an `ExtensionData` property marked as [JsonExtensionData]");
+                Console.ResetColor();
+                Environment.Exit(1);
+            }
+            else if (type.IsSealed && objectContract.ExtensionDataGetter != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Sealed type '{type}' cannot contain a property marked as [JsonExtensionData]");
+                Console.ResetColor();
+                Environment.Exit(1);
+            }
+
+            foreach (var property in objectContract.Properties)
+            {
+                VerifyContract(resolver, property.PropertyType, set);
+            }
+        }
+        else if (contract is JsonArrayContract arrayContract)
+        {
+            VerifyContract(resolver, arrayContract.CollectionItemType, set);
+        }
+    }
+
+    private static JSchemaGenerator CreateGenerator()
     {
         var generator = new JSchemaGenerator
         {
@@ -75,21 +125,6 @@ class Program
         };
 
         generator.GenerationProviders.Add(new StringEnumGenerationProvider { CamelCaseText = true });
-
-        var schema = generator.Generate(type, rootSchemaNullable: false);
-
-        // If type contains JsonExtensinDataAttribute, additional properties are allowed
-        // TODO: Set AllowAdditionalProperties on nested type, not the entry type
-        if (!HasJsonExtensionData(type))
-        {
-            schema.AllowAdditionalProperties = false;
-        }
-
-        File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
-    }
-
-    static bool HasJsonExtensionData(Type type)
-    {
-        return type.GetProperties().Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null);
+        return generator;
     }
 }
