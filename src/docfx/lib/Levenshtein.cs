@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class Levenshtein
     {
-        private static readonly ArrayPool<int> s_arrayPool = ArrayPool<int>.Shared;
-
         /// <summary>
         /// Calculate the Levenshtein Distance from src to target.
         /// </summary>
@@ -33,7 +31,7 @@ namespace Microsoft.Docs.Build
                 return srcLength;
             }
 
-            int[] matrix = s_arrayPool.Rent((srcLength + 1) * (targetLength + 1));
+            int[] matrix = ArrayPool<int>.Shared.Rent((srcLength + 1) * (targetLength + 1));
             matrix[0] = 0;
 
             // source prefixes can be transformed into empty string by
@@ -63,7 +61,7 @@ namespace Microsoft.Docs.Build
             }
             int distance = matrix[((srcLength + 1) * (targetLength + 1)) - 1];
 
-            s_arrayPool.Return(matrix);
+            ArrayPool<int>.Shared.Return(matrix);
 
             return distance;
         }
