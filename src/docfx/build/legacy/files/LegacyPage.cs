@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
-            if (doc.Schema.Attribute as PageSchemaAttribute == null)
+            if (doc.Schema?.Attribute as PageSchemaAttribute == null)
             {
                 var (_, model) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
                 context.Delete(doc.OutputPath);
