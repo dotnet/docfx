@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByName;
         private readonly ConcurrentDictionary<string, UserProfile> _cacheByEmail;
-        private readonly HashSet<string> _unboundEmails = new HashSet<string>();
         private readonly string _cachePath;
         private readonly GitHubAccessor _github;
 
@@ -28,13 +27,13 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(userName));
 
             Error error = null;
-            if (!_cacheByName.TryGetValue(userName, out var userProfile))
+            if (!_cacheByName.TryGetValue(userName, out var profile))
             {
-                (error, userProfile) = await _github.GetUserProfileByName(userName);
-                TryAdd(userName, userProfile);
+                (error, profile) = await _github.GetUserProfileByName(userName);
+                TryAdd(profile);
             }
 
-            return (error, userProfile);
+            return (error, FilterNotFound(profile));
         }
 
         public UserProfile GetByUserEmail(string userEmail)
@@ -42,7 +41,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(userEmail));
 
             if (_cacheByEmail.TryGetValue(userEmail, out var userProfile))
-                return userProfile;
+                return FilterNotFound(userProfile);
             else
                 return null;
         }
@@ -106,7 +105,7 @@ namespace Microsoft.Docs.Build
         private async Task UpdateCacheByCommit(GitCommit commit, Repository repo, List<Error> errors)
         {
             var email = commit.AuthorEmail;
-            if (string.IsNullOrEmpty(email) || GetByUserEmail(email) != null || _unboundEmails.Contains(email))
+            if (string.IsNullOrEmpty(email) || _cacheByEmail.ContainsKey(email))
                 return;
 
             var (authorError, authorName) = await _github.GetNameByCommit(repo.Owner, repo.Name, commit.Sha);
@@ -114,24 +113,21 @@ namespace Microsoft.Docs.Build
                 errors.Add(authorError);
             if (authorName == null)
             {
-                _unboundEmails.Add(email);
+                TryAdd(UserProfile.CreateNotFoundUserByEmail(email));
                 return;
             }
 
-            if (_cacheByName.TryGetValue(authorName, out var existingProfile))
+            if (_cacheByName.TryGetValue(authorName, out var cachedProfile) && cachedProfile.Exists)
             {
-                AddEmailToUserProfile(email, existingProfile);
+                AddEmailToUserProfile(email, cachedProfile);
                 return;
             }
 
-            var (getProfileError, profile) = await _github.GetUserProfileByName(authorName);
+            var (getProfileError, profile) = await GetByUserName(authorName);
             if (getProfileError != null)
                 errors.Add(getProfileError);
-            if (profile == null)
-                return;
-
-            TryAdd(authorName, profile);
-            AddEmailToUserProfile(email, profile);
+            if (profile != null)
+                AddEmailToUserProfile(email, profile);
         }
 
         private void AddEmailToUserProfile(string email, UserProfile profile)
@@ -166,19 +162,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void TryAdd(string userName, UserProfile profile)
+        private void TryAdd(UserProfile profile)
         {
             if (profile == null)
                 return;
 
-            Debug.Assert(!string.IsNullOrEmpty(userName));
-
-            var result = _cacheByName.TryAdd(userName, profile);
+            var userName = profile.Name;
+            if (!string.IsNullOrEmpty(userName))
+                _cacheByName.TryAdd(userName, profile);
             foreach (var email in profile.UserEmails)
             {
                 Debug.Assert(!string.IsNullOrEmpty(email));
                 _cacheByEmail.TryAdd(email, profile);
             }
+        }
+
+        private UserProfile FilterNotFound(UserProfile profile)
+        {
+            if (profile == null || !profile.Exists)
+                return null;
+            else
+                return profile;
         }
     }
 }
