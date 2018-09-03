@@ -31,5 +31,8 @@ namespace Microsoft.Docs.Build
         // tell ops to use plugin for normalization
         [JsonProperty("skip_normalization")]
         public bool SkipNormalization { get; set; }
+
+        [JsonProperty("skip_schema_check")]
+        public bool SkipSchemaCheck { get; set; }
     }
 }
