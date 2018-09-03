@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.39)
+Version Notes (Current Version: v2.39.1)
 =======================================
+
+v2.39.1
+-----------
+1. Update Nuget package config.
+2. Fix Chocolatey package download error. (#3349)
 
 v2.39
 -----------
