@@ -7,8 +7,8 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/dotnet/docfx/tools/DfmHttpService</projectUrl>
+    <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dotnet/docfx/tree/master/tools/DfmHttpService</projectUrl>
     <description>HTTP Server Wrapper for DocFX Favorable Markdown.</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <tags>DFM markdown docascode docfx</tags>

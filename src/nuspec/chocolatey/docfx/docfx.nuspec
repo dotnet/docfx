@@ -36,9 +36,9 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- This section is about the software itself -->
     <title>DocFX</title>
     <authors>Microsoft</authors>
-    <projectUrl>http://dotnet.github.io/docfx/</projectUrl>
+    <projectUrl>https://github.com/dotnet/docfx</projectUrl>
     <iconUrl>https://cdn.rawgit.com/ferventcoder/chocolatey-packages/3d0ce42525e12ad5b9cd528e8cbab011d8db4737/icons/docfx.svg</iconUrl>
-    <copyright>© 2015-2018 Microsoft</copyright>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <licenseUrl>https://github.com/dotnet/docfx/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/dotnet/docfx</projectSourceUrl>
