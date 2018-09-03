@@ -24,6 +24,6 @@ namespace Microsoft.Docs.Build
         [InlineData("hdinsight-hadoop-script-actions-linux", "hadoop", 31)]
         [InlineData("hdinsight-hadoop-script-actions-linux", "interactive-query", 28)]
         public static void LevenshteinDistance(string src, string target, int expectedDistance)
-            => Assert.Equal(expectedDistance, src.LevenshteinDistance(target));
+            => Assert.Equal(expectedDistance, Levenshtein.GetLevenshteinDistance(src, target));
     }
 }
