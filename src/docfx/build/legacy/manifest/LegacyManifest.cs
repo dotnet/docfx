@@ -71,6 +71,7 @@ namespace Microsoft.Docs.Build
                             Type = GetType(document.ContentType),
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
+                            SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
                         };
 
                         convertedItems.Add((file, document));
