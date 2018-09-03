@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FileConfig
+    internal sealed class FileConfig
     {
         /// <summary>
         /// Gets the include patterns of files.
