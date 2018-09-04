@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class TestHelper
+    internal static class TestUtility
     {
         public static void VerifyJsonContainEquals(JToken expected, JToken actual, string parentKey = null)
         {
@@ -52,7 +50,7 @@ namespace Microsoft.Docs.Build
                     expectedHtml.StartsWith('<') && expectedHtml.EndsWith('>'))
                 {
                     // Treat `content` as html if the expected value looks like: <blablabla>
-                    Assert.Equal(TestHelper.NormalizeHtml(expectedHtml), TestHelper.NormalizeHtml(actualHtml));
+                    Assert.Equal(TestUtility.NormalizeHtml(expectedHtml), TestUtility.NormalizeHtml(actualHtml));
                 }
                 else
                 {

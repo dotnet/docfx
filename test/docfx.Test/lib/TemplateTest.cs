@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
             var model = JsonConvert.DeserializeObject(json.Replace('\'', '"'), pageType);
 
             Assert.Equal(
-                TestHelper.NormalizeHtml(html),
-                TestHelper.NormalizeHtml(await Template.Render(pageType.Name, model)));
+                TestUtility.NormalizeHtml(html),
+                TestUtility.NormalizeHtml(await Template.Render(pageType.Name, model)));
         }
     }
 }
