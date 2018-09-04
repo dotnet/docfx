@@ -25,7 +25,9 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = new LegacyManifestOutputItem
+                            MetadataOutput = document.IsSchemaData
+                            ? null
+                            : new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
                                 OutputPathRelativeToSiteBasePath = document.ContentType == ContentType.Resource

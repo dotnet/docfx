@@ -15,55 +15,61 @@ namespace Microsoft.Docs.Build
             LegacyManifestOutput legacyManifestOutput,
             TableOfContentsMap tocMap)
         {
+            // OPS build use TOC ouput as data page
             if (legacyManifestOutput.TocOutput != null)
             {
                 var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset);
                 var (_, model) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
                 context.Delete(doc.OutputPath);
                 context.WriteJson(model.Content, outputPath);
-                return;
             }
 
-            var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
-            var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
-            LegacyUtility.MoveFileSafe(
-                docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
-                docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
-
-            var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
-
-            var content = pageModel.Content as string;
-            if (!string.IsNullOrEmpty(content))
+            JObject rawMetadata = null;
+            if (legacyManifestOutput.PageOutput != null)
             {
-                content = HtmlUtility.TransformHtml(
-                    content,
-                    node => node.AddLinkType(docset.Config.Locale, docset.Legacy)
-                                .RemoveRerunCodepenIframes());
+                var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
+                LegacyUtility.MoveFileSafe(
+                    docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
+                    docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
+
+                var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
+
+                var content = pageModel.Content as string;
+                if (!string.IsNullOrEmpty(content))
+                {
+                    content = HtmlUtility.TransformHtml(
+                        content,
+                        node => node.AddLinkType(docset.Config.Locale, docset.Legacy)
+                                    .RemoveRerunCodepenIframes());
+                }
+
+                var outputRootRelativePath =
+                    PathUtility.NormalizeFolder(
+                        Path.GetRelativePath(
+                            PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath)),
+                            PathUtility.NormalizeFolder(".")));
+
+                var themesRelativePathToOutputRoot = "_themes/";
+
+                if (!string.IsNullOrEmpty(doc.RedirectionUrl))
+                {
+                    rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
+                    context.WriteJson(new { outputRootRelativePath, content, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                }
+                else
+                {
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
+                    var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
+                    context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                }
             }
 
-            var outputRootRelativePath =
-                PathUtility.NormalizeFolder(
-                    Path.GetRelativePath(
-                        PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath)),
-                        PathUtility.NormalizeFolder(".")));
-
-            var themesRelativePathToOutputRoot = "_themes/";
-
-            JObject rawMetadata;
-            if (!string.IsNullOrEmpty(doc.RedirectionUrl))
+            if (legacyManifestOutput.MetadataOutput != null && rawMetadata != null)
             {
-                rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                context.WriteJson(new { outputRootRelativePath, content, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                var metadataOutputPath = legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset);
+                var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
+                context.WriteJson(metadate, metadataOutputPath);
             }
-            else
-            {
-                rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
-                var pageMetadata = LegacyMetadata.GenerateLegacyPageMetadata(rawMetadata);
-                context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
-            }
-
-            var metadate = LegacyMetadata.GenerateLegacyMetadateOutput(rawMetadata);
-            context.WriteJson(metadate, metadataOutputPath);
         }
     }
 }
