@@ -184,3 +184,16 @@ outputs:
     }
   build.manifest:
 ---
+# Show yaml, json syntax error
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    a: b:
+  docs/b.json: |
+    {
+outputs:
+  build.log: |
+    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
+    ["error","json-syntax-error","Error reading JObject from JsonReader. Path ''.","docs/b.json",2]
+  build.manifest:

@@ -180,11 +180,18 @@ namespace Microsoft.Docs.Build
                         JToken.Parse(File.ReadAllText(file)));
                     break;
                 case ".log":
-                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToList();
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
+                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
                     // TODO: Configure github token in CI to get rid of github rate limit,
                     // then we could remove the wildcard match
-                    Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                    if (expected.Contains("*"))
+                    {
+                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                    }
+                    else
+                    {
+                        Assert.Equal(expected, actual);
+                    }
                     break;
                 default:
                     Assert.Equal(
