@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
             {
                 case ".json":
                 case ".manifest":
-                    TestHelper.VerifyJsonContainEquals(
+                    TestUtility.VerifyJsonContainEquals(
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
@@ -184,13 +184,13 @@ namespace Microsoft.Docs.Build
                     var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
                     // TODO: Configure github token in CI to get rid of github rate limit,
                     // then we could remove the wildcard match
-                    if (expected.Contains("*"))
+                    if (expected.Any(str => str.Contains("*")))
                     {
                         Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
                     }
                     else
                     {
-                        Assert.Equal(expected, actual);
+                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
                     break;
                 default:
