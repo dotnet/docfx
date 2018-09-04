@@ -41,7 +41,10 @@ namespace Microsoft.Docs.Build
         {
             foreach (var command in spec.Commands)
             {
-                await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
+                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                {
+                    break;
+                }
             }
 
             // Verify output
@@ -118,7 +121,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(spec.Repo))
             {
                 var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
-                await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
+                await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec, token: null);
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
             }
 
