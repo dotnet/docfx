@@ -22,7 +22,7 @@ Below are the attributes we use with the equivalent keywords in json schema.
 ## Example
 Here comes an example how the C# class looks like:
 ```csharp
-public class SomeClass
+public sealed class SomeClass
 {
     [RegularExpression("[a-z]")]
     public string RegPatternValue { get; set; }
