@@ -132,7 +132,7 @@ outputs:
   build.log: |
     ["info","null-value","'description' contains null value","docs/a.yml",2,1]
 ---
-# Support schema documents with inline Markdown content
+# Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
     rules:
@@ -150,6 +150,32 @@ outputs:
   build.manifest:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
+---
+# Support schema documents with html content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    html: link <a href="b.md"></a> <script></script>
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "html": "link <a href=\"b\"></a> " } }
+  docs/b.json:
+  build.manifest:
+---
+# Support schema documents with href content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    href: b.md
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "href": "b" } }
+  docs/b.json:
+  build.manifest:
 ---
 # Output data schema to json, output page schema to html
 inputs:

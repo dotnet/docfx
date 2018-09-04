@@ -20,6 +20,10 @@ namespace Microsoft.Docs.Build
                     documents,
                     document =>
                     {
+                        if (document.IsSchemaData)
+                        {
+                            return;
+                        }
                         var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToBaseSitePath(docset);
 
                         var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, document.ContentType);

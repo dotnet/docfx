@@ -7,6 +7,12 @@
     },
     "inlineDescription": {
       "type": "string"
+    },
+    "html": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string"
     }
   }
 }
