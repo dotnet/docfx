@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -197,17 +198,6 @@ namespace Microsoft.Docs.Build
                 t_transform = null;
                 t_schemaViolationErrors = null;
             }
-
-            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-            {
-                if (args.CurrentObject == args.ErrorContext.OriginalObject
-                    && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
-                {
-                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
-                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
-                    args.ErrorContext.Handled = true;
-                }
-            }
         }
 
         /// <summary>
@@ -269,6 +259,17 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
+        private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        {
+            if (args.CurrentObject == args.ErrorContext.OriginalObject
+                && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+            {
+                TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
+                args.ErrorContext.Handled = true;
+            }
+        }
+
         private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
             if (message.IndexOf(',') == -1)
@@ -277,11 +278,20 @@ namespace Microsoft.Docs.Build
                 range = new Range(0, 0);
                 return;
             }
-            var parts = message.Remove(message.Length - 1).Split(',');
-            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
-            var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            parsedMessage = message.Substring(0, message.IndexOf("."));
-            range = new Range(lineNumber, linePosition);
+            Match match = null;
+            if ((match = Regex.Match(message, "(.*?)\\. Path (.*)$")).Success)
+            {
+                parsedMessage = match.Groups[1].Value;
+                var lineInfo = match.Groups[2].Value.Split(",").Skip(1);
+                var line = lineInfo.First().Split(" ").Last();
+                var column = lineInfo.Last().Split(" ").Last();
+                range = new Range(int.Parse(line), int.Parse(column.Remove(column.Length - 1)));
+            }
+            else
+            {
+                parsedMessage = null;
+                range = default;
+            }
         }
 
         private static bool ContainsLineInfo(string message)
@@ -500,7 +510,10 @@ namespace Microsoft.Docs.Build
                 {
                     var array = JArray.Load(reader);
                     Validate(reader, array);
-                    return array.ToObject(objectType);
+                    serializer.Error += HandleError;
+                    var value = array.ToObject(objectType, serializer);
+                    serializer.Error -= HandleError;
+                    return value;
                 }
                 else
                 {
