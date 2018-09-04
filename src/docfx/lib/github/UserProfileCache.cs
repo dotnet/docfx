@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (_cacheByName.TryGetValue(authorName, out var cachedProfile) && cachedProfile.Exists)
+            if (_cacheByName.TryGetValue(authorName, out var cachedProfile) && !cachedProfile.Missing)
             {
                 AddEmailToUserProfile(email, cachedProfile);
                 return;
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
 
         private UserProfile FilterNotFound(UserProfile profile)
         {
-            if (profile == null || !profile.Exists)
+            if (profile == null || profile.Missing)
                 return null;
             else
                 return profile;

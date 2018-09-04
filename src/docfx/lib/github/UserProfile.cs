@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
         [JsonProperty("user_emails")]
         public List<string> UserEmails { get; set; } = new List<string>();
 
-        [JsonProperty("exists")]
-        public bool Exists { get; set; } = true;
+        [JsonProperty("missing")]
+        public bool Missing { get; set; } = false;
 
         public static UserProfile CreateNotFoundUserByEmail(string email)
         {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             {
                 EmailAddress = email,
                 UserEmails = new List<string> { email },
-                Exists = false,
+                Missing = true,
             };
         }
 
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             return new UserProfile
             {
                 Name = name,
-                Exists = false,
+                Missing = true,
             };
         }
     }
