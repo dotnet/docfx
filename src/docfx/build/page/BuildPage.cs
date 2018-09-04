@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                 if (attribute is HtmlAttribute)
                 {
                     var html = HtmlUtility.TransformLinks((string)reader.Value, href => GetLink(href, file, file));
-                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html));
+                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
                 // TODO: handle other attributes

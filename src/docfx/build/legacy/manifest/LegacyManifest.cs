@@ -55,11 +55,22 @@ namespace Microsoft.Docs.Build
                         if (document.ContentType == ContentType.Page ||
                             document.ContentType == ContentType.Redirection)
                         {
-                            output.PageOutput = new LegacyManifestOutputItem
+                            if (document.IsSchemaData)
                             {
-                                IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
-                            };
+                                output.TocOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    OutputPathRelativeToSiteBasePath = legacyOutputPathRelativeToBaseSitePath,
+                                };
+                            }
+                            else
+                            {
+                                output.PageOutput = new LegacyManifestOutputItem
+                                {
+                                    IsRawPage = false,
+                                    OutputPathRelativeToSiteBasePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
+                                };
+                            }
                         }
 
                         var file = new LegacyManifestItem
