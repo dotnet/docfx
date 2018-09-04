@@ -21,17 +21,14 @@ namespace Microsoft.Docs.Build
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
-        public static Error UrlRestorePathNotFound(string url)
-            => new Error(ErrorLevel.Error, "url-restore-path-not-found", $"The restore path of url `{url}` can't be found, make sure the `restore` command was executed");
-
         public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
 
         public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
             => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
-        public static Error DependenyRepoNotFound(string dependenyRepoHref)
-            => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
+        public static Error NeedRestore(string dependenyRepoHref)
+            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forgot to run `docfx restore`?");
 
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");

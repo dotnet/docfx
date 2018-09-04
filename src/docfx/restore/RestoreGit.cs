@@ -84,9 +84,15 @@ namespace Microsoft.Docs.Build
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
                 async () =>
                 {
-                    await FetchOrCloneRepo();
-
-                    await AddWorkTrees();
+                    try
+                    {
+                        await FetchOrCloneRepo();
+                        await AddWorkTrees();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw Errors.GitCloneFailed(hrefs.First()).ToException(ex);
+                    }
                 });
 
             Task FetchOrCloneRepo()

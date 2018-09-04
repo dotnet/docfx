@@ -94,19 +94,12 @@ namespace Microsoft.Docs.Build
 
             var remoteWithToken = EmbedToken(remote, token);
 
-            try
-            {
-                await ExecuteNonQuery(cwd, cmd);
+            await ExecuteNonQuery(cwd, cmd);
 
-                if (remoteWithToken != remote)
-                {
-                    // reset url back without token
-                    await SetRemoteGitUrl(Path.Combine(cwd, path), remote);
-                }
-            }
-            catch (InvalidOperationException ex)
+            if (remoteWithToken != remote)
             {
-                throw Errors.GitCloneFailed(remote).ToException(ex);
+                // reset url back without token
+                await SetRemoteGitUrl(Path.Combine(cwd, path), remote);
             }
         }
 
@@ -117,14 +110,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Task status</returns>
         public static async Task Fetch(string cwd, string remote, string refSpec, string token = null)
         {
-            try
-            {
-                await ExecuteNonQuery(cwd, $"fetch {EmbedToken(remote, token)} {refSpec}");
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw Errors.GitCloneFailed(remote).ToException(ex);
-            }
+            await ExecuteNonQuery(cwd, $"fetch {EmbedToken(remote, token)} {refSpec}");
         }
 
         /// <summary>

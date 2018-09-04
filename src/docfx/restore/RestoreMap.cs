@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 return restorePath;
             }
 
-            throw Errors.UrlRestorePathNotFound(path).ToException();
+            throw Errors.NeedRestore(path).ToException();
         }
     }
 }
