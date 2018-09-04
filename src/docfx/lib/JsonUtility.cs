@@ -224,8 +224,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var message = ex.Message.Split('.')[0];
-                throw Errors.JsonSyntaxError(message, ex.Path, ex.LineNumber, ex.LinePosition).ToException(ex);
+                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
             }
         }
 

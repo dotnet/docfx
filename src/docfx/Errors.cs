@@ -72,8 +72,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
-        public static Error JsonSyntaxError(string message, string path, int line, int column)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}. Path '{path}'.", range: new Range(line, column));
+        public static Error JsonSyntaxError(string message, string path, in Range range)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}. Path '{path}'.", range: range);
 
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
