@@ -449,25 +449,30 @@ namespace Microsoft.Docs.Build
 ""regPatternValue"":""3"",
 ""valueWithLengthRestriction"":""a"",
 ""listValueWithLengthRestriction"":[],
-""nestedMember"": {""valueWithLengthRestriction"":""abcd""}}";
+""nestedMember"": {""valueWithLengthRestriction"":""abcd""},
+""Items"": ""notArray""}";
             var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
-            Assert.Collection(errors,
-            error =>
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal("violate-schema", error.Code);
+                Assert.Equal(6, error.Line);
+                Assert.Equal(19, error.Column);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'", error.Message);
+            }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
                 Assert.Equal("Required property 'ValueRequired' not found in JSON", error.Message);
-            },
-            error =>
+            }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(21, error.Column);
-            },
-            error =>
+            }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
@@ -490,6 +495,46 @@ namespace Microsoft.Docs.Build
             });
         }
 
+        [Fact]
+        public void TestConstraintFieldWithInconvertibleNestedType()
+        {
+            var json = @"{
+""AnotherItems"":[
+    {
+        ""Items"": ""notArray"",
+        ""H"": ""notBool""
+    },
+    {
+        ""Items"": []
+    }
+],
+""ValueRequired"": ""a""
+}";
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            Assert.Collection(errors,
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal(2, error.Line);
+                Assert.Equal(16, error.Column);
+                Assert.Equal("Error setting value to 'Items' on 'Microsoft.Docs.Build.JsonUtilityTest+AnotherBasicClass'.", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal(5, error.Line);
+                Assert.Equal(22, error.Column);
+                Assert.Equal("Could not convert string to boolean: notBool", error.Message);
+            },
+            error =>
+            {
+                Assert.Equal(ErrorLevel.Error, error.Level);
+                Assert.Equal(8, error.Line);
+                Assert.Equal(18, error.Column);
+                Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
+            });
+        }
+
         public class BasicClass
         {
             public string C { get; set; }
@@ -506,6 +551,9 @@ namespace Microsoft.Docs.Build
             public string G { get; set; }
 
             public bool H { get; set; }
+
+            [MinLength(1)]
+            public List<BasicClass> Items { get; set; }
         }
 
         public class ClassWithReadOnlyField
@@ -523,6 +571,7 @@ namespace Microsoft.Docs.Build
 
             public List<BasicClass> Items { get; set; }
 
+            [MinLength(1)]
             public List<AnotherBasicClass> AnotherItems { get; set; }
 
             public List<List<AnotherBasicClass>> NestedItems { get; set; }
