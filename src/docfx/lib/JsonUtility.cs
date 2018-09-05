@@ -279,13 +279,17 @@ namespace Microsoft.Docs.Build
                 return;
             }
             Match match = null;
-            if ((match = Regex.Match(message, "(.*?)\\. Path (.*)$")).Success)
+            if ((match = Regex.Match(message, "(.*?)\\. Path (.*) line (.*), position (.*).$")).Success)
             {
                 parsedMessage = match.Groups[1].Value;
-                var lineInfo = match.Groups[2].Value.Split(",").Skip(1);
-                var line = lineInfo.First().Split(" ").Last();
-                var column = lineInfo.Last().Split(" ").Last();
-                range = new Range(int.Parse(line), int.Parse(column.Remove(column.Length - 1)));
+                if (int.TryParse(match.Groups[3].Value, out var line) && int.TryParse(match.Groups[4].Value, out var column))
+                {
+                    range = new Range(line, column);
+                }
+                else
+                {
+                    range = default;
+                }
             }
             else
             {
