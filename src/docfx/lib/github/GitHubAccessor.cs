@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                return (Errors.GitHubApiFailed("", ex), null);
+                return (Errors.GitHubApiFailed("GET /repos/:owner/:repo/commits/:sha", ex), null);
             }
         }
     }

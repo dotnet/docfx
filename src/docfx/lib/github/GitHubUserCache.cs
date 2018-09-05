@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
         {
             Error error;
 
+            if (string.IsNullOrEmpty(login))
+                return default;
+
             var user = TryGetByLogin(login);
             if (user != null)
                 return (null, user);
@@ -48,6 +51,9 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Error, GitHubUser)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
+            if (string.IsNullOrEmpty(authorEmail))
+                return default;
+
             var user = TryGetByEmail(authorEmail);
             if (user != null)
                 return (null, user);

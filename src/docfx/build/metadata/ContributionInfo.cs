@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (Errors.GitHubUserNotFound(authorName), null);
+            return default;
         }
 
         private async Task<(List<Error>, List<GitHubUser>)> GetContributors(Document doc, GitHubUser author, Repository repo, List<GitCommit> fileCommits)
