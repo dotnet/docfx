@@ -198,6 +198,17 @@ namespace Microsoft.Docs.Build
                 t_transform = null;
                 t_schemaViolationErrors = null;
             }
+
+            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+            {
+                if (args.CurrentObject == args.ErrorContext.OriginalObject
+                    && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                {
+                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
+                    args.ErrorContext.Handled = true;
+                }
+            }
         }
 
         /// <summary>
@@ -259,17 +270,6 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-        {
-            if (args.CurrentObject == args.ErrorContext.OriginalObject
-                && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
-            {
-                TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
-                t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
-                args.ErrorContext.Handled = true;
-            }
-        }
-
         private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
             if (message.IndexOf(',') == -1)
@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                parsedMessage = null;
+                parsedMessage = message;
                 range = default;
             }
         }
@@ -510,10 +510,30 @@ namespace Microsoft.Docs.Build
                 {
                     var array = JArray.Load(reader);
                     Validate(reader, array);
-                    serializer.Error += HandleError;
-                    var value = array.ToObject(objectType, serializer);
-                    serializer.Error -= HandleError;
+                    var arraySerializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ContractResolver = DefaultDeserializer.ContractResolver,
+                    };
+                    arraySerializer.Error += HandleError;
+                    var value = array.ToObject(objectType, arraySerializer);
                     return value;
+
+                    void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                    {
+                        if (args.CurrentObject == args.ErrorContext.OriginalObject
+                            && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                        {
+                            TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                            if (range.Equals(default(Range)))
+                            {
+                                var lineInfo = array as IJsonLineInfo;
+                                range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                            }
+                            t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
+                            args.ErrorContext.Handled = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -525,6 +545,7 @@ namespace Microsoft.Docs.Build
                     }
                     return reader.Value;
                 }
+
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
