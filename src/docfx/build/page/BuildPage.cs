@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
-            Error error;
+            List<Error> error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
@@ -40,8 +40,7 @@ namespace Microsoft.Docs.Build
             // TODO: add check before to avoid case failure
             var authorName = metadata.Value<string>("author");
             (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, authorName);
-            if (error != null)
-                errors.Add(error);
+            errors.AddRange(error);
 
             return (errors, model, dependencies.Build());
         }

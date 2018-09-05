@@ -28,9 +28,9 @@ namespace Microsoft.Docs.Build
 
         public string VersionIndependentId { get; set; }
 
-        public GitUserInfo Author { get; set; }
+        public Contributor Author { get; set; }
 
-        public GitUserInfo[] Contributors { get; set; }
+        public Contributor[] Contributors { get; set; }
 
         public DateTime UpdatedAt { get; set; }
 
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         public JObject Metadata { get; set; }
     }
 
-    public class GitUserInfo
+    public class Contributor
     {
         public string Name { get; set; }
 
