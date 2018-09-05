@@ -86,7 +86,7 @@ outputs:
     { "metadata": { "key": "value" } }
   build.manifest:
 ---
-# Global metadata with multiple keys
+# Global metadata multiple keys
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -103,7 +103,7 @@ outputs:
 ---
 # File metadata of object form
 inputs:
-  docfx.yml:
+  docfx.yml: |
     fileMetadata:
       docs/:
         key: value
