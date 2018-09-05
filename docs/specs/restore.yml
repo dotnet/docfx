@@ -95,7 +95,7 @@ inputs:
       dep: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forgot to run `docfx restore`?"]
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent URL can't be found
 commands:
@@ -106,7 +106,7 @@ inputs:
       gitCommitsTime: https://docs.microsoft.com/bad-url
 outputs:
   build.log: |
-    ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forgot to run `docfx restore`?"]
+    ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
 ---
 # Restore longpath repo
 inputs:

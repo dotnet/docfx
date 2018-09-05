@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
 
         public static Error NeedRestore(string dependenyRepoHref)
-            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forgot to run `docfx restore`?");
+            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forget to run `docfx restore`?");
 
         public static Error AuthorNotFound(string author)
             => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");
