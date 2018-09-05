@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             catch (NotFoundException)
             {
                 // GitHub will return 404 "Not Found" if the user doesn't exist
-                return (Errors.AuthorNotFound(name), null);
+                return (Errors.AuthorNotFound(name), UserProfile.CreateNotFoundUserByName(name));
             }
             catch (Exception ex)
             {
