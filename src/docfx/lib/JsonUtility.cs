@@ -545,7 +545,6 @@ namespace Microsoft.Docs.Build
                     }
                     return reader.Value;
                 }
-
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
