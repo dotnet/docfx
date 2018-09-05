@@ -41,7 +41,10 @@ namespace Microsoft.Docs.Build
         {
             foreach (var command in spec.Commands)
             {
-                await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
+                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                {
+                    break;
+                }
             }
 
             // Verify output

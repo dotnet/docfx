@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         private readonly RestoreLock _restoreLock;
 
         public RestoreMap(string docsetPath)
-            : this(RestoreLocker.Load(docsetPath).Result)
+            : this(RestoreLocker.Load(docsetPath).GetAwaiter().GetResult())
         {
         }
 
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 return restorePath;
             }
 
-            throw Errors.UrlRestorePathNotFound(path).ToException();
+            throw Errors.NeedRestore(path).ToException();
         }
     }
 }
