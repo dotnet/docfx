@@ -51,10 +51,7 @@ namespace Microsoft.Docs.Build
 
         public string GetUrlRestorePath(string docsetPath, string path)
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                return null;
-            }
+            Debug.Assert(!string.IsNullOrEmpty(path));
 
             if (!HrefUtility.IsHttpHref(path))
             {
