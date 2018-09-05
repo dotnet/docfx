@@ -127,16 +127,8 @@ namespace Microsoft.Docs.Build
 
         public static T ReadJsonFile<T>(string path)
         {
-            var content = File.ReadAllText(path);
-
-            try
-            {
-                return JsonConvert.DeserializeObject<T>(content);
-            }
-            catch (JsonReaderException ex)
-            {
-                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
-            }
+            var (_, result) = Deserialize<T>(File.ReadAllText(path));
+            return result;
         }
 
         /// <summary>
