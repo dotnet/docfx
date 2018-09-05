@@ -125,6 +125,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static T ReadJsonFile<T>(string path)
+        {
+            var content = File.ReadAllText(path);
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(content);
+            }
+            catch (JsonReaderException ex)
+            {
+                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
+            }
+        }
+
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>

@@ -29,19 +29,19 @@ namespace Microsoft.Docs.Build
 
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
-                : FileUtility.ReadJsonFile<GitCommitsTime>(
+                : JsonUtility.ReadJsonFile<GitCommitsTime>(
                     docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
 
             _gitHubUserCache = new GitHubUserCache(gitHubToken);
 
             if (File.Exists(s_defaultProfilePath))
             {
-                _gitHubUserCache.Update(FileUtility.ReadJsonFile<GitHubUser[]>(s_defaultProfilePath));
+                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(s_defaultProfilePath));
             }
 
             if (!string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache))
             {
-                _gitHubUserCache.Update(FileUtility.ReadJsonFile<GitHubUser[]>(
+                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(
                     docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache)));
             }
         }
