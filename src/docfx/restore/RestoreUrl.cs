@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                         await Task.Delay(RetryInterval);
                         continue;
                     }
-                    throw Errors.DownloadFailed(address, ex.Message).ToException();
+                    throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
                 }
                 return tempFile;
             }

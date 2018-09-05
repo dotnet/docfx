@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.AddLinkType("zh-cn"));
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.RemoveRerunCodepenIframes());
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.StripTags());
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]

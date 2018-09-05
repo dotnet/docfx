@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
@@ -18,6 +19,7 @@ namespace Microsoft.Docs.Build
     internal static class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
+
         private static readonly MethodInfo s_setLineInfo = typeof(JToken).GetMethod(
             "SetLineInfo",
             BindingFlags.NonPublic | BindingFlags.Instance,
@@ -72,6 +74,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)
         {
+            Match match = null;
+
             var errors = new List<Error>();
             var stream = new YamlStream();
 
@@ -79,13 +83,20 @@ namespace Microsoft.Docs.Build
             {
                 stream.Load(new StringReader(input));
             }
-            catch (YamlException ex) when (ex.Message.Contains("Duplicate key"))
+            catch (YamlException ex) when (
+                ex.InnerException is ArgumentException aex &&
+                (match = Regex.Match(aex.Message, "(.*?)\\. Key: (.*)$")).Success)
             {
-                throw Errors.YamlDuplicateKey(ex).ToException();
+                var range = new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+
+                throw Errors.YamlDuplicateKey(range, match.Groups[2].Value).ToException(ex);
             }
             catch (YamlException ex)
             {
-                throw Errors.YamlSyntaxError(ex).ToException();
+                var range = new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
+
+                throw Errors.YamlSyntaxError(range, message).ToException(ex);
             }
 
             if (stream.Documents.Count == 0)

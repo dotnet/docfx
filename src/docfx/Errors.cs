@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -49,10 +48,10 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
-        public static Error MissingTocHead(Range range, string filePath)
+        public static Error MissingTocHead(in Range range, string filePath)
             => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
 
-        public static Error InvalidTocSyntax(Range range, string filePath, string syntax)
+        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax)
             => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalided", filePath, range);
 
         public static Error InvalidTocLevel(string filePath, int from, int to)
@@ -64,20 +63,17 @@ namespace Microsoft.Docs.Build
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
 
-        public static Error YamlSyntaxError(YamlException ex)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
+        public static Error YamlSyntaxError(in Range range, string message)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, range: range);
 
-        public static Error YamlDuplicateKey(YamlException ex)
-        {
-            var (range, message) = RedefineDuplicateKeyErrorMessage(ex);
-            return new Error(ErrorLevel.Error, "yaml-duplicate-key", message, range: range);
-        }
+        public static Error YamlDuplicateKey(in Range range, string key)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
-        public static Error JsonSyntaxError(Exception ex)
-            => new Error(ErrorLevel.Error, "json-syntax-error", ex.Message);
+        public static Error JsonSyntaxError(string message, string path, in Range range)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}. Path '{path}'.", range: range);
 
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
@@ -127,13 +123,13 @@ namespace Microsoft.Docs.Build
         public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark)
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
 
-        public static Error NullValue(Range range, string name)
+        public static Error NullValue(in Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);
 
-        public static Error UnknownField(Range range, string propName, string typeName, string path)
+        public static Error UnknownField(in Range range, string propName, string typeName, string path)
             => new Error(ErrorLevel.Warning, "unknown-field", $"Path:{path} Could not find member '{propName}' on object of type '{typeName}'", range: range);
 
-        public static Error ViolateSchema(Range range, string message)
+        public static Error ViolateSchema(in Range range, string message)
             => new Error(ErrorLevel.Error, "violate-schema", message, range: range);
 
         public static Error SchemaNotFound(string schema)
@@ -141,19 +137,5 @@ namespace Microsoft.Docs.Build
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
-
-        private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
-        {
-            return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
-        }
-
-        private static (Range, string) RedefineDuplicateKeyErrorMessage(YamlException ex)
-        {
-            var range = ParseRangeFromYamlSyntaxException(ex);
-            var innerMessage = ex.InnerException.Message;
-            var keyIndex = innerMessage.LastIndexOf(':');
-            var key = innerMessage.Substring(keyIndex + 2, innerMessage.Length - keyIndex - 2);
-            return (range, $"Key '{key}' is already defined, remove the duplicate key.");
-        }
     }
 }

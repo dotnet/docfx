@@ -255,13 +255,6 @@ namespace Microsoft.Docs.Build
             var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize(json));
         }
 
-        [Fact]
-        public void TestNull()
-        {
-            string json = null;
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize(json));
-        }
-
         [Theory]
         [InlineData("1", 1, 1)]
         [InlineData(@"{""key"":""value""}", 1, 14)]
