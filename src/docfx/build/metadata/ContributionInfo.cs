@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
 
-        private readonly GitHubUserCache _userProfileCache;
+        private readonly GitHubUserCache _gitHubUserCache;
 
         private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
 
@@ -29,13 +29,21 @@ namespace Microsoft.Docs.Build
 
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
+                : FileUtility.ReadJsonFile<GitCommitsTime>(
+                    docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
 
-            var userProfilePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
-                    ? s_defaultProfilePath
-                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache);
+            _gitHubUserCache = new GitHubUserCache(gitHubToken);
 
-            _userProfileCache = new GitHubUserCache(gitHubToken);
+            if (File.Exists(s_defaultProfilePath))
+            {
+                _gitHubUserCache.Update(FileUtility.ReadJsonFile<GitHubUser[]>(s_defaultProfilePath));
+            }
+
+            if (!string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache))
+            {
+                _gitHubUserCache.Update(FileUtility.ReadJsonFile<GitHubUser[]>(
+                    docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache)));
+            }
         }
 
         public async Task<(List<Error> error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(
@@ -45,8 +53,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            var (error, authorInfo) = await GetAuthor(document, author, repo, commits);
-            var (errors, contributors) = await GetContributors(document, authorInfo, repo, commits);
+            var (error, authorInfo) = repo.Host == GitHost.GitHub ? await GetAuthor(document, author, repo, commits) : default;
+            var (errors, contributors) = repo.Host == GitHost.GitHub ? await GetContributors(document, authorInfo, repo, commits) : default;
             var updatedDateTime = GetUpdatedAt(document, commits);
 
             errors.Add(error);
@@ -85,14 +93,14 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(authorName))
             {
-                return await _userProfileCache.GetByLogin(authorName);
+                return await _gitHubUserCache.GetByLogin(authorName);
             }
 
             if (fileCommits != null && fileCommits.Count != 0)
             {
                 for (var i = fileCommits.Count - 1; i >= 0; i--)
                 {
-                    var (error, user) = await _userProfileCache.GetByCommit(fileCommits[i].AuthorEmail, repo.Owner, repo.Name, fileCommits[i].Sha);
+                    var (error, user) = await _gitHubUserCache.GetByCommit(fileCommits[i].AuthorEmail, repo.Owner, repo.Name, fileCommits[i].Sha);
 
                     if (user != null && !excludes.Contains(authorName))
                     {
@@ -104,7 +112,7 @@ namespace Microsoft.Docs.Build
             return (Errors.GitHubUserNotFound(authorName), null);
         }
 
-        private async Task<(List<Error>, List<GitHubUser>)> GetContributors(Document doc, GitHubUser authorInfo, Repository repo, List<GitCommit> fileCommits)
+        private async Task<(List<Error>, List<GitHubUser>)> GetContributors(Document doc, GitHubUser author, Repository repo, List<GitCommit> fileCommits)
         {
             var users = new List<GitHubUser>();
             var errors = new List<Error>();
@@ -116,11 +124,11 @@ namespace Microsoft.Docs.Build
             {
                 if (emails.Add(commit.AuthorEmail))
                 {
-                    var (error, user) = await _userProfileCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
+                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
                     if (error != null)
                         errors.Add(error);
 
-                    if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
+                    if (user != null && user.Id != author.Id && !excludes.Contains(user.Login) && logins.Add(user.Login))
                         users.Add(user);
                 }
             }
