@@ -222,9 +222,9 @@ namespace Microsoft.Docs.Build
                     .ValidateNullValue();
                 return (errors, token ?? JValue.CreateNull());
             }
-            catch (Exception ex)
+            catch (JsonReaderException ex)
             {
-                throw Errors.JsonSyntaxError(ex).ToException();
+                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
             }
         }
 
