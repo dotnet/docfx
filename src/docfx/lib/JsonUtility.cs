@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -283,11 +284,24 @@ namespace Microsoft.Docs.Build
                 range = new Range(0, 0);
                 return;
             }
-            var parts = message.Remove(message.Length - 1).Split(',');
-            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
-            var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            parsedMessage = message.Substring(0, message.IndexOf("."));
-            range = new Range(lineNumber, linePosition);
+            Match match = null;
+            if ((match = Regex.Match(message, "(.*?)\\. Path (.*) line (.*), position (.*).$")).Success)
+            {
+                parsedMessage = match.Groups[1].Value;
+                if (int.TryParse(match.Groups[3].Value, out var line) && int.TryParse(match.Groups[4].Value, out var column))
+                {
+                    range = new Range(line, column);
+                }
+                else
+                {
+                    range = default;
+                }
+            }
+            else
+            {
+                parsedMessage = message;
+                range = default;
+            }
         }
 
         private static bool ContainsLineInfo(string message)
@@ -506,7 +520,30 @@ namespace Microsoft.Docs.Build
                 {
                     var array = JArray.Load(reader);
                     Validate(reader, array);
-                    return array.ToObject(objectType);
+                    var arraySerializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ContractResolver = DefaultDeserializer.ContractResolver,
+                    };
+                    arraySerializer.Error += HandleError;
+                    var value = array.ToObject(objectType, arraySerializer);
+                    return value;
+
+                    void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                    {
+                        if (args.CurrentObject == args.ErrorContext.OriginalObject
+                            && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                        {
+                            TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                            if (range.Equals(default(Range)))
+                            {
+                                var lineInfo = array as IJsonLineInfo;
+                                range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                            }
+                            t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
+                            args.ErrorContext.Handled = true;
+                        }
+                    }
                 }
                 else
                 {
