@@ -84,26 +84,29 @@ namespace Microsoft.Docs.Build
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
                 async () =>
                 {
-                    await FetchOrCloneRepo();
-
-                    await AddWorkTrees();
+                    try
+                    {
+                        await FetchOrCloneRepo();
+                        await AddWorkTrees();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw Errors.GitCloneFailed(hrefs.First()).ToException(ex);
+                    }
                 });
 
-            async Task FetchOrCloneRepo()
+            Task FetchOrCloneRepo()
             {
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
                     // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
-                    await GitUtility.Fetch(restorePath, GitUtility.EmbedToken(url, token), "+refs/heads/*:refs/heads/*");
+                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", token);
                 }
                 else
                 {
                     // doesn't exist yet, clone this repo to a specified branch
-                    await GitUtility.WithToken(restorePath, url, token, async urlWithToken =>
-                    {
-                        await GitUtility.Clone(restoreDir, urlWithToken, restorePath, null, true);
-                    });
+                    return GitUtility.Clone(restoreDir, url, restorePath, token: token, bare: true);
                 }
             }
 
