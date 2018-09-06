@@ -87,21 +87,6 @@ class Program
         var contract = resolver.ResolveContract(type);
         if (contract is JsonObjectContract objectContract)
         {
-            if (!type.IsSealed && objectContract.ExtensionDataGetter == null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Seal '{type}' to disable additional properties in JSON schema, or add an `ExtensionData` property marked as [JsonExtensionData]");
-                Console.ResetColor();
-                Environment.Exit(1);
-            }
-            else if (type.IsSealed && objectContract.ExtensionDataGetter != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Sealed type '{type}' cannot contain a property marked as [JsonExtensionData]");
-                Console.ResetColor();
-                Environment.Exit(1);
-            }
-
             foreach (var property in objectContract.Properties)
             {
                 VerifyContract(resolver, property.PropertyType, set);
