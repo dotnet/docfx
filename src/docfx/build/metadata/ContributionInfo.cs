@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
-        private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
+        private static readonly string s_gitHubUserLocalCachePath = Path.Combine(AppData.CacheDir, "github-users.json");
 
         private readonly GitHubUserCache _gitHubUserCache;
 
@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
 
             _gitHubUserCache = new GitHubUserCache(gitHubToken);
 
-            if (File.Exists(s_defaultProfilePath))
+            if (File.Exists(s_gitHubUserLocalCachePath))
             {
-                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(s_defaultProfilePath));
+                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(s_gitHubUserLocalCachePath));
             }
 
             if (!string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache))
@@ -57,7 +57,9 @@ namespace Microsoft.Docs.Build
             var (errors, contributors) = repo.Host == GitHost.GitHub ? await GetContributors(document, authorInfo, repo, commits) : default;
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            errors.Add(error);
+            if (error != null)
+                errors.Add(error);
+
             return (errors, ToContributor(authorInfo), contributors.Select(ToContributor).ToArray(), updatedDateTime);
         }
 

@@ -70,11 +70,14 @@ namespace Microsoft.Docs.Build
 
         public void Update(IEnumerable<GitHubUser> users)
         {
-            lock (_lock)
+            if (users != null)
             {
-                foreach (var user in users)
+                lock (_lock)
                 {
-                    UnsafeUpdate(user);
+                    foreach (var user in users)
+                    {
+                        UnsafeUpdate(user);
+                    }
                 }
             }
         }

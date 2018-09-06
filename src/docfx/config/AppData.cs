@@ -20,20 +20,14 @@ namespace Microsoft.Docs.Build
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
-        /// <summary>
-        /// Get the restore root dir, default is the user proflie dir.
-        /// User can set the DOCFX_APPDATA_PATH environment to change the root
-        /// </summary>
         private static string GetAppDataDir()
         {
             // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
-            if (!string.IsNullOrEmpty(docfxAppData))
-            {
-                docfxAppData = Path.GetFullPath(docfxAppData);
-            }
 
-            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
+            return string.IsNullOrEmpty(docfxAppData)
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
+                : Path.GetFullPath(docfxAppData);
         }
     }
 }
