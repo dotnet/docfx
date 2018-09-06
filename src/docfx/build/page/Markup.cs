@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
-                    if (!t_result.HasTitle)
+                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
                     }

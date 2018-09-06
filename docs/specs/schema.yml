@@ -73,7 +73,21 @@ outputs:
     {
       "content": { "brand": "azure", "breadcrumb_path": "TOC.json", "toc_rel": "../TOC.json" },
     }
-  build.manifest:
+  build.manifest: |
+    {  
+       "dependencies":{  
+          "docs/a.yml":[  
+             {
+               "source": "docs/TOC.yml",
+               "type": "link"
+             },
+             {  
+                "source":"TOC.yml",
+                "type":"link"
+             }
+          ]
+       }
+    }
 ---
 # schema documents with Href content but wrong type
 inputs:
@@ -118,9 +132,11 @@ outputs:
   build.log: |
     ["info","null-value","'description' contains null value","docs/a.yml",2,1]
 ---
-# Support schema documents with inline Markdown content
+# Support schema documents with inline markdown content
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    rules:
+      heading-not-found: error
   docs/a.yml: |
     #YamlMime:TestPage
     inlineDescription: >
@@ -134,6 +150,32 @@ outputs:
   build.manifest:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
+---
+# Support schema documents with html content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    html: link <a href="b.md"></a> <script></script>
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "html": "link <a href=\"b\"></a> " } }
+  docs/b.json:
+  build.manifest:
+---
+# Support schema documents with href content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    href: b.md
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "href": "b" } }
+  docs/b.json:
+  build.manifest:
 ---
 # Output data schema to json, output page schema to html
 inputs:
@@ -168,3 +210,16 @@ outputs:
     }
   build.manifest:
 ---
+# Show yaml, json syntax error
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    a: b:
+  docs/b.json: |
+    {
+outputs:
+  build.log: |
+    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
+    ["error","json-syntax-error","Error reading JObject from JsonReader. Path ''.","docs/b.json",2]
+  build.manifest:

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             string code,
             string message,
             string file = null,
-            Range range = default)
+            in Range range = default)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");

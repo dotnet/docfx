@@ -2,17 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Config
+    internal sealed class Config
     {
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };

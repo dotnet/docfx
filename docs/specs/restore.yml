@@ -8,7 +8,7 @@ inputs:
 restores:
   git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/01. Restore dependencies with their children-*-lock.json: |
+  restore-lock/*Restore dependencies with their children-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
@@ -30,21 +30,10 @@ restores:
         }
       ]
     }
-  restore-lock/02. Restore urls-*-lock.json: |
+  restore-lock/*Restore urls-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
   build.manifest:
----
-# Restored dependency repo can't be found
-commands:
-  - build
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies#not-exist-branch
-outputs:
-  build.log: |
-    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, make sure the `restore` command was executed"]
 ---
 # Restore urls with extends
 inputs:
@@ -60,7 +49,7 @@ restores:
         }
       ]
     }
-  restore-lock/04. Restore urls with extends-*-lock.json: |
+  restore-lock/*Restore urls with extends-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
   build.manifest:
@@ -72,7 +61,7 @@ inputs:
 restores:
   git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/05. Restore dependencies with extends-*-lock.json: |
+  restore-lock/*Restore dependencies with extends-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
@@ -87,6 +76,37 @@ inputs:
 outputs:
   build.log: |
     ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: No such host is known"]
+---
+# Show error when git clone failed
+inputs:
+  docfx.yml: |
+    dependencies:
+      error: https://github.com/docascode/docfx-test-dependencies#bad-branch
+outputs:
+  build.log: |
+    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies#bad-branch' failed."]
+---
+# Show error when dependent repo can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies#bad-branch
+outputs:
+  build.log: |
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
+---
+# Show error when dependent URL can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    contribution:
+      gitCommitsTime: https://docs.microsoft.com/bad-url
+outputs:
+  build.log: |
+    ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
 ---
 # Restore longpath repo
 inputs:

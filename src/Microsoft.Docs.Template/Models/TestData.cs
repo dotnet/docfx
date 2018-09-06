@@ -4,7 +4,7 @@
 namespace Microsoft.Docs.Build
 {
     [DataSchema]
-    public class TestData
+    public sealed class TestData
     {
         public string Name { get; set; }
     }

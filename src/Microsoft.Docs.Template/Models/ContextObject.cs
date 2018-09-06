@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     [DataSchema]
     [JsonObject(Description = "The schema for context object")]
-    public class ContextObject
+    public sealed class ContextObject
     {
         [JsonProperty("brand")]
         [Description("The brand to be used for the content. Depending on the brand, this may override the UHF header. Not required. Example: azure")]

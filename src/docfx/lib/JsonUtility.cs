@@ -2,13 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -31,8 +30,6 @@ namespace Microsoft.Docs.Build
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
-
-        private static readonly ConcurrentDictionary<Type, Lazy<bool>> s_cacheTypeContainsJsonExtensionData = new ConcurrentDictionary<Type, Lazy<bool>>();
 
         private static readonly JsonSerializerSettings s_noneFormatJsonSerializerSettings = new JsonSerializerSettings
         {
@@ -226,9 +223,9 @@ namespace Microsoft.Docs.Build
                     .ValidateNullValue();
                 return (errors, token ?? JValue.CreateNull());
             }
-            catch (Exception ex)
+            catch (JsonReaderException ex)
             {
-                throw Errors.JsonSyntaxError(ex).ToException();
+                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
             }
         }
 
@@ -281,11 +278,24 @@ namespace Microsoft.Docs.Build
                 range = new Range(0, 0);
                 return;
             }
-            var parts = message.Remove(message.Length - 1).Split(',');
-            var lineNumber = int.Parse(parts.SkipLast(1).Last().Split(' ').Last());
-            var linePosition = int.Parse(parts.Last().Split(' ').Last());
-            parsedMessage = message.Substring(0, message.IndexOf("."));
-            range = new Range(lineNumber, linePosition);
+            Match match = null;
+            if ((match = Regex.Match(message, "(.*?)\\. Path (.*) line (.*), position (.*).$")).Success)
+            {
+                parsedMessage = match.Groups[1].Value;
+                if (int.TryParse(match.Groups[3].Value, out var line) && int.TryParse(match.Groups[4].Value, out var column))
+                {
+                    range = new Range(line, column);
+                }
+                else
+                {
+                    range = default;
+                }
+            }
+            else
+            {
+                parsedMessage = message;
+                range = default;
+            }
         }
 
         private static bool ContainsLineInfo(string message)
@@ -349,8 +359,6 @@ namespace Microsoft.Docs.Build
             }
             else if (token is JObject obj)
             {
-                var allowAddtionalProperties = HasJsonExtensionData(type);
-
                 foreach (var item in token.Children())
                 {
                     var prop = item as JProperty;
@@ -359,7 +367,7 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path, allowAddtionalProperties);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path);
                     if (nestedType != null)
                     {
                         prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
@@ -371,14 +379,6 @@ namespace Microsoft.Docs.Build
         private static string BuildPath(string path, Type type)
         {
             return path is null ? type.Name : $"{path}.{type.Name}";
-        }
-
-        private static bool HasJsonExtensionData(Type type)
-        {
-            return s_cacheTypeContainsJsonExtensionData.GetOrAdd(
-                type,
-                new Lazy<bool>(() => type.GetProperties()
-                        .Any(prop => prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null))).Value;
         }
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
@@ -403,40 +403,29 @@ namespace Microsoft.Docs.Build
             return type;
         }
 
-        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path, bool allowAdditionalProperties)
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
-            JsonPropertyCollection jsonProperties;
+
             if (contract is JsonObjectContract objectContract)
             {
-                jsonProperties = objectContract.Properties;
-            }
-            else if (contract is JsonArrayContract arrayContract)
-            {
-                jsonProperties = GetPropertiesFromJsonArrayContract(arrayContract);
-            }
-            else
-            {
-                return null;
-            }
-
-            // if mismatching field found, add error
-            // else, pass along with nested type
-            var matchingProperty = jsonProperties.GetClosestMatchProperty(prop.Name);
-            if (matchingProperty is null)
-            {
-                if (!allowAdditionalProperties)
+                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
+                if (matchingProperty == null && objectContract.ExtensionDataGetter == null)
                 {
                     var lineInfo = prop as IJsonLineInfo;
                     errors.Add(Errors.UnknownField(
                         new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
                 }
-                return null;
+                return matchingProperty?.PropertyType;
             }
-            else
+
+            if (contract is JsonArrayContract arrayContract)
             {
-                return matchingProperty.PropertyType;
+                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
+                return matchingProperty?.PropertyType;
             }
+
+            return null;
         }
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
@@ -525,7 +514,30 @@ namespace Microsoft.Docs.Build
                 {
                     var array = JArray.Load(reader);
                     Validate(reader, array);
-                    return array.ToObject(objectType);
+                    var arraySerializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ContractResolver = DefaultDeserializer.ContractResolver,
+                    };
+                    arraySerializer.Error += HandleError;
+                    var value = array.ToObject(objectType, arraySerializer);
+                    return value;
+
+                    void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                    {
+                        if (args.CurrentObject == args.ErrorContext.OriginalObject
+                            && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                        {
+                            TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
+                            if (range.Equals(default(Range)))
+                            {
+                                var lineInfo = array as IJsonLineInfo;
+                                range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                            }
+                            t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
+                            args.ErrorContext.Handled = true;
+                        }
+                    }
                 }
                 else
                 {

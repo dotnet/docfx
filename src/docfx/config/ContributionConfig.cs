@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContributionConfig
+    internal sealed class ContributionConfig
     {
         /// <summary>
         /// Determine whether to show contributors and update time based on commits.
