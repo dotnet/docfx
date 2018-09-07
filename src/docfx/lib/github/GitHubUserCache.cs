@@ -13,9 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubUserCache
     {
-        // Default user cache expiration is a week
-        private static readonly int s_userExpiry = int.TryParse(
-            Environment.GetEnvironmentVariable("DOCFX_GITHUB_USER_EXPIRY_MINUTES"), out var n) ? n : 7 * 24 * 60;
+        private static readonly string s_gitHubUserLocalCachePath = Path.Combine(AppData.CacheDir, "github-users.json");
 
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
@@ -23,9 +21,26 @@ namespace Microsoft.Docs.Build
         private readonly object _lock = new object();
         private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
+        private readonly Config _config;
         private readonly GitHubAccessor _github;
+        private readonly string _cachePath;
+        private bool _updated = false;
 
-        public GitHubUserCache(string token = null) => _github = new GitHubAccessor(token);
+        private GitHubUserCache(Config config, string token)
+        {
+            _config = config;
+            _github = new GitHubAccessor(token);
+            _cachePath = string.IsNullOrEmpty(config.Contribution.GitHubUserCache)
+                ? Path.Combine(AppData.CacheDir, "github-users.json")
+                : Path.GetFullPath(config.Contribution.GitHubUserCache);
+        }
+
+        public static async Task<GitHubUserCache> Create(Config config, string token)
+        {
+            var result = new GitHubUserCache(config, token);
+            await result.ReadCacheFile();
+            return result;
+        }
 
         public async Task<(Error error, GitHubUser user)> GetByLogin(string login)
         {
@@ -41,7 +56,7 @@ namespace Microsoft.Docs.Build
             (error, user) = await _github.GetUserByLogin(login);
 
             if (user != null)
-                Update(user);
+                UpdateUser(user);
 
             if (error != null)
                 return (error, null);
@@ -60,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             var (error, login) = await _github.GetLoginByCommit(repoOwner, repoName, commitSha);
 
-            Update(new GitHubUser { Login = login, Emails = new[] { authorEmail } });
+            UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail } });
 
             if (login == null)
                 return (error, null);
@@ -68,25 +83,18 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public void Update(IEnumerable<GitHubUser> users)
+        public Task Flush()
         {
-            if (users != null)
+            return _updated ? ProcessUtility.CreateFileMutex(_cachePath, WriteCache) : Task.CompletedTask;
+
+            Task WriteCache()
             {
                 lock (_lock)
                 {
-                    foreach (var user in users)
-                    {
-                        UnsafeUpdate(user);
-                    }
+                    var users = _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct().ToList();
+                    JsonUtility.WriteJsonFile(_cachePath, users);
                 }
-            }
-        }
-
-        public List<GitHubUser> Export()
-        {
-            lock (_lock)
-            {
-                return _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct().ToList();
+                return Task.CompletedTask;
             }
         }
 
@@ -110,15 +118,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void Update(GitHubUser user)
+        private void UpdateUser(GitHubUser user)
         {
             lock (_lock)
             {
-                UnsafeUpdate(user);
+                UnsafeUpdateUser(user);
+
+                _updated = true;
             }
         }
 
-        private void UnsafeUpdate(GitHubUser user)
+        private void UnsafeUpdateUser(GitHubUser user)
         {
             Debug.Assert(user != null);
             Debug.Assert(!string.IsNullOrEmpty(user.Login) || user.Emails.Length > 0);
@@ -142,9 +152,35 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static DateTime NextExpiry()
+        private DateTime NextExpiry()
         {
-            return DateTime.UtcNow.AddMinutes((s_userExpiry / 2) + t_random.Value.Next(s_userExpiry));
+            var expirationInHours = (double)_config.Contribution.GitHubUserCacheExpirationInHours;
+
+            return DateTime.UtcNow.AddHours((expirationInHours / 2) + (t_random.Value.NextDouble() * expirationInHours));
+        }
+
+        private Task ReadCacheFile()
+        {
+            return ProcessUtility.CreateFileMutex(_cachePath, UpdateCache);
+
+            Task UpdateCache()
+            {
+                if (File.Exists(_cachePath))
+                {
+                    var users = JsonUtility.ReadJsonFile<GitHubUserCacheFile>(_cachePath)?.Users;
+                    if (users != null)
+                    {
+                        lock (_lock)
+                        {
+                            foreach (var user in users)
+                            {
+                                UnsafeUpdateUser(user);
+                            }
+                        }
+                    }
+                }
+                return Task.CompletedTask;
+            }
         }
     }
 }

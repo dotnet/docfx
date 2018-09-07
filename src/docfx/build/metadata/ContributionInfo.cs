@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
-        private static readonly string s_gitHubUserLocalCachePath = Path.Combine(AppData.CacheDir, "github-users.json");
-
         private readonly GitHubUserCache _gitHubUserCache;
 
         private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
@@ -23,27 +21,20 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile;
 
-        public ContributionInfo(Docset docset, string gitHubToken)
+        private ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
         {
+            _gitHubUserCache = gitHubUserCache;
             _commitsByFile = LoadCommits(docset);
 
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                 ? new Dictionary<string, DateTime>()
                 : JsonUtility.ReadJsonFile<GitCommitsTime>(
                     docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
+        }
 
-            _gitHubUserCache = new GitHubUserCache(gitHubToken);
-
-            if (File.Exists(s_gitHubUserLocalCachePath))
-            {
-                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(s_gitHubUserLocalCachePath));
-            }
-
-            if (!string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache))
-            {
-                _gitHubUserCache.Update(JsonUtility.ReadJsonFile<GitHubUser[]>(
-                    docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache)));
-            }
+        public static async Task<ContributionInfo> Create(Docset docset, string gitHubToken)
+        {
+            return new ContributionInfo(docset, await GitHubUserCache.Create(docset.Config, gitHubToken));
         }
 
         public async Task<(List<Error> error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(

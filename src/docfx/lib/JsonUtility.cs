@@ -132,6 +132,11 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        public static void WriteJsonFile(string path, object value)
+        {
+            File.WriteAllText(path, Serialize(value));
+        }
+
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
