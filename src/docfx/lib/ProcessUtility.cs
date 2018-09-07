@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        public static async Task RunInMutex(string mutexName, Func<Task> action)
+        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 

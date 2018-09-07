@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var restoreLockFilePath = GetRestoreLockFilePath(docset);
-            await ProcessUtility.RunInMutex(
+            await ProcessUtility.RunInsideMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 async () =>
                 {
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             if (!File.Exists(restoreLockFilePath))
                 return restore;
 
-            await ProcessUtility.RunInMutex(
+            await ProcessUtility.RunInsideMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 () =>
                 {
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
             var restoreLocks = new ConcurrentBag<RestoreLock>();
             await ParallelUtility.ForEach(Directory.EnumerateFiles(AppData.RestoreLockDir, "*", SearchOption.TopDirectoryOnly), async restoreLockFilePath =>
             {
-                await ProcessUtility.RunInMutex(
+                await ProcessUtility.RunInsideMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 () =>
                 {

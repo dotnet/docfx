@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             var fileName = $"process-test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(
-                i => ProcessUtility.RunInMutex(
+                i => ProcessUtility.RunInsideMutex(
                     fileName,
                     () =>
                     {

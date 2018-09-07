@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             var restoreDir = GetRestoreRootDir(address);
             var restorePath = GetRestoreVersionPath(restoreDir, fileVersion);
-            await ProcessUtility.RunInMutex(
+            await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
                 () =>
                 {
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            await ProcessUtility.RunInMutex(
+            await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
                 async () =>
                 {
