@@ -271,30 +271,26 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field")]
+        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
-        ""ValueBasic"":
-          {""B"": 1,
-          ""C"": ""c"",
-          ""E"": ""e""}, ""ValueRequired"": ""a""}", 5, 14, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"{
-        ""Items"":
-          [{ ""B"": 1,
-            ""C"": ""c"",
-            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"{
-        ""AnotherItems"":
-          [{ ""F"": 1,
-            ""G"": ""c"",
-            ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 16, ErrorLevel.Warning, "unknown-field")]
+""AnotherItems"":
+  [{ ""F"": 1,
+    ""G"": ""c"",
+    ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
 ""NestedItems"":
   [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field")]
-        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
+    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
+        [InlineData(@"[{
+""B"": 1,
+""C"": ""c"",
+""E"": ""e"",
+""NestedSealedMember"": {""Unknown"": 1}}]", 5, 33, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
+        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
         {
-            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (_, token) = JsonUtility.Deserialize(json);
+            var (errors, result) = JsonUtility.ToObject(token, type);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -308,8 +304,9 @@ namespace Microsoft.Docs.Build
         public void TestMultipleUnknownFieldType()
         {
             var json = @"{""mismatchField1"": ""name"",
-""mismatchField2"": ""name""}";
-            var (errors, result) = JsonUtility.Deserialize<BasicClass>(json);
+""mismatchField2"": ""name"",
+""ValueRequired"": ""a""}";
+            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -317,7 +314,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:ClassWithMoreMembers.mismatchField1 Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'", error.Message);
             },
             error =>
             {
@@ -325,7 +322,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(17, error.Column);
-                Assert.Equal("Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:ClassWithMoreMembers.mismatchField2 Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'", error.Message);
             });
         }
 
@@ -351,18 +348,18 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData(@"{
-          ""B"": 1,
-          ""C"": ""c"",
-          ""E"": ""e""}", typeof(ClassWithJsonExtensionData))]
+""B"": 1,
+""C"": ""c"",
+""E"": ""e""}", typeof(NotSealedClass))]
         [InlineData(@"{
-          ""Data"":{
-          ""B"": 1,
-          ""C"": ""c"",
-          ""E"": ""e""}}", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
+""Data"":{
+""B"": 1,
+""C"": ""c"",
+""E"": ""e""}}", typeof(SealedClassNestedWithNotSealedType))]
         [InlineData(@"[{
-          ""B"": 1,
-          ""C"": ""c"",
-          ""E"": ""e""}]", typeof(List<ClassWithJsonExtensionData>))]
+""B"": 1,
+""C"": ""c"",
+""E"": ""e""}]", typeof(List<NotSealedClass>))]
         public void TestObjectTypeWithJsonExtensionData(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
@@ -371,20 +368,20 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestNestedObjectTypeWithoutJsonExtensionData()
+        public void TestNestedObjectTypeWithNotSealedType()
         {
             var yaml = @"[{
-          ""B"": 1,
-          ""C"": ""c"",
-          ""E"": ""e"",
-          ""NestedMemberWithoutExtensionData"": {""Unknown"": 1}}]";
-            var (errors, value) = JsonUtility.Deserialize<List<ClassWithJsonExtensionData>>(yaml);
+""B"": 1,
+""C"": ""c"",
+""E"": ""e"",
+""NestedSealedMember"": {""Unknown"": 1}}]";
+            var (errors, value) = JsonUtility.Deserialize<List<NotSealedClass>>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(5, error.Line);
-                Assert.Equal(57, error.Column);
+                Assert.Equal(33, error.Column);
             });
         }
 
@@ -544,7 +541,7 @@ namespace Microsoft.Docs.Build
             public bool D { get; set; }
         }
 
-        public class AnotherBasicClass
+        public sealed class AnotherBasicClass
         {
             public int F { get; set; }
 
@@ -556,12 +553,12 @@ namespace Microsoft.Docs.Build
             public List<BasicClass> Items { get; set; }
         }
 
-        public class ClassWithReadOnlyField
+        public sealed class ClassWithReadOnlyField
         {
             public readonly string B;
         }
 
-        public class ClassWithMoreMembers : BasicClass
+        public sealed class ClassWithMoreMembers : BasicClass
         {
             public Dictionary<string, object> ValueDict { get; set; }
 
@@ -596,20 +593,17 @@ namespace Microsoft.Docs.Build
             public string ValueRequired { get; set; }
         }
 
-        public class ClassWithJsonExtensionData : BasicClass
+        public class NotSealedClass : BasicClass
         {
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
-
-            public NestedClass NestedMemberWithoutExtensionData { get; set; }
+            public NestedClass NestedSealedMember { get; set; }
         }
 
-        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
+        public sealed class SealedClassNestedWithNotSealedType : BasicClass
         {
-            public ClassWithJsonExtensionData Data { get; set; }
+            public NotSealedClass Data { get; set; }
         }
 
-        public class NestedClass
+        public sealed class NestedClass
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }

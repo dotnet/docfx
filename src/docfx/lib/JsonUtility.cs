@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 t_docsetPath = docsetPath;
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
-                var mismatchingErrors = token.ValidateMismatchingFieldType(type);
+                var mismatchingErrors = token.ValidateUnknownFieldType(type);
                 errors.AddRange(mismatchingErrors);
                 var serializer = new JsonSerializer
                 {
@@ -263,7 +263,7 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        internal static List<Error> ValidateMismatchingFieldType(this JToken token, Type type)
+        internal static List<Error> ValidateUnknownFieldType(this JToken token, Type type)
         {
             var errors = new List<Error>();
             token.TraverseForUnknownFieldType(errors, type);
@@ -410,7 +410,7 @@ namespace Microsoft.Docs.Build
             if (contract is JsonObjectContract objectContract)
             {
                 var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
-                if (matchingProperty == null && objectContract.ExtensionDataGetter == null)
+                if (matchingProperty == null && type.IsSealed)
                 {
                     var lineInfo = prop as IJsonLineInfo;
                     errors.Add(Errors.UnknownField(
