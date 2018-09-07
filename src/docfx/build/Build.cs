@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
             var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
+
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
             context.Report("docfx.yml", configErrors);
@@ -26,9 +27,14 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var contribution = await ContributionInfo.Create(docset, options.GitHubToken);
+
+            var githubUserCache = await GitHubUserCache.Create(docset.Config, options.GitHubToken);
+
+            var contribution = new ContributionInfo(docset, githubUserCache);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
+
+            await githubUserCache.SaveChanges();
 
             BuildManifest.Build(context, files, sourceDependencies);
 

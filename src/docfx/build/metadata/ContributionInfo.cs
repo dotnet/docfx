@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile;
 
-        private ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
+        public ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
             _commitsByFile = LoadCommits(docset);
@@ -30,11 +30,6 @@ namespace Microsoft.Docs.Build
                 ? new Dictionary<string, DateTime>()
                 : JsonUtility.ReadJsonFile<GitCommitsTime>(
                     docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
-        }
-
-        public static async Task<ContributionInfo> Create(Docset docset, string gitHubToken)
-        {
-            return new ContributionInfo(docset, await GitHubUserCache.Create(docset.Config, gitHubToken));
         }
 
         public async Task<(List<Error> error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(

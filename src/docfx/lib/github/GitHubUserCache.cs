@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             return await GetByLogin(login);
         }
 
-        public Task Flush()
+        public Task SaveChanges()
         {
             return _updated ? ProcessUtility.CreateFileMutex(_cachePath, WriteCache) : Task.CompletedTask;
 

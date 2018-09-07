@@ -17,11 +17,8 @@ namespace Microsoft.Docs.Build
         {
             var (error, profile) = await _github.GetUserByLogin(login);
 
-            if (error.Code != "github-api-failed")
-            {
-                Assert.Equal(errorCode, error?.Code);
-                Assert.Equal(id, profile?.Id);
-            }
+            Assert.Equal(errorCode, error?.Code);
+            Assert.Equal(id, profile?.Id);
         }
 
         [Theory]
@@ -31,11 +28,8 @@ namespace Microsoft.Docs.Build
         {
             var (error, name) = await _github.GetLoginByCommit(repoOwner, repoName, commit);
 
-            if (error.Code != "github-api-failed")
-            {
-                Assert.Equal(login, name);
-                Assert.Equal(errorCode, error?.Code);
-            }
+            Assert.Equal(login, name);
+            Assert.Equal(errorCode, error?.Code);
         }
     }
 }
