@@ -10,18 +10,10 @@ namespace Microsoft.Docs.Build
 {
     public static class HashUtility
     {
-        /// <summary>
-        /// Get md5 hash string
-        /// </summary>
-        /// <param name="input">The input string</param>
-        public static string GetMd5String(this string input)
-            => GetMd5String(new MemoryStream(Encoding.UTF8.GetBytes(input)));
+        public static string GetMd5Hash(this string input)
+            => GetMd5Hash(new MemoryStream(Encoding.UTF8.GetBytes(input)));
 
-        /// <summary>
-        /// Get md5 hash string from stream
-        /// </summary>
-        /// <param name="stream">The input stream</param>
-        public static string GetMd5String(Stream stream)
+        public static string GetMd5Hash(Stream stream)
         {
 #pragma warning disable CA5351 //Not used for encryption
             using (var md5 = MD5.Create())
@@ -31,10 +23,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetSha1HashString(string input)
-            => GetSha1HashString(new MemoryStream(Encoding.UTF8.GetBytes(input)));
+        public static string GetSha1Hash(string input)
+            => GetSha1Hash(new MemoryStream(Encoding.UTF8.GetBytes(input)));
 
-        public static string GetSha1HashString(Stream stream)
+        public static string GetSha1Hash(Stream stream)
         {
 #pragma warning disable CA5350 //Not used for encryption
             using (var sha1 = new SHA1CryptoServiceProvider())

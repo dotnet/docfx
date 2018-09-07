@@ -32,14 +32,14 @@ namespace Microsoft.Docs.Build
             var fileVersion = "";
             using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
             {
-                fileVersion = HashUtility.GetSha1HashString(fileStream);
+                fileVersion = HashUtility.GetSha1Hash(fileStream);
             }
 
             Debug.Assert(!string.IsNullOrEmpty(fileVersion));
 
             var restoreDir = GetRestoreRootDir(address);
             var restorePath = GetRestoreVersionPath(restoreDir, fileVersion);
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
                 () =>
                 {
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
                 async () =>
                 {
