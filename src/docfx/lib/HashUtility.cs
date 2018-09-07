@@ -10,11 +10,12 @@ namespace Microsoft.Docs.Build
 {
     public static class HashUtility
     {
+#pragma warning disable CA5351 // Do not use insecure cryptographic algorithm MD5.
+#pragma warning disable CA5350 // Do not use insecure cryptographic algorithm SHA1.
+
         public static string GetMd5Hash(this string input)
         {
-#pragma warning disable CA5351 //Not used for encryption
             using (var md5 = MD5.Create())
-#pragma warning restore CA5351
             {
                 return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
             }
@@ -22,9 +23,7 @@ namespace Microsoft.Docs.Build
 
         public static Guid GetMd5Guid(this string input)
         {
-#pragma warning disable CA5351 //Not used for encryption
             using (var md5 = MD5.Create())
-#pragma warning restore CA5351
             {
                 return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
             }
@@ -35,9 +34,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetSha1Hash(Stream stream)
         {
-#pragma warning disable CA5350 //Not used for encryption
             using (var sha1 = new SHA1CryptoServiceProvider())
-#pragma warning restore CA5350
             {
                 return ToHexString(sha1.ComputeHash(stream));
             }
