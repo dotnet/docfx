@@ -94,14 +94,6 @@ class Program
                 Console.ResetColor();
                 Environment.Exit(1);
             }
-            else if (type.IsSealed && objectContract.ExtensionDataGetter != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Sealed type '{type}' cannot contain a property marked as [JsonExtensionData]");
-                Console.ResetColor();
-                Environment.Exit(1);
-            }
-
             foreach (var property in objectContract.Properties)
             {
                 VerifyContract(resolver, property.PropertyType, set);
