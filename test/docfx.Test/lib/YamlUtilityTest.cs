@@ -360,16 +360,6 @@ items:
         [InlineData(@"mismatchField: name
 ValueRequired: a", 1, 1, ErrorLevel.Warning, "unknown-field")]
         [InlineData(@"ValueRequired: a
-ValueBasic:
-  B: 1
-  C: c
-  E: e", 5, 3, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"ValueRequired: a
-Items:
-  - B: 1
-    C: c
-    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"ValueRequired: a
 AnotherItems:
   - H: 1
     G: c
@@ -396,9 +386,10 @@ NestedItems:
         public void TestMultipltUnknownFieldType()
         {
             var yaml = @"mismatchField1: name
-mismatchField2: name";
+mismatchField2: name
+ValueRequired: a";
 
-            var (errors, result) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
             Assert.Collection(errors,
             error =>
             {
@@ -406,7 +397,7 @@ mismatchField2: name";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Path:BasicClass.mismatchField1 Could not find member 'mismatchField1' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:ClassWithMoreMembers.mismatchField1 Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'", error.Message);
             },
             error =>
             {
@@ -414,7 +405,7 @@ mismatchField2: name";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Path:BasicClass.mismatchField2 Could not find member 'mismatchField2' on object of type 'BasicClass'", error.Message);
+                Assert.Equal("Path:ClassWithMoreMembers.mismatchField2 Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'", error.Message);
             });
         }
 
@@ -445,13 +436,13 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 12)]
         [InlineData(@"
 B: 1
 C: c
-E: e", typeof(ClassWithJsonExtensionData))]
+E: e", typeof(BasicClass))]
         [InlineData(@"
 Data: 
     B: 1
     C: c
-    E: e", typeof(ClassWithNestedTypeContainsJsonExtensionData))]
-        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+    E: e", typeof(SealedClassNestedWithNotSealedType))]
+        public void TestObjectTypeWithNonSealedClassType(string json, Type type)
         {
             var (_, token) = YamlUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
@@ -499,7 +490,7 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public bool D { get; set; }
         }
 
-        public class AnotherBasicClass
+        public sealed class AnotherBasicClass
         {
             public int F { get; set; }
 
@@ -508,12 +499,12 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public bool H { get; set; }
         }
 
-        public class ClassWithReadOnlyField
+        public sealed class ClassWithReadOnlyField
         {
             public readonly string B;
         }
 
-        public class ClassWithMoreMembers : BasicClass
+        public sealed class ClassWithMoreMembers : BasicClass
         {
             public Dictionary<string, object> ValueDict { get; set; }
 
@@ -546,18 +537,12 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public string ValueRequired { get; set; }
         }
 
-        public class ClassWithJsonExtensionData : BasicClass
+        public sealed class SealedClassNestedWithNotSealedType : BasicClass
         {
-            [JsonExtensionData]
-            public JObject AdditionalData { get; set; }
+            public BasicClass Data { get; set; }
         }
 
-        public class ClassWithNestedTypeContainsJsonExtensionData : BasicClass
-        {
-            public ClassWithJsonExtensionData Data { get; set; }
-        }
-
-        public class NestedClass
+        public sealed class NestedClass
         {
             [MinLength(2), MaxLength(3)]
             public string ValueWithLengthRestriction { get; set; }
