@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
@@ -146,7 +147,11 @@ namespace Microsoft.Docs.Build
                 {
                     result.Append(html, pos, link.ValueStartIndex - pos);
                 }
-                result.Append(transform(link.Value));
+                var transformed = transform(link.Value);
+                if (!string.IsNullOrEmpty(transformed))
+                {
+                    result.Append(HttpUtility.HtmlAttributeEncode(transformed));
+                }
                 pos = link.ValueStartIndex + link.ValueLength;
             }
 
