@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -25,5 +26,31 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("user_emails")]
         public List<string> UserEmails { get; set; } = new List<string>();
+
+        [JsonProperty("missing")]
+        public bool Missing { get; set; } = false;
+
+        public static UserProfile CreateNotFoundUserByEmail(string email)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(email));
+
+            return new UserProfile
+            {
+                EmailAddress = email,
+                UserEmails = new List<string> { email },
+                Missing = true,
+            };
+        }
+
+        public static UserProfile CreateNotFoundUserByName(string name)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(name));
+
+            return new UserProfile
+            {
+                Name = name,
+                Missing = true,
+            };
+        }
     }
 }

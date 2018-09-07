@@ -10,7 +10,15 @@ namespace Microsoft.Docs.Build
         public readonly int EndLine;
         public readonly int EndCharacter;
 
-        public Range(int startLine, int startCharacter, int endLine = 0, int endCharacter = 0)
+        public Range(int line, int column)
+        {
+            StartLine = line;
+            StartCharacter = column;
+            EndLine = line;
+            EndCharacter = column;
+        }
+
+        public Range(int startLine, int startCharacter, int endLine, int endCharacter)
         {
             StartLine = startLine;
             StartCharacter = startCharacter;

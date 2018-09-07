@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!restoreMap.TryGetGitRestorePath(url, out var dir))
                 {
-                    throw Errors.DependenyRepoNotFound(url).ToException();
+                    throw Errors.NeedRestore(url).ToException();
                 }
 
                 // get dependent docset config or default config

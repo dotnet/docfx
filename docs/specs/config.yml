@@ -86,6 +86,21 @@ outputs:
     { "metadata": { "key": "value" } }
   build.manifest:
 ---
+# Global metadata multiple keys
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key1: value
+      key2: 2
+  docs/a.md:
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "metadata": { "key1": "value", "key2": 2 } }
+  docs/b.json: |
+    { "metadata": { "key1": "value", "key2": 2 } }
+  build.manifest:
+---
 # File metadata of object form
 inputs:
   docfx.yml: |
@@ -94,9 +109,12 @@ inputs:
         key: value
       docs/index.md:
         key: another value
+      docs/special/chars/allowed,.md:
+        key: special chars
   docs/a.md:
   docs/b.md:
   docs/index.md:
+  docs/special/chars/allowed,.md:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "value" } }
@@ -104,6 +122,8 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/index.json: |
     { "metadata": { "key": "another value" } }
+  docs/special/chars/allowed,.json: |
+    { "metadata": { "key": "special chars" } }
   build.manifest:
 ---
 # File metadata of array form
@@ -122,9 +142,22 @@ inputs:
       - docs/index.md
       value:
         key: index
+    - include: docs/folder1/**
+      exclude: docs/folder1/exclude/**
+      value:
+        key1: value1
+    - include:
+      - docs/folder21/**
+      - docs/folder22/**
+      value:
+        key2: value2
   docs/a.md:
   docs/b.md:
   docs/index.md:
+  docs/folder1/f1-include.md:
+  docs/folder1/exclude/f1-exclude.md:
+  docs/folder21/f2-include1.md:
+  docs/folder22/f2-include2.md:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "exclude b" } }
@@ -132,6 +165,14 @@ outputs:
     { "metadata": { "key": "general" } }
   docs/index.json: |
     { "metadata": { "key": "index" } }
+  docs/folder1/f1-include.json: |
+    { "metadata": { "key1": "value1"} }
+  docs/folder1/exclude/f1-exclude.json: |
+    { "metadata": {"!key1": null} }
+  docs/folder21/f2-include1.json: |
+    { "metadata": {"key2": "value2"} }
+  docs/folder22/f2-include2.json: |
+    { "metadata": {"key2": "value2"} }
   build.manifest:
 ---
 # File metadata overwrite global metadata
