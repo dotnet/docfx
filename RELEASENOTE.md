@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.39.1)
+Version Notes (Current Version: v2.39.2)
 =======================================
+
+v2.39.2
+-----------
+1. Fix ArgumentNullException error when extracting metadata from DLL. (#3374)
 
 v2.39.1
 -----------
