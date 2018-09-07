@@ -100,10 +100,11 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
-            var mutextId = HashUtility.GetMd5Hash(mutexName);
             Directory.CreateDirectory(AppData.MutexDir);
 
-            using (await AcquireFileMutex(mutexName, Path.Combine(AppData.MutexDir, mutextId)))
+            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+            using (await AcquireFileMutex(mutexName, lockPath))
             {
                 await action();
             }
