@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubUserCache
     {
-        private static readonly string s_gitHubUserLocalCachePath = Path.Combine(AppData.CacheDir, "github-users.json");
-
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
 

@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         /// Determines whether to resolve git commit user and GitHub user.
         /// </summary>
 
-        public readonly bool ResolveGitHubUser = false;
+        public readonly bool ResolveGitHubUsers = false;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
