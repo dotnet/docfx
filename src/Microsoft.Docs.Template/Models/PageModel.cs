@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -30,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public Contributor Author { get; set; }
 
-        public Contributor[] Contributors { get; set; }
+        public List<Contributor> Contributors { get; set; }
 
         public DateTime UpdatedAt { get; set; }
 

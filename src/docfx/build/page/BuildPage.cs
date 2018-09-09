@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild)
         {
-            List<Error> error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
@@ -36,11 +35,13 @@ namespace Microsoft.Docs.Build
 
             (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
+            model.UpdatedAt = contribution.GetUpdatedAt(file);
 
-            // TODO: add check before to avoid case failure
+            // TODO: add check before to avoid cast failure
+            List<Error> contributorErrors;
             var authorName = metadata.Value<string>("author");
-            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, authorName);
-            errors.AddRange(error);
+            (contributorErrors, model.Author, model.Contributors) = await contribution.GetAuthorAndContributors(file, authorName);
+            errors.AddRange(contributorErrors);
 
             return (errors, model, dependencies.Build());
         }
