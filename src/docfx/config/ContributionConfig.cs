@@ -39,13 +39,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// </summary>
-
         public readonly bool ResolveGitHubUsers = false;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// </summary>
-
         public readonly int GitHubUserCacheExpirationInHours = 7 * 24;
 
         /// <summary>
