@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
         [ThreadStatic]
-        private static Func<DataTypeAttribute, JsonReader, object> t_transform;
+        private static Func<DataTypeAttribute, object, object> t_transform;
         [ThreadStatic]
         private static string t_docsetPath;
 
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
             JToken token,
             Type type,
             string docsetPath = null,
-            Func<DataTypeAttribute, JsonReader, object> transform = null)
+            Func<DataTypeAttribute, object, object> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -180,8 +180,8 @@ namespace Microsoft.Docs.Build
                 t_docsetPath = docsetPath;
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
-                var mismatchingErrors = token.ValidateUnknownFieldType(type);
-                errors.AddRange(mismatchingErrors);
+
+                token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -263,13 +263,6 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        internal static List<Error> ValidateUnknownFieldType(this JToken token, Type type)
-        {
-            var errors = new List<Error>();
-            token.TraverseForUnknownFieldType(errors, type);
-            return errors;
-        }
-
         private static void TryParseRange(string message, out string parsedMessage, out Range range)
         {
             if (message.IndexOf(',') == -1)
@@ -346,7 +339,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TraverseForUnknownFieldType(this JToken token, List<Error> errors, Type type, string path = null)
+        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type, string path = null)
         {
             path = BuildPath(path, type);
             if (token is JArray array)
@@ -354,7 +347,7 @@ namespace Microsoft.Docs.Build
                 var itemType = GetCollectionItemTypeIfArrayType(type);
                 foreach (var item in token.Children())
                 {
-                    item.TraverseForUnknownFieldType(errors, itemType, path);
+                    item.ReportUnknownFields(errors, itemType, path);
                 }
             }
             else if (token is JObject obj)
@@ -370,7 +363,7 @@ namespace Microsoft.Docs.Build
                     var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path);
                     if (nestedType != null)
                     {
-                        prop.Value.TraverseForUnknownFieldType(errors, nestedType, path);
+                        prop.Value.ReportUnknownFields(errors, nestedType, path);
                     }
                 }
             }
@@ -443,7 +436,7 @@ namespace Microsoft.Docs.Build
             errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
-        private static void SetPropertyWritable(MemberInfo member, JsonProperty prop)
+        private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
         {
             if (!prop.Writable)
             {
@@ -473,7 +466,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                SetPropertyWritable(member, prop);
+                SetFieldWritable(member, prop);
                 return prop;
             }
 
@@ -508,56 +501,14 @@ namespace Microsoft.Docs.Build
 
             public override bool CanConvert(Type objectType) => true;
 
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => new NotSupportedException();
+
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                if (reader.TokenType is JsonToken.StartArray)
-                {
-                    var array = JArray.Load(reader);
-                    Validate(reader, array);
-                    var arraySerializer = new JsonSerializer
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = DefaultDeserializer.ContractResolver,
-                    };
-                    arraySerializer.Error += HandleError;
-                    var value = array.ToObject(objectType, arraySerializer);
-                    return value;
+                var lineInfo = (IJsonLineInfo)reader;
+                var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                var value = serializer.Deserialize(reader, objectType);
 
-                    void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-                    {
-                        if (args.CurrentObject == args.ErrorContext.OriginalObject
-                            && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
-                        {
-                            TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
-                            if (range.Equals(default(Range)))
-                            {
-                                var lineInfo = array as IJsonLineInfo;
-                                range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                            }
-                            t_schemaViolationErrors.Add(Errors.ViolateSchema(range, parsedMessage));
-                            args.ErrorContext.Handled = true;
-                        }
-                    }
-                }
-                else
-                {
-                    Validate(reader, reader.Value);
-                    if (t_transform != null)
-                    {
-                        var transform = t_transform(_attribute, reader);
-                        return transform;
-                    }
-                    return reader.Value;
-                }
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-
-            private void Validate(JsonReader reader, object value)
-            {
                 foreach (var validator in _validators)
                 {
                     try
@@ -566,11 +517,11 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        var lineInfo = reader as IJsonLineInfo;
-                        var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                         t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message));
                     }
                 }
+
+                return t_transform != null ? t_transform(_attribute, reader) : value;
             }
         }
     }
