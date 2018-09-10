@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,6 +20,14 @@ namespace Microsoft.Docs.Build
         private readonly object _lock = new object();
         private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
+
+        // Ensures we only call GitHub once for parallel requests with same input parameter
+        private readonly ConcurrentDictionary<string, Task<(Error, GitHubUser)>> _outgoingGetUserByLoginRequests
+                   = new ConcurrentDictionary<string, Task<(Error, GitHubUser)>>(StringComparer.OrdinalIgnoreCase);
+
+        private readonly ConcurrentDictionary<string, Task<(Error, string)>> _outgoingGetLoginByCommitRequests
+                   = new ConcurrentDictionary<string, Task<(Error, string)>>(StringComparer.OrdinalIgnoreCase);
+
         private readonly Config _config;
         private readonly GitHubAccessor _github;
         private readonly string _cachePath;
@@ -51,7 +60,8 @@ namespace Microsoft.Docs.Build
             if (user != null)
                 return (null, user);
 
-            (error, user) = await _github.GetUserByLogin(login);
+            (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(login, _ => _github.GetUserByLogin(login));
+            _outgoingGetUserByLoginRequests.TryRemove(login, out _);
 
             if (user != null)
                 UpdateUser(user);
@@ -71,7 +81,8 @@ namespace Microsoft.Docs.Build
             if (user != null)
                 return (null, user);
 
-            var (error, login) = await _github.GetLoginByCommit(repoOwner, repoName, commitSha);
+            var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(commitSha, _ => _github.GetLoginByCommit(repoOwner, repoName, commitSha));
+            _outgoingGetLoginByCommitRequests.TryRemove(commitSha, out _);
 
             UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail } });
 
