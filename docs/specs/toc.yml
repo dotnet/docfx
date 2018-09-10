@@ -952,7 +952,7 @@ outputs:
   docs/TOC.json:
   build.manifest:
   build.log: |
-    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",3,3]
+    ["info","null-value","'[0].tocHref' contains null value","docs/TOC.yml",3,3]
 ---
 # Toc with schema violation
 inputs:
@@ -970,8 +970,8 @@ outputs:
   docs/f1/b.json:
   build.manifest:
   build.log: |
-    ["info","null-value","'tocHref' contains null value","docs/TOC.yml",2,3]
-    ["error","violate-schema","Required property 'Name' not found in JSON","docs/TOC.yml",1,3]
+    ["info","null-value","'[0].tocHref' contains null value","docs/TOC.yml",2,3]
+    ["error","violate-schema","Required property 'Name' not found in JSON.","docs/TOC.yml",1,3]
     ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml",5,10]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files

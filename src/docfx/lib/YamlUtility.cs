@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }

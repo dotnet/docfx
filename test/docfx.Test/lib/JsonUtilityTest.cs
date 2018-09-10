@@ -512,9 +512,9 @@ namespace Microsoft.Docs.Build
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal(2, error.Line);
-                Assert.Equal(16, error.Column);
-                Assert.Equal("Error setting value to 'Items' on 'Microsoft.Docs.Build.JsonUtilityTest+AnotherBasicClass'.", error.Message);
+                Assert.Equal(4, error.Line);
+                Assert.Equal(27, error.Column);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
             },
             error =>
             {

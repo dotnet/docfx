@@ -98,13 +98,13 @@ inputs:
   docs/a.yml: |
     #YamlMime:ContextObject
     brand: azure
-    breadcrumb_path: 1
+    breadcrumb_path: {}
     toc_rel: ../TOC.yml
 outputs:
   docs/TOC.json:
   build.manifest:
   build.log: |
-   ["error","violate-schema","Field with attribute 'Microsoft.Docs.Build.HrefAttribute' should be of type System.String.","docs/a.yml",3,18]
+    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml",3,18]
 ---
 # Support schema documents with Markdown content
 inputs:

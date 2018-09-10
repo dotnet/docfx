@@ -201,11 +201,14 @@ namespace Microsoft.Docs.Build
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
-                if (args.CurrentObject == args.ErrorContext.OriginalObject
-                    && (args.ErrorContext.Error is JsonSerializationException || args.ErrorContext.Error is JsonReaderException))
+                if (args.ErrorContext.Error is JsonReaderException jre)
                 {
-                    TryParseRange(args.ErrorContext.Error.Message, out string parsedMessage, out Range range);
-                    errors.Add(Errors.ViolateSchema(range, parsedMessage));
+                    errors.Add(ToError(jre));
+                    args.ErrorContext.Handled = true;
+                }
+                else if (args.ErrorContext.Error is JsonSerializationException jse)
+                {
+                    errors.Add(ToError(jse));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -220,12 +223,16 @@ namespace Microsoft.Docs.Build
             try
             {
                 var (errors, token) = JToken.Parse(json, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load })
-                    .ValidateNullValue();
+                    .RemoveNulls();
                 return (errors, token ?? JValue.CreateNull());
+            }
+            catch (JsonSerializationException ex)
+            {
+                throw ToError(ex).ToException(ex);
             }
             catch (JsonReaderException ex)
             {
-                throw Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition)).ToException(ex);
+                throw ToError(ex).ToException(ex);
             }
         }
 
@@ -251,44 +258,36 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        internal static (List<Error>, JToken) ValidateNullValue(this JToken token)
+        public static (List<Error>, JToken) RemoveNulls(this JToken token)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            token.TraverseForNullValueValidation(errors, nullNodes);
+            token.FindNulls(errors, nullNodes);
             foreach (var node in nullNodes)
             {
+                var lineInfo = (IJsonLineInfo)node;
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), node.Path));
                 node.Remove();
             }
             return (errors, token);
         }
 
-        private static void TryParseRange(string message, out string parsedMessage, out Range range)
+        private static Error ToError(JsonReaderException ex)
         {
-            if (message.IndexOf(',') == -1)
+            return Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition));
+        }
+
+        private static Error ToError(JsonSerializationException ex)
+        {
+            var range = default(Range);
+            var message = ex.Message;
+            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*), line (\\d+), position (\\d+).$");
+            if (match.Success)
             {
-                parsedMessage = message;
-                range = new Range(0, 0);
-                return;
+                message = match.Groups[1].Value;
+                range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
             }
-            Match match = null;
-            if ((match = Regex.Match(message, "(.*?)\\. Path (.*) line (.*), position (.*).$")).Success)
-            {
-                parsedMessage = match.Groups[1].Value;
-                if (int.TryParse(match.Groups[3].Value, out var line) && int.TryParse(match.Groups[4].Value, out var column))
-                {
-                    range = new Range(line, column);
-                }
-                else
-                {
-                    range = default;
-                }
-            }
-            else
-            {
-                parsedMessage = message;
-                range = default;
-            }
+            return Errors.ViolateSchema(range, message);
         }
 
         private static bool ContainsLineInfo(string message)
@@ -304,7 +303,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static void TraverseForNullValueValidation(this JToken token, List<Error> errors, List<JToken> nullNodes, string name = null)
+        private static void FindNulls(this JToken token, List<Error> errors, List<JToken> nullNodes)
         {
             if (token is JArray array)
             {
@@ -312,12 +311,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogInfoForNullValue(array, errors, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        item.TraverseForNullValueValidation(errors, nullNodes, name);
+                        item.FindNulls(errors, nullNodes);
                     }
                 }
             }
@@ -328,26 +326,24 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogInfoForNullValue(item, errors, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.TraverseForNullValueValidation(errors, nullNodes, prop.Name);
+                        prop.Value.FindNulls(errors, nullNodes);
                     }
                 }
             }
         }
 
-        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type, string path = null)
+        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
         {
-            path = BuildPath(path, type);
             if (token is JArray array)
             {
                 var itemType = GetCollectionItemTypeIfArrayType(type);
                 foreach (var item in token.Children())
                 {
-                    item.ReportUnknownFields(errors, itemType, path);
+                    item.ReportUnknownFields(errors, itemType);
                 }
             }
             else if (token is JObject obj)
@@ -360,18 +356,13 @@ namespace Microsoft.Docs.Build
                     if (prop.Name.StartsWith('$'))
                         continue;
 
-                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors, path);
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);
                     if (nestedType != null)
                     {
-                        prop.Value.ReportUnknownFields(errors, nestedType, path);
+                        prop.Value.ReportUnknownFields(errors, nestedType);
                     }
                 }
             }
-        }
-
-        private static string BuildPath(string path, Type type)
-        {
-            return path is null ? type.Name : $"{path}.{type.Name}";
         }
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
@@ -396,7 +387,7 @@ namespace Microsoft.Docs.Build
             return type;
         }
 
-        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors, string path)
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
 
@@ -407,7 +398,7 @@ namespace Microsoft.Docs.Build
                 {
                     var lineInfo = prop as IJsonLineInfo;
                     errors.Add(Errors.UnknownField(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{path}.{prop.Name}"));
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{prop.Path}"));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -429,11 +420,6 @@ namespace Microsoft.Docs.Build
             else if (itemContract is JsonArrayContract contract)
                 return GetPropertiesFromJsonArrayContract(contract);
             return null;
-        }
-
-        private static void LogInfoForNullValue(IJsonLineInfo token, List<Error> errors, string name)
-        {
-            errors.Add(Errors.NullValue(new Range(token.LineNumber, token.LinePosition), name));
         }
 
         private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
@@ -474,11 +460,7 @@ namespace Microsoft.Docs.Build
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false);
                 var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
-                if (t_transform != null && contentTypeAttribute != null)
-                {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
-                }
-                else if (validators.Any())
+                if (contentTypeAttribute != null || validators.Any())
                 {
                     return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
                 }
@@ -508,6 +490,10 @@ namespace Microsoft.Docs.Build
                 var lineInfo = (IJsonLineInfo)reader;
                 var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
                 var value = serializer.Deserialize(reader, objectType);
+                if (value == null)
+                {
+                    return null;
+                }
 
                 foreach (var validator in _validators)
                 {
@@ -521,7 +507,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return t_transform != null ? t_transform(_attribute, reader) : value;
+                return t_transform != null ? t_transform(_attribute, value) : value;
             }
         }
     }
