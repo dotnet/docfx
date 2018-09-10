@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
             var workTreeHeads = new ConcurrentBag<(string href, string head)>();
 
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
                 async () =>
                 {
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
 
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
                 async () =>
                 {

@@ -94,19 +94,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Create a file mutex to lock a resource/action
         /// </summary>
-        /// <param name="mutexFileRelativePath">The mutex file relative path</param>
+        /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        /// <param name="retry">The retry count, default is 600 times</param>
-        /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
-        /// <returns>The task status</returns>
-        public static async Task CreateFileMutex(string mutexFileRelativePath, Func<Task> action, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
-            Debug.Assert(!string.IsNullOrEmpty(mutexFileRelativePath));
-            Debug.Assert(!Path.IsPathRooted(mutexFileRelativePath));
+            Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
-            var lockPath = Path.Combine(AppData.FileMutexDir, mutexFileRelativePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
-            using (var lockFile = await AcquireFileMutex(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            Directory.CreateDirectory(AppData.MutexDir);
+
+            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+            using (await AcquireFileMutex(mutexName, lockPath))
             {
                 await action();
             }
@@ -121,20 +119,34 @@ namespace Microsoft.Docs.Build
                    ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
-        private static async Task<FileStream> AcquireFileMutex(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
+        private static async Task<FileStream> AcquireFileMutex(string mutexName, string lockPath)
         {
-            var retryCount = 0;
+            var retryDelay = 100;
+            var lastWait = DateTime.UtcNow;
+
             while (true)
             {
                 try
                 {
                     return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
                 }
-                catch when (retryCount++ < retry)
+                catch
                 {
-                    // TODO: error handling
-                    // TODO: notify user current waiting process
-                    await Task.Delay(retryTimeSpanInterval);
+                    if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
+                    {
+                        lastWait = DateTime.UtcNow;
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+                        lock (Console.Out)
+#pragma warning restore CA2002
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                            Console.ResetColor();
+                        }
+                    }
+
+                    await Task.Delay(retryDelay);
+                    retryDelay = Math.Min(retryDelay + 100, 1000);
                 }
             }
         }

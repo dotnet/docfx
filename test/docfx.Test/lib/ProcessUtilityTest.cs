@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,17 +22,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task ConcurrencyCreatingFileShouldNotThrowNoException()
+        public static async Task CreateFilesInMutexInParallelDoesNotThrow()
         {
             var fileName = $"process-test\\{Guid.NewGuid()}";
             await Task.WhenAll(Enumerable.Range(0, 5).AsParallel().Select(
-                i => ProcessUtility.CreateFileMutex(
+                i => ProcessUtility.RunInsideMutex(
                     fileName,
                     () =>
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(fileName)));
                         using (var streamWriter = File.CreateText(fileName))
                         {
+                            Thread.Sleep(100);
                             streamWriter.WriteLine(fileName);
                         }
 

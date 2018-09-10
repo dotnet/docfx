@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public static string RestoreLockDir => Path.Combine(AppDataDir, "restore-lock");
 
-        public static string FileMutexDir => Path.Combine(AppDataDir, "file-mutex");
+        public static string MutexDir => Path.Combine(AppDataDir, "mutex");
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
