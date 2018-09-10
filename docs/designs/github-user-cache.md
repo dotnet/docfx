@@ -35,7 +35,7 @@ A profile can be a valid GitHub user, an email that does not exist or a login th
 
 - `resolveGitHubUser`: a boolean config to toggle whether git commit users are resolved into GitHub users. Default to `false`.
 
-- `gitHubUserCache`: an config that sets the file path of the cache. Default to `%USERPROFILE%/.docfx/cache/github-users.json`.
+- `gitHubUserCache`: an config that sets the location of the cache. It could be a file on disk or a HTTP url that supports GET and PUT. When set to an URL. `ETag` is used for optimistic concurrency control. Default to `%USERPROFILE%/.docfx/cache/github-users.json`.
 
 ## Scenarios
 
@@ -44,4 +44,4 @@ A profile can be a valid GitHub user, an email that does not exist or a login th
 
 1. *Clustered Build Server*:
     - Set `resolveGitHubUser` to `true` to resolve contributors.
-    - GitHub user cache is currently only shared within a single build machine.
+    - Set `gitHubUserCache` to a shared blob storage to share it with multiple servers.
