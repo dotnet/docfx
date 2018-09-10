@@ -48,6 +48,10 @@ namespace Microsoft.Docs.Build
                         Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
                         File.Move(tempFile, restorePath);
                     }
+                    else
+                    {
+                        File.Delete(tempFile);
+                    }
 
                     return Task.CompletedTask;
                 });
