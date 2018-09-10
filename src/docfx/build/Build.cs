@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
 
-            await githubUserCache.SaveChanges();
+            var saveGitHubUserCache = githubUserCache.SaveChanges();
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
 
+            await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
         }
 
