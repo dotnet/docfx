@@ -10,45 +10,44 @@ namespace Microsoft.Docs.Build
 {
     public static class HashUtility
     {
-        /// <summary>
-        /// Get md5 hash string
-        /// </summary>
-        /// <param name="input">The input string</param>
-        public static string GetMd5String(this string input)
-            => GetMd5String(new MemoryStream(Encoding.UTF8.GetBytes(input)));
+#pragma warning disable CA5351 // Do not use insecure cryptographic algorithm MD5.
+#pragma warning disable CA5350 // Do not use insecure cryptographic algorithm SHA1.
 
-        /// <summary>
-        /// Get md5 hash string from stream
-        /// </summary>
-        /// <param name="stream">The input stream</param>
-        public static string GetMd5String(Stream stream)
+        public static string GetMd5Hash(this string input)
         {
-#pragma warning disable CA5351 //Not used for encryption
             using (var md5 = MD5.Create())
-#pragma warning restore CA5351
             {
-                return new Guid(md5.ComputeHash(stream)).ToString();
+                return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
             }
         }
 
-        public static string GetSha1HashString(string input)
-            => GetSha1HashString(new MemoryStream(Encoding.UTF8.GetBytes(input)));
-
-        public static string GetSha1HashString(Stream stream)
+        public static Guid GetMd5Guid(this string input)
         {
-#pragma warning disable CA5350 //Not used for encryption
-            using (var sha1 = new SHA1CryptoServiceProvider())
-#pragma warning restore CA5350
+            using (var md5 = MD5.Create())
             {
-                var hash = sha1.ComputeHash(stream);
-                var formatted = new StringBuilder(2 * hash.Length);
-                foreach (byte b in hash)
-                {
-                    formatted.AppendFormat("{0:x2}", b);
-                }
-
-                return formatted.ToString();
+                return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
             }
+        }
+
+        public static string GetSha1Hash(string input)
+            => GetSha1Hash(new MemoryStream(Encoding.UTF8.GetBytes(input)));
+
+        public static string GetSha1Hash(Stream stream)
+        {
+            using (var sha1 = new SHA1CryptoServiceProvider())
+            {
+                return ToHexString(sha1.ComputeHash(stream));
+            }
+        }
+
+        private static string ToHexString(byte[] bytes)
+        {
+            var formatted = new StringBuilder(2 * bytes.Length);
+            foreach (byte b in bytes)
+            {
+                formatted.AppendFormat("{0:x2}", b);
+            }
+            return formatted.ToString();
         }
     }
 }
