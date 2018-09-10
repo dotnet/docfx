@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
             var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
+
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
             context.Report("docfx.yml", configErrors);
@@ -26,10 +27,14 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var (contributionErrors, contribution) = await ContributionInfo.Load(docset, options.GitHubToken);
-            errors.AddRange(contributionErrors);
+
+            var githubUserCache = await GitHubUserCache.Create(docset.Config, options.GitHubToken);
+
+            var contribution = new ContributionInfo(docset, githubUserCache);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
+
+            var saveGitHubUserCache = githubUserCache.SaveChanges();
 
             BuildManifest.Build(context, files, sourceDependencies);
 
@@ -38,6 +43,7 @@ namespace Microsoft.Docs.Build
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
 
+            await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
         }
 

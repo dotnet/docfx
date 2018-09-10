@@ -16,8 +16,14 @@
         "branch": {
           "type": "string"
         },
-        "userProfileCache": {
+        "gitHubUserCache": {
           "type": "string"
+        },
+        "resolveGitHubUsers": {
+          "type": "boolean"
+        },
+        "gitHubUserCacheExpirationInHours": {
+          "type": "integer"
         },
         "gitCommitsTime": {
           "type": "string"

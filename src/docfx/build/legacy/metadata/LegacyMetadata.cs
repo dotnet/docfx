@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
             return rawMetadata;
         }
 
-        private static JObject ToJObject(this GitUserInfo info)
+        private static JObject ToJObject(this Contributor info)
         {
             return new JObject
             {

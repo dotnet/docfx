@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<string> GetExternalReferences()
         {
             yield return Contribution.GitCommitsTime;
-            yield return Contribution.UserProfileCache;
+            yield return Contribution.GitHubUserCache;
         }
 
         /// <summary>

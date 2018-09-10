@@ -10,63 +10,26 @@ namespace Microsoft.Docs.Build
     {
         private GitHubAccessor _github = new GitHubAccessor();
 
-        [Fact]
-        public async Task GetUserProfileByNameAsync()
+        [Theory]
+        [InlineData("docascode", null, 14800732)]
+        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null, 0)]
+        public async Task GetUserByLogin(string login, string errorCode, int? id)
         {
-            var (error, profile) = await _github.GetUserProfileByName("docascode");
-            if (error == null)
-            {
-                Assert.Equal("https://github.com/docascode", profile.ProfileUrl);
-                Assert.NotEmpty(profile.DisplayName);
-                Assert.Equal("docascode", profile.Name);
-                Assert.Equal("14800732", profile.Id);
-            }
-            else
-            {
-                Assert.Equal("resolve-author-failed", error.Code);
-            }
+            var (error, profile) = await _github.GetUserByLogin(login);
+
+            Assert.Equal(errorCode, error?.Code);
+            Assert.Equal(id, profile?.Id);
         }
 
-        [Fact]
-        public async Task GetUserProfileByNameNotFoundAsync()
+        [Theory]
+        [InlineData("docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", null, "OsmondJiang")]
+        [InlineData("docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null)]
+        public async Task GetLoginByCommit(string repoOwner, string repoName, string commit, string errorCode, string login)
         {
-            var (error, profile) = await _github.GetUserProfileByName("N1o2t3E4x5i6s7t8N9a0m9e");
-            Assert.NotNull(error);
-            Assert.Matches("(author-not-found)|(resolve-author-failed)", error.Code);
-        }
+            var (error, name) = await _github.GetLoginByCommit(repoOwner, repoName, commit);
 
-        [Fact]
-        public async Task GetNameByCommitAsync()
-        {
-            var (error, name) = await _github.GetNameByCommit(
-                "docascode",
-                "docfx-test-dependencies",
-                "c467c848311ccd2550fdb25a77ef26f9d8a33d00");
-            if (error == null)
-            {
-                Assert.Equal("OsmondJiang", name);
-            }
-            else
-            {
-                Assert.Equal("resolve-commit-failed", error.Code);
-            }
-        }
-
-        [Fact]
-        public async Task GetNameByCommitNotFoundAsync()
-        {
-            var (error, name) = await _github.GetNameByCommit(
-                "docascode",
-                "docfx-test-dependencies",
-                "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
-            if (error == null)
-            {
-                Assert.Null(name);
-            }
-            else
-            {
-                Assert.Equal("resolve-commit-failed", error.Code);
-            }
+            Assert.Equal(login, name);
+            Assert.Equal(errorCode, error?.Code);
         }
     }
 }
