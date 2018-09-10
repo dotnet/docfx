@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            var resolveGitHubUsers = repo.Host == GitHost.GitHub && document.Docset.Config.Contribution.ResolveGitHubUsers;
+            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.Contribution.ResolveGitHubUsers;
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
             var contributors = new List<Contributor>();
@@ -48,23 +48,26 @@ namespace Microsoft.Docs.Build
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             // Resolve contributors from commits
-            foreach (var commit in commits)
+            if (commits != null)
             {
-                if (!emails.Add(commit.AuthorEmail))
-                    continue;
-                
-                if (!resolveGitHubUsers)
+                foreach (var commit in commits)
                 {
-                    contributors.Add(new Contributor { DisplayName = commit.AuthorName });
-                    continue;
+                    if (!emails.Add(commit.AuthorEmail))
+                        continue;
+
+                    if (!resolveGitHubUsers)
+                    {
+                        contributors.Add(new Contributor { DisplayName = commit.AuthorName });
+                        continue;
+                    }
+
+                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
+                    if (error != null)
+                        errors.Add(error);
+
+                    if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
+                        contributors.Add(user.ToContributor());
                 }
-
-                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
-                if (error != null)
-                    errors.Add(error);
-
-                if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
-                    contributors.Add(user.ToContributor());
             }
 
             if (!string.IsNullOrEmpty(authorName))
