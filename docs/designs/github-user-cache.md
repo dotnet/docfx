@@ -9,7 +9,7 @@ Contribution is determined by running `git log` on a document, then find all the
 to that document.
 
 GitHub accounts are identified by `login`. GitHub login is used widely in `docfx` to identify an user.
-The value of _author_ in markdown YAML header is a GitHub login. [GitHub user API](https://developer.github.com/v3/users/#get-a-single-user) retreives a user by GitHub login.
+The value of _author_ in markdown YAML header is a GitHub login. [GitHub user API](https://developer.github.com/v3/users/#get-a-single-user) retrieves a user by GitHub login.
 
 In git, a commit contains author name, author email and commit hash. The commit author name is not the same as GitHub login name. [GitHub commit API](https://developer.github.com/v3/repos/commits/#get-a-single-commit) can tie a git commit to a GitHub account.
 
@@ -33,18 +33,15 @@ A profile can be a valid GitHub user, an email that does not exist or a login th
 
 ## Configuration
 
-> These switches are currently implemented as an environment variable to easily turn then on the server.
-> We might need to provide a general config override mechianism.
+- `resolveGitHubUser`: a boolean config to toggle whether git commit users are resolved into GitHub users. Default to `false`.
 
-- `DOCFX_RESOLVE_GITHUB_USER`: a boolean environmet variable to toggle whether git commit users are resolved into GitHub users. Default to `false`.
-
-- `DOCFX_GITHUB_USER_CACHE`: an environment variable that sets the file path of the cache. Default to `%USERPROFILE%/.docfx/cache/github-users.json`.
+- `gitHubUserCache`: an config that sets the location of the cache. It could be a file on disk or a HTTP url that supports GET and PUT. When set to an URL. `ETag` is used for optimistic concurrency control. Default to `%USERPROFILE%/.docfx/cache/github-users.json`.
 
 ## Scenarios
 
-2. *Local Machine*:
+- *Local Machine*:
     - Do not resolve GitHub users, local preview shows name from git and default profile placeholder images.
 
-1. *Clustered Build Server*:
-    - Set `DOCFX_RESOLVE_GITHUB_USER` to `true` to resolve contributors.
-    - GitHub user cache is currently only shared within a single build machine.
+- *Clustered Build Server*:
+    - Set `resolveGitHubUser` to `true` to resolve contributors.
+    - Set `gitHubUserCache` to a shared blob storage to share it with multiple servers.
