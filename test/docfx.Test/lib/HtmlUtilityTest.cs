@@ -53,19 +53,21 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("</a>", "</a>")]
-        [InlineData("<a href='hello'>", "<a href='666'>")]
-        [InlineData("<A hrEf=''>", "<A hrEf='666'>")]
-        [InlineData("<a href = 'hello'>", "<a href = '666'>")]
-        [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
-        [InlineData("<img src='a/b.png' />", "<img src='666' />")]
-        [InlineData("<iMg sRc = 'a/b.png' />", "<iMg sRc = '666' />")]
-        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "<div><a href='666'><img src='666' /></div>")]
-        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "<div><img src='666' /><a href='666'></div>")]
-        public void TransformLinks(string input, string output)
+        [InlineData("", "666", "")]
+        [InlineData("</a>", "666", "</a>")]
+        [InlineData("<a href='hello'>", "666", "<a href='666'>")]
+        [InlineData("<a href='hello'>", null, "<a href=''>")]
+        [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;>?:,./][{}|'>")]
+        [InlineData("<A hrEf=''>", "666", "<A hrEf='666'>")]
+        [InlineData("<a href = 'hello'>", "666", "<a href = '666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "666", "<a   target='_blank'   href='666'>")]
+        [InlineData("<img src='a/b.png' />", "666", "<img src='666' />")]
+        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc = '666' />")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666' /></div>")]
+        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666' /><a href='666'></div>")]
+        public void TransformLinks(string input, string link, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));
+            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => link));
         }
 
         [Theory]
