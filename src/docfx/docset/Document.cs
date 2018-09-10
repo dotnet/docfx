@@ -396,7 +396,9 @@ namespace Microsoft.Docs.Build
             var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
             var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SiteBasePath, sitePathWithoutExtension));
 
-            return (HashUtility.GetMd5String($"{depotName}|{sourcePath.ToLowerInvariant()}"), HashUtility.GetMd5String($"{depotName}|{sitePath.ToLowerInvariant()}"));
+            return (
+                HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
+                HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
     }
 }
