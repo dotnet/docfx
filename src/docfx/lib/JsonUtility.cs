@@ -200,14 +200,10 @@ namespace Microsoft.Docs.Build
                 // only log an error once
                 if (args.CurrentObject == args.ErrorContext.OriginalObject)
                 {
-                    if (args.ErrorContext.Error is JsonReaderException jre)
+                    if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                     {
-                        errors.Add(ToError(jre));
-                        args.ErrorContext.Handled = true;
-                    }
-                    else if (args.ErrorContext.Error is JsonSerializationException jse)
-                    {
-                        errors.Add(ToError(jse));
+                        var (range, message, path) = ParseException(args.ErrorContext.Error);
+                        errors.Add(Errors.ViolateSchema(range, message, path));
                         args.ErrorContext.Handled = true;
                     }
                 }
@@ -222,17 +218,13 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var (errors, token) = JToken.Parse(json, new JsonLoadSettings { LineInfoHandling = LineInfoHandling.Load })
-                    .RemoveNulls();
+                var (errors, token) = JToken.Parse(json).RemoveNulls();
                 return (errors, token ?? JValue.CreateNull());
-            }
-            catch (JsonSerializationException ex)
-            {
-                throw ToError(ex).ToException(ex);
             }
             catch (JsonReaderException ex)
             {
-                throw ToError(ex).ToException(ex);
+                var (range, message, path) = ParseException(ex);
+                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
             }
         }
 
@@ -272,27 +264,16 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        private static Error ToError(JsonReaderException ex)
+        private static (Range, string message, string path) ParseException(Exception ex)
         {
-            return Errors.JsonSyntaxError(ex.Message.Split('.')[0], ex.Path, new Range(ex.LineNumber, ex.LinePosition));
-        }
-
-        private static Error ToError(JsonSerializationException ex)
-        {
-            var range = default(Range);
-            var message = ex.Message;
-            var match = Regex.Match(message, "^([\\s\\S]*)\\sPath (.*), line (\\d+), position (\\d+).$");
+            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
-                message = match.Groups[1].Value;
-                range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                return (range, match.Groups[1].Value, match.Groups[2].Value);
             }
-            return Errors.ViolateSchema(range, message);
-        }
 
-        private static bool ContainsLineInfo(string message)
-        {
-            return message.IndexOf(',') != -1;
+            return (default, ex.Message, null);
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -398,7 +379,7 @@ namespace Microsoft.Docs.Build
                 {
                     var lineInfo = prop as IJsonLineInfo;
                     errors.Add(Errors.UnknownField(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, $"{prop.Path}"));
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
                 }
                 return matchingProperty?.PropertyType;
             }
@@ -503,7 +484,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message));
+                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 

@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("Path:ClassWithMoreMembers.mismatchField1 Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField1'", error.Message);
             },
             error =>
             {
@@ -322,21 +322,21 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(17, error.Column);
-                Assert.Equal("Path:ClassWithMoreMembers.mismatchField2 Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField2'", error.Message);
             });
         }
 
         [Theory]
         [InlineData(@"{
-""NumberList"":
-  [1, ""a""],
-""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{""B"" : ""b"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{""ValueEnum"":""Four"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 19)]
+'NumberList':
+  [1, 'a'],
+'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 3, 9)]
+        [InlineData(@"{'B' : 'b', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{'ValueEnum':'Four', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 19)]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn)
         {
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json.Replace('\'', '\"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -455,14 +455,14 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(6, error.Line);
                 Assert.Equal(19, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'", error.Message);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'. Path: 'Items'", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Required property 'ValueRequired' not found in JSON", error.Message);
+                Assert.Equal("Required property 'ValueRequired' not found in JSON. Path: ''", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -475,14 +475,14 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
-                Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
+                Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'. Path: 'valueWithLengthRestriction'", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
-                Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
+                Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'. Path: 'listValueWithLengthRestriction'", error.Message);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -514,21 +514,21 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(27, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'. Path: 'AnotherItems[0].Items'", error.Message);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(22, error.Column);
-                Assert.Equal("Could not convert string to boolean: notBool", error.Message);
+                Assert.Equal("Could not convert string to boolean: notBool. Path: 'AnotherItems[0].H'", error.Message);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(8, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
+                Assert.Equal("The field Items must be a string or array type with a minimum length of '1'. Path: 'AnotherItems[1].Items'", error.Message);
             });
         }
 
