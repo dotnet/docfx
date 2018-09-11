@@ -314,7 +314,7 @@ items:
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("'name' contains null value", error.Message);
+                Assert.Contains("'items[0].name' contains null value", error.Message);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(5, error.Column);
             });
