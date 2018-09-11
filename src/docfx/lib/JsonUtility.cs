@@ -266,6 +266,7 @@ namespace Microsoft.Docs.Build
 
         private static (Range, string message, string path) ParseException(Exception ex)
         {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
