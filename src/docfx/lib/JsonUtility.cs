@@ -197,15 +197,19 @@ namespace Microsoft.Docs.Build
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
             {
-                if (args.ErrorContext.Error is JsonReaderException jre)
+                // only log an error once
+                if (args.CurrentObject == args.ErrorContext.OriginalObject)
                 {
-                    errors.Add(ToError(jre));
-                    args.ErrorContext.Handled = true;
-                }
-                else if (args.ErrorContext.Error is JsonSerializationException jse)
-                {
-                    errors.Add(ToError(jse));
-                    args.ErrorContext.Handled = true;
+                    if (args.ErrorContext.Error is JsonReaderException jre)
+                    {
+                        errors.Add(ToError(jre));
+                        args.ErrorContext.Handled = true;
+                    }
+                    else if (args.ErrorContext.Error is JsonSerializationException jse)
+                    {
+                        errors.Add(ToError(jse));
+                        args.ErrorContext.Handled = true;
+                    }
                 }
             }
         }
