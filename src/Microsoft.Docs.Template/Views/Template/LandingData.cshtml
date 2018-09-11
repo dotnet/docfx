@@ -38,7 +38,8 @@ private void UpdateAbstract()
             <div class="aside">
                 @if (Model.Abstract?.Aside?.Image != null)
                 {
-                    <a href="@Model.Abstract?.Aside?.Href">
+                    var link = Model.Abstract?.Aside?.Href ?? "";
+                    <a href="@link">
                         <img src="@Model.Abstract?.Aside?.Image?.Src" alt="@Model.Abstract?.Aside?.Image?.Alt" />
                     </a>
                 }

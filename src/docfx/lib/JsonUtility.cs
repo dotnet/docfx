@@ -57,10 +57,9 @@ namespace Microsoft.Docs.Build
 
         [ThreadStatic]
         private static List<Error> t_schemaViolationErrors;
+
         [ThreadStatic]
         private static Func<DataTypeAttribute, object, object> t_transform;
-        [ThreadStatic]
-        private static string t_docsetPath;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -162,22 +161,20 @@ namespace Microsoft.Docs.Build
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate mismatching field types
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token, string docsetPath = null)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var (errors, obj) = ToObject(token, typeof(T), docsetPath);
+            var (errors, obj) = ToObject(token, typeof(T));
             return (errors, (T)obj);
         }
 
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            string docsetPath = null,
             Func<DataTypeAttribute, object, object> transform = null)
         {
             var errors = new List<Error>();
             try
             {
-                t_docsetPath = docsetPath;
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
 
@@ -194,7 +191,6 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_docsetPath = null;
                 t_transform = null;
                 t_schemaViolationErrors = null;
             }
@@ -499,7 +495,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        validator.Validate(value, new ValidationContext(value, new Dictionary<object, object>() { { "docsetPath", t_docsetPath } }) { DisplayName = _fieldName });
+                        validator.Validate(value, new ValidationContext(value) { DisplayName = _fieldName });
                     }
                     catch (Exception e)
                     {

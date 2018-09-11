@@ -93,8 +93,8 @@ namespace Microsoft.Docs.Build
         public static Error HeadingNotFound(Document file)
             => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
 
-        public static Error FileNotFound(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
+        public static Error FileNotFound(string relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
 
         public static Error UidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());

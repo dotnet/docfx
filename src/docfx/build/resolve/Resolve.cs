@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment, false);
+            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false);
         }
     }
 }

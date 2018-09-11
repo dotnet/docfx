@@ -97,7 +97,7 @@ else if (Model.Style == "cards")
                                     <h3>@listItem.Title</h3>
                                     @if (!string.IsNullOrEmpty(listItem.Text))
                                     {
-                                        <p>listItem.Text</p>
+                                        <p>@listItem.Text</p>
                                     }
                                     else if (!string.IsNullOrEmpty(listItem.Html))
                                     {
