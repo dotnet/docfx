@@ -33,23 +33,29 @@ Let's make DocFX better together!
 [![Feature Requests](https://docfx-issue.azurewebsites.net/api/get/issues?tag=feature-request&repo=dotnet/docfx&format=svg)](https://docascode.github.io)
 
 ## What is it?
+
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
 
 We currently support C# and VB projects.
 
 ## How to build?
+
 #### Prerequisites
+
 1. [Visual Studio 2017](https://www.visualstudio.com/downloads/), minimum installation is enough.
-2. [Node.js](https://nodejs.org), for building templates.
+1. [Node.js](https://nodejs.org), for building templates.
+1. [Microsoft .NET Framework 4.6.2 Developer Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
 
 #### Steps
-1. Option 1: Run `build.cmd` under *DocFX* code repo.
-2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
+
+- Option 1: Run `build.cmd` under *DocFX* code repo.
+- Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
 
 ## How do I play with *DocFX*?
-1. Option 1: install DocFX through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
-2. Option 2: install DocFX through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
-3. Option 3: play DocFX inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
+
+- Option 1: install DocFX through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
+- Option 2: install DocFX through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
+- Option 3: play DocFX inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
 
 For more information, please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
@@ -67,6 +73,7 @@ For more information, please refer to [Getting Started](http://dotnet.github.io/
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
 ## What's included?
+
 File/Folder     | Description
 :----------     | :----------
 LICENSE         | Project license information
@@ -78,16 +85,20 @@ test            | Test cases for *DocFX* using *xunit* test framework
 tools           | Source code for tools used in code build and deployment
 
 ## How to Contribute
+
 Check out the [contributing](CONTRIBUTING.md) page to see the best places to log issues and start discussions.
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## Contributors & Thank You
+
 Many thanks go to our community of developers who helped improve the quality of *DocFX* through their code contributions.
 Contributors: 
 
 ## License
+
 *DocFX* is licensed under the [MIT license](LICENSE).
 
 ### .NET Foundation
+
 *DocFX* is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
