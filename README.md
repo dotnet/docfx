@@ -44,7 +44,6 @@ We currently support C# and VB projects.
 
 1. [Visual Studio 2017](https://www.visualstudio.com/downloads/), minimum installation is enough.
 1. [Node.js](https://nodejs.org), for building templates.
-1. [Microsoft .NET Framework 4.6.2 Developer Pack](https://www.microsoft.com/en-us/download/confirmation.aspx?id=53321)
 
 #### Steps
 
