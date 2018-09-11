@@ -56,16 +56,14 @@ namespace Microsoft.Docs.Build
             if (!HrefUtility.IsHttpHref(path))
             {
                 // directly return the relative path
-                return Path.Combine(docsetPath, path);
+                var fullPath = Path.Combine(docsetPath, path);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(docsetPath, path).ToException();
             }
 
             // get the file path from restore map
-            if (TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
-            {
-                return restorePath;
-            }
-
-            throw Errors.NeedRestore(path).ToException();
+            return TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath)
+                ? restorePath
+                : throw Errors.NeedRestore(path).ToException();
         }
     }
 }
