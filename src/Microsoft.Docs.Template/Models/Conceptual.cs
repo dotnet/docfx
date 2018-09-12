@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
     //   We currently bake these other properties into PageModel to make the output flat,
     //   but it makes conceptual kinda special. We may consider lift them outside PageModel.
     [PageSchema]
-    public class Conceptual
+    public sealed class Conceptual
     {
         public string Html { get; set; }
 
