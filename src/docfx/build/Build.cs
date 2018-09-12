@@ -127,7 +127,11 @@ namespace Microsoft.Docs.Build
                 var hasErrors = context.Report(file.ToString(), errors);
                 if (model != null && !hasErrors)
                 {
-                    context.WriteJson(model, file.OutputPath);
+                    if (model is string str)
+                        context.WriteText(str, file.OutputPath);
+                    else
+                        context.WriteJson(model, file.OutputPath);
+
                     return (false, dependencies);
                 }
 
