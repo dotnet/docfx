@@ -16,6 +16,12 @@ namespace Microsoft.Docs.Build
         public readonly bool Json = false;
 
         /// <summary>
+        /// Gets whether to include `.html` in urls.
+        /// The default value is to generate an `index.html` for each article.
+        /// </summary>
+        public readonly bool UglifyUrl = false;
+
+        /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
         public readonly bool CopyResources = true;

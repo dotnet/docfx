@@ -214,7 +214,7 @@ namespace Microsoft.Docs.Build
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json);
+            var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema);
             var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
@@ -293,19 +293,27 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema, bool json)
+        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema, bool json, bool uglifyUrl)
         {
             switch (contentType)
             {
                 case ContentType.Page:
                     if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
-                        var extension = json ? ".json" : ".html";
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
+                            var extension = json ? ".json" : ".html";
                             return Path.Combine(Path.GetDirectoryName(path), "index" + extension).Replace('\\', '/');
                         }
-                        return Path.ChangeExtension(path, extension);
+                        if (json)
+                        {
+                            return Path.ChangeExtension(path, ".json");
+                        }
+                        if (uglifyUrl)
+                        {
+                            return Path.ChangeExtension(path, ".html");
+                        }
+                        return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path), "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:

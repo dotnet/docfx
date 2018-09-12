@@ -3,13 +3,18 @@
 
 using System;
 using System.IO;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
+        private static readonly Docset s_docset = new Docset(
+            new Context(new Report(), "."),
+            Directory.GetCurrentDirectory(),
+            JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')).Item2,
+            new CommandLineOptions());
+
         [Theory]
         // same level
         [InlineData(new[] { "TOC.md" }, "b.md", "TOC.json")]
@@ -39,12 +44,11 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var docset = new Docset(new Context(new Report(), "."), Directory.GetCurrentDirectory(), new Config(), new CommandLineOptions());
-            var (_, document) = Document.TryCreate(docset, file);
+            var (_, document) = Document.TryCreate(s_docset, file);
 
             foreach (var tocFile in tocFiles)
             {
-                var (_, toc) = Document.TryCreate(docset, tocFile);
+                var (_, toc) = Document.TryCreate(s_docset, tocFile);
                 builder.Add(toc, new[] { document }, Array.Empty<Document>());
             }
 
