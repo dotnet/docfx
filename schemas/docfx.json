@@ -105,6 +105,9 @@
         "json": {
           "type": "boolean"
         },
+        "uglifyUrl": {
+          "type": "boolean"
+        },
         "copyResources": {
           "type": "boolean"
         }
