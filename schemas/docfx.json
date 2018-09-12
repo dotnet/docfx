@@ -102,6 +102,9 @@
         "path": {
           "type": "string"
         },
+        "json": {
+          "type": "boolean"
+        },
         "copyResources": {
           "type": "boolean"
         }
