@@ -16,8 +16,9 @@ namespace Microsoft.Docs.Build
         public readonly bool Json = false;
 
         /// <summary>
-        /// Gets whether to include `.html` in urls.
-        /// The default value is to generate an `index.html` for each article.
+        /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to true.
+        ///  - Pretty url:      a.md --> a/index.html
+        ///  - Ugly url:        a.md --> a.html
         /// </summary>
         public readonly bool UglifyUrl = false;
 

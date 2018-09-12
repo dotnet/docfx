@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         [InlineData("image.png", true, false, ContentType.Resource, "image.png", "/image.png", "image.png")]
         [InlineData("a&#/b\\.* d.png", true, false, ContentType.Resource, "a&#/b\\.* d.png", "/a&#/b/.* d.png", "a&#/b/.* d.png")]
         [InlineData("a.md", false, false, ContentType.Page, "a/index.html", "/a/", "a/")]
-        [InlineData("a.md", false, true, ContentType.Page, "a.html", "/a", "a")]
+        [InlineData("a.md", false, true, ContentType.Page, "a.html", "/a.html", "a.html")]
         [InlineData("a/index.md", false, false, ContentType.Page, "a/index.html", "/a/", "a/")]
         [InlineData("a/index.md", false, true, ContentType.Page, "a/index.html", "/a/", "a/")]
         internal static void FilePathToUrl(
@@ -36,8 +36,8 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(expectedContentType, Document.GetContentType(path));
             Assert.Equal(expectedSitePath, Document.FilePathToSitePath(path, expectedContentType, null, json, uglifyUrl));
-            Assert.Equal(expectedSiteUrl, Document.PathToAbsoluteUrl(expectedSitePath, expectedContentType, null));
-            Assert.Equal(expectedRelativeSiteUrl, Document.PathToRelativeUrl(expectedSitePath, expectedContentType, null));
+            Assert.Equal(expectedSiteUrl, Document.PathToAbsoluteUrl(expectedSitePath, expectedContentType, null, json));
+            Assert.Equal(expectedRelativeSiteUrl, Document.PathToRelativeUrl(expectedSitePath, expectedContentType, null, json));
         }
     }
 }
