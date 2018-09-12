@@ -301,44 +301,6 @@ Key1: 0
             Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
-        [Fact]
-        public void TestListItemWithNullValue()
-        {
-            var yaml = @"name: List item with null value
-items:
-  - name:
-    displayName: 1
-";
-            var (errors, value) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("'items[0].name' contains null value", error.Message);
-                Assert.Equal(3, error.Line);
-                Assert.Equal(5, error.Column);
-            });
-        }
-
-        [Fact]
-        public void TestListWithNullItem()
-        {
-            var yaml = @"name: List with null item
-items:
-  -
-  - name: 1
-";
-            var (errors, value) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("'items[0]' contains null value", error.Message);
-                Assert.Equal(3, error.Line);
-                Assert.Equal(4, error.Column);
-            });
-        }
-
         [Theory]
         [InlineData("1", 1, 1)]
         [InlineData("name: name", 1, 7)]
@@ -356,133 +318,6 @@ items:
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
         }
 
-        [Theory]
-        [InlineData(@"mismatchField: name
-ValueRequired: a", 1, 1, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"ValueRequired: a
-AnotherItems:
-  - H: 1
-    G: c
-    E: e", 5, 5, ErrorLevel.Warning, "unknown-field")]
-        [InlineData(@"ValueRequired: a
-NestedItems:
-  -
-    - H: 1
-      G: c
-      E: e", 6, 7, ErrorLevel.Warning, "unknown-field")]
-        internal void TestUnknownFieldType(string yaml, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode)
-        {
-            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(expectedErrorLevel, error.Level);
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedLine, error.Line);
-                Assert.Equal(expectedColumn, error.Column);
-            });
-        }
-
-        [Fact]
-        public void TestMultipltUnknownFieldType()
-        {
-            var yaml = @"mismatchField1: name
-mismatchField2: name
-ValueRequired: a";
-
-            var (errors, result) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Collection(errors,
-            error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field", error.Code);
-                Assert.Equal(1, error.Line);
-                Assert.Equal(1, error.Column);
-                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
-                Assert.Equal("mismatchField1", error.Path);
-            },
-            error =>
-            {
-                Assert.Equal(ErrorLevel.Warning, error.Level);
-                Assert.Equal("unknown-field", error.Code);
-                Assert.Equal(2, error.Line);
-                Assert.Equal(1, error.Column);
-                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
-                Assert.Equal("mismatchField2", error.Path);
-            });
-        }
-
-        [Theory]
-        [InlineData(@"numberList:
-        - 1
-        - a
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 3, 11)]
-        [InlineData(@"
-B: b
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 4)]
-        [InlineData(@"ValueEnum: Four
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 12)]
-        internal void TestMismatchingPrimitiveFieldType(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
-            int expectedErrorLine, int expectedErrorColumn)
-        {
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(expectedErrorLevel, error.Level);
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedErrorLine, error.Line);
-                Assert.Equal(expectedErrorColumn, error.Column);
-            });
-        }
-
-        [Theory]
-        [InlineData(@"
-B: 1
-C: c
-E: e", typeof(BasicClass))]
-        [InlineData(@"
-Data: 
-    B: 1
-    C: c
-    E: e", typeof(SealedClassNestedWithNotSealedType))]
-        public void TestObjectTypeWithNonSealedClassType(string json, Type type)
-        {
-            var (_, token) = YamlUtility.Deserialize(json);
-            var (errors, value) = JsonUtility.ToObject(token, type);
-            Assert.Empty(errors);
-        }
-
-        [Theory]
-        [InlineData(@"regPatternValue: A
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 18)]
-        [InlineData(@"ValueWithLengthRestriction: a
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
-        [InlineData(@"ValueWithLengthRestriction: abcd
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 29)]
-        [InlineData(@"ListValueWithLengthRestriction: []
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 1, 33)]
-        [InlineData(@"ListValueWithLengthRestriction:
-                        - a
-                        - b
-                        - c
-                        - d
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 25)]
-        [InlineData(@"NestedMember:
-                        ValueWithLengthRestriction: abcd
-ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
-        [InlineData(@"B: 1", ErrorLevel.Error, "violate-schema", 1, 1)]
-        internal void TestSchemaViolation(string yaml, ErrorLevel expectedErrorLevel, string expectedErrorCode,
-            int expectedErrorLine, int expectedErrorColumn)
-        {
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(expectedErrorLevel, error.Level);
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedErrorLine, error.Line);
-                Assert.Equal(expectedErrorColumn, error.Column);
-            });
-        }
-
         public class BasicClass
         {
             public int B { get; set; }
@@ -490,15 +325,6 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public string C { get; set; }
 
             public bool D { get; set; }
-        }
-
-        public sealed class AnotherBasicClass
-        {
-            public int F { get; set; }
-
-            public string G { get; set; }
-
-            public bool H { get; set; }
         }
 
         public sealed class ClassWithReadOnlyField
@@ -513,48 +339,6 @@ ValueRequired: a", ErrorLevel.Error, "violate-schema", 2, 53)]
             public List<string> ValueList { get; set; }
 
             public BasicClass ValueBasic { get; set; }
-
-            public List<BasicClass> Items { get; set; }
-
-            public List<AnotherBasicClass> AnotherItems { get; set; }
-
-            public List<List<AnotherBasicClass>> NestedItems { get; set; }
-
-            public List<int> NumberList { get; set; }
-
-            [RegularExpression("[a-z]")]
-            public string RegPatternValue { get; set; }
-
-            [MinLength(2), MaxLength(3)]
-            public string ValueWithLengthRestriction { get; set; }
-
-            [MinLength(1), MaxLength(3)]
-            public List<string> ListValueWithLengthRestriction { get; set; }
-
-            public NestedClass NestedMember { get; set; }
-
-            public BasicEnum ValueEnum { get; set; }
-
-            [JsonRequired]
-            public string ValueRequired { get; set; }
-        }
-
-        public sealed class SealedClassNestedWithNotSealedType : BasicClass
-        {
-            public BasicClass Data { get; set; }
-        }
-
-        public sealed class NestedClass
-        {
-            [MinLength(2), MaxLength(3)]
-            public string ValueWithLengthRestriction { get; set; }
-        }
-
-        public enum BasicEnum
-        {
-            One,
-            Two,
-            Three,
         }
     }
 }
