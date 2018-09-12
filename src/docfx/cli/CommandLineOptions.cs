@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
                 ["output"] = new JObject
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
+                    ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
                 },
             };
         }

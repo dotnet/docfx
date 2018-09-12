@@ -1,0 +1,21 @@
+---
+# Apply template and produce html page when output is not json
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  docs/a.md:
+outputs:
+  docs/a/index.html:
+  build.manifest:
+---
+# Use .html extension on uglify url
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+      uglifyUrl: true
+  docs/a.md:
+outputs:
+  docs/a.html:
+  build.manifest:
