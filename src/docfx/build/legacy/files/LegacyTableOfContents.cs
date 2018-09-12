@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -20,16 +21,46 @@ namespace Microsoft.Docs.Build
             ConvertLegacyItems(toc.Items);
 
             toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
-            toc.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(
-                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
 
-            var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
-            toc.Metadata.PdfName = PathUtility.NormalizeFile(
-                $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
+            var (pdfName, pdfAbsolutePath) = PdfInfo();
+            toc.Metadata.PdfName = pdfName;
+            toc.Metadata.PdfAbsolutePath = pdfAbsolutePath;
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
-            context.WriteJson(new LegacyTableOfContentsExperimentMetadata { Experimental = toc.Metadata.Experimental, ExperimentId = toc.Metadata.ExperimentId }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(
+                new LegacyTableOfContentsExperimentMetadata
+                {
+                    Experimental = toc.Metadata.Experimental,
+                    ExperimentId = toc.Metadata.ExperimentId,
+                },
+                legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+
+            (string, string) PdfInfo()
+            {
+                var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
+                var isExperimentalSource = toc.Metadata.Experimental.HasValue && !toc.Metadata.Experimental.Value;
+
+                // Metadata Experimental cases:
+                // true: possible to redirect to corresponding experimental file on requested
+                // false: explicitly declared as experimental pdf file
+                // default(null): normal TOC with no experiment
+                if (isExperimentalSource)
+                {
+                    Debug.Assert(doc.OutputPath.Contains(".experimental", StringComparison.OrdinalIgnoreCase));
+                }
+
+                // keep the v2 output format if it's experimental
+                // e.g. "cosmos-db/TOC.experimental.pdf"
+                var l_pdfName = isExperimentalSource ?
+                    Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf") :
+                    PathUtility.NormalizeFile(
+                $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
+                var l_pdfAbsolutePath = PathUtility.NormalizeFile(
+                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
+
+                return (l_pdfName, l_pdfAbsolutePath);
+            }
         }
 
         private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
