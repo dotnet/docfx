@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject RemoveNulls(this JObject graph)
         {
-            var (_, jtoken) = ((JToken)graph).ValidateNullValue();
+            var (_, jtoken) = ((JToken)graph).RemoveNulls();
             return (JObject)jtoken;
         }
 
