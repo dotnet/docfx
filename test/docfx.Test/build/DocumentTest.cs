@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
         [InlineData("docfx.json", true, false, ContentType.Unknown, "docfx.json", "/docfx.json", "docfx.json")]
         [InlineData("a.md", true, false, ContentType.Page, "a.json", "/a", "a")]
         [InlineData("a/b.md", true, false, ContentType.Page, "a/b.json", "/a/b", "a/b")]
-        [InlineData("index.md", true, false, ContentType.Page, "index.json", "/", ".")]
         [InlineData("a/index.md", true, false, ContentType.Page, "a/index.json", "/a/", "a/")]
         [InlineData("a.yml", true, false, ContentType.Page, "a.json", "/a", "a")]
         [InlineData("a/index.yml", true, false, ContentType.Page, "a/index.json", "/a/", "a/")]
@@ -25,6 +24,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a.md", false, true, ContentType.Page, "a.html", "/a.html", "a.html")]
         [InlineData("a/index.md", false, false, ContentType.Page, "a/index.html", "/a/", "a/")]
         [InlineData("a/index.md", false, true, ContentType.Page, "a/index.html", "/a/", "a/")]
+        [InlineData("index.md", false, false, ContentType.Page, "index.html", "/", ".")]
+        [InlineData("index.md", false, true, ContentType.Page, "index.html", "/", ".")]
+        [InlineData("index.md", true, false, ContentType.Page, "index.json", "/", ".")]
         internal static void FilePathToUrl(
             string path,
             bool json,
