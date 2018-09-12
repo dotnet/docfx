@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
+        public static async Task<(IEnumerable<Error> errors, object result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
@@ -43,7 +43,13 @@ namespace Microsoft.Docs.Build
             if (error != null)
                 errors.Add(error);
 
-            return (errors, model, dependencies.Build());
+            var output = (object)model;
+            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            {
+                output = await Template.Render(model);
+            }
+
+            return (errors, output, dependencies.Build());
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>

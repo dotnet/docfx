@@ -214,8 +214,8 @@ namespace Microsoft.Docs.Build
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, schema);
-            var siteUrl = PathToAbsoluteUrl(sitePath, type, schema);
+            var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
+            var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
             var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema)
+        internal static string FilePathToSitePath(string path, ContentType contentType, Schema schema, bool json, bool uglifyUrl)
         {
             switch (contentType)
             {
@@ -302,8 +302,18 @@ namespace Microsoft.Docs.Build
                     {
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
-                            return Path.Combine(Path.GetDirectoryName(path), "index.json").Replace('\\', '/');
+                            var extension = json ? ".json" : ".html";
+                            return Path.Combine(Path.GetDirectoryName(path), "index" + extension).Replace('\\', '/');
                         }
+                        if (json)
+                        {
+                            return Path.ChangeExtension(path, ".json");
+                        }
+                        if (uglifyUrl)
+                        {
+                            return Path.ChangeExtension(path, ".html");
+                        }
+                        return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path), "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
@@ -313,13 +323,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema)
+        internal static string PathToAbsoluteUrl(string path, ContentType contentType, Schema schema, bool json)
         {
-            var url = PathToRelativeUrl(path, contentType, schema);
+            var url = PathToRelativeUrl(path, contentType, schema, json);
             return url == "." ? "/" : "/" + url;
         }
 
-        internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema)
+        internal static string PathToRelativeUrl(string path, ContentType contentType, Schema schema, bool json)
         {
             var url = path.Replace('\\', '/');
 
@@ -328,19 +338,18 @@ namespace Microsoft.Docs.Build
                 case ContentType.Page:
                     if (schema == null || schema.Attribute is PageSchemaAttribute)
                     {
-                        var extensionIndex = url.LastIndexOf('.');
-                        if (extensionIndex >= 0)
+                        var fileName = Path.GetFileNameWithoutExtension(path);
+                        if (fileName.Equals("index", PathUtility.PathComparison))
                         {
-                            url = url.Substring(0, extensionIndex);
+                            var i = url.LastIndexOf('/');
+                            return i >= 0 ? url.Substring(0, i + 1) : ".";
                         }
-                        if (url.Equals("index", PathUtility.PathComparison))
+                        if (json)
                         {
-                            return ".";
+                            var i = url.LastIndexOf('.');
+                            return i >= 0 ? url.Substring(0, i) : url;
                         }
-                        if (url.EndsWith("/index", PathUtility.PathComparison))
-                        {
-                            return url.Substring(0, url.Length - 5);
-                        }
+                        return url;
                     }
                     return url;
                 default:
