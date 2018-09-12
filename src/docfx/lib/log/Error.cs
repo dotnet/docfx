@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
 
         public Range Range { get; }
 
+        public string Path { get; }
+
         public int Line => Range.StartLine;
 
         public int Column => Range.StartCharacter;
@@ -32,12 +34,14 @@ namespace Microsoft.Docs.Build
             string code,
             string message,
             string file = null,
-            in Range range = default)
+            in Range range = default,
+            string path = "")
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
+            Path = path;
             Level = level;
             Code = code;
             Message = message;
@@ -49,7 +53,7 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, File, Line, Column };
+            object[] payload = { level, Code, Message, File, Path, Line, Column };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0)))
@@ -76,7 +80,8 @@ namespace Microsoft.Docs.Build
                        x.Range.StartLine == y.Range.StartLine &&
                        x.Range.StartCharacter == y.Range.StartCharacter &&
                        x.Range.EndLine == y.Range.EndLine &&
-                       x.Range.EndCharacter == y.Range.EndCharacter;
+                       x.Range.EndCharacter == y.Range.EndCharacter &&
+                       x.Path == y.Path;
             }
 
             public int GetHashCode(Error obj)

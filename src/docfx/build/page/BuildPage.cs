@@ -125,6 +125,10 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
+            if (obj.ContainsKey("$schema"))
+            {
+                obj.Remove("$schema");
+            }
             var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaViolationErrors);
 

@@ -178,9 +178,9 @@ namespace Microsoft.Docs.Build
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
 
-                token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
                 {
+                    MissingMemberHandling = MissingMemberHandling.Error,
                     NullValueHandling = NullValueHandling.Ignore,
                     ContractResolver = DefaultDeserializer.ContractResolver,
                 };
@@ -202,8 +202,18 @@ namespace Microsoft.Docs.Build
                 {
                     if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                     {
-                        var (range, message, path) = ParseException(args.ErrorContext.Error);
-                        errors.Add(Errors.ViolateSchema(range, message, path));
+                        var (range, message, path, isUnkownType) = ParseException(args.ErrorContext.Error, args.CurrentObject?.GetType()?.IsSealed ?? false);
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            if (isUnkownType)
+                            {
+                                errors.Add(Errors.UnknownField(range, message, path));
+                            }
+                            else
+                            {
+                                errors.Add(Errors.ViolateSchema(range, message, path));
+                            }
+                        }
                         args.ErrorContext.Handled = true;
                     }
                 }
@@ -223,7 +233,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (range, message, path) = ParseException(ex);
+                var (range, message, path, _) = ParseException(ex);
                 throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
             }
         }
@@ -258,23 +268,33 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var lineInfo = (IJsonLineInfo)node;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), node.Path));
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), (node as JProperty)?.Name, node.Path));
                 node.Remove();
             }
             return (errors, token);
         }
 
-        private static (Range, string message, string path) ParseException(Exception ex)
+        private static (Range, string message, string path, bool isUnkownField) ParseException(Exception ex, bool isCurrentObjectSealed = false)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var unkownTypeMatch = Regex.Match(ex.Message, "Could not find member '(.*)' on object of type '(.*)'. Path '(.*)', line (\\d+), position (\\d+).");
+            if (unkownTypeMatch.Success)
+            {
+                if (isCurrentObjectSealed)
+                {
+                    var range = new Range(int.Parse(unkownTypeMatch.Groups[4].Value), int.Parse(unkownTypeMatch.Groups[5].Value));
+                    return (range, $"Could not find member '{unkownTypeMatch.Groups[1].Value}' on object of type '{unkownTypeMatch.Groups[2].Value}'.", unkownTypeMatch.Groups[3].Value, true);
+                }
+                return (default, null, null, true);
+            }
+
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
                 var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, match.Groups[1].Value, match.Groups[2].Value);
+                return (range, match.Groups[1].Value, match.Groups[2].Value, false);
             }
-
-            return (default, ex.Message, null);
+            return (default, ex.Message, null, false);
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -318,35 +338,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
-        {
-            if (token is JArray array)
-            {
-                var itemType = GetCollectionItemTypeIfArrayType(type);
-                foreach (var item in token.Children())
-                {
-                    item.ReportUnknownFields(errors, itemType);
-                }
-            }
-            else if (token is JObject obj)
-            {
-                foreach (var item in token.Children())
-                {
-                    var prop = item as JProperty;
-
-                    // skip the special property
-                    if (prop.Name.StartsWith('$'))
-                        continue;
-
-                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);
-                    if (nestedType != null)
-                    {
-                        prop.Value.ReportUnknownFields(errors, nestedType);
-                    }
-                }
-            }
-        }
-
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
             var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
@@ -367,31 +358,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return type;
-        }
-
-        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
-        {
-            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
-
-            if (contract is JsonObjectContract objectContract)
-            {
-                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
-                if (matchingProperty == null && type.IsSealed)
-                {
-                    var lineInfo = prop as IJsonLineInfo;
-                    errors.Add(Errors.UnknownField(
-                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
-                }
-                return matchingProperty?.PropertyType;
-            }
-
-            if (contract is JsonArrayContract arrayContract)
-            {
-                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
-                return matchingProperty?.PropertyType;
-            }
-
-            return null;
         }
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)

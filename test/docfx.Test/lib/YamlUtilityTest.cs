@@ -397,7 +397,8 @@ ValueRequired: a";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField1'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
+                Assert.Equal("mismatchField1", error.Path);
             },
             error =>
             {
@@ -405,7 +406,8 @@ ValueRequired: a";
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField2'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
+                Assert.Equal("mismatchField2", error.Path);
             });
         }
 
