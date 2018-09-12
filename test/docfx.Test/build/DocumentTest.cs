@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             string expectedRelativeSiteUrl)
         {
             Assert.Equal(expectedContentType, Document.GetContentType(path));
-            Assert.Equal(expectedSitePath, Document.FilePathToSitePath(path, expectedContentType, null));
+            Assert.Equal(expectedSitePath, Document.FilePathToSitePath(path, expectedContentType, null, json: true));
             Assert.Equal(expectedSiteUrl, Document.PathToAbsoluteUrl(expectedSitePath, expectedContentType, null));
             Assert.Equal(expectedRelativeSiteUrl, Document.PathToRelativeUrl(expectedSitePath, expectedContentType, null));
         }

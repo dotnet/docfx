@@ -11,6 +11,11 @@ namespace Microsoft.Docs.Build
         public readonly string Path = "_site";
 
         /// <summary>
+        /// Gets whether to output JSON model.
+        /// </summary>
+        public readonly bool Json = false;
+
+        /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
         public readonly bool CopyResources = true;

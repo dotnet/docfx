@@ -1,0 +1,9 @@
+# Apply template and produce html page when output is not json
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  docs/a.md:
+outputs:
+  docs/a.html:
+  build.manifest:
