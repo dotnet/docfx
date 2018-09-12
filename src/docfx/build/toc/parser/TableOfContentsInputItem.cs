@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public bool MaintainContext { get; set; }
 
-        public bool Expanded { get; set; }
+        public bool? Expanded { get; set; }
 
         [MinLength(1)]
         public List<TableOfContentsInputItem> Items { get; set; }

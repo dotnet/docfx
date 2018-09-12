@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         public string TocHref { get; set; }
 
         [JsonProperty(PropertyName = "expanded", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool Expanded { get; set; }
+        public bool? Expanded { get; set; }
 
         [JsonProperty(PropertyName = "maintainContext", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
