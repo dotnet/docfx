@@ -146,44 +146,34 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model);
 
-            object TransformContent(DataTypeAttribute attribute, JsonReader reader)
+            object TransformContent(DataTypeAttribute attribute, object value)
             {
-                // Schema violation if the field is not what SchemaContentTypeAttribute required
-                if (reader.ValueType != attribute.TargetType)
-                {
-                    var lineInfo = reader as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    errors.Add(Errors.ViolateSchema(range, $"Field with attribute '{attribute.GetType()}' should be of type {attribute.TargetType}."));
-                    return null;
-                }
-
                 if (attribute is HrefAttribute)
                 {
-                    return GetLink((string)reader.Value, file, file);
+                    return GetLink((string)value, file, file);
                 }
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)reader.Value, href => GetLink(href, file, file));
+                    var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file));
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
-                // TODO: handle other attributes
-                return reader.Value;
+                return value;
 
                 string GetLink(string path, object relativeTo, object resultRelativeTo)
                 {
