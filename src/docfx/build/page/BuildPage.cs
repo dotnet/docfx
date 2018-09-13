@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            if (obj.ContainsKey("$schema"))
+            if (obj != null && obj.ContainsKey("$schema"))
             {
                 obj.Remove("$schema");
             }

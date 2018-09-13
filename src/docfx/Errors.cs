@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
         public static Error JsonSyntaxError(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, path: path);
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, jsonPath: path);
 
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
@@ -124,13 +124,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
 
         public static Error NullValue(in Range range, string name, string path)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, path: path);
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
 
-        public static Error UnknownField(in Range range, string message, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", message, range: range, path: path);
+        public static Error UnknownField(in Range range, string propName, string typeName)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range);
 
         public static Error ViolateSchema(in Range range, string message, string path)
-            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, path: path);
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");

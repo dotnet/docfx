@@ -271,23 +271,23 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field", "mismatchField", typeof(ClassWithMoreMembers))]
+        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 24, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
 ""AnotherItems"":
   [{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", "AnotherItems[0].E", typeof(ClassWithMoreMembers))]
+    ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 12, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
 ""NestedItems"":
   [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", "NestedItems[0][0].E", typeof(ClassWithMoreMembers))]
+    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 12, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e"",
-""NestedSealedMember"": {""Unknown"": 1}}]", 5, 33, ErrorLevel.Warning, "unknown-field", "[0].NestedSealedMember.Unknown", typeof(List<NotSealedClass>))]
-        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, string expectedPath, Type type)
+""NestedSealedMember"": {""Unknown"": 1}}]", 5, 35, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
+        internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
             var (errors, result) = JsonUtility.ToObject(token, type);
@@ -297,7 +297,6 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedLine, error.Line);
                 Assert.Equal(expectedColumn, error.Column);
-                Assert.Equal(expectedPath, error.Path);
             });
         }
 
@@ -314,18 +313,16 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
-                Assert.Equal(18, error.Column);
+                Assert.Equal(25, error.Column);
                 Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
-                Assert.Equal("mismatchField1", error.Path);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
-                Assert.Equal(17, error.Column);
+                Assert.Equal(24, error.Column);
                 Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
-                Assert.Equal("mismatchField2", error.Path);
             });
         }
 
@@ -346,7 +343,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedErrorLine, error.Line);
                 Assert.Equal(expectedErrorColumn, error.Column);
-                Assert.Equal(expectedPath, error.Path);
+                Assert.Equal(expectedPath, error.JsonPath);
             });
         }
 
@@ -360,11 +357,16 @@ namespace Microsoft.Docs.Build
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e""}}", typeof(SealedClassNestedWithNotSealedType))]
+        [InlineData(@"{
+""Items"":[{
+""B"": 1,
+""C"": ""c"",
+""E"": ""e""}]}", typeof(SealedClassNestedWithNotSealedType))]
         [InlineData(@"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e""}]", typeof(List<NotSealedClass>))]
-        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        public void TestObjectTypeWithNotSealedType(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
@@ -385,7 +387,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(5, error.Line);
-                Assert.Equal(33, error.Column);
+                Assert.Equal(35, error.Column);
             });
         }
 
@@ -407,7 +409,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedErrorLine, error.Line);
                 Assert.Equal(expectedErrorColumn, error.Column);
-                Assert.Equal(expectedPath, error.Path);
+                Assert.Equal(expectedPath, error.JsonPath);
             });
         }
 
@@ -461,7 +463,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(6, error.Line);
                 Assert.Equal(19, error.Column);
                 Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
-                Assert.Equal("Items", error.Path);
+                Assert.Equal("Items", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -469,7 +471,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
                 Assert.Equal("Required property 'ValueRequired' not found in JSON.", error.Message);
-                Assert.Equal("", error.Path);
+                Assert.Equal("", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -483,7 +485,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
                 Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
-                Assert.Equal("valueWithLengthRestriction", error.Path);
+                Assert.Equal("valueWithLengthRestriction", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -491,7 +493,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
                 Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
-                Assert.Equal("listValueWithLengthRestriction", error.Path);
+                Assert.Equal("listValueWithLengthRestriction", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -524,7 +526,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(4, error.Line);
                 Assert.Equal(27, error.Column);
                 Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
-                Assert.Equal("AnotherItems[0].Items", error.Path);
+                Assert.Equal("AnotherItems[0].Items", error.JsonPath);
             },
             error =>
             {
@@ -532,7 +534,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(5, error.Line);
                 Assert.Equal(22, error.Column);
                 Assert.Equal("Could not convert string to boolean: notBool.", error.Message);
-                Assert.Equal("AnotherItems[0].H", error.Path);
+                Assert.Equal("AnotherItems[0].H", error.JsonPath);
             },
             error =>
             {
@@ -540,7 +542,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(8, error.Line);
                 Assert.Equal(18, error.Column);
                 Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
-                Assert.Equal("AnotherItems[1].Items", error.Path);
+                Assert.Equal("AnotherItems[1].Items", error.JsonPath);
             });
         }
 
@@ -613,6 +615,8 @@ namespace Microsoft.Docs.Build
         public sealed class SealedClassNestedWithNotSealedType : BasicClass
         {
             public NotSealedClass Data { get; set; }
+
+            public List<NotSealedClass> Items { get; set; }
         }
 
         public sealed class NestedClass

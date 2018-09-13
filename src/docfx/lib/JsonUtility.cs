@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize a string to an object
+        /// De-serialize a string to an object
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string json)
         {
@@ -180,7 +180,6 @@ namespace Microsoft.Docs.Build
 
                 var serializer = new JsonSerializer
                 {
-                    MissingMemberHandling = MissingMemberHandling.Error,
                     NullValueHandling = NullValueHandling.Ignore,
                     ContractResolver = DefaultDeserializer.ContractResolver,
                 };
@@ -202,18 +201,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
                     {
-                        var (range, message, path, isUnkownType) = ParseException(args.ErrorContext.Error, args.CurrentObject?.GetType()?.IsSealed ?? false);
-                        if (!string.IsNullOrEmpty(message))
-                        {
-                            if (isUnkownType)
-                            {
-                                errors.Add(Errors.UnknownField(range, message, path));
-                            }
-                            else
-                            {
-                                errors.Add(Errors.ViolateSchema(range, message, path));
-                            }
-                        }
+                        var (range, message, path) = ParseException(args.ErrorContext.Error);
+                        errors.Add(Errors.ViolateSchema(range, message, path));
                         args.ErrorContext.Handled = true;
                     }
                 }
@@ -233,7 +222,7 @@ namespace Microsoft.Docs.Build
             }
             catch (JsonReaderException ex)
             {
-                var (range, message, path, _) = ParseException(ex);
+                var (range, message, path) = ParseException(ex);
                 throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
             }
         }
@@ -274,27 +263,16 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
-        private static (Range, string message, string path, bool isUnkownField) ParseException(Exception ex, bool isCurrentObjectSealed = false)
+        private static (Range, string message, string path) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
-            var unkownTypeMatch = Regex.Match(ex.Message, "Could not find member '(.*)' on object of type '(.*)'. Path '(.*)', line (\\d+), position (\\d+).");
-            if (unkownTypeMatch.Success)
-            {
-                if (isCurrentObjectSealed)
-                {
-                    var range = new Range(int.Parse(unkownTypeMatch.Groups[4].Value), int.Parse(unkownTypeMatch.Groups[5].Value));
-                    return (range, $"Could not find member '{unkownTypeMatch.Groups[1].Value}' on object of type '{unkownTypeMatch.Groups[2].Value}'.", unkownTypeMatch.Groups[3].Value, true);
-                }
-                return (default, null, null, true);
-            }
-
             var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
             if (match.Success)
             {
                 var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
-                return (range, match.Groups[1].Value, match.Groups[2].Value, false);
+                return (range, match.Groups[1].Value, match.Groups[2].Value);
             }
-            return (default, ex.Message, null, false);
+            return (default, ex.Message, null);
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -383,6 +361,31 @@ namespace Microsoft.Docs.Build
 
         private sealed class JsonContractResolver : DefaultContractResolver
         {
+            protected override JsonObjectContract CreateObjectContract(Type objectType)
+            {
+                var contract = base.CreateObjectContract(objectType);
+                if (objectType.IsSealed)
+                {
+                    contract.ExtensionDataValueType = typeof(JToken);
+                    contract.ExtensionDataSetter = (o, key, value) =>
+                    {
+                        var token = (JToken)value;
+                        if (token.IsNullOrUndefined())
+                        {
+                            return;
+                        }
+
+                        if (contract.Properties.GetClosestMatchProperty(key) == null)
+                        {
+                            var lineInfo = (IJsonLineInfo)value;
+                            t_schemaViolationErrors.Add(Errors.UnknownField(
+                                new Range(lineInfo.LineNumber, lineInfo.LinePosition), key, objectType.Name));
+                        }
+                    };
+                }
+                return contract;
+            }
+
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
