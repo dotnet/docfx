@@ -172,14 +172,15 @@ namespace Microsoft.Docs.Build
 
             if (extend)
             {
-                var extendErros = new List<Error>();
-                (extendErros, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
-                errors.AddRange(extendErros);
+                var extendErrors = new List<Error>();
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                errors.AddRange(extendErrors);
             }
 
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
+
             return (errors, config);
         }
 

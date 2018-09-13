@@ -71,6 +71,21 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Writes the input text to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void WriteText(string contents, string destRelativePath)
+        {
+            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+
+            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+
+            File.WriteAllText(destinationPath, contents);
+        }
+
+        /// <summary>
         /// Copies a file from source to destination, throws if source does not exists.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>

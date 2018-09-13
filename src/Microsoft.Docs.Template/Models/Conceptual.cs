@@ -7,7 +7,8 @@ namespace Microsoft.Docs.Build
     //   Conceptual model is more than just an html string, it also contain other properties.
     //   We currently bake these other properties into PageModel to make the output flat,
     //   but it makes conceptual kinda special. We may consider lift them outside PageModel.
-    public class Conceptual
+    [PageSchema]
+    public sealed class Conceptual
     {
         public string Html { get; set; }
 

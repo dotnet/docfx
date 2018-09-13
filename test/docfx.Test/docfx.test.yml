@@ -3,3 +3,5 @@ rules:
   heading-not-found: off
   resolve-author-failed: off
   resolve-commit-failed: off
+output:
+  json: true

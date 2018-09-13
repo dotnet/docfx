@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
-        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
+        public static readonly JsonSerializer DefaultSerializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver(),
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    ContractResolver = DefaultDeserializer.ContractResolver,
+                    ContractResolver = DefaultSerializer.ContractResolver,
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
 
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
-            var contract = DefaultDeserializer.ContractResolver.ResolveContract(type);
+            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
             if (contract is JsonObjectContract)
             {
                 return type;
@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
         {
-            var itemContract = DefaultDeserializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
+            var itemContract = DefaultSerializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
             if (itemContract is JsonObjectContract objectContract)
                 return objectContract.Properties;
             else if (itemContract is JsonArrayContract contract)

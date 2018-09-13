@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyFile(string file, string content)
         {
-            switch (Path.GetExtension(file.ToLower()))
+            switch (Path.GetExtension(file.ToLowerInvariant()))
             {
                 case ".json":
                 case ".manifest":
@@ -194,6 +194,14 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    }
+                    break;
+                case ".html":
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        Assert.Equal(
+                            TestUtility.NormalizeHtml(content),
+                            TestUtility.NormalizeHtml(File.ReadAllText(file)));
                     }
                     break;
                 default:

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "html": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "htmlTitle": {
+      "type": "string"
+    },
+    "wordCount": {
+      "type": "integer"
+    }
+  }
+}
