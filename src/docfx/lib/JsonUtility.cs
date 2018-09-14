@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize a string to an object
+        /// De-serialize a string to an object
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string json)
         {
@@ -258,7 +258,8 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var lineInfo = (IJsonLineInfo)node;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), node.Path));
+                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
             return (errors, token);
@@ -273,7 +274,6 @@ namespace Microsoft.Docs.Build
                 var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
                 return (range, match.Groups[1].Value, match.Groups[2].Value);
             }
-
             return (default, ex.Message, null);
         }
 
