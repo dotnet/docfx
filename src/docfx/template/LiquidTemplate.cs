@@ -6,9 +6,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using DotLiquid;
 using DotLiquid.FileSystems;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _fileSystem = new IncludeFileSystem(templateDir);
         }
 
-        public string Render(string templateName, JToken model)
+        public string Render(string templateName, JObject model)
         {
             var template = _templates.GetOrAdd(
                 templateName,
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 return value.Value;
 
             if (token is JArray arr)
-                return new Hash((_, key) => ToHash(arr[key]));
+                return arr.Select(ToHash).ToArray();
 
             if (token is JObject obj)
                 return new Hash((_, key) => ToHash(obj.GetValue(key)));

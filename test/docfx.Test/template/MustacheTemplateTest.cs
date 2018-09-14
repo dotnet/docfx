@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         private readonly MustacheTemplate _template = new MustacheTemplate("data/mustache");
 
         [Theory]
-        [InlineData("test", "{'description':'hello'}", "<div>hello<div>a b</div></div>")]
+        [InlineData("test", "{'description':'hello','tags':[1,2]}", "<div>hello<div>a b<p>1</p><p>2</p></div></div>")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
             var model = JToken.Parse(json.Replace('\'', '"'));
