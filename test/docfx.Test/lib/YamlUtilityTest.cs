@@ -117,25 +117,6 @@ B: *anchor
         }
 
         [Fact]
-        public void TestBasicClassWithNullCharactor()
-        {
-            var yaml = @"
-C: ""~""
-D: ~
-";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
-            });
-            Assert.NotNull(value);
-            Assert.Equal("~", value["C"]);
-            Assert.DoesNotContain("D", value.Keys);
-        }
-
-        [Fact]
         public void TestBasicClass()
         {
             var yaml = @"
