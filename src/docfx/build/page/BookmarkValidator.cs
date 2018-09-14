@@ -45,15 +45,7 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-
-                var suggestedBookmark = bookmarks != null ?
-                    (from bookmarkCandidate in bookmarks
-                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(bookmarkCandidate, bookmark)
-                     where levanshteinDistance <= 5
-                     orderby levanshteinDistance, bookmarkCandidate
-                     select bookmarkCandidate).FirstOrDefault()
-                                         : null;
-                result.Add((Errors.BookmarkNotFound(file, reference, bookmark, suggestedBookmark), file));
+                result.Add((Errors.BookmarkNotFound(file, reference, bookmark, bookmarks), file));
             }
 
             return result;
