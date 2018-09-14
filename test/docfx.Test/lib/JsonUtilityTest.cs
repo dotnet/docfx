@@ -218,36 +218,20 @@ namespace Microsoft.Docs.Build
             Assert.Equal(result, resultJsonString);
         }
 
-        [Fact]
-        public void TestListWithNullItem()
+        [Theory]
+        [InlineData("{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}", "'items' contains null value", "items[0]")]
+        [InlineData("{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}", "'name' contains null value", "items[0].name")]
+        [InlineData("{[1,,1,1]", "[1] contains null value", "[1]")]
+        public void TestListWithNullItem(string json, string message, string jsonPath)
         {
-            var json = "{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}";
             var (errors, result) = JsonUtility.Deserialize<JToken>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Equal("'items' contains null value", error.Message);
-                Assert.Equal("items[0]", error.JsonPath);
+                Assert.Equal(message, error.Message);
+                Assert.Equal(jsonPath, error.JsonPath);
             });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
-        }
-
-        [Fact]
-        public void TestListItemWithNullValue()
-        {
-            var json = "{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}";
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Equal("'name' contains null value", error.Message);
-                Assert.Equal("items[0].name", error.JsonPath);
-            });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
         }
 
         [Fact]

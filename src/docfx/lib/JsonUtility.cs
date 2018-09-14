@@ -258,15 +258,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in nullNodes)
             {
                 var lineInfo = (IJsonLineInfo)node;
-                string name = null;
-                if (node is JProperty)
-                {
-                    name = ((JProperty)node).Name;
-                }
-                else
-                {
-                    name = ((JProperty)node.Parent.Parent).Name;
-                }
+                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
                 errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
