@@ -8,17 +8,17 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class TemplateTest
+    public class RazorTemplateTest
     {
         [Theory]
         [InlineData(typeof(TestPage), "{'description':'hello'}", "<div>{&quot;Description&quot;:&quot;hello&quot;}</div>")]
-        public async Task RenderTemplate(Type pageType, string json, string html)
+        public async Task RenderRazorTemplate(Type pageType, string json, string html)
         {
             var model = JsonConvert.DeserializeObject(json.Replace('\'', '"'), pageType);
 
             Assert.Equal(
                 TestUtility.NormalizeHtml(html),
-                TestUtility.NormalizeHtml(await Template.Render(pageType.Name, model)));
+                TestUtility.NormalizeHtml(await RazorTemplate.Render(pageType.Name, model)));
         }
     }
 }

@@ -218,34 +218,20 @@ namespace Microsoft.Docs.Build
             Assert.Equal(result, resultJsonString);
         }
 
-        [Fact]
-        public void TestListWithNullItem()
+        [Theory]
+        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value", "items[0]")]
+        [InlineData("{'name':'title','items':[{'name':,'displayName':'1'}]}", "'name' contains null value", "items[0].name")]
+        [InlineData("[1,,1,1]", "'[1]' contains null value", "[1]")]
+        public void TestListWithNullItem(string json, string message, string jsonPath)
         {
-            var json = "{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}";
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json.Replace('\'', '"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Equal(message, error.Message);
+                Assert.Equal(jsonPath, error.JsonPath);
             });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
-        }
-
-        [Fact]
-        public void TestListItemWithNullValue()
-        {
-            var json = "{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}";
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
-            });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
         }
 
         [Fact]
@@ -314,7 +300,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField1'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
             },
             error =>
             {
@@ -322,7 +308,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
                 Assert.Equal(17, error.Column);
-                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'. Path: 'mismatchField2'", error.Message);
+                Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
             });
         }
 
@@ -330,11 +316,11 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{
 'NumberList':
   [1, 'a'],
-'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{'B' : 'b', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{'ValueEnum':'Four', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 19)]
+'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 3, 9, "NumberList[1]")]
+        [InlineData(@"{'B' : 'b', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 10, "B")]
+        [InlineData(@"{'ValueEnum':'Four', 'ValueRequired': 'a'}", ErrorLevel.Error, "violate-schema", 1, 19, "ValueEnum")]
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
-            int expectedErrorLine, int expectedErrorColumn)
+            int expectedErrorLine, int expectedErrorColumn, string expectedPath)
         {
             var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json.Replace('\'', '\"'));
             Assert.Collection(errors, error =>
@@ -343,6 +329,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedErrorLine, error.Line);
                 Assert.Equal(expectedErrorColumn, error.Column);
+                Assert.Equal(expectedPath, error.JsonPath);
             });
         }
 
@@ -356,11 +343,16 @@ namespace Microsoft.Docs.Build
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e""}}", typeof(SealedClassNestedWithNotSealedType))]
+        [InlineData(@"{
+""Items"":[{
+""B"": 1,
+""C"": ""c"",
+""E"": ""e""}]}", typeof(SealedClassNestedWithNotSealedType))]
         [InlineData(@"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e""}]", typeof(List<NotSealedClass>))]
-        public void TestObjectTypeWithJsonExtensionData(string json, Type type)
+        public void TestObjectTypeWithNotSealedType(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
             var (errors, value) = JsonUtility.ToObject(token, type);
@@ -386,15 +378,15 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""regPatternValue"":""3"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22)]
-        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33)]
-        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 36)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35)]
-        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 53)]
-        [InlineData(@"{""B"": 1}", ErrorLevel.Error, "violate-schema", 1, 1)]
+        [InlineData(@"{""regPatternValue"":""3"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 22, "regPatternValue")]
+        [InlineData(@"{""valueWithLengthRestriction"":""a"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 33, "valueWithLengthRestriction")]
+        [InlineData(@"{""valueWithLengthRestriction"":""abcd"", ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 36, "valueWithLengthRestriction")]
+        [InlineData(@"{""listValueWithLengthRestriction"":[], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35, "listValueWithLengthRestriction")]
+        [InlineData(@"{""listValueWithLengthRestriction"":[""a"", ""b"", ""c"", ""d""], ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 35, "listValueWithLengthRestriction")]
+        [InlineData(@"{""nestedMember"": {""valueWithLengthRestriction"":""abcd""}, ""ValueRequired"": ""a""}", ErrorLevel.Error, "violate-schema", 1, 53, "nestedMember.valueWithLengthRestriction")]
+        [InlineData(@"{""B"": 1}", ErrorLevel.Error, "violate-schema", 1, 1, "")]
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
-            int expectedErrorLine, int expectedErrorColumn)
+            int expectedErrorLine, int expectedErrorColumn, string expectedPath)
         {
             var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
@@ -403,6 +395,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(expectedErrorCode, error.Code);
                 Assert.Equal(expectedErrorLine, error.Line);
                 Assert.Equal(expectedErrorColumn, error.Column);
+                Assert.Equal(expectedPath, error.JsonPath);
             });
         }
 
@@ -438,7 +431,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(18, error.Column);
             });
         }
-
+         
         [Fact]
         public void TestMultipleSchemaViolation()
         {
@@ -455,14 +448,16 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(6, error.Line);
                 Assert.Equal(19, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'. Path: 'Items'", error.Message);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
+                Assert.Equal("Items", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(1, error.Line);
                 Assert.Equal(1, error.Column);
-                Assert.Equal("Required property 'ValueRequired' not found in JSON. Path: ''", error.Message);
+                Assert.Equal("Required property 'ValueRequired' not found in JSON.", error.Message);
+                Assert.Equal("", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -475,14 +470,16 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Line);
                 Assert.Equal(32, error.Column);
-                Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'. Path: 'valueWithLengthRestriction'", error.Message);
+                Assert.Equal("The field ValueWithLengthRestriction must be a string or array type with a minimum length of '2'.", error.Message);
+                Assert.Equal("valueWithLengthRestriction", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(34, error.Column);
-                Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'. Path: 'listValueWithLengthRestriction'", error.Message);
+                Assert.Equal("The field ListValueWithLengthRestriction must be a string or array type with a minimum length of '1'.", error.Message);
+                Assert.Equal("listValueWithLengthRestriction", error.JsonPath);
             }, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -514,21 +511,24 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(4, error.Line);
                 Assert.Equal(27, error.Column);
-                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'. Path: 'AnotherItems[0].Items'", error.Message);
+                Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
+                Assert.Equal("AnotherItems[0].Items", error.JsonPath);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(5, error.Line);
                 Assert.Equal(22, error.Column);
-                Assert.Equal("Could not convert string to boolean: notBool. Path: 'AnotherItems[0].H'", error.Message);
+                Assert.Equal("Could not convert string to boolean: notBool.", error.Message);
+                Assert.Equal("AnotherItems[0].H", error.JsonPath);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(8, error.Line);
                 Assert.Equal(18, error.Column);
-                Assert.Equal("The field Items must be a string or array type with a minimum length of '1'. Path: 'AnotherItems[1].Items'", error.Message);
+                Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
+                Assert.Equal("AnotherItems[1].Items", error.JsonPath);
             });
         }
 
@@ -601,6 +601,8 @@ namespace Microsoft.Docs.Build
         public sealed class SealedClassNestedWithNotSealedType : BasicClass
         {
             public NotSealedClass Data { get; set; }
+
+            public List<NotSealedClass> Items { get; set; }
         }
 
         public sealed class NestedClass
