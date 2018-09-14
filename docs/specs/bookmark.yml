@@ -1,0 +1,20 @@
+---
+# Bookmark suggestion and validation
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ## <a name="somehow"></a> Section 1 title
+    ## <a name="this-is"></a> Section 2 title
+    ## <a name="a-bookmark"></a> Section 3 title
+  docs/b.md: |
+    [Ref Doc a Bookmark](./a.md#some-bookmark)
+  docs/c.md: |
+    [Ref Doc b Bookmark](./b.md#b-has-no-bookmark)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  build.log: |
+    ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean 'a-bookmark'","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
+  build.manifest:

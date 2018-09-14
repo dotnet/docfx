@@ -120,8 +120,8 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
-        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
+        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, string suggestedBookmark = null)
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(!string.IsNullOrEmpty(suggestedBookmark) ? $", did you mean '{suggestedBookmark}'" : null)}", relativeTo.ToString());
 
         public static Error NullValue(in Range range, string name)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);

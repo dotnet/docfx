@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -45,7 +46,12 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                result.Add((Errors.BookmarkNotFound(file, reference, bookmark), file));
+                var suggestedBookmark = bookmarks != null ?
+                    (from bookmarkCandidate in bookmarks.ToList()
+                     orderby Levenshtein.GetLevenshteinDistance(bookmarkCandidate, bookmark)
+                     select bookmarkCandidate).FirstOrDefault()
+                    : null;
+                result.Add((Errors.BookmarkNotFound(file, reference, bookmark, suggestedBookmark), file));
             }
 
             return result;
