@@ -117,25 +117,6 @@ B: *anchor
         }
 
         [Fact]
-        public void TestBasicClassWithNullCharactor()
-        {
-            var yaml = @"
-C: ""~""
-D: ~
-";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
-            });
-            Assert.NotNull(value);
-            Assert.Equal("~", value["C"]);
-            Assert.DoesNotContain("D", value.Keys);
-        }
-
-        [Fact]
         public void TestBasicClass()
         {
             var yaml = @"
@@ -301,41 +282,35 @@ Key1: 0
             Assert.Contains("Key 'Key1' is already defined, remove the duplicate key", exception.Message);
         }
 
-        [Fact]
-        public void TestListItemWithNullValue()
-        {
-            var yaml = @"name: List item with null value
+
+        [Theory]
+        [InlineData(@"name: List item with null value
 items:
   - name:
     displayName: 1
-";
-            var (errors, value) = YamlUtility.Deserialize(yaml);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("'items[0].name' contains null value", error.Message);
-                Assert.Equal(3, error.Line);
-                Assert.Equal(5, error.Column);
-            });
-        }
-
-        [Fact]
-        public void TestListWithNullItem()
-        {
-            var yaml = @"name: List with null item
+", "'items[0].name' contains null value", 3, 5)]
+        [InlineData(@"name: List with null item
 items:
   -
   - name: 1
-";
-            var (errors, value) = YamlUtility.Deserialize(yaml);
+", "'items[0]' contains null value", 3 , 4)]
+        [InlineData(@"
+C: ""~""
+D: ~
+", "'D' contains null value", 3, 1)]
+        [InlineData("ms.date:", "'['ms.date']' contains null value", 1, 1)]
+        [InlineData("date:", "'date' contains null value", 1, 1)]
+
+        public void TestNullValue(string yaml, string message, int line, int column)
+        {
+            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, object>>(yaml);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("'items[0]' contains null value", error.Message);
-                Assert.Equal(3, error.Line);
-                Assert.Equal(4, error.Column);
+                Assert.Equal(message, error.Message);
+                Assert.Equal(line, error.Line);
+                Assert.Equal(column, error.Column);
             });
         }
 
@@ -438,7 +413,7 @@ B: 1
 C: c
 E: e", typeof(BasicClass))]
         [InlineData(@"
-Data: 
+Data:
     B: 1
     C: c
     E: e", typeof(SealedClassNestedWithNotSealedType))]
