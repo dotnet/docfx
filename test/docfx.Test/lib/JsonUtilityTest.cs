@@ -227,7 +227,8 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Equal("'items' contains null value", error.Message);
+                Assert.Equal("items[0]", error.JsonPath);
             });
             var resultJsonString = JsonUtility.Serialize(result);
             Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
@@ -242,7 +243,8 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Equal("'name' contains null value", error.Message);
+                Assert.Equal("items[0].name", error.JsonPath);
             });
             var resultJsonString = JsonUtility.Serialize(result);
             Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
