@@ -291,6 +291,78 @@ outputs:
     { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
   build.manifest:
 ---
+# validate bookmarks in markdown documents
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # title 1
+    [link to title 1](#title-1)
+    [link to title 2](#title-2)
+    [link to title 3](#title-3)
+    [link to html title](#html-title)
+    [link to yaml](c.yml#no-such-bookmark) does not warn
+    ## title 2
+    <h2 id="html-title">title</h2>
+    [!include[](d.md)]
+  docs/b.md: |
+    [link to title 2](a.md#title-2)
+    [link to title 3](a.md#title-3)
+  docs/c.yml: |
+    #YamlMime:LandingData
+    title: test
+  docs/d.md: |
+    [link to title 3](a.md#title-3)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:
+  build.log: |
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/a.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/d.md"]
+  build.manifest:
+---
+# do not output file if bookmark-not-found is treated as error
+inputs:
+  docfx.yml: |
+    rules:
+      bookmark-not-found: error
+  docs/a.md: |
+    [link to b](b.md#bookmark)
+  docs/b.md:
+outputs:
+  docs/b.json:
+  build.log: |
+    ["error","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
+  build.manifest:
+---
+# Bookmark suggestion and validation
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ## <a name="somehow"></a> Section 1 title
+    ## <a name="this-is"></a> Section 2 title
+    ## <a name="a-bookmark"></a> Section 3 title
+  docs/b.md: |
+    [Ref Doc a Bookmark](./a.md#some-bookmark)
+  docs/c.md: |
+    ## <a name="bookmark"></a> Section 1 title
+    [Ref Doc b Bookmark](./b.md#b-has-no-bookmark)
+  # default threshold is 5, if levenstein distance is greater than 5, won't show suggestion bookmark
+  docs/d.md: |
+    [Ref Doc a Bookmark](./c.md#bookmark123456)
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/d.json:
+  build.log: |
+    ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean 'a-bookmark'?","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md"]
+  build.manifest:
+---
 # experimental pairs
 inputs:
   docfx.yml:
