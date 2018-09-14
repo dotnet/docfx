@@ -17,20 +17,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Levenshtein Distance</returns>
         public static int GetLevenshteinDistance(string src, string target)
         {
-            int srcLength = string.IsNullOrEmpty(src) ? 0 : src.Length;
-            int targetLength = string.IsNullOrEmpty(target) ? 0 : target.Length;
-
-            if (srcLength == 0)
-            {
-                return targetLength;
-            }
-            if (targetLength == 0)
-            {
-                return srcLength;
-            }
-            var srcCharArray = src.ToCharArray();
-            var targetCharArray = target.ToCharArray();
-            return GetLevenshteinDistance<char>(srcCharArray, targetCharArray, Comparer<char>.Default);
+            return GetLevenshteinDistance(src.AsSpan(), target.AsSpan(), EqualityComparer<char>.Default);
         }
 
         /// <summary>
@@ -41,13 +28,13 @@ namespace Microsoft.Docs.Build
         /// <param name="target">The target type list</param>
         /// <param name="comparer">Implementation of IEqualityComparer for given type</param>
         /// <returns>Levenshtein distance of the two given list</returns>
-        public static int GetLevenshteinDistance<T>(IList<T> src, IList<T> target, IComparer<T> comparer)
+        public static int GetLevenshteinDistance<T>(ReadOnlySpan<T> src, ReadOnlySpan<T> target, IEqualityComparer<T> comparer)
         {
             // for all i and j, matrix[i,j] will hold the Levenshtein distance between
             // the first i characters of source and the first j characters of target
             // note that matrix has (src + 1) * (target + 1) values
-            int srcLength = src == null ? 0 : src.Count;
-            int targetLength = target == null ? 0 : target.Count;
+            int srcLength = src == null ? 0 : src.Length;
+            int targetLength = target == null ? 0 : target.Length;
 
             if (srcLength == 0)
             {
@@ -78,7 +65,7 @@ namespace Microsoft.Docs.Build
             {
                 for (int i = 1; i <= srcLength; i++)
                 {
-                    int cost = comparer.Compare(src[i - 1], target[j - 1]) == 0 ? 0 : 1;
+                    int cost = comparer.Equals(src[i - 1], target[j - 1]) ? 0 : 1;
                     matrix[(j * (srcLength + 1)) + i] = Math.Min(
                         matrix[(j * (srcLength + 1)) + i - 1] + 1, Math.Min(
                         matrix[((j - 1) * (srcLength + 1)) + i] + 1,
