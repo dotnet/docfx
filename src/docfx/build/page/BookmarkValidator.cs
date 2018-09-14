@@ -46,13 +46,11 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var suggestedBookmark = bookmarks != null ?
-                    (from bookmarkCandidate in bookmarks.ToList()
-                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(bookmarkCandidate, bookmark)
-                     orderby levanshteinDistance, bookmarkCandidate
-                     where levanshteinDistance <= 5
-                     select bookmarkCandidate).FirstOrDefault()
-                    : null;
+                var suggestedBookmark = (from bookmarkCandidate in bookmarks
+                                         let levanshteinDistance = Levenshtein.GetLevenshteinDistance(bookmarkCandidate, bookmark)
+                                         where levanshteinDistance <= 5
+                                         orderby levanshteinDistance, bookmarkCandidate
+                                         select bookmarkCandidate).FirstOrDefault();
                 result.Add((Errors.BookmarkNotFound(file, reference, bookmark, suggestedBookmark), file));
             }
 
