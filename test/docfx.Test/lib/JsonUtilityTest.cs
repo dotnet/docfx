@@ -218,34 +218,20 @@ namespace Microsoft.Docs.Build
             Assert.Equal(result, resultJsonString);
         }
 
-        [Fact]
-        public void TestListWithNullItem()
-        {
-            var json = "{\"name\":\"title\",\"items\":[,{\"name\":\"1\"}]}";
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(ErrorLevel.Info, error.Level);
-                Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
-            });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"name\":\"1\"}]}", resultJsonString);
-        }
+        [Theory]
+        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items[0]' contains null value")]
+        [InlineData("{'name':'title','items':[{'name':,'displayName':'1'}]}", "'items[0].name' contains null value")]
+        [InlineData("{'name': null}", "'name' contains null value")]
 
-        [Fact]
-        public void TestListItemWithNullValue()
+        public void TestNullValue(string json, string message)
         {
-            var json = "{\"name\":\"title\",\"items\":[{\"name\":,\"displayName\":\"1\"}]}";
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json);
+            var (errors, result) = JsonUtility.Deserialize<JToken>(json.Replace('\'', '"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
                 Assert.Equal("null-value", error.Code);
-                Assert.Contains("contains null value", error.Message);
+                Assert.Equal(message, error.Message);
             });
-            var resultJsonString = JsonUtility.Serialize(result);
-            Assert.Equal("{\"name\":\"title\",\"items\":[{\"displayName\":\"1\"}]}", resultJsonString);
         }
 
         [Fact]
