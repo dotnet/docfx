@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             var output = (object)model;
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
             {
-                output = await Template.Render(model);
+                output = await RazorTemplate.Render(model);
             }
 
             return (errors, output, dependencies.Build());
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
             {
-                content = await Template.Render(schema.Name, content);
+                content = await RazorTemplate.Render(schema.Name, content);
             }
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();

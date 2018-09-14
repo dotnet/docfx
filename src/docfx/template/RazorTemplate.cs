@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Template
+    internal class RazorTemplate
     {
         private static readonly Lazy<TestServer> s_server = new Lazy<TestServer>(StartServer);
 
