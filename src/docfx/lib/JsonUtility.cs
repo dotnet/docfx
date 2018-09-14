@@ -178,6 +178,7 @@ namespace Microsoft.Docs.Build
                 t_transform = transform;
                 t_schemaViolationErrors = new List<Error>();
 
+                token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -316,6 +317,35 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
+        {
+            if (token is JArray array)
+            {
+                var itemType = GetCollectionItemTypeIfArrayType(type);
+                foreach (var item in token.Children())
+                {
+                    item.ReportUnknownFields(errors, itemType);
+                }
+            }
+            else if (token is JObject obj)
+            {
+                foreach (var item in token.Children())
+                {
+                    var prop = item as JProperty;
+
+                    // skip the special property
+                    if (prop.Name.StartsWith('$'))
+                        continue;
+
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);
+                    if (nestedType != null)
+                    {
+                        prop.Value.ReportUnknownFields(errors, nestedType);
+                    }
+                }
+            }
+        }
+
         private static Type GetCollectionItemTypeIfArrayType(Type type)
         {
             var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
@@ -336,6 +366,31 @@ namespace Microsoft.Docs.Build
                 }
             }
             return type;
+        }
+
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
+        {
+            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+
+            if (contract is JsonObjectContract objectContract)
+            {
+                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
+                if (matchingProperty == null && type.IsSealed)
+                {
+                    var lineInfo = prop as IJsonLineInfo;
+                    errors.Add(Errors.UnknownField(
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
+                }
+                return matchingProperty?.PropertyType;
+            }
+
+            if (contract is JsonArrayContract arrayContract)
+            {
+                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
+                return matchingProperty?.PropertyType;
+            }
+
+            return null;
         }
 
         private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
@@ -361,31 +416,6 @@ namespace Microsoft.Docs.Build
 
         private sealed class JsonContractResolver : DefaultContractResolver
         {
-            protected override JsonObjectContract CreateObjectContract(Type objectType)
-            {
-                var contract = base.CreateObjectContract(objectType);
-                if (objectType.IsSealed)
-                {
-                    contract.ExtensionDataValueType = typeof(JToken);
-                    contract.ExtensionDataSetter = (o, key, value) =>
-                    {
-                        var token = (JToken)value;
-                        if (token.IsNullOrUndefined())
-                        {
-                            return;
-                        }
-
-                        if (contract.Properties.GetClosestMatchProperty(key) == null)
-                        {
-                            var lineInfo = (IJsonLineInfo)value;
-                            t_schemaViolationErrors.Add(Errors.UnknownField(
-                                new Range(lineInfo.LineNumber, lineInfo.LinePosition), key, objectType.Name));
-                        }
-                    };
-                }
-                return contract;
-            }
-
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);

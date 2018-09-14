@@ -271,22 +271,22 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 24, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
+        [InlineData(@"{""mismatchField"": ""name"", ""ValueRequired"": ""a""}", 1, 17, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
 ""AnotherItems"":
   [{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 12, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
+    ""E"": ""e""}], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"{
 ""NestedItems"":
   [[{ ""F"": 1,
     ""G"": ""c"",
-    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 12, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
+    ""E"": ""e""}]], ""ValueRequired"": ""a""}", 5, 8, ErrorLevel.Warning, "unknown-field", typeof(ClassWithMoreMembers))]
         [InlineData(@"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e"",
-""NestedSealedMember"": {""Unknown"": 1}}]", 5, 35, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
+""NestedSealedMember"": {""Unknown"": 1}}]", 5, 33, ErrorLevel.Warning, "unknown-field", typeof(List<NotSealedClass>))]
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
@@ -313,7 +313,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(1, error.Line);
-                Assert.Equal(25, error.Column);
+                Assert.Equal(18, error.Column);
                 Assert.Equal("Could not find member 'mismatchField1' on object of type 'ClassWithMoreMembers'.", error.Message);
             },
             error =>
@@ -321,7 +321,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(2, error.Line);
-                Assert.Equal(24, error.Column);
+                Assert.Equal(17, error.Column);
                 Assert.Equal("Could not find member 'mismatchField2' on object of type 'ClassWithMoreMembers'.", error.Message);
             });
         }
@@ -387,7 +387,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(ErrorLevel.Warning, error.Level);
                 Assert.Equal("unknown-field", error.Code);
                 Assert.Equal(5, error.Line);
-                Assert.Equal(35, error.Column);
+                Assert.Equal(33, error.Column);
             });
         }
 

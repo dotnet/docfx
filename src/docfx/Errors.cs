@@ -126,8 +126,8 @@ namespace Microsoft.Docs.Build
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
 
-        public static Error UnknownField(in Range range, string propName, string typeName)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range);
+        public static Error UnknownField(in Range range, string propName, string typeName, string path)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
 
         public static Error ViolateSchema(in Range range, string message, string path)
             => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
