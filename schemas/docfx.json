@@ -214,7 +214,7 @@
     "warningsAsErrors": {
       "type": "boolean"
     },
-    "xrefMapUrls": {
+    "xref": {
       "type": "array",
       "items": {
         "type": "string"
