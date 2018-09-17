@@ -209,9 +209,10 @@ namespace Microsoft.Docs.Build
                 }
             }
         }
-        /// <summary>	
-        /// Parse a string to JToken.	
-        /// Validate null value during the process.	
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string json)
         {
