@@ -11,14 +11,14 @@ namespace Microsoft.Docs.Build
     public class XrefMap
     {
         // TODO: key could be uid+moniker+locale
-        private readonly ConcurrentDictionary<string, XRefSpec> _map = new ConcurrentDictionary<string, XRefSpec>();
+        private readonly ConcurrentDictionary<string, XrefSpec> _map = new ConcurrentDictionary<string, XrefSpec>();
 
         internal XrefMap(Docset docset)
         {
             Parallel.ForEach(docset.Config.Xref, url =>
             {
                 var json = File.ReadAllText(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, url));
-                var (_, xrefs) = JsonUtility.Deserialize<List<XRefSpec>>(json);
+                var (_, xrefs) = JsonUtility.Deserialize<List<XrefSpec>>(json);
                 foreach (var xref in xrefs)
                 {
                     _map.TryAdd(xref.Uid, xref);
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        internal XRefSpec Resolve(string uid)
+        internal XrefSpec Resolve(string uid)
         {
             if (_map.TryGetValue(uid, out var xrefSpec))
             {
