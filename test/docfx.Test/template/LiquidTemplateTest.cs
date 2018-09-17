@@ -6,15 +6,15 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class MustacheTemplateTest
+    public class LiquidTemplateTest
     {
-        private readonly MustacheTemplate _template = new MustacheTemplate("data/mustache");
+        private readonly LiquidTemplate _template = new LiquidTemplate("data/liquid");
 
         [Theory]
         [InlineData("test", "{'description':'hello','tags':[1,2]}", "<div>hello<div>a b<p>1</p><p>2</p></div></div>")]
-        public void RenderMustacheTemplate(string name, string json, string html)
+        public void RenderLiquidTemplate(string name, string json, string html)
         {
-            var model = JToken.Parse(json.Replace('\'', '"'));
+            var model = JObject.Parse(json.Replace('\'', '"'));
 
             Assert.Equal(
                 TestUtility.NormalizeHtml(html),

@@ -120,8 +120,8 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
-        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
+        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
 
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
@@ -137,5 +137,29 @@ namespace Microsoft.Docs.Build
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
+
+        /// <summary>
+        /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
+        /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>
+        /// Returns: false if no match is found, otherwise return true.
+        /// </summary>
+        /// <param name="target">The string to be looked for</param>
+        /// <param name="candidates">Possible strings to look for from</param>
+        /// <param name="bestMatch">If a match is found, this will be assigned</param>
+        /// <param name="threshold">Max levenshtein distance between the candidate and the target, greater values will be filtered</param>
+        /// <returns>
+        ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
+        /// </returns>
+        private static bool FindBestMatch(string target, IEnumerable<string> candidates, out string bestMatch, int threshold = 5)
+        {
+            bestMatch = candidates != null ?
+                    (from candidate in candidates
+                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     where levanshteinDistance <= threshold
+                     orderby levanshteinDistance, candidate
+                     select candidate).FirstOrDefault()
+                    : null;
+            return !string.IsNullOrEmpty(bestMatch);
+        }
     }
 }
