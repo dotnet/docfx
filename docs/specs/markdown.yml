@@ -318,9 +318,9 @@ outputs:
   docs/c.json:
   docs/d.json:
   build.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/b.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/a.md"]
-    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean 'title-1'?","docs/d.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md"]
   build.manifest:
 ---
 # do not output file if bookmark-not-found is treated as error
@@ -358,7 +358,7 @@ outputs:
   docs/c.json:
   docs/d.json:
   build.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean 'a-bookmark'?","docs/b.md"]
+    ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","docs/b.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md"]
   build.manifest:
