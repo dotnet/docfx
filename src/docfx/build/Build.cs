@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var (contributionErrors, contribution) = await ContributionInfo.Load(docset, options.GitHubToken);
             errors.AddRange(contributionErrors);
 
-            var xrefMap = new XrefMap(docset);
+            var xrefMap = XrefMap.Create(docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 

@@ -10,7 +10,6 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
-
         public string FullName { get; set; }
 
         public string Href { get; set; }
