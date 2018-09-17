@@ -213,6 +213,12 @@
     },
     "warningsAsErrors": {
       "type": "boolean"
+    },
+    "xrefMapUrls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }
