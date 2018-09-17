@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
         public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{Hint(bookmark, candidateBookmarks)}", relativeTo.ToString());
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
 
         public static Error NullValue(in Range range, string name, string path)
             => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
@@ -140,27 +140,26 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
-        /// and return a hint string. <para/>
-        /// Returns: null if <paramref name="candidates"/> is null, otherwise return the best matched candidate. <para/>
-        /// Example hint string: "did you mean 'bestMatchCandidates?'"
+        /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>
+        /// Returns: false if no match is found, otherwise return true.
         /// </summary>
         /// <param name="target">The string to be looked for</param>
         /// <param name="candidates">Possible strings to look for from</param>
+        /// <param name="bestMatch">If a match is found, this will be assigned</param>
         /// <param name="threshold">Max levenshtein distance between the candidate and the target, greater values will be filtered</param>
         /// <returns>
-        ///     null if candidates is null <para/>
-        ///     hint string if valid match is found. e.g. "did you mean 'bestMatchCandidates?'"
+        ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
         /// </returns>
-        private static string Hint(string target, IEnumerable<string> candidates, int threshold = 5)
+        private static bool FindBestMatch(string target, IEnumerable<string> candidates, out string bestMatch, int threshold = 5)
         {
-            var bestMatch = candidates != null ?
-                    (from bookmarkCandidate in candidates
-                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(bookmarkCandidate, target)
+            bestMatch = candidates != null ?
+                    (from candidate in candidates
+                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
                      where levanshteinDistance <= threshold
-                     orderby levanshteinDistance, bookmarkCandidate
-                     select bookmarkCandidate).FirstOrDefault()
+                     orderby levanshteinDistance, candidate
+                     select candidate).FirstOrDefault()
                     : null;
-            return string.IsNullOrEmpty(bestMatch) ? null : $", did you mean '{bestMatch}'?";
+            return !string.IsNullOrEmpty(bestMatch);
         }
     }
 }
