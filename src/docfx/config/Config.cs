@@ -122,6 +122,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool WarningsAsErrors;
 
+        /// <summary>
+        /// Gets the urls to restore xref map
+        /// </summary>
+        public readonly List<string> XrefMapUrls = new List<string>();
+
         public IEnumerable<string> GetExternalReferences()
         {
             yield return Contribution.GitCommitsTime;

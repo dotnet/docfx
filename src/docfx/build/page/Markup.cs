@@ -224,8 +224,7 @@ namespace Microsoft.Docs.Build
 
         private static string ResolveXref(string uid)
         {
-            // TODO: implement xref resolve
-            return null;
+            return ResolveXrefMap.Resolve(uid)?.Href;
         }
     }
 }

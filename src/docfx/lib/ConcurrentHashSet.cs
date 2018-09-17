@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Collections.Concurrent
 {
@@ -16,5 +17,10 @@ namespace System.Collections.Concurrent
         public bool TryAdd(T value) => _dictionary.TryAdd(value, null);
 
         public bool Contains(T value) => _dictionary.ContainsKey(value);
+
+        internal T FirstOrDefault()
+        {
+            return _dictionary.Keys.FirstOrDefault();
+        }
     }
 }

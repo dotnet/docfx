@@ -29,6 +29,11 @@ namespace Microsoft.Docs.Build
 
                 await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset, options.GitToken));
 
+                Parallel.ForEach(config.XrefMapUrls, async url =>
+                {
+                    await ResolveXrefMap.RestoreAsync(new Uri(url));
+                });
+
                 async Task RestoreDocset(string docset)
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var loadErrors, out var childConfig, false))

@@ -20,3 +20,15 @@ outputs:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
   build.manifest:
+---
+# Restore xref map from configured url and use the map for resolving
+inputs:
+  docfx.yml: |
+    xrefMapUrls: 
+      - https://xref.docs.microsoft.com/query?uid=System.String
+  docs/a.md: Link to @System.String
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to <xref href=\"https://docs.microsoft.com/dotnet/api/system.string\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@System.String\"></xref></p>\n"}
+  build.manifest:
+---
