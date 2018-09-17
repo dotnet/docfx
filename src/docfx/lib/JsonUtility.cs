@@ -158,17 +158,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// De-serialize a text reader to an object
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
-        {
-            var (errors, token) = Deserialize(reader);
-            var (mismatchingErrors, result) = ToObject<T>(token);
-            errors.AddRange(mismatchingErrors);
-            return (errors, result);
-        }
-
-        /// <summary>
         /// Creates an instance of the specified .NET type from the JToken
         /// And validate mismatching field types
         /// </summary>
@@ -221,27 +210,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (List<Error>, JToken) Deserialize(TextReader reader)
-        {
-            try
-            {
-                using (JsonReader json = new JsonTextReader(reader))
-                {
-                    return Deserialize(JToken.ReadFrom(json));
-                }
-            }
-            catch (JsonReaderException ex)
-            {
-                var (range, message, path) = ParseException(ex);
-                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
-            }
-        }
-
         public static (List<Error>, JToken) Deserialize(string json)
         {
             try
             {
-                return Deserialize(JToken.Parse(json));
+                var (errors, token) = JToken.Parse(json).RemoveNulls();
+                return (errors, token ?? JValue.CreateNull());
             }
             catch (JsonReaderException ex)
             {
@@ -285,12 +259,6 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
-        }
-
-        private static (List<Error>, JToken) Deserialize(JToken jToken)
-        {
-            var (errors, token) = jToken.RemoveNulls();
-            return (errors, token ?? JValue.CreateNull());
         }
 
         private static (Range, string message, string path) ParseException(Exception ex)

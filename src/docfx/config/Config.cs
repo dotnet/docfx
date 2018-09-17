@@ -123,12 +123,18 @@ namespace Microsoft.Docs.Build
         public readonly bool WarningsAsErrors;
 
         /// <summary>
-        /// Gets the urls to restore xref map
+        /// The addresses of xref map files, used for resolving xref.
+        /// They should be absolute url or relative path
         /// </summary>
-        public readonly List<string> XrefMapUrls = new List<string>();
+        public readonly string[] Xref = Array.Empty<string>();
 
         public IEnumerable<string> GetExternalReferences()
         {
+            foreach (var url in Xref)
+            {
+                yield return url;
+            }
+
             yield return Contribution.GitCommitsTime;
             yield return Contribution.UserProfileCache;
         }

@@ -36,14 +36,6 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
-        {
-            { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
-            { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
-            { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
-            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
-        };
-
         [ThreadStatic]
         private static MarkupResult t_result;
 
@@ -68,7 +60,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_result = new MarkupResult();
-                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
+                var ast = Markdown.Parse(content, SetupPipeline(MarkdownPipelineType.TocMarkdown));
 
                 return (ast, t_result);
             }
@@ -81,6 +73,7 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
+            XrefMap xrefMap,
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild,
@@ -99,7 +92,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
+                    var html = Markdown.ToHtml(markdown, SetupPipeline(pipelineType, xrefMap));
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -116,7 +109,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static MarkdownPipeline CreateConceptualMarkdownPipeline()
+        private static MarkdownPipeline SetupPipeline(MarkdownPipelineType pipelineType, XrefMap xrefMap = null)
+        {
+            switch (pipelineType)
+            {
+                case MarkdownPipelineType.ConceptualMarkdown:
+                    return CreateConceptualMarkdownPipeline(xrefMap);
+                case MarkdownPipelineType.InlineMarkdown:
+                    return CreateInlineMarkdownPipeline(xrefMap);
+                case MarkdownPipelineType.Markdown:
+                    return CreateMarkdownPipeline(xrefMap);
+                case MarkdownPipelineType.TocMarkdown:
+                    return CreateTocPipeline();
+                default:
+                    return null;
+            }
+        }
+
+        private static MarkdownPipeline CreateConceptualMarkdownPipeline(XrefMap xrefMap)
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -126,11 +136,11 @@ namespace Microsoft.Docs.Build
                 .UseExtractYamlHeader()
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref)
+                .UseResolveXref(ResolveXref, xrefMap)
                 .Build();
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline()
+        private static MarkdownPipeline CreateMarkdownPipeline(XrefMap xrefMap)
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -139,11 +149,11 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref)
+                .UseResolveXref(ResolveXref, xrefMap)
                 .Build();
         }
 
-        private static MarkdownPipeline CreateInlineMarkdownPipeline()
+        private static MarkdownPipeline CreateInlineMarkdownPipeline(XrefMap xrefMap)
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -151,7 +161,7 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref)
+                .UseResolveXref(ResolveXref, xrefMap)
                 .UseInlineOnly()
                 .Build();
         }
@@ -222,9 +232,9 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private static string ResolveXref(string uid)
+        private static string ResolveXref(XrefMap xrefMap, string uid)
         {
-            return ResolveXrefMap.Resolve(uid)?.Href;
+            return xrefMap.Resolve(uid)?.Href;
         }
     }
 }

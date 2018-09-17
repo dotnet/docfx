@@ -18,14 +18,15 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            XrefMap xrefMap)
         {
             Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild);
+            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild, xrefMap);
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
 
             model.PageType = schema.Name;
@@ -54,29 +55,29 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             Load(
-            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var content = file.ReadText();
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild);
+                return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
         }
 
         private static (List<Error> errors, Schema schema, PageModel model)
             LoadMarkdown(
-            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
-            var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
+            var (html, markup) = Markup.ToHtml(content, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
@@ -102,25 +103,25 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadYaml(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
 
-            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadJson(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
 
-            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -161,14 +162,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
