@@ -26,8 +26,8 @@ https://contoso.com/path/file?sig={token}
 It can be configured in `docfx.yml`:
 ```yml
 referenceToAResource: "https://contoso.com/path/file"
-secrets:
-  http:
+http:
+  secrets:
     "https://contoso.com/path/file": "?sig={token}"
 ```
 The value of secrets object can be a simple string, which indicates the param string. 
@@ -42,9 +42,9 @@ Authorization: Bearer {token}
 ```
 The value of secrets object can be an object to provide more details of the request header. It can be configured in `docfx.yml` like:
 ```yml
-secrets:
-  http:
-  - location: "https://contoso.com/path/file":
+http:
+  secrets:
+  - baseUrl: "https://contoso.com/path/file":
     query: "?sig={token}"
     headers:
       Authorization: Bearer {token}
@@ -58,14 +58,12 @@ There is other types of authorization, like:
 - Clone a repository from GitHub/Azure DevOps/GitLab... with personal access token.
 - Call GitHub API with personal access token to resolve contributors.
 
-For these cases, the secrets section in config can also contain credentials other than HTTP, like:
+In these cases, the configuration for these specific services can contain a `authToken` field to store the secret token, like:
 ``` yml
-secrets:
-  gitHub: {GitHub token}
-  git:
-    https://github.com/org1/repo1.git: {GitHub token}
-    https://org2.visualstudio.com/proj2/_git/repo2: {Azure DevOps token}
-
+git:
+  authToken: {token}
+gitHub:
+  authToken: {token}
 ```
 
 ## How to authorize in server build
@@ -75,9 +73,12 @@ Here is the steps:
 1. Before build, the build system should check the identity of user.
 2. Build system call the credential service to collect the necessary secrets, and stores into a partial docfx configure, like:
    ```yml
-   secrets:
-     http:
-       resoruce1: token1
-       resource2: token2
+   http:
+     secrets:
+       ...
+   git:
+     authToken: ...
+   gitHub:
+     authToken: ...
    ```
 3. Build system pass the secrets to DocFX to build docsets using them.
