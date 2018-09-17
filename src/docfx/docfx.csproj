@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotLiquid" Version="2.0.298" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="1.0.226" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.2" />
