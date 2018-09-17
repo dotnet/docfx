@@ -25,7 +25,7 @@ outputs:
 inputs:
   docfx.yml: |
     xrefMapUrls: 
-      - https://xref.docs.microsoft.com/query?uid=System.String
+      - https://xref.docs.microsoft.com/query?uid=System.String&tags=netcore-2.1
   docs/a.md: Link to @System.String
 outputs:
   docs/a.json: |
