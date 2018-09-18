@@ -270,6 +270,12 @@
     },
     "warningsAsErrors": {
       "type": "boolean"
+    },
+    "xref": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }
