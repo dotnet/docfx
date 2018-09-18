@@ -25,8 +25,9 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
 
-        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset, string gitToken)
+        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset)
         {
+            var gitToken = docset.Config.GitHub.AuthToken;
             var result = new ContributionInfo(docset, gitToken);
             var errors = await result.LoadCommits(docset);
             return (errors, result);
