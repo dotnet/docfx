@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var (contributionErrors, contribution) = await ContributionInfo.Load(docset);
             errors.AddRange(contributionErrors);
 
-            var xrefMap = RestoreXrefMap.Create(docset);
+            var xrefMap = XrefMap.Create(docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             Context context,
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
-            RestoreXrefMap xrefMap,
+            XrefMap xrefMap,
             ContributionInfo contribution)
         {
             using (Progress.Start("Building files"))
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(bool hasError, DependencyMap)> BuildFile(
             Context context,
             Document file,
-            RestoreXrefMap xrefMap,
+            XrefMap xrefMap,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,

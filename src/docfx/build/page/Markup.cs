@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         private static Action<Document> t_buildChild;
 
         [ThreadStatic]
-        private static RestoreXrefMap t_xrefMap;
+        private static XrefMap t_xrefMap;
 
         public static MarkupResult Result => t_result;
 
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            RestoreXrefMap xrefMap,
+            XrefMap xrefMap,
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild,

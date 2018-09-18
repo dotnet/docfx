@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild,
-            RestoreXrefMap xrefMap)
+            XrefMap xrefMap)
         {
             Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             Load(
-            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, RestoreXrefMap xrefMap)
+            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var content = file.ReadText();
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, Schema schema, PageModel model)
             LoadMarkdown(
-            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, RestoreXrefMap xrefMap)
+            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (html, markup) = Markup.ToHtml(content, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
 
@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadYaml(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, RestoreXrefMap xrefMap)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
 
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadJson(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, RestoreXrefMap xrefMap)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
 
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, RestoreXrefMap xrefMap)
+            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
