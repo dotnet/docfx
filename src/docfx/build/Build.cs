@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
-                var filesBuilder = new List();
+                var filesBuilder = new DocumentListBuilder();
                 var filesWithErrors = new ConcurrentBag<Document>();
 
                 await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
