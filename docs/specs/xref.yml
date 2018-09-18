@@ -32,11 +32,11 @@ inputs:
         "uid": "System.String",
         "name": "String",
         "fullName": "System.String",
-        "href": "https://ppe.docs.microsoft.com/e2eppe-core-docs/api/system.string",
+        "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
         "nameWithType": "System.String"
     }]
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"https://ppe.docs.microsoft.com/e2eppe-core-docs/api/system.string\" title=\"System.String\"></a></p>\n"}
+    { "content": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\" title=\"System.String\"></a></p>\n"}
   build.manifest:
 ---
