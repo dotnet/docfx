@@ -900,9 +900,9 @@ inputs:
   docs/a.md:
 outputs:
   docs/index.json: |
-    {"toc": "f1/TOC.json"}
+    {"toc_rel": "f1/TOC.json"}
   docs/a.json: |
-    {"!toc": null}
+    {"!toc_rel": null}
   build.manifest:
   docs/f1/TOC.json:
   docs/f1/TOC.experimental.json:
@@ -983,9 +983,9 @@ inputs:
 outputs:
   docs/dir1/TOC.json:
   docs/file-with-no-toc.json: |
-    {"!toc": null}
+    {"!toc_rel": null}
   docs/dir1/dir2/file-with-toc.json: |
-    {"toc": "../TOC.json"}
+    {"toc_rel": "../TOC.json"}
   build.manifest:
 ---
 # File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
@@ -1006,7 +1006,7 @@ outputs:
   docs/dir1/b/TOC.json:
   docs/dir1/aa/TOC.json:
   docs/dir1/c/file1.json: |
-    {"toc": "../a/TOC.json"}
+    {"toc_rel": "../a/TOC.json"}
   build.manifest:
 ---
 # Bad Toc markdown

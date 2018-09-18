@@ -32,12 +32,12 @@ namespace Microsoft.Docs.Build
             model.PageType = schema.Name;
             model.Locale = file.Docset.Config.Locale;
             model.Metadata = metadata;
-            model.ShowEdit = file.Docset.Config.Contribution.ShowEdit;
-            model.Toc = tocMap.FindTocRelativePath(file);
+            model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
+            model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = GetCanonicalUrl(file);
 
-            (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
+            (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
             // TODO: add check before to avoid case failure
             var authorName = metadata.Value<string>("author");
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 Content = finalHtml,
                 Metadata = markup.Metadata,
                 Title = title,
-                HtmlTitle = markup.HtmlTitle,
+                RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
             };
 
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
                 Content = content,
                 Metadata = metadata,
                 Title = title,
-                HtmlTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
+                RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
             };
 
             return (errors, schema, model);

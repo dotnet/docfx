@@ -195,7 +195,7 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
   docs/redirect.json: |
-    {"redirectionUrl":"/absolute/path"}
+    {"redirect_url":"/absolute/path"}
 ---
 # Files redirected to a relative URL
 inputs:
@@ -209,7 +209,7 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
   docs/redirect.json: |
-    {"redirectionUrl":"relative/path"}
+    {"redirect_url":"relative/path"}
 ---
 # Show warning if inclusion is a redirection file
 inputs:
@@ -223,7 +223,7 @@ outputs:
   docs/a.json: |
     {"content":"<p>Link to [!include[](redirect.md)]</p>"}
   docs/redirect.json: |
-    {"redirectionUrl":"/absolute/path"}
+    {"redirect_url":"/absolute/path"}
   build.log: |
     ["warning","include-is-redirection","Referenced inclusion redirect.md relative to 'docs/a.md' shouldn't belong to redirections","docs/a.md"]
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]

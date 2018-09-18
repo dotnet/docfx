@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        public async Task<(Error error, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
+        public async Task<(Error error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
             string author)
         {
@@ -169,12 +169,12 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private GitUserInfo ToGitUserInfo(UserProfile profile)
+        private Contributor ToGitUserInfo(UserProfile profile)
         {
             if (profile == null)
                 return null;
 
-            return new GitUserInfo
+            return new Contributor
             {
                 Name = profile.Name,
                 DisplayName = profile.DisplayName,
