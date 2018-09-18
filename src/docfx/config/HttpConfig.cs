@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class HttpConfig
+    internal sealed class HttpConfig
     {
         public readonly HttpSecretConfig[] Secrets;
     }

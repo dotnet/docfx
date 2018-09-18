@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitHubConfig
+    internal sealed class GitHubConfig
     {
         // TODO: move other configs from ContributionConfig to here
         public string AuthToken = string.Empty;

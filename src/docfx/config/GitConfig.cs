@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitConfig
+    internal sealed class GitConfig
     {
         public readonly string AuthToken = string.Empty;
     }

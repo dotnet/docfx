@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class HttpSecretConfig
+    internal sealed class HttpSecretConfig
     {
         public readonly string BaseUrl = string.Empty;
 
