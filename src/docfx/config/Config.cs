@@ -210,10 +210,9 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var errors = new List<Error>();
 
-            var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
-            if (!string.IsNullOrEmpty(configExtend))
+            if (File.Exists(AppData.GlobalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, AppData.GlobalConfigPath);
                 (errors, result) = LoadConfigObject(filePath);
             }
 
