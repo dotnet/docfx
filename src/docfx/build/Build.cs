@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var docset = new Docset(context, docsetPath, config, options);
 
             var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var (contributionErrors, contribution) = await ContributionInfo.Load(docset, options.GitHubToken);
+            var (contributionErrors, contribution) = await ContributionInfo.Load(docset);
             errors.AddRange(contributionErrors);
 
             var xrefMap = XrefMap.Create(docset);

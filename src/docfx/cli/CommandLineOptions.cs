@@ -21,6 +21,14 @@ namespace Microsoft.Docs.Build
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                     ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
                 },
+                ["git"] = new JObject
+                {
+                    ["authToken"] = GitToken != null ? (JValue)GitToken : JValue.CreateNull(),
+                },
+                ["gitHub"] = new JObject
+                {
+                    ["authToken"] = GitHubToken != null ? (JValue)GitHubToken : JValue.CreateNull(),
+                },
             };
         }
     }
