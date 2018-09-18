@@ -300,3 +300,19 @@ outputs:
     { "id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "versionIndependentId": "41d29d50-009e-41b4-ab51-371ed5bba821"}
   azure/virtual-machines/windows/classic/web-app-visual-studio.json:
   build.manifest:
+---
+# Generate canonical URL
+inputs:
+  docfx.yml: |
+    content: "**/*"
+    baseUrl: "https://docs.microsoft.com"
+    routes:
+      articles/: "azure/"
+  articles/app-service/index.md:
+  articles/app-service/index.experimental.md:
+outputs:
+  azure/app-service/index.json: |
+    { "canonicalUrl": "https://docs.microsoft.com/en-us/azure/app-service/" }
+  azure/app-service/index.experimental.json: |
+    { "canonicalUrl": "https://docs.microsoft.com/en-us/azure/app-service/" }
+  build.manifest:

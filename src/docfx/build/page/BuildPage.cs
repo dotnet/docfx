@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
             model.Metadata = metadata;
             model.ShowEdit = file.Docset.Config.Contribution.ShowEdit;
             model.Toc = tocMap.FindTocRelativePath(file);
+            model.CanonicalUrl = GetCanonicalUrl(file);
 
             (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
@@ -51,6 +52,25 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, output, dependencies.Build());
+        }
+
+        private static string GetCanonicalUrl(Document file)
+        {
+            var config = file.Docset.Config;
+            var siteUrl = file.SiteUrl;
+            if (file.IsExperimental)
+            {
+                var sitePath = ReplaceLast(file.SitePath, ".experimental", "");
+                siteUrl = Document.PathToAbsoluteUrl(sitePath, file.ContentType, file.Schema, config.Output.Json);
+            }
+
+            return $"{config.BaseUrl}/{config.Locale}{siteUrl}";
+
+            string ReplaceLast(string source, string find, string replace)
+            {
+                var i = source.LastIndexOf(find);
+                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
+            }
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
