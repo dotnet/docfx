@@ -36,6 +36,15 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
+        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
+            new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
+                {
+                    { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
+                    { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+                    { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
+                    { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+                };
+
         [ThreadStatic]
         private static MarkupResult t_result;
 
@@ -49,7 +58,7 @@ namespace Microsoft.Docs.Build
         private static Action<Document> t_buildChild;
 
         [ThreadStatic]
-        private static Dictionary<MarkdownPipelineType, MarkdownPipeline> t_pipelineMapping;
+        private static RestoreXrefMap t_xrefMap;
 
         public static MarkupResult Result => t_result;
 
@@ -63,7 +72,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_result = new MarkupResult();
-                var ast = Markdown.Parse(content, SetupPipeline(MarkdownPipelineType.TocMarkdown));
+                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
                 return (ast, t_result);
             }
@@ -95,18 +104,9 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
-                    if (t_pipelineMapping == null)
-                    {
-                        t_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
-                                            {
-                                                { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline(xrefMap) },
-                                                { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline(xrefMap) },
-                                                { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
-                                                { MarkdownPipelineType.Markdown, CreateMarkdownPipeline(xrefMap) },
-                                            };
-                    }
+                    t_xrefMap = xrefMap;
 
-                    var html = Markdown.ToHtml(markdown, t_pipelineMapping[pipelineType]);
+                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
                     {
                         t_result.Errors.Add(Errors.HeadingNotFound(file));
@@ -119,29 +119,12 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = null;
                     t_bookmarkValidator = null;
                     t_buildChild = null;
-                    t_pipelineMapping = null;
+                    t_xrefMap = null;
                 }
             }
         }
 
-        private static MarkdownPipeline SetupPipeline(MarkdownPipelineType pipelineType, RestoreXrefMap xrefMap = null)
-        {
-            switch (pipelineType)
-            {
-                case MarkdownPipelineType.ConceptualMarkdown:
-                    return CreateConceptualMarkdownPipeline(xrefMap);
-                case MarkdownPipelineType.InlineMarkdown:
-                    return CreateInlineMarkdownPipeline(xrefMap);
-                case MarkdownPipelineType.Markdown:
-                    return CreateMarkdownPipeline(xrefMap);
-                case MarkdownPipelineType.TocMarkdown:
-                    return CreateTocPipeline();
-                default:
-                    return null;
-            }
-        }
-
-        private static MarkdownPipeline CreateConceptualMarkdownPipeline(RestoreXrefMap xrefMap)
+        private static MarkdownPipeline CreateConceptualMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -151,11 +134,11 @@ namespace Microsoft.Docs.Build
                 .UseExtractYamlHeader()
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref, xrefMap)
+                .UseResolveXref(ResolveXref)
                 .Build();
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline(RestoreXrefMap xrefMap)
+        private static MarkdownPipeline CreateMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -164,11 +147,11 @@ namespace Microsoft.Docs.Build
                 .UseDocfxExtensions(markdownContext)
                 .UseExtractYamlHeader()
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref, xrefMap)
+                .UseResolveXref(ResolveXref)
                 .Build();
         }
 
-        private static MarkdownPipeline CreateInlineMarkdownPipeline(RestoreXrefMap xrefMap)
+        private static MarkdownPipeline CreateInlineMarkdownPipeline()
         {
             var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
@@ -176,7 +159,7 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
                 .UseResolveHtmlLinks(markdownContext)
-                .UseResolveXref(ResolveXref, xrefMap)
+                .UseResolveXref(ResolveXref)
                 .UseInlineOnly()
                 .Build();
         }
@@ -247,9 +230,9 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private static XrefSpec ResolveXref(RestoreXrefMap xrefMap, string uid)
+        private static XrefSpec ResolveXref(string uid)
         {
-            return xrefMap.Resolve(uid);
+            return t_xrefMap.Resolve(uid);
         }
     }
 }

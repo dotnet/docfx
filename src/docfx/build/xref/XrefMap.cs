@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
 {
     public class XrefMap
     {
-        public List<XrefSpec> References { get; set; }
+        public List<XrefSpec> References { get; } = new List<XrefSpec>();
     }
 }
