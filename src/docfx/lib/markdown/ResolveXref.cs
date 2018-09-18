@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<XrefMap, string, XrefSpec> resolveXref, XrefMap xrefMap)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<RestoreXrefMap, string, XrefSpec> resolveXref, RestoreXrefMap xrefMap)
         {
             return builder.Use(document =>
             {
@@ -31,7 +31,8 @@ namespace Microsoft.Docs.Build
                             Markup.Result.Errors.Add(error);
                             return new LiteralInline(raw);
                         }
-                        return new LinkInline(xrefSpec.Href, xrefSpec.FullName);
+                        var content = new LiteralInline(xrefSpec.Name);
+                        return new LinkInline(xrefSpec.Href, null).AppendChild(content);
                     }
                     return node;
                 });

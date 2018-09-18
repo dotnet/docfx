@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var (contributionErrors, contribution) = await ContributionInfo.Load(docset);
             errors.AddRange(contributionErrors);
 
-            var xrefMap = XrefMap.Create(docset);
+            var xrefMap = RestoreXrefMap.Create(docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
@@ -47,14 +47,14 @@ namespace Microsoft.Docs.Build
             Context context,
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
-            XrefMap xrefMap,
+            RestoreXrefMap xrefMap,
             ContributionInfo contribution)
         {
             using (Progress.Start("Building files"))
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
-                var filesBuilder = new DocumentListBuilder();
+                var filesBuilder = new List();
                 var filesWithErrors = new ConcurrentBag<Document>();
 
                 await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
         private static async Task<(bool hasError, DependencyMap)> BuildFile(
             Context context,
             Document file,
-            XrefMap xrefMap,
+            RestoreXrefMap xrefMap,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
