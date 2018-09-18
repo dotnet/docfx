@@ -305,7 +305,6 @@ outputs:
 inputs:
   docfx.yml: |
     content: "**/*"
-    siteBasePath: azure
     baseUrl: "https://docs.microsoft.com"
     routes:
       articles/: "azure/"
