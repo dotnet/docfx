@@ -118,6 +118,21 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
         /// <summary>
+        /// Gets the authorization keys for required resources access
+        /// </summary>
+        public readonly HttpConfig Http = new HttpConfig();
+
+        /// <summary>
+        /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
+        /// </summary>
+        public readonly GitHubConfig GitHub = new GitHubConfig();
+
+        /// <summary>
+        /// Gets the configturation related to git repositories, usually used to clone a repo.
+        /// </summary>
+        public readonly GitConfig Git = new GitConfig();
+
+        /// <summary>
         /// Gets whether warnings should be treated as errors.
         /// </summary>
         public readonly bool WarningsAsErrors;
