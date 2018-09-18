@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
 
         public string HtmlTitle { get; set; }
 
+        public string CanonicalUrl { get; set; }
+
         public string RedirectionUrl { get; set; }
 
         public string Id { get; set; }
