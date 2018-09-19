@@ -31,7 +31,10 @@ namespace Microsoft.Docs.Build
                             Markup.Result.Errors.Add(error);
                             return new LiteralInline(raw);
                         }
-                        var content = new LiteralInline(xrefSpec.Name);
+
+                        // TODO: Support advanced cross reference
+                        // e.g.: <a href="xref:System.String?displayProperty=fullName"/>
+                        var content = new LiteralInline(xrefSpec.Name ?? xrefSpec.Uid);
                         return new LinkInline(xrefSpec.Href, null).AppendChild(content);
                     }
                     return node;

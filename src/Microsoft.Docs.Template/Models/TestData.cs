@@ -7,5 +7,8 @@ namespace Microsoft.Docs.Build
     public sealed class TestData
     {
         public string Name { get; set; }
+
+        [Uid]
+        public string Uid { get; set; }
     }
 }

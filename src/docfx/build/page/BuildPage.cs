@@ -200,6 +200,11 @@ namespace Microsoft.Docs.Build
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
+                if (attribute is XrefAttribute)
+                {
+                    return xrefMap.Resolve((string)value);
+                }
+
                 return value;
 
                 string GetLink(string path, object relativeTo, object resultRelativeTo)

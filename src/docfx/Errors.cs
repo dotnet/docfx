@@ -138,6 +138,9 @@ namespace Microsoft.Docs.Build
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
+        public static Error DuplicateUid(string uid, string href)
+            => new Error(ErrorLevel.Error, "duplicate-uid", $"Uid '{uid}' has already been defined in {href}.");
+
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
         /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>

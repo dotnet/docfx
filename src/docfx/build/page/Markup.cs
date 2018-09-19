@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
 
         private static XrefSpec ResolveXref(string uid)
         {
-            return t_xrefMap.Resolve(uid);
+            return t_xrefMap?.Resolve(uid);
         }
     }
 }

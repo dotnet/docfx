@@ -3,29 +3,36 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     public class XrefMap
     {
         // TODO: key could be uid+moniker+locale
-        private readonly IReadOnlyDictionary<string, XrefSpec> _map;
+        private readonly InternalXrefMap _internalXrefMap;
+        private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> map)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> map, InternalXrefMap internalXrefMap)
         {
-            _map = map;
+            _externalXrefMap = map;
+            _internalXrefMap = internalXrefMap;
         }
 
         public XrefSpec Resolve(string uid)
         {
-            if (_map.TryGetValue(uid, out var xrefSpec))
+            if (_internalXrefMap.Resolve(uid, out var xrefSpec))
+            {
+                return xrefSpec;
+            }
+            if (_externalXrefMap.TryGetValue(uid, out xrefSpec))
             {
                 return xrefSpec;
             }
             return null;
         }
 
-        internal static XrefMap Create(Docset docset)
+        internal static async Task<XrefMap> Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -37,7 +44,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map);
+            return new XrefMap(map, await InternalXrefMap.Create(context, docset.BuildScope));
         }
     }
 }
