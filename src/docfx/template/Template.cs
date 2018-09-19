@@ -27,14 +27,14 @@ namespace Microsoft.Docs.Build
 
         private readonly LiquidTemplate _liquid;
         private readonly MustacheTemplate _mustache;
-        private readonly Javascript _js;
+        private readonly JavaScript _js;
 
         public Template(string templateDir)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _liquid = new LiquidTemplate(templateDir);
-            _js = new Javascript(contentTemplateDir);
+            _js = new JavaScript(contentTemplateDir);
             _mustache = new MustacheTemplate(contentTemplateDir);
         }
 

@@ -15,14 +15,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Javascript
+    internal class JavaScript
     {
         private static readonly Engine s_engine = new Engine();
 
         private readonly ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>> _scripts = new ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>>();
         private readonly string _scriptDir;
 
-        public Javascript(string scriptDir) => _scriptDir = scriptDir;
+        public JavaScript(string scriptDir) => _scriptDir = scriptDir;
 
         public JObject Run(string scriptName, JObject input)
         {
