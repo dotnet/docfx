@@ -4,6 +4,9 @@
   "properties": {
     "name": {
       "type": "string"
+    },
+    "uid": {
+      "type": "string"
     }
   }
 }
