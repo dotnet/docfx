@@ -14,8 +14,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude", "f1_keywords" };
-
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
@@ -120,46 +118,9 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
             }
 
-            return RemoveUpdatedAtDateTime(LegacySchema.Transform(Jint.Run(rawMetadata), pageModel)).RemoveNulls();
-        }
-
-        public static string GenerateLegacyPageMetadata(JObject rawMetadata)
-        {
-            StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-
-            foreach (var item in rawMetadata)
-            {
-                if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
-                {
-                    string key = HttpUtility.HtmlEncode(item.Key);
-                    string content;
-                    if (item.Value is JArray)
-                    {
-                        content = string.Join(",", item.Value);
-                    }
-                    else if (item.Value.Type == JTokenType.Boolean)
-                    {
-                        content = (bool)item.Value ? "true" : "false";
-                    }
-                    else
-                    {
-                        content = item.Value.ToString();
-                    }
-
-                    if (key.Equals("robots", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Add to the first line
-                        key = "ROBOTS";
-                        pageMetadataOutput.Insert(0, $"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />{Environment.NewLine}");
-                    }
-                    else
-                    {
-                        pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-                    }
-                }
-            }
-
-            return pageMetadataOutput.ToString();
+            return RemoveUpdatedAtDateTime(
+                LegacySchema.Transform(
+                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
