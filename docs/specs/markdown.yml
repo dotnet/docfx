@@ -60,7 +60,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>\n",
-      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "title from yaml header",
       "metadata": { "title": "title from yaml header" }
     }
@@ -79,7 +79,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>hello</p>",
-      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "Title from H1",
       "metadata":
       {
@@ -139,7 +139,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "htmlTitle": "<h1 id=\"title-from-h1\">Title from H1</h1>",
+      "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
     }
   build.manifest:
 ---
@@ -158,7 +158,7 @@ inputs:
 outputs:
   docs/a.json: |
     {
-      "htmlTitle": "",
+      "raw_title": "",
     }
   build.manifest:
 ---
@@ -193,7 +193,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<h1 id=\"heading-from-c\">Heading from C</h1>",
-      "htmlTitle": "<h1 id=\"heading-from-d\">Heading from D</h1>"
+      "raw_title": "<h1 id=\"heading-from-d\">Heading from D</h1>"
     }
   build.manifest:
 ---
@@ -214,7 +214,7 @@ outputs:
   docs/a.json: |
     {
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
-      "htmlTitle": ""
+      "raw_title": ""
     }
   build.manifest:
   build.log: |
@@ -246,7 +246,7 @@ outputs:
     {
       "content": "<p>body</p>",
       "title": "This is a title",
-      "htmlTitle": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
+      "raw_title": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
   build.manifest:
@@ -370,8 +370,8 @@ inputs:
   docs/a.experimental.md:
 outputs:
   docs/a.json: |
-    {"id":"fa697b4e-3e52-77f6-2219-39040f6070da","versionIndependentId":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
+    {"document_id":"fa697b4e-3e52-77f6-2219-39040f6070da","document_version_independent_id":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
   docs/a.experimental.json: |
-    {"id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","versionIndependentId":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
+    {"document_id":"f481558d-b8fa-5acb-facb-d3bee58fbf3e","document_version_independent_id":"80168efe-9436-03b9-9e7c-eaf20a91d680"}
   build.manifest: |
     {"files":[{"siteUrl":"/docs/a.experimental","outputPath":"docs/a.experimental.json","sourcePath":"docs/a.experimental.md"},{"siteUrl":"/docs/a","outputPath":"docs/a.json","sourcePath":"docs/a.md"}],"dependencies":{}}
