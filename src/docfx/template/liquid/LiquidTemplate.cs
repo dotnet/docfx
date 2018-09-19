@@ -19,6 +19,15 @@ namespace Microsoft.Docs.Build
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
 
+        static LiquidTemplate()
+        {
+            DotLiquid.Template.RegisterTag<StyleTag>("style");
+            DotLiquid.Template.RegisterTag<JavaScriptTag>("js");
+            DotLiquid.Template.RegisterTag<ImageTag>("img");
+            DotLiquid.Template.RegisterTag<LocalizeTag>("loc");
+            DotLiquid.Template.RegisterFilter(typeof(LiquidFilter));
+        }
+
         public LiquidTemplate(string templateDir)
         {
             _templateDir = templateDir;

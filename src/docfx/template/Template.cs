@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web;
 using Newtonsoft.Json.Linq;
@@ -27,14 +28,14 @@ namespace Microsoft.Docs.Build
 
         private readonly LiquidTemplate _liquid;
         private readonly MustacheTemplate _mustache;
-        private readonly Javascript _js;
+        private readonly JavaScript _js;
 
         public Template(string templateDir)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _liquid = new LiquidTemplate(templateDir);
-            _js = new Javascript(contentTemplateDir);
+            _js = new JavaScript(contentTemplateDir);
             _mustache = new MustacheTemplate(contentTemplateDir);
         }
 
@@ -76,6 +77,11 @@ namespace Microsoft.Docs.Build
                 var content = "";
                 if (value is JArray arr)
                 {
+                    if (!arr.All(item => item is JValue))
+                    {
+                        continue;
+                    }
+
                     content = string.Join(",", value);
                 }
                 else if (value.Type == JTokenType.Boolean)
