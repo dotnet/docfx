@@ -40,12 +40,16 @@ namespace Microsoft.Docs.Build
 
         public string Render(string schemaName, PageModel model)
         {
-            var obj = JObject.FromObject(model);
-            obj.Remove("content");
-
             // TODO: only works for conceptual
             var content = model.Content.ToString();
-            var page = _js.Run($"{schemaName}.mta.json.js", obj);
+
+            var obj = JObject.FromObject(model);
+            obj.Remove("content");
+            obj.Remove("metadata");
+
+            obj.Merge(model.Metadata, JsonUtility.MergeSettings);
+
+            var page = _js.Run($"{schemaName}.mta.json.js", JsonUtility.Merge(model.Metadata, obj));
             var metadata = CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
             var liquidModel = new JObject { ["content"] = content, ["page"] = page, ["metadata"] = metadata };
