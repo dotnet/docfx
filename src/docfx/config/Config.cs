@@ -137,8 +137,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool WarningsAsErrors;
 
+        /// <summary>
+        /// The addresses of xref map files, used for resolving xref.
+        /// They should be absolute url or relative path
+        /// </summary>
+        public readonly string[] Xref = Array.Empty<string>();
+
         public IEnumerable<string> GetExternalReferences()
         {
+            foreach (var url in Xref)
+            {
+                yield return url;
+            }
+
             yield return Contribution.GitCommitsTime;
             yield return Contribution.UserProfileCache;
         }
