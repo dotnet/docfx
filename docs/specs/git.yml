@@ -6,25 +6,25 @@ outputs:
     {
       "author": {
         "name": "superyyrrzz",
-        "profileUrl": "https://github.com/superyyrrzz",
-        "displayName": "Renze Yu",
+        "profile_url": "https://github.com/superyyrrzz",
+        "display_name": "Renze Yu",
         "id": "3831744"
       },
       "contributors": [
         {
           "name": "yufeih",
-          "profileUrl": "https://github.com/yufeih",
-          "displayName": "Yufei Huang",
+          "profile_url": "https://github.com/yufeih",
+          "display_name": "Yufei Huang",
           "id": "511355"
         },
         {
           "name": "OsmondJiang",
-          "profileUrl": "https://github.com/OsmondJiang",
-          "displayName": "Osmond Jiang",
+          "profile_url": "https://github.com/OsmondJiang",
+          "display_name": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "1874-01-01T00:00:00.0000000"
+      "updated_at": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
 ---
@@ -35,25 +35,25 @@ outputs:
     {
       "author": {
         "name": "superyyrrzz",
-        "profileUrl": "https://github.com/superyyrrzz",
-        "displayName": "Renze Yu",
+        "profile_url": "https://github.com/superyyrrzz",
+        "display_name": "Renze Yu",
         "id": "3831744"
       },
       "contributors": [
         {
           "name": "yufeih",
-          "profileUrl": "https://github.com/yufeih",
-          "displayName": "Yufei Huang",
+          "profile_url": "https://github.com/yufeih",
+          "display_name": "Yufei Huang",
           "id": "511355"
         },
         {
           "name": "OsmondJiang",
-          "profileUrl": "https://github.com/OsmondJiang",
-          "displayName": "Osmond Jiang",
+          "profile_url": "https://github.com/OsmondJiang",
+          "display_name": "Osmond Jiang",
           "id": "19990166"
         }
       ],
-      "updatedAt": "1874-01-01T00:00:00.0000000"
+      "updated_at": "1874-01-01T00:00:00.0000000"
     }
   build.manifest:
 ---
@@ -75,21 +75,21 @@ outputs:
     {
       "author":  {
         "name": "yufeih",
-        "profileUrl": "https://github.com/yufeih",
-        "displayName": "Yufei Huang",
+        "profile_url": "https://github.com/yufeih",
+        "display_name": "Yufei Huang",
         "id": "511355"
       },
       "contributors": [
         {
           "name": "superyyrrzz",
-          "profileUrl": "https://github.com/superyyrrzz",
-          "displayName": "Renze Yu",
+          "profile_url": "https://github.com/superyyrrzz",
+          "display_name": "Renze Yu",
           "id": "3831744"
         },
         {
           "name": "OsmondJiang",
-          "profileUrl": "https://github.com/OsmondJiang",
-          "displayName": "Osmond Jiang",
+          "profile_url": "https://github.com/OsmondJiang",
+          "display_name": "Osmond Jiang",
           "id": "19990166"
         }
       ],
@@ -120,8 +120,8 @@ outputs:
     {
       "author":  {
         "name": "OsmondJiang",
-        "profileUrl": "https://github.com/OsmondJiang",
-        "displayName": "Osmond Jiang",
+        "profile_url": "https://github.com/OsmondJiang",
+        "display_name": "Osmond Jiang",
         "id": "19990166"
       },
       "contributors": [
@@ -151,14 +151,14 @@ outputs:
       "contributors": [
         {
           "name": "superyyrrzz",
-          "profileUrl": "https://github.com/superyyrrzz",
-          "displayName": "Renze Yu",
+          "profile_url": "https://github.com/superyyrrzz",
+          "display_name": "Renze Yu",
           "id": "3831744"
         },
         {
           "name": "OsmondJiang",
-          "profileUrl": "https://github.com/OsmondJiang",
-          "displayName": "Osmond Jiang",
+          "profile_url": "https://github.com/OsmondJiang",
+          "display_name": "Osmond Jiang",
           "id": "19990166"
         }
       ],
@@ -167,22 +167,22 @@ outputs:
   build.manifest:
   dep.json:
 ---
-# Show editUrl, contentUrl and commitUrl
+# Show content_git_url, original_content_git_url and gitcommit
 repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
 outputs:
   README.json: |
     {
-      "showEdit": true,
-      "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
-      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
-      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
+      "open_to_public_contributors": true,
+      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
+      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
     }
   testdata1.json: |
     {
-      "showEdit": true,
-      "editUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
-      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
-      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
+      "open_to_public_contributors": true,
+      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
+      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
     }
   dep.json:
   build.manifest:
@@ -192,9 +192,9 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test-config-repo-
 outputs:
   README.json: |
     {
-      "editUrl": "https://github.com/test-org/test-repo/blob/contribution/README.md",
-      "contentUrl": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-config-repo-branch/README.md",
-      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
+      "content_git_url": "https://github.com/test-org/test-repo/blob/contribution/README.md",
+      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-config-repo-branch/README.md",
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
     }
   testdata1.json:
   build.manifest:
@@ -206,7 +206,7 @@ outputs:
   README.json: |
     {
       "contributors": [],
-      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/c877f1eb84e4a3bd8a8a421b14f684c4f0de853d/README.md"
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/c877f1eb84e4a3bd8a8a421b14f684c4f0de853d/README.md"
     }
   build.manifest:
 ---
@@ -215,7 +215,7 @@ repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
 outputs:
   README.json: |
     {
-      "updatedAt": "2018-07-03T05:41:26",
+      "updated_at": "2018-07-03T05:41:26",
     }
   testdata1.json:
   build.manifest:
@@ -226,13 +226,13 @@ repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
 outputs:
   README.json: |
     {
-      "commitUrl": "https://github.com/docascode/docfx-test-dependencies/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
-      "updatedAt": "2018-04-23T03:23:37Z"
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
+      "updated_at": "2018-04-23T03:23:37Z"
     }
   docfx-test-submodule/README.json: |
     {
-      "commitUrl": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
-      "updatedAt": "2018-07-18T05:03:26Z"
+      "gitcommit": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
+      "updated_at": "2018-07-18T05:03:26Z"
     }
   build.manifest:
 ---
