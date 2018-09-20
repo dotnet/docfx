@@ -158,6 +158,9 @@
         },
         "copyResources": {
           "type": "boolean"
+        },
+        "maxErrors": {
+          "type": "integer"
         }
       }
     },
