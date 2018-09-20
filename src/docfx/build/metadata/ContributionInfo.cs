@@ -25,11 +25,10 @@ namespace Microsoft.Docs.Build
         {
             _gitHubUserCache = gitHubUserCache;
             _commitsByFile = LoadCommits(docset);
-
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
-                ? new Dictionary<string, DateTime>()
-                : JsonUtility.ReadJsonFile<GitCommitsTime>(
-                    docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
+               ? new Dictionary<string, DateTime>()
+               : JsonUtility.ReadJsonFile<GitCommitsTime>(
+                   docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
         }
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors)> GetAuthorAndContributors(
@@ -136,6 +135,7 @@ namespace Microsoft.Docs.Build
 
             return (editUrl, contentUrl, commitUrl);
         }
+
         private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
@@ -160,6 +160,7 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, (Repository, List<GitCommit> commits)> LoadCommits(Docset docset)
         {
+            var errors = new List<Error>();
             var result = new Dictionary<string, (Repository, List<GitCommit> commits)>();
 
             if (docset.Config.Contribution.ShowContributors)

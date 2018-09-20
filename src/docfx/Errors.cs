@@ -63,8 +63,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
-        public static Error JsonSyntaxError(string message, string path, in Range range)
-            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}. Path '{path}'.", range: range);
+        public static Error JsonSyntaxError(in Range range, string message, string path)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, jsonPath: path);
 
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
@@ -84,8 +84,8 @@ namespace Microsoft.Docs.Build
         public static Error HeadingNotFound(Document file)
             => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
 
-        public static Error FileNotFound(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
+        public static Error FileNotFound(string relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
 
         public static Error UidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
@@ -111,22 +111,46 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
-        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'", relativeTo.ToString());
+        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
 
-        public static Error NullValue(in Range range, string name)
-            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range);
+        public static Error NullValue(in Range range, string name, string path)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
 
         public static Error UnknownField(in Range range, string propName, string typeName, string path)
-            => new Error(ErrorLevel.Warning, "unknown-field", $"Path:{path} Could not find member '{propName}' on object of type '{typeName}'", range: range);
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
 
-        public static Error ViolateSchema(in Range range, string message)
-            => new Error(ErrorLevel.Error, "violate-schema", message, range: range);
+        public static Error ViolateSchema(in Range range, string message, string path)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
+
+        /// <summary>
+        /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
+        /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>
+        /// Returns: false if no match is found, otherwise return true.
+        /// </summary>
+        /// <param name="target">The string to be looked for</param>
+        /// <param name="candidates">Possible strings to look for from</param>
+        /// <param name="bestMatch">If a match is found, this will be assigned</param>
+        /// <param name="threshold">Max levenshtein distance between the candidate and the target, greater values will be filtered</param>
+        /// <returns>
+        ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
+        /// </returns>
+        private static bool FindBestMatch(string target, IEnumerable<string> candidates, out string bestMatch, int threshold = 5)
+        {
+            bestMatch = candidates != null ?
+                    (from candidate in candidates
+                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     where levanshteinDistance <= threshold
+                     orderby levanshteinDistance, candidate
+                     select candidate).FirstOrDefault()
+                    : null;
+            return !string.IsNullOrEmpty(bestMatch);
+        }
     }
 }

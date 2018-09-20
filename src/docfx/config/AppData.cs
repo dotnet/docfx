@@ -20,6 +20,23 @@ namespace Microsoft.Docs.Build
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
+        public static string GlobalConfigPath => GetGlobalConfigPath();
+
+        /// <summary>
+        /// Get the global configuration path, default is under <see cref="AppDataDir"/>
+        /// </summary>
+        private static string GetGlobalConfigPath()
+        {
+            var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
+            return string.IsNullOrEmpty(docfxGlobalConfig) ?
+                Path.Combine(AppDataDir, "docfx.yml") :
+                Path.GetFullPath(docfxGlobalConfig);
+        }
+
+        /// <summary>
+        /// Get the application cache root dir, default is under user proflie dir.
+        /// User can set the DOCFX_APPDATA_PATH environment to change the root
+        /// </summary>
         private static string GetAppDataDir()
         {
             // TODO: document this environment variable

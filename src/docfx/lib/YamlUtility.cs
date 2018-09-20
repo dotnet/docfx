@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -111,7 +112,7 @@ namespace Microsoft.Docs.Build
 
             if (nullValidation)
             {
-                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).ValidateNullValue();
+                var (nullErrors, token) = ToJson(stream.Documents[0].RootNode).RemoveNulls();
                 errors.AddRange(nullErrors);
                 return (errors, token);
             }
@@ -130,11 +131,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (string.IsNullOrWhiteSpace(scalar.Value))
                     {
-                        return null;
+                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
                     }
                     if (scalar.Value == "~")
                     {
-                        return null;
+                        return PopulateLineInfoToJToken(JValue.CreateNull(), node);
                     }
                     if (long.TryParse(scalar.Value, out var n))
                     {
@@ -184,9 +185,7 @@ namespace Microsoft.Docs.Build
 
         private static JToken PopulateLineInfoToJToken(JToken token, YamlNode node)
         {
-            if (token is null)
-                return token;
-
+            Debug.Assert(token != null);
             s_setLineInfo.Invoke(token, new object[] { node.Start.Line, node.Start.Column });
             return token;
         }

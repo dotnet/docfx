@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         {
             return Report(file == error.File || !string.IsNullOrEmpty(error.File)
                     ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Range));
+                    : new Error(error.Level, error.Code, error.Message, file, error.Range, error.JsonPath));
         }
 
         public bool Report(Error error)
@@ -68,6 +68,21 @@ namespace Microsoft.Docs.Build
             {
                 JsonUtility.Serialize(writer, graph);
             }
+        }
+
+        /// <summary>
+        /// Writes the input text to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void WriteText(string contents, string destRelativePath)
+        {
+            Debug.Assert(!Path.IsPathRooted(destRelativePath));
+
+            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+
+            File.WriteAllText(destinationPath, contents);
         }
 
         /// <summary>

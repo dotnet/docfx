@@ -4,38 +4,39 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, PageModel result, DependencyMap dependencies)> Build(
+        public static async Task<(IEnumerable<Error> errors, object result, DependencyMap dependencies)> Build(
             Document file,
             TableOfContentsMap tocMap,
             ContributionInfo contribution,
             BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            Action<Document> buildChild,
+            XrefMap xrefMap)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild);
+            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild, xrefMap);
             var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Config.Locale;
             model.Metadata = metadata;
-            model.ShowEdit = file.Docset.Config.Contribution.ShowEdit;
-            model.Toc = tocMap.FindTocRelativePath(file);
+            model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
+            model.TocRel = tocMap.FindTocRelativePath(file);
+            model.CanonicalUrl = GetCanonicalUrl(file);
 
-            (model.Id, model.VersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (model.EditUrl, model.ContentUrl, model.CommitUrl) = contribution.GetGitUrls(file);
-            model.UpdatedAt = contribution.GetUpdatedAt(file);
+            (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
             // TODO: add check before to avoid cast failure
             List<Error> contributorErrors;
@@ -43,34 +44,59 @@ namespace Microsoft.Docs.Build
             (contributorErrors, model.Author, model.Contributors) = await contribution.GetAuthorAndContributors(file, authorName);
             errors.AddRange(contributorErrors);
 
-            return (errors, model, dependencies.Build());
+            var output = (object)model;
+            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            {
+                output = await RazorTemplate.Render(model);
+            }
+
+            return (errors, output, dependencies.Build());
+        }
+
+        private static string GetCanonicalUrl(Document file)
+        {
+            var config = file.Docset.Config;
+            var siteUrl = file.SiteUrl;
+            if (file.IsExperimental)
+            {
+                var sitePath = ReplaceLast(file.SitePath, ".experimental", "");
+                siteUrl = Document.PathToAbsoluteUrl(sitePath, file.ContentType, file.Schema, config.Output.Json);
+            }
+
+            return $"{config.BaseUrl}/{config.Locale}{siteUrl}";
+
+            string ReplaceLast(string source, string find, string replace)
+            {
+                var i = source.LastIndexOf(find);
+                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
+            }
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             Load(
-            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var content = file.ReadText();
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild);
+                return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
             else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
             else
             {
                 Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild);
+                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
         }
 
         private static (List<Error> errors, Schema schema, PageModel model)
             LoadMarkdown(
-            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
-            var (html, markup) = Markup.ToHtml(content, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
+            var (html, markup) = Markup.ToHtml(content, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
@@ -83,7 +109,7 @@ namespace Microsoft.Docs.Build
                 Content = finalHtml,
                 Metadata = markup.Metadata,
                 Title = title,
-                HtmlTitle = markup.HtmlTitle,
+                RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
             };
 
@@ -96,25 +122,25 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadYaml(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = YamlUtility.Deserialize(content);
 
-            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadJson(
-            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             var (errors, token) = JsonUtility.Deserialize(content);
 
-            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild);
+            return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model)>
             LoadSchemaDocument(
-            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+            List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
             // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
             //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -130,7 +156,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
             {
-                content = await Template.Render(schema.Name, content);
+                content = await RazorTemplate.Render(schema.Name, content);
             }
 
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
@@ -141,49 +167,39 @@ namespace Microsoft.Docs.Build
                 Content = content,
                 Metadata = metadata,
                 Title = title,
-                HtmlTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
+                RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
             };
 
             return (errors, schema, model);
 
-            object TransformContent(DataTypeAttribute attribute, JsonReader reader)
+            object TransformContent(DataTypeAttribute attribute, object value)
             {
-                // Schema violation if the field is not what SchemaContentTypeAttribute required
-                if (reader.ValueType != attribute.TargetType)
-                {
-                    var lineInfo = reader as IJsonLineInfo;
-                    var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
-                    errors.Add(Errors.ViolateSchema(range, $"Field with attribute '{attribute.GetType()}' should be of type {attribute.TargetType}."));
-                    return null;
-                }
-
                 if (attribute is HrefAttribute)
                 {
-                    return GetLink((string)reader.Value, file, file);
+                    return GetLink((string)value, file, file);
                 }
 
                 if (attribute is MarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is InlineMarkdownAttribute)
                 {
-                    var (html, markup) = Markup.ToHtml((string)reader.Value, file, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
+                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)reader.Value, href => GetLink(href, file, file));
+                    var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file));
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
-                // TODO: handle other attributes
-                return reader.Value;
+                return value;
 
                 string GetLink(string path, object relativeTo, object resultRelativeTo)
                 {

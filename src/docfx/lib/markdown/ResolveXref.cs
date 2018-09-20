@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ResolveXref
     {
-        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, string> resolveXref)
+        public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, XrefSpec> resolveXref)
         {
             return builder.Use(document =>
             {
@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is XrefInline xref)
                     {
-                        var href = resolveXref(xref.Href);
-                        if (string.IsNullOrEmpty(href))
+                        var xrefSpec = resolveXref(xref.Href);
+                        if (xrefSpec is null)
                         {
                             var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
                             var error = raw.StartsWith("@")
@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
                             Markup.Result.Errors.Add(error);
                             return new LiteralInline(raw);
                         }
+                        var content = new LiteralInline(xrefSpec.Name);
+                        return new LinkInline(xrefSpec.Href, null).AppendChild(content);
                     }
                     return node;
                 });

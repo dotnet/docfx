@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
                 ReportErrors(report, configErrors);
                 report.Configure(docsetPath, config);
 
-                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset, options.GitToken));
+                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset));
 
                 async Task RestoreDocset(string docset)
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var loadErrors, out var childConfig, false))
                     {
-                        await RestoreLocker.Save(docset, () => RestoreOneDocset(report, docset, options, childConfig, RestoreDocset, options.GitToken));
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(report, docset, options, childConfig, RestoreDocset));
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, string token)
+        private static async Task<RestoreLock> RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild)
         {
             var restoreLock = new RestoreLock();
 
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             // extend the config before loading
             var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
             ReportErrors(report, errors);
-            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, token);
+            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, config.Git.AuthToken);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
                 });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);

@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
 
         public Task SaveChanges()
         {
-            return _updated ? ProcessUtility.CreateFileMutex(_cachePath, WriteCache) : Task.CompletedTask;
+            return _updated ? ProcessUtility.RunInsideMutex(_cachePath, WriteCache) : Task.CompletedTask;
 
             Task WriteCache()
             {
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
 
         private Task ReadCacheFile()
         {
-            return ProcessUtility.CreateFileMutex(_cachePath, UpdateCache);
+            return ProcessUtility.RunInsideMutex(_cachePath, UpdateCache);
 
             Task UpdateCache()
             {
