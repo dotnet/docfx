@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Report : IDisposable
     {
-        public static readonly int MaxErrors = int.TryParse(Environment.GetEnvironmentVariable("DOCFX_MAX_ERRORS"), out var n) ? n : 1000;
-
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
@@ -63,11 +61,12 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
+            var maxErrors = _config?.Output.MaxErrors ?? OutputConfig.DefaultMaxErrors;
             if (ReachMaxErrors())
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(MaxErrors), level);
+                    WriteCore(Errors.ExceedMaxErrors(maxErrors), level);
                 }
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
@@ -82,11 +81,11 @@ namespace Microsoft.Docs.Build
                 switch (level)
                 {
                     case ErrorLevel.Error:
-                        return Volatile.Read(ref _errorCount) >= MaxErrors;
+                        return Volatile.Read(ref _errorCount) >= maxErrors;
                     case ErrorLevel.Warning:
-                        return Volatile.Read(ref _warningCount) >= MaxErrors;
+                        return Volatile.Read(ref _warningCount) >= maxErrors;
                     default:
-                        return Volatile.Read(ref _infoCount) >= MaxErrors;
+                        return Volatile.Read(ref _infoCount) >= maxErrors;
                 }
             }
 
@@ -95,11 +94,11 @@ namespace Microsoft.Docs.Build
                 switch (level)
                 {
                     case ErrorLevel.Error:
-                        return Interlocked.Increment(ref _errorCount) > MaxErrors;
+                        return Interlocked.Increment(ref _errorCount) > maxErrors;
                     case ErrorLevel.Warning:
-                        return Interlocked.Increment(ref _warningCount) > MaxErrors;
+                        return Interlocked.Increment(ref _warningCount) > maxErrors;
                     default:
-                        return Interlocked.Increment(ref _infoCount) > MaxErrors;
+                        return Interlocked.Increment(ref _infoCount) > maxErrors;
                 }
             }
         }
