@@ -5,6 +5,8 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class OutputConfig
     {
+        public const int DefaultMaxErrors = 1000;
+
         /// <summary>
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
@@ -26,5 +28,10 @@ namespace Microsoft.Docs.Build
         /// Gets whether resources are copied to output.
         /// </summary>
         public readonly bool CopyResources = true;
+
+        /// <summary>
+        /// Gets the maximum errors or warnings to output.
+        /// </summary>
+        public readonly int MaxErrors = DefaultMaxErrors;
     }
 }
