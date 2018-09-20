@@ -146,16 +146,7 @@ namespace Microsoft.Docs.Build
                         content = item.Value.ToString();
                     }
 
-                    if (key.Equals("robots", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Add to the first line
-                        key = "ROBOTS";
-                        pageMetadataOutput.Insert(0, $"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />{Environment.NewLine}");
-                    }
-                    else
-                    {
-                        pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-                    }
+                    pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
                 }
             }
 
