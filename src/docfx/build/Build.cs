@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var (contributionErrors, contribution) = await ContributionInfo.Load(docset);
             errors.AddRange(contributionErrors);
 
-            var xrefMap = await XrefMap.Create(context, docset);
+            var xrefMap = await XrefMap.Create(context, docset, config.BuildInternalXrefMap);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 

@@ -44,7 +44,8 @@ outputs:
 ---
 # Define uid in conceptual, resolve it
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    buildInternalXrefMap: true
   docs/a.md: |
     ---
     title: Title from yaml header a
@@ -65,7 +66,8 @@ outputs:
 ---
 # Define uid in SDP, resolve it
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    buildInternalXrefMap: true
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -83,7 +85,8 @@ outputs:
 ---
 # Define duplicate uid in conceptual and SDP, should output warning
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    buildInternalXrefMap: true
   docs/a.yml: |
     #YamlMime:TestData
     uid: a

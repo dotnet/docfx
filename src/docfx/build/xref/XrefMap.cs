@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public XrefSpec Resolve(string uid)
         {
-            if (_internalXrefMap.Resolve(uid, out var xrefSpec))
+            if (_internalXrefMap != null && _internalXrefMap.Resolve(uid, out var xrefSpec))
             {
                 return xrefSpec;
             }
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        internal static async Task<XrefMap> Create(Context context, Docset docset)
+        internal static async Task<XrefMap> Create(Context context, Docset docset, bool buildInternalXrefMap)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, await InternalXrefMap.Create(context, docset.BuildScope));
+            return new XrefMap(map, buildInternalXrefMap ? await InternalXrefMap.Create(context, docset.BuildScope) : null);
         }
     }
 }
