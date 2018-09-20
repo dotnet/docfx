@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is XrefAttribute)
                 {
-                    return xrefMap.Resolve((string)value);
+                    return xrefMap.Resolve((string)value).Href;
                 }
 
                 return value;

@@ -104,3 +104,28 @@ outputs:
   build.log: |
     ["error","duplicate-uid","Uid 'a' has already been defined in *.","*"]
 ---  
+# Resolve xref in SDP
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "test",
+      "fullName": "test.test",
+      "description": "a.description"
+    }
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a"
+    }
+outputs:
+  docs/a.json:
+  docs/b.json: | 
+    {
+      "content": {"xref": "docs/a.json"}
+    }
+  build.manifest:
+---  

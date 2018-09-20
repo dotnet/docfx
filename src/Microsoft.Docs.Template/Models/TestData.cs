@@ -14,5 +14,8 @@ namespace Microsoft.Docs.Build
 
         [Uid]
         public string Uid { get; set; }
+
+        [Xref]
+        public string Xref { get; set; }
     }
 }

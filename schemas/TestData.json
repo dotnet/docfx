@@ -13,6 +13,9 @@
     },
     "uid": {
       "type": "string"
+    },
+    "xref": {
+      "type": "string"
     }
   }
 }
