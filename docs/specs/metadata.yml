@@ -1,3 +1,15 @@
+# known metadata keys are case insensitive
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    Robots: noindex, nofollow
+    ---
+outputs:
+  docs/a.json: |
+    { "metadata": { "robots": "noindex, nofollow" } }
+  build.manifest:
+---
 # generate normal document id and version id
 # backward compatible to docs.com
 # document id = md5("Win.sccm|mdt/release-notes.md")
