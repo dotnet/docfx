@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
                 });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
