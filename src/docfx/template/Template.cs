@@ -42,14 +42,15 @@ namespace Microsoft.Docs.Build
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
+            var fileMetadata = JObject.FromObject(model.Metadata);
 
             var obj = JObject.FromObject(model);
             obj.Remove("content");
             obj.Remove("metadata");
 
-            obj.Merge(model.Metadata, JsonUtility.MergeSettings);
+            obj.Merge(fileMetadata, JsonUtility.MergeSettings);
 
-            var page = _js.Run($"{schemaName}.mta.json.js", JsonUtility.Merge(model.Metadata, obj));
+            var page = _js.Run($"{schemaName}.mta.json.js", JsonUtility.Merge(fileMetadata, obj));
             var metadata = CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
             var liquidModel = new JObject { ["content"] = content, ["page"] = page, ["metadata"] = metadata };
