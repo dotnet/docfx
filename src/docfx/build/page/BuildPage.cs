@@ -44,9 +44,10 @@ namespace Microsoft.Docs.Build
                 errors.Add(error);
 
             var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute &&
+                file.Docset.Config.Dependencies.ContainsKey("_themes"))
             {
-                output = await RazorTemplate.Render(model);
+                output = file.Docset.Template.Render(model.PageType, model);
             }
 
             return (errors, output, dependencies.Build());

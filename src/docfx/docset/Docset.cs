@@ -48,10 +48,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
+        public Template Template => _template.Value;
+
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
+        private readonly Lazy<Template> _template;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
@@ -74,6 +77,9 @@ namespace Microsoft.Docs.Build
                 context.Report("docfx.yml", errors);
                 return map;
             });
+
+            // TODO: make template path a config
+            _template = new Lazy<Template>(() => new Template(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)
@@ -82,10 +88,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                if (!restoreMap.TryGetGitRestorePath(url, out var dir))
-                {
-                    throw Errors.NeedRestore(url).ToException();
-                }
+                var dir = restoreMap.GetGitRestorePath(url);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
