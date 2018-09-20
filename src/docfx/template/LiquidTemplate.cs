@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
+        private readonly ConcurrentDictionary<string, Lazy<DotLiquid.Template>> _templates = new ConcurrentDictionary<string, Lazy<DotLiquid.Template>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
 
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         {
             var template = _templates.GetOrAdd(
                 templateName,
-                new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
+                new Lazy<DotLiquid.Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
 
             var parameters = new RenderParameters(CultureInfo.InvariantCulture)
             {
@@ -46,9 +46,9 @@ namespace Microsoft.Docs.Build
             return template.Render(parameters);
         }
 
-        private static Template LoadTemplate(string fullPath)
+        private static DotLiquid.Template LoadTemplate(string fullPath)
         {
-            var template = Template.Parse(File.ReadAllText(fullPath));
+            var template = DotLiquid.Template.Parse(File.ReadAllText(fullPath));
             template.MakeThreadSafe();
             return template;
         }
@@ -73,17 +73,17 @@ namespace Microsoft.Docs.Build
         private class IncludeFileSystem : ITemplateFileSystem
         {
             private readonly string _templateDir;
-            private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
+            private readonly ConcurrentDictionary<string, Lazy<DotLiquid.Template>> _templates = new ConcurrentDictionary<string, Lazy<DotLiquid.Template>>();
 
             public IncludeFileSystem(string templateDir) => _templateDir = templateDir;
 
             public string ReadTemplateFile(DotLiquid.Context context, string templateName) => throw new NotSupportedException();
 
-            public Template GetTemplate(DotLiquid.Context context, string templateName)
+            public DotLiquid.Template GetTemplate(DotLiquid.Context context, string templateName)
             {
                 return _templates.GetOrAdd(
                     templateName,
-                    new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
+                    new Lazy<DotLiquid.Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
             }
         }
     }
