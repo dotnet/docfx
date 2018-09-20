@@ -14,8 +14,6 @@ namespace Microsoft.Docs.Build
     internal static class RestoreUrl
     {
         private const int MaxVersionCount = 5;
-        private const int RetryCount = 3;
-        private const int RetryInterval = 1000;
 
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
@@ -99,31 +97,20 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(AppData.UrlRestoreDir);
             var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
 
-            for (var i = 0; i < RetryCount; i++)
+            try
             {
-                try
-                {
-                    var response = await RuledHttpClient.GetAsync(address, rules);
+                var response = await RuledHttpClient.GetAsync(address, rules);
 
-                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
-                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await stream.CopyToAsync(file);
-                    }
-                }
-                catch (HttpRequestException ex)
+                using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
+                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    if (i < RetryCount - 1)
-                    {
-                        await Task.Delay(RetryInterval);
-                        continue;
-                    }
-                    throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
+                    await stream.CopyToAsync(file);
                 }
-                return tempFile;
             }
-
-            Debug.Fail("should never reach here");
+            catch (HttpRequestException ex)
+            {
+                throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
+            }
             return tempFile;
         }
 
