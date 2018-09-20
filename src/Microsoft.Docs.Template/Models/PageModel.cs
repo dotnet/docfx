@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -48,7 +47,7 @@ namespace Microsoft.Docs.Build
 
         public string Gitcommit { get; set; }
 
-        public JObject Metadata { get; set; }
+        public FileMetadata Metadata { get; set; }
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

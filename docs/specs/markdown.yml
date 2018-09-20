@@ -81,10 +81,7 @@ outputs:
       "content": "<p>hello</p>",
       "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
       "title": "Title from H1",
-      "metadata":
-      {
-          "Title": "Title from yaml header"
-      }
+      "metadata": { "title": "Title from yaml header" }
     }
   build.manifest:
 ---

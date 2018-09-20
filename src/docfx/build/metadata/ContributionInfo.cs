@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                    docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
         }
 
-        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors)> GetAuthorAndContributors(
+        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
             string authorName)
         {
@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var logins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var updatedDateTime = GetUpdatedAt(document, commits);
 
             // Resolve contributors from commits
             if (commits != null)
@@ -81,10 +82,10 @@ namespace Microsoft.Docs.Build
                     if (author != null)
                         contributors.RemoveAll(c => string.Equals(c.Name, author.Name, StringComparison.OrdinalIgnoreCase));
 
-                    return (errors, author?.ToContributor(), contributors);
+                    return (errors, author?.ToContributor(), contributors, updatedDateTime);
                 }
 
-                return (errors, new Contributor { DisplayName = authorName }, contributors);
+                return (errors, new Contributor { DisplayName = authorName }, contributors, updatedDateTime);
             }
 
             // When author name is not specified, last contributor is author
@@ -92,20 +93,19 @@ namespace Microsoft.Docs.Build
             {
                 var author = contributors[contributors.Count - 1];
                 contributors.RemoveAt(contributors.Count - 1);
-                return (errors, author, contributors);
+                return (errors, author, contributors, updatedDateTime);
             }
 
-            return (errors, null, contributors);
+            return (errors, null, contributors, updatedDateTime);
         }
 
-        public DateTime GetUpdatedAt(Document document)
+        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
         {
-            var (_, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            if (commits?.Count > 0)
+            if (fileCommits?.Count > 0)
             {
-                return _updateTimeByCommit.TryGetValue(commits[0].Sha, out var timeFromHistory)
+                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
                     ? timeFromHistory
-                    : commits[0].Time.UtcDateTime;
+                    : fileCommits[0].Time.UtcDateTime;
             }
             return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
