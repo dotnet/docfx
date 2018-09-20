@@ -39,14 +39,13 @@ namespace Microsoft.Docs.Build
         ///   {{ body_content }}
         /// {%- endif -%}
         /// </summary>
-        /// <param name="context">Liquid context</param>
         /// <param name="html">Html content to be filtered</param>
         /// <param name="nodesXPath">Nodes' XPath to be selected</param>
         /// <param name="attributesXPath">Attributes' XPath to append query string</param>
         /// <param name="queryKey">The appended query key</param>
         /// <param name="queryValue">The appended query value</param>
         /// <returns>String result</returns>
-        public static string AppendQueryString(Context context, string html, string nodesXPath, string attributesXPath, string queryKey, string queryValue)
+        public static string AppendQueryString(string html, string nodesXPath, string attributesXPath, string queryKey, string queryValue)
         {
             var htmlDocument = new HtmlDocument();
             try
@@ -92,11 +91,10 @@ namespace Microsoft.Docs.Build
         ///   {{filter_content}}
         /// {%- endif -%}
         /// </summary>
-        /// <param name="context">Liquid context</param>
         /// <param name="html">Html content to be filtered</param>
         /// <param name="nodesXPath">Nodes' XPath to be removed</param>
         /// <returns>String result</returns>
-        public static string ExcludeNodes(Context context, string html, string nodesXPath)
+        public static string ExcludeNodes(string html, string nodesXPath)
         {
             // TODO: load html document once for multiple filters
             var htmlDocument = new HtmlDocument();
