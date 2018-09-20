@@ -25,8 +25,9 @@ namespace Microsoft.Docs.Build
 
             var dependencies = new DependencyMapBuilder();
 
-            var (errors, schema, model) = await Load(file, dependencies, bookmarkValidator, buildChild, xrefMap);
-            var metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), model.Metadata);
+            var (errors, schema, model, yamlHeader) = await Load(file, dependencies, bookmarkValidator, buildChild, xrefMap);
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader));
+            errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Config.Locale;
@@ -38,9 +39,7 @@ namespace Microsoft.Docs.Build
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
-            // TODO: add check before to avoid case failure
-            var authorName = metadata.Value<string>("author");
-            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, authorName);
+            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, metadata.Author);
             if (error != null)
                 errors.Add(error);
 
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
             Load(
             Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
@@ -82,18 +81,15 @@ namespace Microsoft.Docs.Build
             {
                 return LoadMarkdown(file, content, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
-            else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 return await LoadYaml(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
-            else
-            {
-                Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
-                return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
-            }
+            Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
+            return await LoadJson(content, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
-        private static (List<Error> errors, Schema schema, PageModel model)
+        private static (List<Error> errors, Schema schema, PageModel model, JObject metadata)
             LoadMarkdown(
             Document file, string content, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
@@ -108,7 +104,6 @@ namespace Microsoft.Docs.Build
             var model = new PageModel
             {
                 Content = finalHtml,
-                Metadata = markup.Metadata,
                 Title = title,
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
@@ -118,10 +113,10 @@ namespace Microsoft.Docs.Build
 
             bookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (markup.Errors, Schema.Conceptual, model);
+            return (markup.Errors, Schema.Conceptual, model, markup.Metadata);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
             LoadYaml(
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
@@ -130,7 +125,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
             LoadJson(
             string content, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
@@ -139,7 +134,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
             LoadSchemaDocument(
             List<Error> errors, JToken token, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
@@ -160,18 +155,18 @@ namespace Microsoft.Docs.Build
                 content = await RazorTemplate.Render(schema.Name, content);
             }
 
+            // TODO: add check before to avoid case failure
             var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
             var title = metadata.Value<string>("title") ?? obj?.Value<string>("title");
 
             var model = new PageModel
             {
                 Content = content,
-                Metadata = metadata,
                 Title = title,
                 RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
             };
 
-            return (errors, schema, model);
+            return (errors, schema, model, metadata);
 
             object TransformContent(DataTypeAttribute attribute, object value)
             {

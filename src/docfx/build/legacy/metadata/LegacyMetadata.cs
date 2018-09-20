@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 LegacyManifestOutput legacyManifestOutput,
                 TableOfContentsMap tocMap)
         {
-            var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
