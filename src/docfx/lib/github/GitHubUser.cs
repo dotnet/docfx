@@ -17,7 +17,9 @@ namespace Microsoft.Docs.Build
 
         public DateTime Expiry { get; set; }
 
-        public bool IsValid() => Name != null && Expiry < DateTime.UtcNow;
+        public bool IsValid() => Id != 0;
+
+        public bool IsExpired() => Expiry > DateTime.UtcNow;
 
         public Contributor ToContributor()
         {
