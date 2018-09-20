@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
-            result.Write($@"<link rel=""stylesheet"" href=""{Markup}"">");
+            result.Write($@"<link rel=""stylesheet"" href=""/_themes/{Markup}"">");
         }
     }
 }

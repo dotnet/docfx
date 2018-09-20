@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
+            var stringId = Markup.Trim();
             result.Write(Markup);
         }
     }

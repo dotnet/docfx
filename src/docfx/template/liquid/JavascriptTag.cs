@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using DotLiquid;
 
@@ -10,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
-            result.Write($@"<script src=""{0}""></script>");
+            result.Write($@"<script src=""/_themes/{Markup}""></script>");
         }
     }
 }

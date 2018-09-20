@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
@@ -26,6 +27,9 @@ namespace Microsoft.Docs.Build
             "f1_keywords",
         };
 
+        private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
+
+        private readonly string _templateDir;
         private readonly LiquidTemplate _liquid;
         private readonly MustacheTemplate _mustache;
         private readonly JavaScript _js;
@@ -34,6 +38,7 @@ namespace Microsoft.Docs.Build
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
+            _templateDir = templateDir;
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavaScript(contentTemplateDir);
             _mustache = new MustacheTemplate(contentTemplateDir);
@@ -62,6 +67,23 @@ namespace Microsoft.Docs.Build
         public JObject TransformMetadata(string schemaName, JObject metadata)
         {
             return _js.Run($"{schemaName}.mta.json.js", metadata);
+        }
+
+        public void CopyTo(string outputPath)
+        {
+            foreach (var resourceDir in s_resourceFolders)
+            {
+                var srcDir = Path.Combine(_templateDir, resourceDir);
+                if (Directory.Exists(srcDir))
+                {
+                    Parallel.ForEach(Directory.EnumerateFiles(srcDir), file =>
+                    {
+                        var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
+                        Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+                        File.Copy(file, outputFilePath, overwrite: true);
+                    });
+                }
+            }
         }
 
         public static string CreateHtmlMetaTags(JObject metadata)

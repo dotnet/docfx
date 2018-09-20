@@ -23,7 +23,6 @@ namespace Microsoft.Docs.Build
         {
             DotLiquid.Template.RegisterTag<StyleTag>("style");
             DotLiquid.Template.RegisterTag<JavaScriptTag>("js");
-            DotLiquid.Template.RegisterTag<ImageTag>("img");
             DotLiquid.Template.RegisterTag<LocalizeTag>("loc");
             DotLiquid.Template.RegisterFilter(typeof(LiquidFilter));
         }

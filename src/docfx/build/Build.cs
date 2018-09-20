@@ -40,6 +40,11 @@ namespace Microsoft.Docs.Build
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
 
+            if (!docset.Config.Output.Json)
+            {
+                docset.Template.CopyTo(outputPath);
+            }
+
             errors.ForEach(e => context.Report(e));
         }
 
