@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
     <div class=""version3"">
         <p>content3</p>
     </div>
-</div>", "//div[@class and not(contains(@class,'1'))]", @"
+</div>", "//div[@class and not(contains(@class,'version1'))]", @"
 < div>
     <h2>Constructors summary1</h2>
     
