@@ -8,6 +8,10 @@ namespace Microsoft.Docs.Build
     {
         public string Name { get; set; }
 
+        public string FullName { get; set; }
+
+        public string Description { get; set; }
+
         [Uid]
         public string Uid { get; set; }
     }

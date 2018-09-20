@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                await ParallelUtility.ForEach(files, file => Load(context, xrefs, file), Progress.Update);
+                await ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefs, file), Progress.Update);
             }
             return new InternalXrefMap(xrefs);
         }
@@ -34,33 +35,40 @@ namespace Microsoft.Docs.Build
 
         private static Task Load(Context context, ConcurrentDictionary<string, XrefSpec> xrefs, Document file)
         {
-            var errors = new List<Error>();
-            var content = file.ReadText();
-            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+            try
             {
-                TryAddXref(errors, xrefs, LoadMarkdown(content, file));
+                var errors = new List<Error>();
+                var content = file.ReadText();
+                if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+                {
+                    TryAddXref(errors, xrefs, LoadMarkdown(content, file));
+                }
+                else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+                {
+                    var (yamlErrors, token) = YamlUtility.Deserialize(content);
+                    errors.AddRange(yamlErrors);
+                    TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
+                }
+                else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+                {
+                    var (jsonErrors, token) = JsonUtility.Deserialize(content);
+                    errors.AddRange(jsonErrors);
+                    TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
+                }
+                context.Report(file.ToString(), errors);
+                return Task.CompletedTask;
             }
-            else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            catch (DocfxException ex)
             {
-                var (yamlErrors, token) = YamlUtility.Deserialize(content);
-                errors.AddRange(yamlErrors);
-                TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
+                context.Report(file.ToString(), ex.Error);
+                return Task.CompletedTask;
             }
-            else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
-            {
-                var (jsonErrors, token) = JsonUtility.Deserialize(content);
-                errors.AddRange(jsonErrors);
-                TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
-            }
-            context.Report(file.FilePath, errors);
-            return Task.CompletedTask;
         }
 
         private static XrefSpec LoadMarkdown(string content, Document file)
         {
             var (_, markup) = Markup.ToHtml(content, file, null, null, null, null, MarkdownPipelineType.ConceptualMarkdown);
 
-            // TODO: put metadata property names into a file with constants
             var uid = markup.Metadata.Value<string>("uid");
             var title = markup.Metadata.Value<string>("title");
             if (!string.IsNullOrEmpty(uid))
@@ -98,11 +106,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (!string.IsNullOrEmpty((string)value))
                     {
-                        // TODO: need to set extension data for xref spec
+                        // TODO: set name and extension data based on defined xref properties in the schema type
                         xref = new XrefSpec { Uid = (string)value, Href = file.FilePath };
                     }
                 }
-                return null;
+                return (string)value;
             }
         }
 

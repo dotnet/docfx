@@ -69,7 +69,10 @@ inputs:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a"
+      "uid": "a",
+      "name": "test",
+      "fullName": "test.test",
+      "description": "a.description"
     }
   docs/c.md: Link to @a
 outputs:
