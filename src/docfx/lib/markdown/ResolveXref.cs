@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
                         // TODO: Support advanced cross reference
                         // e.g.: <a href="xref:System.String?displayProperty=fullName"/>
-                        var content = new LiteralInline(xrefSpec.Name ?? xrefSpec.Uid);
+                        var content = new LiteralInline(string.IsNullOrEmpty(xrefSpec.Name) ? xrefSpec.Uid : xrefSpec.Name);
                         return new LinkInline(xrefSpec.Href, null).AppendChild(content);
                     }
                     return node;

@@ -83,7 +83,7 @@ outputs:
   docs/a.json:
   build.manifest:
 ---
-# Define duplicate uid in conceptual and SDP, should output warning
+# Define duplicate uid in conceptual and SDP, should output warning and do not resolve it
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
@@ -98,11 +98,13 @@ inputs:
   docs/c.md: Link to @a
 outputs:
   docs/a.json:
-  docs/b.json:
-  docs/c.json:
-  build.manifest:
+  docs/b.json: 
+  docs/c.json: |
+    {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["error","duplicate-uid","Uid 'a' has already been defined in *.","*"]
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.yml,docs/b.json"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
+  build.manifest:
 ---  
 # Resolve xref in SDP
 inputs:

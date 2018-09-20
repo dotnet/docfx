@@ -138,8 +138,8 @@ namespace Microsoft.Docs.Build
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
-        public static Error DuplicateUid(string uid, string href)
-            => new Error(ErrorLevel.Error, "duplicate-uid", $"Uid '{uid}' has already been defined in {href}.");
+        public static Error UidConflict(string uid, IEnumerable<XrefSpec> specs)
+            => new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', specs.OrderBy(spec => spec.Href).Select(spec => spec.Href).Take(5))}");
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

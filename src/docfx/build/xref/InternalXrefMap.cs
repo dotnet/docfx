@@ -10,30 +10,31 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class InternalXrefMap
+    internal class InternalXrefMap
     {
         private readonly IReadOnlyDictionary<string, XrefSpec> _map;
-        private static readonly object _lock = new object();
 
         private InternalXrefMap(IReadOnlyDictionary<string, XrefSpec> map)
         {
             _map = map;
         }
 
-        internal static async Task<InternalXrefMap> Create(Context context, IEnumerable<Document> files)
+        public static async Task<InternalXrefMap> Create(Context context, IEnumerable<Document> files)
         {
+            ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
             ConcurrentDictionary<string, XrefSpec> xrefs = new ConcurrentDictionary<string, XrefSpec>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
-                await ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefs, file), Progress.Update);
+                await ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefs, xrefConflicts, file), Progress.Update);
+                HandleXrefConflicts(context, xrefs, xrefConflicts);
             }
             return new InternalXrefMap(xrefs);
         }
 
-        internal bool Resolve(string uid, out XrefSpec xref) => _map.TryGetValue(uid, out xref);
+        public bool Resolve(string uid, out XrefSpec xref) => _map.TryGetValue(uid, out xref);
 
-        private static Task Load(Context context, ConcurrentDictionary<string, XrefSpec> xrefs, Document file)
+        private static Task Load(Context context, ConcurrentDictionary<string, XrefSpec> xrefs, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, Document file)
         {
             try
             {
@@ -41,19 +42,19 @@ namespace Microsoft.Docs.Build
                 var content = file.ReadText();
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    TryAddXref(errors, xrefs, LoadMarkdown(content, file));
+                    TryAddXref(errors, xrefs, xrefConflicts, LoadMarkdown(content, file));
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
                     var (yamlErrors, token) = YamlUtility.Deserialize(content);
                     errors.AddRange(yamlErrors);
-                    TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
+                    TryAddXref(errors, xrefs, xrefConflicts, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
                     var (jsonErrors, token) = JsonUtility.Deserialize(content);
                     errors.AddRange(jsonErrors);
-                    TryAddXref(errors, xrefs, LoadSchemaDocument(errors, token, file));
+                    TryAddXref(errors, xrefs, xrefConflicts, LoadSchemaDocument(errors, token, file));
                 }
                 context.Report(file.ToString(), errors);
                 return Task.CompletedTask;
@@ -62,6 +63,24 @@ namespace Microsoft.Docs.Build
             {
                 context.Report(file.ToString(), ex.Error);
                 return Task.CompletedTask;
+            }
+        }
+
+        private static void HandleXrefConflicts(Context context, ConcurrentDictionary<string, XrefSpec> xrefs, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts)
+        {
+            foreach (var (uid, conflict) in xrefConflicts)
+            {
+                var conflictingSpecs = new HashSet<XrefSpec>();
+                foreach (var xref in conflict)
+                {
+                    conflictingSpecs.Add(xref);
+                }
+
+                if (xrefs.TryRemove(uid, out var removed))
+                {
+                    conflictingSpecs.Add(removed);
+                }
+                context.Report(Errors.UidConflict(uid, conflictingSpecs));
             }
         }
 
@@ -114,21 +133,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TryAddXref(List<Error> errors, ConcurrentDictionary<string, XrefSpec> xrefs, XrefSpec spec)
+        private static void TryAddXref(List<Error> errors, ConcurrentDictionary<string, XrefSpec> xrefs, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, XrefSpec spec)
         {
             if (spec is null)
             {
                 return;
             }
-            lock (_lock)
+
+            if (!xrefs.TryAdd(spec.Uid, spec))
             {
-                if (xrefs.ContainsKey(spec.Uid))
+                if (xrefs.TryGetValue(spec.Uid, out var existingXref))
                 {
-                    errors.Add(Errors.DuplicateUid(spec.Uid, xrefs[spec.Uid].Href));
-                }
-                else
-                {
-                    xrefs.TryAdd(spec.Uid, spec);
+                    xrefConflicts.GetOrAdd(spec.Uid, _ => new ConcurrentBag<XrefSpec>()).Add(spec);
                 }
             }
         }

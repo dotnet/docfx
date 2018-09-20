@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    public class XrefMap
+    internal class XrefMap
     {
         // TODO: key could be uid+moniker+locale
         private readonly InternalXrefMap _internalXrefMap;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        internal static async Task<XrefMap> Create(Context context, Docset docset, bool buildInternalXrefMap)
+        public static async Task<XrefMap> Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, buildInternalXrefMap ? await InternalXrefMap.Create(context, docset.BuildScope) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? await InternalXrefMap.Create(context, docset.BuildScope) : null);
         }
     }
 }
