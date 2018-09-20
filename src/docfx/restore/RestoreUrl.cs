@@ -11,13 +11,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    public static class RestoreUrl
+    internal static class RestoreUrl
     {
         private const int MaxVersionCount = 5;
-        private const int RetryCount = 3;
-        private const int RetryInterval = 1000;
-
-        private static readonly HttpClient s_httpClient = new HttpClient();
 
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
@@ -25,9 +21,9 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string address)
             => Docs.Build.Restore.GetRestoreRootDir(address, AppData.UrlRestoreDir);
 
-        public static async Task<string> Restore(string address)
+        public static async Task<string> Restore(string address, HttpSecretConfig[] rules)
         {
-            var tempFile = await DownloadToTempFile(address);
+            var tempFile = await DownloadToTempFile(address, rules);
 
             var fileVersion = "";
             using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
@@ -96,36 +92,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<string> DownloadToTempFile(string address)
+        private static async Task<string> DownloadToTempFile(string address, HttpSecretConfig[] rules)
         {
             Directory.CreateDirectory(AppData.UrlRestoreDir);
             var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
 
-            for (var i = 0; i < RetryCount; i++)
+            try
             {
-                try
-                {
-                    var response = await s_httpClient.GetAsync(new Uri(address));
+                var response = await RuledHttpClient.GetAsync(address, rules);
 
-                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
-                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await stream.CopyToAsync(file);
-                    }
-                }
-                catch (HttpRequestException ex)
+                using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
+                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    if (i < RetryCount - 1)
-                    {
-                        await Task.Delay(RetryInterval);
-                        continue;
-                    }
-                    throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
+                    await stream.CopyToAsync(file);
                 }
-                return tempFile;
             }
-
-            Debug.Fail("should never reach here");
+            catch (HttpRequestException ex)
+            {
+                throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
+            }
             return tempFile;
         }
 
