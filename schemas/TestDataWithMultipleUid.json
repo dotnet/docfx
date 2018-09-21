@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "uid": {
+      "type": "string"
+    },
+    "anotherUid": {
+      "type": "string"
+    }
+  }
+}
