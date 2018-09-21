@@ -30,22 +30,16 @@ DocFX build supports localization contents, there are a few features need to be 
   - Focus the Loc publishing configuration controlling, like bilingual or contribution.  
   - Source configuration changing will be immediately applied to Loc, no more manually sync.
   ```yaml
-  tier1:
+  "[de-de,zh-cn,ja-jp,ko-kr]":
     locale: [<locale>]
     contribution:
       repository: https://github.com/test-org/test-repo[.<locale>]
       branch: contribution
       excludedContributors:
         - superyyrrZZ
-  tier2:
+  "[hu-hu,it-it]":
     locale: [<locale>]
     content: "**/*.md"
-  de-de: tier1
-  zh-cn: tier1
-  ja-jp: tier1
-  kp-kr: tier1
-  hu-hu: tier2
-  it-it: tier2
   ```
 
 ### [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
