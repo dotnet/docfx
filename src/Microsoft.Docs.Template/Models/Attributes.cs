@@ -37,6 +37,8 @@ namespace Microsoft.Docs.Build
 
     public class XrefAttribute : DataTypeAttribute { }
 
+    public class XrefPropertyAttribute : DataTypeAttribute { }
+
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class LocaleAttribute : ValidationAttribute
     {

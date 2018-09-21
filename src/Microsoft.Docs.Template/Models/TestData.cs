@@ -6,10 +6,13 @@ namespace Microsoft.Docs.Build
     [DataSchema]
     public sealed class TestData
     {
+        [XrefProperty]
         public string Name { get; set; }
 
+        [XrefProperty]
         public string FullName { get; set; }
 
+        [XrefProperty]
         public string Description { get; set; }
 
         [Uid]

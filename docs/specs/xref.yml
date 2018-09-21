@@ -79,7 +79,7 @@ inputs:
   docs/c.md: Link to @a
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
+    {"content":"<p>Link to <a href=\"docs/a.json\">test</a></p>\n"}
   docs/a.json:
   build.manifest:
 ---
@@ -105,7 +105,7 @@ outputs:
   build.log: |
     ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.json,docs/b.json"]
   build.manifest:
----  
+---
 # Resolve xref in SDP
 inputs:
   docfx.yml: |
@@ -130,4 +130,4 @@ outputs:
       "content": {"xref": "docs/a.json"}
     }
   build.manifest:
----  
+---

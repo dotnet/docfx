@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
 
             public bool Resolve(string uid, out XrefSpec xref) => _map.TryGetValue(uid, out xref);
 
-            private static Task Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, Document file)
+            private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, Document file)
             {
                 try
                 {
@@ -97,12 +97,10 @@ namespace Microsoft.Docs.Build
                         TryAddXref(xrefConflicts, LoadSchemaDocument(errors, token, file));
                     }
                     context.Report(file.ToString(), errors);
-                    return Task.CompletedTask;
                 }
                 catch (DocfxException ex)
                 {
                     context.Report(file.ToString(), ex.Error);
-                    return Task.CompletedTask;
                 }
             }
 
@@ -126,7 +124,6 @@ namespace Microsoft.Docs.Build
             private static XrefSpec LoadMarkdown(string content, Document file)
             {
                 var (_, markup) = Markup.ToHtml(content, file, null, null, null, null, MarkdownPipelineType.ConceptualMarkdown);
-
                 var uid = markup.Metadata.Value<string>("uid");
                 var title = markup.Metadata.Value<string>("title");
                 if (!string.IsNullOrEmpty(uid))
@@ -143,7 +140,9 @@ namespace Microsoft.Docs.Build
 
             private static XrefSpec LoadSchemaDocument(List<Error> errors, JToken token, Document file)
             {
-                XrefSpec xref = null;
+                string uid = null;
+                string name = null;
+                JObject extensionData = new JObject();
 
                 // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
                 //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -156,17 +155,41 @@ namespace Microsoft.Docs.Build
 
                 var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
                 errors.AddRange(schemaErrors);
-                return xref;
+                return BuildXref();
 
-                object TransformContent(DataTypeAttribute attribute, object value)
+                XrefSpec BuildXref()
+                {
+                    if (string.IsNullOrEmpty(uid))
+                    {
+                        if (name != null || extensionData.Children().Count() > 0)
+                        {
+                            errors.Add(Errors.UidMissing());
+                        }
+                        return null;
+                    }
+                    var xref = new XrefSpec { Uid = uid, Name = name, Href = file.SitePath };
+                    xref.ExtensionData.Merge(extensionData, new JsonMergeSettings());
+                    return xref;
+                }
+
+                object TransformContent(DataTypeAttribute attribute, object value, string fieldName)
                 {
                     if (attribute is UidAttribute)
                     {
                         if (!string.IsNullOrEmpty((string)value))
                         {
-                            // TODO: set name and extension data based on defined xref properties in the schema type
-                            xref = new XrefSpec { Uid = (string)value, Href = file.SitePath };
+                            uid = (string)value;
                         }
+                    }
+
+                    if (attribute is XrefPropertyAttribute)
+                    {
+                        if (fieldName == "Name")
+                        {
+                            name = (string)value;
+                            return (string)value;
+                        }
+                        extensionData[fieldName] = (string)value;
                     }
                     return (string)value;
                 }

@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         private static List<Error> t_schemaViolationErrors;
 
         [ThreadStatic]
-        private static Func<DataTypeAttribute, object, object> t_transform;
+        private static Func<DataTypeAttribute, object, string, object> t_transform;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<DataTypeAttribute, object, object> transform = null)
+            Func<DataTypeAttribute, object, string, object> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -489,7 +489,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return t_transform != null ? t_transform(_attribute, value) : value;
+                return t_transform != null ? t_transform(_attribute, value, _fieldName) : value;
             }
         }
     }

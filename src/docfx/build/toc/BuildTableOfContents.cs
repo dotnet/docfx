@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
             try
             {
@@ -64,13 +64,10 @@ namespace Microsoft.Docs.Build
                 var (errors, tocModel, _, referencedDocuments, referencedTocs) = Load(fileToBuild);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
-
-                return Task.CompletedTask;
             }
             catch (DocfxException ex)
             {
                 context.Report(fileToBuild.ToString(), ex.Error);
-                return Task.CompletedTask;
             }
         }
 

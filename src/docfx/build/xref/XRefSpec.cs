@@ -15,6 +15,6 @@ namespace Microsoft.Docs.Build
         public string Href { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; }
+        public JObject ExtensionData { get; } = new JObject();
     }
 }
