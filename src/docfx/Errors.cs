@@ -138,6 +138,12 @@ namespace Microsoft.Docs.Build
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
 
+        public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
+        {
+            var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+        }
+
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
         /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>

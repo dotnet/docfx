@@ -4,6 +4,18 @@
   "properties": {
     "name": {
       "type": "string"
+    },
+    "fullName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "uid": {
+      "type": "string"
+    },
+    "xref": {
+      "type": "string"
     }
   }
 }
