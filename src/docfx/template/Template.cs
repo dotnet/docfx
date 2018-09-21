@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavaScript(contentTemplateDir);
             _mustache = new MustacheTemplate(contentTemplateDir);
-            _global = JObject.Parse(File.ReadAllText(Path.Combine(templateDir, "LocalizedTokens/docs(en-us).html/tokens.json")));
+            _global = LoadGlobalTokens(templateDir);
         }
 
         public string Render(string schemaName, PageModel model, string sitePath, CultureInfo culture)
@@ -137,6 +138,12 @@ namespace Microsoft.Docs.Build
             }
 
             return result.ToString();
+        }
+
+        private JObject LoadGlobalTokens(string templateDir)
+        {
+            var path = Path.Combine(templateDir, "LocalizedTokens/docs(en-us).html/tokens.json");
+            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
     }
 }

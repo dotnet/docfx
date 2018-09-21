@@ -69,7 +69,13 @@ namespace Microsoft.Docs.Build
 
         private static IReadOnlyDictionary<string, string> LoadLocalizedStrings(string templateDir)
         {
-            var (_, data) = YamlUtility.Deserialize<JObject[]>(File.ReadAllText(Path.Combine(templateDir, "yml/Conceptual.html.yml")));
+            var file = Path.Combine(templateDir, "yml/Conceptual.html.yml");
+            if (!File.Exists(file))
+            {
+                return new Dictionary<string, string>();
+            }
+
+            var (_, data) = YamlUtility.Deserialize<JObject[]>(File.ReadAllText(file));
 
             return data.ToDictionary(item => item.Value<string>("uid"), item => item.Value<string>("name"));
         }
