@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
             }
 
-            if (!docset.Config.Output.Json)
+            if (!docset.Config.Output.Json && docset.Config.Dependencies.ContainsKey("_themes"))
             {
                 docset.Template.CopyTo(outputPath);
             }
