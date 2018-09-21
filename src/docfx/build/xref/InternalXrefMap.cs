@@ -72,13 +72,10 @@ namespace Microsoft.Docs.Build
             {
                 if (conflict.Count > 1)
                 {
+                    conflict.OrderBy(spec => spec.Href);
                     context.Report(Errors.UidConflict(uid, conflict));
-                    continue;
                 }
-                else if (conflict.Count == 1)
-                {
-                    result.Add(uid, conflict.First());
-                }
+                result.Add(uid, conflict.First());
             }
             return result;
         }
@@ -125,7 +122,7 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrEmpty((string)value))
                     {
                         // TODO: set name and extension data based on defined xref properties in the schema type
-                        xref = new XrefSpec { Uid = (string)value, Href = file.FilePath };
+                        xref = new XrefSpec { Uid = (string)value, Href = file.SitePath };
                     }
                 }
                 return (string)value;
