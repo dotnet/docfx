@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
-            result.Write($@"<script src=""/_themes/{Markup}""></script>");
+            result.Write($@"<script src=""{LiquidTemplate.GetThemeRelativePath(context, Markup)}"" ></script>");
         }
     }
 }

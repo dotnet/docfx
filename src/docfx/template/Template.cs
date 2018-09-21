@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,7 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _liquid;
         private readonly MustacheTemplate _mustache;
         private readonly JavaScript _js;
+        private readonly JObject _global;
 
         public Template(string templateDir)
         {
@@ -42,24 +44,39 @@ namespace Microsoft.Docs.Build
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavaScript(contentTemplateDir);
             _mustache = new MustacheTemplate(contentTemplateDir);
+            _global = JObject.Parse(File.ReadAllText(Path.Combine(templateDir, "LocalizedTokens/docs(en-us).html/tokens.json")));
         }
 
-        public string Render(string schemaName, PageModel model)
+        public string Render(string schemaName, PageModel model, string sitePath, CultureInfo culture)
         {
             // TODO: only works for conceptual
             var content = model.Content.ToString();
             var fileMetadata = JObject.FromObject(model.Metadata);
 
             var obj = JObject.FromObject(model);
+            obj["_op_gitContributorInformation"] = new JObject
+            {
+                ["contributors"] = obj["contributors"],
+                ["update_at"] = model.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                ["updated_at_date_time"] = model.UpdatedAt,
+            };
+            obj["__global"] = _global;
             obj.Remove("content");
             obj.Remove("metadata");
-
-            obj.Merge(fileMetadata, JsonUtility.MergeSettings);
+            obj.Remove("contributors");
 
             var page = _js.Run($"{schemaName}.mta.json.js", JsonUtility.Merge(fileMetadata, obj));
             var metadata = CreateHtmlMetaTags(page);
             var layout = page.Value<string>("layout");
-            var liquidModel = new JObject { ["content"] = content, ["page"] = page, ["metadata"] = metadata };
+            var themeRelativePath = PathUtility.GetRelativePathToFile(sitePath, "_themes");
+
+            var liquidModel = new JObject
+            {
+                ["content"] = content,
+                ["page"] = page,
+                ["metadata"] = metadata,
+                ["theme_rel"] = themeRelativePath,
+            };
 
             return _liquid.Render(layout, liquidModel);
         }
@@ -76,7 +93,7 @@ namespace Microsoft.Docs.Build
                 var srcDir = Path.Combine(_templateDir, resourceDir);
                 if (Directory.Exists(srcDir))
                 {
-                    Parallel.ForEach(Directory.EnumerateFiles(srcDir), file =>
+                    Parallel.ForEach(Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories), file =>
                     {
                         var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
                         Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));

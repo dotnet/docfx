@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -22,6 +23,11 @@ namespace Microsoft.Docs.Build
         /// Gets the config associated with this docset, loaded from `docfx.yml`.
         /// </summary>
         public Config Config { get; }
+
+        /// <summary>
+        /// Gets the culture info computed from <see cref="Config.Locale"/>.
+        /// </summary>
+        public CultureInfo Culture { get; }
 
         /// <summary>
         /// Gets a value indicating whether enable legacy output.
@@ -62,6 +68,7 @@ namespace Microsoft.Docs.Build
             _context = context;
             Config = config;
 
+            Culture = new CultureInfo(config.Locale);
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
             RestoreMap = new RestoreMap(DocsetPath);

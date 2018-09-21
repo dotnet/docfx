@@ -85,7 +85,6 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_url"] = pageModel.RedirectUrl;
             }
 
-            var culture = new CultureInfo(docset.Config.Locale);
             if (pageModel.UpdatedAt != default)
             {
                 rawMetadata["_op_gitContributorInformation"] = new JObject
@@ -94,14 +93,14 @@ namespace Microsoft.Docs.Build
                     ["contributors"] = pageModel.Contributors != null
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
-                    ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern, docset.Culture),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
             if (pageModel.UpdatedAt != default)
-                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
+                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", docset.Culture);
 
             rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
 

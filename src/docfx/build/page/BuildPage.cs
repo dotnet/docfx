@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute &&
                 file.Docset.Config.Dependencies.ContainsKey("_themes"))
             {
-                output = file.Docset.Template.Render(model.PageType, model);
+                output = file.Docset.Template.Render(model.PageType, model, file.SitePath, file.Docset.Culture);
             }
 
             return (errors, output, dependencies.Build());

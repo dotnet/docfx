@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Lazy<DotLiquid.Template>> _templates = new ConcurrentDictionary<string, Lazy<DotLiquid.Template>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
+        private readonly IReadOnlyDictionary<string, string> _localizedStrings;
 
         static LiquidTemplate()
         {
@@ -31,6 +32,7 @@ namespace Microsoft.Docs.Build
         {
             _templateDir = templateDir;
             _fileSystem = new IncludeFileSystem(templateDir);
+            _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
         public string Render(string templateName, JObject model)
@@ -39,12 +41,18 @@ namespace Microsoft.Docs.Build
                 templateName,
                 new Lazy<DotLiquid.Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
 
+            var registers = new Hash
+            {
+                ["file_system"] = _fileSystem,
+                ["localized_strings"] = _localizedStrings,
+            };
+
             var parameters = new RenderParameters(CultureInfo.InvariantCulture)
             {
                 Context = new DotLiquid.Context(
                     environments: new List<Hash> { (Hash)ToHash(model) },
                     outerScope: new Hash(),
-                    registers: new Hash { ["file_system"] = _fileSystem },
+                    registers: registers,
                     errorsOutputMode: ErrorsOutputMode.Rethrow,
                     maxIterations: 0,
                     timeout: 0,
@@ -52,6 +60,18 @@ namespace Microsoft.Docs.Build
             };
 
             return template.Render(parameters);
+        }
+
+        public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
+        {
+            return Path.Combine((string)context["theme_rel"], resourcePath);
+        }
+
+        private static IReadOnlyDictionary<string, string> LoadLocalizedStrings(string templateDir)
+        {
+            var (_, data) = YamlUtility.Deserialize<JObject[]>(File.ReadAllText(Path.Combine(templateDir, "yml/Conceptual.html.yml")));
+
+            return data.ToDictionary(item => item.Value<string>("uid"), item => item.Value<string>("name"));
         }
 
         private static DotLiquid.Template LoadTemplate(string fullPath)
