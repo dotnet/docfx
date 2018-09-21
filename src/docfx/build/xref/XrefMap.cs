@@ -187,7 +187,6 @@ namespace Microsoft.Docs.Build
                         if (fieldName == "Name")
                         {
                             name = (string)value;
-                            return (string)value;
                         }
                         extensionData[fieldName] = (string)value;
                     }
