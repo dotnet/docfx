@@ -137,6 +137,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool WarningsAsErrors;
 
+        // TODO: remove the switch when we fix the performance
+
+        /// <summary>
+        /// Gets whether to build internal xref map
+        /// </summary>
+        public readonly bool BuildInternalXrefMap;
+
         /// <summary>
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path

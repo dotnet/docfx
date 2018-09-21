@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
                 Result.Errors.Add(error);
             }
 
-            t_dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+            t_dependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
 
             return (content, child);
         }
@@ -219,20 +219,20 @@ namespace Microsoft.Docs.Build
                 Result.Errors.Add(error);
             }
 
-            if (child != null)
+            if (child != null && t_buildChild != null)
             {
                 t_buildChild(child);
-                t_dependencyMap.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
+                t_dependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
             }
 
-            t_bookmarkValidator.AddBookmarkReference(self, child ?? self, fragment);
+            t_bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
 
             return link;
         }
 
         private static XrefSpec ResolveXref(string uid)
         {
-            return t_xrefMap.Resolve(uid);
+            return t_xrefMap?.Resolve(uid);
         }
     }
 }

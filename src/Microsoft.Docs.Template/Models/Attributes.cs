@@ -33,6 +33,10 @@ namespace Microsoft.Docs.Build
 
     public class HtmlAttribute : DataTypeAttribute { }
 
+    public class UidAttribute : DataTypeAttribute { }
+
+    public class XrefAttribute : DataTypeAttribute { }
+
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class LocaleAttribute : ValidationAttribute
     {
