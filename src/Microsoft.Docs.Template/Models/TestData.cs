@@ -20,5 +20,17 @@ namespace Microsoft.Docs.Build
 
         [Xref]
         public string Xref { get; set; }
+
+        public TestData Data { get; set; }
+    }
+
+    [DataSchema]
+    public sealed class TestDataWithMultipleUid
+    {
+        [Uid]
+        public string Uid { get; set; }
+
+        [Uid]
+        public string AnotherUid { get; set; }
     }
 }

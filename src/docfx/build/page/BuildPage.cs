@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model, metadata);
 
-            object TransformContent(DataTypeAttribute attribute, object value, string fieldName)
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath, string fieldName)
             {
                 if (attribute is HrefAttribute)
                 {

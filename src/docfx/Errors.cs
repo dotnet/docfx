@@ -145,7 +145,10 @@ namespace Microsoft.Docs.Build
         }
 
         public static Error UidMissing()
-            => new Error(ErrorLevel.Error, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the same object level");
+            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the same object level.");
+
+        public static Error MultipleUid()
+            => new Error(ErrorLevel.Warning, "multiple-uid", "Multiple uid defined at the same object level.");
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
