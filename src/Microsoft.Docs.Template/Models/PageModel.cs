@@ -2,10 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class PageModel
     {
         public string PageType { get; set; }
@@ -16,36 +18,39 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; set; }
 
-        public string Toc { get; set; }
+        public string TocRel { get; set; }
 
         public string Title { get; set; }
 
-        public string HtmlTitle { get; set; }
+        public string RawTitle { get; set; }
 
-        public string RedirectionUrl { get; set; }
+        public string CanonicalUrl { get; set; }
 
-        public string Id { get; set; }
+        public string RedirectUrl { get; set; }
 
-        public string VersionIndependentId { get; set; }
+        public string DocumentId { get; set; }
 
-        public GitUserInfo Author { get; set; }
+        public string DocumentVersionIndependentId { get; set; }
 
-        public GitUserInfo[] Contributors { get; set; }
+        public Contributor Author { get; set; }
+
+        public Contributor[] Contributors { get; set; }
 
         public DateTime UpdatedAt { get; set; }
 
-        public bool ShowEdit { get; set; }
+        public bool OpenToPublicContributors { get; set; }
 
-        public string EditUrl { get; set; }
+        public string ContentGitUrl { get; set; }
 
-        public string ContentUrl { get; set; }
+        public string OriginalContentGitUrl { get; set; }
 
-        public string CommitUrl { get; set; }
+        public string Gitcommit { get; set; }
 
-        public JObject Metadata { get; set; }
+        public FileMetadata Metadata { get; set; }
     }
 
-    public class GitUserInfo
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public class Contributor
     {
         public string Name { get; set; }
 

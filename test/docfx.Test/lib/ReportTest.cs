@@ -26,15 +26,15 @@ namespace Microsoft.Docs.Build
         {
             using (var report = new Report())
             {
-                for (var i = 0; i < Report.MaxErrors; i++)
+                for (var i = 0; i < OutputConfig.DefaultMaxErrors; i++)
                 {
                     report.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
                 }
 
-                Assert.Equal(Report.MaxErrors, report.ErrorCount);
+                Assert.Equal(OutputConfig.DefaultMaxErrors, report.ErrorCount);
 
                 report.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-                Assert.Equal(Report.MaxErrors, report.ErrorCount);
+                Assert.Equal(OutputConfig.DefaultMaxErrors, report.ErrorCount);
             }
         }
     }
