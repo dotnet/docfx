@@ -38,11 +38,11 @@ namespace Microsoft.Docs.Build
             if (options.Legacy)
             {
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
-            }
 
-            if (!docset.Config.Output.Json && docset.Config.Dependencies.ContainsKey("_themes"))
-            {
-                docset.Template.CopyTo(outputPath);
+                if (!docset.Config.Output.Json)
+                {
+                    docset.LegacyTemplate.CopyTo(outputPath);
+                }
             }
 
             errors.ForEach(e => context.Report(e));
