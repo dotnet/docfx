@@ -115,15 +115,18 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
 
-            rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
+            if (file.ContentType != ContentType.Redirection)
+            {
+                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
 
-            if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
-                rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
+                if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
+                    rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
 
-            if (!string.IsNullOrEmpty(pageModel.Gitcommit))
-                rawMetadata["gitcommit"] = pageModel.Gitcommit;
-            if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
-                rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
+                if (!string.IsNullOrEmpty(pageModel.Gitcommit))
+                    rawMetadata["gitcommit"] = pageModel.Gitcommit;
+                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
+                    rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
+            }
 
             return RemoveUpdatedAtDateTime(
                 LegacySchema.Transform(
