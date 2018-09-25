@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             BuildManifest.Build(context, files, sourceDependencies);
 
-            if (options.Legacy)
+            if (options.Legacy && config.Output.Json)
             {
                 Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
 
