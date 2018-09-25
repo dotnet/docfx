@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -22,6 +23,11 @@ namespace Microsoft.Docs.Build
         /// Gets the config associated with this docset, loaded from `docfx.yml`.
         /// </summary>
         public Config Config { get; }
+
+        /// <summary>
+        /// Gets the culture computed from <see cref="Config.Locale"/>.
+        /// </summary>
+        public CultureInfo Culture { get; }
 
         /// <summary>
         /// Gets a value indicating whether enable legacy output.
@@ -64,6 +70,7 @@ namespace Microsoft.Docs.Build
 
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
+            Culture = CreateCultureInfo(Config.Locale);
             RestoreMap = new RestoreMap(DocsetPath);
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
@@ -80,6 +87,18 @@ namespace Microsoft.Docs.Build
 
             // TODO: make template path a config
             _template = new Lazy<Template>(() => new Template(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+        }
+
+        private CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.InvalidLocale(locale).ToException();
+            }
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)

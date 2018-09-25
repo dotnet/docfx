@@ -26,8 +26,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the default locale of this docset.
+        /// TODO: lower case user inputs.
         /// </summary>
-        [Locale]
         public readonly string Locale = "en-us";
 
         /// <summary>
