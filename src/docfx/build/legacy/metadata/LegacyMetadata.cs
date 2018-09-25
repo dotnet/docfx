@@ -51,15 +51,14 @@ namespace Microsoft.Docs.Build
                 string content,
                 Docset docset,
                 Document file,
-                LegacyManifestOutput legacyManifestOutput,
-                TableOfContentsMap tocMap)
+                LegacyManifestOutput legacyManifestOutput)
         {
             var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
             rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
-            rawMetadata["toc_rel"] = pageModel.TocRel ?? tocMap.FindTocRelativePath(file);
+            rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
