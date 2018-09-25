@@ -54,6 +54,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocLevel(string filePath, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
 
+        public static Error InvalidLocale(string locale)
+            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
