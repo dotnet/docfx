@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _liquid;
         private readonly JavaScript _js;
 
+        public JObject Global { get; }
+
         public LegacyTemplate(string templateDir)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
@@ -22,6 +24,7 @@ namespace Microsoft.Docs.Build
             _templateDir = templateDir;
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavaScript(contentTemplateDir);
+            Global = LoadGlobalTokens(templateDir);
         }
 
         public string Render(PageModel model, Document file)
@@ -64,6 +67,12 @@ namespace Microsoft.Docs.Build
                     });
                 }
             }
+        }
+
+        private JObject LoadGlobalTokens(string templateDir)
+        {
+            var path = Path.Combine(templateDir, "LocalizedTokens/docs(en-us).html/tokens.json");
+            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
     }
 }

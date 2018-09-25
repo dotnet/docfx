@@ -35,11 +35,13 @@ namespace Microsoft.Docs.Build
 
             BuildManifest.Build(context, files, sourceDependencies);
 
-            if (options.Legacy && config.Output.Json)
+            if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
-
-                if (!docset.Config.Output.Json)
+                if (config.Output.Json)
+                {
+                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                }
+                else
                 {
                     docset.LegacyTemplate.CopyTo(outputPath);
                 }
