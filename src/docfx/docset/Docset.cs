@@ -68,7 +68,6 @@ namespace Microsoft.Docs.Build
             _context = context;
             Config = config;
 
-            Culture = new CultureInfo(config.Locale);
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
             Culture = CreateCultureInfo(Config.Locale);
