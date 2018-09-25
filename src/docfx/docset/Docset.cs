@@ -54,13 +54,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
-        public Template Template => _template.Value;
+        public LegacyTemplate Template => _template.Value;
 
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<Template> _template;
+        private readonly Lazy<LegacyTemplate> _template;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             });
 
             // TODO: make template path a config
-            _template = new Lazy<Template>(() => new Template(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+            _template = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)

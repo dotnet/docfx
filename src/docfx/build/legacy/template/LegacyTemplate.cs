@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Template
+    internal class LegacyTemplate
     {
         private static readonly HashSet<string> s_excludedHtmlMetaTags = new HashSet<string>
         {
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         private readonly JavaScript _js;
         private readonly JObject _global;
 
-        public Template(string templateDir)
+        public LegacyTemplate(string templateDir)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 

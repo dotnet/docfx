@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
-                    var pageMetadata = Template.CreateHtmlMetaTags(rawMetadata);
+                    var pageMetadata = LegacyTemplate.CreateHtmlMetaTags(rawMetadata);
                     context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }
