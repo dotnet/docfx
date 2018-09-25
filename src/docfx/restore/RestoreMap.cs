@@ -22,31 +22,20 @@ namespace Microsoft.Docs.Build
             _restoreLock = restoreLock;
         }
 
-        public bool TryGetGitRestorePath(string remote, out string restorePath)
+        public string GetGitRestorePath(string remote)
         {
             var (url, _) = GitUtility.GetGitRemoteInfo(remote);
             var restoreDir = RestoreGit.GetRestoreRootDir(url);
             if (_restoreLock.Git.TryGetValue(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
             {
-                restorePath = RestoreGit.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                return true;
+                var result = RestoreGit.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                if (Directory.Exists(result))
+                {
+                    return result;
+                }
             }
 
-            restorePath = default;
-            return false;
-        }
-
-        public bool TryGetUrlRestorePath(string remote, out string restorePath)
-        {
-            var restoreDir = RestoreUrl.GetRestoreRootDir(remote);
-            if (_restoreLock.Url.TryGetValue(remote, out var version) && !string.IsNullOrEmpty(version))
-            {
-                restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
-                return true;
-            }
-
-            restorePath = default;
-            return false;
+            throw Errors.NeedRestore(remote).ToException();
         }
 
         public string GetUrlRestorePath(string docsetPath, string path)
@@ -56,13 +45,19 @@ namespace Microsoft.Docs.Build
             if (!HrefUtility.IsHttpHref(path))
             {
                 // directly return the relative path
-                return Path.Combine(docsetPath, path);
+                var fullPath = Path.Combine(docsetPath, path);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(docsetPath, path).ToException();
             }
 
             // get the file path from restore map
-            if (TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
+            var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+            if (_restoreLock.Url.TryGetValue(path, out var version) && !string.IsNullOrEmpty(version))
             {
-                return restorePath;
+                var result = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
+                if (File.Exists(result))
+                {
+                    return result;
+                }
             }
 
             throw Errors.NeedRestore(path).ToException();

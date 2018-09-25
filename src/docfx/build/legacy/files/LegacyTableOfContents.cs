@@ -20,16 +20,21 @@ namespace Microsoft.Docs.Build
             ConvertLegacyItems(toc.Items);
 
             toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
-            toc.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(
-                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
 
             var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
-            toc.Metadata.PdfName = PathUtility.NormalizeFile(
-                $"{(string.IsNullOrEmpty(dirName) ? "" : "/")}{dirName}.pdf");
+            var pdfAbsolutePath = PathUtility.NormalizeFile(
+                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
+            toc.Metadata.PdfAbsolutePath = pdfAbsolutePath;
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
-            context.WriteJson(new LegacyTableOfContentsExperimentMetadata { Experimental = toc.Metadata.Experimental, ExperimentId = toc.Metadata.ExperimentId }, legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
+            context.WriteJson(
+                new LegacyTableOfContentsExperimentMetadata
+                {
+                    Experimental = toc.Metadata.Experimental,
+                    ExperimentId = toc.Metadata.ExperimentId,
+                },
+                legacyManifestOutput.MetadataOutput.ToLegacyOutputPath(docset));
         }
 
         private static void ConvertLegacyItems(IEnumerable<LegacyTableOfContentsItem> items)
@@ -62,9 +67,6 @@ namespace Microsoft.Docs.Build
         {
             [JsonProperty(PropertyName = "pdf_absolute_path")]
             public string PdfAbsolutePath { get; set; }
-
-            [JsonProperty(PropertyName = "pdf_name")]
-            public string PdfName { get; set; }
         }
 
         private class LegacyTableOfContentsExperimentMetadata

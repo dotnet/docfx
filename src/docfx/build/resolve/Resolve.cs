@@ -49,7 +49,8 @@ namespace Microsoft.Docs.Build
                     {
                         return (error, query + fragment, fragment, null);
                     }
-                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(Path.GetFileName(file.SitePath), file.ContentType, file.Schema));
+                    var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
+                        Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
                 if (string.IsNullOrEmpty(fragment))
@@ -67,7 +68,8 @@ namespace Microsoft.Docs.Build
 
             // Make result relative to `resultRelativeTo`
             var relativePath = PathUtility.GetRelativePathToFile(resultRelativeTo.SitePath, file.SitePath);
-            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(relativePath, file.ContentType, file.Schema));
+            var relativeUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
+                relativePath, file.ContentType, file.Schema, file.Docset.Config.Output.Json));
 
             if (redirectTo != null)
             {
@@ -143,7 +145,7 @@ namespace Microsoft.Docs.Build
 
             var file = Document.TryCreateFromFile(relativeTo.Docset, pathToDocset);
 
-            return (file != null ? null : Errors.FileNotFound(relativeTo, path), file, null, query, fragment, false);
+            return (file != null ? null : Errors.FileNotFound(relativeTo.ToString(), path), file, null, query, fragment, false);
         }
     }
 }

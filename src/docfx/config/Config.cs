@@ -118,12 +118,45 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
         /// <summary>
+        /// Gets the authorization keys for required resources access
+        /// </summary>
+        public readonly HttpConfig Http = new HttpConfig();
+
+        /// <summary>
+        /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
+        /// </summary>
+        public readonly GitHubConfig GitHub = new GitHubConfig();
+
+        /// <summary>
+        /// Gets the configturation related to git repositories, usually used to clone a repo.
+        /// </summary>
+        public readonly GitConfig Git = new GitConfig();
+
+        /// <summary>
         /// Gets whether warnings should be treated as errors.
         /// </summary>
         public readonly bool WarningsAsErrors;
 
+        // TODO: remove the switch when we fix the performance
+
+        /// <summary>
+        /// Gets whether to build internal xref map
+        /// </summary>
+        public readonly bool BuildInternalXrefMap;
+
+        /// <summary>
+        /// The addresses of xref map files, used for resolving xref.
+        /// They should be absolute url or relative path
+        /// </summary>
+        public readonly string[] Xref = Array.Empty<string>();
+
         public IEnumerable<string> GetExternalReferences()
         {
+            foreach (var url in Xref)
+            {
+                yield return url;
+            }
+
             yield return Contribution.GitCommitsTime;
             yield return Contribution.UserProfileCache;
         }
@@ -172,14 +205,15 @@ namespace Microsoft.Docs.Build
 
             if (extend)
             {
-                var extendErros = new List<Error>();
-                (extendErros, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
-                errors.AddRange(extendErros);
+                var extendErrors = new List<Error>();
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                errors.AddRange(extendErrors);
             }
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject, docsetPath);
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
+
             return (errors, config);
         }
 
@@ -194,10 +228,9 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var errors = new List<Error>();
 
-            var configExtend = Environment.GetEnvironmentVariable("DOCFX_CONFIG_EXTEND");
-            if (!string.IsNullOrEmpty(configExtend))
+            if (File.Exists(AppData.GlobalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(docsetPath, configExtend);
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, AppData.GlobalConfigPath);
                 (errors, result) = LoadConfigObject(filePath);
             }
 

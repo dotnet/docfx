@@ -25,14 +25,15 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
 
-        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset, string gitToken)
+        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset)
         {
+            var gitToken = docset.Config.GitHub.AuthToken;
             var result = new ContributionInfo(docset, gitToken);
             var errors = await result.LoadCommits(docset);
             return (errors, result);
         }
 
-        public async Task<(Error error, GitUserInfo author, GitUserInfo[] contributors, DateTime updatedAt)> GetContributorInfo(
+        public async Task<(Error error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(
             Document document,
             string author)
         {
@@ -168,12 +169,12 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private GitUserInfo ToGitUserInfo(UserProfile profile)
+        private Contributor ToGitUserInfo(UserProfile profile)
         {
             if (profile == null)
                 return null;
 
-            return new GitUserInfo
+            return new Contributor
             {
                 Name = profile.Name,
                 DisplayName = profile.DisplayName,

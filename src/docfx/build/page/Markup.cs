@@ -36,13 +36,14 @@ namespace Microsoft.Docs.Build
             { "Caution", "<p>Caution</p>" },
         };
 
-        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping = new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
-        {
-            { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
-            { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
-            { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
-            { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
-        };
+        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
+            new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
+                {
+                    { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
+                    { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+                    { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
+                    { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+                };
 
         [ThreadStatic]
         private static MarkupResult t_result;
@@ -55,6 +56,9 @@ namespace Microsoft.Docs.Build
 
         [ThreadStatic]
         private static Action<Document> t_buildChild;
+
+        [ThreadStatic]
+        private static XrefMap t_xrefMap;
 
         public static MarkupResult Result => t_result;
 
@@ -81,6 +85,7 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
+            XrefMap xrefMap,
             DependencyMapBuilder dependencyMap,
             BookmarkValidator bookmarkValidator,
             Action<Document> buildChild,
@@ -99,6 +104,8 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = dependencyMap;
                     t_bookmarkValidator = bookmarkValidator;
                     t_buildChild = buildChild;
+                    t_xrefMap = xrefMap;
+
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
                     {
@@ -112,6 +119,7 @@ namespace Microsoft.Docs.Build
                     t_dependencyMap = null;
                     t_bookmarkValidator = null;
                     t_buildChild = null;
+                    t_xrefMap = null;
                 }
             }
         }
@@ -193,7 +201,7 @@ namespace Microsoft.Docs.Build
                 Result.Errors.Add(error);
             }
 
-            t_dependencyMap.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+            t_dependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
 
             return (content, child);
         }
@@ -211,21 +219,20 @@ namespace Microsoft.Docs.Build
                 Result.Errors.Add(error);
             }
 
-            if (child != null)
+            if (child != null && t_buildChild != null)
             {
                 t_buildChild(child);
-                t_dependencyMap.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
+                t_dependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
             }
 
-            t_bookmarkValidator.AddBookmarkReference(self, child ?? self, fragment);
+            t_bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
 
             return link;
         }
 
-        private static string ResolveXref(string uid)
+        private static XrefSpec ResolveXref(string uid)
         {
-            // TODO: implement xref resolve
-            return null;
+            return t_xrefMap?.Resolve(uid);
         }
     }
 }

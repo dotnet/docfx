@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly HashSet<Document> _experimentalTocs;
 
-        private readonly Dictionary<Document, HashSet<Document>> _documentToTocs;
+        private readonly IReadOnlyDictionary<Document, HashSet<Document>> _documentToTocs;
 
         public TableOfContentsMap(List<Document> tocs, List<Document> experimentalTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {

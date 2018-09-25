@@ -14,8 +14,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude", "f1_keywords" };
-
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
@@ -44,7 +42,7 @@ namespace Microsoft.Docs.Build
         public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
             => new JObject
             {
-                ["redirect_url"] = pageModel.RedirectionUrl,
+                ["redirect_url"] = pageModel.RedirectUrl,
                 ["locale"] = docset.Config.Locale,
             }.RemoveNulls();
 
@@ -56,17 +54,17 @@ namespace Microsoft.Docs.Build
                 LegacyManifestOutput legacyManifestOutput,
                 TableOfContentsMap tocMap)
         {
-            var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
+            var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
             rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
-            rawMetadata["toc_rel"] = pageModel.Toc ?? tocMap.FindTocRelativePath(file);
+            rawMetadata["toc_rel"] = pageModel.TocRel ?? tocMap.FindTocRelativePath(file);
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
             rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.HtmlTitle ?? "";
+            rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
 
@@ -79,12 +77,12 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_path"] = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
 
-            rawMetadata["document_id"] = pageModel.Id;
-            rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
+            rawMetadata["document_id"] = pageModel.DocumentId;
+            rawMetadata["document_version_independent_id"] = pageModel.DocumentVersionIndependentId;
 
-            if (!string.IsNullOrEmpty(pageModel.RedirectionUrl))
+            if (!string.IsNullOrEmpty(pageModel.RedirectUrl))
             {
-                rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
+                rawMetadata["redirect_url"] = pageModel.RedirectUrl;
             }
 
             var culture = new CultureInfo(docset.Config.Locale);
@@ -111,55 +109,18 @@ namespace Microsoft.Docs.Build
             {
                 rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
 
-                if (!string.IsNullOrEmpty(pageModel.EditUrl))
-                    rawMetadata["content_git_url"] = pageModel.EditUrl;
+                if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
+                    rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
 
-                if (!string.IsNullOrEmpty(pageModel.CommitUrl))
-                    rawMetadata["gitcommit"] = pageModel.CommitUrl;
-                if (!string.IsNullOrEmpty(pageModel.ContentUrl))
-                    rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
+                if (!string.IsNullOrEmpty(pageModel.Gitcommit))
+                    rawMetadata["gitcommit"] = pageModel.Gitcommit;
+                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
+                    rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
             }
 
-            return RemoveUpdatedAtDateTime(LegacySchema.Transform(Jint.Run(rawMetadata), pageModel)).RemoveNulls();
-        }
-
-        public static string GenerateLegacyPageMetadata(JObject rawMetadata)
-        {
-            StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-
-            foreach (var item in rawMetadata)
-            {
-                if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
-                {
-                    string key = HttpUtility.HtmlEncode(item.Key);
-                    string content;
-                    if (item.Value is JArray)
-                    {
-                        content = string.Join(",", item.Value);
-                    }
-                    else if (item.Value.Type == JTokenType.Boolean)
-                    {
-                        content = (bool)item.Value ? "true" : "false";
-                    }
-                    else
-                    {
-                        content = item.Value.ToString();
-                    }
-
-                    if (key.Equals("robots", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Add to the first line
-                        key = "ROBOTS";
-                        pageMetadataOutput.Insert(0, $"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />{Environment.NewLine}");
-                    }
-                    else
-                    {
-                        pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-                    }
-                }
-            }
-
-            return pageMetadataOutput.ToString();
+            return RemoveUpdatedAtDateTime(
+                LegacySchema.Transform(
+                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
@@ -180,7 +141,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject RemoveNulls(this JObject graph)
         {
-            var (_, jtoken) = ((JToken)graph).ValidateNullValue();
+            var (_, jtoken) = ((JToken)graph).RemoveNulls();
             return (JObject)jtoken;
         }
 
@@ -195,7 +156,7 @@ namespace Microsoft.Docs.Build
             return rawMetadata;
         }
 
-        private static JObject ToJObject(this GitUserInfo info)
+        private static JObject ToJObject(this Contributor info)
         {
             return new JObject
             {
