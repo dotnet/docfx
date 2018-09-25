@@ -15,17 +15,17 @@ namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<DotLiquid.Template>> _templates = new ConcurrentDictionary<string, Lazy<DotLiquid.Template>>();
+        private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
 
         static LiquidTemplate()
         {
-            DotLiquid.Template.RegisterTag<StyleTag>("style");
-            DotLiquid.Template.RegisterTag<JavaScriptTag>("js");
-            DotLiquid.Template.RegisterTag<LocalizeTag>("loc");
-            DotLiquid.Template.RegisterFilter(typeof(LiquidFilter));
+            Template.RegisterTag<StyleTag>("style");
+            Template.RegisterTag<JavaScriptTag>("js");
+            Template.RegisterTag<LocalizeTag>("loc");
+            Template.RegisterFilter(typeof(LiquidFilter));
         }
 
         public LiquidTemplate(string templateDir)
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         {
             var template = _templates.GetOrAdd(
                 templateName,
-                new Lazy<DotLiquid.Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
+                new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
 
             var registers = new Hash
             {
@@ -47,10 +47,15 @@ namespace Microsoft.Docs.Build
                 ["localized_strings"] = _localizedStrings,
             };
 
+            var environments = new List<Hash>
+            {
+                Hash.FromDictionary(model.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value))),
+            };
+
             var parameters = new RenderParameters(CultureInfo.InvariantCulture)
             {
                 Context = new DotLiquid.Context(
-                    environments: new List<Hash> { (Hash)ToHash(model) },
+                    environments: environments,
                     outerScope: new Hash(),
                     registers: registers,
                     errorsOutputMode: ErrorsOutputMode.Rethrow,
@@ -80,14 +85,14 @@ namespace Microsoft.Docs.Build
             return data.ToDictionary(item => item.Value<string>("uid"), item => item.Value<string>("name"));
         }
 
-        private static DotLiquid.Template LoadTemplate(string fullPath)
+        private static Template LoadTemplate(string fullPath)
         {
-            var template = DotLiquid.Template.Parse(File.ReadAllText(fullPath));
+            var template = Template.Parse(File.ReadAllText(fullPath));
             template.MakeThreadSafe();
             return template;
         }
 
-        private static object ToHash(JToken token)
+        private static object ToLiquidObject(JToken token)
         {
             if (token == null)
                 return null;
@@ -96,10 +101,10 @@ namespace Microsoft.Docs.Build
                 return value.Value;
 
             if (token is JArray arr)
-                return arr.Select(ToHash).ToArray();
+                return arr.Select(ToLiquidObject).ToArray();
 
             if (token is JObject obj)
-                return new Hash((_, key) => ToHash(obj.GetValue(key)));
+                return obj.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value));
 
             throw new NotSupportedException($"Unknown jToken type {token.Type}");
         }
@@ -107,17 +112,17 @@ namespace Microsoft.Docs.Build
         private class IncludeFileSystem : ITemplateFileSystem
         {
             private readonly string _templateDir;
-            private readonly ConcurrentDictionary<string, Lazy<DotLiquid.Template>> _templates = new ConcurrentDictionary<string, Lazy<DotLiquid.Template>>();
+            private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
 
             public IncludeFileSystem(string templateDir) => _templateDir = templateDir;
 
             public string ReadTemplateFile(DotLiquid.Context context, string templateName) => throw new NotSupportedException();
 
-            public DotLiquid.Template GetTemplate(DotLiquid.Context context, string templateName)
+            public Template GetTemplate(DotLiquid.Context context, string templateName)
             {
                 return _templates.GetOrAdd(
                     templateName,
-                    new Lazy<DotLiquid.Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
+                    new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
             }
         }
     }

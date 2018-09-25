@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _template = new LiquidTemplate("data/liquid");
 
         [Theory]
-        [InlineData("test", "{'description':'hello','tags':[1,2]}", "<div>hello<div>a b<p>1</p><p>2</p></div></div>")]
+        [InlineData("test", "{'description':'hello','tags':[1,2],'page':{'value':3}}", "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
         public void RenderLiquidTemplate(string name, string json, string html)
         {
             var model = JObject.Parse(json.Replace('\'', '"'));

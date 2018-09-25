@@ -11,8 +11,9 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
+            var id = Markup.Trim();
             var localizedStrings = (IReadOnlyDictionary<string, string>)context.Registers["localized_strings"];
-            result.Write(localizedStrings[Markup.Trim()]);
+            result.Write(localizedStrings.TryGetValue(id, out var value) ? value : id);
         }
     }
 }
