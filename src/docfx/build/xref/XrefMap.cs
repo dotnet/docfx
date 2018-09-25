@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
                 {
                     return BuildXref();
                 }
-                else if (extensionData.Children().Count() > 0)
+                else if (extensionData.Count > 0)
                 {
                     errors.Add(Errors.UidMissing());
                 }

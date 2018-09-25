@@ -23,7 +23,11 @@ namespace Microsoft.Docs.Build
         {
             var done = 0;
             var total = 0;
-            Parallel.ForEach<T>(source, item => Run(item));
+            Parallel.ForEach<T>(source, item =>
+            {
+                Run(item);
+                total++;
+            });
 
             void Run(T item)
             {
@@ -64,7 +68,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> actionAsync, Func<T, bool> predicate = null, Action<int, int> progress = null)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
             ActionBlock<(T, bool)> queue = null;
 
@@ -92,7 +96,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await actionAsync(item, Enqueue);
+                    await action(item, Enqueue);
                 }
 
                 if (Interlocked.Decrement(ref running) == 0)
