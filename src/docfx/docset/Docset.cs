@@ -71,6 +71,7 @@ namespace Microsoft.Docs.Build
             Culture = new CultureInfo(config.Locale);
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
+            Culture = CreateCultureInfo(Config.Locale);
             RestoreMap = new RestoreMap(DocsetPath);
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
@@ -86,6 +87,18 @@ namespace Microsoft.Docs.Build
             });
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+        }
+
+        private CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.InvalidLocale(locale).ToException();
+            }
         }
 
         private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)
