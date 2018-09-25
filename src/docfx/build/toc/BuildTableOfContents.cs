@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
+        public static TableOfContentsMap BuildTocMap(Context context, IEnumerable<Document> files)
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                     return builder.Build();
                 }
 
-                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
 
                 return builder.Build();
             }

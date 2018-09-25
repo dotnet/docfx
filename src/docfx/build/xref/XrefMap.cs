@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public static async Task<XrefMap> Create(Context context, Docset docset)
+        public static XrefMap Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? await InternalXrefMap.Create(context, docset.BuildScope) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? InternalXrefMap.Create(context, docset.BuildScope) : null);
         }
 
         private class InternalXrefMap
@@ -60,13 +60,13 @@ namespace Microsoft.Docs.Build
                 _map = map;
             }
 
-            public static async Task<InternalXrefMap> Create(Context context, IEnumerable<Document> files)
+            public static InternalXrefMap Create(Context context, IEnumerable<Document> files)
             {
                 ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
                 Debug.Assert(files != null);
                 using (Progress.Start("Building Xref map"))
                 {
-                    await ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefConflicts, file), Progress.Update);
+                    ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefConflicts, file), Progress.Update);
                     var xrefs = HandleXrefConflicts(context, xrefConflicts);
                     return new InternalXrefMap(xrefs);
                 }
@@ -138,9 +138,9 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            private static IEnumerable<XrefSpec> LoadSchemaDocument(List<Error> errors, JToken token, Document file)
+            private static XrefSpec LoadSchemaDocument(List<Error> errors, JToken token, Document file)
             {
-                var xrefs = new Dictionary<int, XrefSpec>();
+                var extensionData = new JObject();
 
                 // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
                 //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
@@ -151,50 +151,44 @@ namespace Microsoft.Docs.Build
                     throw Errors.SchemaNotFound(file.Mime).ToException();
                 }
 
+                var uidExists = schema.Type.GetProperty("Uid") != null;
                 var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
                 errors.AddRange(schemaErrors);
-                return xrefs.Values;
+                if (!string.IsNullOrEmpty((string)schema.Type.GetProperty("Uid")?.GetValue(content, null)))
+                {
+                    return BuildXref();
+                }
+                else if (extensionData.Children().Count() > 0)
+                {
+                    errors.Add(Errors.UidMissing());
+                }
+                return null;
+
+                XrefSpec BuildXref()
+                {
+                    var xref = new XrefSpec
+                    {
+                        Uid = (string)schema.Type.GetProperty("Uid")?.GetValue(content, null),
+                        Name = (string)schema.Type.GetProperty("Name")?.GetValue(content, null),
+                        Href = file.SitePath,
+                    };
+                    xref.ExtensionData.Merge(extensionData);
+                    return xref;
+                }
 
                 object TransformContent(DataTypeAttribute attribute, object value, string jsonPath, string fieldName)
                 {
-                    if (attribute is UidAttribute)
+                    if (attribute is XrefPropertyAttribute && IsRootLevel(jsonPath))
                     {
-                        var level = GetLevelFromPath(jsonPath);
-                        if (!xrefs.ContainsKey(level))
-                        {
-                            xrefs.Add(level, new XrefSpec { Uid = (string)value, Href = file.SitePath });
-                        }
-                        else
-                        {
-                            errors.Add(Errors.MultipleUid());
-                        }
-                    }
-
-                    if (attribute is XrefPropertyAttribute)
-                    {
-                        if (!xrefs.TryGetValue(GetLevelFromPath(jsonPath), out var xref))
-                        {
-                            errors.Add(Errors.UidMissing());
-                        }
-                        else
-                        {
-                            if (fieldName == "Name")
-                            {
-                                xref.Name = (string)value;
-                            }
-                            else
-                            {
-                                xref.ExtensionData[fieldName] = (string)value;
-                            }
-                        }
+                        extensionData[fieldName] = (string)value;
                     }
                     return (string)value;
                 }
 
                 // e.g.: name => 1, data.name => 2
-                int GetLevelFromPath(string path)
+                bool IsRootLevel(string path)
                 {
-                    return path.Split('.').Count();
+                    return path.Split('.').Count() == 1;
                 }
             }
 

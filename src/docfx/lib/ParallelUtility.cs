@@ -19,12 +19,11 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static Task ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null)
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null)
         {
             var done = 0;
             var total = 0;
-            var queue = new ActionBlock<T>(Run, s_dataflowOptions);
-            return ForEach<T>(total, source, queue);
+            Parallel.ForEach<T>(source, item => Run(item));
 
             void Run(T item)
             {
@@ -38,7 +37,22 @@ namespace Microsoft.Docs.Build
             var done = 0;
             var total = 0;
             var queue = new ActionBlock<T>(Run, s_dataflowOptions);
-            return ForEach<T>(total, source, queue);
+            foreach (var item in source)
+            {
+                var posted = queue.Post(item);
+
+                // https://github.com/dotnet/corefx/issues/21715
+                // Post on an ActionBlock that's unbounded should only return false
+                // if the ActionBlock has been closed to additional messages, which could happen for example
+                // if someone called Complete on the block
+                // or if the block's delegate threw an exception that went unhandled and caused the block to fault.
+                DebugAssertPostedOrFaulted(posted, queue);
+
+                total++;
+            }
+
+            queue.Complete();
+            return queue.Completion;
 
             async Task Run(T item)
             {
@@ -50,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
+        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> actionAsync, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
             ActionBlock<(T, bool)> queue = null;
 
@@ -78,7 +92,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await action(item, Enqueue);
+                    await actionAsync(item, Enqueue);
                 }
 
                 if (Interlocked.Decrement(ref running) == 0)
@@ -103,26 +117,6 @@ namespace Microsoft.Docs.Build
                     progress?.Invoke(done, Interlocked.Increment(ref total));
                 }
             }
-        }
-
-        private static Task ForEach<T>(int total, IEnumerable<T> source, ActionBlock<T> queue)
-        {
-            foreach (var item in source)
-            {
-                var posted = queue.Post(item);
-
-                // https://github.com/dotnet/corefx/issues/21715
-                // Post on an ActionBlock that's unbounded should only return false
-                // if the ActionBlock has been closed to additional messages, which could happen for example
-                // if someone called Complete on the block
-                // or if the block's delegate threw an exception that went unhandled and caused the block to fault.
-                DebugAssertPostedOrFaulted(posted, queue);
-
-                total++;
-            }
-
-            queue.Complete();
-            return queue.Completion;
         }
 
         [Conditional("Debug")]

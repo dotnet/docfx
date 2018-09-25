@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+
 namespace Microsoft.Docs.Build
 {
     [DataSchema]
@@ -15,22 +17,11 @@ namespace Microsoft.Docs.Build
         [XrefProperty]
         public string Description { get; set; }
 
-        [Uid]
         public string Uid { get; set; }
 
         [Xref]
         public string Xref { get; set; }
 
         public TestData Data { get; set; }
-    }
-
-    [DataSchema]
-    public sealed class TestDataWithMultipleUid
-    {
-        [Uid]
-        public string Uid { get; set; }
-
-        [Uid]
-        public string AnotherUid { get; set; }
     }
 }

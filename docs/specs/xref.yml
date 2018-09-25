@@ -131,14 +131,14 @@ outputs:
     }
   build.manifest:
 ---
-# Define xref property without uid in the same object level, should output warning
+# Define xref property without uid at root level, should output warning
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
+      "uid": "",
       "name": "test",
       "fullName": "test.test",
       "description": "a.description",
@@ -147,29 +147,10 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","uid-missing","Uid is missing for xref property assignment, uid should be defined at the same object level.","docs/a.json"]
+    ["warning","uid-missing","Uid is missing for xref property assignment, uid should be defined at the root level.","docs/a.json"]
   build.manifest:
 ---
-# Define multiple uid in the same object level, should output warning
-inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestDataWithMultipleUid.json",
-      "uid": "a",
-      "anotherUid": "b"
-    }
-  docs/b.md: Link to @a
-outputs:
-  docs/a.json:
-  docs/b.json: |
-    { "content": "<p>Link to <a href=\"docs/a.json\">a</a></p>" }
-  build.log: |
-    ["warning","multiple-uid","Multiple uid defined at the same object level.","docs/a.json"]
-  build.manifest:
----
-# Define multiple uid in different object level
+# Define uid in non-root object level, it will be ignored
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
@@ -185,6 +166,7 @@ inputs:
   docs/b.md: Link to @b
 outputs:
   docs/a.json:
-  docs/b.json: |
-    { "content": "<p>Link to <a href=\"docs/a.json\">b</a></p>" }
+  docs/b.json:
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
   build.manifest:
