@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 // 1. sub count
                 // 2. sub nearest.
                 // 3. parent nearest
-                // 4. sub-name nearest
+                // 4. sub-name word-level levenshtein distance nearest
                 // 5. sub-name lexicographical nearest
                 var tocCandidates = (from toc in filteredTocFiles
                                      let dirInfo = GetRelativeDirectoryInfo(file, toc)
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                                          toc,
                                          dirInfo,
                                      }).Take(50).ToList();
- 
+
                 Debug.Assert(tocCandidates != null && tocCandidates.Count > 0);
                 var nearestCandidate = tocCandidates.First();
                 var leftCandidates = (from tocInfo in tocCandidates
@@ -99,13 +99,18 @@ namespace Microsoft.Docs.Build
                                       && tocInfo.dirInfo.subDirectoryCount == nearestCandidate.dirInfo.subDirectoryCount
                                       select tocInfo).ToList();
                 nearestToc = leftCandidates.Count == 1 ? leftCandidates.First().toc
-                    : leftCandidates.OrderBy(tocInfo => Path.GetFileNameWithoutExtension(file.SitePath).LevenshteinDistance(tocInfo.dirInfo.path))
-                        .ThenBy(tocInfo => tocInfo.toc.SitePath).First().toc;
+                    : (from candidate in leftCandidates
+                       orderby Levenshtein.GetLevenshteinDistance(
+                           Regex.Split(Path.GetFileNameWithoutExtension(file.SitePath), "[^a-zA-Z0-9]+"),
+                           candidate.dirInfo.paths.ToArray(),
+                           StringComparer.OrdinalIgnoreCase),
+                                 candidate.toc.SitePath
+                       select candidate.toc).First();
             }
             return nearestToc;
         }
 
-        private static (int subDirectoryCount, int parentDirectoryCount, string path)
+        private static (int subDirectoryCount, int parentDirectoryCount, IList<string> paths)
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
@@ -116,11 +121,10 @@ namespace Microsoft.Docs.Build
             }
 
             // todo: perf optimization, don't split '/' here again.
-            var relativePathParts = relativePath.Split('/');
+            var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
-            var emptyCount = 0;
-            var sb = new StringBuilder();
+            var paths = new List<string>();
             foreach (var part in relativePathParts)
             {
                 switch (part)
@@ -128,16 +132,13 @@ namespace Microsoft.Docs.Build
                     case "..":
                         parentDirectoryCount++;
                         break;
-                    case "":
-                        emptyCount++;
-                        break;
                     default:
-                        sb.Append(part);
+                        paths.AddRange(Regex.Split(Path.GetFileNameWithoutExtension(part), "[^a-zA-Z0-9]+"));
                         break;
                 }
             }
-            subDirectoryCount = relativePathParts.Length - parentDirectoryCount - emptyCount;
-            return (subDirectoryCount, parentDirectoryCount, sb.ToString());
+            subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
+            return (subDirectoryCount, parentDirectoryCount, paths);
         }
     }
 }
