@@ -53,12 +53,12 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(doc.RedirectionUrl))
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.WriteJson(new { outputRootRelativePath, content, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput);
-                    var pageMetadata = Template.CreateHtmlMetaTags(rawMetadata);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc);
+                    var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
                     context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
             {
                 output = file.Docset.Legacy
-                    ? file.Docset.LegacyTemplate.Render(model.PageType, model, file.SitePath, file.Docset.Culture)
+                    ? file.Docset.LegacyTemplate.Render(model, file)
                     : await RazorTemplate.Render(model.PageType, model);
             }
 
