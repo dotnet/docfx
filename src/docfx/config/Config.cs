@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        private const string DefaultLocaleStr = "en-us";
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
 
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>
-        public readonly string DefaultLocale = AppData.DefaultLocale;
+        public readonly string DefaultLocale = DefaultLocaleStr;
 
         /// <summary>
         /// Gets the contents that are managed by this docset.
@@ -268,7 +269,7 @@ namespace Microsoft.Docs.Build
                 if (config.TryGetValue(ConfigConstants.DefaultLocale, out var defaultLocale) && defaultLocale is JValue defaultLocaleValue)
                     locale = defaultLocaleValue.Value<string>();
                 else
-                    locale = AppData.DefaultLocale;
+                    locale = DefaultLocaleStr;
             }
 
             var result = new JObject();

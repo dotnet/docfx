@@ -22,8 +22,6 @@ namespace Microsoft.Docs.Build
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
-        public static string DefaultLocale = "en-us";
-
         /// <summary>
         /// Get the global configuration path, default is under <see cref="AppDataDir"/>
         /// </summary>
