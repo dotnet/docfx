@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
-        public string Name { get; set; }
+        public string GetName() => ExtensionData.Property("name") != null ? ExtensionData.Value<string>("name") : null;
 
         public string Href { get; set; }
 
