@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             {
                 // generate manifest and corresponding files
                 var legacyManifestItems = LegacyManifest.Convert(docset, context, documents);
-                LegacyOutput.Convert(docset, context, legacyManifestItems, tocMap);
+                LegacyOutput.Convert(docset, context, legacyManifestItems);
 
                 // generate mappings
                 LegacyFileMap.Convert(docset, context, documents);
