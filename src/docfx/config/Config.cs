@@ -283,28 +283,26 @@ namespace Microsoft.Docs.Build
             return redirection;
         }
 
-        private static JToken ExpandRouteConfigs(JToken jToken)
+        private static JToken ExpandRouteConfigs(JToken token)
         {
-            if (jToken == null)
-                return null;
-            if (!(jToken is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(jToken)}");
-
-            var result = new JArray();
-            foreach (var (key, value) in obj)
+            if (token is JObject obj)
             {
-                if (!(value is JValue strValue))
-                    throw new Exception($"Expect to be a string: {JsonUtility.Serialize(jToken)}");
-
-                result.Add(new JObject
+                var result = new JArray();
+                foreach (var (key, value) in obj)
                 {
-                    [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\') ?
-                        PathUtility.NormalizeFolder(key) :
-                        PathUtility.NormalizeFile(key),
-                    [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
-                });
+                    result.Add(new JObject
+                    {
+                        [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\')
+                            ? PathUtility.NormalizeFolder(key)
+                            : PathUtility.NormalizeFile(key),
+                        [ConfigConstants.Destination] = value is JValue v && v.Value is string str
+                            ? PathUtility.NormalizeFile(str)
+                            : value,
+                    });
+                }
+                return result;
             }
-            return result;
+            return token;
         }
 
         private static JToken ExpandGlobConfigs(JToken token)
@@ -325,9 +323,10 @@ namespace Microsoft.Docs.Build
 
         private static void ExpandGlobConfig(JToken item)
         {
-            if (!(item is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(item)}");
-            ExpandIncludeExclude(obj);
+            if (item is JObject obj)
+            {
+                ExpandIncludeExclude(obj);
+            }
         }
 
         private static JArray ToGlobConfigs(JObject obj)
@@ -336,8 +335,6 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in obj)
             {
-                if (key.Contains("*"))
-                    throw new Exception($"Glob is not supported in config key: '{key}'");
                 result.Add(new JObject
                 {
                     [ConfigConstants.Include] = key,
@@ -376,8 +373,6 @@ namespace Microsoft.Docs.Build
                 return new JArray(e);
             if (e is JArray arr)
                 return arr;
-
-            // TODO: error handle
             return null;
         }
     }
