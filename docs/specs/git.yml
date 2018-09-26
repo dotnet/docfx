@@ -73,7 +73,7 @@ inputs:
     ---
     # git-test
   user_profile.json:
-    {"users": [ {"name": "github-user-not-found"}]}
+    {"users": [ {"name": "invalid_user"}]}
 outputs:
   README.json:
   build.manifest:
