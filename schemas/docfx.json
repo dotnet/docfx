@@ -16,14 +16,8 @@
         "branch": {
           "type": "string"
         },
-        "gitHubUserCache": {
-          "type": "string"
-        },
         "resolveGitHubUsers": {
           "type": "boolean"
-        },
-        "gitHubUserCacheExpirationInHours": {
-          "type": "integer"
         },
         "gitCommitsTime": {
           "type": "string"
@@ -93,6 +87,12 @@
       "properties": {
         "authToken": {
           "type": "string"
+        },
+        "userCache": {
+          "type": "string"
+        },
+        "userCacheExpirationInHours": {
+          "type": "integer"
         }
       }
     },

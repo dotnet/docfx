@@ -75,7 +75,6 @@ namespace Microsoft.Docs.Build
             {
                 if (resolveGitHubUsers)
                 {
-
                     // Remove author from contributors if author name is specified
                     var (error, author) = await _gitHubUserCache.GetByLogin(authorName);
                     if (error != null)
