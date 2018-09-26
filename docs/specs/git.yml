@@ -91,10 +91,10 @@ inputs:
   user_profile.json: |
     {
       "users": [
-        {"name": "Real Author", "login": "real_author", "id": 31415926, "user_emails": ["real_author@contoso.com"]},
+        {"name": "Real Author", "login": "real_author", "id": 31415926, "emails": ["real_author@contoso.com"]},
         {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
         {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
-        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "user_emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
+        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
       ]
     }
 outputs:
