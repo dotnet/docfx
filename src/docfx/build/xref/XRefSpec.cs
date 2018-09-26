@@ -10,11 +10,11 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
-        public string GetName() => ExtensionData.Property("name") != null ? ExtensionData.Value<string>("name") : null;
-
         public string Href { get; set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
+
+        public string GetName() => ExtensionData.TryGetValue("name", out var name) ? (string)name : null;
     }
 }
