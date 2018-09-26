@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class OverwriteConfigIdentifer
     {
-        private static Regex s_branchRegex = new Regex(@"branches:[ ]*\[(.+)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex s_localeRegex = new Regex(@"locales:[ ]*\[(.+)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex s_branchRegex = new Regex(@"branches:[ ]*\[([^\[\]]*)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex s_localeRegex = new Regex(@"locales:[ ]*\[([^\[\]]*)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public OverwriteConfigIdentifer(string identifierStr)
         {

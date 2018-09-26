@@ -443,7 +443,7 @@ commands:
 inputs:
   docfx.yml: |
     content: a.md
-    "locales: [zh-cn]":
+    "locales: [zh-cn,de-de]":
       content: b.md
   a.md:
 outputs:
@@ -461,7 +461,7 @@ inputs:
         include: 
           - b.md
           - c.md
-    "branches: [master]":
+    "branches: [master,live]":
       content:
         exclude:
           - b.md
@@ -479,7 +479,7 @@ repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
     content: a.md
-    "locales: [zh-cn] branchs: [live]":
+    "locales: [zh-cn, de-de] branches: [live]":
       content: b.md
   a.md:
 outputs:
