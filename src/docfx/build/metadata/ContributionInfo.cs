@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var logins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
             // Resolve contributors from commits
@@ -55,7 +56,7 @@ namespace Microsoft.Docs.Build
                     if (!emails.Add(commit.AuthorEmail))
                         continue;
 
-                    if (!resolveGitHubUsers)
+                    if (!resolveGitHubUsers && authorNames.Add(commit.AuthorName))
                     {
                         contributors.Add(new Contributor { DisplayName = commit.AuthorName });
                         continue;
@@ -74,13 +75,16 @@ namespace Microsoft.Docs.Build
             {
                 if (resolveGitHubUsers)
                 {
+
                     // Remove author from contributors if author name is specified
                     var (error, author) = await _gitHubUserCache.GetByLogin(authorName);
                     if (error != null)
                         errors.Add(error);
 
+                    if (excludes.Contains(authorName))
+                        author = null;
                     if (author != null)
-                        contributors.RemoveAll(c => string.Equals(c.Name, author.Name, StringComparison.OrdinalIgnoreCase));
+                        contributors.RemoveAll(c => c.Id == author.Id.ToString());
 
                     return (errors, author?.ToContributor(), contributors, updatedDateTime);
                 }

@@ -30,20 +30,9 @@ namespace Microsoft.Docs.Build
         public readonly string Branch;
 
         /// <summary>
-        /// The address of user profile cache, used for generating authoer and contributors.
-        /// It should be an absolute url or a relative path
-        /// </summary>
-        public readonly string GitHubUserCache = string.Empty;
-
-        /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// </summary>
         public readonly bool ResolveGitHubUsers = false;
-
-        /// <summary>
-        /// Determines whether to resolve git commit user and GitHub user.
-        /// </summary>
-        public readonly int GitHubUserCacheExpirationInHours = 7 * 24;
 
         /// <summary>
         /// The address of commit time history file, which contains the time each commit being pushed.

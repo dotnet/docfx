@@ -33,18 +33,18 @@ namespace Microsoft.Docs.Build
         private readonly string _cachePath;
         private bool _updated = false;
 
-        private GitHubUserCache(Config config, string token)
+        private GitHubUserCache(Docset docset, string token)
         {
-            _config = config;
+            _config = docset.Config;
             _github = new GitHubAccessor(token);
-            _cachePath = string.IsNullOrEmpty(config.Contribution.GitHubUserCache)
+            _cachePath = string.IsNullOrEmpty(_config.GitHub.UserCache)
                 ? Path.Combine(AppData.CacheDir, "github-users.json")
-                : Path.GetFullPath(config.Contribution.GitHubUserCache);
+                : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, _config.GitHub.UserCache);
         }
 
-        public static async Task<GitHubUserCache> Create(Config config, string token)
+        public static async Task<GitHubUserCache> Create(Docset docset, string token)
         {
-            var result = new GitHubUserCache(config, token);
+            var result = new GitHubUserCache(docset, token);
             await result.ReadCacheFile();
             return result;
         }
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
 
         private DateTime NextExpiry()
         {
-            var expirationInHours = (double)_config.Contribution.GitHubUserCacheExpirationInHours;
+            var expirationInHours = (double)_config.GitHub.UserCacheExpirationInHours;
 
             return DateTime.UtcNow.AddHours((expirationInHours / 2) + (t_random.Value.NextDouble() * expirationInHours));
         }

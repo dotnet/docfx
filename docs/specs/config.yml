@@ -305,9 +305,10 @@ inputs:
     extend:
       - docs/a.yml
       - docs/b.yml
+    github:
+      userCache: docs/d.json
     contribution:
       gitCommitsTime: docs/c.json
-      userProfileCache: docs/d.json
   docs/a.yml:
   docs/b.yml:
   docs/c.json: '{}'

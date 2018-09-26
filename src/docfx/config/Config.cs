@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             }
 
             yield return Contribution.GitCommitsTime;
-            yield return Contribution.GitHubUserCache;
+            yield return GitHub.UserCache;
         }
 
         /// <summary>
