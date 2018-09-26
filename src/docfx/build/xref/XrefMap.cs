@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> map, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
         {
-            _externalXrefMap = map;
+            _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
         }
 
@@ -143,11 +143,12 @@ namespace Microsoft.Docs.Build
 
             var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
             errors.AddRange(schemaErrors);
-            if (!string.IsNullOrEmpty(obj.Value<string>("uid")))
+            var uid = obj.Value<string>("uid");
+            if (!string.IsNullOrEmpty(uid))
             {
                 var xref = new XrefSpec
                 {
-                    Uid = obj.Value<string>("uid"),
+                    Uid = uid,
                     Href = file.SitePath,
                 };
                 xref.ExtensionData.Merge(extensionData);
@@ -169,13 +170,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, XrefSpec spec)
+        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, XrefSpec spec)
         {
             if (spec is null)
             {
                 return;
             }
-            xrefConflicts.GetOrAdd(spec.Uid, _ => new ConcurrentBag<XrefSpec>()).Add(spec);
+            xrefsByUid.GetOrAdd(spec.Uid, _ => new ConcurrentBag<XrefSpec>()).Add(spec);
         }
     }
 }
