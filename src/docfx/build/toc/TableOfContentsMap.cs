@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -52,61 +50,27 @@ namespace Microsoft.Docs.Build
         /// "near" means less subdirectory count
         /// when subdirectory counts are same, "near" means less parent directory count
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
-        /// when the file is not referenced, return only toc in the same folder or parents folder.
+        /// when the file is not referenced, return only toc in the same or higher folder level.
         /// i.e. relativePath only contains "..".
         /// </summary>
         public Document GetNearestToc(Document file)
         {
-            var nearestToc = (Document)null;
+            var hasReferencedTocs = false;
+            var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
-            if (!_documentToTocs.TryGetValue(file, out var referencedTocFiles))
-            {
-                // fallback to all tocs if no toc files reference this file
-                // filter toc files by relative path: subdircount = 0, min parentdir
-                // get default nonreferenced toc
-                nearestToc = (from toc in _tocs
-                              let dirInfo = GetRelativeDirectoryInfo(file, toc)
-                              where dirInfo.subDirectoryCount == 0
-                              orderby dirInfo.parentDirectoryCount
-                              select toc)
-                             .FirstOrDefault();
-            }
-            else
-            {
-                // from referenced pick the nearest one
-                // 1. sub count
-                // 2. sub nearest.
-                // 3. parent nearest
-                // 4. sub-name word-level levenshtein distance nearest
-                // 5. sub-name lexicographical nearest
-                var tocCandidates = (from toc in referencedTocFiles
-                                     let dirInfo = GetRelativeDirectoryInfo(file, toc)
-                                     orderby dirInfo.subDirectoryCount,
-                                             dirInfo.parentDirectoryCount
-                                     select new
-                                     {
-                                         toc,
-                                         dirInfo,
-                                     }).Take(5);
+            // when there's no referenced toc, sub directory count should be zero (only look in parent folders)
+            var tocCandidates = from toc in filteredTocs
+                                let dirInfo = GetRelativeDirectoryInfo(file, toc)
+                                where hasReferencedTocs || dirInfo.parentDirectoryCount >= dirInfo.subDirectoryCount
+                                select new TocCandidate(dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount, toc);
 
-                var nearestCandidate = tocCandidates.First();
-                var leftCandidates = from tocInfo in tocCandidates
-                                     where tocInfo.dirInfo.parentDirectoryCount == nearestCandidate.dirInfo.parentDirectoryCount
-                                     && tocInfo.dirInfo.subDirectoryCount == nearestCandidate.dirInfo.subDirectoryCount
-                                     select tocInfo;
-                nearestToc = leftCandidates.Count() == 1 ? nearestCandidate.toc
-                    : (from candidate in leftCandidates
-                       orderby Levenshtein.GetLevenshteinDistance(
-                           Regex.Split(Path.GetFileNameWithoutExtension(file.SitePath), "[^a-zA-Z0-9]+"),
-                           candidate.dirInfo.paths.ToArray(),
-                           StringComparer.OrdinalIgnoreCase),
-                                 candidate.toc.SitePath
-                       select candidate.toc).First();
-            }
-            return nearestToc;
+            return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
+            {
+                return CompareTocCandidate(minCandidate, nextCandidate, file) <= 0 ? minCandidate : nextCandidate;
+            })?.Toc;
         }
 
-        private static (int subDirectoryCount, int parentDirectoryCount, IList<string> paths)
+        private static (int subDirectoryCount, int parentDirectoryCount)
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
@@ -120,7 +84,6 @@ namespace Microsoft.Docs.Build
             var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
-            var paths = new List<string>();
             foreach (var part in relativePathParts)
             {
                 switch (part)
@@ -129,12 +92,69 @@ namespace Microsoft.Docs.Build
                         parentDirectoryCount++;
                         break;
                     default:
-                        paths.AddRange(Regex.Split(Path.GetFileNameWithoutExtension(part), "[^a-zA-Z0-9]+"));
                         break;
                 }
             }
             subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
-            return (subDirectoryCount, parentDirectoryCount, paths);
+            return (subDirectoryCount, parentDirectoryCount);
+        }
+
+        private sealed class TocCandidate
+        {
+            public int SubDirectoryCount { get; }
+
+            public int ParentDirectoryCount { get; }
+
+            // save the calculated distance during comparison to avoid repeadly calculation
+            public int? LevenshteinDistance { get; set; }
+
+            public Document Toc { get; }
+
+            public TocCandidate(int subDirectoryCount, int parentDirectoryCount, Document toc)
+            {
+                SubDirectoryCount = subDirectoryCount;
+                ParentDirectoryCount = parentDirectoryCount;
+                Toc = toc;
+            }
+        }
+
+        /**
+         * Compare two toc candidate relative to target file.
+         * Return -1 if x is closer than y, 1 if x is farer than y, 0 if x equals y.
+         */
+        private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY, Document targetFile)
+        {
+            // from referenced pick the nearest one
+            // 1. sub nearest
+            // 2. parent nearest
+            // 3. sub-name word-level levenshtein distance nearest
+            // 4. sub-name lexicographical nearest
+            var subDirCompareResult = Comparer<int>.Default.Compare(candidateX.SubDirectoryCount, candidateY.SubDirectoryCount);
+            if (subDirCompareResult == 0)
+            {
+                var parentDirCompareResult = Comparer<int>.Default.Compare(candidateX.ParentDirectoryCount, candidateY.ParentDirectoryCount);
+                if (parentDirCompareResult == 0)
+                {
+                    var fileNames = Path.GetFileNameWithoutExtension(targetFile.SitePath).Split(new[] { '-', '#', '_' })
+                        .Where(str => !string.IsNullOrWhiteSpace(str)).ToArray();
+                    candidateX.LevenshteinDistance = candidateX.LevenshteinDistance.HasValue ? candidateX.LevenshteinDistance.Value :
+                        Levenshtein.GetLevenshteinDistance(fileNames, candidateX.Toc.SitePath.Split(new[] { '-', '#', '_', '/' }), StringComparer.OrdinalIgnoreCase);
+                    candidateY.LevenshteinDistance = candidateY.LevenshteinDistance.HasValue ? candidateY.LevenshteinDistance.Value :
+                        Levenshtein.GetLevenshteinDistance(fileNames, candidateY.Toc.SitePath.Split(new[] { '-', '#', '_', '/' }), StringComparer.OrdinalIgnoreCase);
+
+                    var levenshteinDistanceCompareResult = Comparer<int>.Default.Compare(candidateX.LevenshteinDistance.Value, candidateY.LevenshteinDistance.Value);
+                    return levenshteinDistanceCompareResult == 0 ? StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath)
+                        : levenshteinDistanceCompareResult;
+                }
+                else
+                {
+                    return parentDirCompareResult;
+                }
+            }
+            else
+            {
+                return subDirCompareResult;
+            }
         }
     }
 }
