@@ -26,9 +26,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the default locale of this docset.
-        /// TODO: lower case user inputs.
         /// </summary>
-        public readonly string Locale = "en-us";
+        public readonly string DefaultLocale = AppData.DefaultLocale;
 
         /// <summary>
         /// Gets the contents that are managed by this docset.
@@ -199,6 +198,7 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var errors = new List<Error>();
             Config config = null;
+
             var (loadErrors, configObject) = LoadConfigObject(configPath);
             var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
@@ -210,11 +210,20 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(extendErrors);
             }
 
+            finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
+
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
             return (errors, config);
+
+            string GetBranch()
+            {
+                var repoPath = GitUtility.FindRepo(docsetPath);
+
+                return repoPath == null ? null : GitUtility.GetRepoInfo(repoPath).branch;
+            }
         }
 
         private static (List<Error>, JObject) LoadConfigObject(string filePath)
@@ -250,6 +259,44 @@ namespace Microsoft.Docs.Build
 
             result.Merge(config, JsonUtility.MergeSettings);
             return (errors, result);
+        }
+
+        private static JObject OverwriteConfig(JObject config, string locale, string branch)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                if (config.TryGetValue(ConfigConstants.DefaultLocale, out var defaultLocale) && defaultLocale is JValue defaultLocaleValue)
+                    locale = defaultLocaleValue.Value<string>();
+                else
+                    locale = AppData.DefaultLocale;
+            }
+
+            var result = new JObject();
+            var overwriteConfigIdentifiers = new List<string>();
+            result.Merge(config, JsonUtility.MergeSettings);
+            foreach (var (key, value) in config)
+            {
+                if (OverwriteConfigIdentifer.Match(key))
+                {
+                    var identifier = new OverwriteConfigIdentifer(key);
+                    if ((identifier.Branches.Count == 0 || (!string.IsNullOrEmpty(branch) && identifier.Branches.Contains(branch))) &&
+                        (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
+                        value is JObject overwriteConfig)
+                    {
+                        result.Merge(ExpandAndNormalize(overwriteConfig), JsonUtility.MergeSettings);
+                    }
+
+                    overwriteConfigIdentifiers.Add(key);
+                }
+            }
+
+            // clean up overwrite configuration
+            foreach (var overwriteConfigIdentifier in overwriteConfigIdentifiers)
+            {
+                result.Remove(overwriteConfigIdentifier);
+            }
+
+            return result;
         }
 
         private static JObject ExpandAndNormalize(JObject config)

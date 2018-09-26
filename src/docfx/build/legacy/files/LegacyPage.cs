@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 {
                     content = HtmlUtility.TransformHtml(
                         content,
-                        node => node.AddLinkType(docset.Config.Locale, docset.Legacy)
+                        node => node.AddLinkType(docset.Locale, docset.Legacy)
                                     .RemoveRerunCodepenIframes());
                 }
 

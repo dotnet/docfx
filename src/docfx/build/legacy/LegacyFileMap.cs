@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             context.WriteJson(
                 new
                 {
-                    locale = docset.Config.Locale,
+                    locale = docset.Locale,
                     base_path = $"/{docset.Config.SiteBasePath}",
                     source_base_path = docset.Config.SourceBasePath,
                     version_info = new { },

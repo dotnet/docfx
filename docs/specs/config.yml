@@ -421,8 +421,67 @@ outputs:
 os: windows
 inputs:
   docfx.yml: |
-    locale: wrong/wrong
+    defaultLocale: wrong/wrong
 outputs:
   build.log: |
     ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
 ---
+# branch overwrite config
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    content: a.md
+    "branches: [master]":
+      content: b.md
+  a.md:
+outputs:
+  build.manifest:
+---
+# locale overwrite config
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    content: a.md
+    "locales: [zh-cn]":
+      content: b.md
+  a.md:
+outputs:
+  build.manifest:
+---
+# branch | locale overwrite config
+commands:
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    content: a.md
+    "locales: [zh-cn]":
+      content:
+        include: 
+          - b.md
+          - c.md
+    "branches: [master]":
+      content:
+        exclude:
+          - b.md
+  a.md:
+  b.md:
+  c.md:
+outputs:
+  c.json:
+  build.manifest:
+---
+# branch & locale overwrite config
+commands:
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    content: a.md
+    "locales: [zh-cn] branchs: [live]":
+      content: b.md
+  a.md:
+outputs:
+  a.json:
+  build.manifest:

@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
             return new RedirectionModel
             {
                 RedirectUrl = file.RedirectionUrl,
-                Locale = file.Docset.Config.Locale,
+                Locale = file.Docset.Locale,
             };
         }
     }
