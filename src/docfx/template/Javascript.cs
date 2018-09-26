@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,27 +15,28 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Jint
+    internal class JavaScript
     {
         private static readonly Engine s_engine = new Engine();
-        private static ThreadLocal<Func<JObject, JObject>> s_transform = null;
 
-        public static void Init(Docset docset)
+        private readonly ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>> _scripts = new ConcurrentDictionary<string, ThreadLocal<Func<JObject, JObject>>>();
+        private readonly string _scriptDir;
+
+        public JavaScript(string scriptDir) => _scriptDir = scriptDir;
+
+        public JObject Run(string scriptName, JObject input)
         {
-            docset.RestoreMap.TryGetGitRestorePath(docset.Config.Dependencies.GetValueOrDefault("_themes"), out var restorePath);
-            s_transform = new ThreadLocal<Func<JObject, JObject>>(() => LoadTransform(restorePath));
+            var transform = _scripts.GetOrAdd(
+                scriptName,
+                key => new ThreadLocal<Func<JObject, JObject>>(() => LoadTransform(Path.Combine(_scriptDir, key))));
+
+            Debug.Assert(transform != null);
+
+            return transform.Value(input);
         }
 
-        public static JObject Run(JObject input)
+        private static Func<JObject, JObject> LoadTransform(string scriptPath)
         {
-            Debug.Assert(s_transform != null);
-            return s_transform.Value(input);
-        }
-
-        private static Func<JObject, JObject> LoadTransform(string templateRestorePath)
-        {
-            var scriptPath = Path.Combine(templateRestorePath, "ContentTemplate/conceptual.mta.json.js");
-
             var exports = Load(scriptPath, new Dictionary<string, ObjectInstance>());
             var transform = exports.Get("transform");
 

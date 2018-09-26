@@ -1,21 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Web;
-
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url", "contributors_to_exclude", "f1_keywords" };
-
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
@@ -87,7 +80,6 @@ namespace Microsoft.Docs.Build
                 rawMetadata["redirect_url"] = pageModel.RedirectUrl;
             }
 
-            var culture = new CultureInfo(docset.Config.Locale);
             if (pageModel.UpdatedAt != default)
             {
                 rawMetadata["_op_gitContributorInformation"] = new JObject
@@ -96,14 +88,14 @@ namespace Microsoft.Docs.Build
                     ["contributors"] = pageModel.Contributors != null
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
-                    ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern, docset.Culture),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
             if (pageModel.UpdatedAt != default)
-                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
+                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", docset.Culture);
 
             rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
 
@@ -120,37 +112,9 @@ namespace Microsoft.Docs.Build
                     rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
             }
 
-            return RemoveUpdatedAtDateTime(LegacySchema.Transform(Jint.Run(rawMetadata), pageModel)).RemoveNulls();
-        }
-
-        public static string GenerateLegacyPageMetadata(JObject rawMetadata)
-        {
-            StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-
-            foreach (var item in rawMetadata)
-            {
-                if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
-                {
-                    string key = HttpUtility.HtmlEncode(item.Key);
-                    string content;
-                    if (item.Value is JArray)
-                    {
-                        content = string.Join(",", item.Value);
-                    }
-                    else if (item.Value.Type == JTokenType.Boolean)
-                    {
-                        content = (bool)item.Value ? "true" : "false";
-                    }
-                    else
-                    {
-                        content = item.Value.ToString();
-                    }
-
-                    pageMetadataOutput.AppendLine($"<meta name=\"{key}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-                }
-            }
-
-            return pageMetadataOutput.ToString();
+            return RemoveUpdatedAtDateTime(
+                LegacySchema.Transform(
+                    docset.Template.TransformMetadata("conceptual", rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)

@@ -280,6 +280,9 @@
     "warningsAsErrors": {
       "type": "boolean"
     },
+    "buildInternalXrefMap": {
+      "type": "boolean"
+    },
     "xref": {
       "type": "array",
       "items": {

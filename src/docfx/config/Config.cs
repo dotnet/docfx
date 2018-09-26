@@ -26,8 +26,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the default locale of this docset.
+        /// TODO: lower case user inputs.
         /// </summary>
-        [Locale]
         public readonly string Locale = "en-us";
 
         /// <summary>
@@ -136,6 +136,13 @@ namespace Microsoft.Docs.Build
         /// Gets whether warnings should be treated as errors.
         /// </summary>
         public readonly bool WarningsAsErrors;
+
+        // TODO: remove the switch when we fix the performance
+
+        /// <summary>
+        /// Gets whether to build internal xref map
+        /// </summary>
+        public readonly bool BuildInternalXrefMap;
 
         /// <summary>
         /// The addresses of xref map files, used for resolving xref.

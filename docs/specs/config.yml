@@ -425,6 +425,5 @@ inputs:
     locale: wrong/wrong
 outputs:
   build.log: |
-    ["error","violate-schema","Locale 'wrong/wrong' is not supported.","docfx.yml","locale"]
-  build.manifest:
+    ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
 ---

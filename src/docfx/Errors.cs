@@ -45,6 +45,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocLevel(string filePath, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
 
+        public static Error InvalidLocale(string locale)
+            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
@@ -128,6 +131,12 @@ namespace Microsoft.Docs.Build
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
+
+        public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
+        {
+            var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+        }
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

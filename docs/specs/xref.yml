@@ -42,3 +42,92 @@ outputs:
     { "content": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
   build.manifest:
 ---
+# Define uid in conceptual, resolve it
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md: |
+    ---
+    title: Title from yaml header b
+    uid: b
+    ---
+  docs/c.md: Link to @a
+outputs:
+  docs/c.json: | 
+    {"content":"<p>Link to <a href=\"docs/a.json\">Title from yaml header a</a></p>\n"}
+  docs/a.json:
+  docs/b.json:
+  build.manifest:
+---
+# Define uid in SDP, resolve it
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "test",
+      "fullName": "test.test",
+      "description": "a.description"
+    }
+  docs/c.md: Link to @a
+outputs:
+  docs/c.json: | 
+    {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
+  docs/a.json:
+  build.manifest:
+---
+# Define duplicate uid in conceptual and SDP 
+# should output warning and resolve it with the first one ordered by href
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a"
+    }
+  docs/c.md: Link to @a
+outputs:
+  docs/a.json:
+  docs/b.json: 
+  docs/c.json: |
+    {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
+  build.log: |
+    ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.json,docs/b.json"]
+  build.manifest:
+---  
+# Resolve xref in SDP
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "test",
+      "fullName": "test.test",
+      "description": "a.description"
+    }
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a"
+    }
+outputs:
+  docs/a.json:
+  docs/b.json: | 
+    {
+      "content": {"xref": "docs/a.json"}
+    }
+  build.manifest:
+---  

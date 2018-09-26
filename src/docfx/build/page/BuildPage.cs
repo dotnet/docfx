@@ -44,9 +44,10 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(contributorErrors);
 
             var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
+            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute &&
+                file.Docset.Config.Dependencies.ContainsKey("_themes"))
             {
-                output = await RazorTemplate.Render(model);
+                output = file.Docset.Template.Render(model.PageType, model);
             }
 
             return (errors, output, dependencies.Build());
@@ -192,6 +193,11 @@ namespace Microsoft.Docs.Build
                 {
                     var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file));
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
+                }
+
+                if (attribute is XrefAttribute)
+                {
+                    return xrefMap.Resolve((string)value).Href;
                 }
 
                 return value;

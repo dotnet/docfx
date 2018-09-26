@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             var contribution = new ContributionInfo(docset, githubUserCache);
 
-            var xrefMap = XrefMap.Create(docset);
+            var xrefMap = await XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
