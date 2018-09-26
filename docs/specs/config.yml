@@ -485,3 +485,18 @@ inputs:
 outputs:
   a.json:
   build.manifest:
+---
+# invalid overwrite config
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    content: a.md
+    "locales: zh-cn":
+      content: b.md
+  a.md:
+outputs:
+  a.json:
+  build.manifest:
+  build.log: |
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]

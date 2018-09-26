@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(str))
                 return false;
 
-            return str.Contains("locales:", StringComparison.OrdinalIgnoreCase) || str.Contains("branches:", StringComparison.OrdinalIgnoreCase);
+            return s_branchRegex.Match(str).Success || s_localeRegex.Match(str).Success;
         }
     }
 }
