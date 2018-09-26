@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
             }
             return null;
 
-            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath, string fieldName)
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
             {
                 if (attribute is XrefPropertyAttribute)
                 {
