@@ -37,7 +37,14 @@ namespace Microsoft.Docs.Build
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                if (config.Output.Json)
+                {
+                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                }
+                else
+                {
+                    docset.LegacyTemplate.CopyTo(outputPath);
+                }
             }
 
             errors.ForEach(e => context.Report(e));

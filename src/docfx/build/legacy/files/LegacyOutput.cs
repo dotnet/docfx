@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyOutput
     {
-        public static void Convert(Docset docset, Context context, List<(LegacyManifestItem manifestItem, Document document)> files, TableOfContentsMap tocMap)
+        public static void Convert(Docset docset, Context context, List<(LegacyManifestItem manifestItem, Document document)> files)
         {
             using (Progress.Start("Convert Legacy Files"))
             {
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
                 using (Progress.Start("Convert Legacy Markdown/Redirection Files"))
                 {
-                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection), file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output, tocMap));
+                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection), file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output));
                 }
 
                 using (Progress.Start("Convert Legacy Resource Files"))
