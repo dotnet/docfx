@@ -238,7 +238,7 @@ outputs:
   README.json: |
     {
       "contributors": [],
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/424413cf1b63e93f5aa61447866dccd7a8360c18/README.md"
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/45ea50bfb7d6ea3c93e77d8a9d27c967c59c78c1/README.md"
     }
   build.manifest:
 ---
