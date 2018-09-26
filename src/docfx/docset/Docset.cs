@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the culture computed from <see cref="Config.Locale"/>.
+        /// Gets the culture info computed from <see cref="Config.Locale"/>.
         /// </summary>
         public CultureInfo Culture { get; }
 
@@ -54,13 +54,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
-        public Template Template => _template.Value;
+        public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
         private readonly Lazy<RedirectionMap> _redirections;
-        private readonly Lazy<Template> _template;
+        private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
@@ -85,8 +85,7 @@ namespace Microsoft.Docs.Build
                 return map;
             });
 
-            // TODO: make template path a config
-            _template = new Lazy<Template>(() => new Template(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
