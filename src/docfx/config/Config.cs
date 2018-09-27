@@ -277,9 +277,8 @@ namespace Microsoft.Docs.Build
             result.Merge(config, JsonUtility.MergeSettings);
             foreach (var (key, value) in config)
             {
-                if (OverwriteConfigIdentifer.Match(key))
+                if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
                 {
-                    var identifier = new OverwriteConfigIdentifer(key);
                     if ((identifier.Branches.Count == 0 || (!string.IsNullOrEmpty(branch) && identifier.Branches.Contains(branch))) &&
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)

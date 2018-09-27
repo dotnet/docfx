@@ -9,39 +9,48 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OverwriteConfigIdentifer
+    internal class OverwriteConfigIdentifier
     {
-        private static Regex s_branchRegex = new Regex(@"branches:[ ]*\[([^\[\]]*)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex s_localeRegex = new Regex(@"locales:[ ]*\[([^\[\]]*)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex s_branchRegex = new Regex(@"branches:[ ]*\[([^\[\]]*)\]", RegexOptions.IgnoreCase);
+        private static Regex s_localeRegex = new Regex(@"locales:[ ]*\[([^\[\]]*)\]", RegexOptions.IgnoreCase);
 
-        public OverwriteConfigIdentifer(string identifierStr)
+        private OverwriteConfigIdentifier(HashSet<string> branches, HashSet<string> locales)
+        {
+            Branches = branches;
+            Locales = locales;
+        }
+
+        public static bool TryMatch(string identifierStr, out OverwriteConfigIdentifier overwriteConfigIdentifier)
         {
             Debug.Assert(!string.IsNullOrEmpty(identifierStr));
-            Branches = new HashSet<string>(GetMatchParts(s_branchRegex), StringComparer.OrdinalIgnoreCase);
-            Locales = new HashSet<string>(GetMatchParts(s_localeRegex), StringComparer.OrdinalIgnoreCase);
 
-            IEnumerable<string> GetMatchParts(Regex regex)
+            overwriteConfigIdentifier = null;
+            var branchMatched = TryGetMatchedParts(s_branchRegex, out var branches);
+            var localeMatched = TryGetMatchedParts(s_localeRegex, out var locales);
+            if (branchMatched || localeMatched)
             {
+                overwriteConfigIdentifier = new OverwriteConfigIdentifier(new HashSet<string>(branches), new HashSet<string>(locales, StringComparer.OrdinalIgnoreCase));
+                return true;
+            }
+
+            return false;
+
+            bool TryGetMatchedParts(Regex regex, out IEnumerable<string> parts)
+            {
+                parts = Array.Empty<string>();
                 var match = regex.Match(identifierStr);
                 if (match.Success)
                 {
-                    return match.Groups[1].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
+                    parts = match.Groups[1].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
+                    return true;
                 }
 
-                return Array.Empty<string>();
+                return false;
             }
         }
 
         public HashSet<string> Locales { get; }
 
         public HashSet<string> Branches { get; }
-
-        public static bool Match(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-                return false;
-
-            return s_branchRegex.Match(str).Success || s_localeRegex.Match(str).Success;
-        }
     }
 }
