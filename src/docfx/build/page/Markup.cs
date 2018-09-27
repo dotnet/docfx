@@ -196,10 +196,7 @@ namespace Microsoft.Docs.Build
 
             var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
 
-            if (error != null)
-            {
-                Result.Errors.Add(error);
-            }
+            Result.Errors.AddIfNotNull(error);
 
             t_dependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
 
@@ -214,10 +211,7 @@ namespace Microsoft.Docs.Build
             var self = (Document)relativeTo;
             var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
 
-            if (error != null)
-            {
-                Result.Errors.Add(error);
-            }
+            Result.Errors.AddIfNotNull(error);
 
             if (child != null && t_buildChild != null)
             {
