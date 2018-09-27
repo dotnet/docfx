@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model, metadata);
 
-            object TransformContent(DataTypeAttribute attribute, object value)
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
             {
                 if (attribute is HrefAttribute)
                 {
@@ -198,6 +198,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is XrefAttribute)
                 {
+                    // TODO: how to fill xref resolving data besides href
                     return xrefMap.Resolve((string)value).Href;
                 }
 

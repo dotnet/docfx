@@ -138,6 +138,9 @@ namespace Microsoft.Docs.Build
             return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
 
+        public static Error UidMissing()
+            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
+
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
         /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>

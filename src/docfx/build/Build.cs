@@ -26,13 +26,12 @@ namespace Microsoft.Docs.Build
 
             var docset = new Docset(context, docsetPath, config, options);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-
             var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
 
             var contribution = new ContributionInfo(docset, githubUserCache);
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
 
-            var xrefMap = await XrefMap.Create(context, docset);
+            var xrefMap = XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 

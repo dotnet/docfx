@@ -14,18 +14,18 @@ namespace Microsoft.Docs.Build
     internal class XrefMap
     {
         // TODO: key could be uid+moniker+locale
-        private readonly InternalXrefMap _internalXrefMap;
+        private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> map, InternalXrefMap internalXrefMap)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
         {
-            _externalXrefMap = map;
+            _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
         }
 
         public XrefSpec Resolve(string uid)
         {
-            if (_internalXrefMap != null && _internalXrefMap.Resolve(uid, out var xrefSpec))
+            if (_internalXrefMap != null && _internalXrefMap.TryGetValue(uid, out var xrefSpec))
             {
                 return xrefSpec;
             }
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public static async Task<XrefMap> Create(Context context, Docset docset)
+        public static XrefMap Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
@@ -48,139 +48,135 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? await InternalXrefMap.Create(context, docset.BuildScope) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : null);
         }
 
-        private class InternalXrefMap
+        public static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
-            private readonly IReadOnlyDictionary<string, XrefSpec> _map;
-
-            private InternalXrefMap(IReadOnlyDictionary<string, XrefSpec> map)
+            ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
+            Debug.Assert(files != null);
+            using (Progress.Start("Building Xref map"))
             {
-                _map = map;
+                ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
+                var xrefs = HandleXrefConflicts(context, xrefsByUid);
+                return xrefs;
             }
+        }
 
-            public static async Task<InternalXrefMap> Create(Context context, IEnumerable<Document> files)
+        private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, Document file)
+        {
+            try
             {
-                ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
-                Debug.Assert(files != null);
-                using (Progress.Start("Building Xref map"))
+                var errors = new List<Error>();
+                var content = file.ReadText();
+                if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    await ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefConflicts, file), Progress.Update);
-                    var xrefs = HandleXrefConflicts(context, xrefConflicts);
-                    return new InternalXrefMap(xrefs);
+                    TryAddXref(xrefsByUid, LoadMarkdown(content, file));
                 }
+                else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+                {
+                    var (yamlErrors, token) = YamlUtility.Deserialize(content);
+                    errors.AddRange(yamlErrors);
+                    TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
+                }
+                else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+                {
+                    var (jsonErrors, token) = JsonUtility.Deserialize(content);
+                    errors.AddRange(jsonErrors);
+                    TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
+                }
+                context.Report(file.ToString(), errors);
             }
-
-            public bool Resolve(string uid, out XrefSpec xref) => _map.TryGetValue(uid, out xref);
-
-            private static Task Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, Document file)
+            catch (DocfxException ex)
             {
-                try
-                {
-                    var errors = new List<Error>();
-                    var content = file.ReadText();
-                    if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
-                    {
-                        TryAddXref(xrefConflicts, LoadMarkdown(content, file));
-                    }
-                    else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
-                    {
-                        var (yamlErrors, token) = YamlUtility.Deserialize(content);
-                        errors.AddRange(yamlErrors);
-                        TryAddXref(xrefConflicts, LoadSchemaDocument(errors, token, file));
-                    }
-                    else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
-                    {
-                        var (jsonErrors, token) = JsonUtility.Deserialize(content);
-                        errors.AddRange(jsonErrors);
-                        TryAddXref(xrefConflicts, LoadSchemaDocument(errors, token, file));
-                    }
-                    context.Report(file.ToString(), errors);
-                    return Task.CompletedTask;
-                }
-                catch (DocfxException ex)
-                {
-                    context.Report(file.ToString(), ex.Error);
-                    return Task.CompletedTask;
-                }
+                context.Report(file.ToString(), ex.Error);
             }
+        }
 
-            private static Dictionary<string, XrefSpec> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts)
+        private static Dictionary<string, XrefSpec> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid)
+        {
+            var result = new Dictionary<string, XrefSpec>();
+            foreach (var (uid, conflict) in xrefsByUid)
             {
-                var result = new Dictionary<string, XrefSpec>();
-                foreach (var (uid, conflict) in xrefConflicts)
+                if (conflict.Count > 1)
                 {
-                    if (conflict.Count > 1)
-                    {
-                       var orderedConflict = conflict.OrderBy(spec => spec.Href);
-                       context.Report(Errors.UidConflict(uid, orderedConflict));
-                       result.Add(uid, orderedConflict.First());
-                       continue;
-                    }
-                    result.Add(uid, conflict.First());
+                    var orderedConflict = conflict.OrderBy(spec => spec.Href);
+                    context.Report(Errors.UidConflict(uid, orderedConflict));
+                    result.Add(uid, orderedConflict.First());
+                    continue;
                 }
-                return result;
+                result.Add(uid, conflict.First());
             }
+            return result;
+        }
 
-            private static XrefSpec LoadMarkdown(string content, Document file)
+        private static XrefSpec LoadMarkdown(string content, Document file)
+        {
+            var (_, markup) = Markup.ToHtml(content, file, null, null, null, null, MarkdownPipelineType.ConceptualMarkdown);
+            var uid = markup.Metadata.Value<string>("uid");
+            var title = markup.Metadata.Value<string>("title");
+            if (!string.IsNullOrEmpty(uid))
             {
-                var (_, markup) = Markup.ToHtml(content, file, null, null, null, null, MarkdownPipelineType.ConceptualMarkdown);
-
-                var uid = markup.Metadata.Value<string>("uid");
-                var title = markup.Metadata.Value<string>("title");
-                if (!string.IsNullOrEmpty(uid))
+                var xref = new XrefSpec
                 {
-                    return new XrefSpec
-                    {
-                        Uid = uid,
-                        Name = string.IsNullOrEmpty(title) ? uid : title,
-                        Href = file.SitePath,
-                    };
-                }
-                return null;
-            }
-
-            private static XrefSpec LoadSchemaDocument(List<Error> errors, JToken token, Document file)
-            {
-                XrefSpec xref = null;
-
-                // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
-                //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
-                var obj = token as JObject;
-                var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
-                if (schema == null)
-                {
-                    throw Errors.SchemaNotFound(file.Mime).ToException();
-                }
-
-                var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
-                errors.AddRange(schemaErrors);
+                    Uid = uid,
+                    Href = file.SitePath,
+                };
+                xref.ExtensionData["name"] = string.IsNullOrEmpty(title) ? uid : title;
                 return xref;
-
-                object TransformContent(DataTypeAttribute attribute, object value)
-                {
-                    if (attribute is UidAttribute)
-                    {
-                        if (!string.IsNullOrEmpty((string)value))
-                        {
-                            // TODO: set name and extension data based on defined xref properties in the schema type
-                            xref = new XrefSpec { Uid = (string)value, Href = file.SitePath };
-                        }
-                    }
-                    return (string)value;
-                }
             }
+            return null;
+        }
 
-            private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefConflicts, XrefSpec spec)
+        private static XrefSpec LoadSchemaDocument(List<Error> errors, JToken token, Document file)
+        {
+            var extensionData = new JObject();
+
+            // TODO: for backward compatibility, when #YamlMime:YamlDocument, documentType is used to determine schema.
+            //       when everything is moved to SDP, we can refactor the mime check to Document.TryCreate
+            var obj = token as JObject;
+            var schema = file.Schema ?? Schema.GetSchema(obj?.Value<string>("documentType"));
+            if (schema == null)
             {
-                if (spec is null)
-                {
-                    return;
-                }
-
-                xrefConflicts.GetOrAdd(spec.Uid, _ => new ConcurrentBag<XrefSpec>()).Add(spec);
+                throw Errors.SchemaNotFound(file.Mime).ToException();
             }
+
+            var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
+            errors.AddRange(schemaErrors);
+            var uid = obj.Value<string>("uid");
+            if (!string.IsNullOrEmpty(uid))
+            {
+                var xref = new XrefSpec
+                {
+                    Uid = uid,
+                    Href = file.SitePath,
+                };
+                xref.ExtensionData.Merge(extensionData);
+                return xref;
+            }
+            else if (extensionData.Count > 0)
+            {
+                errors.Add(Errors.UidMissing());
+            }
+            return null;
+
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
+            {
+                if (attribute is XrefPropertyAttribute)
+                {
+                    extensionData[jsonPath] = (string)value;
+                }
+                return (string)value;
+            }
+        }
+
+        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, XrefSpec spec)
+        {
+            if (spec is null)
+            {
+                return;
+            }
+            xrefsByUid.GetOrAdd(spec.Uid, _ => new ConcurrentBag<XrefSpec>()).Add(spec);
         }
     }
 }
