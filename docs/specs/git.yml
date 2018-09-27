@@ -72,8 +72,15 @@ inputs:
     author: invalid_user
     ---
     # git-test
-  user_profile.json:
-    {"users": [ {"login": "invalid_user"}]}
+  user_profile.json: |
+    {
+      "users": [
+        {"login": "invalid_user"},
+        {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
+        {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
+        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
+      ]
+    }
 outputs:
   README.json:
   build.manifest:

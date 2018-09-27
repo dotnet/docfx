@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
 
             var user = TryGetByLogin(login);
             if (user != null)
-                return (null, user.IsValid() ? user : null);
+                return user.IsValid() ? ((Error)null, user) : (Errors.GitHubUserNotFound(login), null);
 
             (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(login, _ => _github.GetUserByLogin(login));
             _outgoingGetUserByLoginRequests.TryRemove(login, out _);
