@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
         {
             if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) && content.Contains("\n>>>>>>>"))
             {
-                throw Errors.MergedConflict(file).ToException();
+                throw Errors.MergeConflict(file).ToException();
             }
         }
 

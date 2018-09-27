@@ -16,6 +16,6 @@ inputs:
     >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
 outputs:
   build.log: |
-    ["error","merged-conflict","File contains merge conflict","docs/toc.md"]
-    ["error","merged-conflict","File contains merge conflict","docs/a.md"]
+    ["error","merge-conflict","File contains merge conflict","docs/toc.md"]
+    ["error","merge-conflict","File contains merge conflict","docs/a.md"]
   build.manifest:
