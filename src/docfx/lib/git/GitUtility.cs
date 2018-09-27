@@ -163,6 +163,15 @@ namespace Microsoft.Docs.Build
         public static Task<string> Revision(string cwd, string branch = "HEAD")
            => ExecuteQuery(cwd, $"rev-parse {branch}");
 
+        public static Error CheckMergeConflictMarker(string content, string file)
+        {
+            if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) && content.Contains("\n>>>>>>>"))
+            {
+                return Errors.MergedConflict(file);
+            }
+            return null;
+        }
+
         internal static string EmbedToken(string remote, string token)
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
