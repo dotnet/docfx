@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -19,12 +20,22 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null)
+        {
+            var done = 0;
+            var total = source.Count();
+            Parallel.ForEach<T>(source, item =>
+            {
+                action(item);
+                progress?.Invoke(Interlocked.Increment(ref done), total);
+            });
+        }
+
         public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
         {
             var done = 0;
             var total = 0;
             var queue = new ActionBlock<T>(Run, s_dataflowOptions);
-
             foreach (var item in source)
             {
                 var posted = queue.Post(item);
