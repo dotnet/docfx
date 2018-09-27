@@ -32,5 +32,6 @@ namespace Microsoft.Docs.Build
     public class HtmlAttribute : DataTypeAttribute { }
 
     public class XrefAttribute : DataTypeAttribute { }
+
     public class XrefPropertyAttribute : DataTypeAttribute { }
 }
