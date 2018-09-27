@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.Contribution.ResolveGitHubUsers;
+            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
             var contributors = new List<Contributor>();

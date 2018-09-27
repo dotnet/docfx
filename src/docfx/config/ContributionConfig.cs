@@ -30,11 +30,6 @@ namespace Microsoft.Docs.Build
         public readonly string Branch;
 
         /// <summary>
-        /// Determines whether to resolve git commit user and GitHub user.
-        /// </summary>
-        public readonly bool ResolveGitHubUsers = false;
-
-        /// <summary>
         /// The address of commit time history file, which contains the time each commit being pushed.
         /// It should be an absolute url or a relative path
         /// </summary>

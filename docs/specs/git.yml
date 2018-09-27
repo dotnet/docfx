@@ -34,8 +34,8 @@ inputs:
   content: README.md
   gitHub:
     userCache: user_profile.json
+    resolveUsers: true
   contribution:
-    resolveGitHubUsers: true
     gitCommitsTime: build_history.json
 outputs:
   README.json: |
@@ -140,9 +140,9 @@ inputs:
   docfx.yml: |
     content: "README.md"
     github:
+      resolveUsers: true
       userCache: user_profile.json
     contribution:
-      resolveGitHubUsers: true
       excludedContributors:
         - superyyrrZZ
         - YUFEIH
@@ -167,8 +167,8 @@ inputs:
     content: "README.md"
     github:
       userCache: user_profile.json
+      resolveUsers: true
     contribution:
-      resolveGitHubUsers: true
       excludedContributors:
         - superyyrrZZ
 outputs:
@@ -211,8 +211,8 @@ inputs:
     content: "README.md"
     github:
       userCache: user_profile.json
+      resolveUsers: true
     contribution:
-      resolveGitHubUsers: true
       repository: test-org/test-repo
       branch: contribution
 outputs:
@@ -225,20 +225,12 @@ outputs:
   build.manifest:
 ---
 # Don't load git commits when showContributors is set to false
-repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
-inputs:
-  docfx.yml: |
-    content: "README.md"
-    github:
-      userCache: user_profile.json
-    contribution:
-      resolveGitHubUsers: true
-      showContributors: false
+repo: https://github.com/docascode/docfx-test-dependencies#no-load-commits
 outputs:
   README.json: |
     {
       "contributors": [],
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/45ea50bfb7d6ea3c93e77d8a9d27c967c59c78c1/README.md"
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/5087ddfc6ee4886bcabe8cc93673edd8605fe15c/README.md"
     }
   build.manifest:
 ---
@@ -249,8 +241,8 @@ inputs:
     content: "README.md"
     github:
       userCache: user_profile.json
+      resolveUsers: true
     contribution:
-      resolveGitHubUsers: true
 outputs:
   README.json: |
     {

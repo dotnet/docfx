@@ -16,9 +16,6 @@
         "branch": {
           "type": "string"
         },
-        "resolveGitHubUsers": {
-          "type": "boolean"
-        },
         "gitCommitsTime": {
           "type": "string"
         },
@@ -93,6 +90,9 @@
         },
         "userCacheExpirationInHours": {
           "type": "integer"
+        },
+        "resolveUsers": {
+          "type": "boolean"
         }
       }
     },
