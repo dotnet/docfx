@@ -16,9 +16,6 @@
         "branch": {
           "type": "string"
         },
-        "userProfileCache": {
-          "type": "string"
-        },
         "gitCommitsTime": {
           "type": "string"
         },
@@ -87,6 +84,15 @@
       "properties": {
         "authToken": {
           "type": "string"
+        },
+        "userCache": {
+          "type": "string"
+        },
+        "userCacheExpirationInHours": {
+          "type": "integer"
+        },
+        "resolveUsers": {
+          "type": "boolean"
         }
       }
     },
