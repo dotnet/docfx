@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             var map = new XrefMapModel();
             map.References.AddRange(xrefMap.References);
 
-            using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.SiteBasePath, "xrefmap.yaml"))))
+            using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.SiteBasePath, "xrefmap.yml"))))
             {
                 writer.WriteLine("### YamlMime:XRefMap");
                 var serializer = new SerializerBuilder().Build();
