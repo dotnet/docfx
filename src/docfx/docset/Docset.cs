@@ -25,12 +25,12 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the culture computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>.
+        /// Gets the culture computed from <see cref="Locale"/>/>.
         /// </summary>
         public CultureInfo Culture { get; }
 
         /// <summary>
-        /// Gets the lower-case culture name computed from <see cref="Culture"/>
+        /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
         /// </summary>
         public string Locale { get; }
 
