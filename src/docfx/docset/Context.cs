@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal sealed class Cache
+        private sealed class Cache
         {
             private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
 
