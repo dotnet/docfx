@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             newMetadata["search.ms_product"] = docset.Config.Product;
             newMetadata["search.ms_sitename"] = "Docs";
 
-            newMetadata["locale"] = docset.Config.Locale;
+            newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
             newMetadata["version"] = 0;
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             => new JObject
             {
                 ["redirect_url"] = pageModel.RedirectUrl,
-                ["locale"] = docset.Config.Locale,
+                ["locale"] = docset.Locale,
             }.RemoveNulls();
 
         public static JObject GenerateLegacyRawMetadata(
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["title"] = pageModel.Title;
             rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.SiteBasePath}/";
 
             if (docset.Config.NeedGeneratePdfUrlTemplate)
             {
