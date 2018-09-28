@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,11 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
-        {
-            _externalXrefMap = externalXrefMap;
-            _internalXrefMap = internalXrefMap;
-        }
+        public IEnumerable<XrefSpec> References => _internalXrefMap.Values;
 
         public XrefSpec Resolve(string uid)
         {
@@ -59,8 +56,17 @@ namespace Microsoft.Docs.Build
             {
                 ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
                 var xrefs = HandleXrefConflicts(context, xrefsByUid);
+                var xrefMap = new XrefMapModel();
+                xrefMap.References.AddRange(xrefs.Values);
+                context.WriteJson(xrefMap, "xrefmap.json");
                 return xrefs;
             }
+        }
+
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
+        {
+            _externalXrefMap = externalXrefMap;
+            _internalXrefMap = internalXrefMap;
         }
 
         private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, Document file)
@@ -75,13 +81,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Deserialize(content);
+                    var (yamlErrors, token) = context.LoadYaml(file);
                     errors.AddRange(yamlErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.Deserialize(content);
+                    var (jsonErrors, token) = context.LoadJson(file);
                     errors.AddRange(jsonErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
@@ -95,19 +101,19 @@ namespace Microsoft.Docs.Build
 
         private static Dictionary<string, XrefSpec> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid)
         {
-            var result = new Dictionary<string, XrefSpec>();
+            var result = new List<XrefSpec>();
             foreach (var (uid, conflict) in xrefsByUid)
             {
                 if (conflict.Count > 1)
                 {
                     var orderedConflict = conflict.OrderBy(spec => spec.Href);
                     context.Report(Errors.UidConflict(uid, orderedConflict));
-                    result.Add(uid, orderedConflict.First());
+                    result.Add(orderedConflict.First());
                     continue;
                 }
-                result.Add(uid, conflict.First());
+                result.Add(conflict.First());
             }
-            return result;
+            return result.OrderBy(item => item.Uid).ToDictionary(xref => xref.Uid);
         }
 
         private static XrefSpec LoadMarkdown(string content, Document file)

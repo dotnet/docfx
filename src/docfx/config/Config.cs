@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets whether to build internal xref map
         /// </summary>
-        public readonly bool BuildInternalXrefMap;
+        public readonly bool BuildInternalXrefMap = true;
 
         /// <summary>
         /// The addresses of xref map files, used for resolving xref.

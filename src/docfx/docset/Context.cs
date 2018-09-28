@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,12 +14,20 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _outputPath;
         private readonly Report _report;
+        private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _cache;
 
         public Context(Report report, string outputPath)
         {
             _report = report;
             _outputPath = Path.GetFullPath(outputPath);
+            _cache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
         }
+
+        public (List<Error> errors, JToken token) LoadYaml(Document file)
+            => _cache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => YamlUtility.Deserialize(file.ReadText()))).Value;
+
+        public (List<Error> errors, JToken token) LoadJson(Document file)
+            => _cache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(file.ReadText()))).Value;
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -112,5 +123,7 @@ namespace Microsoft.Docs.Build
                 File.Delete(destinationPath);
             }
         }
+
+        private string GetKeyFromFile(Document file) => file.FilePath + file.LastWriteTime;
     }
 }

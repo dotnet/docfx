@@ -97,6 +97,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
 
+        /// <summary>
+        /// Gets a value indicating the time the file was last written
+        /// </summary>
+        public DateTime LastWriteTime { get; }
+
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
         /// <summary>
@@ -112,6 +117,7 @@ namespace Microsoft.Docs.Build
             string mime,
             Schema schema,
             bool isExperimental,
+            DateTime lastWriteTime,
             string redirectionUrl = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath));
@@ -126,6 +132,7 @@ namespace Microsoft.Docs.Build
             Mime = mime;
             Schema = schema;
             IsExperimental = isExperimental;
+            LastWriteTime = lastWriteTime;
             RedirectionUrl = redirectionUrl;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
@@ -213,6 +220,7 @@ namespace Microsoft.Docs.Build
             var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
+            var lastWriteTime = new FileInfo(Path.Combine(docset.DocsetPath, filePath)).LastWriteTime;
 
             var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
@@ -224,7 +232,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, mime, schema, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, mime, schema, isExperimental, lastWriteTime, redirectionUrl));
         }
 
         /// <summary>

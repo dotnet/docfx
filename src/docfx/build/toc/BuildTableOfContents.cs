@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap) Build(
-            Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+            Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             }
 
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(file, dependencyMapBuilder);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder);
 
             foreach (var article in refArticles)
             {
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, tocModel, _, referencedDocuments, referencedTocs) = Load(fileToBuild);
+                var (errors, tocModel, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
@@ -78,13 +78,13 @@ namespace Microsoft.Docs.Build
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
+            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
-                fileToBuild.ReadText(),
+                context,
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
