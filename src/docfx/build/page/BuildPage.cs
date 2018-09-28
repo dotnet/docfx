@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             LoadYaml(
             Context context, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
-            var (errors, token) = context.LoadYaml(file);
+            var (errors, token) = context.Load(file, f => YamlUtility.Deserialize(f.ReadText()));
 
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             LoadJson(
             Context context, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
-            var (errors, token) = context.LoadJson(file);
+            var (errors, token) = context.Load(file, f => JsonUtility.Deserialize(f.ReadText()));
 
             return await LoadSchemaDocument(errors, token, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }

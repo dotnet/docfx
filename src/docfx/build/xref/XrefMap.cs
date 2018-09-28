@@ -81,13 +81,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = context.LoadYaml(file);
+                    var (yamlErrors, token) = context.Load(file, f => YamlUtility.Deserialize(f.ReadText()));
                     errors.AddRange(yamlErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = context.LoadJson(file);
+                    var (jsonErrors, token) = context.Load(file, f => JsonUtility.Deserialize(f.ReadText()));
                     errors.AddRange(jsonErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }

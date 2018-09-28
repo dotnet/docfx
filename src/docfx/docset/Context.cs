@@ -23,11 +23,8 @@ namespace Microsoft.Docs.Build
             _cache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
         }
 
-        public (List<Error> errors, JToken token) LoadYaml(Document file)
-            => _cache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => YamlUtility.Deserialize(file.ReadText()))).Value;
-
-        public (List<Error> errors, JToken token) LoadJson(Document file)
-            => _cache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(file.ReadText()))).Value;
+        public (List<Error> errors, JToken token) Load(Document file, Func<Document, (List<Error>, JToken)> action)
+            => _cache.GetOrAdd(file.FilePath + file.LastWriteTime, new Lazy<(List<Error>, JToken)>(() => action(file))).Value;
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -123,7 +120,5 @@ namespace Microsoft.Docs.Build
                 File.Delete(destinationPath);
             }
         }
-
-        private string GetKeyFromFile(Document file) => file.FilePath + file.LastWriteTime;
     }
 }

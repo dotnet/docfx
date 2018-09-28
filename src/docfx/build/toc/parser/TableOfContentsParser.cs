@@ -31,14 +31,14 @@ namespace Microsoft.Docs.Build
             var filePath = file.FilePath;
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = context.LoadYaml(file);
+                var (errors, tocToken) = context.Load(file, f => YamlUtility.Deserialize(f.ReadText()));
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
             else if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                var (errors, tocToken) = context.LoadJson(file);
+                var (errors, tocToken) = context.Load(file, f => JsonUtility.Deserialize(f.ReadText()));
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
