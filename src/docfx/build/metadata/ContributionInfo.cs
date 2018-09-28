@@ -13,38 +13,104 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionInfo
     {
-        private static readonly string s_defaultProfilePath = Path.Combine(AppData.CacheDir, "user-profile.json");
-
-        private readonly UserProfileCache _userProfileCache;
+        private readonly GitHubUserCache _gitHubUserCache;
 
         private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private readonly GitHubAccessor _github;
+        private readonly IReadOnlyDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile;
 
-        private IReadOnlyDictionary<string, List<GitCommit>> _commitsByFile;
-
-        public static async Task<(List<Error> errors, ContributionInfo info)> Load(Docset docset)
+        public ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
         {
-            var gitToken = docset.Config.GitHub.AuthToken;
-            var result = new ContributionInfo(docset, gitToken);
-            var errors = await result.LoadCommits(docset);
-            return (errors, result);
+            _gitHubUserCache = gitHubUserCache;
+            _commitsByFile = LoadCommits(docset);
+            _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
+               ? new Dictionary<string, DateTime>()
+               : JsonUtility.ReadJsonFile<GitCommitsTime>(
+                   docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
         }
 
-        public async Task<(Error error, Contributor author, Contributor[] contributors, DateTime updatedAt)> GetContributorInfo(
+        public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
             Document document,
-            string author)
+            string authorName)
         {
             Debug.Assert(document != null);
 
-            _commitsByFile.TryGetValue(document.FilePath, out var commits);
-            var (error, authorInfo) = await GetAuthor(document, author, commits);
-            var contributors = GetContributors(document, authorInfo, commits);
+            var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
+            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
+            var excludes = document.Docset.Config.Contribution.ExcludedContributors;
+
+            var contributors = new List<Contributor>();
+            var errors = new List<Error>();
+            var logins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            return (error, ToGitUserInfo(authorInfo), contributors.Select(ToGitUserInfo).ToArray(), updatedDateTime);
+            // Resolve contributors from commits
+            if (commits != null)
+            {
+                foreach (var commit in commits)
+                {
+                    if (!emails.Add(commit.AuthorEmail))
+                        continue;
+
+                    if (!resolveGitHubUsers && authorNames.Add(commit.AuthorName))
+                    {
+                        contributors.Add(new Contributor { DisplayName = commit.AuthorName });
+                        continue;
+                    }
+
+                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
+                    if (error != null)
+                        errors.Add(error);
+
+                    if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
+                        contributors.Add(user.ToContributor());
+                }
+            }
+
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                if (resolveGitHubUsers)
+                {
+                    // Remove author from contributors if author name is specified
+                    var (error, author) = await _gitHubUserCache.GetByLogin(authorName);
+                    if (error != null)
+                        errors.Add(error);
+
+                    if (excludes.Contains(authorName))
+                        author = null;
+                    if (author != null)
+                        contributors.RemoveAll(c => c.Id == author.Id.ToString());
+
+                    return (errors, author?.ToContributor(), contributors, updatedDateTime);
+                }
+
+                return (errors, new Contributor { DisplayName = authorName }, contributors, updatedDateTime);
+            }
+
+            // When author name is not specified, last contributor is author
+            if (contributors.Count > 0)
+            {
+                var author = contributors[contributors.Count - 1];
+                contributors.RemoveAt(contributors.Count - 1);
+                return (errors, author, contributors, updatedDateTime);
+            }
+
+            return (errors, null, contributors, updatedDateTime);
+        }
+
+        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
+        {
+            if (fileCommits?.Count > 0)
+            {
+                return _updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory)
+                    ? timeFromHistory
+                    : fileCommits[0].Time.UtcDateTime;
+            }
+            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
         }
 
         public (string editUrl, string contentUrl, string commitUrl) GetGitUrls(Document document)
@@ -53,9 +119,7 @@ namespace Microsoft.Docs.Build
 
             var (repo, pathToRepo, _) = GetRepository(document);
             if (repo == null)
-            {
                 return default;
-            }
 
             var branch = repo.Branch ?? "master";
             var editRepo = document.Docset.Config.Contribution.Repository ?? $"{repo.Owner}/{repo.Name}";
@@ -65,8 +129,8 @@ namespace Microsoft.Docs.Build
                 ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
                 : null;
 
-            var commit = _commitsByFile.TryGetValue(document.FilePath, out var commits) && commits.Count > 0
-                ? commits[0].Sha
+            var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
+                ? value.commits[0].Sha
                 : repo.Commit;
 
             var commitUrl = commit != null ? $"https://github.com/{repo.Owner}/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
@@ -75,84 +139,12 @@ namespace Microsoft.Docs.Build
             return (editUrl, contentUrl, commitUrl);
         }
 
-        private ContributionInfo(Docset docset, string gitToken)
-        {
-            _github = new GitHubAccessor(gitToken);
-
-            _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
-                ? new Dictionary<string, DateTime>()
-                : GitCommitsTime.Create(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
-
-            var userProfilePath = string.IsNullOrEmpty(docset.Config.Contribution.UserProfileCache)
-                    ? s_defaultProfilePath
-                    : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.UserProfileCache);
-            _userProfileCache = UserProfileCache.Create(userProfilePath, _github);
-        }
-
-        private async Task<(Error error, UserProfile author)> GetAuthor(Document doc, string authorName, List<GitCommit> fileCommits)
-        {
-            Error error = null;
-            UserProfile authorProfile = null;
-            var errors = new List<Error>();
-            if (!string.IsNullOrEmpty(authorName) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
-            {
-                (error, authorProfile) = await _userProfileCache.GetByUserName(authorName);
-            }
-
-            if (fileCommits != null && fileCommits.Count != 0)
-            {
-                if (string.IsNullOrEmpty(authorName))
-                {
-                    for (var i = fileCommits.Count - 1; i >= 0; i--)
-                    {
-                        if (!string.IsNullOrEmpty(fileCommits[i].AuthorEmail))
-                        {
-                            authorProfile = _userProfileCache.GetByUserEmail(fileCommits[i].AuthorEmail);
-                            if (authorProfile != null && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(authorName))
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return (error, authorProfile);
-        }
-
-        private List<UserProfile> GetContributors(Document doc, UserProfile authorInfo, List<GitCommit> fileCommits)
-        {
-            if (fileCommits == null || fileCommits.Count == 0)
-            {
-                return new List<UserProfile>();
-            }
-
-            return (from commit in fileCommits
-                    where !string.IsNullOrEmpty(commit.AuthorEmail)
-                    let info = _userProfileCache.GetByUserEmail(commit.AuthorEmail)
-                    where info != null && !(authorInfo != null && info.Id == authorInfo.Id) && !doc.Docset.Config.Contribution.ExcludedContributors.Contains(info.Name)
-                    group info by info.Id into g
-                    select g.First()).ToList();
-        }
-
-        private DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
-        {
-            if (fileCommits?.Count > 0)
-            {
-                if (_updateTimeByCommit.TryGetValue(fileCommits[0].Sha, out var timeFromHistory))
-                    return timeFromHistory;
-                else
-                    return fileCommits[0].Time.UtcDateTime;
-            }
-            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath));
-        }
-
         private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var repo = GetRepository(fullPath);
             if (repo == null)
-            {
                 return default;
-            }
 
             var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.RepositoryPath, PathUtility.PathComparison);
             return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)), isDocsetRepo);
@@ -169,24 +161,10 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private Contributor ToGitUserInfo(UserProfile profile)
-        {
-            if (profile == null)
-                return null;
-
-            return new Contributor
-            {
-                Name = profile.Name,
-                DisplayName = profile.DisplayName,
-                Id = profile.Id,
-                ProfileUrl = profile.ProfileUrl,
-            };
-        }
-
-        private async Task<List<Error>> LoadCommits(Docset docset)
+        private Dictionary<string, (Repository, List<GitCommit> commits)> LoadCommits(Docset docset)
         {
             var errors = new List<Error>();
-            var result = new Dictionary<string, List<GitCommit>>();
+            var result = new Dictionary<string, (Repository, List<GitCommit> commits)>();
 
             if (docset.Config.Contribution.ShowContributors)
             {
@@ -206,15 +184,12 @@ namespace Microsoft.Docs.Build
                     var (commitsByFile, allCommits) = GitUtility.GetCommits(repoPath, pathToRepo);
                     for (var i = 0; i < pathToDocset.Count; i++)
                     {
-                        result.Add(pathToDocset[i], commitsByFile[i]);
+                        result.Add(pathToDocset[i], (group.Key, commitsByFile[i]));
                     }
-
-                    errors.AddRange(await _userProfileCache.AddUsersForCommits(allCommits, repo));
                 }
             }
 
-            _commitsByFile = result;
-            return errors;
+            return result;
         }
     }
 }
