@@ -1,6 +1,6 @@
 ---
 # Show git contribution info when userProfile & commitsTime is set to URL
-repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-url
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-url
 outputs:
   README.json: |
     {
@@ -29,7 +29,14 @@ outputs:
   build.manifest:
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
-repo: https://github.com/docascode/docfx-test-dependencies#git-profile-time-file
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+inputs:
+  content: README.md
+  gitHub:
+    userCache: user_profile.json
+    resolveUsers: true
+  contribution:
+    gitCommitsTime: build_history.json
 outputs:
   README.json: |
     {
@@ -58,28 +65,61 @@ outputs:
   build.manifest:
 ---
 # Specify invalid author in YAML header should log warning
-# the warning code can be author-not-found(expected) or resolve-author-failed(GitHub rate limit exceeded)
-repo: https://github.com/docascode/docfx-test-dependencies#author-not-found
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+inputs:
+  README.md: |
+    ---
+    author: invalid_user
+    ---
+    # git-test
+  user_profile.json: |
+    {
+      "users": [
+        {"login": "invalid_user"},
+        {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
+        {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
+        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
+      ]
+    }
 outputs:
   README.json:
-  testdata1.json:
   build.manifest:
-  dep.json:
   build.log: |
-    ["warning","*","*","README.md"]
+    ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","README.md"]
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+inputs:
+  README.md: |
+    ---
+    author: real_author
+    ---
+    # git-test
+  user_profile.json: |
+    {
+      "users": [
+        {"name": "Real Author", "login": "real_author", "id": 31415926, "emails": ["real_author@contoso.com"]},
+        {"name": "Osmond Jiang", "login": "OsmondJiang", "id": 19990166, "emails": ["xinjiang@microsoft.com"]},
+        {"name": "Renze Yu", "login": "superyyrrzz", "id": 3831744, "emails": ["renzeyu@microsoft.com","superyyrrzz@gmail.com"]},
+        {"name": "Yufei Huang", "login": "yufeih", "id": 511355, "emails": ["yufeih@users.noreply.github.com","yufeih@live.com"]}
+      ]
+    }
 outputs:
   README.json: |
     {
-      "author":  {
-        "name": "yufeih",
-        "profile_url": "https://github.com/yufeih",
-        "display_name": "Yufei Huang",
-        "id": "511355"
+      "author": {
+        "name": "real_author",
+        "profile_url": "https://github.com/real_author",
+        "display_name": "Real Author",
+        "id": "31415926"
       },
       "contributors": [
+        {
+          "name": "yufeih",
+          "profile_url": "https://github.com/yufeih",
+          "display_name": "Yufei Huang",
+          "id": "511355"
+        },
         {
           "name": "superyyrrzz",
           "profile_url": "https://github.com/superyyrrzz",
@@ -94,27 +134,25 @@ outputs:
         }
       ],
     }
-  testdata1.json:
   build.manifest:
-  dep.json:
 ---
 # Author is case-insensitive
 # Contributors can be excluded, it's case insensitive
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 inputs:
   README.md: |
     ---
     author: OSMONDJIANG
     ---
   docfx.yml: |
-    name: docfx-git-test
-    content: "*.md"
+    content: "README.md"
+    github:
+      resolveUsers: true
+      userCache: user_profile.json
     contribution:
-      userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-4/user_profile.json
-      repository: https://gitlab.com/test-org/test-repo
-      branch: contribution
       excludedContributors:
         - superyyrrZZ
+        - YUFEIH
 outputs:
   README.json: |
     {
@@ -127,33 +165,29 @@ outputs:
       "contributors": [
       ],
     }
-  testdata1.json:
   build.manifest:
-  dep.json:
 ---
 # Author can be excluded, it's case insensitive
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 inputs:
   docfx.yml: |
-    name: docfx-git-test
-    content: "*.md"
+    content: "README.md"
+    github:
+      userCache: user_profile.json
+      resolveUsers: true
     contribution:
-      userProfileCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-4/user_profile.json
-      repository: https://gitlab.com/test-org/test-repo
-      branch: contribution
       excludedContributors:
-        - YUFEIH
-        - yufeih
+        - superyyrrZZ
 outputs:
   README.json: |
     {
       "!author": null,
       "contributors": [
         {
-          "name": "superyyrrzz",
-          "profile_url": "https://github.com/superyyrrzz",
-          "display_name": "Renze Yu",
-          "id": "3831744"
+          "name": "yufeih",
+          "profile_url": "https://github.com/yufeih",
+          "display_name": "Yufei Huang",
+          "id": "511355"
         },
         {
           "name": "OsmondJiang",
@@ -163,63 +197,65 @@ outputs:
         }
       ],
     }
-  testdata1.json:
   build.manifest:
-  dep.json:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-6
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 outputs:
   README.json: |
     {
       "open_to_public_contributors": true,
-      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
-      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/README.md",
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/8d9f4c8426ce28f4a98ddc8dbc88073210048cfc/README.md",
+      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
+      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
     }
-  testdata1.json: |
-    {
-      "open_to_public_contributors": true,
-      "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
-      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-6/testdata1.md",
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/ba823dc527860ca0a5d7844fd80c9824dd993170/testdata1.md",
-    }
-  dep.json:
   build.manifest:
 ---
 # Specify editLink repo and branch in config
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-config-repo-branch
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+inputs:
+  docfx.yml: |
+    content: "README.md"
+    github:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
+      repository: test-org/test-repo
+      branch: contribution
 outputs:
   README.json: |
     {
       "content_git_url": "https://github.com/test-org/test-repo/blob/contribution/README.md",
-      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/git-test-config-repo-branch/README.md",
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/6119d37731a8c25058bcf85defdb4c9a09d6b404/README.md"
+      "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
     }
-  testdata1.json:
   build.manifest:
-  dep.json:
 ---
 # Don't load git commits when showContributors is set to false
-repo: https://github.com/docascode/docfx-test-dependencies#git-no-contributors
+repo: https://github.com/docascode/docfx-test-dependencies#no-load-commits
 outputs:
   README.json: |
     {
       "contributors": [],
-      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/c877f1eb84e4a3bd8a8a421b14f684c4f0de853d/README.md"
+      "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/5087ddfc6ee4886bcabe8cc93673edd8605fe15c/README.md"
     }
   build.manifest:
 ---
 # Use commit's time when gitCommitsTime file not given
-repo: https://github.com/docascode/docfx-test-dependencies#git-test-4
+repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
+inputs:
+  docfx.yml: |
+    content: "README.md"
+    github:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
 outputs:
   README.json: |
     {
-      "updated_at": "2018-07-03T05:41:26",
+      "updated_at": "2018-07-27T02:15:49Z",
     }
-  testdata1.json:
   build.manifest:
-  dep.json:
 ---
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule

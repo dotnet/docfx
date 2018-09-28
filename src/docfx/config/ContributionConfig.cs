@@ -9,12 +9,12 @@ namespace Microsoft.Docs.Build
     internal sealed class ContributionConfig
     {
         /// <summary>
-        /// Determine whether to show contributors and update time based on commits.
+        /// Determines whether to show contributors and update time based on commits.
         /// </summary>
         public readonly bool ShowContributors = true;
 
         /// <summary>
-        /// Determine whether to show edit button for contribution.
+        /// Determines whether to show edit button for contribution.
         /// </summary>
         public readonly bool ShowEdit = true;
 
@@ -28,12 +28,6 @@ namespace Microsoft.Docs.Build
         /// Specify the which branch edit link goes to. Fallback to the current branch if not set.
         /// </summary>
         public readonly string Branch;
-
-        /// <summary>
-        /// The address of user profile cache, used for generating authoer and contributors.
-        /// It should be an absolute url or a relative path
-        /// </summary>
-        public readonly string UserProfileCache = string.Empty;
 
         /// <summary>
         /// The address of commit time history file, which contains the time each commit being pushed.
