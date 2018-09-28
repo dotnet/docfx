@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -57,9 +58,8 @@ namespace Microsoft.Docs.Build
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
-            // when there's no referenced toc, sub directory count should be zero (only look in parent folders)
-            var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(new[] { '-', '#', '_' })
-                        .Where(str => !string.IsNullOrWhiteSpace(str)).ToArray();
+
+            var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(new[] { '-', '#', '_', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(file, toc)
                                 where hasReferencedTocs || dirInfo.parentDirectoryCount >= dirInfo.subDirectoryCount
@@ -106,9 +106,6 @@ namespace Microsoft.Docs.Build
 
             public int ParentDirectoryCount { get; }
 
-            // save the calculated distance during comparison to avoid repeadly calculation
-            private readonly Lazy<int> _levenshteinDistance;
-
             public int LevenshteinDistance => _levenshteinDistance.Value;
 
             public Document Toc { get; }
@@ -124,11 +121,14 @@ namespace Microsoft.Docs.Build
                 _levenshteinDistance = new Lazy<int>(() => GetLevenshteinDistanceToFile());
             }
 
+            // save the calculated distance during comparison to avoid repeadly calculation
+            private readonly Lazy<int> _levenshteinDistance;
+
             private int GetLevenshteinDistanceToFile()
             {
                 return Levenshtein.GetLevenshteinDistance(
                     FileNames,
-                    Toc.SitePath.Split(new[] { '-', '#', '_', '/' }, StringSplitOptions.RemoveEmptyEntries),
+                    Toc.SitePath.Split(new[] { '-', '#', '_', '/', ' ' }, StringSplitOptions.RemoveEmptyEntries),
                     StringComparer.OrdinalIgnoreCase);
             }
         }
