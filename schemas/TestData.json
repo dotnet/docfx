@@ -16,6 +16,9 @@
     },
     "xref": {
       "type": "string"
+    },
+    "data": {
+      "$ref": "#"
     }
   }
 }

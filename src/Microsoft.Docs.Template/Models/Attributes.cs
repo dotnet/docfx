@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
     public class HtmlAttribute : DataTypeAttribute { }
 
-    public class UidAttribute : DataTypeAttribute { }
-
     public class XrefAttribute : DataTypeAttribute { }
+
+    public class XrefPropertyAttribute : DataTypeAttribute { }
 }

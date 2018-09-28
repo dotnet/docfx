@@ -21,23 +21,14 @@ namespace Microsoft.Docs.Build
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
-        public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
-
-        public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
-
         public static Error NeedRestore(string dependenyRepoHref)
             => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forget to run `docfx restore`?");
 
-        public static Error AuthorNotFound(string author)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Cannot find user '{author}' on GitHub");
+        public static Error GitHubUserNotFound(string login)
+            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
 
-        public static Error ResolveAuthorFailed(string author, string message)
-            => new Error(ErrorLevel.Warning, "resolve-author-failed", $"Resolve user '{author}' from GitHub failed: {message}");
-
-        public static Error ResolveCommitFailed(string sha, string repo, string message)
-            => new Error(ErrorLevel.Warning, "resolve-commit-failed", $"Resolve commit '{sha}' of repository '{repo}' from GitHub failed: {message}");
+        public static Error GitHubApiFailed(string api, Exception ex)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -146,6 +137,9 @@ namespace Microsoft.Docs.Build
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
             return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
+
+        public static Error UidMissing()
+            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
