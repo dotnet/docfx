@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,6 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<Document> _experimentalTocs;
 
         private readonly IReadOnlyDictionary<Document, HashSet<Document>> _documentToTocs;
+
+        private static readonly char[] wordSplitChars = new char[] { '-', '#', '_', ' ', '/' };
 
         public TableOfContentsMap(List<Document> tocs, List<Document> experimentalTocs, Dictionary<Document, HashSet<Document>> documentToTocs)
         {
@@ -58,8 +59,7 @@ namespace Microsoft.Docs.Build
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
-
-            var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(new[] { '-', '#', '_', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var fileNames = Path.GetFileNameWithoutExtension(file.SitePath).Split(wordSplitChars, StringSplitOptions.RemoveEmptyEntries);
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(file, toc)
                                 where hasReferencedTocs || dirInfo.parentDirectoryCount >= dirInfo.subDirectoryCount
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
             {
                 return Levenshtein.GetLevenshteinDistance(
                     FileNames,
-                    Toc.SitePath.Split(new[] { '-', '#', '_', '/', ' ' }, StringSplitOptions.RemoveEmptyEntries),
+                    Toc.SitePath.Split(wordSplitChars, StringSplitOptions.RemoveEmptyEntries),
                     StringComparer.OrdinalIgnoreCase);
             }
         }
@@ -144,19 +144,19 @@ namespace Microsoft.Docs.Build
             // 2. parent nearest
             // 3. sub-name word-level levenshtein distance nearest
             // 4. sub-name lexicographical nearest
-            var subDirCompareResult = Comparer<int>.Default.Compare(candidateX.SubDirectoryCount, candidateY.SubDirectoryCount);
+            var subDirCompareResult = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
             if (subDirCompareResult != 0)
             {
                 return subDirCompareResult;
             }
 
-            var parentDirCompareResult = Comparer<int>.Default.Compare(candidateX.ParentDirectoryCount, candidateY.ParentDirectoryCount);
+            var parentDirCompareResult = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
             if (parentDirCompareResult != 0)
             {
                 return parentDirCompareResult;
             }
 
-            var levenshteinDistanceCompareResult = Comparer<int>.Default.Compare(candidateX.LevenshteinDistance, candidateY.LevenshteinDistance);
+            var levenshteinDistanceCompareResult = candidateX.LevenshteinDistance - candidateY.LevenshteinDistance;
             return levenshteinDistanceCompareResult == 0 ? StringComparer.OrdinalIgnoreCase.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath)
                 : levenshteinDistanceCompareResult;
         }
