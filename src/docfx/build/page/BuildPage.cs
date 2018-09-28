@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
             Action<Document> buildChild,
             XrefMap xrefMap)
         {
-            Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
@@ -39,15 +38,17 @@ namespace Microsoft.Docs.Build
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
-            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, metadata.Author);
-            if (error != null)
-                errors.Add(error);
+            List<Error> contributorErrors;
+            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetAuthorAndContributors(file, metadata.Author);
+            if (contributorErrors != null)
+                errors.AddRange(contributorErrors);
 
             var output = (object)model;
-            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute &&
-                file.Docset.Config.Dependencies.ContainsKey("_themes"))
+            if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
             {
-                output = file.Docset.Template.Render(model.PageType, model);
+                output = file.Docset.Legacy
+                    ? file.Docset.LegacyTemplate.Render(model, file)
+                    : await RazorTemplate.Render(model.PageType, model);
             }
 
             return (errors, output, dependencies.Build());
@@ -168,7 +169,7 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model, metadata);
 
-            object TransformContent(DataTypeAttribute attribute, object value)
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
             {
                 if (attribute is HrefAttribute)
                 {
@@ -197,6 +198,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is XrefAttribute)
                 {
+                    // TODO: how to fill xref resolving data besides href
                     return xrefMap.Resolve((string)value).Href;
                 }
 

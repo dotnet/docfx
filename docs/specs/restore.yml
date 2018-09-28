@@ -69,13 +69,12 @@ outputs:
   build.manifest:
 ---
 # Show error when download failed
-os: windows
 inputs:
   docfx.yml: |
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
 outputs:
   build.log: |
-    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: No such host is known"]
+    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: *"]
 ---
 # Show error when git clone failed
 inputs:

@@ -12,8 +12,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Document doc,
-            LegacyManifestOutput legacyManifestOutput,
-            TableOfContentsMap tocMap)
+            LegacyManifestOutput legacyManifestOutput)
         {
             // OPS build use TOC ouput as data page
             if (legacyManifestOutput.TocOutput != null)
@@ -54,12 +53,12 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(doc.RedirectionUrl))
                 {
                     rawMetadata = LegacyMetadata.GenerateLegacyRedirectionRawMetadata(docset, pageModel);
-                    context.WriteJson(new { outputRootRelativePath, content, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
+                    context.WriteJson(new { outputRootRelativePath, rawMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
                 else
                 {
-                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, docset, doc, legacyManifestOutput, tocMap);
-                    var pageMetadata = Template.CreateHtmlMetaTags(rawMetadata);
+                    rawMetadata = LegacyMetadata.GenerateLegacyRawMetadata(pageModel, content, doc);
+                    var pageMetadata = LegacyMetadata.CreateHtmlMetaTags(rawMetadata);
                     context.WriteJson(new { outputRootRelativePath, content, rawMetadata, pageMetadata, themesRelativePathToOutputRoot }, rawPageOutputPath);
                 }
             }
