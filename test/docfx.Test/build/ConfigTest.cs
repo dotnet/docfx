@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
         [InlineData("branches: [master, live]     locales: [zh-cn, de-de]", true, new[] { "master", "live" }, new[] { "zh-cn", "de-de" })]
         [InlineData("branches: [live, live]     locales: [zh-cn, de-de]", true, new[] { "live" }, new[] { "zh-cn", "de-de" })]
         [InlineData("branches: [LIVE, live]     locales: [zh-cn, ZH-CN]", true, new[] { "LIVE", "live" }, new[] { "zh-cn" })]
-        [InlineData("locales: zh-cn branches: [live]", true, new[] { "live" }, new string[0])]
-        [InlineData("branches: [live] locales: zh-cn", true, new[] { "live" }, new string[0])]
+        [InlineData("locales: zh-cn branches: [live]", false, null, null)]
+        [InlineData("branches: [live] locales: zh-cn", false, null, null)]
         [InlineData("branches: live", false, null, null)]
         [InlineData("locales: zh-cn", false, null, null)]
         public static void OverwriteConifgIdentifierMatch(string str, bool matched, string[] matchedBranches, string[] matchedLocales)

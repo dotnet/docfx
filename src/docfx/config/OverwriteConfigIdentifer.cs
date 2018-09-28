@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OverwriteConfigIdentifier
     {
+        private static Regex s_identifier = new Regex(@"^([ ]*(branches|locales):[ ]*\[([^\[\]]*)\]){1,2}$", RegexOptions.IgnoreCase);
         private static Regex s_branchRegex = new Regex(@"branches:[ ]*\[([^\[\]]*)\]", RegexOptions.IgnoreCase);
         private static Regex s_localeRegex = new Regex(@"locales:[ ]*\[([^\[\]]*)\]", RegexOptions.IgnoreCase);
 
@@ -25,6 +26,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(identifierStr));
 
             overwriteConfigIdentifier = null;
+            if (!s_identifier.Match(identifierStr).Success)
+                return false;
+
             var branchMatched = TryGetMatchedParts(s_branchRegex, out var branches);
             var localeMatched = TryGetMatchedParts(s_localeRegex, out var locales);
             if (branchMatched || localeMatched)
