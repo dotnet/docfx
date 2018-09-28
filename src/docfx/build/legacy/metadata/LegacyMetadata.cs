@@ -66,9 +66,10 @@ namespace Microsoft.Docs.Build
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
 
-            var fileRelativePath = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.SitePath));
 
-            rawMetadata["_path"] = rawMetadata["fileRelativePath"] = fileRelativePath;
+            rawMetadata["_path"] = path;
+            rawMetadata["fileRelativePath"] = Path.ChangeExtension(path, ".html");
             rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
