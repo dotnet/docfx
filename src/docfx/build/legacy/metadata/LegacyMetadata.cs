@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
 
-            var fileRelativePath = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
+            var fileRelativePath = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = rawMetadata["fileRelativePath"] = fileRelativePath;
             rawMetadata["toc_rel"] = pageModel.TocRel;
