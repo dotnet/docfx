@@ -14,17 +14,18 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _outputPath;
         private readonly Report _report;
-        private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _cache;
+        private readonly Cache _cache;
 
         public Context(Report report, string outputPath)
         {
             _report = report;
             _outputPath = Path.GetFullPath(outputPath);
-            _cache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
+            _cache = new Cache();
         }
 
-        public (List<Error> errors, JToken token) Load(Document file, Func<Document, (List<Error>, JToken)> action)
-            => _cache.GetOrAdd(file.FilePath + file.LastWriteTime, new Lazy<(List<Error>, JToken)>(() => action(file))).Value;
+        public (List<Error> errors, JToken token) LoadYamlFile(Document file) => _cache.LoadYamlFile(file);
+
+        public (List<Error> errors, JToken token) LoadJsonFile(Document file) => _cache.LoadJsonFile(file);
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -119,6 +120,19 @@ namespace Microsoft.Docs.Build
             {
                 File.Delete(destinationPath);
             }
+        }
+
+        internal sealed class Cache
+        {
+            private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
+
+            public (List<Error> errors, JToken token) LoadYamlFile(Document file)
+                => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => YamlUtility.Deserialize(file.ReadText()))).Value;
+
+            public (List<Error> errors, JToken token) LoadJsonFile(Document file)
+                => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(file.ReadText()))).Value;
+
+            private string GetKeyFromFile(Document file) => file.FilePath + new FileInfo(Path.Combine(file.Docset.DocsetPath, file.FilePath)).LastWriteTime;
         }
     }
 }
