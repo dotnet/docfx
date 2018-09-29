@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LocConfigConversion
+    internal static class LocConfigConvention
     {
         private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4})?$", RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// The eidt repo name for loc follows below conversions:
+        /// The eidt repo name for loc follows below conventions:
         /// source name                         -->     loc name
         /// {org}/{repo-name}                   -->     {org}/{repo-name}.{locale}
         /// {org}/{repo-name}.{source-locale}   -->     {org}/{repo-name}.{loc-locale}
