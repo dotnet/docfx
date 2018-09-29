@@ -122,7 +122,8 @@ namespace Microsoft.Docs.Build
                 return default;
 
             var branch = repo.Branch ?? "master";
-            var editRepo = LocConfigConversion.GetEditRepository(document.Docset.Config.Contribution.Repository, document.Docset.Locale) ?? $"{repo.Owner}/{repo.Name}";
+            var editRepo = LocConfigConversion.GetEditRepository(document.Docset.Config.Contribution.Repository, document.Docset.Locale, document.Docset.Config.DefaultLocale)
+                ?? $"{repo.Owner}/{repo.Name}";
             var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
 
             var editUrl = document.Docset.Config.Contribution.ShowEdit

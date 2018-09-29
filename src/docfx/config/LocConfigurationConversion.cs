@@ -19,8 +19,13 @@ namespace Microsoft.Docs.Build
         /// <param name="repository">The origin repo name</param>
         /// <param name="locale">The current build locale</param>
         /// <returns>The repo name with locale</returns>
-        public static string GetEditRepository(string repository, string locale)
+        public static string GetEditRepository(string repository, string locale, string defaultLocale)
         {
+            if (string.Equals(locale, defaultLocale, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return repository;
+            }
+
             if (string.IsNullOrEmpty(repository))
             {
                 return repository;

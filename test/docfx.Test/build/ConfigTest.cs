@@ -41,9 +41,9 @@ namespace Microsoft.Docs.Build
         [InlineData("github/name.en-US", "zh-CN", "github/name.zh-CN")]
         [InlineData("github/name.en", "zh-cn", "github/name.en.zh-cn")]
         [InlineData("github/name.en-us", "en-us", "github/name.en-us")]
-        [InlineData("github/test-repo", "en-us", "github/test-repo.en-us")]
+        [InlineData("github/test-repo", "en-us", "github/test-repo")]
         [InlineData("github/en-us", "zh-cn", "github/en-us.zh-cn")]
         public static void LocConfigConversionEditRepoName(string sourceName, string locale, string locName)
-            => Assert.Equal(locName, LocConfigConversion.GetEditRepository(sourceName, locale));
+            => Assert.Equal(locName, LocConfigConversion.GetEditRepository(sourceName, locale, "en-us"));
     }
 }
