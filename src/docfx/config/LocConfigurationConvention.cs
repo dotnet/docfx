@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocConfigConvention
     {
-        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4})?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// The eidt repo name for loc follows below conventions:
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
             var repoName = repository.Split(new[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
-            if (match.Success && match.Groups.Count == 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
+            if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
                 return repository.Replace(originLocale, $".{locale}");
