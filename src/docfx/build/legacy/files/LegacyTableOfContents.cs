@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
             var pdfAbsolutePath = PathUtility.NormalizeFile(
-                $"/{docset.Config.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
+                $"/{docset.Config.LegacyConfig.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
             toc.Metadata.PdfAbsolutePath = pdfAbsolutePath;
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));

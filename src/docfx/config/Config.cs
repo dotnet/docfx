@@ -46,19 +46,9 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
-        /// Just for backward compatibility, the output site path prefix
+        /// Gets the configuration for legacy conversion.
         /// </summary>
-        public readonly string SiteBasePath = ".";
-
-        /// <summary>
-        /// Just for backward compatibility, the source path prefix
-        /// </summary>
-        public readonly string SourceBasePath = ".";
-
-        /// <summary>
-        /// Just for backward compatibility, Indicate that whether generate pdf url template in medadata.
-        /// </summary>
-        public readonly bool NeedGeneratePdfUrlTemplate = false;
+        public readonly LegacyConfig LegacyConfig = new LegacyConfig();
 
         /// <summary>
         /// The hostname

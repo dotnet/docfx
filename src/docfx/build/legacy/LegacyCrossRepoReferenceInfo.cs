@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 crrInfo = legacyCrrInfoItems[0];
             }
 
-            context.WriteJson(crrInfo, Path.Combine(docset.Config.SiteBasePath, "op_crr_info.json"));
+            context.WriteJson(crrInfo, Path.Combine(docset.Config.LegacyConfig.SiteBasePath, "op_crr_info.json"));
         }
 
         private class LegacyCrossRepoReferenceInfoItem

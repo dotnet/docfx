@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                 references = Array.Empty<string>(),
             };
 
-            using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.SiteBasePath, "xrefmap.yml"))))
+            using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.LegacyConfig.SiteBasePath, "xrefmap.yml"))))
             {
                 writer.WriteLine("### YamlMime:XRefMap");
                 var serializer = new SerializerBuilder().Build();

@@ -44,13 +44,13 @@ namespace Microsoft.Docs.Build
                 new
                 {
                     locale = docset.Locale,
-                    base_path = $"/{docset.Config.SiteBasePath}",
-                    source_base_path = docset.Config.SourceBasePath,
+                    base_path = $"/{docset.Config.LegacyConfig.SiteBasePath}",
+                    source_base_path = docset.Config.LegacyConfig.SourceBasePath,
                     version_info = new { },
                     file_mapping = items.ToDictionary(
                         key => PathUtility.NormalizeFile(key.legacyFilePathRelativeToBaseFolder), v => v.fileMapItem),
                 },
-                Path.Combine(docset.Config.SiteBasePath, "filemap.json"));
+                Path.Combine(docset.Config.LegacyConfig.SiteBasePath, "filemap.json"));
         }
     }
 }
