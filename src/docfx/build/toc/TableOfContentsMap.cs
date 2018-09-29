@@ -133,17 +133,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        /**
-         * Compare two toc candidate relative to target file.
-         * Return -1 if x is closer than y, 1 if x is farer than y, 0 if x equals y.
-         */
+        /// <summary>
+        /// Compare two toc candidate relative to target file.
+        /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
+        /// 1. sub nearest
+        /// 2. parent nearest
+        /// 3. sub-name word-level levenshtein distance nearest
+        /// 4. sub-name lexicographical nearest
+        /// </summary>
         private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
         {
-            // from referenced pick the nearest one
-            // 1. sub nearest
-            // 2. parent nearest
-            // 3. sub-name word-level levenshtein distance nearest
-            // 4. sub-name lexicographical nearest
             var subDirCompareResult = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
             if (subDirCompareResult != 0)
             {
