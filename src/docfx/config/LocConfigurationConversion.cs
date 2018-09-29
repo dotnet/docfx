@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LocConfigConversion
     {
-        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?\.?([a-z]{2,4}-[a-z]{2,4})?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4})?$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// The eidt repo name for loc follows below conversions:
@@ -30,11 +31,12 @@ namespace Microsoft.Docs.Build
                 return repository;
             }
 
-            var match = s_repoNameWithLocale.Match(repository);
+            var repoName = repository.Split(new[] { '/', '\\' }).Last();
+            var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count == 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return repository.Replace(originLocale, locale);
+                return repository.Replace(originLocale, $".{locale}");
             }
 
             return $"{repository}.{locale}";
