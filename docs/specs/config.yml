@@ -501,3 +501,29 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
+---
+# loc config conversion without source locale
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: github.com/docfx/docfx
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
+  build.manifest:
+---
+# loc config conversion with source locale
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: github.com/docfx/docfx.en-us
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
+  build.manifest:

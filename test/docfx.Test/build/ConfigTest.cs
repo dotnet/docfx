@@ -29,5 +29,19 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(matchedLocales, identifier.Locales);
             }
         }
+
+        [Theory]
+        [InlineData(null, "zh-cn", null)]
+        [InlineData("", "zh-cn", "")]
+        [InlineData("github/name", "", "github/name")]
+        [InlineData("github/name", null, "github/name")]
+        [InlineData("github/name", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-us", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-US", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-US", "zh-CN", "github/name.zh-CN")]
+        [InlineData("github/name.en", "zh-cn", "github/name.en.zh-cn")]
+        [InlineData("github/name.en-us", "en-us", "github/name.en-us")]
+        public static void LocConfigConversionEditRepoName(string sourceName, string locale, string locName)
+            => Assert.Equal(locName, LocConfigConversion.GetEditRepository(sourceName, locale));
     }
 }
