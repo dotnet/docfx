@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
             public (List<Error> errors, JToken token) LoadJsonFile(Document file)
                 => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(file.ReadText()))).Value;
 
-            private string GetKeyFromFile(Document file) => file.FilePath + new FileInfo(Path.Combine(file.Docset.DocsetPath, file.FilePath)).LastWriteTime;
+            private string GetKeyFromFile(Document file) => Path.Combine(file.Docset.DocsetPath, file.FilePath) + new FileInfo(Path.Combine(file.Docset.DocsetPath, file.FilePath)).LastWriteTime;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     [AttributeUsage(AttributeTargets.Class)]
     public class PageSchemaAttribute : DataSchemaAttribute { }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public abstract class DataTypeAttribute : Attribute
     {
         public virtual Type TargetType => typeof(string);
