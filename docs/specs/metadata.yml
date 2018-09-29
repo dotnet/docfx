@@ -16,7 +16,7 @@ outputs:
 # version independent id = md5("Win.sccm|mdt/release-notes")
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -34,7 +34,7 @@ outputs:
 # version independent id = md5("Win.sccm|index") || md5("Win.sccm|mdm/index")
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -53,7 +53,7 @@ outputs:
 # A => B, B's ids should be same with A's
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -73,7 +73,7 @@ outputs:
 # A => B, A is out of build scope, B's ids should be same with A's
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -92,7 +92,7 @@ outputs:
 # generate different document id and version id with 'redirection without document id'
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -111,7 +111,7 @@ outputs:
 # get conflicted redirection document id warning if two or more files redirect to the same file with document id
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       sourceBasePath: sccm
       siteBasePath: sccm
     name: sccm
@@ -137,8 +137,9 @@ outputs:
 # version_independent_id = hash({mapped_depot_name}|{file_path})
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       siteBasePath: azure
+    documentId:
       depotMappings:
         articles/iot-central/: MSDN.microsoft-iot-central
       directoryMappings:
@@ -254,7 +255,7 @@ outputs:
 # redirect to redirect
 inputs:
   docfx.yml: |
-    documentId:
+    legacyConfig:
       siteBasePath: azure
     name: azure-documents
     product: Azure
@@ -281,7 +282,7 @@ inputs:
   docfx.yml: |
     product: Azure
     name: azure-documents
-    documentId:
+    legacyConfig:
       siteBasePath: articles
     content: "**/*"
   articles/active-directory-b2c/index.yml : |
@@ -297,7 +298,7 @@ inputs:
   docfx.yml: |
     product: Azure
     name: azure-documents
-    documentId:
+    legacyConfig:
       siteBasePath: azure
     content: "**/*"
     routes:
