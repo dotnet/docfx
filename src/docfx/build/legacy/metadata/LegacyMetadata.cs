@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             newMetadata["search.ms_product"] = docset.Config.Product;
             newMetadata["search.ms_sitename"] = "Docs";
 
-            newMetadata["locale"] = docset.Config.Locale;
+            newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
             newMetadata["version"] = 0;
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             => new JObject
             {
                 ["redirect_url"] = pageModel.RedirectUrl,
-                ["locale"] = docset.Config.Locale,
+                ["locale"] = docset.Locale,
             }.RemoveNulls();
 
         public static JObject GenerateLegacyRawMetadata(
@@ -66,9 +66,10 @@ namespace Microsoft.Docs.Build
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
 
-            var fileRelativePath = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.OutputPath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.SitePath));
 
-            rawMetadata["_path"] = rawMetadata["fileRelativePath"] = fileRelativePath;
+            rawMetadata["_path"] = path;
+            rawMetadata["fileRelativePath"] = Path.ChangeExtension(path, ".html");
             rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
             rawMetadata["title"] = pageModel.Title;
             rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.SiteBasePath}/";
 
             if (docset.Config.NeedGeneratePdfUrlTemplate)
             {

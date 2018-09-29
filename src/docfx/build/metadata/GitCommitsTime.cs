@@ -20,26 +20,5 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <returns>A Dictionary keyed with commit sha, valued with commit server time</returns>
         public Dictionary<string, DateTime> ToDictionary() => Commits.ToDictionary(c => c.Sha, c => c.BuiltAt);
-
-        /// <summary>
-        /// Create an instance of <see cref="GitCommitsTime"/> from local file
-        /// </summary>
-        /// <param name="path">the path of the file</param>
-        public static GitCommitsTime Create(string path)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(File.Exists(path));
-
-            try
-            {
-                var json = File.ReadAllText(path);
-                var (_, value) = JsonUtility.Deserialize<GitCommitsTime>(json);
-                return value;
-            }
-            catch (Exception ex)
-            {
-                throw Errors.InvalidGitCommitsTime(path, ex).ToException(ex);
-            }
-        }
     }
 }

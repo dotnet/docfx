@@ -25,9 +25,14 @@ namespace Microsoft.Docs.Build
         public Config Config { get; }
 
         /// <summary>
-        /// Gets the culture info computed from <see cref="Config.Locale"/>.
+        /// Gets the culture computed from <see cref="Locale"/>/>.
         /// </summary>
         public CultureInfo Culture { get; }
+
+        /// <summary>
+        /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
+        /// </summary>
+        public string Locale { get; }
 
         /// <summary>
         /// Gets a value indicating whether enable legacy output.
@@ -70,7 +75,8 @@ namespace Microsoft.Docs.Build
 
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
-            Culture = CreateCultureInfo(Config.Locale);
+            Locale = !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : Config.DefaultLocale;
+            Culture = CreateCultureInfo(Locale);
             RestoreMap = new RestoreMap(DocsetPath);
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);

@@ -19,20 +19,24 @@ namespace Microsoft.Docs.Build
 
             var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
+
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
             context.Report("docfx.yml", configErrors);
 
             var docset = new Docset(context, docsetPath, config, options);
 
+            var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
+
+            var contribution = new ContributionInfo(docset, githubUserCache);
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var (contributionErrors, contribution) = await ContributionInfo.Load(docset);
-            errors.AddRange(contributionErrors);
 
             var xrefMap = XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
+            // TODO: write back to global cache
+            // var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
@@ -47,6 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            // await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
         }
 
@@ -172,7 +177,7 @@ namespace Microsoft.Docs.Build
             return new RedirectionModel
             {
                 RedirectUrl = file.RedirectionUrl,
-                Locale = file.Docset.Config.Locale,
+                Locale = file.Docset.Locale,
             };
         }
     }
