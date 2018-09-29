@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
-            model.Locale = file.Docset.Config.Locale;
+            model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = Document.PathToAbsoluteUrl(sitePath, file.ContentType, file.Schema, config.Output.Json);
             }
 
-            return $"{config.BaseUrl}/{config.Locale}{siteUrl}";
+            return $"{config.BaseUrl}/{file.Docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
