@@ -192,7 +192,7 @@
     "name": {
       "type": "string"
     },
-    "locale": {
+    "defaultLocale": {
       "type": "string"
     },
     "content": {
