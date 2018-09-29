@@ -43,10 +43,10 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope, docset.Config.SiteBasePath) : null);
         }
 
-        public static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
+        public static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files, string configSiteBasePath)
         {
             ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
             Debug.Assert(files != null);
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 var xrefs = HandleXrefConflicts(context, xrefsByUid);
                 var xrefMap = new XrefMapModel();
                 xrefMap.References.AddRange(xrefs.Values);
-                context.WriteJson(xrefMap, "xrefmap.json");
+                context.WriteJson(xrefMap, Path.Combine(configSiteBasePath, "xrefmap.json"));
                 return xrefs;
             }
         }
