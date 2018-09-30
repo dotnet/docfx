@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             var docset = new Docset(context, docsetPath, config, options);
 
-            var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
+            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
             var contribution = new ContributionInfo(docset, githubUserCache);
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
             // TODO: write back to global cache
-            // var saveGitHubUserCache = githubUserCache.SaveChanges();
+            var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (options.Legacy)
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // await saveGitHubUserCache;
+            await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
         }
 

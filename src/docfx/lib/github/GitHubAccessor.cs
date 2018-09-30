@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             }
             catch (RateLimitExceededException ex)
             {
-                _rateLimitError = Errors.GitHubApiFailed($"GET /users/:username", ex);
+                _rateLimitError = Errors.GitHubApiFailed($"GET /users/{login}", ex);
                 return (_rateLimitError, null);
             }
             catch (Exception ex)
@@ -69,6 +69,7 @@ namespace Microsoft.Docs.Build
                 return (_rateLimitError, null);
             }
 
+            var apiFailedMessage = $"GET /repos/{repoOwner}/{repoName}/commits/{commitSha}";
             try
             {
                 var user = await _client.Repository.Commit.Get(repoOwner, repoName, commitSha);
@@ -86,12 +87,12 @@ namespace Microsoft.Docs.Build
             }
             catch (RateLimitExceededException ex)
             {
-                _rateLimitError = Errors.GitHubApiFailed($"GET /repos/:owner/:repo/commits/:sha", ex);
+                _rateLimitError = Errors.GitHubApiFailed(apiFailedMessage, ex);
                 return (_rateLimitError, null);
             }
             catch (Exception ex)
             {
-                return (Errors.GitHubApiFailed($"GET /repos/:owner/:repo/commits/:sha", ex), null);
+                return (Errors.GitHubApiFailed(apiFailedMessage, ex), null);
             }
         }
     }
