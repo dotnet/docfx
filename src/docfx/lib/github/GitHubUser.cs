@@ -15,11 +15,11 @@ namespace Microsoft.Docs.Build
 
         public string[] Emails { get; set; } = Array.Empty<string>();
 
-        public DateTime Expiry { get; set; }
+        public DateTime? Expiry { get; set; }
 
         public bool IsValid() => Id != 0;
 
-        public bool IsExpired() => Expiry > DateTime.UtcNow;
+        public bool IsExpired() => Expiry != null && Expiry < DateTime.UtcNow;
 
         public Contributor ToContributor()
         {
