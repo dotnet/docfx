@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsValid() => Id != 0;
 
-        public bool IsExpired() => Expiry > DateTime.UtcNow;
+        public bool IsExpired() => Expiry < DateTime.UtcNow;
 
         public Contributor ToContributor()
         {
