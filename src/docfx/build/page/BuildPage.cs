@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
             Action<Document> buildChild,
             XrefMap xrefMap)
         {
-            Error error;
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
@@ -33,7 +32,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
-            model.Locale = file.Docset.Config.Locale;
+            model.Locale = file.Docset.Locale;
             model.Metadata = metadata;
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
@@ -42,8 +41,10 @@ namespace Microsoft.Docs.Build
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
-            (error, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetContributorInfo(file, metadata.Author);
-            errors.AddIfNotNull(error);
+            List<Error> contributorErrors;
+            (contributorErrors, model.Author, model.Contributors, model.UpdatedAt) = await contribution.GetAuthorAndContributors(file, metadata.Author);
+            if (contributorErrors != null)
+                errors.AddRange(contributorErrors);
 
             var output = (object)model;
             if (!file.Docset.Config.Output.Json && schema.Attribute is PageSchemaAttribute)
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = Document.PathToAbsoluteUrl(sitePath, file.ContentType, file.Schema, config.Output.Json);
             }
 
-            return $"{config.BaseUrl}/{config.Locale}{siteUrl}";
+            return $"{config.BaseUrl}/{file.Docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {

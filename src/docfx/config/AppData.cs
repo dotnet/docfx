@@ -41,12 +41,10 @@ namespace Microsoft.Docs.Build
         {
             // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
-            if (!string.IsNullOrEmpty(docfxAppData))
-            {
-                docfxAppData = Path.GetFullPath(docfxAppData);
-            }
 
-            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
+            return string.IsNullOrEmpty(docfxAppData)
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
+                : Path.GetFullPath(docfxAppData);
         }
     }
 }

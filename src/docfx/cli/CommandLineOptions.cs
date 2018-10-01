@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public string GitToken;
         public string GitHubToken;
+        public string Locale;
 
         public JObject ToJObject()
         {

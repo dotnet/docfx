@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        private const string DefaultLocaleStr = "en-us";
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
         private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
 
@@ -26,9 +27,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the default locale of this docset.
-        /// TODO: lower case user inputs.
         /// </summary>
-        public readonly string Locale = "en-us";
+        public readonly string DefaultLocale = DefaultLocaleStr;
 
         /// <summary>
         /// Gets the contents that are managed by this docset.
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             }
 
             yield return Contribution.GitCommitsTime;
-            yield return Contribution.UserProfileCache;
+            yield return GitHub.UserCache;
         }
 
         /// <summary>
@@ -199,6 +199,7 @@ namespace Microsoft.Docs.Build
             // Options should be converted to config and overwrite the config parsed from docfx.yml
             var errors = new List<Error>();
             Config config = null;
+
             var (loadErrors, configObject) = LoadConfigObject(configPath);
             var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
@@ -210,11 +211,20 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(extendErrors);
             }
 
+            finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
+
             var deserializeErrors = new List<Error>();
             (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
             return (errors, config);
+
+            string GetBranch()
+            {
+                var repoPath = GitUtility.FindRepo(docsetPath);
+
+                return repoPath == null ? null : GitUtility.GetRepoInfo(repoPath).branch;
+            }
         }
 
         private static (List<Error>, JObject) LoadConfigObject(string filePath)
@@ -252,6 +262,43 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
+        private static JObject OverwriteConfig(JObject config, string locale, string branch)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                if (config.TryGetValue(ConfigConstants.DefaultLocale, out var defaultLocale) && defaultLocale is JValue defaultLocaleValue)
+                    locale = defaultLocaleValue.Value<string>();
+                else
+                    locale = DefaultLocaleStr;
+            }
+
+            var result = new JObject();
+            var overwriteConfigIdentifiers = new List<string>();
+            result.Merge(config, JsonUtility.MergeSettings);
+            foreach (var (key, value) in config)
+            {
+                if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
+                {
+                    if ((identifier.Branches.Count == 0 || (!string.IsNullOrEmpty(branch) && identifier.Branches.Contains(branch))) &&
+                        (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
+                        value is JObject overwriteConfig)
+                    {
+                        result.Merge(ExpandAndNormalize(overwriteConfig), JsonUtility.MergeSettings);
+                    }
+
+                    overwriteConfigIdentifiers.Add(key);
+                }
+            }
+
+            // clean up overwrite configuration
+            foreach (var overwriteConfigIdentifier in overwriteConfigIdentifiers)
+            {
+                result.Remove(overwriteConfigIdentifier);
+            }
+
+            return result;
+        }
+
         private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
@@ -283,28 +330,26 @@ namespace Microsoft.Docs.Build
             return redirection;
         }
 
-        private static JToken ExpandRouteConfigs(JToken jToken)
+        private static JToken ExpandRouteConfigs(JToken token)
         {
-            if (jToken == null)
-                return null;
-            if (!(jToken is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(jToken)}");
-
-            var result = new JArray();
-            foreach (var (key, value) in obj)
+            if (token is JObject obj)
             {
-                if (!(value is JValue strValue))
-                    throw new Exception($"Expect to be a string: {JsonUtility.Serialize(jToken)}");
-
-                result.Add(new JObject
+                var result = new JArray();
+                foreach (var (key, value) in obj)
                 {
-                    [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\') ?
-                        PathUtility.NormalizeFolder(key) :
-                        PathUtility.NormalizeFile(key),
-                    [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
-                });
+                    result.Add(new JObject
+                    {
+                        [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\')
+                            ? PathUtility.NormalizeFolder(key)
+                            : PathUtility.NormalizeFile(key),
+                        [ConfigConstants.Destination] = value is JValue v && v.Value is string str
+                            ? PathUtility.NormalizeFile(str)
+                            : value,
+                    });
+                }
+                return result;
             }
-            return result;
+            return token;
         }
 
         private static JToken ExpandGlobConfigs(JToken token)
@@ -325,9 +370,10 @@ namespace Microsoft.Docs.Build
 
         private static void ExpandGlobConfig(JToken item)
         {
-            if (!(item is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(item)}");
-            ExpandIncludeExclude(obj);
+            if (item is JObject obj)
+            {
+                ExpandIncludeExclude(obj);
+            }
         }
 
         private static JArray ToGlobConfigs(JObject obj)
@@ -336,8 +382,6 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in obj)
             {
-                if (key.Contains("*"))
-                    throw new Exception($"Glob is not supported in config key: '{key}'");
                 result.Add(new JObject
                 {
                     [ConfigConstants.Include] = key,
@@ -376,8 +420,6 @@ namespace Microsoft.Docs.Build
                 return new JArray(e);
             if (e is JArray arr)
                 return arr;
-
-            // TODO: error handle
             return null;
         }
     }
