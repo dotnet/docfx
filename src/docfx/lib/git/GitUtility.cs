@@ -165,7 +165,9 @@ namespace Microsoft.Docs.Build
 
         public static void CheckMergeConflictMarker(string content, string file)
         {
-            if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) && content.Contains("\n>>>>>>>"))
+            if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) &&
+                content.Contains("\n>>>>>>>") &&
+                content.Contains("\n======="))
             {
                 throw Errors.MergeConflict(file).ToException();
             }
