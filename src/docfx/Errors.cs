@@ -93,6 +93,9 @@ namespace Microsoft.Docs.Build
         public static Error UidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
+        public static Error MergeConflict(string file)
+            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", file);
+
         public static Error AtUidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 

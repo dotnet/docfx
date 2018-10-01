@@ -1,0 +1,21 @@
+---
+# Check git merge conflict marker
+inputs:
+  docfx.yml:
+  docs/toc.md: |
+    <<<<<<< HEAD
+    foo
+    =======
+    bar
+    >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
+  docs/a.md: |
+    <<<<<<< HEAD
+    foo
+    =======
+    bar
+    >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
+outputs:
+  build.log: |
+    ["error","merge-conflict","File contains merge conflict","docs/toc.md"]
+    ["error","merge-conflict","File contains merge conflict","docs/a.md"]
+  build.manifest:
