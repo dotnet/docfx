@@ -48,6 +48,15 @@ namespace Microsoft.Docs.Build
             Console.Write($"{scope.Name}: {percent.PadLeft(3)}% ({done}/{total}), {duration} {eol}");
         }
 
+        public static string FormatTimeSpan(TimeSpan value)
+        {
+            if (value.TotalMinutes > 1)
+                return TimeSpan.FromSeconds(value.TotalSeconds).ToString();
+            if (value.TotalSeconds > 1)
+                return Math.Round(value.TotalSeconds, digits: 2) + "s";
+            return Math.Round(value.TotalMilliseconds, digits: 2) + "ms";
+        }
+
         private class LogScope : IDisposable
         {
             public string Name;
@@ -61,7 +70,7 @@ namespace Microsoft.Docs.Build
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
                 if (elapsedMs > ProgressDelayMs)
                 {
-                    Console.WriteLine($"{Name} done in {TimeSpan.FromSeconds(elapsedMs / 1000)}");
+                    Console.WriteLine($"{Name} done in {FormatTimeSpan(Stopwatch.Elapsed)}");
                 }
             }
         }
