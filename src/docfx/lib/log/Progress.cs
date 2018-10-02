@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Progress
     {
+        private const int ProgressDelayMs = 2000;
         private static readonly AsyncLocal<ImmutableStack<LogScope>> t_scope = new AsyncLocal<ImmutableStack<LogScope>>();
 
         public static IDisposable Start(string name)
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
-            if (elapsedMs < 2000)
+            if (elapsedMs < ProgressDelayMs)
             {
                 return;
             }
@@ -56,7 +57,12 @@ namespace Microsoft.Docs.Build
             public void Dispose()
             {
                 t_scope.Value = t_scope.Value.Pop(out var scope);
-                Console.WriteLine($"{scope.Name} done in {TimeSpan.FromSeconds(Stopwatch.ElapsedMilliseconds / 1000)}");
+
+                var elapsedMs = Stopwatch.ElapsedMilliseconds;
+                if (elapsedMs > ProgressDelayMs)
+                {
+                    Console.WriteLine($"{Name} done in {TimeSpan.FromSeconds(elapsedMs / 1000)}");
+                }
             }
         }
     }
