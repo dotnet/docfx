@@ -195,7 +195,7 @@ inputs:
     routes:
       /: outputB
       docs/a.md: output
-      docs/b/: output
+      docs/b: output
   docs/a.md: |
     [link](c.png)
   docs/c.png:
