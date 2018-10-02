@@ -45,7 +45,12 @@ namespace Microsoft.Docs.Build
                 matcher += '/';
             }
 
-            return file.StartsWith(matcher, PathComparison) ? (true, false, Path.GetRelativePath(matcher, file)) : default;
+            if (file.StartsWith(matcher, PathComparison))
+            {
+                return (true, false, Path.GetRelativePath(matcher, file).Replace('\\', '/'));
+            }
+
+            return default;
         }
 
         /// <summary>
