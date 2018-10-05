@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Microsoft.Docs.Build
 {
-    public static class HashUtility
+    internal static class HashUtility
     {
 #pragma warning disable CA5351 // Do not use insecure cryptographic algorithm MD5.
 #pragma warning disable CA5350 // Do not use insecure cryptographic algorithm SHA1.
