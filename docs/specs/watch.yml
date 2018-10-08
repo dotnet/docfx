@@ -4,5 +4,5 @@ inputs:
   docfx.yml:
   docs/a.md:
 http:
-  /docs/a/:
+  docs/a/:
     status: 200

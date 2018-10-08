@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             
             foreach (var (request, response) in spec.Http)
             {
-                var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = request);
+                var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = "/" + request);
                 var body = new StreamReader(responseContext.Response.Body).ReadToEnd();
                 var actualResponse = new JObject
                 {
