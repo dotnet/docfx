@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
         {
-            var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions(), new Report()));
+            var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions()));
             
             foreach (var (request, response) in spec.Http)
             {
