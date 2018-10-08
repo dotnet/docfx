@@ -39,6 +39,11 @@ namespace Microsoft.Docs.Build
             // var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
+            if (config.BuildInternalXrefMap)
+            {
+                xrefMap.OutputXrefMap(context);
+            }
+
             if (options.Legacy)
             {
                 if (config.Output.Json)

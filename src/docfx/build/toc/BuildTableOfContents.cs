@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -84,12 +83,8 @@ namespace Microsoft.Docs.Build
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
-            var content = fileToBuild.ReadText();
-            GitUtility.CheckMergeConflictMarker(content, fileToBuild.FilePath);
-
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
-                content,
                 fileToBuild,
                 (file, href, isInclude) =>
                 {

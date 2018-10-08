@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        public IEnumerable<XrefSpec> References => _internalXrefMap.Values;
+        public IEnumerable<XrefSpec> References => _internalXrefMap?.Values;
 
         public XrefSpec Resolve(string uid)
         {
@@ -44,10 +43,20 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope, docset.Config.SiteBasePath) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : null);
         }
 
-        public static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files, string configSiteBasePath)
+        public void OutputXrefMap(Context context)
+        {
+            var models = new XrefMapModel();
+            if (References != null)
+            {
+                models.References.AddRange(References);
+            }
+            context.WriteJson(models, "xrefmap.json");
+        }
+
+        private static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
             ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
             Debug.Assert(files != null);
@@ -55,9 +64,6 @@ namespace Microsoft.Docs.Build
             {
                 ParallelUtility.ForEach(files.Where(f => f.ContentType == ContentType.Page), file => Load(context, xrefsByUid, file), Progress.Update);
                 var xrefs = HandleXrefConflicts(context, xrefsByUid);
-                var xrefMap = new XrefMapModel();
-                xrefMap.References.AddRange(xrefs.Values);
-                context.WriteJson(xrefMap, Path.Combine(configSiteBasePath, "xrefmap.json"));
                 return xrefs;
             }
         }
@@ -80,13 +86,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Deserialize(Path.Combine(file.Docset.DocsetPath, file.FilePath), new Lazy<string>(() => file.ReadText()), context);
+                    var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
                     errors.AddRange(yamlErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.Deserialize(Path.Combine(file.Docset.DocsetPath, file.FilePath), new Lazy<string>(() => file.ReadText()), context);
+                    var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
                     errors.AddRange(jsonErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
@@ -165,16 +171,10 @@ namespace Microsoft.Docs.Build
             }
             return null;
 
-            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
+            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
             {
                 string result = (string)value;
-                if (attributes.Any(x => x is MarkdownAttribute))
-                {
-                    var (html, markup) = Markup.ToHtml((string)value, file, null, null, null, null, MarkdownPipelineType.Markdown);
-                    errors.AddRange(markup.Errors);
-                    result = html;
-                }
-                if (attributes.Any(x => x is XrefPropertyAttribute))
+                if (attribute is XrefPropertyAttribute)
                 {
                     extensionData[jsonPath] = result;
                 }
