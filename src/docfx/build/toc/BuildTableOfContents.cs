@@ -83,16 +83,16 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
+
+            GitUtility.CheckMergeConflictMarker(content, fileToBuild.FilePath);
+
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
+                    errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
@@ -106,10 +106,7 @@ namespace Microsoft.Docs.Build
                     // add to referenced document list
                     // only resolve href, no need to build
                     var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
+                    errors.AddIfNotNull(error);
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);

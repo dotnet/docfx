@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var dependencies = new DependencyMapBuilder();
+            var content = file.ReadText();
+
+            GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (errors, schema, model, yamlHeader) = await Load(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader));
@@ -86,6 +89,7 @@ namespace Microsoft.Docs.Build
             {
                 return await LoadYaml(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
+
             Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
             return await LoadJson(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
@@ -213,10 +217,8 @@ namespace Microsoft.Docs.Build
                     var self = (Document)relativeTo;
 
                     var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
+                    errors.AddIfNotNull(error);
+
                     dependencies.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
                     return link;
                 }
