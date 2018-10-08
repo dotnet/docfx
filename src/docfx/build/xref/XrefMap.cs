@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,13 +80,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
+                    var (yamlErrors, token) = YamlUtility.Deserialize(Path.Combine(file.Docset.DocsetPath, file.FilePath), new Lazy<string>(() => file.ReadText()), context);
                     errors.AddRange(yamlErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
+                    var (jsonErrors, token) = JsonUtility.Deserialize(Path.Combine(file.Docset.DocsetPath, file.FilePath), new Lazy<string>(() => file.ReadText()), context);
                     errors.AddRange(jsonErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }

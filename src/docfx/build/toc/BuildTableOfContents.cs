@@ -84,10 +84,12 @@ namespace Microsoft.Docs.Build
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
 
+            var content = fileToBuild.ReadText();
             GitUtility.CheckMergeConflictMarker(content, fileToBuild.FilePath);
 
             var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
                 context,
+                content,
                 fileToBuild,
                 (file, href, isInclude) =>
                 {

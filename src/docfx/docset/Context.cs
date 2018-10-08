@@ -23,9 +23,9 @@ namespace Microsoft.Docs.Build
             _cache = new Cache();
         }
 
-        public (List<Error> errors, JToken token) LoadYamlFile(Document file) => _cache.LoadYamlFile(file);
+        public (List<Error> errors, JToken token) LoadYamlFile(string filePath, Lazy<string> content) => _cache.LoadYamlFile(filePath, content);
 
-        public (List<Error> errors, JToken token) LoadJsonFile(Document file) => _cache.LoadJsonFile(file);
+        public (List<Error> errors, JToken token) LoadJsonFile(string filePath, Lazy<string> content) => _cache.LoadJsonFile(filePath, content);
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -126,13 +126,13 @@ namespace Microsoft.Docs.Build
         {
             private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
 
-            public (List<Error> errors, JToken token) LoadYamlFile(Document file)
-                => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => YamlUtility.Deserialize(file.ReadText()))).Value;
+            public (List<Error> errors, JToken token) LoadYamlFile(string filePath, Lazy<string> content)
+                => _tokenCache.GetOrAdd(GetKeyFromFile(filePath), new Lazy<(List<Error>, JToken)>(() => YamlUtility.Deserialize(content.Value))).Value;
 
-            public (List<Error> errors, JToken token) LoadJsonFile(Document file)
-                => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(file.ReadText()))).Value;
+            public (List<Error> errors, JToken token) LoadJsonFile(string filePath, Lazy<string> content)
+                => _tokenCache.GetOrAdd(GetKeyFromFile(filePath), new Lazy<(List<Error>, JToken)>(() => JsonUtility.Deserialize(content.Value))).Value;
 
-            private string GetKeyFromFile(Document file) => Path.Combine(file.Docset.DocsetPath, file.FilePath) + new FileInfo(Path.Combine(file.Docset.DocsetPath, file.FilePath)).LastWriteTime;
+            private string GetKeyFromFile(string filePath) => filePath + new FileInfo(filePath).LastWriteTime;
         }
     }
 }
