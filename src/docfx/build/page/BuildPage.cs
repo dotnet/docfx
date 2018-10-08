@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                 return await LoadYaml(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
 
-            Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));  
+            Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
             return await LoadJson(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
         }
 
