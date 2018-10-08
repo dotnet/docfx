@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,10 +15,14 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Commands = new[] { "restore", "build" };
 
-        public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly bool Watch;
 
-        public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();
 
-        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>();
+
+        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>();
+
+        public readonly Dictionary<string, JToken> Http = new Dictionary<string, JToken>();
     }
 }

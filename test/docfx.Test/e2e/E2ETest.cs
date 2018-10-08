@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
@@ -24,16 +25,24 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name, int ordinal)
         {
             var (docsetPath, spec) = await CreateDocset(name, ordinal);
-            var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
-                os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
-            if (osMatches)
+            if (spec.Watch)
             {
-                await RunCore(docsetPath, spec);
+                await RunWatchCore(docsetPath, spec);
             }
             else
             {
-                await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
+                var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
+                    os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
+
+                if (osMatches)
+                {
+                    await RunCore(docsetPath, spec);
+                }
+                else
+                {
+                    await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
+                }
             }
         }
 
@@ -76,6 +85,26 @@ namespace Microsoft.Docs.Build
             {
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
+        }
+
+        private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
+        {
+            var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions(), new Report()));
+            
+            foreach (var (request, response) in spec.Http)
+            {
+                var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = request);
+                var body = new StreamReader(responseContext.Response.Body).ReadToEnd();
+                var actualResponse = new JObject
+                {
+                    ["status"] = responseContext.Response.StatusCode,
+                    ["body"] = body,
+                };
+                TestUtility.VerifyJsonContainEquals(response, actualResponse);
+            }
+
+            // Verify no output in output directory
+            Assert.False(Directory.Exists(Path.Combine(docsetPath, "_site")));
         }
 
         private static TheoryData<string, int> FindTestSpecs()

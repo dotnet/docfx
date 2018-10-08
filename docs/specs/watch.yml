@@ -1,0 +1,10 @@
+# Watch changes
+watch: true
+inputs:
+  docfx.yml:
+  docs/a.md:
+http:
+  docs/a/: |
+    { "status": 200 }
+  docs/b/: |
+    { "status": 404 }

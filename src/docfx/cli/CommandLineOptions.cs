@@ -10,8 +10,8 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public string GitToken;
-        public string GitHubToken;
         public string Locale;
+        public int Port;
 
         public JObject ToJObject()
         {
@@ -25,11 +25,7 @@ namespace Microsoft.Docs.Build
                 ["git"] = new JObject
                 {
                     ["authToken"] = GitToken != null ? (JValue)GitToken : JValue.CreateNull(),
-                },
-                ["gitHub"] = new JObject
-                {
-                    ["authToken"] = GitHubToken != null ? (JValue)GitHubToken : JValue.CreateNull(),
-                },
+                }
             };
         }
     }
