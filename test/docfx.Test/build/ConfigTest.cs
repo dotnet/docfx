@@ -29,5 +29,24 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(matchedLocales, identifier.Locales);
             }
         }
+
+        [Theory]
+        [InlineData(null, "zh-cn", null)]
+        [InlineData("", "zh-cn", "")]
+        [InlineData("github/name", "", "github/name")]
+        [InlineData("github/name", null, "github/name")]
+        [InlineData("github/name", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-us", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-US", "zh-cn", "github/name.zh-cn")]
+        [InlineData("github/name.en-US", "zh-CN", "github/name.zh-CN")]
+        [InlineData("github/name.en", "zh-cn", "github/name.en.zh-cn")]
+        [InlineData("github/name.en-us", "en-us", "github/name.en-us")]
+        [InlineData("github/test-repo", "en-us", "github/test-repo")]
+        [InlineData("github/en-us", "zh-cn", "github/en-us.zh-cn")]
+        [InlineData("github/test-repo", "bs-Cyrl-BA", "github/test-repo.bs-Cyrl-BA")]
+        [InlineData("github/test-repo.en-us", "bs-Cyrl-BA", "github/test-repo.bs-Cyrl-BA")]
+        [InlineData("github/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "github/test-repo.sr-Latn-RS")]
+        public static void LocConfigConventionEditRepoName(string sourceName, string locale, string locName)
+            => Assert.Equal(locName, LocConfigConvention.GetEditRepository(sourceName, locale, "en-us"));
     }
 }

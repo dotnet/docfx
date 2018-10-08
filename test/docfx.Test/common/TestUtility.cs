@@ -53,6 +53,13 @@ namespace Microsoft.Docs.Build
                     Assert.Equal(TestUtility.NormalizeHtml(expectedHtml), TestUtility.NormalizeHtml(actualHtml));
                 }
                 else
+                if (expectedValue is string expectedStr && actualValue is string actualStr &&
+                    expectedStr.StartsWith("*") && expectedStr.EndsWith("*"))
+                {
+                    expectedStr = expectedStr.Trim(new[] { '*' });
+                    Assert.True(actualStr.Contains(expectedStr), $"{expectedStr} is not part of {actual}");
+                }
+                else
                 {
                     Assert.Equal(expectedValue, actualValue);
                 }
