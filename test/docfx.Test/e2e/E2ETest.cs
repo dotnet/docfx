@@ -109,11 +109,11 @@ namespace Microsoft.Docs.Build
 
         private static TheoryData<string, int> FindTestSpecs()
         {
-            var result = new TheoryData<string, int>();
+            var specNames = new List<(string, int, bool only)>();
             foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
             {
                 var i = 0;
-                foreach (var header in FindTestSpecHeadersInFile(file))
+                foreach (var (header, only) in FindTestSpecHeadersInFile(file))
                 {
                     if (string.IsNullOrEmpty(header))
                     {
@@ -126,7 +126,17 @@ namespace Microsoft.Docs.Build
                         file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
                         name).Replace("\\", "/");
 
-                    result.Add(folder, i++);
+                    specNames.Add((folder, i++, only));
+                }
+            }
+
+            var hasOnly = specNames.Any(spec => spec.only);
+            var result = new TheoryData<string, int>();
+            foreach (var (name, i, only) in specNames)
+            {
+                if (!hasOnly || only)
+                {
+                    result.Add(name, i);
                 }
             }
             return result;
@@ -183,12 +193,14 @@ namespace Microsoft.Docs.Build
             Directory.Delete(targetDir, false);
         }
 
-        private static IEnumerable<string> FindTestSpecHeadersInFile(string path)
+        private static IEnumerable<(string, bool)> FindTestSpecHeadersInFile(string path)
         {
-            var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+            var content = File.ReadAllText(path);
+            var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var section in sections)
             {
+                var only = false;
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
 
@@ -196,8 +208,13 @@ namespace Microsoft.Docs.Build
                 {
                     header = header.Replace(ch, ' ');
                 }
-
-                yield return header.Replace('/', ' ').Replace('\\', ' ');
+#if DEBUG
+                if (yaml.Contains("only: true"))
+                {
+                    only = true;
+                }
+#endif
+                yield return (header.Replace('/', ' ').Replace('\\', ' '), only);
             }
         }
 

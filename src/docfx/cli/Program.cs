@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             {
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Done in {new TimeSpan(duration.Hours, duration.Minutes, duration.Seconds)}");
+                Console.WriteLine($"Done in {Progress.FormatTimeSpan(duration)}");
 
                 if (report.ErrorCount > 0 || report.WarningCount > 0)
                 {

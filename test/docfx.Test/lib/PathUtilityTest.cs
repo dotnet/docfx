@@ -58,9 +58,12 @@ namespace Microsoft.Docs.Build
         [InlineData("a/b", "./", true, false, "a/b")]
         [InlineData("a/b", "c/", false, false, null)]
         [InlineData("a/b", "c", false, false, null)]
-        public static void PathMatch(string file, string path, bool expectedMatch, bool expectedIsFileMatch, string expectedRemainingPath)
+        [InlineData("a", "a/b", false, false, null)]
+        [InlineData("a/b/c", "a", true, false, "b/c")]
+        [InlineData("ab/c", "a", false, false, null)]
+        public static void PathMatch(string file, string matcher, bool expectedMatch, bool expectedIsFileMatch, string expectedRemainingPath)
         {
-            var (match, isFileMatch, remaniningPath) = PathUtility.Match(file, path);
+            var (match, isFileMatch, remaniningPath) = PathUtility.Match(file, matcher);
             Assert.Equal(expectedMatch, match);
             Assert.Equal(expectedIsFileMatch, isFileMatch);
             Assert.Equal(expectedRemainingPath, remaniningPath);
