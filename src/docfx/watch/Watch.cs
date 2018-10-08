@@ -12,19 +12,19 @@ namespace Microsoft.Docs.Build
 {
     internal class Watch
     {
-        public static Task Run(string docsetPath, CommandLineOptions options, Report report)
+        public static Task Run(string docsetPath, CommandLineOptions options)
         {
             var cts = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, e) => cts.Cancel();
-            return CreateWebServer(docsetPath, options, report).Build().RunAsync(cts.Token);
+            return CreateWebServer(docsetPath, options).Build().RunAsync(cts.Token);
         }
 
-        public static IWebHostBuilder CreateWebServer(string docsetPath, CommandLineOptions options, Report report, CancellationToken cancellationToken = default)
+        public static IWebHostBuilder CreateWebServer(string docsetPath, CommandLineOptions options)
         {
             return new WebHostBuilder()
                 .UseUrls($"http://*:{options.Port}")
                 .Configure(Configure);
-            
+
             void Configure(IApplicationBuilder app)
             {
                 app.Use(next => async httpContext =>

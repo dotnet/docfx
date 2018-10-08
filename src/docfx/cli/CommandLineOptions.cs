@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
                 ["git"] = new JObject
                 {
                     ["authToken"] = GitToken != null ? (JValue)GitToken : JValue.CreateNull(),
-                }
+                },
             };
         }
     }

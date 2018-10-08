@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "watch":
-                            await Watch.Run(docset, options, report);
+                            await Watch.Run(docset, options);
                             break;
                     }
                     return 0;
