@@ -171,9 +171,24 @@ namespace Microsoft.Docs.Build
             }
             return null;
 
-            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
+            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 string result = (string)value;
+                foreach (var attribute in attributes.OrderBy(attr => attr.Order))
+                {
+                    result = Transform(attribute, result, jsonPath);
+                }
+                return result;
+            }
+
+            string Transform(DataTypeAttribute attribute, string result, string jsonPath)
+            {
+                if (attribute is MarkdownAttribute)
+                {
+                    var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
+                    errors.AddRange(markup.Errors);
+                    return html;
+                }
                 if (attribute is XrefPropertyAttribute)
                 {
                     extensionData[jsonPath] = result;

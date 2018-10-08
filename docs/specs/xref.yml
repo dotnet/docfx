@@ -195,3 +195,19 @@ outputs:
   build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
+---
+# Xref property field which supports markdown content
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "summary": "Hello `docfx`!"
+    }
+outputs:
+  docs/a.json:
+  build.manifest:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Hello <code>docfx</code>!</p>"}]}

@@ -172,8 +172,9 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model, metadata);
 
-            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
+            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
+                var attribute = attributes.OrderBy(attr => attr.Order).First();
                 if (attribute is HrefAttribute)
                 {
                     return GetLink((string)value, file, file);
