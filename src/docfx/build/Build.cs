@@ -39,11 +39,16 @@ namespace Microsoft.Docs.Build
             // var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
+            if (config.BuildInternalXrefMap)
+            {
+                xrefMap.OutputXrefMap(context);
+            }
+
             if (options.Legacy)
             {
                 if (config.Output.Json)
                 {
-                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
                 }
                 else
                 {
@@ -130,10 +135,10 @@ namespace Microsoft.Docs.Build
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
                     case ContentType.Page:
-                        (errors, model, dependencies) = await BuildPage.Build(file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
+                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
+                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.Redirection:
                         model = BuildRedirection(file);
