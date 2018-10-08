@@ -1,10 +1,8 @@
-# Watch changes
+# Watch launches an HTTP server
 watch: true
 inputs:
   docfx.yml:
   docs/a.md:
 http:
-  docs/a/: |
-    { "status": 200 }
-  docs/b/: |
-    { "status": 404 }
+  /docs/a/:
+    status: 200
