@@ -61,8 +61,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var otherAttributes = attributes.Where(attr => !(attr is XrefPropertyAttribute));
-                return otherAttributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
+                return attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
             }
             catch (InvalidOperationException)
             {
