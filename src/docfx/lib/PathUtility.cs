@@ -23,26 +23,31 @@ namespace Microsoft.Docs.Build
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
         /// <summary>
-        /// Check if the file is same with or inside of the path
+        /// Check if the file is the same as matcher or is inside the directory specified by matcher.
         /// Both path should be normalized
         /// </summary>
-        public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string path)
+        public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string matcher)
         {
             Debug.Assert(!file.EndsWith('/'));
 
-            if (string.Equals(file, path, PathComparison))
+            if (string.Equals(file, matcher, PathComparison))
             {
                 return (true, true, file);
             }
 
-            if (path == "./")
+            if (matcher == "./")
             {
                 return (true, false, file);
             }
 
-            if (path.EndsWith('/') && file.StartsWith(path, PathComparison))
+            if (!matcher.EndsWith('/'))
             {
-                return (true, false, Path.GetRelativePath(path, file));
+                matcher += '/';
+            }
+
+            if (file.StartsWith(matcher, PathComparison))
+            {
+                return (true, false, Path.GetRelativePath(matcher, file).Replace('\\', '/'));
             }
 
             return default;

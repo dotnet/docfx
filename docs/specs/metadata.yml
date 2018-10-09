@@ -143,7 +143,7 @@ inputs:
       depotMappings:
         articles/iot-central/: MSDN.microsoft-iot-central
       directoryMappings:
-        articles\iot-central/: articles
+        articles\iot-central: articles
         articles\billing/billing-add-change-azure-subscription-administrator.md: articles
     name: azure-documents
     product: Azure

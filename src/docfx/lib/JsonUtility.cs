@@ -222,6 +222,11 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Deserialize from JSON file, get from or add to cache
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.LoadJsonFile(file);
+
+        /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
@@ -452,7 +457,7 @@ namespace Microsoft.Docs.Build
             private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false);
-                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
+                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>(false);
                 if (contentTypeAttribute != null || validators.Any())
                 {
                     return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);

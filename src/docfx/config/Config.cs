@@ -127,8 +127,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool WarningsAsErrors;
 
-        // TODO: remove the switch when we fix the performance
-
         /// <summary>
         /// Gets whether to build internal xref map
         /// </summary>
