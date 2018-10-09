@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        public static DataTypeAttribute GetNonXrefPropertyAttribute(IEnumerable<DataTypeAttribute> attributes, List<Error> errors, string jsonPath)
+        public static DataTypeAttribute GetNonXrefPropertyAttribute(IEnumerable<DataTypeAttribute> attributes, string jsonPath)
         {
             try
             {
@@ -66,8 +66,7 @@ namespace Microsoft.Docs.Build
             }
             catch (InvalidOperationException)
             {
-                errors.Add(Errors.InvalidMultipleAttributes(jsonPath));
-                return null;
+                throw Errors.InvalidMultipleAttributes(jsonPath).ToException();
             }
         }
 
@@ -189,7 +188,7 @@ namespace Microsoft.Docs.Build
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 string result = (string)value;
-                var attribute = GetNonXrefPropertyAttribute(attributes, errors, jsonPath);
+                var attribute = GetNonXrefPropertyAttribute(attributes, jsonPath);
                 if (attribute is MarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
