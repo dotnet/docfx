@@ -20,23 +20,7 @@ namespace Microsoft.Docs.Build
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public abstract class DataTypeAttribute : Attribute
     {
-        private int _order = -1;
-
         public virtual Type TargetType => typeof(string);
-
-        public int Order
-        {
-            get => _order;
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentException(nameof(Order));
-                }
-
-                _order = value;
-            }
-        }
     }
 
     public class HrefAttribute : DataTypeAttribute { }
