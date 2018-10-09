@@ -174,32 +174,34 @@ namespace Microsoft.Docs.Build
 
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
-                if (attributes.Any(attr => attr is HrefAttribute))
+                var attribute = XrefMap.GetNonXrefPropertyAttribute(attributes, errors, jsonPath);
+
+                if (attribute is HrefAttribute)
                 {
                     return GetLink((string)value, file, file);
                 }
 
-                if (attributes.Any(attr => attr is MarkdownAttribute))
+                if (attribute is MarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
-                if (attributes.Any(attr => attr is InlineMarkdownAttribute))
+                if (attribute is InlineMarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(markup.Errors);
                     return html;
                 }
 
-                if (attributes.Any(attr => attr is HtmlAttribute))
+                if (attribute is HtmlAttribute)
                 {
                     var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file));
                     return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
-                if (attributes.Any(attr => attr is XrefAttribute))
+                if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
                     return xrefMap.Resolve((string)value).Href;

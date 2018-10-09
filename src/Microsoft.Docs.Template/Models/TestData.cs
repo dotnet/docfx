@@ -28,4 +28,12 @@ namespace Microsoft.Docs.Build
 
         public TestData Data { get; set; }
     }
+
+    [DataSchema]
+    public sealed class TestDataWithMultipleDataType
+    {
+        [Href]
+        [Markdown]
+        public string Description { get; set; }
+    }
 }
