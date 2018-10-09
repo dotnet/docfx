@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.LegacyConfig.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
+                aggregatedFileMapItems.Add(PathUtility.NormalizeFile(Path.Combine(docset.Config.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem);
             }
 
             context.WriteJson(
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                         [docset.Config.Name] = new
                         {
                             docset_name = docset.Config.Name,
-                            docset_path_to_root = docset.Config.LegacyConfig.SourceBasePath,
+                            docset_path_to_root = docset.Config.SourceBasePath,
                         },
                     },
                 }, "op_aggregated_file_map_info.json");

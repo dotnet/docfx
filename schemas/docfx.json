@@ -147,12 +147,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "sourceBasePath": {
-          "type": "string"
-        },
-        "siteBasePath": {
-          "type": "string"
-        },
         "needGeneratePdfUrlTemplate": {
           "type": "boolean"
         }
@@ -211,6 +205,12 @@
       "$ref": "#/definitions/OutputConfig"
     },
     "globalMetadata": {},
+    "sourceBasePath": {
+      "type": "string"
+    },
+    "siteBasePath": {
+      "type": "string"
+    },
     "legacyConfig": {
       "$ref": "#/definitions/LegacyConfig"
     },

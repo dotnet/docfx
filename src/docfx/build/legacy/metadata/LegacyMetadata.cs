@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
             rawMetadata["conceptual"] = content;
 
-            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.LegacyConfig.SiteBasePath, file.SitePath));
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.SiteBasePath, file.SitePath));
 
             rawMetadata["_path"] = path;
             rawMetadata["fileRelativePath"] = Path.ChangeExtension(path, ".html");
@@ -77,11 +77,11 @@ namespace Microsoft.Docs.Build
             rawMetadata["title"] = pageModel.Title;
             rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.LegacyConfig.SiteBasePath}/";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.SiteBasePath}/";
 
             if (docset.Config.LegacyConfig.NeedGeneratePdfUrlTemplate)
             {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{$"{docset.Config.Product}.{docset.Config.Name}"}/{{branchName}}";
+                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
             }
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
