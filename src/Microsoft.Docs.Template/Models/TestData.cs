@@ -17,11 +17,23 @@ namespace Microsoft.Docs.Build
         [XrefProperty]
         public string Description { get; set; }
 
+        [XrefProperty]
+        [Markdown]
+        public string Summary { get; set; }
+
         public string Uid { get; set; }
 
         [Xref]
         public string Xref { get; set; }
 
         public TestData Data { get; set; }
+    }
+
+    [DataSchema]
+    public sealed class TestDataWithMultipleDataType
+    {
+        [Href]
+        [Markdown]
+        public string Description { get; set; }
     }
 }
