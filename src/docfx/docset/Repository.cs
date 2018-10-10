@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             Host = host;
             Owner = account;
             Name = repository;
-            Branch = branch;
+            Branch = branch ?? "master";
             Commit = commit;
             RepositoryPath = PathUtility.NormalizeFolder(path);
         }

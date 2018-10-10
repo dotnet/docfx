@@ -508,11 +508,11 @@ commands:
 inputs:
   docfx.yml: |
     contribution:
-      repository: github.com/docfx/docfx
+      repository: dotnet/docfx
   docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn*"}
   build.manifest:
 ---
 # loc config convention with source locale
@@ -521,9 +521,9 @@ commands:
 inputs:
   docfx.yml: |
     contribution:
-      repository: github.com/docfx/docfx.en-us
+      repository: dotnet/docfx.en-us
   docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
+    { "content_git_url": "*dotnet/docfx.zh-cn*"}
   build.manifest:

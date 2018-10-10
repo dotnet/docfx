@@ -121,13 +121,10 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var branch = repo.Branch ?? "master";
-            var editRepo = document.Docset.Config.GetEditRepository(document.Docset.Locale)
-                ?? $"{repo.Owner}/{repo.Name}";
-            var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
-
+            var (editOwner, editRepoName) = document.Docset.Config.GetEditRepository(document.Docset.Locale);
+            var editRepo = repo.With(editOwner, editRepoName, document.Docset.Config.Contribution.Branch);
             var editUrl = document.Docset.Config.Contribution.ShowEdit
-                ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
+                ? $"https://github.com/{editRepo.FullName}/blob/{editRepo.Branch}/{pathToRepo}"
                 : null;
 
             var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
@@ -135,7 +132,7 @@ namespace Microsoft.Docs.Build
                 : repo.Commit;
 
             var commitUrl = commit != null ? $"https://github.com/{repo.Owner}/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
-            var contentUrl = $"https://github.com/{repo.Owner}/{repo.Name}/blob/{branch}/{pathToRepo}";
+            var contentUrl = $"https://github.com/{repo.Owner}/{repo.Name}/blob/{repo.Branch}/{pathToRepo}";
 
             return (editUrl, contentUrl, commitUrl);
         }

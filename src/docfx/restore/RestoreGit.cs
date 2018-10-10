@@ -82,9 +82,8 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var locRepoFullName = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.FullName, locale, config.DefaultLocale);
-                var locRepo = repo.With(repo.Owner, locRepoFullName.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).Last());
-                var locRepoUrl = locRepo.GetRemoteWithBranch();
+                var (locOwner, locRepoName) = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.Owner, repo.Name, locale, config.DefaultLocale);
+                var locRepoUrl = repo.With(locOwner, locRepoName).GetRemoteWithBranch();
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
             }
