@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, CommandLineOptions options, Func<string, Task> restoreChild, string token)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string token, string locale)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
 
@@ -60,12 +61,12 @@ namespace Microsoft.Docs.Build
             (string locRestoreDir, string href) GetLocRestoreItem()
             {
                 // restore loc repository
-                if (string.IsNullOrEmpty(options.Locale))
+                if (string.IsNullOrEmpty(locale))
                 {
                     return default;
                 }
 
-                if (string.Equals(options.Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
                 {
                     return default;
                 }
@@ -75,13 +76,13 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var repo = Repository.Create(docsetPath);
+                var repo = Repository.Create(Path.GetFullPath(docsetPath));
                 if (repo == null)
                 {
                     return default;
                 }
 
-                var locRepoFullName = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.FullName, options.Locale, config.DefaultLocale);
+                var locRepoFullName = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.FullName, locale, config.DefaultLocale);
                 var locRepo = repo.With(repo.Owner, locRepoFullName.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).Last());
                 var locRepoUrl = locRepo.GetRemoteWithBranch();
 

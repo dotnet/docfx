@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
                 ReportErrors(report, configErrors);
                 report.Configure(docsetPath, config);
 
-                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset));
+                await RestoreLocker.Save(docsetPath, () => RestoreOneDocset(report, docsetPath, options, config, RestoreDocset, restoreLocRepo: true));
 
                 async Task RestoreDocset(string docset)
                 {
                     if (restoredDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var loadErrors, out var childConfig, false))
                     {
-                        await RestoreLocker.Save(docset, () => RestoreOneDocset(report, docset, options, childConfig, RestoreDocset));
+                        await RestoreLocker.Save(docset, () => RestoreOneDocset(report, docset, options, childConfig, RestoreDocset, restoreLocRepo: false /*no need to restore child docsets' loc repository*/));
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<RestoreLock> RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild)
+        private static async Task<RestoreLock> RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, bool restoreLocRepo = false)
         {
             var restoreLock = new RestoreLock();
 
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             ReportErrors(report, errors);
 
             // restore git repos includes dependency repos and loc repos
-            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, extendedConfig, options, restoreChild, config.Git.AuthToken);
+            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, extendedConfig, restoreChild, config.Git.AuthToken, restoreLocRepo ? options.Locale : null);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;

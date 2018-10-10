@@ -68,6 +68,21 @@ restores:
 outputs:
   build.manifest:
 ---
+# Restore loc repo with dependencies
+commands:
+  - restore --locale zh-cn
+  - build
+repo: https://github.com/docascode/docfx-test-dependencies#master
+restores:
+  git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a/dep.md: loc-DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
+  restore-lock/*Restore loc repo with dependencies-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a", "https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+  restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+outputs:
+  build.manifest:
+---
 # Show error when download failed
 inputs:
   docfx.yml: |
