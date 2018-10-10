@@ -11,7 +11,10 @@ namespace Microsoft.Docs.Build
         public static void Convert(Docset docset, Context context, XrefMap xrefMap)
         {
             var map = new XrefMapModel();
-            map.References.AddRange(xrefMap.References);
+            if (xrefMap.References != null)
+            {
+                map.References.AddRange(xrefMap.References);
+            }
 
             using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.SiteBasePath, "xrefmap.yml"))))
             {
