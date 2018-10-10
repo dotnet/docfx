@@ -68,7 +68,7 @@ restores:
 outputs:
   build.manifest:
 ---
-# Restore loc repo with dependencies
+# [repository mapping] Restore loc repo with dependencies 
 commands:
   - restore --locale zh-cn
   - build
@@ -76,10 +76,25 @@ repo: https://github.com/docascode/docfx-test-dependencies#master
 restores:
   git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a/dep.md: loc-DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/*Restore loc repo with dependencies-*-lock.json: |
+  restore-lock/*[repository mapping] Restore loc repo with dependencies-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a", "https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
   restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+outputs:
+  build.manifest:
+---
+# [repository + folder mapping] Restore loc repo
+commands:
+  - restore --locale zh-cn
+  - build
+repo: https://github.com/docascode/docfx-test-dependencies#loc
+inputs:
+  docfx.yml: |
+    locMappingType: RepositoryAndFolder
+restores:
+  git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb/dep.md: loc-DEP
+  restore-lock/*[repository + folder mapping] Restore loc repo-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#loc":"18d3d65979413ce8342fd709dbce1c78ab45ffeb"}}
 outputs:
   build.manifest:
 ---
