@@ -223,3 +223,14 @@ outputs:
     ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml","",2,5]
     ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json","",2]
   build.manifest:
+---
+# Data Schema with multiple data type attributes
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestDataWithMultipleDataType
+    description: test
+outputs:
+  build.log: |
+    ["error","invalid-multiple-attribute","'description' contains invalid multiple DataTypeAttribute, only XrefPropertyAttribute is allowed to be combined with another DataTypeAttribute.","docs/a.yml"]
+  build.manifest:

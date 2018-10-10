@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -17,11 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
-        {
-            _externalXrefMap = externalXrefMap;
-            _internalXrefMap = internalXrefMap;
-        }
+        public IEnumerable<XrefSpec> References => _internalXrefMap?.Values;
 
         public XrefSpec Resolve(string uid)
         {
@@ -51,7 +47,29 @@ namespace Microsoft.Docs.Build
             return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : null);
         }
 
-        public static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
+        public void OutputXrefMap(Context context)
+        {
+            var models = new XrefMapModel();
+            if (References != null)
+            {
+                models.References.AddRange(References);
+            }
+            context.WriteJson(models, "xrefmap.json");
+        }
+
+        public static DataTypeAttribute GetNonXrefPropertyAttribute(IEnumerable<DataTypeAttribute> attributes, string jsonPath)
+        {
+            try
+            {
+                return attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
+            }
+            catch (InvalidOperationException)
+            {
+                throw Errors.InvalidMultipleAttributes(jsonPath).ToException();
+            }
+        }
+
+        private static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
             ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
             Debug.Assert(files != null);
@@ -61,6 +79,12 @@ namespace Microsoft.Docs.Build
                 var xrefs = HandleXrefConflicts(context, xrefsByUid);
                 return xrefs;
             }
+        }
+
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, XrefSpec> internalXrefMap)
+        {
+            _externalXrefMap = externalXrefMap;
+            _internalXrefMap = internalXrefMap;
         }
 
         private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, Document file)
@@ -75,13 +99,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Deserialize(content);
+                    var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
                     errors.AddRange(yamlErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.Deserialize(content);
+                    var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
                     errors.AddRange(jsonErrors);
                     TryAddXref(xrefsByUid, LoadSchemaDocument(errors, token, file));
                 }
@@ -95,19 +119,19 @@ namespace Microsoft.Docs.Build
 
         private static Dictionary<string, XrefSpec> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid)
         {
-            var result = new Dictionary<string, XrefSpec>();
+            var result = new List<XrefSpec>();
             foreach (var (uid, conflict) in xrefsByUid)
             {
                 if (conflict.Count > 1)
                 {
                     var orderedConflict = conflict.OrderBy(spec => spec.Href);
                     context.Report(Errors.UidConflict(uid, orderedConflict));
-                    result.Add(uid, orderedConflict.First());
+                    result.Add(orderedConflict.First());
                     continue;
                 }
-                result.Add(uid, conflict.First());
+                result.Add(conflict.First());
             }
-            return result;
+            return result.OrderBy(item => item.Uid).ToDictionary(xref => xref.Uid);
         }
 
         private static XrefSpec LoadMarkdown(string content, Document file)
@@ -160,13 +184,21 @@ namespace Microsoft.Docs.Build
             }
             return null;
 
-            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
+            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
-                if (attribute is XrefPropertyAttribute)
+                string result = (string)value;
+                var attribute = GetNonXrefPropertyAttribute(attributes, jsonPath);
+                if (attribute is MarkdownAttribute)
                 {
-                    extensionData[jsonPath] = (string)value;
+                    var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
+                    errors.AddRange(markup.Errors);
+                    result = html;
                 }
-                return (string)value;
+                if (attributes.Any(attr => attr is XrefPropertyAttribute))
+                {
+                    extensionData[jsonPath] = result;
+                }
+                return result;
             }
         }
 
