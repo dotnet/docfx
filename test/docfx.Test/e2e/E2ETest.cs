@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             Directory.Delete(targetDir, false);
         }
 
-        private static IEnumerable<(string, bool)> FindTestSpecHeadersInFile(string path)
+        private static IEnumerable<(string, bool only)> FindTestSpecHeadersInFile(string path)
         {
             var content = File.ReadAllText(path);
             var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
@@ -174,17 +174,16 @@ namespace Microsoft.Docs.Build
                 var only = false;
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
-
-                foreach (var ch in Path.GetInvalidPathChars())
-                {
-                    header = header.Replace(ch, ' ');
-                }
 #if DEBUG
-                if (yaml.Contains("only: true"))
+                if (header.Contains("ONLY"))
                 {
                     only = true;
                 }
 #endif
+                foreach (var ch in Path.GetInvalidPathChars())
+                {
+                    header = header.Replace(ch, ' ');
+                }
                 yield return (header.Replace('/', ' ').Replace('\\', ' '), only);
             }
         }
