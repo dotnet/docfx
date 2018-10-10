@@ -17,11 +17,11 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        public IEnumerable<XrefSpec> InternalReferences => _internalXrefMap?.Values;
+        public IEnumerable<XrefSpec> InternalReferences => _internalXrefMap.Values;
 
         public XrefSpec Resolve(string uid)
         {
-            if (_internalXrefMap != null && _internalXrefMap.TryGetValue(uid, out var xrefSpec))
+            if (_internalXrefMap.TryGetValue(uid, out var xrefSpec))
             {
                 return xrefSpec;
             }
