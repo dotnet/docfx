@@ -28,10 +28,40 @@ namespace Microsoft.Docs.Build
 
         public string RepositoryPath { get; }
 
-        private Repository(string path)
+        private Repository(GitHost host, string account, string repository, string branch, string commit, string path)
         {
-            Debug.Assert(GitUtility.IsRepo(path));
+            Host = host;
+            Owner = account;
+            Name = repository;
+            Branch = branch;
+            Commit = commit;
+            RepositoryPath = PathUtility.NormalizeFolder(path);
+        }
+
+        public Repository With(string owner, string name, string branch = null)
+        {
+            return new Repository(Host, owner ?? Owner, name ?? Name, branch ?? Branch, Commit, RepositoryPath);
+        }
+
+        public string GetRemoteWithBranch()
+        {
+            switch (Host)
+            {
+                case GitHost.GitHub:
+                    return $"https://github.com/{Owner}/{Name}#{Branch}";
+                default:
+                    throw new System.NotSupportedException($"{Host} is not supported yet");
+            }
+        }
+
+        public static Repository Create(string path)
+        {
             Debug.Assert(Path.IsPathRooted(path));
+
+            var repoPath = GitUtility.FindRepo(path);
+
+            if (repoPath == null)
+                return null;
 
             var (host, account, repository) = default((GitHost, string, string));
             var (remote, branch, commit) = GitUtility.GetRepoInfo(path);
@@ -48,20 +78,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            Host = host;
-            Owner = account;
-            Name = repository;
-            Branch = branch;
-            Commit = commit;
-            RepositoryPath = PathUtility.NormalizeFolder(path);
-        }
-
-        public static Repository Create(string path)
-        {
-            Debug.Assert(Path.IsPathRooted(path));
-
-            var repoPath = GitUtility.FindRepo(path);
-            return repoPath != null ? new Repository(repoPath) : null;
+            return new Repository(host, account, repository, branch, commit, repoPath);
         }
     }
 }

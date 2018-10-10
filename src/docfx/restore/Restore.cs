@@ -101,16 +101,18 @@ namespace Microsoft.Docs.Build
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
-            // restore other urls and git dependnecy repositories
             // extend the config before loading
             var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
             ReportErrors(report, errors);
-            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, config.Git.AuthToken);
+
+            // restore git repos includes dependency repos and loc repos
+            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, extendedConfig, options, restoreChild, config.Git.AuthToken);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;
             }
 
+            // restore urls except extend url
             await ParallelUtility.ForEach(
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
