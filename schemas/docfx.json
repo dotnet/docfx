@@ -288,6 +288,15 @@
       "items": {
         "type": "string"
       }
+    },
+    "locMappingType": {
+      "type": "string",
+      "enum": [
+        "repository",
+        "folder",
+        "repositoryAndFolder",
+        "sideBySide"
+      ]
     }
   }
 }
