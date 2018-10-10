@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, XrefSpec> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
 
-        public IEnumerable<XrefSpec> References => _internalXrefMap?.Values;
+        public IEnumerable<XrefSpec> InternalReferences => _internalXrefMap?.Values;
 
         public XrefSpec Resolve(string uid)
         {
@@ -44,16 +44,13 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : null);
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.BuildScope) : new Dictionary<string, XrefSpec>());
         }
 
         public void OutputXrefMap(Context context)
         {
             var models = new XrefMapModel();
-            if (References != null)
-            {
-                models.References.AddRange(References);
-            }
+            models.References.AddRange(InternalReferences);
             context.WriteJson(models, "xrefmap.json");
         }
 
