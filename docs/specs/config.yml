@@ -501,29 +501,3 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
----
-# loc config convention without source locale
-commands:
-  - build --locale zh-cn
-inputs:
-  docfx.yml: |
-    contribution:
-      repository: dotnet/docfx
-  docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn*"}
-  build.manifest:
----
-# loc config convention with source locale
-commands:
-  - build --locale zh-cn
-inputs:
-  docfx.yml: |
-    contribution:
-      repository: dotnet/docfx.en-us
-  docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn*"}
-  build.manifest:
