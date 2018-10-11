@@ -120,17 +120,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the authorization keys for required resources access
         /// </summary>
-        public readonly HttpConfig Http = new HttpConfig();
+        public readonly Dictionary<string, HttpSecretConfig> HttpSecrets = new Dictionary<string, HttpSecretConfig>();
 
         /// <summary>
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
         /// </summary>
         public readonly GitHubConfig GitHub = new GitHubConfig();
-
-        /// <summary>
-        /// Gets the configturation related to git repositories, usually used to clone a repo.
-        /// </summary>
-        public readonly GitConfig Git = new GitConfig();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.

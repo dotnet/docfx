@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class HttpSecretConfig
     {
-        public readonly string BaseUrl = string.Empty;
-
         public readonly string Query = string.Empty;
 
         public readonly Dictionary<string, string> Headers = new Dictionary<string, string>();
