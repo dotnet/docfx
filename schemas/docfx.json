@@ -294,8 +294,7 @@
       "enum": [
         "repository",
         "folder",
-        "repositoryAndFolder",
-        "sideBySide"
+        "repositoryAndFolder"
       ]
     }
   }
