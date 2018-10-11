@@ -12,9 +12,9 @@ namespace Microsoft.Docs.Build
                @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
 
-        public static bool TryParse(string remote, out (string owner, string name) repoInfo)
+        public static bool TryParse(string remote, out string owner, out string name)
         {
-            repoInfo = default;
+            owner = name = default;
 
             if (string.IsNullOrEmpty(remote))
                 return false;
@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            repoInfo.owner = match.Groups["account"].Value;
-            repoInfo.name = match.Groups["repository"].Value;
+            owner = match.Groups["account"].Value;
+            name = match.Groups["repository"].Value;
 
             return true;
         }

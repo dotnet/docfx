@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        public GitHost Host { get; private set; }
-
         public string Remote { get; private set; }
 
         public string Branch { get; private set; }
@@ -18,13 +16,12 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; private set; }
 
-        private Repository(GitHost host, string remote, string branch, string commit = null, string path = null)
+        private Repository(string remote, string branch, string commit, string path)
         {
-            Host = host;
             Remote = remote ?? throw new ArgumentNullException(nameof(remote));
             Branch = branch ?? "master";
-            Commit = commit;
-            Path = path;
+            Commit = commit ?? throw new ArgumentNullException(nameof(commit));
+            Path = path ??  throw new ArgumentNullException(nameof(path));
         }
 
         public static Repository CreateFromFolder(string path)
@@ -37,31 +34,12 @@ namespace Microsoft.Docs.Build
                 return null;
 
             var (remote, branch, commit) = GitUtility.GetRepoInfo(repoPath);
-            if (GitHostUtility.TryParse(remote, out var githost))
+            var gitIndex = remote.IndexOf(".git");
+            if (gitIndex >= 0)
             {
-                var gitIndex = remote.IndexOf(".git");
-                if (gitIndex >= 0)
-                {
-                    remote = remote.Remove(gitIndex);
-                }
-                return new Repository(githost, remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
+                remote = remote.Remove(gitIndex);
             }
-
-            return null;
-        }
-
-        public static Repository CreateFromRemote(string remote)
-        {
-            if (string.IsNullOrEmpty(remote))
-                return null;
-
-            if (GitHostUtility.TryParse(remote, out var gitHost))
-            {
-                var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
-                return new Repository(gitHost, url, branch);
-            }
-
-            return null;
+            return new Repository(remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }

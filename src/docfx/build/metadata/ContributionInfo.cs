@@ -49,12 +49,7 @@ namespace Microsoft.Docs.Build
             var githubOwner = string.Empty;
             var githubRepoName = string.Empty;
 
-            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
-            if (resolveGitHubUsers &= GithubUtility.TryParse(repo?.Remote, out var remoteInfo))
-            {
-                githubOwner = remoteInfo.owner;
-                githubRepoName = remoteInfo.name;
-            }
+            var resolveGitHubUsers = document.Docset.Config.GitHub.ResolveUsers && GithubUtility.TryParse(repo?.Remote, out githubOwner, out githubRepoName);
 
             // Resolve contributors from commits
             if (commits != null)
@@ -129,6 +124,7 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
+            var repoHost = GithubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
                 ? value.commits[0].Sha
                 : repo.Commit;
@@ -137,36 +133,36 @@ namespace Microsoft.Docs.Build
 
             string GetCommitUrl()
             {
-                switch (repo.Host)
+                switch (repoHost)
                 {
                     case GitHost.GitHub:
                         return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
                     default:
-                        throw new NotSupportedException($"{repo.Host}");
+                        throw new NotSupportedException($"{repoHost}");
                 }
             }
 
             string GetContentUrl()
             {
-                switch (repo.Host)
+                switch (repoHost)
                 {
                     case GitHost.GitHub:
                         return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
                     default:
-                        throw new NotSupportedException($"{repo.Host}");
+                        throw new NotSupportedException($"{repoHost}");
                 }
             }
 
             string GetEditUrl()
             {
                 // git edit url, only works for github repo
-                var editRepo = Repository.CreateFromRemote(document.Docset.Config.Contribution.Repository) ?? repo;
+                var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
+                editRemote = LocConfigConvention.GetLocRepository(editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
 
-                var editRemote = LocConfigConvention.GetLocRepository(editRepo.Remote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
-                if (editRepo.Host == GitHost.GitHub)
+                if (GithubUtility.TryParse(editRemote, out _, out _))
                 {
                     return document.Docset.Config.Contribution.ShowEdit
-                    ? $"{editRemote}/blob/{editRepo.Branch}/{pathToRepo}"
+                    ? $"{editRemote}/blob/{eidtBranch}/{pathToRepo}"
                     : null;
                 }
 
@@ -225,6 +221,12 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        private enum GitHost
+        {
+            Unknown,
+            GitHub,
         }
     }
 }
