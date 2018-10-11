@@ -38,7 +38,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
             var contributors = new List<Contributor>();
@@ -47,6 +46,15 @@ namespace Microsoft.Docs.Build
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
+            var githubOwner = string.Empty;
+            var githubRepoName = string.Empty;
+
+            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
+            if (resolveGitHubUsers &= GithubUtility.TryParse(repo?.Remote, out var remoteInfo))
+            {
+                githubOwner = remoteInfo.owner;
+                githubRepoName = remoteInfo.name;
+            }
 
             // Resolve contributors from commits
             if (commits != null)
@@ -62,7 +70,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
+                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, githubOwner, githubRepoName, commit.Sha);
                     if (error != null)
                         errors.Add(error);
 
@@ -121,23 +129,49 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var branch = repo.Branch ?? "master";
-            var editRepo = LocConfigConvention.GetEditRepository(document.Docset.Config.Contribution.Repository, document.Docset.Locale, document.Docset.Config.DefaultLocale)
-                ?? $"{repo.Owner}/{repo.Name}";
-            var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
-
-            var editUrl = document.Docset.Config.Contribution.ShowEdit
-                ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
-                : null;
-
             var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
                 ? value.commits[0].Sha
                 : repo.Commit;
 
-            var commitUrl = commit != null ? $"https://github.com/{repo.Owner}/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
-            var contentUrl = $"https://github.com/{repo.Owner}/{repo.Name}/blob/{branch}/{pathToRepo}";
+            return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
 
-            return (editUrl, contentUrl, commitUrl);
+            string GetCommitUrl()
+            {
+                switch (repo.Host)
+                {
+                    case GitHost.GitHub:
+                        return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
+                    default:
+                        throw new NotSupportedException($"{repo.Host}");
+                }
+            }
+
+            string GetContentUrl()
+            {
+                switch (repo.Host)
+                {
+                    case GitHost.GitHub:
+                        return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
+                    default:
+                        throw new NotSupportedException($"{repo.Host}");
+                }
+            }
+
+            string GetEditUrl()
+            {
+                // git edit url, only works for github repo
+                var editRepo = Repository.CreateFromRemote(document.Docset.Config.Contribution.Repository) ?? repo;
+
+                var editRemote = LocConfigConvention.GetLocRepository(editRepo.Remote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
+                if (editRepo.Host == GitHost.GitHub)
+                {
+                    return document.Docset.Config.Contribution.ShowEdit
+                    ? $"{editRemote}/blob/{editRepo.Branch}/{pathToRepo}"
+                    : null;
+                }
+
+                return null;
+            }
         }
 
         private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
@@ -147,14 +181,14 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.RepositoryPath, PathUtility.PathComparison);
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)), isDocsetRepo);
+            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.Path, PathUtility.PathComparison);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)), isDocsetRepo);
         }
 
         private Repository GetRepository(string path)
         {
             if (GitUtility.IsRepo(path))
-                return Repository.Create(path);
+                return Repository.CreateFromFolder(path);
 
             var parent = path.Substring(0, path.LastIndexOf("/"));
             return Directory.Exists(parent)
@@ -181,7 +215,7 @@ namespace Microsoft.Docs.Build
                     var pathToDocset = group.Select(pair => pair.file.FilePath).ToList();
                     var pathToRepo = group.Select(pair => pair.pathToRepo).ToList();
                     var repo = group.Key;
-                    var repoPath = repo.RepositoryPath;
+                    var repoPath = repo.Path;
                     var (commitsByFile, allCommits) = GitUtility.GetCommits(repoPath, pathToRepo);
                     for (var i = 0; i < pathToDocset.Count; i++)
                     {

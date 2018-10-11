@@ -1,67 +1,67 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        private static readonly Regex s_gitHubRepoUrlRegex =
-            new Regex(
-                @"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+        public GitHost Host { get; private set; }
 
-        public GitHost Host { get; }
+        public string Remote { get; private set; }
 
-        public string Owner { get; }
+        public string Branch { get; private set; }
 
-        public string Name { get; }
+        public string Commit { get; private set; }
 
-        public string FullName => $"{Owner}/{Name}";
+        public string Path { get; private set; }
 
-        public string Branch { get; }
-
-        public string Commit { get; }
-
-        public string RepositoryPath { get; }
-
-        private Repository(string path)
+        private Repository(GitHost host, string remote, string branch, string commit = null, string path = null)
         {
-            Debug.Assert(GitUtility.IsRepo(path));
-            Debug.Assert(Path.IsPathRooted(path));
-
-            var (host, account, repository) = default((GitHost, string, string));
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(path);
-
-            // TODO: support VSTS, or others
-            if (!string.IsNullOrEmpty(remote))
-            {
-                var match = s_gitHubRepoUrlRegex.Match(remote);
-                if (match.Success)
-                {
-                    account = match.Groups["account"].Value;
-                    repository = match.Groups["repository"].Value;
-                    host = GitHost.GitHub;
-                }
-            }
-
             Host = host;
-            Owner = account;
-            Name = repository;
-            Branch = branch;
+            Remote = remote ?? throw new ArgumentNullException(nameof(remote));
+            Branch = branch ?? "master";
             Commit = commit;
-            RepositoryPath = PathUtility.NormalizeFolder(path);
+            Path = path;
         }
 
-        public static Repository Create(string path)
+        public static Repository CreateFromFolder(string path)
         {
-            Debug.Assert(Path.IsPathRooted(path));
+            Debug.Assert(!string.IsNullOrEmpty(path));
 
             var repoPath = GitUtility.FindRepo(path);
-            return repoPath != null ? new Repository(repoPath) : null;
+
+            if (repoPath == null)
+                return null;
+
+            var (remote, branch, commit) = GitUtility.GetRepoInfo(repoPath);
+            if (GitHostUtility.TryParse(remote, out var githost))
+            {
+                var gitIndex = remote.IndexOf(".git");
+                if (gitIndex >= 0)
+                {
+                    remote = remote.Remove(gitIndex);
+                }
+                return new Repository(githost, remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
+            }
+
+            return null;
+        }
+
+        public static Repository CreateFromRemote(string remote)
+        {
+            if (string.IsNullOrEmpty(remote))
+                return null;
+
+            if (GitHostUtility.TryParse(remote, out var gitHost))
+            {
+                var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
+                return new Repository(gitHost, url, branch);
+            }
+
+            return null;
         }
     }
 }

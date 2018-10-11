@@ -11,40 +11,41 @@ namespace Microsoft.Docs.Build
         private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// The eidt repo name for loc follows below conventions:
-        /// source name                         -->     loc name
-        /// {org}/{repo-name}                   -->     {org}/{repo-name}.{locale}
-        /// {org}/{repo-name}.{source-locale}   -->     {org}/{repo-name}.{loc-locale}
+        /// The loc repo name follows below conventions:
+        /// source remote                                           -->     loc remote
+        /// https:://github.com/{org}/{repo-name}                   -->     https:://github.com/{org}/{repo-name}.{locale}
+        /// https:://github.com/{org}/{repo-name}.{source-locale}   -->     https:://github.com/{org}/{repo-name}.{loc-locale}
+        /// // TODO: org name can be different
         /// </summary>
-        /// <param name="repository">The origin repo name</param>
-        /// <param name="locale">The current build locale</param>
-        /// <returns>The repo name with locale</returns>
-        public static string GetEditRepository(string repository, string locale, string defaultLocale)
+        /// <returns>The loc remote url</returns>
+        public static string GetLocRepository(string remote, string locale, string defaultLocale)
         {
             if (string.Equals(locale, defaultLocale, System.StringComparison.OrdinalIgnoreCase))
             {
-                return repository;
+                return remote;
             }
 
-            if (string.IsNullOrEmpty(repository))
+            if (string.IsNullOrEmpty(remote))
             {
-                return repository;
+                return remote;
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return repository;
+                return remote;
             }
 
-            var repoName = repository.Split(new[] { '/', '\\' }).Last();
+            var newLocale = $".{locale}";
+            var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return repository.Replace(originLocale, $".{locale}");
+                return remote.Replace(originLocale, newLocale);
             }
 
-            return $"{repository}.{locale}";
+            return $"{remote}{newLocale}";
         }
+
     }
 }
