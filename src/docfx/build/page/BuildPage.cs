@@ -172,8 +172,10 @@ namespace Microsoft.Docs.Build
 
             return (errors, schema, model, metadata);
 
-            object TransformContent(DataTypeAttribute attribute, object value, string jsonPath)
+            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
+                var attribute = XrefMap.GetNonXrefPropertyAttribute(attributes, jsonPath);
+
                 if (attribute is HrefAttribute)
                 {
                     return GetLink((string)value, file, file);
