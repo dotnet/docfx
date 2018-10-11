@@ -31,6 +31,12 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "sourceBasePath": {
+          "type": "string"
+        },
+        "siteBasePath": {
+          "type": "string"
+        },
         "depotMappings": {
           "type": "object",
           "additionalProperties": {
@@ -143,15 +149,6 @@
         }
       }
     },
-    "LegacyConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "needGeneratePdfUrlTemplate": {
-          "type": "boolean"
-        }
-      }
-    },
     "OutputConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -205,14 +202,8 @@
       "$ref": "#/definitions/OutputConfig"
     },
     "globalMetadata": {},
-    "sourceBasePath": {
-      "type": "string"
-    },
-    "siteBasePath": {
-      "type": "string"
-    },
-    "legacyConfig": {
-      "$ref": "#/definitions/LegacyConfig"
+    "showPdfUrlTemplate": {
+      "type": "boolean"
     },
     "baseUrl": {
       "type": "string"
