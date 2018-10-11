@@ -46,6 +46,5 @@ namespace Microsoft.Docs.Build
 
             return $"{remote}{newLocale}";
         }
-
     }
 }

@@ -46,10 +46,8 @@ namespace Microsoft.Docs.Build
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
-            var githubOwner = string.Empty;
-            var githubRepoName = string.Empty;
 
-            var resolveGitHubUsers = document.Docset.Config.GitHub.ResolveUsers && GithubUtility.TryParse(repo?.Remote, out githubOwner, out githubRepoName);
+            var resolveGitHubUsers = GithubUtility.TryParse(repo?.Remote, out var githubOwner, out var githubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
             if (commits != null)

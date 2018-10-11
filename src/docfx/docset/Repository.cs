@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             Remote = remote ?? throw new ArgumentNullException(nameof(remote));
             Branch = branch ?? "master";
             Commit = commit ?? throw new ArgumentNullException(nameof(commit));
-            Path = path ??  throw new ArgumentNullException(nameof(path));
+            Path = path ?? throw new ArgumentNullException(nameof(path));
         }
 
         public static Repository CreateFromFolder(string path)
