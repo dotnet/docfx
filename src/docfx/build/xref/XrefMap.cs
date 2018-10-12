@@ -54,18 +54,6 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        public static DataTypeAttribute GetNonXrefPropertyAttribute(IEnumerable<DataTypeAttribute> attributes, string jsonPath)
-        {
-            try
-            {
-                return attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-            }
-            catch (InvalidOperationException)
-            {
-                throw Errors.InvalidMultipleAttributes(jsonPath).ToException();
-            }
-        }
-
         private static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
             ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<XrefSpec>>();
@@ -184,7 +172,7 @@ namespace Microsoft.Docs.Build
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 string result = (string)value;
-                var attribute = GetNonXrefPropertyAttribute(attributes, jsonPath);
+                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
                 if (attribute is MarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
