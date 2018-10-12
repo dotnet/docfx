@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(Config config, Func<string, Task> restoreChild, string token)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(Config config, Func<string, Task> restoreChild)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
             var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList()));
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreDependentRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await AddWorkTrees(restoreDir, hrefs, token);
+                var workTreeHeads = await AddWorkTrees(restoreDir, hrefs, config);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Restore dependent repo to local and create work tree
-        private static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs, string token)
+        private static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs, Config config)
         {
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
             var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
@@ -97,16 +97,22 @@ namespace Microsoft.Docs.Build
 
             Task FetchOrCloneRepo()
             {
+                var gitConfig = string.Join(
+                    ' ',
+                    config.Http.SelectMany(
+                        secret => secret.Value.Headers.Select(header =>
+                            $"-c http.{secret.Key}.extraheader=\"{header.Key}: {header.Value}\"")));
+
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
                     // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
-                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", token);
+                    return GitUtility.Fetch(restorePath, "+refs/heads/*:refs/heads/*", gitConfig);
                 }
                 else
                 {
                     // doesn't exist yet, clone this repo to a specified branch
-                    return GitUtility.Clone(restoreDir, url, restorePath, token: token, bare: true);
+                    return GitUtility.Clone(restoreDir, url, restorePath, gitConfig: gitConfig, bare: true);
                 }
             }
 

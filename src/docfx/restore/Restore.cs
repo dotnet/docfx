@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config);
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             // extend the config before loading
             var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
             ReportErrors(report, errors);
-            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild, config.Git.AuthToken);
+            var workTreeHeadMappings = await RestoreGit.Restore(extendedConfig, restoreChild);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config);
                 });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);

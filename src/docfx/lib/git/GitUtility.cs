@@ -79,28 +79,20 @@ namespace Microsoft.Docs.Build
         /// <param name="branch">The branch you want to clone</param>
         /// <param name="bare">Make the git repo bare</param>
         /// <returns>Task status</returns>
-        public static async Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false, string token = null)
+        public static async Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false, string gitConfig = null)
         {
             Directory.CreateDirectory(cwd);
 
             // clone with configuration core.longpaths turned-on
             // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
-                : $"clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+                ? $"{gitConfig} clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
+                : $"{gitConfig} clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             if (bare)
                 cmd += " --bare";
 
-            var remoteWithToken = EmbedToken(remote, token);
-
             await ExecuteNonQuery(cwd, cmd);
-
-            if (remoteWithToken != remote)
-            {
-                // reset url back without token
-                await SetRemoteGitUrl(Path.Combine(cwd, path), remote);
-            }
         }
 
         /// <summary>
@@ -108,9 +100,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
-        public static async Task Fetch(string cwd, string remote, string refSpec, string token = null)
+        public static async Task Fetch(string cwd, string refSpec, string gitConfig = null)
         {
-            await ExecuteNonQuery(cwd, $"fetch {EmbedToken(remote, token)} {refSpec}");
+            await ExecuteNonQuery(cwd, $"{gitConfig} fetch {refSpec}");
         }
 
         /// <summary>
@@ -172,24 +164,6 @@ namespace Microsoft.Docs.Build
                 throw Errors.MergeConflict(file).ToException();
             }
         }
-
-        internal static string EmbedToken(string remote, string token)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return remote;
-            }
-
-            var i = remote.IndexOf("://");
-
-            return i >= 0 ? remote.Substring(0, i + 3) + token + '@' + remote.Substring(i + 3)
-                          : remote;
-        }
-
-        private static Task SetRemoteGitUrl(string cwd, string url, string remoteName = null)
-            => ExecuteNonQuery(cwd, $"remote set-url {remoteName ?? "origin"} {url}");
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
             => Execute(cwd, commandLineArgs, x => x, redirectOutput: false);

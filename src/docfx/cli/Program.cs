@@ -87,7 +87,6 @@ namespace Microsoft.Docs.Build
                 // Restore command
                 // usage: docfx restore [docset] [--git-token token] [--locale locale]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                syntax.DefineOption("git-token", ref options.GitToken, "The git token used to restore dependency repositories");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
