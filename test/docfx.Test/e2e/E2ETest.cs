@@ -80,18 +80,35 @@ namespace Microsoft.Docs.Build
 
         private static TheoryData<string> FindTestSpecs()
         {
-            var result = new TheoryData<string>();
+            var specNames = new List<(string, bool only)>();
             foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
             {
                 var i = 0;
-                foreach (var header in FindTestSpecHeadersInFile(file))
+                var content = File.ReadAllText(file);
+                var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var section in sections)
                 {
+                    var yaml = section.Trim('\r', '\n', '-');
+                    var header = YamlUtility.ReadHeader(yaml) ?? "";
                     if (string.IsNullOrEmpty(header))
                     {
                         i++;
                         continue;
                     }
-                    result.Add($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}");
+
+                    var only = header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase);
+                    specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
+                }
+            }
+
+            var hasOnly = specNames.Any(spec => spec.only);
+            var result = new TheoryData<string>();
+            foreach (var (name, only) in specNames)
+            {
+                if (!hasOnly || only)
+                {
+                    result.Add(name);
                 }
             }
             return result;
@@ -160,17 +177,6 @@ namespace Microsoft.Docs.Build
             }
 
             Directory.Delete(targetDir, false);
-        }
-
-        private static IEnumerable<string> FindTestSpecHeadersInFile(string path)
-        {
-            var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var section in sections)
-            {
-                var yaml = section.Trim('\r', '\n', '-');
-                yield return YamlUtility.ReadHeader(yaml) ?? "";
-            }
         }
 
         private static void VerifyFile(string file, string content)
