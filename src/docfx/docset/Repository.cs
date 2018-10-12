@@ -1,84 +1,45 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        private static readonly Regex s_gitHubRepoUrlRegex =
-            new Regex(
-                @"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+        public string Remote { get; private set; }
 
-        public GitHost Host { get; }
+        public string Branch { get; private set; }
 
-        public string Owner { get; }
+        public string Commit { get; private set; }
 
-        public string Name { get; }
+        public string Path { get; private set; }
 
-        public string FullName => $"{Owner}/{Name}";
-
-        public string Branch { get; }
-
-        public string Commit { get; }
-
-        public string RepositoryPath { get; }
-
-        private Repository(GitHost host, string account, string repository, string branch, string commit, string path)
+        private Repository(string remote, string branch, string commit, string path)
         {
-            Host = host;
-            Owner = account;
-            Name = repository;
+            Remote = remote ?? throw new ArgumentNullException(nameof(remote));
             Branch = branch ?? "master";
-            Commit = commit;
-            RepositoryPath = PathUtility.NormalizeFolder(path);
+            Commit = commit ?? throw new ArgumentNullException(nameof(commit));
+            Path = path ?? throw new ArgumentNullException(nameof(path));
         }
 
-        public Repository With(string owner, string name, string branch = null)
+        public static Repository CreateFromFolder(string path)
         {
-            return new Repository(Host, owner ?? Owner, name ?? Name, branch ?? Branch, Commit, RepositoryPath);
-        }
-
-        public string GetRemoteWithBranch()
-        {
-            switch (Host)
-            {
-                case GitHost.GitHub:
-                    return $"https://github.com/{Owner}/{Name}#{Branch}";
-                default:
-                    throw new System.NotSupportedException($"{Host} is not supported yet");
-            }
-        }
-
-        public static Repository Create(string path)
-        {
-            Debug.Assert(Path.IsPathRooted(path));
+            Debug.Assert(!string.IsNullOrEmpty(path));
 
             var repoPath = GitUtility.FindRepo(path);
 
             if (repoPath == null)
                 return null;
 
-            var (host, account, repository) = default((GitHost, string, string));
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(path);
-
-            // TODO: support VSTS, or others
-            if (!string.IsNullOrEmpty(remote))
+            var (remote, branch, commit) = GitUtility.GetRepoInfo(repoPath);
+            var gitIndex = remote.IndexOf(".git");
+            if (gitIndex >= 0)
             {
-                var match = s_gitHubRepoUrlRegex.Match(remote);
-                if (match.Success)
-                {
-                    account = match.Groups["account"].Value;
-                    repository = match.Groups["repository"].Value;
-                    host = GitHost.GitHub;
-                }
+                remote = remote.Remove(gitIndex);
             }
-
-            return new Repository(host, account, repository, branch, commit, repoPath);
+            return new Repository(remote, branch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }

@@ -19,19 +19,9 @@ namespace Microsoft.Docs.Build
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
 
-            // restore dependency repositories
-            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
-
-            // restore loc repository
-            var (locRestoreDir, locRepoHref) = GetLocRestoreItem();
-            if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
-            {
-                restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
-            }
-
             // process git restore items
             await ParallelUtility.ForEach(
-               restoreItems,
+               GetRestoreItems(),
                async restoreItem =>
                {
                    var (restoreDir, hrefs) = restoreItem;
@@ -58,6 +48,21 @@ namespace Microsoft.Docs.Build
                 return workTreeHeads;
             }
 
+            List<(string restoreDir, List<string> hrefs)> GetRestoreItems()
+            {
+                // restore dependency repositories
+                var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+
+                // restore loc repository
+                var (locRestoreDir, locRepoHref) = GetLocRestoreItem();
+                if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
+                {
+                    restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
+                }
+
+                return restoreItems;
+            }
+
             (string locRestoreDir, string href) GetLocRestoreItem()
             {
                 // restore loc repository
@@ -76,14 +81,14 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var repo = Repository.Create(Path.GetFullPath(docsetPath));
+                var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
                 if (repo == null)
                 {
                     return default;
                 }
 
-                var (locOwner, locRepoName) = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.Owner, repo.Name, locale, config.DefaultLocale);
-                var locRepoUrl = repo.With(locOwner, locRepoName).GetRemoteWithBranch();
+                var (locRemote, _) = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.Remote, locale, config.DefaultLocale);
+                var locRepoUrl = $"{locRemote}#{repo.Branch}";
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
             }

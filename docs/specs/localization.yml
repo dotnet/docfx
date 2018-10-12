@@ -28,28 +28,42 @@ restores:
 outputs:
   build.manifest:
 ---
-# loc config convention without source locale
+# [repository mapping] loc config convention without source locale
 commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
     contribution:
-      repository: dotnet/docfx
+      repository: https://github.com/dotnet/docfx
   docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.zh-cn*"}
   build.manifest:
 ---
-# loc config convention with source locale
+# [repository mapping] loc config convention with source locale
 commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
     contribution:
-      repository: dotnet/docfx.en-us
+      repository: https://github.com/dotnet/docfx.en-us
   docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.zh-cn*"}
+  build.manifest:
+---
+# [repository + folder mapping] loc config convention with source locale
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/dotnet/docfx.en-us
+    locMappingType: RepositoryAndFolder
+  docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
   build.manifest:

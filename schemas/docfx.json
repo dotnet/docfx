@@ -13,9 +13,6 @@
         "repository": {
           "type": "string"
         },
-        "branch": {
-          "type": "string"
-        },
         "gitCommitsTime": {
           "type": "string"
         },
