@@ -99,9 +99,10 @@ namespace Microsoft.Docs.Build
             {
                 var gitConfig = string.Join(
                     ' ',
-                    config.Http.SelectMany(
-                        secret => secret.Value.Headers.Select(header =>
-                            $"-c http.{secret.Key}.extraheader=\"{header.Key}: {header.Value}\"")));
+                    from http in config.Http
+                    where url.StartsWith(http.Key)
+                    from header in http.Value.Headers
+                    select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"");
 
                 if (GitUtility.IsRepo(restoreDir))
                 {
