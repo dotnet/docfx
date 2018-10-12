@@ -86,8 +86,8 @@ namespace Microsoft.Docs.Build
             // clone with configuration core.longpaths turned-on
             // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"{gitConfig} clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
-                : $"{gitConfig} clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+                ? $"clone {gitConfig} -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
+                : $"clone {gitConfig} -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             if (bare)
                 cmd += " --bare";
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Task status</returns>
         public static async Task Fetch(string cwd, string refSpec, string gitConfig = null)
         {
-            await ExecuteNonQuery(cwd, $"{gitConfig} fetch {refSpec}");
+            await ExecuteNonQuery(cwd, $"fetch {gitConfig} {refSpec}");
         }
 
         /// <summary>

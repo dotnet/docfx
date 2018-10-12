@@ -69,15 +69,6 @@
         }
       }
     },
-    "GitConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "authToken": {
-          "type": "string"
-        }
-      }
-    },
     "GitHubConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -123,21 +114,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "secrets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/HttpSecretConfig"
-          }
-        }
-      }
-    },
-    "HttpSecretConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "baseUrl": {
-          "type": "string"
-        },
         "query": {
           "type": "string"
         },
@@ -269,13 +245,13 @@
       }
     },
     "http": {
-      "$ref": "#/definitions/HttpConfig"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/HttpConfig"
+      }
     },
     "gitHub": {
       "$ref": "#/definitions/GitHubConfig"
-    },
-    "git": {
-      "$ref": "#/definitions/GitConfig"
     },
     "warningsAsErrors": {
       "type": "boolean"
