@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 {
                     // already exists, just pull the new updates from remote
                     // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
-                    return GitUtility.Fetch(restorePath, "+refs/heads/*:refs/heads/*", gitConfig);
+                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", gitConfig);
                 }
                 else
                 {

@@ -100,9 +100,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
-        public static async Task Fetch(string cwd, string refSpec, string gitConfig = null)
+        public static async Task Fetch(string cwd, string remote, string refSpec, string gitConfig = null)
         {
-            await ExecuteNonQuery(cwd, $"fetch {gitConfig} {refSpec}");
+            await ExecuteNonQuery(cwd, $"fetch {gitConfig} {remote} {refSpec}");
         }
 
         /// <summary>
