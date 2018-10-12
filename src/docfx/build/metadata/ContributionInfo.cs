@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var githubOwner, out var githubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
+            var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
             if (commits != null)
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, githubOwner, githubRepoName, commit.Sha);
+                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                     if (error != null)
                         errors.Add(error);
 

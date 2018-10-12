@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class GithubUtilityTest
+    public class GitHubUtilityTest
     {
         [Theory]
         [InlineData("http://github.com/", false,null, null)]
