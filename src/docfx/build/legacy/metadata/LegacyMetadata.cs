@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
 
             rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
-            if (docset.Config.ShowPdfUrlTemplate)
+            if (docset.Config.Output.Pdf)
             {
                 rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
             }

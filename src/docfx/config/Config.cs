@@ -46,12 +46,6 @@ namespace Microsoft.Docs.Build
         public readonly JObject GlobalMetadata = new JObject();
 
         /// <summary>
-        /// For backward compatibility, whether generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion
-        /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
-        /// </summary>
-        public readonly bool ShowPdfUrlTemplate = true;
-
-        /// <summary>
         /// The hostname
         /// </summary>
         public readonly string BaseUrl = string.Empty;

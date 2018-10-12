@@ -159,6 +159,9 @@
         "json": {
           "type": "boolean"
         },
+        "pdf": {
+          "type": "boolean"
+        },
         "uglifyUrl": {
           "type": "boolean"
         },
@@ -202,9 +205,6 @@
       "$ref": "#/definitions/OutputConfig"
     },
     "globalMetadata": {},
-    "showPdfUrlTemplate": {
-      "type": "boolean"
-    },
     "baseUrl": {
       "type": "string"
     },
