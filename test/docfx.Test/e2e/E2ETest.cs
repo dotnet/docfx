@@ -96,8 +96,11 @@ namespace Microsoft.Docs.Build
                         i++;
                         continue;
                     }
-
+#if DEBUG
                     var only = header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase);
+#else
+                    var only = false;
+#endif
                     specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
                 }
             }
