@@ -220,8 +220,7 @@ inputs:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
-      repository: test-org/test-repo
-      branch: contribution
+      repository: https://github.com/test-org/test-repo#contribution
 outputs:
   README.json: |
     {

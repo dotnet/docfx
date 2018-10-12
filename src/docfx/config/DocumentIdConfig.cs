@@ -9,14 +9,16 @@ namespace Microsoft.Docs.Build
     internal sealed class DocumentIdConfig
     {
         /// <summary>
-        /// The source base folder path, used by docs.com, for backward compatibility
+        /// For backward compatibility, the source path prefix
+        /// Used for resolving docId in <see cref="Document.LoadDocumentId()"/>
         /// </summary>
-        public string SourceBasePath = ".";
+        public readonly string SourceBasePath = ".";
 
         /// <summary>
-        /// The site base path, used by docs.com, for backward compatibility
+        /// For backward compatibility, the output site path prefix
+        /// Used for resolving versionIndependentId in <see cref="Document.LoadDocumentId()"/>
         /// </summary>
-        public string SiteBasePath = ".";
+        public readonly string SiteBasePath = ".";
 
         /// <summary>
         /// The mappings between depot and files/directory
