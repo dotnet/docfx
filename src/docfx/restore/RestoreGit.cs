@@ -97,12 +97,13 @@ namespace Microsoft.Docs.Build
 
             Task FetchOrCloneRepo()
             {
-                var gitConfig = string.Join(
-                    ' ',
+                var gitConfigs =
                     from http in config.Http
                     where url.StartsWith(http.Key)
                     from header in http.Value.Headers
-                    select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"");
+                    select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"";
+
+                var gitConfig = string.Join(' ', gitConfigs);
 
                 if (GitUtility.IsRepo(restoreDir))
                 {
