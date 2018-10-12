@@ -294,7 +294,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             try
                             {
-                                currentBuildInfo.IsValid = Logger.WarningCount < Logger.WarningThrottling;
+                                if (Logger.WarningCount >= Logger.WarningThrottling)
+                                {
+                                    currentBuildInfo.IsValid = false;
+                                    currentBuildInfo.Message = $"Warning count {Logger.WarningCount} exceeds throttling {Logger.WarningThrottling}";
+                                }
                                 currentBuildInfo.Save(_intermediateFolder);
                                 if (_cleanupCacheHistory)
                                 {
