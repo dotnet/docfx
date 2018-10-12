@@ -19,15 +19,11 @@ namespace Microsoft.Docs.Build
         public readonly bool ShowEdit = true;
 
         /// <summary>
-        /// Specify the repository for contribution. For GitHub, it is `account/name`.
+        /// Specify the repository url for contribution:
+        /// <protocol>://<hostname>[:<port>][:][/]<path>[#<branch>]
         /// Fallback to git origin if not set.
         /// </summary>
         public readonly string Repository;
-
-        /// <summary>
-        /// Specify the which branch edit link goes to. Fallback to the current branch if not set.
-        /// </summary>
-        public readonly string Branch;
 
         /// <summary>
         /// The address of commit time history file, which contains the time each commit being pushed.
