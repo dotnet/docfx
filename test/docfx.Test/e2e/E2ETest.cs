@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 var yaml = section.Trim('\r', '\n', '-');
                 var header = YamlUtility.ReadHeader(yaml) ?? "";
 #if DEBUG
-                if (header.Contains("ONLY"))
+                if (header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase))
                 {
                     only = true;
                 }
