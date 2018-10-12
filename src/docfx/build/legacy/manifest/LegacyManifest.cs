@@ -101,13 +101,13 @@ namespace Microsoft.Docs.Build
                     },
                     files = convertedItems.Select(f => f.manifestItem),
                     is_already_processed = true,
-                    source_base_path = docset.Config.SourceBasePath,
+                    source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
 
                     // todo: items to publish
                     // todo: type_mapping
                 },
-                Path.Combine(docset.Config.SiteBasePath, ".manifest.json"));
+                Path.Combine(docset.Config.DocumentId.SiteBasePath, ".manifest.json"));
 
                 return convertedItems.ToList();
             }
