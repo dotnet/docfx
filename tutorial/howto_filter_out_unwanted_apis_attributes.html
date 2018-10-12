@@ -8,7 +8,7 @@
     <title>How-to: Filter Out Unwanted APIs or Attributes | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes | DocFX website ">
-    <meta name="generator" content="docfx 2.39.2.0">
+    <meta name="generator" content="docfx 2.40.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -147,6 +147,9 @@ If no rule is matched the API would be included by default.</p>
 <h5>Note</h5>
 <p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
 <p><code>Namespace</code> is flattened. Namely, excluding namespace 'A.B' has nothing to do with namespace 'A.B.C'.</p>
+</div>
+<div class="IMPORTANT">
+<h5>Important</h5>
 <p>If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 If a type is excluded, all members defined in the type would also be excluded.</p>
 </div>
@@ -158,11 +161,11 @@ If a type is excluded, all members defined in the type would also be excluded.</
 </code></pre>
 <h4 id="3-exclude-or-include-apis-by-containing-matched-attributes">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
 <p>You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
-<blockquote>
-<p><em>Note</em></p>
+<div class="NOTE">
+<h5>Note</h5>
 <p><code>ctorArguments</code> requires a full match of the attribute's constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
 Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments.</p>
-</blockquote>
+</div>
 <p>The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
 <pre><code>  - exclude:
       hasAttribute:

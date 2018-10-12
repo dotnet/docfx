@@ -8,7 +8,7 @@
     <title>How-to: Create A Custom Template | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Create A Custom Template | DocFX website ">
-    <meta name="generator" content="docfx 2.39.2.0">
+    <meta name="generator" content="docfx 2.40.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -92,7 +92,7 @@
 <p>You may notice that DocFX reports a warning message saying that: <em>Warning: [Build Document.Apply Templates]There is no template processing document type(s): Toc</em>. It is because our custom template only specifies how to handle document with type <code>conceptual</code>.</p>
 <p>To test the output of the template, create a simple documentation project following <a href="walkthrough/walkthrough_create_a_docfx_project.html">Walkthrough Part I</a> or download the <a href="walkthrough/artifacts/walkthrough1.zip">zipped documentation project</a> directly.</p>
 <p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>. The <code>-t</code> command option specifies the template name(s) used by the current build.</p>
-<p>Open <a href="http://localhost:8080">http://localhost:8080</a> and you can see a simple web page as follows:</p>
+<p>Open http://localhost:8080 and you can see a simple web page as follows:</p>
 <p><img src="images/simple_web_page.png" alt="Simple Web Page"></p>
 <h2 id="add-preprocessor-file">Add <em>Preprocessor</em> file</h2>
 <h3 id="step-3-add-preprocessor-file">Step 3. Add <em>Preprocessor</em> file</h3>
@@ -108,7 +108,7 @@
 {{{conceptual}}}
 </code></pre>
 <p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>.</p>
-<p>Open <a href="http://localhost:8080">http://localhost:8080</a> and you can see <code>_extra_property</code> is added to the web page.</p>
+<p>Open http://localhost:8080 and you can see <code>_extra_property</code> is added to the web page.</p>
 <p><img src="images/web_page_with_extra_property.png" alt="Updated Web Page"></p>
 <h2 id="merge-template-with-default-template">Merge template with <code>default</code> template</h2>
 <p>DocFX contains some embedded template resources that you can refer to directly. You can use <code>docfx template list</code> to list available templates provided by DocFX.</p>
@@ -127,7 +127,7 @@
 </code></pre>
 <p>In the documentation project, run <code>docfx build docfx.json -t default,c:/docfx_howto/simple_template --serve</code>.</p>
 <p>Now the warning message <em>There is no template processing document type(s): Toc</em> disappears because the default template contains <em>Renderer</em> to handle TOC files.</p>
-<p>Open <a href="http://localhost:8080/toc.html">http://localhost:8080/toc.html</a> and you can see a toc web page.
+<p>Open http://localhost:8080/toc.html and you can see a toc web page.
 <img src="images/toc_web_page.png" alt="TOC Web Page"></p>
 <div class="TIP">
 <h5>Tip</h5>
