@@ -156,6 +156,9 @@
         "json": {
           "type": "boolean"
         },
+        "pdf": {
+          "type": "boolean"
+        },
         "uglifyUrl": {
           "type": "boolean"
         },
@@ -199,15 +202,6 @@
       "$ref": "#/definitions/OutputConfig"
     },
     "globalMetadata": {},
-    "siteBasePath": {
-      "type": "string"
-    },
-    "sourceBasePath": {
-      "type": "string"
-    },
-    "needGeneratePdfUrlTemplate": {
-      "type": "boolean"
-    },
     "baseUrl": {
       "type": "string"
     },
