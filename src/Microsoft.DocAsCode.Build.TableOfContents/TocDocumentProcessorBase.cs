@@ -43,7 +43,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             return new FileModel(file, toc)
             {
-                Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
                 LocalPathFromRoot = displayLocalPath
             };
         }

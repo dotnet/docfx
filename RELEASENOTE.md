@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.39.2)
+Version Notes (Current Version: v2.40)
 =======================================
+
+v2.40
+-----------
+1. Upgrade Markdig to 0.15.4
 
 v2.39.2
 -----------
