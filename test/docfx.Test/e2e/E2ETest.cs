@@ -17,13 +17,13 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
-        public static readonly TheoryData<string, int> Specs = FindTestSpecs();
+        public static readonly TheoryData<string> Specs = FindTestSpecs();
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task Run(string name, int ordinal)
+        public static async Task Run(string name)
         {
-            var (docsetPath, spec) = await CreateDocset(name, ordinal);
+            var (docsetPath, spec) = await CreateDocset(name);
             var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                 os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
@@ -78,49 +78,57 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TheoryData<string, int> FindTestSpecs()
+        private static TheoryData<string> FindTestSpecs()
         {
-            var specNames = new List<(string, int, bool only)>();
+            var specNames = new List<(string, bool only)>();
             foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
             {
                 var i = 0;
-                foreach (var (header, only) in FindTestSpecHeadersInFile(file))
+                var content = File.ReadAllText(file);
+                var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var section in sections)
                 {
+                    var yaml = section.Trim('\r', '\n', '-');
+                    var header = YamlUtility.ReadHeader(yaml) ?? "";
                     if (string.IsNullOrEmpty(header))
                     {
                         i++;
                         continue;
                     }
-
-                    var name = $"{i + 1:D2}. {header}";
-                    var folder = Path.Combine(
-                        file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
-                        name).Replace("\\", "/");
-
-                    specNames.Add((folder, i++, only));
+#if DEBUG
+                    var only = header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase);
+#else
+                    var only = false;
+#endif
+                    specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
                 }
             }
 
             var hasOnly = specNames.Any(spec => spec.only);
-            var result = new TheoryData<string, int>();
-            foreach (var (name, i, only) in specNames)
+            var result = new TheoryData<string>();
+            foreach (var (name, only) in specNames)
             {
                 if (!hasOnly || only)
                 {
-                    result.Add(name, i);
+                    result.Add(name);
                 }
             }
             return result;
         }
 
-        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName, int ordinal)
+        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName)
         {
-            var i = specName.LastIndexOf('/');
-            var specPath = specName.Substring(0, i) + ".yml";
+            var match = Regex.Match(specName, "^(.+?)/(\\d+). (.*)");
+            var specPath = match.Groups[1].Value + ".yml";
+            var ordinal = int.Parse(match.Groups[2].Value);
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
+
+            Assert.StartsWith($"# {match.Groups[3].Value}", yaml);
+
             var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
-            var docsetPath = Path.Combine("specs-drop", specName.Replace("<", "").Replace(">", ""));
+            var docsetPath = Path.Combine("specs-drop", ToSafePathString(specName));
 
             if (Directory.Exists(docsetPath))
             {
@@ -145,6 +153,16 @@ namespace Microsoft.Docs.Build
             return (docsetPath, spec);
         }
 
+        private static string ToSafePathString(string value)
+        {
+            foreach (var ch in Path.GetInvalidPathChars())
+            {
+                value = value.Replace(ch, ' ');
+            }
+
+            return value.Replace('/', ' ').Replace('\\', ' ').Replace("<", "").Replace(">", "");
+        }
+
         private static void DeleteDirectory(string targetDir)
         {
             string[] files = Directory.GetFiles(targetDir);
@@ -162,30 +180,6 @@ namespace Microsoft.Docs.Build
             }
 
             Directory.Delete(targetDir, false);
-        }
-
-        private static IEnumerable<(string, bool only)> FindTestSpecHeadersInFile(string path)
-        {
-            var content = File.ReadAllText(path);
-            var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var section in sections)
-            {
-                var only = false;
-                var yaml = section.Trim('\r', '\n', '-');
-                var header = YamlUtility.ReadHeader(yaml) ?? "";
-#if DEBUG
-                if (header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase))
-                {
-                    only = true;
-                }
-#endif
-                foreach (var ch in Path.GetInvalidPathChars())
-                {
-                    header = header.Replace(ch, ' ');
-                }
-                yield return (header.Replace('/', ' ').Replace('\\', ' '), only);
-            }
         }
 
         private static void VerifyFile(string file, string content)
