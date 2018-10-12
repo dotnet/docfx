@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class GithubUtility
+    internal static class GitHubUtility
     {
         private static readonly Regex s_gitHubRepoUrlRegex =
            new Regex(

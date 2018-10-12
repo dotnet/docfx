@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/org/name#branch", true, "org", "name")]
         public static void ParseGithubRemote(string remote, bool parsed, string expectedOwner, string expectedName)
         {
-            if (GithubUtility.TryParse(remote, out var owner, out var name))
+            if (GitHubUtility.TryParse(remote, out var owner, out var name))
             {
                 Assert.True(parsed);
                 Assert.Equal(expectedOwner, owner);

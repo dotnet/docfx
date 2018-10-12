@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
-            var resolveGitHubUsers = GithubUtility.TryParse(repo?.Remote, out var githubOwner, out var githubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
+            var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var githubOwner, out var githubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
             if (commits != null)
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var repoHost = GithubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
+            var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
                 ? value.commits[0].Sha
                 : repo.Commit;
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
                 var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
                 editRemote = LocConfigConvention.GetLocRepository(editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
 
-                if (GithubUtility.TryParse(editRemote, out _, out _))
+                if (GitHubUtility.TryParse(editRemote, out _, out _))
                 {
                     return document.Docset.Config.Contribution.ShowEdit
                     ? $"{editRemote}/blob/{eidtBranch}/{pathToRepo}"
