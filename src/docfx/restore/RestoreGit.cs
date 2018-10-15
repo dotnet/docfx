@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                if (config.LocMappingType != LocMappingType.Repository && config.LocMappingType != LocMappingType.RepositoryAndFolder)
+                if (config.LocalizationMapping != LocalizationMapping.Repository && config.LocalizationMapping != LocalizationMapping.RepositoryAndFolder)
                 {
                     return default;
                 }
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var (locRemote, _) = LocConfigConvention.GetLocRepository(config.LocMappingType, repo.Remote, locale, config.DefaultLocale);
+                var (locRemote, _) = LocalizationConfig.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
                 var locRepoUrl = $"{locRemote}#{repo.Branch}";
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);

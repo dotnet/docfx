@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    public enum LocMappingType
+    public enum LocalizationMapping
     {
         /// <summary>
         /// loc files are stored in an **independent repository** per locale but keep the **same folder structure**

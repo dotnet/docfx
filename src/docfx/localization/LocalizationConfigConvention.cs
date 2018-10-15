@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LocConfigConvention
+    internal static class LocalizationConfig
     {
         private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
 
@@ -18,9 +18,9 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static (string remote, bool changed) GetLocRepository(LocMappingType locMappingType, string remote, string locale, string defaultLocale)
+        public static (string remote, bool changed) GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
         {
-            if (locMappingType != LocMappingType.Repository && locMappingType != LocMappingType.RepositoryAndFolder)
+            if (localizationMapping != LocalizationMapping.Repository && localizationMapping != LocalizationMapping.RepositoryAndFolder)
             {
                 return (remote, false);
             }
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return (remote, false);
             }
 
-            var newLocale = locMappingType == LocMappingType.Repository ? $".{locale}" : ".localization";
+            var newLocale = localizationMapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))

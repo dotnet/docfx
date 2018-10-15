@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The mapping between source files and loc files
         /// </summary>
-        public readonly LocMappingType LocMappingType;
+        public readonly LocalizationMapping LocalizationMapping;
 
         public IEnumerable<string> GetExternalReferences()
         {
