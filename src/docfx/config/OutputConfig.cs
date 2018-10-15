@@ -18,6 +18,13 @@ namespace Microsoft.Docs.Build
         public readonly bool Json = false;
 
         /// <summary>
+        /// For backward compatibility.
+        /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
+        /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
+        /// </summary>
+        public readonly bool Pdf = true;
+
+        /// <summary>
         /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
         ///  - Pretty url:      a.md --> a/index.html
         ///  - Ugly url:        a.md --> a.html

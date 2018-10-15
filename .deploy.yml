@@ -1,0 +1,21 @@
+trigger:
+- v3
+queue:
+  name: DocFX
+steps:
+- powershell: ./impact.ps1
+  env:
+    GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
+    SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
+  displayName: Impact Test
+
+- powershell: ./build.ps1
+  displayName: Build
+
+- task: NuGetCommand@2
+  displayName: Push to MyGet
+  inputs:
+    command: push
+    packagesToPush: drop/**/*.nupkg
+    nuGetFeedType: external
+    publishFeedCredentials: myget.docfx-v3
