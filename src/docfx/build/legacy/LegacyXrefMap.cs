@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
             {
                 writer.WriteLine("### YamlMime:XRefMap");
                 var serializer = new SerializerBuilder().Build();
-                serializer.Serialize(writer, new { references = xrefMap.InternalReferences });
+                serializer.Serialize(writer, new { sorted = true, references = xrefMap.InternalReferences });
             }
         }
     }
