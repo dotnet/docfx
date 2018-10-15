@@ -5,8 +5,7 @@ queue:
 steps:
 - powershell: ./impact.ps1
   env:
-    GITHUB_PAT: $(GitHubPAT)
-    DEVOPS_PAT: $(DevOpsPAT)
+    GITHUB_BASIC_AUTH: $(GitHubBasicAuth)
     SYSTEM_ACCESS_TOKEN: $(System.AccessToken)
   displayName: Impact Test
 

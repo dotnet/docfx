@@ -17,17 +17,14 @@ Write-Host "Use docfx at: $env:DOCFX_PATH"
 
 pushd D:/docfx-impact
 
-$DevOpsPATBase64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($env:DEVOPS_PAT)"))
-$env:DEVOPS_GIT_AUTH = "-c http.https://ceapex.visualstudio.com.extraheader=""AUTHORIZATION: basic $DevOpsPATBase64"""
-
-$GitHubPATBase64 = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("$($env:GITHUB_PAT)"))
-$env:GITHUB_GIT_AUTH = "-c http.https://github.com.extraheader=""AUTHORIZATION: basic $GitHubPATBase64"""
+$devopsAuth = "-c http.https://ceapex.visualstudio.com.extraheader=""AUTHORIZATION: bearer $env:SYSTEM_ACCESS_TOKEN"""
+$githubAuth = "-c http.https://github.com.extraheader=""AUTHORIZATION: basic $env:GITHUB_BASIC_AUTH"""
 
 exec "git init"
 git remote add origin https://ceapex.visualstudio.com/Engineering/_git/Docs.DocFX.Impact
-exec "git $env:GITHUB_GIT_AUTH $env:DEVOPS_GIT_AUTH fetch --progress"
+exec "git $devopsAuth $githubAuth fetch --progress"
 exec "git checkout origin/master --force --progress"
-exec "git $env:GITHUB_GIT_AUTH $env:DEVOPS_GIT_AUTH submodule update --init --progress"
+exec "git $devopsAuth $githubAuth submodule update --init --progress"
 
 exec "npm install"
 exec "npm run impact -- --push"
