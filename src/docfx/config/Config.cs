@@ -133,6 +133,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly string[] Xref = Array.Empty<string>();
 
+        /// <summary>
+        /// The mapping between source files and localized files
+        /// </summary>
+        public readonly LocalizationMapping LocalizationMapping;
+
         public IEnumerable<string> GetExternalReferences()
         {
             foreach (var url in Xref)

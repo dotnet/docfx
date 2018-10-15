@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var restoreDir = RestoreGit.GetRestoreRootDir(url);
             if (_restoreLock.Git.TryGetValue(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
             {
-                var result = RestoreGit.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                var result = RestoreWorkTree.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                 if (Directory.Exists(result))
                 {
                     return result;
