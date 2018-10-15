@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
 
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
-                var attribute = XrefMap.GetNonXrefPropertyAttribute(attributes, jsonPath);
+                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
 
                 if (attribute is HrefAttribute)
                 {

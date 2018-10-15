@@ -255,6 +255,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "localizationMapping": {
+      "type": "string",
+      "enum": [
+        "repository",
+        "folder",
+        "repositoryAndFolder"
+      ]
     }
   }
 }
