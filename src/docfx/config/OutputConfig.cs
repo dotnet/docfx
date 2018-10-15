@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
         /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
         /// </summary>
-        public readonly bool Pdf = true;
+        public readonly bool Pdf = false;
 
         /// <summary>
         /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
