@@ -231,37 +231,49 @@ namespace Microsoft.Docs.Build
         /// Opens a new <see cref="Document"/> based on the path relative to docset.
         /// </summary>
         /// <param name="docset">The current docset</param>
-        /// <param name="path">The path relative to docset root</param>
+        /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document TryCreateFromFile(Docset docset, string path)
+        public static Document TryCreateFromFile(Docset docset, string pathToDocset)
         {
             Debug.Assert(docset != null);
-            Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(!Path.IsPathRooted(path));
+            Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
+            Debug.Assert(!Path.IsPathRooted(pathToDocset));
 
-            path = PathUtility.NormalizeFile(path);
+            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, path)))
+            // resolve from localization docset
+            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, pathToDocset)))
             {
-                var (error, file) = TryCreate(docset, path);
+                var (error, file) = TryCreate(docset.LocalizationDocset, pathToDocset);
                 return error == null ? file : null;
             }
 
-            // todo: localization fallback logic
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
+            {
+                var (error, file) = TryCreate(docset, pathToDocset);
+                return error == null ? file : null;
+            }
+
+            // resolve from fallback docset
+            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, pathToDocset)))
+            {
+                var (error, file) = TryCreate(docset.FallbackDocset, pathToDocset);
+                return error == null ? file : null;
+            }
 
             // resolve from dependent docsets
             foreach (var (dependencyName, dependentDocset) in docset.DependentDocset)
             {
                 Debug.Assert(dependencyName.EndsWith('/'));
 
-                if (!path.StartsWith(dependencyName, PathUtility.PathComparison))
+                if (!pathToDocset.StartsWith(dependencyName, PathUtility.PathComparison))
                 {
                     // the file stored in the dependent docset should start with dependency name
                     continue;
                 }
 
-                var dependencyFile = TryCreateFromFile(dependentDocset, path.Substring(dependencyName.Length));
+                var dependencyFile = TryCreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length));
                 if (dependencyFile != null)
                 {
                     return dependencyFile;

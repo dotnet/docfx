@@ -55,6 +55,6 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization")]
         [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization")]
         public static void LocConfigConventionEditRepoName(LocalizationMapping locMappingType, string sourceName, string locale, string locName)
-            => Assert.Equal(locName, LocalizationConfig.GetLocalizationRepo(locMappingType, sourceName, locale, "en-us").remote);
+            => Assert.Equal(locName, LocalizationConvention.GetLocalizationRepo(locMappingType, sourceName, locale, "en-us").remote);
     }
 }

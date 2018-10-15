@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LocalizationConfig
+    internal static class LocalizationConvention
     {
         private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
 
