@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class LocConfigConvention
+    internal static class LocalizationConfig
     {
         private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
 
@@ -18,33 +18,38 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static string GetLocRepository(string remote, string locale, string defaultLocale)
+        public static (string remote, bool changed) GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
         {
+            if (localizationMapping != LocalizationMapping.Repository && localizationMapping != LocalizationMapping.RepositoryAndFolder)
+            {
+                return (remote, false);
+            }
+
             if (string.Equals(locale, defaultLocale, System.StringComparison.OrdinalIgnoreCase))
             {
-                return remote;
+                return (remote, false);
             }
 
             if (string.IsNullOrEmpty(remote))
             {
-                return remote;
+                return (remote, false);
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return remote;
+                return (remote, false);
             }
 
-            var newLocale = $".{locale}";
+            var newLocale = localizationMapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return remote.Replace(originLocale, newLocale);
+                return (remote.Replace(originLocale, newLocale), true);
             }
 
-            return $"{remote}{newLocale}";
+            return ($"{remote}{newLocale}", true);
         }
     }
 }
