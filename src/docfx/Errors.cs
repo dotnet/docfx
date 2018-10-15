@@ -144,9 +144,6 @@ namespace Microsoft.Docs.Build
         public static Error UidMissing()
             => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
 
-        public static Error InvalidMultipleAttributes(string jsonPath)
-            => new Error(ErrorLevel.Error, "invalid-multiple-attribute", $"'{jsonPath}' contains invalid multiple DataTypeAttribute, only XrefPropertyAttribute is allowed to be combined with another DataTypeAttribute.");
-
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
         /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>

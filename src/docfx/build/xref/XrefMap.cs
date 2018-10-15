@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,18 +51,6 @@ namespace Microsoft.Docs.Build
             var models = new XrefMapModel();
             models.References.AddRange(InternalReferences);
             context.WriteJson(models, "xrefmap.json");
-        }
-
-        public static DataTypeAttribute GetNonXrefPropertyAttribute(IEnumerable<DataTypeAttribute> attributes, string jsonPath)
-        {
-            try
-            {
-                return attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-            }
-            catch (InvalidOperationException)
-            {
-                throw Errors.InvalidMultipleAttributes(jsonPath).ToException();
-            }
         }
 
         private static IReadOnlyDictionary<string, XrefSpec> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
@@ -184,7 +171,7 @@ namespace Microsoft.Docs.Build
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 string result = (string)value;
-                var attribute = GetNonXrefPropertyAttribute(attributes, jsonPath);
+                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
                 if (attribute is MarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
