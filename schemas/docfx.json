@@ -286,7 +286,7 @@
         "type": "string"
       }
     },
-    "locMappingType": {
+    "localizationMapping": {
       "type": "string",
       "enum": [
         "repository",

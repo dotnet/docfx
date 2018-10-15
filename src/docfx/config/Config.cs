@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
         public readonly string[] Xref = Array.Empty<string>();
 
         /// <summary>
-        /// The mapping between source files and loc files
+        /// The mapping between source files and localized files
         /// </summary>
         public readonly LocalizationMapping LocalizationMapping;
 
