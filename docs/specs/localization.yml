@@ -20,7 +20,7 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc
 inputs:
   docfx.yml: |
-    locMappingType: RepositoryAndFolder
+    localizationMapping: RepositoryAndFolder
 restores:
   git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb/dep.md: loc-DEP
   restore-lock/*[repository + folder mapping] Restore loc repo-*-lock.json: |
@@ -61,7 +61,7 @@ inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx.en-us
-    locMappingType: RepositoryAndFolder
+    localizationMapping: RepositoryAndFolder
   docs/a.md:
 outputs:
   docs/a.json: |
