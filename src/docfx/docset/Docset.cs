@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                             {
                                 return null;
                             }
-                            var (locRemote, changed) = LocalizationConvention.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, Locale, config.DefaultLocale);
+                            var locRemote = LocalizationConvention.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, Locale, config.DefaultLocale);
                             var restorePath = RestoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
                             localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository
                                 ? restorePath

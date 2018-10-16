@@ -19,26 +19,26 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static (string remote, bool changed) GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
+        public static string GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
         {
             if (localizationMapping != LocalizationMapping.Repository && localizationMapping != LocalizationMapping.RepositoryAndFolder)
             {
-                return (remote, false);
+                return remote;
             }
 
             if (string.Equals(locale, defaultLocale, System.StringComparison.OrdinalIgnoreCase))
             {
-                return (remote, false);
+                return remote;
             }
 
             if (string.IsNullOrEmpty(remote))
             {
-                return (remote, false);
+                return remote;
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return (remote, false);
+                return remote;
             }
 
             var newLocale = localizationMapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
@@ -47,10 +47,10 @@ namespace Microsoft.Docs.Build
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return (remote.Replace(originLocale, newLocale), true);
+                return remote.Replace(originLocale, newLocale);
             }
 
-            return ($"{remote}{newLocale}", true);
+            return $"{remote}{newLocale}";
         }
     }
 }

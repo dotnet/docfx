@@ -29,8 +29,9 @@ namespace Microsoft.Docs.Build
             var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
 
             var contribution = new ContributionInfo(docset, githubUserCache);
-            var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
 
+            // TODO: toc map and xref map should always use source docset?
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
             var xrefMap = XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);

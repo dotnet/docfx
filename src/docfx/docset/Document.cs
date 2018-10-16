@@ -242,23 +242,9 @@ namespace Microsoft.Docs.Build
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
             // resolve from localization docset
-            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, pathToDocset)))
+            if (TryResolveDocset(docset, pathToDocset, out var realDocset))
             {
-                var (error, file) = TryCreate(docset.LocalizationDocset, pathToDocset);
-                return error == null ? file : null;
-            }
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
-            {
-                var (error, file) = TryCreate(docset, pathToDocset);
-                return error == null ? file : null;
-            }
-
-            // resolve from fallback docset
-            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, pathToDocset)))
-            {
-                var (error, file) = TryCreate(docset.FallbackDocset, pathToDocset);
+                var (error, file) = TryCreate(realDocset, pathToDocset);
                 return error == null ? file : null;
             }
 
@@ -281,6 +267,34 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        // TODO: report the fallback info
+        internal static bool TryResolveDocset(Docset docset, string file, out Docset realDocset)
+        {
+            // resolve from localization docset
+            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
+            {
+                realDocset = docset.LocalizationDocset;
+                return true;
+            }
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
+            {
+                realDocset = docset;
+                return true;
+            }
+
+            // resolve from fallback docset
+            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
+            {
+                realDocset = docset.FallbackDocset;
+                return true;
+            }
+
+            realDocset = null;
+            return false;
         }
 
         internal static ContentType GetContentType(string path)
