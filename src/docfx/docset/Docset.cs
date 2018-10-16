@@ -10,17 +10,17 @@ using System.Linq;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// A docset is a collection of documents in the folder identified by `docfx.yml`.
+    /// A docset is a collection of documents in the folder identified by `docfx.yml/docfx.json`.
     /// </summary>
     internal class Docset
     {
         /// <summary>
-        /// Gets the absolute path to folder containing `docfx.yml`, it is not necessarily the path to git repository.
+        /// Gets the absolute path to folder containing `docfx.yml/docfx.json`, it is not necessarily the path to git repository.
         /// </summary>
         public string DocsetPath { get; }
 
         /// <summary>
-        /// Gets the config associated with this docset, loaded from `docfx.yml`.
+        /// Gets the config associated with this docset, loaded from `docfx.yml/docfx.json`.
         /// </summary>
         public Config Config { get; }
 
@@ -59,6 +59,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
+        /// <summary>
+        /// Gets the config file name.
+        /// </summary>
+        public string ConfigFile { get; }
+
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
@@ -67,11 +72,12 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, string configFile)
         {
             _options = options;
             _context = context;
             Config = config;
+            ConfigFile = configFile;
 
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
@@ -87,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report("docfx.yml", errors);
+                context.Report(ConfigFile, errors);
                 return map;
             });
 
@@ -118,7 +124,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, ConfigFile));
             }
             return (errors, result);
         }
@@ -138,7 +144,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection, ConfigFile));
                     }
                 }
 

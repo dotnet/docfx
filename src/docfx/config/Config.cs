@@ -152,13 +152,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error>, Config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error>, Config, string) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
-            if (!TryGetConfigPath(docsetPath, out var configPath))
+            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFile))
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.ConfigNotFound(docsetPath, configFile).ToException();
             }
-            return LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            return (errors, config, configFile);
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
         public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
-            var exists = TryGetConfigPath(docsetPath, out var configPath);
+            var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
             if (exists)
             {
                 (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
@@ -180,15 +181,17 @@ namespace Microsoft.Docs.Build
             return exists;
         }
 
-        private static bool TryGetConfigPath(string docsetPath, out string configPath)
+        public static bool TryGetConfigPath(string parentPath, out string configPath, out string configFile)
         {
-            configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
+            configFile = "docfx.yml";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
             if (File.Exists(configPath))
             {
                 return true;
             }
 
-            configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.json"));
+            configFile = "docfx.json";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
             if (File.Exists(configPath))
             {
                 return true;
@@ -198,7 +201,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml
+            // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
             var errors = new List<Error>();
             Config config = null;
 
@@ -249,9 +252,10 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var errors = new List<Error>();
 
-            if (File.Exists(AppData.GlobalConfigPath))
+            var globalConfigPath = AppData.GlobalConfigPath;
+            if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(docsetPath, AppData.GlobalConfigPath);
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, globalConfigPath);
                 (errors, result) = LoadConfigObject(filePath);
             }
 

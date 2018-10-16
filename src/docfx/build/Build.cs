@@ -17,14 +17,14 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            var (configErrors, config) = Config.Load(docsetPath, options);
+            var (configErrors, config, configFile) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
-            context.Report("docfx.yml", configErrors);
+            context.Report(configFile, configErrors);
 
-            var docset = new Docset(context, docsetPath, config, options);
+            var docset = new Docset(context, docsetPath, config, options, configFile);
 
             var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
 
