@@ -24,6 +24,11 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string name)
         {
             var (docsetPath, spec) = await CreateDocset(name);
+            if (spec == null)
+            {
+                return;
+            }
+
             var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                 os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
@@ -143,11 +148,29 @@ namespace Microsoft.Docs.Build
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
             }
 
+            var replaceEnvironments =
+                spec.Environments.Length > 0 &&
+                !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
+
+            var skip = spec.Environments.Length > 0 && !replaceEnvironments;
+            if (skip)
+            {
+                return default;
+            }
+
             foreach (var (file, content) in spec.Inputs)
             {
+                var mutableContent = content;
                 var filePath = Path.Combine(docsetPath, file);
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                File.WriteAllText(filePath, content);
+                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                {
+                    foreach (var env in spec.Environments)
+                    {
+                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                    }
+                }
+                File.WriteAllText(filePath, mutableContent);
             }
 
             return (docsetPath, spec);
@@ -215,12 +238,15 @@ namespace Microsoft.Docs.Build
                     }
                     break;
                 default:
-                    Assert.Equal(
-                        content?.Trim() ?? "",
-                        File.ReadAllText(file).Trim(),
-                        ignoreCase: false,
-                        ignoreLineEndingDifferences: true,
-                        ignoreWhiteSpaceDifferences: true);
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        Assert.Equal(
+                            content?.Trim() ?? "",
+                            File.ReadAllText(file).Trim(),
+                            ignoreCase: false,
+                            ignoreLineEndingDifferences: true,
+                            ignoreWhiteSpaceDifferences: true);
+                    }
                     break;
             }
         }

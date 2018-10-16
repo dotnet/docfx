@@ -135,3 +135,19 @@ outputs:
       "content": "<p>for long file path test.</p>"
     }
   build.manifest:
+---
+# Restore private repos with dependencies
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
+    http:
+      https://ceapex.visualstudio.com:
+        headers:
+          Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
+environments:
+  - SYSTEM_ACCESS_TOKEN
+restores:
+  git/ceapex.visualstudio.com/Engineering/_git/docs-host-vnext/c9c018ce36b67713af186be2aaddeb734d8b1dbd/README.md:
+outputs:
+  build.manifest:
