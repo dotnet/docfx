@@ -10,14 +10,11 @@ namespace Microsoft.Docs.Build
     {
         public static void Convert(Docset docset, Context context, XrefMap xrefMap)
         {
-            var map = new XrefMapModel();
-            map.References.AddRange(xrefMap.InternalReferences);
-
             using (var writer = new StreamWriter(context.WriteStream(Path.Combine(docset.Config.DocumentId.SiteBasePath, "xrefmap.yml"))))
             {
                 writer.WriteLine("### YamlMime:XRefMap");
                 var serializer = new SerializerBuilder().Build();
-                serializer.Serialize(writer, map);
+                serializer.Serialize(writer, new { sorted = true, references = xrefMap.InternalReferences });
             }
         }
     }
