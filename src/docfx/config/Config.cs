@@ -154,8 +154,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error>, Config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
-            if (!File.Exists(configPath))
+            if (!TryGetConfigPath(docsetPath, out var configPath))
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
             }
@@ -168,8 +167,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
         public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = Path.Combine(docsetPath, "docfx.yml");
-            var exists = File.Exists(configPath);
+            var exists = TryGetConfigPath(docsetPath, out var configPath);
             if (exists)
             {
                 (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
@@ -180,6 +178,22 @@ namespace Microsoft.Docs.Build
                 config = new Config();
             }
             return exists;
+        }
+
+        private static bool TryGetConfigPath(string docsetPath, out string configPath)
+        {
+            configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+
+            configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.json"));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+            return false;
         }
 
         private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
@@ -217,7 +231,16 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadConfigObject(string filePath)
         {
-            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            var errors = new List<Error>();
+            JObject config = null;
+            if (filePath.Contains(".yml", StringComparison.OrdinalIgnoreCase))
+            {
+                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            }
+            else if (filePath.Contains(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            }
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
