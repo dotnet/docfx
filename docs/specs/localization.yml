@@ -109,7 +109,8 @@ outputs:
 #   [link to b](b.md)
 #   ![include[include b](b.md)
 # source repo:
-# b.md
+# b.md: |
+#   [link to a](a.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -118,9 +119,9 @@ inputs:
   docfx.yml:
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link to b</a></p>\n<p>b.md</p>\n"}
+    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
   docs/b.json: |
-    { "content":"<p>b.md</p>\n"}
+    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
 # loc fallback, all loc files are in one repo
@@ -129,7 +130,8 @@ outputs:
 #   [link to b](b.md)
 #   ![include[include b](b.md)
 # source repo:
-# b.md
+# b.md: |
+#   [link to a](a.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -139,7 +141,7 @@ inputs:
     localizationMapping: RepositoryAndFolder
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link to b</a></p>\n<p>b.md</p>\n"}
+    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
   docs/b.json: |
-    { "content":"<p>b.md</p>\n"}
+    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
