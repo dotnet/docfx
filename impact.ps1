@@ -11,8 +11,6 @@ $env:GIT_TERMINAL_PROMPT = 0
 $env:DOCFX_APPDATA_PATH = "D:/appdata"
 $env:DOCFX_PATH = [System.IO.Directory]::GetCurrentDirectory()
 
-Write-Host "Use docfx at: $env:DOCFX_PATH"
-
 [System.IO.Directory]::CreateDirectory('D:/docfx-impact')
 
 pushd D:/docfx-impact
@@ -25,6 +23,8 @@ git remote add origin https://ceapex.visualstudio.com/Engineering/_git/Docs.DocF
 exec "git $devopsAuth $githubAuth fetch --progress"
 exec "git checkout origin/master --force --progress"
 exec "git $devopsAuth $githubAuth submodule update --init --progress"
+exec "git clean -xdf"
+exec "git status"
 
 exec "npm install"
 exec "npm run impact -- --push"
