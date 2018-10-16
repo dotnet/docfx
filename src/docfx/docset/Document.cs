@@ -241,7 +241,6 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            // resolve from localization docset
             if (TryResolveDocset(docset, pathToDocset, out var realDocset))
             {
                 var (error, file) = TryCreate(realDocset, pathToDocset);
