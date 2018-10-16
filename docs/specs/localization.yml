@@ -30,12 +30,13 @@ outputs:
 ---
 # [repository mapping] loc config convention without source locale
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc
 inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx
-  docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.zh-cn*"}
@@ -43,12 +44,13 @@ outputs:
 ---
 # [repository mapping] loc config convention with source locale
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc
 inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx.en-us
-  docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.zh-cn*"}
@@ -56,13 +58,14 @@ outputs:
 ---
 # [repository + folder mapping] loc config convention with source locale
 commands:
+  - restore --locale zh-cn
   - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc
 inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx.en-us
     localizationMapping: RepositoryAndFolder
-  docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}

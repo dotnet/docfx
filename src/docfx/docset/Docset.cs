@@ -87,18 +87,17 @@ namespace Microsoft.Docs.Build
 
             Docset GetLocalizationDocset()
             {
-                var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
-                if (repo == null)
-                {
-                    return null;
-                }
-
                 var localizationDocsetPath = docsetPath;
                 switch (config.LocalizationMapping)
                 {
                     case LocalizationMapping.Repository:
                     case LocalizationMapping.RepositoryAndFolder:
                         {
+                            var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+                            if (repo == null)
+                            {
+                                return null;
+                            }
                             var (locRemote, changed) = LocalizationConvention.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, Locale, config.DefaultLocale);
                             var restorePath = RestoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
                             localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository

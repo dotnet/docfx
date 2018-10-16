@@ -446,6 +446,7 @@ inputs:
     content: a.md
     "locales: [zh-cn,de-de]":
       content: b.md
+    defaultLocale: "zh-cn"
   a.md:
 outputs:
   build.manifest:
@@ -456,6 +457,7 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: [zh-cn]":
       content:
@@ -479,6 +481,7 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: [zh-cn, de-de] branches: [live]":
       content: b.md
@@ -492,6 +495,7 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: zh-cn":
       content: b.md
