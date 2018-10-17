@@ -125,13 +125,13 @@ outputs:
   build.manifest:
 ---
 # loc fallback, all loc files are in one repo
-# loc repo: 
-# a.md: |
-#   [link to b](b.md)
-#   ![include[include b](b.md)
+# loc repo:
+#   a.md: |
+#     [link to b](b.md)
+#     ![include[include b](b.md)
 # source repo:
-# b.md: |
-#   [link to a](a.md)
+#   b.md: |
+#     [link to a](a.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
@@ -145,3 +145,63 @@ outputs:
   docs/b.json: |
     { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
+---
+# loc build with toc map, loc toc has higher priority
+# loc repo:
+#   docs/a.md:
+#   docs/b.md:
+#   docs/toc.md: |
+#     # [reference a](a.md)
+#     # [reference b](b.md)
+# source repo:
+#   docs/toc.md: |
+#     # [reference a](a.md)
+#   docs/b/toc.md: |
+#     # [reference b](../b.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-tocmap
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+  docs/toc.md: |
+    # [reference a](a.md)
+  docs/b/toc.md: |
+    # [reference b](../b.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"toc_rel": "toc.json"}
+  docs/b.json: |
+    {"toc_rel": "toc.json"}
+  docs/toc.json: |
+    {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
+---
+# loc build with mixed toc map
+# loc repo:
+#   docs/b/b.md
+#   docs/a/toc.md: |
+#     # [reference a](a.md)
+# source repo:
+#   docs/a/a.md:
+#   docs/b/toc.md: |
+#     # [reference b](b.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-tocmap
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+  docs/b/toc.md: |
+    # [reference b](b.md)
+  docs/a/a.md:
+outputs:
+  build.manifest:
+  docs/a/a.json: |
+    {"toc_rel": "toc.json"}
+  docs/b/b.json: |
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
+    {"items": [{"toc_title": "reference a", "href": "a"}]}
