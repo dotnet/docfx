@@ -419,7 +419,7 @@ Paragraph1
 
         #region Fallback folders testing
 
-        [Fact(Skip = "won't support")]
+        [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestFallback_Inclusion_random_name()
         {
@@ -462,22 +462,31 @@ markdown token1.md content end.";
             TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
 
             var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
+            var basePath = $"{uniqueFolderName}/root_folder_{uniqueFolderName}";
+            SetEnvironmentContext(basePath, fallbackFolders);
+
             var parameter = new MarkdownServiceParameters
             {
-                BasePath = "."
+                BasePath = basePath,
+                Extensions = new Dictionary<string, object>
+                {
+                    { "EnableSourceInfo", false }
+                }
             };
             var service = new MarkdigMarkdownService(parameter);
-            //var marked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md");
-            var marked = service.Markup("place", "holder");
+            var marked = service.Markup(root, $"root_{uniqueFolderName}.md");
             var dependency = marked.Dependency;
 
             Assert.Equal($@"<p>1markdown root.md main content start.</p>
 <p>1markdown a.md main content start.</p>
 <p>1markdown token1.md content start.</p>
 <p><strong>1markdown token2.md main content</strong></p>
+
 <p>markdown token1.md content end.</p>
 <p><strong>1markdown token2.md main content</strong></p>
+
 <p>markdown a.md main content end.</p>
+
 <p>markdown root.md main content end.</p>
 ".Replace("\r\n", "\n"), marked.Html);
             Assert.Equal(
@@ -485,7 +494,7 @@ markdown token1.md content end.";
                 dependency.OrderBy(x => x).ToArray());
         }
 
-        [Fact(Skip = "won't support")]
+        [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestFallback_InclusionWithCodeFences()
         {
@@ -548,30 +557,38 @@ markdown a.md a.md content end.";
             TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder/code_folder/sample2.cs", sample2);
 
             var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder") } };
-
+            var basePath = $"{uniqueFolderName}/root_folder";
+            SetEnvironmentContext(basePath, fallbackFolders);
             // Verify root.md markup result
             var parameter = new MarkdownServiceParameters
             {
-                BasePath = "."
+                BasePath = basePath,
+                Extensions = new Dictionary<string, object>
+                {
+                    { "EnableSourceInfo", false }
+                }
             };
             var service = new MarkdigMarkdownService(parameter);
-            //var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
-            var rootMarked = service.Markup("place", "holder");
+            var rootMarked = service.Markup(root, "root.md");
             var rootDependency = rootMarked.Dependency;
             Assert.Equal(@"<p>markdown root.md main content start.</p>
 <p>mardown a content in root.md content start</p>
 <p>markdown a.md main content start.</p>
 <p>code_in_a code in a.md content start</p>
 <pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
-</code></pre><p>code_in_a in a.md content end</p>
+</code></pre>
+<p>code_in_a in a.md content end</p>
 <p>markdown a.md a.md content end.</p>
+
 <p>mardown a content in root.md content end</p>
 <p>sample 1 code in root.md content start</p>
 <pre><code class=""lang-cs"" name=""this is sample 1 code"">namespace sample1{}
-</code></pre><p>sample 1 code in root.md content end</p>
+</code></pre>
+<p>sample 1 code in root.md content end</p>
 <p>sample 2 code in root.md content start</p>
 <pre><code class=""lang-cs"" name=""this is sample 2 code"">namespace sample2{}
-</code></pre><p>sample 2 code in root.md content end</p>
+</code></pre>
+<p>sample 2 code in root.md content end</p>
 <p>markdown root.md main content end.</p>
 ".Replace("\r\n", "\n"), rootMarked.Html);
             Assert.Equal(
@@ -580,12 +597,13 @@ markdown a.md a.md content end.";
 
             // Verify a.md markup result
             //var aMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), a, fallbackFolders, "a_folder/a.md");
-            var aMarked = service.Markup("place", "holder");
+            var aMarked = service.Markup(a, "a_folder/a.md");
             var aDependency = aMarked.Dependency;
             Assert.Equal(@"<p>markdown a.md main content start.</p>
 <p>code_in_a code in a.md content start</p>
 <pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
-</code></pre><p>code_in_a in a.md content end</p>
+</code></pre>
+<p>code_in_a in a.md content end</p>
 <p>markdown a.md a.md content end.</p>
 ".Replace("\r\n", "\n"), aMarked.Html);
             Assert.Equal(
@@ -786,6 +804,21 @@ body";
             }
             Assert.Equal(null, InclusionContext.RootFile);
             Assert.Equal(null, InclusionContext.File);
+        }
+
+        private void SetEnvironmentContext(string baseDirectory, List<string> fallbackFolders)
+        {
+            EnvironmentContext.SetBaseDirectory(baseDirectory);
+            FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory);
+
+            foreach (var fallbackFolder in fallbackFolders)
+            {
+                var fallbackReader = new RealFileReader(fallbackFolder, ImmutableDictionary<string, string>.Empty);
+                falBuilder = falBuilder.FallbackReadFromReader(fallbackReader);
+            }
+
+            EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
         }
     }
 }
