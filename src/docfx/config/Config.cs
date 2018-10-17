@@ -152,14 +152,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error>, Config, string) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config, string configFileName) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
-            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFile))
+            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
-                throw Errors.ConfigNotFound(docsetPath, configFile).ToException();
+                throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
             var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
-            return (errors, config, configFile);
+            return (errors, config, configFileName);
         }
 
         /// <summary>

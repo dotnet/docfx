@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the config file name.
         /// </summary>
-        public string ConfigFile { get; }
+        public string ConfigFileName { get; }
 
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             _options = options;
             _context = context;
             Config = config;
-            ConfigFile = configFile;
+            ConfigFileName = configFile;
 
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report(ConfigFile, errors);
+                context.Report(ConfigFileName, errors);
                 return map;
             });
 
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, ConfigFile));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, ConfigFileName));
             }
             return (errors, result);
         }
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection, ConfigFile));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection, ConfigFileName));
                     }
                 }
 

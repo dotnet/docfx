@@ -6,9 +6,12 @@ inputs:
       include:
         - docs/**/*.md
   docfx.json: |
-    content:
-      include:
-        - ignore.md
+    {
+      "content":
+        {
+          "include": "ignore.md"
+        }
+    }  
   ignore.md:
   docs/index.md:
 outputs:
