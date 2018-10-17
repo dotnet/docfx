@@ -10,17 +10,17 @@ using System.Linq;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// A docset is a collection of documents in the folder identified by `docfx.yml`.
+    /// A docset is a collection of documents in the folder identified by `docfx.yml/docfx.json`.
     /// </summary>
     internal class Docset
     {
         /// <summary>
-        /// Gets the absolute path to folder containing `docfx.yml`, it is not necessarily the path to git repository.
+        /// Gets the absolute path to folder containing `docfx.yml/docfx.json`, it is not necessarily the path to git repository.
         /// </summary>
         public string DocsetPath { get; }
 
         /// <summary>
-        /// Gets the config associated with this docset, loaded from `docfx.yml`.
+        /// Gets the config associated with this docset, loaded from `docfx.yml/docfx.json`.
         /// </summary>
         public Config Config { get; }
 
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report("docfx.yml", errors);
+                context.Report(Config.ConfigFileName, errors);
                 return map;
             });
 
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
                     }
                 }
 

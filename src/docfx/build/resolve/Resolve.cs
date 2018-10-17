@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             // Pages outside build scope, don't build the file, use relative href
             if (error == null && file.ContentType == ContentType.Page && !file.Docset.BuildScope.Contains(file))
             {
-                return (Errors.LinkOutOfScope(relativeTo, file, href), relativeUrl + query + fragment, fragment, null);
+                return (Errors.LinkOutOfScope(relativeTo, file, href, file.Docset.Config.ConfigFileName), relativeUrl + query + fragment, fragment, null);
             }
 
             return (error, relativeUrl + query + fragment, fragment, file);

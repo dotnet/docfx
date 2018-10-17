@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
-            context.Report("docfx.yml", configErrors);
+            context.Report(config.ConfigFileName, configErrors);
 
             var docset = GetBuildDocset();
 

@@ -1,10 +1,17 @@
 ---
-# Specify include files
+# Specify include files, prefer docfx.yml to docfx.json
 inputs:
   docfx.yml: |
     content:
       include:
         - docs/**/*.md
+  docfx.json: |
+    {
+      "content":
+        {
+          "include": "ignore.md"
+        }
+    }  
   ignore.md:
   docs/index.md:
 outputs:
@@ -244,12 +251,12 @@ outputs:
   output/c.gif:
   build.manifest:
 ---
-# relative path extend
+# relative path extend with json file
 inputs:
   docfx.yml: |
-    extend: _shared/extend.yml
-  _shared/extend.yml: |
-    content: a.md
+    extend: _shared/extend.json
+  _shared/extend.json: |
+    {"content": "a.md"}
   a.md:
 outputs:
   a.json:
@@ -321,11 +328,15 @@ inputs:
   docfx.yml: |
     content: '**/*.md'
     extend:
-      extend.yml
-  extend.yml: |
-    content: 
-      include: a.md
-      exclude: b.md
+      extend.json
+  extend.json: |
+    {
+      "content":
+        {
+          "include": "a.md",
+          "exclude": "b.md"
+        }
+    }
   a.md:
   b.md:
 outputs:
