@@ -13,8 +13,7 @@ namespace Microsoft.Docs.Build
             new Context(new Report(), "."),
             Directory.GetCurrentDirectory(),
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')).Item2,
-            new CommandLineOptions(),
-            "docfx.yml");
+            new CommandLineOptions());
 
         [Theory]
         // same level

@@ -59,11 +59,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
-        /// <summary>
-        /// Gets the config file name.
-        /// </summary>
-        public string ConfigFileName { get; }
-
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
@@ -72,12 +67,11 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, string configFile)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
         {
             _options = options;
             _context = context;
             Config = config;
-            ConfigFileName = configFile;
 
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
 
@@ -93,7 +87,7 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report(ConfigFileName, errors);
+                context.Report(Config.ConfigFileName, errors);
                 return map;
             });
 
@@ -124,7 +118,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, ConfigFileName));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options));
             }
             return (errors, result);
         }
@@ -144,7 +138,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection, ConfigFileName));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
                     }
                 }
 

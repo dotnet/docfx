@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 restoredDocsets.TryAdd(docsetPath, 0);
 
                 // Root docset must have a config
-                var (configErrors, config, _) = Config.Load(docsetPath, options, extend: false);
+                var (configErrors, config) = Config.Load(docsetPath, options, extend: false);
                 ReportErrors(report, configErrors);
                 report.Configure(docsetPath, config);
 
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
             // extend the config before loading
-            var (errors, extendedConfig, _) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
+            var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
             ReportErrors(report, errors);
 
             // restore git repos includes dependency repos and loc repos

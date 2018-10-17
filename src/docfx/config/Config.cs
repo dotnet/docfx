@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -138,6 +139,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly LocalizationMapping LocalizationMapping;
 
+        /// <summary>
+        /// Gets the config file name.
+        /// </summary>
+        [JsonIgnore]
+        public string ConfigFileName { get; private set; }
+
         public IEnumerable<string> GetExternalReferences()
         {
             foreach (var url in Xref)
@@ -152,14 +159,15 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config, string configFileName) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
             if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
                 throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
             var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
-            return (errors, config, configFileName);
+            config.ConfigFileName = configFileName;
+            return (errors, config);
         }
 
         /// <summary>
