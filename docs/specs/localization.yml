@@ -100,7 +100,7 @@ inputs:
     localizationMapping: RepositoryAndFolder
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
   build.manifest:
 ---
 # loc fallback

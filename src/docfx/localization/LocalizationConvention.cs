@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationConvention
     {
-        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_repoNameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.localization)?$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// The loc repo name follows below conventions:
@@ -26,7 +28,7 @@ namespace Microsoft.Docs.Build
                 return remote;
             }
 
-            if (string.Equals(locale, defaultLocale, System.StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(locale, defaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 return remote;
             }
@@ -51,6 +53,43 @@ namespace Microsoft.Docs.Build
             }
 
             return $"{remote}{newLocale}";
+        }
+
+        public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale, RestoreMap restoreMap)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
+            Debug.Assert(!string.IsNullOrEmpty(locale));
+            Debug.Assert(config != null);
+            Debug.Assert(restoreMap != null);
+
+            var localizationDocsetPath = docsetPath;
+            switch (config.LocalizationMapping)
+            {
+                case LocalizationMapping.Repository:
+                case LocalizationMapping.RepositoryAndFolder:
+                    {
+                        var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+                        if (repo == null)
+                        {
+                            return null;
+                        }
+                        var locRemote = GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
+                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
+                        localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository
+                            ? restorePath
+                            : Path.Combine(restorePath, locale);
+                        break;
+                    }
+                case LocalizationMapping.Folder:
+                    {
+                        localizationDocsetPath = Path.Combine(localizationDocsetPath, "localization", locale);
+                        break;
+                    }
+                default:
+                    throw new NotSupportedException($"{config.LocalizationMapping} is not supported yet");
+            }
+
+            return localizationDocsetPath;
         }
     }
 }

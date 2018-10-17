@@ -241,9 +241,9 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, pathToDocset, out var realDocset))
+            if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
             {
-                var (error, file) = TryCreate(realDocset, pathToDocset);
+                var (error, file) = TryCreate(resolvedDocset, pathToDocset);
                 return error == null ? file : null;
             }
 
@@ -269,30 +269,30 @@ namespace Microsoft.Docs.Build
         }
 
         // TODO: report the fallback info
-        internal static bool TryResolveDocset(Docset docset, string file, out Docset realDocset)
+        private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
         {
             // resolve from localization docset
             if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
             {
-                realDocset = docset.LocalizationDocset;
+                resolvedDocset = docset.LocalizationDocset;
                 return true;
             }
 
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, file)))
             {
-                realDocset = docset;
+                resolvedDocset = docset;
                 return true;
             }
 
             // resolve from fallback docset
             if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
             {
-                realDocset = docset.FallbackDocset;
+                resolvedDocset = docset.FallbackDocset;
                 return true;
             }
 
-            realDocset = null;
+            resolvedDocset = null;
             return false;
         }
 

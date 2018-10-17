@@ -82,41 +82,11 @@ namespace Microsoft.Docs.Build
         {
             if (!string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                LocalizationDocset = GetLocalizationDocset();
-            }
-
-            Docset GetLocalizationDocset()
-            {
-                var localizationDocsetPath = docsetPath;
-                switch (config.LocalizationMapping)
-                {
-                    case LocalizationMapping.Repository:
-                    case LocalizationMapping.RepositoryAndFolder:
-                        {
-                            var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
-                            if (repo == null)
-                            {
-                                return null;
-                            }
-                            var locRemote = LocalizationConvention.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, Locale, config.DefaultLocale);
-                            var restorePath = RestoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
-                            localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository
-                                ? restorePath
-                                : Path.Combine(restorePath, Locale);
-                            break;
-                        }
-                    case LocalizationMapping.Folder:
-                        {
-                            localizationDocsetPath = Path.Combine(localizationDocsetPath, "localization", Locale);
-                            break;
-                        }
-                    default:
-                        throw new NotSupportedException($"{config.LocalizationMapping} is not supported yet");
-                }
+                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
 
                 // localization docset will share the same context, config, build locale and options with source docset
-                // source docset configuration will be overwrote using build locale overwrite configuration
-                return new Docset(context, localizationDocsetPath, config, Locale, options, this);
+                // source docset configuration will be overwrote by build locale overwrite configuration
+                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this);
             }
         }
 
