@@ -137,8 +137,6 @@ namespace Microsoft.DocAsCode.Common
                 case BuildStatus.Succeed:
                     WriteToConsole(message, ConsoleColor.Green);
                     break;
-                default:
-                    break;
             }
         }
 

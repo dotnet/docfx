@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     {
                         _cache.Add(fullPath, item);
                     }
-                }   
+                }
             }
         }
 

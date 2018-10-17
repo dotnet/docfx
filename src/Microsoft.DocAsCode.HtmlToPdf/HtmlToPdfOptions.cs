@@ -90,28 +90,28 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             sb.Append(OutlineOption == OutlineOption.WkDefaultOutline ? " --outline" : " --no-outline");
             if (!string.IsNullOrEmpty(Encoding))
             {
-                sb.Append($" --encoding {Encoding}");
+                sb.Append(" --encoding ").Append(Encoding);
             }
             if (string.IsNullOrEmpty(UserStyleSheet))
             {
-                sb.Append($" --user-style-sheet \"{DefaultStyleSheet}\"");
+                sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append("\"");
             }
             else
             {
-                sb.Append($" --user-style-sheet \"{UserStyleSheet}\"");
+                sb.Append(" --user-style-sheet \"").Append(UserStyleSheet).Append("\"");
             }
 
             if (!string.IsNullOrEmpty(HeaderHtmlPath))
             {
-                sb.Append($" --header-html \"{HeaderHtmlPath}\"");
+                sb.Append(" --header-html \"").Append(HeaderHtmlPath).Append("\"");
             }
             if (!string.IsNullOrEmpty(FooterHtmlPath))
             {
-                sb.Append($" --footer-html \"{FooterHtmlPath}\"");
+                sb.Append(" --footer-html \"").Append(FooterHtmlPath).Append("\"");
             }
             if (!string.IsNullOrEmpty(LoadErrorHandling))
             {
-                sb.Append($" --load-error-handling {LoadErrorHandling}"); 
+                sb.Append(" --load-error-handling ").Append(LoadErrorHandling);
             }
             if (IsReadArgsFromStdin)
             {
@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
             if (!string.IsNullOrEmpty(AdditionalArguments))
             {
-                sb.Append($" {AdditionalArguments}");
+                sb.Append(" ").Append(AdditionalArguments);
             }
 
             return sb.ToString();

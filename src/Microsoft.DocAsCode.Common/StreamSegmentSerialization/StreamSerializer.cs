@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
         private StreamSegment WriteArray(IReadOnlyCollection<object> value)
         {
             var startOffset = (int)UnderlyingStream.Position;
-            var length = 4 + 4 + 1 + value.Count * 4;
+            var length = 4 + 4 + 1 + (value.Count * 4);
             UnderlyingStream.Seek(length, SeekOrigin.Current);
             var indices = new List<int>(value.Count);
             foreach (var item in value)
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
             return new StreamSegment(
                 UnderlyingStream,
                 startOffset,
-                4 + 4 + 1 + value.Count * 4,
+                4 + 4 + 1 + (value.Count * 4),
                 next,
                 StreamSegmentType.Array);
         }
@@ -176,7 +176,7 @@ namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
         private StreamSegment WriteDictionary(IReadOnlyCollection<KeyValuePair<string, object>> value)
         {
             var startOffset = (int)UnderlyingStream.Position;
-            var length = 4 + 4 + 1 + value.Count * 2 * 4;
+            var length = 4 + 4 + 1 + (value.Count * 2 * 4);
             UnderlyingStream.Seek(length, SeekOrigin.Current);
             var indices = new List<int>(value.Count * 2);
             foreach (var pair in value)
@@ -197,7 +197,7 @@ namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
             return new StreamSegment(
                 UnderlyingStream,
                 startOffset,
-                4 + 4 + 1 + value.Count * 2 * 4,
+                4 + 4 + 1 + (value.Count * 2 * 4),
                 next,
                 StreamSegmentType.Dictionary);
         }

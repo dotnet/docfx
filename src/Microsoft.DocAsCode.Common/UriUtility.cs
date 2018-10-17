@@ -99,20 +99,20 @@ namespace Microsoft.DocAsCode.Common
                 targetParameters.Set(key, sourceParameters[key]);
             }
 
-            var path = sourcePath == string.Empty ? targetPath : sourcePath;
+            var path = sourcePath?.Length == 0 ? targetPath : sourcePath;
             var query = targetParameters.HasKeys() ? QueryMarker + targetParameters.ToString() : string.Empty;
-            var fragment = sourceFragment == string.Empty ? targetFragment : sourceFragment;
+            var fragment = sourceFragment?.Length == 0 ? targetFragment : sourceFragment;
 
             return path + query + fragment;
         }
 
-        private static (string path, string query, string fragment) Split(string uri, string paramName)
+        private static (string path, string query, string fragment) Split(string uri)
         {
             if (uri == null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (uri == string.Empty)
+            if (uri?.Length == 0)
             {
                 return (string.Empty, string.Empty, string.Empty);
             }
