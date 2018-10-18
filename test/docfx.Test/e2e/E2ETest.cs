@@ -148,15 +148,15 @@ namespace Microsoft.Docs.Build
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
             }
 
-            var replaceEnvironments =
-                spec.Environments.Length > 0 &&
-                !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
-
-            var skip = spec.Environments.Length > 0 && !replaceEnvironments;
+            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));;
             if (skip)
             {
                 return default;
             }
+
+            var replaceEnvironments =
+                spec.Environments.Length > 0 &&
+                !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
             foreach (var (file, content) in spec.Inputs)
             {
