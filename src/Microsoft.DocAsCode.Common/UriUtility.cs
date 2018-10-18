@@ -88,8 +88,8 @@ namespace Microsoft.DocAsCode.Common
         /// </summary>
         public static string MergeHref(string target, string source)
         {
-            var (targetPath, targetQueryString, targetFragment) = Split(target, nameof(target));
-            var (sourcePath, sourceQueryString, sourceFragment) = Split(source, nameof(source));
+            var (targetPath, targetQueryString, targetFragment) = Split(target);
+            var (sourcePath, sourceQueryString, sourceFragment) = Split(source);
 
             var targetParameters = HttpUtility.ParseQueryString(targetQueryString);
             var sourceParameters = HttpUtility.ParseQueryString(sourceQueryString);
