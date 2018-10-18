@@ -170,19 +170,11 @@ namespace Microsoft.Docs.Build
 
                 // git edit url, only works for github repo
                 var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
-                var (editRemoteWithLocale, changed) = LocalizationConfig.GetLocalizationRepo(document.Docset.Config.LocalizationMapping, editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
+                var editRemoteWithLocale = LocalizationConvention.GetLocalizationRepo(document.Docset.Config.LocalizationMapping, editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
 
                 if (GitHubUtility.TryParse(editRemoteWithLocale, out _, out _))
                 {
-                    if (document.Docset.Config.LocalizationMapping == LocalizationMapping.Repository || !changed)
-                    {
-                        return $"{editRemoteWithLocale}/blob/{eidtBranch}/{pathToRepo}";
-                    }
-
-                    if (document.Docset.Config.LocalizationMapping == LocalizationMapping.RepositoryAndFolder)
-                    {
-                        return $"{editRemoteWithLocale}/blob/{eidtBranch}/{document.Docset.Locale}/{pathToRepo}";
-                    }
+                    return $"{editRemoteWithLocale}/blob/{eidtBranch}/{pathToRepo}";
                 }
 
                 return null;
