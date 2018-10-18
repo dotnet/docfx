@@ -15,8 +15,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidRedirection(string path, ContentType contentType)
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
-        public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
+        public static Error ConfigNotFound(string docsetPath, string configFile)
+            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
 
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
@@ -72,11 +72,11 @@ namespace Microsoft.Docs.Build
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
 
-        public static Error LinkOutOfScope(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in docfx.yml", relativeTo.ToString());
+        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString());
 
-        public static Error RedirectionOutOfScope(Document redirection)
-            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in docfx.yml");
+        public static Error RedirectionOutOfScope(Document redirection, string configFile)
+            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
 
         public static Error LinkIsDependency(Document relativeTo, Document file, string href)
             => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());

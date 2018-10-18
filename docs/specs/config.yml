@@ -1,10 +1,17 @@
 ---
-# Specify include files
+# Specify include files, prefer docfx.yml to docfx.json
 inputs:
   docfx.yml: |
     content:
       include:
         - docs/**/*.md
+  docfx.json: |
+    {
+      "content":
+        {
+          "include": "ignore.md"
+        }
+    }  
   ignore.md:
   docs/index.md:
 outputs:
@@ -195,7 +202,7 @@ inputs:
     routes:
       /: outputB
       docs/a.md: output
-      docs/b/: output
+      docs/b: output
   docs/a.md: |
     [link](c.png)
   docs/c.png:
@@ -244,12 +251,12 @@ outputs:
   output/c.gif:
   build.manifest:
 ---
-# relative path extend
+# relative path extend with json file
 inputs:
   docfx.yml: |
-    extend: _shared/extend.yml
-  _shared/extend.yml: |
-    content: a.md
+    extend: _shared/extend.json
+  _shared/extend.json: |
+    {"content": "a.md"}
   a.md:
 outputs:
   a.json:
@@ -321,11 +328,15 @@ inputs:
   docfx.yml: |
     content: '**/*.md'
     extend:
-      extend.yml
-  extend.yml: |
-    content: 
-      include: a.md
-      exclude: b.md
+      extend.json
+  extend.json: |
+    {
+      "content":
+        {
+          "include": "a.md",
+          "exclude": "b.md"
+        }
+    }
   a.md:
   b.md:
 outputs:
@@ -446,6 +457,7 @@ inputs:
     content: a.md
     "locales: [zh-cn,de-de]":
       content: b.md
+    defaultLocale: "zh-cn"
   a.md:
 outputs:
   build.manifest:
@@ -456,6 +468,7 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: [zh-cn]":
       content:
@@ -479,6 +492,7 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: [zh-cn, de-de] branches: [live]":
       content: b.md
@@ -492,6 +506,7 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
+    defaultLocale: "zh-cn"
     content: a.md
     "locales: zh-cn":
       content: b.md
@@ -501,29 +516,3 @@ outputs:
   build.manifest:
   build.log: |
     ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]
----
-# loc config convention without source locale
-commands:
-  - build --locale zh-cn
-inputs:
-  docfx.yml: |
-    contribution:
-      repository: github.com/docfx/docfx
-  docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
-  build.manifest:
----
-# loc config convention with source locale
-commands:
-  - build --locale zh-cn
-inputs:
-  docfx.yml: |
-    contribution:
-      repository: github.com/docfx/docfx.en-us
-  docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*github.com/docfx/docfx.zh-cn*"}
-  build.manifest:
