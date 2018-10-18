@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
   userCache: cache.json");
             File.WriteAllText(gitHubUserCachePath, inputCache);
 
-            var (_, config) = Config.Load("docset", new CommandLineOptions());
+            var (_, config) = Config.Load(docsetPath, new CommandLineOptions());
             var options = new CommandLineOptions();
             var docset = new Docset(new Context(new Report(), "_site"), docsetPath, config, options);
             var cache = await GitHubUserCache.Create(docset, null);
