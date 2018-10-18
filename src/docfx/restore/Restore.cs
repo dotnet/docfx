@@ -97,7 +97,15 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config);
+                    try
+                    {
+                        restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Restoring {docsetPath} {restoreUrl}, {ex}");
+                        throw;
+                    }
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
