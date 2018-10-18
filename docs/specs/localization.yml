@@ -175,7 +175,7 @@ outputs:
     {"toc_rel": "TOC.json"}
   docs/b.json: |
     {"toc_rel": "TOC.json"}
-  docs/toc.json: |
+  docs/TOC.json: |
     {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
@@ -203,7 +203,7 @@ outputs:
     {"toc_rel": "TOC.json"}
   docs/b/b.json: |
     {"toc_rel": "TOC.json"}
-  docs/a/toc.json: |
+  docs/a/TOC.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority
