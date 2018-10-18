@@ -42,9 +42,8 @@ namespace Microsoft.Docs.Build
 
             var contributors = new List<Contributor>();
             var errors = new List<Error>();
-            var logins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
 
             var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
@@ -57,50 +56,56 @@ namespace Microsoft.Docs.Build
                     if (!emails.Add(commit.AuthorEmail))
                         continue;
 
-                    if (!resolveGitHubUsers && authorNames.Add(commit.AuthorName))
+                    var contributor = await GetContributor(commit);
+                    if (!excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
                     {
-                        contributors.Add(new Contributor { DisplayName = commit.AuthorName });
-                        continue;
+                        contributors.Add(contributor);
                     }
-
-                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                    if (error != null)
-                        errors.Add(error);
-
-                    if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
-                        contributors.Add(user.ToContributor());
                 }
             }
 
-            if (!string.IsNullOrEmpty(authorName))
+            var author = await GetAuthor();
+            if (author != null)
             {
-                if (resolveGitHubUsers)
+                contributors.RemoveAll(c => c.Id == author.Id);
+            }
+
+            return (errors, author, contributors, updatedDateTime);
+
+            async Task<Contributor> GetContributor(GitCommit commit)
+            {
+                if (!resolveGitHubUsers)
                 {
-                    // Remove author from contributors if author name is specified
-                    var (error, author) = await _gitHubUserCache.GetByLogin(authorName);
-                    if (error != null)
-                        errors.Add(error);
-
-                    if (excludes.Contains(authorName))
-                        author = null;
-                    if (author != null)
-                        contributors.RemoveAll(c => c.Id == author.Id.ToString());
-
-                    return (errors, author?.ToContributor(), contributors, updatedDateTime);
+                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
                 }
 
-                return (errors, new Contributor { DisplayName = authorName }, contributors, updatedDateTime);
+                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                if (error != null)
+                    errors.Add(error);
+
+                return user.ToContributor();
             }
 
-            // When author name is not specified, last contributor is author
-            if (contributors.Count > 0)
+            async Task<Contributor> GetAuthor()
             {
-                var author = contributors[contributors.Count - 1];
-                contributors.RemoveAt(contributors.Count - 1);
-                return (errors, author, contributors, updatedDateTime);
+                if (!string.IsNullOrEmpty(authorName))
+                {
+                    if (resolveGitHubUsers && !excludes.Contains(authorName))
+                    {
+                        // Remove author from contributors if author name is specified
+                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
+                        if (error != null)
+                            errors.Add(error);
+                        return result?.ToContributor();
+                    }
+                }
+                else if (contributors.Count > 0)
+                {
+                    // When author name is not specified, last contributor is author
+                    return await GetContributor(commits[commits.Count - 1]);
+                }
+                return null;
             }
-
-            return (errors, null, contributors, updatedDateTime);
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
