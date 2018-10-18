@@ -205,3 +205,54 @@ outputs:
     {"toc_rel": "toc.json"}
   docs/a/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
+---
+# loc build with xref map, loc file has higher priority
+# loc repo:
+#   docs/a.md: uid = a
+#   docs/b.md: link to @c
+# source repo:
+#   docs/a.md: uid = c
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-xrefmap
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.md: |
+    ---
+    uid: c
+    ---
+outputs:
+  build.manifest:
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
+  docs/a.json:
+  docs/b.json:
+  xrefmap.json:
+---
+# loc build with mixed xref map
+# loc repo:
+#   docs/a.md: uid = a
+#   docs/b.md: link to @a and @c
+# source repo:
+#   docs/c.md: uid = c
+# TODO: c.json should exist in build output, @huwe is working on it
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-xrefmap
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/c.md: |
+    ---
+    uid: c
+    ---
+outputs:
+  build.manifest:
+  docs/a.json:
+  docs/b.json: |
+    {"content":"<p>link to <a href=\"docs/a.json\">a</a>\nlink to <a href=\"docs/c.json\">c</a></p>\n"}
+  xrefmap.json: |
+    {"references":[{"uid":"a","href":"docs/a.json","name":"a"},{"uid":"c","href":"docs/c.json","name":"c"}]}
