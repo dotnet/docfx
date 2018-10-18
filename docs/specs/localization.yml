@@ -146,7 +146,7 @@ outputs:
     { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
-# [ONLY] loc build with TOC map, loc TOC has higher priority
+# loc build with TOC map, loc TOC has higher priority
 # loc repo:
 #   docs/a.md:
 #   docs/b.md:
