@@ -80,8 +80,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                if (error != null)
-                    errors.Add(error);
+                errors.AddIfNotNull(error);
 
                 return user.ToContributor();
             }
@@ -94,15 +93,21 @@ namespace Microsoft.Docs.Build
                     {
                         // Remove author from contributors if author name is specified
                         var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                        if (error != null)
-                            errors.Add(error);
+                        errors.AddIfNotNull(error);
                         return result?.ToContributor();
                     }
                 }
                 else if (contributors.Count > 0)
                 {
                     // When author name is not specified, last contributor is author
-                    return await GetContributor(commits[commits.Count - 1]);
+                    for (var i = commits.Count - 1; i >= 0; i--)
+                    {
+                        var user = await GetContributor(commits[i]);
+                        if (user != null)
+                        {
+                            return user;
+                        }
+                    }
                 }
                 return null;
             }
