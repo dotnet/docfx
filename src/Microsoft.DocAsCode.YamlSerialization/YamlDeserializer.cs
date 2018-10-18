@@ -107,7 +107,6 @@ namespace Microsoft.DocAsCode.YamlSerialization
             TypeResolvers = new List<INodeTypeResolver>
             {
                 new TagNodeTypeResolver(_tagMappings),
-                new TypeNameInTagNodeTypeResolver(),
                 new DefaultContainersNodeTypeResolver(),
                 new ScalarYamlNodeTypeResolver()
             };
