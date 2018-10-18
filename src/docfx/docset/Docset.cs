@@ -45,6 +45,16 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
 
         /// <summary>
+        /// Gets the localization docset, it will be set when the current build locale is different with default locale
+        /// </summary>
+        public Docset LocalizationDocset { get; }
+
+        /// <summary>
+        /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
+        /// </summary>
+        public Docset FallbackDocset { get; }
+
+        /// <summary>
         /// Gets the restore path mappings
         /// </summary>
         public RestoreMap RestoreMap { get; }
@@ -68,16 +78,29 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.DefaultLocale, options, null)
+        {
+            if (!string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
+
+                // localization docset will share the same context, config, build locale and options with source docset
+                // source docset configuration will be overwrote by build locale overwrite configuration
+                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this);
+            }
+        }
+
+        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset)
         {
             _options = options;
             _context = context;
             Config = config;
-
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-
-            Locale = !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : Config.DefaultLocale;
-            Culture = CreateCultureInfo(Locale);
+            Locale = locale;
+            Culture = CreateCultureInfo(locale);
             RestoreMap = new RestoreMap(DocsetPath);
+            FallbackDocset = fallbackDocset;
+
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
