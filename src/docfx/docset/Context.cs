@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -26,6 +27,8 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) LoadYamlFile(Document file) => _cache.LoadYamlFile(file);
 
         public (List<Error> errors, JToken token) LoadJsonFile(Document file) => _cache.LoadJsonFile(file);
+
+        public (List<Error> errors, JObject metadata) ExtractMetadata(Document file) => _cache.ExtractMetadata(file);
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -125,6 +128,7 @@ namespace Microsoft.Docs.Build
         private sealed class Cache
         {
             private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
+            private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>> _metadataCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>>();
 
             public (List<Error> errors, JToken token) LoadYamlFile(Document file)
                 => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
@@ -142,10 +146,31 @@ namespace Microsoft.Docs.Build
                     return JsonUtility.Deserialize(content);
                 })).Value;
 
+            public (List<Error> errors, JObject metadata) ExtractMetadata(Document file)
+                => _metadataCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JObject)>(() =>
+                {
+                    var content = file.ReadText();
+                    GitUtility.CheckMergeConflictMarker(content, file.FilePath);
+                    return Extract(content);
+                })).Value;
+
             private string GetKeyFromFile(Document file)
             {
                 var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
                 return filePath + new FileInfo(filePath).LastWriteTime;
+            }
+
+            private (List<Error> errors, JObject metadata) Extract(string content)
+            {
+                var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
+                var match = yamlHeaderRegex.Match(content);
+                if (match.Success)
+                {
+                    var yamlContent = content.Substring(match.Groups[1].Index, match.Groups[1].Length);
+                    return ExtractYamlHeader.Extract(yamlContent);
+                }
+
+                return (new List<Error>(), default);
             }
         }
     }
