@@ -6,10 +6,5 @@ namespace Microsoft.Docs.Build
     internal class GitHubUserCacheFile
     {
         public GitHubUser[] Users { get; set; }
-
-        public GitHubUserCacheFile(GitHubUser[] users)
-        {
-            Users = users;
-        }
     }
 }
