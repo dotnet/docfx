@@ -15,11 +15,12 @@ namespace Microsoft.Docs.Build
     {
         private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
 
-        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, string filePath)
+        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(Document file, Context context)
         {
+            var tocContent = file.ReadText();
+            var filePath = file.FilePath;
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-
             var (ast, result) = Markup.Parse(tocContent);
             errors.AddRange(result.Errors);
             foreach (var block in ast)
@@ -35,9 +36,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            errors.AddRange(metaErrors);
             var tocModel = new TableOfContentsInputModel
             {
-                Metadata = result.Metadata,
+                Metadata = metadata,
             };
 
             try

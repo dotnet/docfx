@@ -151,26 +151,13 @@ namespace Microsoft.Docs.Build
                 {
                     var content = file.ReadText();
                     GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                    return Extract(content);
+                    return ExtractYamlHeader.Extract(content);
                 })).Value;
 
             private string GetKeyFromFile(Document file)
             {
                 var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
                 return filePath + new FileInfo(filePath).LastWriteTime;
-            }
-
-            private (List<Error> errors, JObject metadata) Extract(string content)
-            {
-                var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
-                var match = yamlHeaderRegex.Match(content);
-                if (match.Success)
-                {
-                    var yamlContent = content.Substring(match.Groups[1].Index, match.Groups[1].Length);
-                    return ExtractYamlHeader.Extract(yamlContent);
-                }
-
-                return (new List<Error>(), default);
             }
         }
     }

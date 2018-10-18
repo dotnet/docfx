@@ -79,8 +79,8 @@ namespace Microsoft.Docs.Build
                 var content = file.ReadText();
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    var (metadataErrors, metadata) = context.ExtractMetadata(file);
-                    errors.AddRange(metadataErrors);
+                    var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+                    errors.AddRange(metaErrors);
                     TryAddXref(xrefsByUid, LoadMarkdown(metadata, file));
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
