@@ -79,6 +79,15 @@ namespace Microsoft.DocAsCode.Common
             return new FileAbstractLayerBuilder(_reader, new ManifestFileWriter(manifest, manifestFolder, outputFolder));
         }
 
+        public FileAbstractLayerBuilder FallbackReadFromReader(IFileReader falbackReader)
+        {
+            if (falbackReader == null)
+            {
+                throw new ArgumentNullException(nameof(falbackReader));
+            }
+            return new FileAbstractLayerBuilder(CreateFallback(_reader, falbackReader), _writer);
+        }
+
         public FileAbstractLayerBuilder FallbackReadFromInput(FileAbstractLayer fal)
         {
             if (fal == null)

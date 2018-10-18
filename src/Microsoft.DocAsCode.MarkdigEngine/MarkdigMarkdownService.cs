@@ -181,7 +181,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var currentFilePath = ((RelativePath)relativeTo).GetPathFromWorkingFolder();
             var includedFilePath = ((RelativePath)path).BasedOn(currentFilePath);
             var includedFilePathWithoutWorkingFolder = includedFilePath.RemoveWorkingFolder();
+            var parentFileDirectoryToDocset = Path.GetDirectoryName(Path.Combine(_parameters.BasePath, ((RelativePath)InclusionContext.RootFile).RemoveWorkingFolder()));
 
+            ReportDependency(includedFilePathWithoutWorkingFolder, parentFileDirectoryToDocset);
             if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePathWithoutWorkingFolder))
             {
                 return (null, null);
@@ -190,6 +192,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePathWithoutWorkingFolder);
 
             return (content, includedFilePath);
+        }
+
+        private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
+        {
+            var expectedPhysicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
+
+            foreach (var physicalPath in expectedPhysicalPath)
+            {
+                var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, physicalPath);
+                InclusionContext.PushDependency((RelativePath)fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
+
+                if (File.Exists(physicalPath)) break;
+            }
         }
     }
 }

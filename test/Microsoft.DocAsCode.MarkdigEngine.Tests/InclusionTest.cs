@@ -61,7 +61,7 @@ description: include file
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md", "~/r/b.md" };
+            var expectedDependency = new List<string> { "a.md", "b.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -96,7 +96,7 @@ This is a file A included by another file.
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a(x).md" };
+            var expectedDependency = new List<string> { "a(x).md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -131,7 +131,7 @@ This is a file A included by another file.
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -211,7 +211,7 @@ Test Escaped Inline Included File: \[!include[refa](~/r/a.md)].
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -264,7 +264,7 @@ block content in Inline Inclusion.";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/a.md" };
+            var expectedDependency = new List<string> { "a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -328,11 +328,12 @@ Paragraph1
             Assert.Equal(
                 new[]
                 {
-                    "~/r/a/refc.md",
-                    "~/r/b/linkAndRefRoot.md",
-                    "~/r/c/c.md",
-                    "~/r/empty.md",
-                    "~/r/link/link2.md",
+                    "a/refc.md",
+                    "b/linkAndRefRoot.md",
+                    "c/c.md",
+                    "empty.md",
+                    "link/link2.md",
+                    "root.md",
                 },
                 dependency.OrderBy(x => x).ToArray());
         }
@@ -380,14 +381,14 @@ Paragraph1
             var dependency = marked.Dependency;
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/r/b/token.md" },
+                new[] { "../b/token.md" },
                 dependency.OrderBy(x => x).ToArray());
 
             marked = TestUtility.MarkupWithoutSourceInfo(d, "r/c/d/d.md");
             dependency = marked.Dependency;
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/r/b/token.md" },
+                new[] { "../../b/token.md" },
                 dependency.OrderBy(x => x).ToArray());
 
             dependency.Clear();
@@ -395,7 +396,7 @@ Paragraph1
             dependency = marked.Dependency;
             Assert.Equal($@"{expected}{expected}", marked.Html);
             Assert.Equal(
-                new[] { "~/r/a/a.md", "~/r/b/token.md", "~/r/c/d/d.md" },
+                new[] { "a/a.md", "b/token.md", "c/d/d.md" },
                 dependency.OrderBy(x => x).ToArray());
         }
 
@@ -415,184 +416,6 @@ Paragraph1
             var expected = @"<p>Paragraph1</p>" + "\n";
             Assert.Equal(expected, marked.Html);
         }
-
-        #region Fallback folders testing
-
-        [Fact(Skip = "won't support")]
-        [Trait("Related", "DfmMarkdown")]
-        public void TestFallback_Inclusion_random_name()
-        {
-            // -root_folder (this is also docset folder)
-            //  |- root.md
-            //  |- a_folder
-            //  |  |- a.md
-            //  |- token_folder
-            //  |  |- token1.md
-            // -fallback_folder
-            //  |- token_folder
-            //     |- token2.md
-
-            // 1. Prepare data
-            var uniqueFolderName = Path.GetRandomFileName();
-            var root = $@"1markdown root.md main content start.
-
-[!include[a](a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md ""This is a.md"")]
-
-markdown root.md main content end.";
-
-            var a = $@"1markdown a.md main content start.
-
-[!include[token1](../token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md ""This is token1.md"")]
-[!include[token1](../token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md ""This is token2.md"")]
-
-markdown a.md main content end.";
-
-            var token1 = $@"1markdown token1.md content start.
-
-[!include[token2](token2_{uniqueFolderName}.md ""This is token2.md"")]
-
-markdown token1.md content end.";
-
-            var token2 = @"**1markdown token2.md main content**";
-
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", token1);
-            TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
-
-            var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            //var marked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md");
-            var marked = service.Markup("place", "holder");
-            var dependency = marked.Dependency;
-
-            Assert.Equal($@"<p>1markdown root.md main content start.</p>
-<p>1markdown a.md main content start.</p>
-<p>1markdown token1.md content start.</p>
-<p><strong>1markdown token2.md main content</strong></p>
-<p>markdown token1.md content end.</p>
-<p><strong>1markdown token2.md main content</strong></p>
-<p>markdown a.md main content end.</p>
-<p>markdown root.md main content end.</p>
-".Replace("\r\n", "\n"), marked.Html);
-            Assert.Equal(
-                new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
-                dependency.OrderBy(x => x).ToArray());
-        }
-
-        [Fact(Skip = "won't support")]
-        [Trait("Related", "DfmMarkdown")]
-        public void TestFallback_InclusionWithCodeFences()
-        {
-            // -root_folder (this is also docset folder)
-            //  |- root.md
-            //  |- a_folder
-            //     |- a.md
-            //  |- code_folder
-            //     |- sample1.cs
-            // -fallback_folder
-            //  |- a_folder
-            //     |- code_in_a.cs
-            //  |- code_folder
-            //     |- sample2.cs
-
-            // 1. Prepare data
-            var root = @"markdown root.md main content start.
-
-mardown a content in root.md content start
-
-[!include[a](a_folder/a.md ""This is a.md"")]
-
-mardown a content in root.md content end
-
-sample 1 code in root.md content start
-
-[!CODE-cs[this is sample 1 code](code_folder/sample1.cs)]
-
-sample 1 code in root.md content end
-
-sample 2 code in root.md content start
-
-[!CODE-cs[this is sample 2 code](code_folder/sample2.cs)]
-
-sample 2 code in root.md content end
-
-markdown root.md main content end.";
-
-            var a = @"markdown a.md main content start.
-
-code_in_a code in a.md content start
-
-[!CODE-cs[this is code_in_a code](code_in_a.cs)]
-
-code_in_a in a.md content end
-
-markdown a.md a.md content end.";
-
-            var code_in_a = @"namespace code_in_a{}";
-
-            var sample1 = @"namespace sample1{}";
-
-            var sample2 = @"namespace sample2{}";
-
-            var uniqueFolderName = Path.GetRandomFileName();
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/root.md", root);
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/a_folder/a.md", a);
-            TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/code_folder/sample1.cs", sample1);
-            TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder/a_folder/code_in_a.cs", code_in_a);
-            TestUtility.WriteToFile($"{uniqueFolderName}/fallback_folder/code_folder/sample2.cs", sample2);
-
-            var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder") } };
-
-            // Verify root.md markup result
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            //var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
-            var rootMarked = service.Markup("place", "holder");
-            var rootDependency = rootMarked.Dependency;
-            Assert.Equal(@"<p>markdown root.md main content start.</p>
-<p>mardown a content in root.md content start</p>
-<p>markdown a.md main content start.</p>
-<p>code_in_a code in a.md content start</p>
-<pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
-</code></pre><p>code_in_a in a.md content end</p>
-<p>markdown a.md a.md content end.</p>
-<p>mardown a content in root.md content end</p>
-<p>sample 1 code in root.md content start</p>
-<pre><code class=""lang-cs"" name=""this is sample 1 code"">namespace sample1{}
-</code></pre><p>sample 1 code in root.md content end</p>
-<p>sample 2 code in root.md content start</p>
-<pre><code class=""lang-cs"" name=""this is sample 2 code"">namespace sample2{}
-</code></pre><p>sample 2 code in root.md content end</p>
-<p>markdown root.md main content end.</p>
-".Replace("\r\n", "\n"), rootMarked.Html);
-            Assert.Equal(
-                new[] { "../fallback_folder/a_folder/code_in_a.cs", "../fallback_folder/code_folder/sample2.cs", "a_folder/a.md", "a_folder/code_in_a.cs", "code_folder/sample1.cs", "code_folder/sample2.cs" },
-                rootDependency.OrderBy(x => x).ToArray());
-
-            // Verify a.md markup result
-            //var aMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), a, fallbackFolders, "a_folder/a.md");
-            var aMarked = service.Markup("place", "holder");
-            var aDependency = aMarked.Dependency;
-            Assert.Equal(@"<p>markdown a.md main content start.</p>
-<p>code_in_a code in a.md content start</p>
-<pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
-</code></pre><p>code_in_a in a.md content end</p>
-<p>markdown a.md a.md content end.</p>
-".Replace("\r\n", "\n"), aMarked.Html);
-            Assert.Equal(
-                new[] { "../../fallback_folder/a_folder/code_in_a.cs", "code_in_a.cs" },
-                aDependency.OrderBy(x => x).ToArray());
-        }
-
-        #endregion
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
@@ -618,7 +441,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             Assert.Equal(expected, marked.Html);
             Assert.Equal(
-                new[] { "~/ref1.md", "~/ref2.md", "~/ref3.md" },
+                new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
                 dependency.OrderBy(x => x).ToArray());
         }
 
@@ -651,7 +474,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             var dependency = marked.Dependency;
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
             Assert.Equal(
-              new[] { "~/inc1.md", "~/inc2.md", "~/inc3.md" },
+              new[] { "inc1.md", "inc2.md", "inc3.md" },
               dependency.OrderBy(x => x).ToArray());
         }
 
@@ -688,7 +511,7 @@ Test Include File
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            var expectedDependency = new List<string> { "../../include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 
@@ -722,7 +545,7 @@ body";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
             var dependency = result.Dependency;
-            var expectedDependency = new List<string> { "~/r/include/a.md" };
+            var expectedDependency = new List<string> { "../../include/a.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), dependency);
         }
 

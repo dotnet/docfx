@@ -48,6 +48,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static IEnumerable<object> Dependencies => (IEnumerable<object>)t_dependencies ?? ImmutableArray<object>.Empty;
 
         /// <summary>
+        /// Push dependency
+        /// </summary>
+        /// <param name="file"></param>
+        public static void PushDependency(object file)
+        {
+            t_dependencies = (t_dependencies ?? ImmutableHashSet<object>.Empty).Add(file);
+        }
+
+        /// <summary>
         /// Creates a scope to use the specified file.
         /// </summary>
         public static IDisposable PushFile(object file)
@@ -59,10 +68,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 // Clear dependencies for the root scope.
                 t_dependencies = ImmutableHashSet<object>.Empty;
                 t_rootFile = file;
-            }
-            else
-            {
-                t_dependencies = (t_dependencies ?? ImmutableHashSet<object>.Empty).Add(file);
             }
 
             t_files = current.Push(file);

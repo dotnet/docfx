@@ -61,7 +61,7 @@ key: value
             var expected = @"<p>Paragraph1</p>" + "\n";
             Assert.Equal(expected, mr.Html);
 
-            var expectedDependency = new List<string> { "~/x/b/linkAndRefRoot.md" };
+            var expectedDependency = new List<string> { "b/linkAndRefRoot.md" };
             Assert.Equal(expectedDependency.ToImmutableList(), mr.Dependency);
         }
 
