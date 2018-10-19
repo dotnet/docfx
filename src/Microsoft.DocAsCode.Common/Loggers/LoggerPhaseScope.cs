@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
-        private readonly AmbientContext? _ac = null;
+        private readonly AmbientContext? _ac;
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
@@ -95,8 +95,7 @@ namespace Microsoft.DocAsCode.Common
 
         private static LoggerPhaseScope Restore(object captured, LogLevel? perfLogLevel)
         {
-            var capturedScope = captured as CapturedLoggerPhaseScope;
-            if (capturedScope == null)
+            if (!(captured is CapturedLoggerPhaseScope capturedScope))
             {
                 return null;
             }

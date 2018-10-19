@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                         var doc = new HtmlDocument();
                         doc.Load(htmlFilePath);
                         var tags = doc.DocumentNode.SelectNodes("//a[@href]");
-                        if (tags != null && tags.Count > 0)
+                        if (tags?.Count > 0)
                         {
                             bool isTransformed = false;
                             foreach (var tag in tags)

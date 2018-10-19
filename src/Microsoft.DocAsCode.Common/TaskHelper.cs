@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Common
         {
             if (body == null)
             {
-                throw new ArgumentNullException("body");
+                throw new ArgumentNullException(nameof(body));
             }
 
             using (var semaphore = new SemaphoreSlim(maxParallelism))
@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Common
         {
             if (body == null)
             {
-                throw new ArgumentNullException("body");
+                throw new ArgumentNullException(nameof(body));
             }
 
             using (var semaphore = new SemaphoreSlim(maxParallelism))

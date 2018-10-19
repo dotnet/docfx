@@ -113,8 +113,7 @@ namespace Microsoft.DocAsCode.Common
 
                 foreach (var pair in dict)
                 {
-                    var key = pair.Key as string;
-                    if (key == null)
+                    if (!(pair.Key is string key))
                     {
                         throw new NotSupportedException("Only string key is supported.");
                     }

@@ -52,8 +52,6 @@ namespace Microsoft.DocAsCode.SubCommands
                         _exportTemplateConfig.All = true;
                     }
                     break;
-                default:
-                    break;
             }
             _assembly = this.GetType().Assembly;
             var templateRegex = new Regex($"{Regex.Escape(_assembly.GetName().Name)}\\.{Regex.Escape(Constants.EmbeddedTemplateFolderName)}\\.([\\S.]+)\\.zip");
@@ -69,8 +67,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     break;
                 case TemplateCommandType.Export:
                     ExecExportTemplate();
-                    break;
-                default:
                     break;
             }
         }

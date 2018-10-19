@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         }
 
         /// <summary>
-        /// Call a user-supplied validation delegate and throws an ArgumentException if the 
+        /// Call a user-supplied validation delegate and throws an ArgumentException if the
         /// delegate returns false.
         /// </summary>
         /// <param name="validationFunction">This function will be called to perform validation.

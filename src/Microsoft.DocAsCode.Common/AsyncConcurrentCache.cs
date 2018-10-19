@@ -41,10 +41,11 @@ namespace Microsoft.DocAsCode.Common
 
                 if (removeKeyOnFaulted)
                 {
-                    task.ContinueWith(task1 =>
-                    {
-                        _cache.TryRemove(key, out Lazy<Task<TValue>> useless);
-                    }, TaskContinuationOptions.OnlyOnFaulted);
+                    task.ContinueWith(_ => _cache.TryRemove(
+                        key,
+                        out Lazy<Task<TValue>> useless),
+                        TaskContinuationOptions.OnlyOnFaulted
+                        );
                 }
 
                 return task;

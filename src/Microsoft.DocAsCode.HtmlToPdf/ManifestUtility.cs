@@ -43,8 +43,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                         return content.RelativePath;
                     }
                     break;
-                default:
-                    break;
             }
 
             return null;
@@ -107,5 +105,4 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         Content,
         Resource,
     }
-
 }
