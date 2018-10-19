@@ -11,14 +11,37 @@ namespace Microsoft.Docs.Build
 {
     public static class ParallelUtilityTest
     {
-        [Fact]
-        public static async Task ThrowsTheSameException()
+        [Theory]
+        [InlineData(typeof(InvalidOperationException))]
+        [InlineData(typeof(OperationCanceledException))]
+        [InlineData(typeof(TaskCanceledException))]
+        public static async Task ThrowsTheSameExceptionAsync(Type exceptionType)
+        {
+            for (var i = 0; i < 1; i++)
+            {
+                var exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
+                Assert.Equal(exceptionType, exception.GetType());
+            }
+
+            Task Run(int n) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
+        }
+
+        [Theory]
+        [InlineData(typeof(InvalidOperationException))]
+        [InlineData(typeof(OperationCanceledException))]
+        [InlineData(typeof(TaskCanceledException))]
+        public static void ThrowsTheSameException(Type exceptionType)
         {
             for (var i = 0; i < 5; i++)
             {
-                await Assert.ThrowsAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
+                var exception = Assert.ThrowsAny<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
+                Assert.Equal(exceptionType, exception.GetType());
+            }
 
-                Task Run(int n) => n % 500 == 0 ? throw new Exception() : Task.CompletedTask;
+            void Run(int n)
+            {
+                if (n % 500 == 0)
+                    throw (Exception)Activator.CreateInstance(exceptionType);
             }
         }
 

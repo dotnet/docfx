@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -24,14 +25,22 @@ namespace Microsoft.Docs.Build
         {
             var done = 0;
             var total = source.Count();
-            Parallel.ForEach<T>(source, item =>
+
+            try
             {
-                action(item);
-                progress?.Invoke(Interlocked.Increment(ref done), total);
-            });
+                Parallel.ForEach(source, item =>
+                {
+                    action(item);
+                    progress?.Invoke(Interlocked.Increment(ref done), total);
+                });
+            }
+            catch (AggregateException ex)
+            {
+                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            }
         }
 
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
         {
             var done = 0;
             var total = 0;
@@ -51,11 +60,30 @@ namespace Microsoft.Docs.Build
             }
 
             queue.Complete();
-            return queue.Completion;
+
+            try
+            {
+                await queue.Completion;
+            }
+            catch (WrapException we)
+            {
+                ExceptionDispatchInfo.Capture(we.InnerException).Throw();
+            }
 
             async Task Run(T item)
             {
-                await action(item);
+                try
+                {
+                    await action(item);
+                }
+                catch (TaskCanceledException tce)
+                {
+                    throw new WrapException(tce);
+                }
+                catch (OperationCanceledException oce)
+                {
+                    throw new WrapException(oce);
+                }
                 progress?.Invoke(Interlocked.Increment(ref done), total);
             }
         }
@@ -63,7 +91,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
             ActionBlock<(T, bool)> queue = null;
 
@@ -76,7 +104,15 @@ namespace Microsoft.Docs.Build
             // Enqueue a virtual root node as a placeholder,
             // it is responsible for queueing each items in source parameter
             queue.Post((default, true));
-            return queue.Completion;
+
+            try
+            {
+                await queue.Completion;
+            }
+            catch (WrapException we)
+            {
+                ExceptionDispatchInfo.Capture(we.InnerException).Throw();
+            }
 
             async Task Run((T, bool) input)
             {
@@ -91,7 +127,18 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await action(item, Enqueue);
+                    try
+                    {
+                        await action(item, Enqueue);
+                    }
+                    catch (TaskCanceledException tce)
+                    {
+                        throw new WrapException(tce);
+                    }
+                    catch (OperationCanceledException oce)
+                    {
+                        throw new WrapException(oce);
+                    }
                 }
 
                 if (Interlocked.Decrement(ref running) == 0)
@@ -133,6 +180,12 @@ namespace Microsoft.Docs.Build
 
                 Debug.Assert(queue.Completion.IsFaulted);
             }
+        }
+
+        private class WrapException : Exception
+        {
+            public WrapException(Exception innerException)
+                : base("", innerException) { }
         }
     }
 }
