@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                         continue;
 
                     var contributor = await GetContributor(commit);
-                    if (!excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
+                    if (contributor != null && !excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
                     {
                         contributors.Add(contributor);
                     }
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                 errors.AddIfNotNull(error);
 
-                return user.ToContributor();
+                return user?.ToContributor();
             }
 
             async Task<Contributor> GetAuthor()
