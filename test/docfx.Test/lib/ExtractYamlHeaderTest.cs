@@ -46,7 +46,7 @@ this: is a frontmatter
         [InlineData(
 @"---
 hello
-...", "yaml-header-not-object", "Expect yaml header to be an object, but got an scalar")]
+...", "yaml-header-not-object", "Expect yaml header to be an object, but got a scalar")]
         [InlineData(
 @"---
 - 1
