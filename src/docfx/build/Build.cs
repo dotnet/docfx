@@ -165,9 +165,9 @@ namespace Microsoft.Docs.Build
 
                 return (true, dependencies);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), ex.Error);
+                context.Report(file.ToString(), dex.Error);
                 return (true, DependencyMap.Empty);
             }
         }
