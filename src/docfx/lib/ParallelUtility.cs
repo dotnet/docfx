@@ -76,10 +76,6 @@ namespace Microsoft.Docs.Build
                 {
                     await action(item);
                 }
-                catch (TaskCanceledException tce)
-                {
-                    throw new WrapException(tce);
-                }
                 catch (OperationCanceledException oce)
                 {
                     throw new WrapException(oce);
@@ -130,10 +126,6 @@ namespace Microsoft.Docs.Build
                     try
                     {
                         await action(item, Enqueue);
-                    }
-                    catch (TaskCanceledException tce)
-                    {
-                        throw new WrapException(tce);
                     }
                     catch (OperationCanceledException oce)
                     {
