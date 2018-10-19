@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string address)
             => Docs.Build.Restore.GetRestoreRootDir(address, AppData.UrlRestoreDir);
 
-        public static async Task<string> Restore(string address, HttpSecretConfig[] rules)
+        public static async Task<string> Restore(string address, Config config)
         {
-            var tempFile = await DownloadToTempFile(address, rules);
+            var tempFile = await DownloadToTempFile(address, config);
 
             var fileVersion = "";
             using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
@@ -92,14 +92,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<string> DownloadToTempFile(string address, HttpSecretConfig[] rules)
+        private static async Task<string> DownloadToTempFile(string address, Config config)
         {
             Directory.CreateDirectory(AppData.UrlRestoreDir);
             var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
 
             try
             {
-                var response = await RuledHttpClient.GetAsync(address, rules);
+                var response = await HttpClientUtility.GetAsync(address, config);
 
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))

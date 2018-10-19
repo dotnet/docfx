@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreRootDir(string url)
             => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
 
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string token, string locale)
+        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
 
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             async Task<List<(string href, string head)>> RestoreGitRepo(string restoreDir, List<string> hrefs)
             {
-                var workTreeHeads = await RestoreWorkTree.AddWorkTrees(restoreDir, hrefs, token);
+                var workTreeHeads = await RestoreWorkTree.AddWorkTrees(restoreDir, hrefs, config);
 
                 foreach (var (_, workTreeHead) in workTreeHeads)
                 {
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var (locRemote, _) = LocalizationConfig.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
+                var locRemote = LocalizationConvention.GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
                 var locRepoUrl = $"{locRemote}#{repo.Branch}";
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);

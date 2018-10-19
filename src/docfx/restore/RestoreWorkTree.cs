@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         public static string GetRestoreWorkTreeDir(string restoreDir, string workTreeHead)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
 
-        public static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs, string token)
+        public static async Task<List<(string href, string head)>> AddWorkTrees(string restoreDir, List<string> hrefs, Config config)
         {
             Debug.Assert(!string.IsNullOrEmpty(restoreDir));
             Debug.Assert(hrefs != null && hrefs.Any());
@@ -44,16 +44,24 @@ namespace Microsoft.Docs.Build
 
             Task FetchOrCloneRepo()
             {
+                var gitConfigs =
+                       from http in config.Http
+                       where url.StartsWith(http.Key)
+                       from header in http.Value.Headers
+                       select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"";
+
+                var gitConfig = string.Join(' ', gitConfigs);
+
                 if (GitUtility.IsRepo(restoreDir))
                 {
                     // already exists, just pull the new updates from remote
                     // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
-                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", token);
+                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", gitConfig);
                 }
                 else
                 {
                     // doesn't exist yet, clone this repo to a specified branch
-                    return GitUtility.Clone(restoreDir, url, restorePath, token: token, bare: true);
+                    return GitUtility.Clone(restoreDir, url, restorePath, gitConfig: gitConfig, bare: true);
                 }
             }
 

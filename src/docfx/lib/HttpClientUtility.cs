@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RuledHttpClient
+    internal static class HttpClientUtility
     {
         private const int RetryCount = 3;
         private const int RetryInterval = 1000;
         private static readonly HttpClient s_httpClient = new HttpClient();
 
-        public static async Task<HttpResponseMessage> GetAsync(string requestUri, HttpSecretConfig[] rules)
+        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config)
         {
             HttpResponseMessage response;
             for (var i = 0; i < RetryCount; i++)
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 {
                     // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
                     // "The request message was already sent. Cannot send the same request message multiple times."
-                    var message = CreateHttpRequestMessage(requestUri, rules);
+                    var message = CreateHttpRequestMessage(requestUri, config);
                     message.Method = HttpMethod.Get;
                     response = await s_httpClient.SendAsync(message);
                 }
@@ -39,21 +39,21 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public static async Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, HttpSecretConfig[] rules)
+        public static async Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content, Config config)
         {
-            var message = CreateHttpRequestMessage(requestUri, rules);
+            var message = CreateHttpRequestMessage(requestUri, config);
             message.Method = HttpMethod.Put;
             message.Content = content;
             return await s_httpClient.SendAsync(message);
         }
 
-        private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, HttpSecretConfig[] rules)
+        private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
         {
             var message = new HttpRequestMessage();
 
-            foreach (var rule in rules)
+            foreach (var (baseUrl, rule) in config.Http)
             {
-                if (rule.Match(requestUri))
+                if (requestUri.StartsWith(baseUrl))
                 {
                     // TODO: merge query if requestUri also contains query
                     message.RequestUri = new Uri(requestUri + rule.Query);
@@ -67,14 +67,6 @@ namespace Microsoft.Docs.Build
 
             message.RequestUri = new Uri(requestUri);
             return message;
-        }
-
-        private static bool Match(this HttpSecretConfig rule, string uri)
-        {
-            if (!string.IsNullOrEmpty(rule.BaseUrl) && uri.StartsWith(rule.BaseUrl))
-                return true;
-
-            return false;
         }
     }
 }

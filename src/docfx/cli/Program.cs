@@ -87,9 +87,8 @@ namespace Microsoft.Docs.Build
                 // Restore command
                 // usage: docfx restore [docset] [--git-token token] [--locale locale]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                syntax.DefineOption("git-token", ref options.GitToken, "The git token used to restore dependency repositories");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
+                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // Build command
                 // usage: docfx build [docset] [-o/--output output] [--log log] [--legacy] [--git-token token] [--locale locale]
@@ -98,7 +97,7 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                 syntax.DefineOption("github-token", ref options.GitHubToken, "The GitHub token used to get contribution information from GitHub API");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
-                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
+                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
             });
 
             return (command, docset, options);

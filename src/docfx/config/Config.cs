@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -105,17 +106,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the authorization keys for required resources access
         /// </summary>
-        public readonly HttpConfig Http = new HttpConfig();
+        public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
 
         /// <summary>
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
         /// </summary>
         public readonly GitHubConfig GitHub = new GitHubConfig();
-
-        /// <summary>
-        /// Gets the configturation related to git repositories, usually used to clone a repo.
-        /// </summary>
-        public readonly GitConfig Git = new GitConfig();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -138,6 +134,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly LocalizationMapping LocalizationMapping;
 
+        /// <summary>
+        /// Gets the config file name.
+        /// </summary>
+        [JsonIgnore]
+        public string ConfigFileName { get; private set; }
+
         public IEnumerable<string> GetExternalReferences()
         {
             foreach (var url in Xref)
@@ -152,14 +154,15 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error>, Config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
-            if (!File.Exists(configPath))
+            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
-            return LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            config.ConfigFileName = configFileName;
+            return (errors, config);
         }
 
         /// <summary>
@@ -168,8 +171,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
         public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = Path.Combine(docsetPath, "docfx.yml");
-            var exists = File.Exists(configPath);
+            var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
             if (exists)
             {
                 (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
@@ -182,13 +184,31 @@ namespace Microsoft.Docs.Build
             return exists;
         }
 
+        public static bool TryGetConfigPath(string parentPath, out string configPath, out string configFile)
+        {
+            configFile = "docfx.yml";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+
+            configFile = "docfx.json";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+            return false;
+        }
+
         private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml
+            // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
             var errors = new List<Error>();
             Config config = null;
 
-            var (loadErrors, configObject) = LoadConfigObject(configPath);
+            var (loadErrors, configObject) = LoadConfigObject(configPath, configPath);
             var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
@@ -215,9 +235,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, JObject) LoadConfigObject(string filePath)
+        private static (List<Error>, JObject) LoadConfigObject(string fileName, string filePath)
         {
-            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            var errors = new List<Error>();
+            JObject config = null;
+            if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            {
+                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            }
+            else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+            }
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
@@ -226,10 +255,11 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var errors = new List<Error>();
 
-            if (File.Exists(AppData.GlobalConfigPath))
+            var globalConfigPath = AppData.GlobalConfigPath;
+            if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(docsetPath, AppData.GlobalConfigPath);
-                (errors, result) = LoadConfigObject(filePath);
+                var filePath = restoreMap.GetUrlRestorePath(docsetPath, globalConfigPath);
+                (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
             if (config[ConfigConstants.Extend] is JArray extends)
@@ -239,7 +269,7 @@ namespace Microsoft.Docs.Build
                     if (extend is JValue value && value.Value is string str)
                     {
                         var filePath = restoreMap.GetUrlRestorePath(docsetPath, str);
-                        var (extendErros, extendConfigObject) = LoadConfigObject(filePath);
+                        var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
                         result.Merge(extendConfigObject, JsonUtility.MergeSettings);
                     }

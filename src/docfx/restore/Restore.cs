@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config);
                 });
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             ReportErrors(report, errors);
 
             // restore git repos includes dependency repos and loc repos
-            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, extendedConfig, restoreChild, config.Git.AuthToken, restoreLocRepo ? options.Locale : null);
+            var workTreeHeadMappings = await RestoreGit.Restore(docsetPath, extendedConfig, restoreChild, restoreLocRepo ? options.Locale : null);
             foreach (var (href, workTreeHead) in workTreeHeadMappings)
             {
                 restoreLock.Git[href] = workTreeHead;
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, config.Http.Secrets);
+                    restoreUrlMappings[restoreUrl] = await RestoreUrl.Restore(restoreUrl, extendedConfig);
                 });
 
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
