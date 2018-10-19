@@ -30,9 +30,6 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
-                os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
-
             if (spec.Watch)
             {
                 await RunWatchCore(docsetPath, spec);
