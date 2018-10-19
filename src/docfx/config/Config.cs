@@ -59,8 +59,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the file metadata added to each document.
+        /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
+        public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
 
         /// <summary>
         /// Gets the input and output path mapping configuration of documents.
@@ -320,7 +321,6 @@ namespace Microsoft.Docs.Build
         private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
-            config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
             config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
@@ -368,47 +368,6 @@ namespace Microsoft.Docs.Build
                 return result;
             }
             return token;
-        }
-
-        private static JToken ExpandGlobConfigs(JToken token)
-        {
-            if (token == null)
-                return null;
-            if (token is JObject obj)
-                token = ToGlobConfigs(obj);
-            if (token is JArray arr)
-            {
-                foreach (var item in arr)
-                {
-                    ExpandGlobConfig(item);
-                }
-            }
-            return token;
-        }
-
-        private static void ExpandGlobConfig(JToken item)
-        {
-            if (item is JObject obj)
-            {
-                ExpandIncludeExclude(obj);
-            }
-        }
-
-        private static JArray ToGlobConfigs(JObject obj)
-        {
-            var result = new JArray();
-
-            foreach (var (key, value) in obj)
-            {
-                result.Add(new JObject
-                {
-                    [ConfigConstants.Include] = key,
-                    [ConfigConstants.Value] = value,
-                    [ConfigConstants.IsGlob] = false,
-                });
-            }
-
-            return result;
         }
 
         private static JObject ExpandFiles(JToken file)

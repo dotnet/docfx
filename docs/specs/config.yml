@@ -112,12 +112,10 @@ outputs:
 inputs:
   docfx.yml: |
     fileMetadata:
-      docs/:
-        key: value
-      docs/index.md:
-        key: another value
-      docs/special/chars/allowed,.md:
-        key: special chars
+      key:
+        docs/**: value
+        docs/index.md: another value
+        docs/special/chars/allowed,.md: special chars
   docs/a.md:
   docs/b.md:
   docs/index.md:
@@ -133,63 +131,14 @@ outputs:
     { "metadata": { "key": "special chars" } }
   build.manifest:
 ---
-# File metadata of array form
-inputs:
-  docfx.yml: |
-    globalMetadata:
-      key: general
-    fileMetadata:
-    - include: docs/**
-      exclude:
-      - docs/index.md
-      - docs/b.md
-      value:
-        key: exclude b
-    - include:
-      - docs/index.md
-      value:
-        key: index
-    - include: docs/folder1/**
-      exclude: docs/folder1/exclude/**
-      value:
-        key1: value1
-    - include:
-      - docs/folder21/**
-      - docs/folder22/**
-      value:
-        key2: value2
-  docs/a.md:
-  docs/b.md:
-  docs/index.md:
-  docs/folder1/f1-include.md:
-  docs/folder1/exclude/f1-exclude.md:
-  docs/folder21/f2-include1.md:
-  docs/folder22/f2-include2.md:
-outputs:
-  docs/a.json: |
-    { "metadata": { "key": "exclude b" } }
-  docs/b.json: |
-    { "metadata": { "key": "general" } }
-  docs/index.json: |
-    { "metadata": { "key": "index" } }
-  docs/folder1/f1-include.json: |
-    { "metadata": { "key1": "value1"} }
-  docs/folder1/exclude/f1-exclude.json: |
-    { "metadata": {"!key1": null} }
-  docs/folder21/f2-include1.json: |
-    { "metadata": {"key2": "value2"} }
-  docs/folder22/f2-include2.json: |
-    { "metadata": {"key2": "value2"} }
-  build.manifest:
----
 # File metadata overwrite global metadata
 inputs:
   docfx.yml: |
     globalMetadata:
       key: value
     fileMetadata:
-      docs/:
-        key: another value
+      key:
+        docs/**: another value
   docs/a.md:
 outputs:
   docs/a.json: |

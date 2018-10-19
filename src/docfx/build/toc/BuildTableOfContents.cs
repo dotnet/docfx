@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 buildChild(article);
             }
 
-            var model = new TableOfContentsModel { Items = tocModel, Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), tocMetadata) };
+            var model = new TableOfContentsModel { Items = tocModel, Metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata) };
 
             return (errors, model, dependencyMapBuilder.Build());
         }

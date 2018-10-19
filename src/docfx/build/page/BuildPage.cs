@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var dependencies = new DependencyMapBuilder();
 
             var (errors, schema, model, yamlHeader) = await Load(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader));
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
