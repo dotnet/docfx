@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,188 +11,171 @@ namespace Microsoft.Docs.Build
     public class GitHubUserCacheTest
     {
         [Fact]
-        public void GetUserByLogin()
+        public async Task GetUserByLoginAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByLogin("alice"),
-                "{}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 1,
                 0);
         }
 
         [Fact]
-        public void GetSameUserByLoginMultipleTimesShouldCallGitHubOnce()
+        public async Task GetSameUserByLoginMultipleTimesShouldCallGitHubOnceAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) =>
                 {
-                    await cache.GetByLogin("alice");
-                    await cache.GetByLogin("alice");
+                    await ParallelUtility.ForEach(Enumerable.Range(0, 20), async (_) => await cache.GetByLogin("alice"));
                 },
-                "{}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 1,
                 0);
         }
 
         [Fact]
-        public void GetUserByLoginFromCache()
+        public async Task GetUserByLoginFromCacheAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByLogin("alice"),
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 0,
                 0);
         }
 
         [Fact]
-        public void GetUserByCommmit()
+        public async Task GetUserByCommmitAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1"),
-                "{}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 1,
                 1);
         }
 
         [Fact]
-        public void GetSameUserByCommmitMultipleTimesShouldCallGitHubOnce()
+        public async Task GetSameUserByCommmitMultipleTimesShouldCallGitHubOnceAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) =>
                 {
-                    await cache.GetByCommit("alice@contoso.com", "owner", "name", "1");
-                    await cache.GetByCommit("alice@contoso.com", "owner", "name", "2");
+                    await ParallelUtility.ForEach(
+                        Enumerable.Range(0, 20),
+                        async (i) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1"));
                 },
-                "{}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 1,
                 1);
         }
 
         [Fact]
-        public void GetUserByCommmitFromCache()
+        public async Task GetUserByCommmitFromCacheAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1"),
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
                 0,
                 0);
         }
 
         [Fact]
-        public void GetUserByCommmitWithNewEmail()
+        public async Task GetUserByCommmitWithNewEmailAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1"),
-                "{}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\",\"alice_new@contoso.com\"]}]}",
+                "[]",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]".Replace("\'", "\""),
                 1,
                 1);
         }
 
         [Fact]
-        public void GetUserByCommmitWithNewEmailCanCompleteCache()
+        public async Task GetUserByCommmitWithNewEmailCanCompleteCacheAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByCommit("alice_new@contoso.com", "owner", "name", "1"),
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\"]}]}",
-                "{\"users\":[{\"id\":1,\"login\":\"alice\",\"name\":\"Alice\",\"emails\":[\"alice@contoso.com\",\"alice_new@contoso.com\"]}]}",
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]".Replace("\'", "\""),
+                "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com','alice_new@contoso.com']}]".Replace("\'", "\""),
                 0,
                 1);
         }
 
         [Fact]
-        public void GetUserByInvalidLogin()
+        public async Task GetUserByInvalidLoginAsync()
         {
-            VerifyCore(
+            await VerifyCore(
                 async (cache) => await cache.GetByLogin("invalid"),
-                "{}",
-                "{\"users\":[{\"login\":\"invalid\",\"emails\":[]}]}",
+                "[]",
+                "[{'login':'invalid','emails':[]}]".Replace("\'", "\""),
                 1,
-                0); ;
-        }
-        [Fact]
-        public void GetUserByInvalidLoginFromCache()
-        {
-            VerifyCore(
-                async (cache) => await cache.GetByLogin("invalid"),
-                "{\"users\":[{\"login\":\"invalid\",\"emails\":[]}]}",
-                "{\"users\":[{\"login\":\"invalid\",\"emails\":[]}]}",
-                0,
-                0); ;
+                0);
         }
 
-        private async void VerifyCore(Action<GitHubUserCache> test, string inputCache, string expectedOutputCache, int expectedGetUserByLoginCall, int expectedGetLoginByCommitCall)
+        [Fact]
+        public async Task GetUserByInvalidLoginFromCacheAsync()
+        {
+            await VerifyCore(
+                async (cache) => await cache.GetByLogin("invalid"),
+                "[{'login':'invalid','emails':[]}]".Replace("\'", "\""),
+                "[{'login':'invalid','emails':[]}]".Replace("\'", "\""),
+                0,
+                0);
+        }
+
+        private async Task VerifyCore(Func<GitHubUserCache, Task> test, string cacheUsersJson, string expectedOutputCacheUsersJson, int expectedGetUserByLoginCall, int expectedGetLoginByCommitCall)
         {
             // Arrange
-            var docsetPath = Path.Combine("github-user-cache-test", Path.GetRandomFileName());
-            if (Directory.Exists(docsetPath))
-                Directory.Delete(docsetPath, true);
-            Directory.CreateDirectory(docsetPath);
-            var docfxYmlPath = Path.Combine(docsetPath, "docfx.yml");
-            var gitHubUserCachePath = Path.Combine(docsetPath, "cache.json");
-            File.WriteAllText(docfxYmlPath, @"gitHub:
-  userCache: cache.json");
-            File.WriteAllText(gitHubUserCachePath, inputCache);
-
-            var (_, config) = Config.Load(docsetPath, new CommandLineOptions());
-            var options = new CommandLineOptions();
-            var docset = new Docset(new Context(new Report(), "_site"), docsetPath, config, options);
-            var cache = await GitHubUserCache.Create(docset, null);
+            var (_, users) = JsonUtility.Deserialize<GitHubUser[]>(cacheUsersJson);
+            var cache = new GitHubUserCache(users, "cache.json", 7 * 24);
             var accessor = new MockGitHubAccessor();
             cache._getUserByLoginFromGitHub = accessor.GetUserByLogin;
             cache._getLoginByCommitFromGitHub = accessor.GetLoginByCommit;
 
             // Act
-            test(cache);
-            await cache.SaveChanges();
+            await test(cache);
 
             // Assert
-            var outputCache = File.ReadAllText(gitHubUserCachePath);
             Assert.Equal(expectedGetUserByLoginCall, accessor.GetUserByLoginCallCount);
-            Assert.Equal(expectedGetLoginByCommitCall, accessor.GetLoginbyCommitCallCount);
-            AssertCacheEqual(expectedOutputCache, outputCache);
-
-            Directory.Delete(docsetPath, true);
+            Assert.Equal(expectedGetLoginByCommitCall, accessor.GetLoginByCommitCallCount);
+            var (_, expectedUsers) = JsonUtility.Deserialize<GitHubUser[]>(expectedOutputCacheUsersJson);
+            AssertUsersEqual(expectedUsers, cache.Users.ToArray());
         }
 
-        private void AssertCacheEqual(string expected, string actual)
+        private void AssertUsersEqual(GitHubUser[] expectedUsers, GitHubUser[] actualUsers)
         {
-            var (_, expectedObj) = JsonUtility.Deserialize<JObject>(expected);
-            var (_, actualObj) = JsonUtility.Deserialize<JObject>(actual);
-            var expectedUsers = expectedObj["users"] as JArray;
-            var actualUsers = actualObj["users"] as JArray;
-            Assert.NotNull(expectedUsers);
-            Assert.NotNull(actualUsers);
-
-            Assert.Equal(expectedUsers.Count, actualUsers.Count);
-            for (var i = 0; i < expectedUsers.Count; i++)
+            Assert.Equal(expectedUsers.Length, actualUsers.Length);
+            for (var i = 0; i < expectedUsers.Length; i++)
             {
-                var expectedUser = expectedUsers[i] as JObject;
-                var actualUser = actualUsers[i] as JObject;
-
-                expectedUser["emails"] = new JArray(expectedUser["emails"].OrderBy(e => e));
-                actualUser["emails"] = new JArray(actualUser["emails"].OrderBy(e => e));
-                actualUser.Remove("expiry");
-
-                Assert.True(JToken.DeepEquals(expectedUser, actualUser));
+                AssertUserEqual(expectedUsers[i], actualUsers[i]);
             }
+        }
+
+        private void AssertUserEqual(GitHubUser expectedUser, GitHubUser actualUser)
+        {
+            Assert.Equal(expectedUser.Id, actualUser.Id);
+            Assert.Equal(expectedUser.Login, actualUser.Login);
+            Assert.Equal(expectedUser.Name, actualUser.Name);
+            Assert.True(expectedUser.Emails.OrderBy(u => u).SequenceEqual(actualUser.Emails.OrderBy(u => u)));
         }
 
         private sealed class MockGitHubAccessor
         {
-            public int GetUserByLoginCallCount { get; private set; }
+            public int GetUserByLoginCallCount { get { return _getUserByLoginCallCount; } }
 
-            public int GetLoginbyCommitCallCount { get; private set; }
+            public int GetLoginByCommitCallCount { get { return _getLoginByCommitCallCount; } }
+
+            private int _getUserByLoginCallCount;
+            private int _getLoginByCommitCallCount;
 
             public Task<(Error, GitHubUser)> GetUserByLogin(string login)
             {
-                GetUserByLoginCallCount++;
+                Interlocked.Increment(ref _getUserByLoginCallCount);
                 switch (login)
                 {
                     case "alice":
@@ -203,11 +187,10 @@ namespace Microsoft.Docs.Build
 
             public Task<(Error, string logiin)> GetLoginByCommit(string repoOwner, string repoName, string commitSha)
             {
-                GetLoginbyCommitCallCount++;
+                Interlocked.Increment(ref _getLoginByCommitCallCount);
                 switch ($"{repoOwner}/{repoName}/{commitSha}")
                 {
                     case "owner/name/1":
-                    case "owner/name/2":
                         return Task.FromResult<(Error, string)>((null, "alice"));
                     default:
                         return Task.FromResult<(Error, string)>(default);
