@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, JObject metadata) Extract(string content)
         {
             var errors = new List<Error>();
-            var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
+            var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n(\-{3}|\.{3})(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
             var match = yamlHeaderRegex.Match(content);
             if (match.Success)
             {
