@@ -17,11 +17,8 @@ namespace Microsoft.Docs.Build
         [InlineData(typeof(TaskCanceledException))]
         public static async Task ThrowsTheSameExceptionAsync(Type exceptionType)
         {
-            for (var i = 0; i < 1; i++)
-            {
-                var exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
-                Assert.Equal(exceptionType, exception.GetType());
-            }
+            var exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
+            Assert.Equal(exceptionType, exception.GetType());
 
             Task Run(int n) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
         }
@@ -32,11 +29,8 @@ namespace Microsoft.Docs.Build
         [InlineData(typeof(TaskCanceledException))]
         public static void ThrowsTheSameException(Type exceptionType)
         {
-            for (var i = 0; i < 5; i++)
-            {
-                var exception = Assert.ThrowsAny<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
-                Assert.Equal(exceptionType, exception.GetType());
-            }
+            var exception = Assert.ThrowsAny<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
+            Assert.Equal(exceptionType, exception.GetType());
 
             void Run(int n)
             {
