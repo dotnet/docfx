@@ -15,28 +15,12 @@ namespace Microsoft.Docs.Build
         [InlineData(typeof(InvalidOperationException))]
         [InlineData(typeof(OperationCanceledException))]
         [InlineData(typeof(TaskCanceledException))]
-        public static async Task ThrowsTheSameExceptionAsync(Type exceptionType)
+        public static async Task ThrowsTheSameException(Type exceptionType)
         {
             var exception = await Assert.ThrowsAnyAsync<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
             Assert.Equal(exceptionType, exception.GetType());
 
             Task Run(int n) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
-        }
-
-        [Theory]
-        [InlineData(typeof(InvalidOperationException))]
-        [InlineData(typeof(OperationCanceledException))]
-        [InlineData(typeof(TaskCanceledException))]
-        public static void ThrowsTheSameException(Type exceptionType)
-        {
-            var exception = Assert.ThrowsAny<Exception>(() => ParallelUtility.ForEach(Enumerable.Range(0, 1000), Run));
-            Assert.Equal(exceptionType, exception.GetType());
-
-            void Run(int n)
-            {
-                if (n % 500 == 0)
-                    throw (Exception)Activator.CreateInstance(exceptionType);
-            }
         }
 
         [Fact]

@@ -18,5 +18,11 @@ namespace Microsoft.Docs.Build
         {
             Error = error;
         }
+
+        public static bool IsDocfxException(Exception ex, out DocfxException docfxException)
+        {
+            docfxException = ex as DocfxException ?? ex.InnerException as DocfxException;
+            return docfxException != null;
+        }
     }
 }
