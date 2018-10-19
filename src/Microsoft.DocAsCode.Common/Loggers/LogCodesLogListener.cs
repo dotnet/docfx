@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Common
             Codes.AddOrUpdate(
                 item.File,
                 ImmutableHashSet.Create(item.Code),
-                (k, v) => v.Add(item.Code));
+                (_, v) => v.Add(item.Code));
         }
     }
 }

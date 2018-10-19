@@ -145,10 +145,7 @@ namespace Microsoft.DocAsCode.Common
                 _rollbacked = true;
             }
 
-            public void Reset()
-            {
-                throw new NotImplementedException();
-            }
+            public void Reset() => throw new NotImplementedException();
         }
     }
 }

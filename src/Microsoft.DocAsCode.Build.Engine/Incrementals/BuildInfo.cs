@@ -52,7 +52,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// <summary>
         /// Is this cache valid.
         /// </summary>
-        public bool IsValid { get; set; }
+        public bool IsValid { get; set; } = true;
+        /// <summary>
+        /// Details about why cache is not valid.
+        /// </summary>
+        public string Message { get; set; }
 
         public static BuildInfo Load(string baseDir)
         {
@@ -74,6 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             baseDir = Path.GetFullPath(expanded);
             if (!File.Exists(Path.Combine(baseDir, FileName)))
             {
+                Logger.LogInfo($"Cannot load build info: '{FileName}' not found under '{baseDir}'");
                 return null;
             }
 
@@ -83,6 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
                 if (onlyValid && !buildInfo.IsValid)
                 {
+                    Logger.LogInfo($"Cannot load build info as cache is invalid: {buildInfo.Message}");
                     return null;
                 }
 

@@ -24,11 +24,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static void SetResources(ComputerResourceCollection resources)
         {
-            if (resources == null)
-            {
-                throw new ArgumentNullException(nameof(resources));
-            }
-            _resources = resources;
+            _resources = resources ?? throw new ArgumentNullException(nameof(resources));
         }
 
         public static ComputerResource Require(ComputerResourceType type)

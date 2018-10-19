@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     },
                 new MultiAnswerQuestion(
                     "What are the locations of your markdown files overwriting triple slash comments?",
-                    (s, m, c) =>
+                    (s, m, _) =>
                     {
                         if (s != null)
                         {
@@ -99,9 +99,7 @@ namespace Microsoft.DocAsCode.SubCommands
              {
                 new SingleAnswerQuestion(
                     "Where to save the generated documentation?",
-                    (s, m, c) => {
-                        m.Build.Destination = s;
-                    },
+                    (s, m, _) => m.Build.Destination = s,
                     "_site")
                 {
                     Descriptions = new string[]
@@ -116,7 +114,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 // IF no matching: WARN [init]: There is no file matching this pattern.
                 new MultiAnswerQuestion(
                     "What are the locations of your conceptual files?",
-                    (s, m, c) =>
+                    (s, m, _) =>
                     {
                         if (s != null)
                         {
@@ -139,7 +137,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 },
                 new MultiAnswerQuestion(
                     "What are the locations of your resource files?",
-                    (s, m, c) =>
+                    (s, m, _) =>
                     {
                         if (s != null)
                         {
@@ -157,7 +155,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 },
                 new MultiAnswerQuestion(
                     "Do you want to specify external API references?",
-                    (s, m, c) =>
+                    (s, m, _) =>
                     {
                         if (s != null)
                         {
@@ -174,7 +172,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 },
                 new MultiAnswerQuestion(
                     "What documentation templates do you want to use?",
-                    (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
+                    (s, m, _) => { if (s != null) m.Build.Templates.AddRange(s); },
                     new string[] { "default" })
                 {
                     Descriptions = new string[]
@@ -244,7 +242,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 else
                 {
-                    outputFolder = StringExtension.ToDisplayPath(Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder));
+                    outputFolder = Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder).ToDisplayPath();
                     GenerateSeedProject(outputFolder, config, _options.Quiet, _options.Overwrite);
                 }
             }
@@ -256,7 +254,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
         {
-            var path = StringExtension.ToDisplayPath(Path.Combine(outputFolder ?? string.Empty, ConfigName));
+            var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
             if (File.Exists(path))
             {
                 if (!ProcessOverwriteQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?", quiet, overwrite))
@@ -295,7 +293,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
-                    $"Created folder {StringExtension.ToDisplayPath(folder)}".WriteLineToConsole(ConsoleColor.Gray);
+                    $"Created folder {folder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
                 }
             }
 
@@ -361,7 +359,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                     }
 
                     File.WriteAllText(filePath, content);
-                    $"Created File {StringExtension.ToDisplayPath(filePath)}".WriteLineToConsole(ConsoleColor.Gray);
+                    $"Created File {filePath.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
                 }
             }
 
@@ -370,12 +368,12 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             if (overwrite || !File.Exists(path))
             {
                 SaveConfigFile(path, config);
-                $"Created config file {StringExtension.ToDisplayPath(path)}".WriteLineToConsole(ConsoleColor.Gray);
+                $"Created config file {path.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
             }
 
-            $"Successfully generated default docfx project to {StringExtension.ToDisplayPath(outputFolder)}".WriteLineToConsole(ConsoleColor.Green);
+            $"Successfully generated default docfx project to {outputFolder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Green);
             "Please run:".WriteLineToConsole(ConsoleColor.Gray);
-            $"\tdocfx \"{StringExtension.ToDisplayPath(path)}\" --serve".WriteLineToConsole(ConsoleColor.White);
+            $"\tdocfx \"{path.ToDisplayPath()}\" --serve".WriteLineToConsole(ConsoleColor.White);
             "To generate a default docfx website.".WriteLineToConsole(ConsoleColor.Gray);
         }
 

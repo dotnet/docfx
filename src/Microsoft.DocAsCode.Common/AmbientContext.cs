@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
     [Serializable]
     public struct AmbientContext : IDisposable
     {
-        private static readonly string AMBCTX_NAME = nameof(AmbientContext);
+        private const string AMBCTX_NAME = nameof(AmbientContext);
 
         // auto increment counter maintained during branch and trace entry creation.
         private long[] _counterRef;
@@ -39,11 +39,7 @@ namespace Microsoft.DocAsCode.Common
         public static AmbientContext GetOrCreateAmbientContext()
         {
             // no thread safety issue here because the TLS can only be initialized by the thread itself
-            var context = GetCurrentContext();
-            if (context == null)
-            {
-                context = InitializeAmbientContext(null);
-            }
+            var context = GetCurrentContext() ?? (AmbientContext?)InitializeAmbientContext(null);
             return new AmbientContext(context.Value);
         }
 

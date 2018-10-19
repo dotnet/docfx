@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 return string.Empty;
             }
             path = path.Trim('/');
-            return path == string.Empty ? path : path + "/";
+            return path?.Length == 0 ? path : path + "/";
         }
     }
 }

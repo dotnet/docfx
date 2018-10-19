@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 throw new DocumentException($"Unable to find pdf subcommand config in file '{configFile}'.");
             }
-                
+
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             BuildCommand.MergeOptionsToConfig(options, config);
 
-            if (options.ExcludedTocs != null && options.ExcludedTocs.Count > 0)
+            if (options.ExcludedTocs?.Count > 0)
             {
                 config.ExcludedTocs = new ListWithStringFallback(options.ExcludedTocs);
             }

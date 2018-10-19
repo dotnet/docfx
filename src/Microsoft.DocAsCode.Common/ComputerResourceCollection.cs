@@ -38,8 +38,6 @@ namespace Microsoft.DocAsCode.Common
                 case -(int)ComputerResourceType.Cpu:
                     CpuResource.Release();
                     break;
-                default:
-                    break;
             }
             switch ((target & ComputerResourceType.DiskIO) - (current & ComputerResourceType.DiskIO))
             {
@@ -49,8 +47,6 @@ namespace Microsoft.DocAsCode.Common
                 case -(int)ComputerResourceType.DiskIO:
                     DiskIOResource.Release();
                     break;
-                default:
-                    break;
             }
             switch ((target & ComputerResourceType.NetworkIO) - (current & ComputerResourceType.NetworkIO))
             {
@@ -59,8 +55,6 @@ namespace Microsoft.DocAsCode.Common
                     break;
                 case -(int)ComputerResourceType.NetworkIO:
                     NetworkIOResource.Release();
-                    break;
-                default:
                     break;
             }
         }

@@ -198,7 +198,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)
         {
-            if (!projects.Any())
+            if (projects.Count == 0)
             {
                 if (!File.Exists(Constants.ConfigFileName))
                 {
