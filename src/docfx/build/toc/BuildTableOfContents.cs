@@ -62,9 +62,9 @@ namespace Microsoft.Docs.Build
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(fileToBuild.ToString(), ex.Error);
+                context.Report(fileToBuild.ToString(), dex.Error);
             }
         }
 
