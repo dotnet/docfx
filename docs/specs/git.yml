@@ -167,6 +167,20 @@ outputs:
     }
   build.manifest:
 ---
+# Use the earliest contributor as author if author not specified in YAML header
+repo: https://github.com/docascode/docfx-test-dependencies#contributors
+outputs:
+  contributors.json: |
+    {
+      "author": {
+        "name": "superyyrrzz",
+        "profile_url": "https://github.com/superyyrrzz",
+        "display_name": "Renze Yu",
+        "id": "3831744"
+      }
+    }
+  build.manifest:
+---
 # Author can be excluded, it's case insensitive
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 inputs:
@@ -220,8 +234,7 @@ inputs:
       userCache: user_profile.json
       resolveUsers: true
     contribution:
-      repository: test-org/test-repo
-      branch: contribution
+      repository: https://github.com/test-org/test-repo#contribution
 outputs:
   README.json: |
     {

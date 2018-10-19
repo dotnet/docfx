@@ -10,17 +10,17 @@ using System.Linq;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// A docset is a collection of documents in the folder identified by `docfx.yml`.
+    /// A docset is a collection of documents in the folder identified by `docfx.yml/docfx.json`.
     /// </summary>
     internal class Docset
     {
         /// <summary>
-        /// Gets the absolute path to folder containing `docfx.yml`, it is not necessarily the path to git repository.
+        /// Gets the absolute path to folder containing `docfx.yml/docfx.json`, it is not necessarily the path to git repository.
         /// </summary>
         public string DocsetPath { get; }
 
         /// <summary>
-        /// Gets the config associated with this docset, loaded from `docfx.yml`.
+        /// Gets the config associated with this docset, loaded from `docfx.yml/docfx.json`.
         /// </summary>
         public Config Config { get; }
 
@@ -45,6 +45,16 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
 
         /// <summary>
+        /// Gets the localization docset, it will be set when the current build locale is different with default locale
+        /// </summary>
+        public Docset LocalizationDocset { get; }
+
+        /// <summary>
+        /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
+        /// </summary>
+        public Docset FallbackDocset { get; }
+
+        /// <summary>
         /// Gets the restore path mappings
         /// </summary>
         public RestoreMap RestoreMap { get; }
@@ -59,25 +69,44 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
+        /// <summary>
+        /// Gets the scan scope used to generate toc map, xref map, xxx map before build
+        /// </summary>
+        public HashSet<Document> ScanScope => _scanScope.Value;
+
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
+        private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.DefaultLocale, options, null)
+        {
+            if (!string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
+
+                // localization docset will share the same context, config, build locale and options with source docset
+                // source docset configuration will be overwrote by build locale overwrite configuration
+                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this);
+            }
+        }
+
+        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset)
         {
             _options = options;
             _context = context;
             Config = config;
-
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-
-            Locale = !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : Config.DefaultLocale;
-            Culture = CreateCultureInfo(Locale);
+            Locale = locale;
+            Culture = CreateCultureInfo(locale);
             RestoreMap = new RestoreMap(DocsetPath);
+            FallbackDocset = fallbackDocset;
+
             var configErrors = new List<Error>();
             (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
 
@@ -87,9 +116,10 @@ namespace Microsoft.Docs.Build
             {
                 var (errors, map) = RedirectionMap.Create(this);
                 errors.AddRange(configErrors);
-                context.Report("docfx.yml", errors);
+                context.Report(Config.ConfigFileName, errors);
                 return map;
             });
+            _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
@@ -138,12 +168,36 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _context.Report(Errors.RedirectionOutOfScope(redirection));
+                        _context.Report(Errors.RedirectionOutOfScope(redirection, Config.ConfigFileName));
                     }
                 }
 
                 return files;
             }
+        }
+
+        private HashSet<Document> CreateScanScope()
+        {
+            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
+            var scanScope = new HashSet<Document>();
+
+            foreach (var buildScope in new[] { LocalizationDocset?.BuildScope, BuildScope, FallbackDocset?.BuildScope })
+            {
+                if (buildScope == null)
+                {
+                    continue;
+                }
+
+                foreach (var document in buildScope)
+                {
+                    if (scanScopeFilePaths.Add(document.FilePath))
+                    {
+                        scanScope.Add(document);
+                    }
+                }
+            }
+
+            return scanScope;
         }
     }
 }

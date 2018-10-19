@@ -1,0 +1,258 @@
+# Restore loc repo with dependencies
+# [repository mapping] 
+commands:
+  - restore --locale zh-cn
+  - build
+repo: https://github.com/docascode/docfx-test-dependencies#master
+restores:
+  git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a/dep.md: loc-DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
+  restore-lock/* Restore loc repo with dependencies-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a", "https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+  restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+outputs:
+  build.manifest:
+---
+# Restore loc repo, all loc files are in one repo
+# [repository + folder mapping]
+commands:
+  - restore --locale zh-cn
+  - build
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+restores:
+  git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb/dep.md: loc-DEP
+  restore-lock/*Restore loc repo, all loc files are in one repo-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master":"18d3d65979413ce8342fd709dbce1c78ab45ffeb"}}
+outputs:
+  build.manifest:
+---
+# loc config convention without source locale
+# [repository mapping] 
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/dotnet/docfx
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn*"}
+  build.manifest:
+---
+# loc config convention with source locale
+# [repository mapping] 
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/dotnet/docfx.en-us
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.zh-cn*"}
+  build.manifest:
+---
+# loc config convention with source locale, all loc files are in one repo
+# [repository + folder mapping] 
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/dotnet/docfx.en-us
+    localizationMapping: RepositoryAndFolder
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
+  build.manifest:
+---
+# loc file contributor info
+# [repository mapping] 
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml:
+outputs:
+  docs/a.json: |
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/master/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/bc5ae3ec85617bcd5a66124b3e916be0714d32e8/docs/a.md"}
+  build.manifest:
+---
+# loc file contributor info, all loc files are in one repo
+# [repository + folder mapping] 
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+outputs:
+  docs/a.json: |
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
+  build.manifest:
+---
+# loc fallback
+# loc repo: 
+# a.md: |
+#   [link to b](b.md)
+#   ![include[include b](b.md)
+# source repo:
+# b.md: |
+#   [link to a](a.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
+inputs:
+  docfx.yml:
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+  docs/b.json: |
+    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
+  build.manifest:
+---
+# loc fallback, all loc files are in one repo
+# loc repo:
+#   a.md: |
+#     [link to b](b.md)
+#     ![include[include b](b.md)
+# source repo:
+#   b.md: |
+#     [link to a](a.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+  docs/b.json: |
+    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
+  build.manifest:
+---
+# loc build with TOC map, loc TOC has higher priority
+# loc repo:
+#   docs/a.md:
+#   docs/b.md:
+#   docs/TOC.md: |
+#     # [reference a](a.md)
+#     # [reference b](b.md)
+# source repo:
+#   docs/TOC.md: |
+#     # [reference a](a.md)
+#   docs/b/TOC.md: |
+#     # [reference b](../b.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-tocmap
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+  docs/TOC.md: |
+    # [reference a](a.md)
+  docs/b/TOC.md: |
+    # [reference b](../b.md)
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"toc_rel": "TOC.json"}
+  docs/b.json: |
+    {"toc_rel": "TOC.json"}
+  docs/TOC.json: |
+    {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
+---
+# loc build with mixed toc map
+# loc repo:
+#   docs/b/b.md
+#   docs/a/TOC.md: |
+#     # [reference a](a.md)
+# source repo:
+#   docs/a/a.md:
+#   docs/b/TOC.md: |
+#     # [reference b](b.md)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-tocmap
+inputs:
+  docfx.yml: |
+    localizationMapping: RepositoryAndFolder
+  docs/b/TOC.md: |
+    # [reference b](b.md)
+  docs/a/a.md:
+outputs:
+  build.manifest:
+  docs/a/a.json: |
+    {"toc_rel": "TOC.json"}
+  docs/b/b.json: |
+    {"toc_rel": "TOC.json"}
+  docs/a/TOC.json: |
+    {"items": [{"toc_title": "reference a", "href": "a"}]}
+---
+# loc build with xref map, loc file has higher priority
+# loc repo:
+#   docs/a.md: uid = a
+#   docs/b.md: link to @c
+# source repo:
+#   docs/a.md: uid = c
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-xrefmap
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.md: |
+    ---
+    uid: c
+    ---
+outputs:
+  build.manifest:
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
+  docs/a.json:
+  docs/b.json:
+  xrefmap.json:
+---
+# loc build with mixed xref map
+# loc repo:
+#   docs/a.md: uid = a
+#   docs/b.md: link to @a and @c
+# source repo:
+#   docs/c.md: uid = c
+# TODO: c.json should exist in build output, @huwe is working on it
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-xrefmap
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/c.md: |
+    ---
+    uid: c
+    ---
+outputs:
+  build.manifest:
+  docs/a.json:
+  docs/b.json: |
+    {"content":"<p>link to <a href=\"docs/a.json\">a</a>\nlink to <a href=\"docs/c.json\">c</a></p>\n"}
+  xrefmap.json: |
+    {"references":[{"uid":"a","href":"docs/a.json","name":"a"},{"uid":"c","href":"docs/c.json","name":"c"}]}

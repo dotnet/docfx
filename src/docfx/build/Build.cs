@@ -22,15 +22,16 @@ namespace Microsoft.Docs.Build
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
-            context.Report("docfx.yml", configErrors);
+            context.Report(config.ConfigFileName, configErrors);
 
-            var docset = new Docset(context, docsetPath, config, options);
+            var docset = GetBuildDocset();
 
             var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
             var contribution = new ContributionInfo(docset, githubUserCache);
-            var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
 
+            // TODO: toc map and xref map should always use source docset?
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
             var xrefMap = XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
@@ -39,11 +40,16 @@ namespace Microsoft.Docs.Build
             // var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
+            if (config.BuildInternalXrefMap)
+            {
+                xrefMap.OutputXrefMap(context);
+            }
+
             if (options.Legacy)
             {
                 if (config.Output.Json)
                 {
-                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
                 }
                 else
                 {
@@ -53,6 +59,12 @@ namespace Microsoft.Docs.Build
 
             // await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
+
+            Docset GetBuildDocset()
+            {
+                var sourceDocset = new Docset(context, docsetPath, config, options);
+                return sourceDocset.LocalizationDocset ?? sourceDocset;
+            }
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
@@ -130,10 +142,10 @@ namespace Microsoft.Docs.Build
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
                     case ContentType.Page:
-                        (errors, model, dependencies) = await BuildPage.Build(file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
+                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
+                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap, buildChild);
                         break;
                     case ContentType.Redirection:
                         model = BuildRedirection(file);

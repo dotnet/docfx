@@ -13,9 +13,6 @@
         "repository": {
           "type": "string"
         },
-        "branch": {
-          "type": "string"
-        },
         "gitCommitsTime": {
           "type": "string"
         },
@@ -69,15 +66,6 @@
         }
       }
     },
-    "GitConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "authToken": {
-          "type": "string"
-        }
-      }
-    },
     "GitHubConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -123,21 +111,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "secrets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/HttpSecretConfig"
-          }
-        }
-      }
-    },
-    "HttpSecretConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "baseUrl": {
-          "type": "string"
-        },
         "query": {
           "type": "string"
         },
@@ -157,6 +130,9 @@
           "type": "string"
         },
         "json": {
+          "type": "boolean"
+        },
+        "pdf": {
           "type": "boolean"
         },
         "uglifyUrl": {
@@ -202,15 +178,6 @@
       "$ref": "#/definitions/OutputConfig"
     },
     "globalMetadata": {},
-    "siteBasePath": {
-      "type": "string"
-    },
-    "sourceBasePath": {
-      "type": "string"
-    },
-    "needGeneratePdfUrlTemplate": {
-      "type": "boolean"
-    },
     "baseUrl": {
       "type": "string"
     },
@@ -269,13 +236,13 @@
       }
     },
     "http": {
-      "$ref": "#/definitions/HttpConfig"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/HttpConfig"
+      }
     },
     "gitHub": {
       "$ref": "#/definitions/GitHubConfig"
-    },
-    "git": {
-      "$ref": "#/definitions/GitConfig"
     },
     "warningsAsErrors": {
       "type": "boolean"
@@ -288,6 +255,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "localizationMapping": {
+      "type": "string",
+      "enum": [
+        "repository",
+        "folder",
+        "repositoryAndFolder"
+      ]
     }
   }
 }

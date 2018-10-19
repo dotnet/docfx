@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         private static List<Error> t_schemaViolationErrors;
 
         [ThreadStatic]
-        private static Func<DataTypeAttribute, object, string, object> t_transform;
+        private static Func<IEnumerable<DataTypeAttribute>, object, string, object> t_transform;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<DataTypeAttribute, object, string, object> transform = null)
+            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -220,6 +220,11 @@ namespace Microsoft.Docs.Build
                 }
             }
         }
+
+        /// <summary>
+        /// Deserialize from JSON file, get from or add to cache
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.LoadJsonFile(file);
 
         /// <summary>
         /// Parse a string to JToken.
@@ -452,10 +457,10 @@ namespace Microsoft.Docs.Build
             private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
             {
                 var validators = member.GetCustomAttributes<ValidationAttribute>(false);
-                var contentTypeAttribute = member.GetCustomAttribute<DataTypeAttribute>();
-                if (contentTypeAttribute != null || validators.Any())
+                var contentTypeAttributes = member.GetCustomAttributes<DataTypeAttribute>(false);
+                if (contentTypeAttributes.Any() || validators.Any())
                 {
-                    return new SchemaValidationAndTransformConverter(contentTypeAttribute, validators, member.Name);
+                    return new SchemaValidationAndTransformConverter(contentTypeAttributes, validators, member.Name);
                 }
                 return null;
             }
@@ -464,12 +469,12 @@ namespace Microsoft.Docs.Build
         private sealed class SchemaValidationAndTransformConverter : JsonConverter
         {
             private readonly IEnumerable<ValidationAttribute> _validators;
-            private readonly DataTypeAttribute _attribute;
+            private readonly IEnumerable<DataTypeAttribute> _attributes;
             private readonly string _fieldName;
 
-            public SchemaValidationAndTransformConverter(DataTypeAttribute attribute, IEnumerable<ValidationAttribute> validators, string fieldName)
+            public SchemaValidationAndTransformConverter(IEnumerable<DataTypeAttribute> attributes, IEnumerable<ValidationAttribute> validators, string fieldName)
             {
-                _attribute = attribute;
+                _attributes = attributes;
                 _validators = validators;
                 _fieldName = fieldName;
             }
@@ -500,7 +505,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return t_transform != null ? t_transform(_attribute, value, reader.Path) : value;
+                return t_transform != null ? t_transform(_attributes, value, reader.Path) : value;
             }
         }
     }

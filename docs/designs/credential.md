@@ -27,12 +27,9 @@ It can be configured in `docfx.yml`:
 ```yml
 referenceToAResource: "https://contoso.com/path/file"
 http:
-  secrets:
-    "https://contoso.com/path/file": "?sig={token}"
+  https://contoso.com/path/file:
+    query: "?sig={token}"
 ```
-The value of secrets object can be a simple string, which indicates the param string. 
-
-In this case, we can also embed the token into URL like `referenceToAResource: "https://contoso.com/path/file?sig={token}"`. However, the config cannot be public as it contains secret information. Have a separate `secrets` part can help store them in more private place, like a local machine.
 
 ### Request header
 
@@ -43,25 +40,20 @@ Authorization: Bearer {token}
 The value of secrets object can be an object to provide more details of the request header. It can be configured in `docfx.yml` like:
 ```yml
 http:
-  secrets:
-  - baseUrl: "https://contoso.com/path/file":
-    query: "?sig={token}"
+  https://contoso.com/path/file:
     headers:
       Authorization: Bearer {token}
 ```
 
 We can also put other required headers here. e.g. Azure Blob requires the `x-ms-blob-type` header when `PUT` a resource.
 
-## How to authorize non-HTTP requests
+## How to authorize other requests
 
 There is other types of authorization, like:
-- Clone a repository from GitHub/Azure DevOps/GitLab... with personal access token.
 - Call GitHub API with personal access token to resolve contributors.
 
 In these cases, the configuration for these specific services can contain a `authToken` field to store the secret token, like:
 ``` yml
-git:
-  authToken: {token}
 gitHub:
   authToken: {token}
 ```
@@ -74,10 +66,8 @@ Here is the steps:
 2. Build system call the credential service to collect the necessary secrets, and stores into a partial docfx configure, like:
    ```yml
    http:
-     secrets:
+     {url}:
        ...
-   git:
-     authToken: ...
    gitHub:
      authToken: ...
    ```

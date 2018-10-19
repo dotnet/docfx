@@ -38,15 +38,15 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
-            var resolveGitHubUsers = repo?.Host == GitHost.GitHub && document.Docset.Config.GitHub.ResolveUsers;
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
             var contributors = new List<Contributor>();
             var errors = new List<Error>();
-            var logins = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var authorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
+
+            var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
             if (commits != null)
@@ -56,50 +56,61 @@ namespace Microsoft.Docs.Build
                     if (!emails.Add(commit.AuthorEmail))
                         continue;
 
-                    if (!resolveGitHubUsers && authorNames.Add(commit.AuthorName))
+                    var contributor = await GetContributor(commit);
+                    if (contributor != null && !excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
                     {
-                        contributors.Add(new Contributor { DisplayName = commit.AuthorName });
-                        continue;
+                        contributors.Add(contributor);
                     }
-
-                    var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repo.Owner, repo.Name, commit.Sha);
-                    if (error != null)
-                        errors.Add(error);
-
-                    if (user != null && !excludes.Contains(user.Login) && logins.Add(user.Login))
-                        contributors.Add(user.ToContributor());
                 }
             }
 
-            if (!string.IsNullOrEmpty(authorName))
+            var author = await GetAuthor();
+            if (author != null)
             {
-                if (resolveGitHubUsers)
+                contributors.RemoveAll(c => c.Id == author.Id);
+            }
+
+            return (errors, author, contributors, updatedDateTime);
+
+            async Task<Contributor> GetContributor(GitCommit commit)
+            {
+                if (!resolveGitHubUsers)
                 {
-                    // Remove author from contributors if author name is specified
-                    var (error, author) = await _gitHubUserCache.GetByLogin(authorName);
-                    if (error != null)
-                        errors.Add(error);
-
-                    if (excludes.Contains(authorName))
-                        author = null;
-                    if (author != null)
-                        contributors.RemoveAll(c => c.Id == author.Id.ToString());
-
-                    return (errors, author?.ToContributor(), contributors, updatedDateTime);
+                    return new Contributor { DisplayName = commit.AuthorName, Id = commit.AuthorEmail };
                 }
 
-                return (errors, new Contributor { DisplayName = authorName }, contributors, updatedDateTime);
+                var (error, user) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                errors.AddIfNotNull(error);
+
+                return user?.ToContributor();
             }
 
-            // When author name is not specified, last contributor is author
-            if (contributors.Count > 0)
+            async Task<Contributor> GetAuthor()
             {
-                var author = contributors[contributors.Count - 1];
-                contributors.RemoveAt(contributors.Count - 1);
-                return (errors, author, contributors, updatedDateTime);
+                if (!string.IsNullOrEmpty(authorName))
+                {
+                    if (resolveGitHubUsers && !excludes.Contains(authorName))
+                    {
+                        // Remove author from contributors if author name is specified
+                        var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
+                        errors.AddIfNotNull(error);
+                        return result?.ToContributor();
+                    }
+                }
+                else if (contributors.Count > 0)
+                {
+                    // When author name is not specified, last contributor is author
+                    for (var i = commits.Count - 1; i >= 0; i--)
+                    {
+                        var user = await GetContributor(commits[i]);
+                        if (user != null)
+                        {
+                            return user;
+                        }
+                    }
+                }
+                return null;
             }
-
-            return (errors, null, contributors, updatedDateTime);
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
@@ -121,23 +132,53 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var branch = repo.Branch ?? "master";
-            var editRepo = LocConfigConvention.GetEditRepository(document.Docset.Config.Contribution.Repository, document.Docset.Locale, document.Docset.Config.DefaultLocale)
-                ?? $"{repo.Owner}/{repo.Name}";
-            var editBranch = document.Docset.Config.Contribution.Branch ?? branch;
-
-            var editUrl = document.Docset.Config.Contribution.ShowEdit
-                ? $"https://github.com/{editRepo}/blob/{editBranch}/{pathToRepo}"
-                : null;
-
+            var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
             var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
                 ? value.commits[0].Sha
                 : repo.Commit;
 
-            var commitUrl = commit != null ? $"https://github.com/{repo.Owner}/{repo.Name}/blob/{commit}/{pathToRepo}" : null;
-            var contentUrl = $"https://github.com/{repo.Owner}/{repo.Name}/blob/{branch}/{pathToRepo}";
+            return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
 
-            return (editUrl, contentUrl, commitUrl);
+            string GetCommitUrl()
+            {
+                switch (repoHost)
+                {
+                    case GitHost.GitHub:
+                        return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
+                    default:
+                        throw new NotSupportedException($"{repoHost}");
+                }
+            }
+
+            string GetContentUrl()
+            {
+                switch (repoHost)
+                {
+                    case GitHost.GitHub:
+                        return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
+                    default:
+                        throw new NotSupportedException($"{repoHost}");
+                }
+            }
+
+            string GetEditUrl()
+            {
+                if (!document.Docset.Config.Contribution.ShowEdit)
+                {
+                    return null;
+                }
+
+                // git edit url, only works for github repo
+                var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
+                var editRemoteWithLocale = LocalizationConvention.GetLocalizationRepo(document.Docset.Config.LocalizationMapping, editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
+
+                if (GitHubUtility.TryParse(editRemoteWithLocale, out _, out _))
+                {
+                    return $"{editRemoteWithLocale}/blob/{eidtBranch}/{pathToRepo}";
+                }
+
+                return null;
+            }
         }
 
         private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
@@ -147,14 +188,14 @@ namespace Microsoft.Docs.Build
             if (repo == null)
                 return default;
 
-            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.RepositoryPath, PathUtility.PathComparison);
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.RepositoryPath, fullPath)), isDocsetRepo);
+            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.Path, PathUtility.PathComparison);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)), isDocsetRepo);
         }
 
         private Repository GetRepository(string path)
         {
             if (GitUtility.IsRepo(path))
-                return Repository.Create(path);
+                return Repository.CreateFromFolder(path);
 
             var parent = path.Substring(0, path.LastIndexOf("/"));
             return Directory.Exists(parent)
@@ -181,7 +222,7 @@ namespace Microsoft.Docs.Build
                     var pathToDocset = group.Select(pair => pair.file.FilePath).ToList();
                     var pathToRepo = group.Select(pair => pair.pathToRepo).ToList();
                     var repo = group.Key;
-                    var repoPath = repo.RepositoryPath;
+                    var repoPath = repo.Path;
                     var (commitsByFile, allCommits) = GitUtility.GetCommits(repoPath, pathToRepo);
                     for (var i = 0; i < pathToDocset.Count; i++)
                     {
@@ -191,6 +232,12 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        private enum GitHost
+        {
+            Unknown,
+            GitHub,
         }
     }
 }

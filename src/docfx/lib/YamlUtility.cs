@@ -71,6 +71,11 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Deserialize from a YAML file, get from or add to cache
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.LoadYamlFile(file);
+
+        /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
         public static (List<Error>, JToken) Deserialize(string input, bool nullValidation = true)

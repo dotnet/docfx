@@ -223,3 +223,4 @@ outputs:
     ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml","",2,5]
     ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json","",2]
   build.manifest:
+---

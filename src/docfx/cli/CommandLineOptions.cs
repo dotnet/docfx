@@ -9,7 +9,6 @@ namespace Microsoft.Docs.Build
     {
         public string Output;
         public bool Legacy;
-        public string GitToken;
         public string Locale;
         public int Port;
 
@@ -21,10 +20,6 @@ namespace Microsoft.Docs.Build
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                     ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
-                },
-                ["git"] = new JObject
-                {
-                    ["authToken"] = GitToken != null ? (JValue)GitToken : JValue.CreateNull(),
                 },
             };
         }
