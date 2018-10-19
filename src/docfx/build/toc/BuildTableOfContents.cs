@@ -34,14 +34,12 @@ namespace Microsoft.Docs.Build
             return (errors, model, dependencyMapBuilder.Build());
         }
 
-        public static TableOfContentsMap BuildTocMap(Context context, IEnumerable<Document> files)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
         {
             using (Progress.Start("Loading TOC"))
             {
-                Debug.Assert(files != null);
-
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
+                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
                     return builder.Build();
