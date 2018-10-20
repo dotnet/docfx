@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -97,9 +98,9 @@ namespace Microsoft.Docs.Build
                 }
                 context.Report(file.ToString(), errors);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), ex.Error);
+                context.Report(file.ToString(), dex.Error);
             }
         }
 
