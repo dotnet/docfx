@@ -103,7 +103,7 @@ outputs:
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
   build.manifest:
 ---
-# loc fallback
+# loc page fallback
 # loc repo: 
 # a.md: |
 #   [link to b](b.md)
@@ -122,7 +122,7 @@ outputs:
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
-# loc fallback, all loc files are in one repo
+# loc page fallback, all loc files are in one repo
 # loc repo:
 #   a.md: |
 #     [link to b](b.md)
@@ -140,6 +140,24 @@ inputs:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+  build.manifest:
+---
+# loc resource fallback
+# loc repo:
+#   a.md: |
+#     [link to b](b.png)
+# source repo:
+#   docs/b.png:
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback-resource
+inputs:
+  docfx.yml:
+  docs/b.png:
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b.png\">link to b</a></p>"}
   build.manifest:
 ---
 # loc build with TOC map, loc TOC has higher priority
