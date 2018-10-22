@@ -409,3 +409,44 @@ inputs:
 outputs:
   build.manifest:
   docs/b.json:
+---
+# built metadata for loc files
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
+---
+# built metadata for loc files, all loc files are in same repo
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+    localizationMapping: RepositoryAndFolder
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
+---
+# built metadata for loc files, all loc files are in source repo under different locale folder
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+    localizationMapping: Folder
+  localization/zh-cn/docs/a.md:
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
