@@ -47,9 +47,9 @@ namespace Microsoft.Docs.Build
             {
                 tocModel.Items = ConvertTo(filePath, headingBlocks.ToArray(), errors).children;
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.Add(ex.Error);
+                errors.Add(dex.Error);
             }
 
             return (errors, tocModel);
