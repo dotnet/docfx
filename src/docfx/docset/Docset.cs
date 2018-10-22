@@ -157,9 +157,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                // exclude the localization folder if the current localization mapping is "folder"
-                var exclude = Config.LocalizationMapping == LocalizationMapping.Folder ? Config.Content.Exclude.Concat(new[] { "localization/**/*" }).ToArray() : Config.Content.Exclude;
-                var fileGlob = new FileGlob(Config.Content.Include, exclude);
+                var fileGlob = new FileGlob(Config.Content.Include, Config.Content.Exclude);
                 var files = fileGlob.GetFiles(DocsetPath).Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file))).ToHashSet();
 
                 foreach (var redirection in redirections)
