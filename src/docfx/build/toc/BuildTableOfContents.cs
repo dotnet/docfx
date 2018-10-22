@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap) Build(
-            Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+            Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -23,11 +23,6 @@ namespace Microsoft.Docs.Build
 
             var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder);
-
-            foreach (var article in refArticles)
-            {
-                buildChild(article);
-            }
 
             var model = new TableOfContentsModel { Items = tocModel, Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), tocMetadata) };
 

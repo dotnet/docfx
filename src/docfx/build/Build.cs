@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
+            var (files, sourceDependencies) = await BuildFiles(context, docset, docset.BuildScope, tocMap, xrefMap, contribution);
 
             // TODO: write back to global cache
             // var saveGitHubUserCache = githubUserCache.SaveChanges();
@@ -69,6 +69,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
+            Docset docset,
             HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
@@ -105,7 +106,8 @@ namespace Microsoft.Docs.Build
 
                 bool ShouldBuildFile(Document file)
                 {
-                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
+                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file) &&
+                        (docset.FallbackDocset == null/*source docset*/ || file.Docset.FallbackDocset != null /*loc file*/);
                 }
 
                 void ValidateBookmarks()
@@ -145,7 +147,7 @@ namespace Microsoft.Docs.Build
                         (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap, buildChild);
+                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
                         break;
                     case ContentType.Redirection:
                         model = BuildRedirection(file);

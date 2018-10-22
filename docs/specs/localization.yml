@@ -120,8 +120,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
-  docs/b.json: |
-    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
 # loc fallback, all loc files are in one repo
@@ -142,8 +140,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
-  docs/b.json: |
-    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
 # loc build with TOC map, loc TOC has higher priority
@@ -199,8 +195,6 @@ inputs:
   docs/a/a.md:
 outputs:
   build.manifest:
-  docs/a/a.json: |
-    {"toc_rel": "TOC.json"}
   docs/b/b.json: |
     {"toc_rel": "TOC.json"}
   docs/a/TOC.json: |
@@ -237,7 +231,6 @@ outputs:
 #   docs/b.md: link to @a and @c
 # source repo:
 #   docs/c.md: uid = c
-# TODO: c.json should exist in build output, @huwe is working on it
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
