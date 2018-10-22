@@ -9,6 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
         {
+            var ignoreCase = !PathUtility.IsCaseSensitive;
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
             var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
 
@@ -23,6 +24,11 @@ namespace Microsoft.Docs.Build
                 }
 
                 path = path.Replace('\\', '/');
+
+                if (ignoreCase)
+                {
+                    path = path.ToLowerInvariant();
+                }
 
                 foreach (var include in includeGlobs)
                 {
@@ -40,17 +46,21 @@ namespace Microsoft.Docs.Build
                 }
                 return false;
             }
-        }
 
-        private static Glob.Glob CreateGlob(string pattern)
-        {
-            try
+            Glob.Glob CreateGlob(string pattern)
             {
-                return new Glob.Glob(pattern.Replace('\\', '/'), Glob.GlobOptions.Compiled);
-            }
-            catch (Exception ex)
-            {
-                throw Errors.InvalidGlob(pattern, ex).ToException(ex);
+                try
+                {
+                    if (ignoreCase)
+                    {
+                        pattern = pattern.ToLowerInvariant();
+                    }
+                    return new Glob.Glob(pattern.Replace('\\', '/'), Glob.GlobOptions.Compiled);
+                }
+                catch (Exception ex)
+                {
+                    throw Errors.InvalidGlob(pattern, ex).ToException(ex);
+                }
             }
         }
     }

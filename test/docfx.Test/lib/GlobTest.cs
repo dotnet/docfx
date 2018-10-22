@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("\\a", "a", false)]
-        [InlineData("a*", "a Abc abd abe", true)]
+        [InlineData("a*", "a abc abd abe", true)]
         [InlineData("**/a/*/b.cs", "b/a/a/a/b.cs", true)]
 
         // ** is a shortcut for **/*
