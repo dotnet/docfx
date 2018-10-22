@@ -1,6 +1,7 @@
+using System.IO;
 using Xunit;
 
-namespace Microsoft.Docs.Build.lib
+namespace Microsoft.Docs.Build
 {
     public class ExtractYamlHeaderTest
     {
@@ -37,9 +38,12 @@ this: is a frontmatter
 ...   ", "{'this':'is a frontmatter'}")]
         public void TestExtract(string content, string expectedMetadata)
         {
-            var (errors, metadata) = ExtractYamlHeader.Extract(content);
-            Assert.Empty(errors);
-            Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
+            using (var reader = GetStreamReaderFromString(content))
+            {
+                var (errors, metadata) = ExtractYamlHeader.Extract(reader);
+                Assert.Empty(errors);
+                Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
+            }
         }
 
         [Theory]
@@ -54,12 +58,25 @@ hello
 ...", "yaml-header-not-object", "Expect yaml header to be an object, but got an array")]
         public void TestNotJObject(string content, string expectedErrorCode, string expectedErrorMessage)
         {
-            var (errors, metadata) = ExtractYamlHeader.Extract(content);
-            Assert.Collection(errors, error =>
+            using (var reader = GetStreamReaderFromString(content))
             {
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedErrorMessage, error.Message);
-            });
+                var (errors, metadata) = ExtractYamlHeader.Extract(reader);
+                Assert.Collection(errors, error =>
+                {
+                    Assert.Equal(expectedErrorCode, error.Code);
+                    Assert.Equal(expectedErrorMessage, error.Message);
+                });
+            }
+        }
+
+        private StreamReader GetStreamReaderFromString(string content)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(content);
+            writer.Flush();
+            stream.Position = 0;
+            return new StreamReader(stream);
         }
     }
 }

@@ -149,9 +149,10 @@ namespace Microsoft.Docs.Build
             public (List<Error> errors, JObject metadata) ExtractMetadata(Document file)
                 => _metadataCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JObject)>(() =>
                 {
-                    var content = file.ReadText();
-                    GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                    return ExtractYamlHeader.Extract(content);
+                    using (var reader = new StreamReader(file.ReadStream()))
+                    {
+                        return ExtractYamlHeader.Extract(reader);
+                    }
                 })).Value;
 
             private string GetKeyFromFile(Document file)
