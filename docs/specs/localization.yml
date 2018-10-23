@@ -76,6 +76,22 @@ outputs:
     { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
   build.manifest:
 ---
+# loc config convention with source locale, all loc files are in source repo under different locale folder
+# [folder mapping] 
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    contribution:
+      repository: https://github.com/dotnet/docfx.en-us
+    localizationMapping: Folder
+  localization/zh-cn/docs/a.md:
+outputs:
+  docs/a.json: |
+    { "content_git_url": "*dotnet/docfx.en-us/blob/master/*"}
+  build.manifest:
+---
 # loc file contributor info
 # [repository mapping] 
 commands:
@@ -103,11 +119,27 @@ outputs:
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
   build.manifest:
 ---
+# loc file contributor info, all loc file are in source repo under different locale folder
+# [folder mapping]
+# source repo:
+#   localization/zh-cn/docs/a.md:
+commands:
+  - restore
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution-folder
+inputs:
+  docfx.yml: |
+    localizationMapping: Folder
+outputs:
+  docs/a.json: |
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/docfx-test-dependencies/blob/3fbb3c7939d52cd16ce96d90185cf27f85c94437/localization/zh-cn/docs/a.md"}
+  build.manifest:
+---
 # loc page fallback
 # loc repo: 
 # a.md: |
 #   [link to b](b.md)
-#   ![include[include b](b.md)
+#   [!include[include b](b.md)
 # source repo:
 # b.md: |
 #   [link to a](a.md)
@@ -126,7 +158,7 @@ outputs:
 # loc repo:
 #   a.md: |
 #     [link to b](b.md)
-#     ![include[include b](b.md)
+#     [!include[include b](b.md)
 # source repo:
 #   b.md: |
 #     [link to a](a.md)
@@ -137,6 +169,7 @@ repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
 inputs:
   docfx.yml: |
     localizationMapping: RepositoryAndFolder
+  a.md: a
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
@@ -158,6 +191,34 @@ inputs:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b.png\">link to b</a></p>"}
+  build.manifest:
+---
+# loc token fallback, all loc files are in source repo under different locale folder
+# source repo:
+#   b.md: |
+#     [link to a](a.md)
+#   a.md: a
+#   localization/zh-cn/a.md: |
+#     [link to b](b.md)
+#     [!include[include b](b.md)
+commands:
+  - restore
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
+inputs:
+  docfx.yml: |
+    localizationMapping: Folder
+  docs/b.md: |
+    [link to a](a.md)
+  docs/a.md: a
+  localization/zh-cn/docs/a.md: |
+    [link to b](b.md)
+    [!include[include b](b.md)
+outputs:
+  docs/a.json: |
+    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+  docs/b.json: |
+    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
 # loc build with TOC map, loc TOC has higher priority
@@ -218,6 +279,35 @@ outputs:
   docs/a/TOC.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
+# loc build with mixed toc map, all loc files are in source repo under different locale folder
+# source repo:
+#   docs/a/a.md:
+#   docs/b/TOC.md: |
+#     # [reference b](b.md)
+#   localization/zh-cn/docs/b/b.md:
+#   localization/zh-cn/docs/a/TOC.md: |
+#     # [reference a](a.md)
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    localizationMapping: Folder
+  docs/b/TOC.md: |
+    # [reference b](b.md)
+  docs/a/a.md:
+  localization/zh-cn/docs/b/b.md:
+  localization/zh-cn/docs/a/TOC.md: |
+    # [reference a](a.md)
+outputs:
+  build.manifest:
+  docs/a/a.json: |
+    {"toc_rel": "TOC.json"}
+  docs/b/b.json: |
+    {"toc_rel": "TOC.json"}
+  docs/a/TOC.json: |
+    {"items": [{"toc_title": "reference a", "href": "a"}]}
+---
 # loc build with xref map, loc file has higher priority
 # loc repo:
 #   docs/a.md: uid = a
@@ -235,6 +325,35 @@ inputs:
     ---
     uid: c
     ---
+outputs:
+  build.manifest:
+  build.log: |
+    ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
+  docs/a.json:
+  docs/b.json:
+  xrefmap.json:
+---
+# loc build with xref map, all locale files are in source repo under different locale folder, loc file has higher priority
+# source repo:
+#   docs/a.md: uid = c
+#   localization/zh-cn/docs/a.md: uid = a
+#   localization/zh-cn/docs/b.md: link to @c
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+    localizationMapping: Folder
+  docs/a.md: |
+    ---
+    uid: c
+    ---
+  localization/zh-cn/docs/a.md: |
+    ---
+    uid: a
+    ---
+  localization/zh-cn/docs/b.md: link to @c
 outputs:
   build.manifest:
   build.log: |
@@ -267,3 +386,78 @@ outputs:
     {"content":"<p>link to <a href=\"docs/a.json\">a</a>\nlink to <a href=\"docs/c.json\">c</a></p>\n"}
   xrefmap.json: |
     {"references":[{"uid":"a","href":"docs/a.json","name":"a"},{"uid":"c","href":"docs/c.json","name":"c"}]}
+---
+# loc folder should be excluded from source docset during loc docset build
+# source repo:
+# localization/zh-cn/docs/a.md: |
+#   [link to a](~/docs/localization/zh-cn/docs/a.md)
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    content: '**/*.md'
+    localizationMapping: Folder
+  localization/zh-cn/docs/a.md: |
+    [link to a](~/localization/zh-cn/docs/a.md)
+    [link to a](~/docs/a.md)
+outputs:
+  build.manifest:
+  docs/a.json:
+  build.log: |
+    ["warning","link-out-of-scope","File 'localization/zh-cn/docs/a.md' referenced by link '~/localization/zh-cn/docs/a.md' will not be built because it is not included in docfx.yml","docs/a.md"]
+---
+# loc folder should be excluded from source docset during source docset build
+# source repo:
+# localization/zh-cn/docs/a.md:
+# docs/b.md
+inputs:
+  docfx.yml: |
+    content: '**/*.md'
+    localizationMapping: Folder
+  localization/zh-cn/docs/a.md:
+  docs/b.md:
+outputs:
+  build.manifest:
+  docs/b.json:
+---
+# built metadata for loc files
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
+---
+# built metadata for loc files, all loc files are in same repo
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+    localizationMapping: RepositoryAndFolder
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
+---
+# built metadata for loc files, all loc files are in source repo under different locale folder
+commands:
+  - restore
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com
+    localizationMapping: Folder
+  localization/zh-cn/docs/a.md:
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
