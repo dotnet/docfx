@@ -30,9 +30,7 @@ namespace Microsoft.Docs.Build
                 var match = yamlHeaderRegex.Match(content);
                 if (match.Success)
                 {
-                    var yamlContent = content.Substring(match.Groups[1].Index, match.Groups[1].Length);
-
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(yamlContent);
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(match.Groups[1].Value);
                     errors.AddRange(yamlErrors);
                     if (yamlHeaderObj is JObject obj)
                     {
