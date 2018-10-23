@@ -15,10 +15,8 @@ namespace Microsoft.Docs.Build
     {
         private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
 
-        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(Document file, Context context)
+        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
-            var tocContent = file.ReadText();
-            var filePath = file.FilePath;
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
             var (ast, result) = Markup.Parse(tocContent);
@@ -27,7 +25,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!s_blockWhiteList.Contains(block.GetType()))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
                 }
 
                 if (block is HeadingBlock headingBlock)
@@ -45,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                tocModel.Items = ConvertTo(filePath, headingBlocks.ToArray(), errors).children;
+                tocModel.Items = ConvertTo(file.FilePath, headingBlocks.ToArray(), errors).children;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

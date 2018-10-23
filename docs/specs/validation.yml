@@ -1,5 +1,5 @@
 ---
-# Check git merge conflict marker
+# [only]Check git merge conflict marker
 inputs:
   docfx.yml:
   docs/toc.md: |
