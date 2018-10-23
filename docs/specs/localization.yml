@@ -217,8 +217,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
-  docs/b.json: |
-    { "content":"<p><a href=\"a\">link to a</a></p>\n"}
   build.manifest:
 ---
 # loc build with TOC map, loc TOC has higher priority
@@ -301,8 +299,6 @@ inputs:
     # [reference a](a.md)
 outputs:
   build.manifest:
-  docs/a/a.json: |
-    {"toc_rel": "TOC.json"}
   docs/b/b.json: |
     {"toc_rel": "TOC.json"}
   docs/a/TOC.json: |
