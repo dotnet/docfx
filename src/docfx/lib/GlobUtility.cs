@@ -32,11 +32,11 @@ namespace Microsoft.Docs.Build
 
                 foreach (var include in includeGlobs)
                 {
-                    if (include.IsMatch(path))
+                    if (include != null && include.IsMatch(path))
                     {
                         foreach (var exclude in excludeGlobs)
                         {
-                            if (exclude.IsMatch(path))
+                            if (exclude != null && exclude.IsMatch(path))
                             {
                                 return false;
                             }
@@ -51,6 +51,11 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(pattern))
+                    {
+                        // https://github.com/kthompson/glob/issues/35
+                        return null;
+                    }
                     if (ignoreCase)
                     {
                         pattern = pattern.ToLowerInvariant();

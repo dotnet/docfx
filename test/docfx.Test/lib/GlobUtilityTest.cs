@@ -6,9 +6,10 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class GlobTest
+    public class GlobUtilityTest
     {
         [Theory]
+        [InlineData("", "a", false)]
         [InlineData("\\a", "a", false)]
         [InlineData("a*", "a abc abd abe", true)]
         [InlineData("**/a/*/b.cs", "b/a/a/a/b.cs", true)]
@@ -58,7 +59,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("")]
         [InlineData("[^a-c]*")]
         [InlineData("[abc[]]a")]
         [InlineData("[a[]")]
