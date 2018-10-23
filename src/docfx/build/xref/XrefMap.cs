@@ -32,6 +32,12 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
+        public string ResolveToHtml(string uid, string displayProperty)
+        {
+            XrefSpec xrefSpec = Resolve(uid);
+            return $"<a href={xrefSpec.Href}>{xrefSpec.GetXrefProperty(displayProperty)}</a>";
+        }
+
         public static XrefMap Create(Context context, Docset docset)
         {
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();

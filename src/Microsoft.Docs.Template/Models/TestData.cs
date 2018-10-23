@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public string Uid { get; set; }
 
-        [Xref]
+        [Xref(DisplayProperty = "description")]
         public string Xref { get; set; }
 
         public TestData Data { get; set; }

@@ -146,7 +146,7 @@ outputs:
   docs/a.json:
   docs/b.json: | 
     {
-      "content": {"xref": "docs/a.json"}
+      "content": {"xref": "<a href=\"docs/a.json\">a.description</a>"}
     }
   build.manifest:
   xrefmap.json: | 

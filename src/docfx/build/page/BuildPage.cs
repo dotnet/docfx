@@ -203,8 +203,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is XrefAttribute)
                 {
-                    // TODO: how to fill xref resolving data besides href
-                    return xrefMap.Resolve((string)value).Href;
+                    return xrefMap.ResolveToHtml((string)value, ((XrefAttribute)attribute).DisplayProperty);
                 }
 
                 return value;
