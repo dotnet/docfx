@@ -15,17 +15,25 @@ namespace Microsoft.Docs.Build
             {
                 using (Progress.Start("Convert Legacy TOC Files"))
                 {
-                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.TableOfContents), file => LegacyTableOfContents.Convert(docset, context, file.document, file.manifestItem.Output));
+                    ParallelUtility.ForEach(
+                        files.Where(f => f.document.ContentType == ContentType.TableOfContents),
+                        file => LegacyTableOfContents.Convert(docset, context, file.document, file.manifestItem.Output),
+                        Progress.Update);
                 }
 
                 using (Progress.Start("Convert Legacy Markdown/Redirection Files"))
                 {
-                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection), file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output));
+                    ParallelUtility.ForEach(
+                        files.Where(f => f.document.ContentType == ContentType.Page || f.document.ContentType == ContentType.Redirection),
+                        file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output),
+                        Progress.Update);
                 }
-
                 using (Progress.Start("Convert Legacy Resource Files"))
                 {
-                    Parallel.ForEach(files.Where(f => f.document.ContentType == ContentType.Resource), file => LegacyResource.Convert(docset, context, file.document, file.manifestItem.Output));
+                    ParallelUtility.ForEach(
+                        files.Where(f => f.document.ContentType == ContentType.Resource),
+                        file => LegacyResource.Convert(docset, context, file.document, file.manifestItem.Output),
+                        Progress.Update);
                 }
             }
         }
