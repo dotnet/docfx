@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset, docset.BuildScope, tocMap, xrefMap, contribution);
+            var (files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
 
             // TODO: write back to global cache
             var saveGitHubUserCache = githubUserCache.SaveChanges();
@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
             Docset docset,
-            HashSet<Document> buildScope,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
             ContributionInfo contribution)
@@ -82,7 +81,7 @@ namespace Microsoft.Docs.Build
                 var filesBuilder = new DocumentListBuilder();
                 var filesWithErrors = new ConcurrentBag<Document>();
 
-                await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
+                await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
                 ValidateBookmarks();
 
@@ -106,8 +105,10 @@ namespace Microsoft.Docs.Build
 
                 bool ShouldBuildFile(Document file)
                 {
-                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file) &&
-                        (docset.FallbackDocset == null/*source docset*/ || file.Docset.FallbackDocset != null /*loc file*/);
+                    return file.ContentType != ContentType.Unknown &&
+                        filesBuilder.TryAdd(file) &&
+                        !(docset.FallbackDocset != null &&
+                        file.Docset.LocalizationDocset != null);
                 }
 
                 void ValidateBookmarks()
