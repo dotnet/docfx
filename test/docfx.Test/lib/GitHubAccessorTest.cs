@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("docascode", null, 14800732)]
-        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", "github-user-not-found", 0)]
+        [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", "github-user-not-found", null)]
         public async Task GetUserByLogin(string login, string errorCode, int? id)
         {
             var (error, profile) = await _github.GetUserByLogin(login);
