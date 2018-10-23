@@ -69,11 +69,17 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> BuildScope => _buildScope.Value;
 
+        /// <summary>
+        /// Gets the scan scope used to generate toc map, xref map, xxx map before build
+        /// </summary>
+        public HashSet<Document> ScanScope => _scanScope.Value;
+
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
         private readonly Context _context;
         private readonly Lazy<HashSet<Document>> _buildScope;
+        private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
@@ -113,6 +119,7 @@ namespace Microsoft.Docs.Build
                 context.Report(Config.ConfigFileName, errors);
                 return map;
             });
+            _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
 
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
@@ -167,6 +174,30 @@ namespace Microsoft.Docs.Build
 
                 return files;
             }
+        }
+
+        private HashSet<Document> CreateScanScope()
+        {
+            var scanScopeFilePaths = new HashSet<string>(PathUtility.PathComparer);
+            var scanScope = new HashSet<Document>();
+
+            foreach (var buildScope in new[] { LocalizationDocset?.BuildScope, BuildScope, FallbackDocset?.BuildScope })
+            {
+                if (buildScope == null)
+                {
+                    continue;
+                }
+
+                foreach (var document in buildScope)
+                {
+                    if (scanScopeFilePaths.Add(document.FilePath))
+                    {
+                        scanScope.Add(document);
+                    }
+                }
+            }
+
+            return scanScope;
         }
     }
 }

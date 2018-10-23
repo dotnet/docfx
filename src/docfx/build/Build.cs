@@ -26,18 +26,18 @@ namespace Microsoft.Docs.Build
 
             var docset = GetBuildDocset();
 
-            var githubUserCache = await GitHubUserCache.Create(docset, options.GitHubToken);
+            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
             var contribution = new ContributionInfo(docset, githubUserCache);
 
             // TODO: toc map and xref map should always use source docset?
-            var tocMap = BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
             var xrefMap = XrefMap.Create(context, docset);
 
             var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, xrefMap, contribution);
 
             // TODO: write back to global cache
-            // var saveGitHubUserCache = githubUserCache.SaveChanges();
+            var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
 
             if (config.BuildInternalXrefMap)
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // await saveGitHubUserCache;
+            await saveGitHubUserCache;
             errors.ForEach(e => context.Report(e));
 
             Docset GetBuildDocset()
@@ -165,9 +165,9 @@ namespace Microsoft.Docs.Build
 
                 return (true, dependencies);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), ex.Error);
+                context.Report(file.ToString(), dex.Error);
                 return (true, DependencyMap.Empty);
             }
         }
