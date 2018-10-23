@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class NativeMethods
     {
-        private const string LibName = "git2-b0d9952";
+        private const string LibName = "git2-8e0b172";
         private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         static NativeMethods()
