@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
                         file => LegacyPage.Convert(docset, context, file.document, file.manifestItem.Output),
                         Progress.Update);
                 }
+
                 using (Progress.Start("Convert Legacy Resource Files"))
                 {
                     ParallelUtility.ForEach(
