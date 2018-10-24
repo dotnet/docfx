@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(restoreMap != null);
 
             var localizationDocsetPath = docsetPath;
-            switch (config.LocalizationMapping)
+            switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
                 case LocalizationMapping.RepositoryAndFolder:
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
                         {
                             return null;
                         }
-                        var locRemote = GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
+                        var locRemote = GetLocalizationRepo(config.Localization.Mapping, repo.Remote, locale, config.DefaultLocale);
                         var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
-                        localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository
+                        localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath
                             : Path.Combine(restorePath, locale);
                         break;
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                         break;
                     }
                 default:
-                    throw new NotSupportedException($"{config.LocalizationMapping} is not supported yet");
+                    throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
             }
 
             return localizationDocsetPath;

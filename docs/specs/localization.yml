@@ -22,7 +22,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
 restores:
   git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb/dep.md: loc-DEP
   restore-lock/*Restore loc repo, all loc files are in one repo-*-lock.json: |
@@ -70,7 +71,8 @@ inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx.en-us
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
@@ -85,7 +87,8 @@ inputs:
   docfx.yml: |
     contribution:
       repository: https://github.com/dotnet/docfx.en-us
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
@@ -113,7 +116,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
 inputs:
   docfx.yml: |
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
 outputs:
   docs/a.json: |
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
@@ -129,7 +133,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution-folder
 inputs:
   docfx.yml: |
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
 outputs:
   docs/a.json: |
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/docfx-test-dependencies/blob/3fbb3c7939d52cd16ce96d90185cf27f85c94437/localization/zh-cn/docs/a.md"}
@@ -168,7 +173,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
 inputs:
   docfx.yml: |
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
   a.md: a
 outputs:
   docs/a.json: |
@@ -207,7 +213,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
 inputs:
   docfx.yml: |
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   docs/b.md: |
     [link to a](a.md)
   docs/a.md: a
@@ -237,7 +244,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-tocmap
 inputs:
   docfx.yml: |
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
   docs/TOC.md: |
     # [reference a](a.md)
   docs/b/TOC.md: |
@@ -266,7 +274,8 @@ commands:
 repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-tocmap
 inputs:
   docfx.yml: |
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
   docs/b/TOC.md: |
     # [reference b](b.md)
   docs/a/a.md:
@@ -290,7 +299,8 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   docs/b/TOC.md: |
     # [reference b](b.md)
   docs/a/a.md:
@@ -340,7 +350,8 @@ commands:
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   docs/a.md: |
     ---
     uid: c
@@ -393,7 +404,8 @@ commands:
 inputs:
   docfx.yml: |
     content: '**/*.md'
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   localization/zh-cn/docs/a.md: |
     [link to a](~/localization/zh-cn/docs/a.md)
     [link to a](~/docs/a.md)
@@ -410,7 +422,8 @@ outputs:
 inputs:
   docfx.yml: |
     content: '**/*.md'
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   localization/zh-cn/docs/a.md:
   docs/b.md:
 outputs:
@@ -438,7 +451,8 @@ repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
 inputs:
   docfx.yml: |
     baseUrl: https://docs.microsoft.com
-    localizationMapping: RepositoryAndFolder
+    localization:
+      mapping: RepositoryAndFolder
 outputs:
   build.manifest:
   docs/a.json: |
@@ -451,7 +465,8 @@ commands:
 inputs:
   docfx.yml: |
     baseUrl: https://docs.microsoft.com
-    localizationMapping: Folder
+    localization:
+      mapping: Folder
   localization/zh-cn/docs/a.md:
 outputs:
   build.manifest:

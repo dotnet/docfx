@@ -130,9 +130,9 @@ namespace Microsoft.Docs.Build
         public readonly string[] Xref = Array.Empty<string>();
 
         /// <summary>
-        /// The mapping between source files and localized files
+        /// The configurations for localization build
         /// </summary>
-        public readonly LocalizationMapping LocalizationMapping;
+        public readonly LocalizationConfig Localization = new LocalizationConfig();
 
         /// <summary>
         /// Gets the config file name.
