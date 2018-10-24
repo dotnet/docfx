@@ -106,6 +106,19 @@ outputs:
   build.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
 ---
+# Schema documents with Href content referencing resource file, the resouce file should be outputed
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    Href: image.png
+  docs/image.png:
+outputs:
+  docs/a.json: |
+    {"content": {"href": "image.png"}}
+  docs/image.png:
+  build.manifest:
+---
 # Support schema documents with Markdown content
 inputs:
   docfx.yml:
