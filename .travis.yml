@@ -5,3 +5,7 @@ git:
   depth: false
 script:
   - ./build.sh
+os:
+  - windows
+  - linux
+  - osx
