@@ -3,8 +3,9 @@ dotnet: 2.1
 mono: none
 os:
   - linux
-  - osx
   - windows
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install dotnetcore
 git:
   depth: false
 script:
