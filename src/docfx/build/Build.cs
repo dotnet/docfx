@@ -105,10 +105,13 @@ namespace Microsoft.Docs.Build
 
                 bool ShouldBuildFile(Document file)
                 {
-                    return file.ContentType != ContentType.Unknown &&
-                        filesBuilder.TryAdd(file) &&
-                        !(docset.FallbackDocset != null &&
-                        file.Docset.LocalizationDocset != null);
+                    // source content in a localization docset
+                    if (docset.FallbackDocset != null && file.Docset.LocalizationDocset != null)
+                    {
+                        return false;
+                    }
+
+                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
                 }
 
                 void ValidateBookmarks()

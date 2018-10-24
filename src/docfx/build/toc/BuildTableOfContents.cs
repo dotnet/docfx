@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, DependencyMap.Empty);
             }
 
+            // todo: build resource files linked by toc
             var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder);
 
