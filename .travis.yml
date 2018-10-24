@@ -1,11 +1,11 @@
 language: csharp
 dotnet: 2.1
 mono: none
+os:
+  - linux
+  - windows
+  - osx
 git:
   depth: false
 script:
   - ./build.sh
-os:
-  - windows
-  - linux
-  - osx
