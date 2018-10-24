@@ -23,7 +23,12 @@ namespace Microsoft.Docs.Build
         /// <returns>The loc remote url</returns>
         public static (string remote, string branch) GetLocalizationRepo(LocalizationConfig localizationConfig, string remote, string branch, string locale, string defaultLocale)
         {
-            if (localizationConfig == null || (localizationConfig.Mapping != LocalizationMapping.Repository && localizationConfig.Mapping != LocalizationMapping.RepositoryAndFolder))
+            if (localizationConfig == null)
+            {
+                return (remote, branch);
+            }
+
+            if (localizationConfig.Mapping != LocalizationMapping.Repository && localizationConfig.Mapping != LocalizationMapping.RepositoryAndFolder)
             {
                 return (remote, branch);
             }
@@ -88,6 +93,10 @@ namespace Microsoft.Docs.Build
                     }
                 case LocalizationMapping.Folder:
                     {
+                        if (config.Localization.Bilingual)
+                        {
+                            throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
+                        }
                         localizationDocsetPath = Path.Combine(localizationDocsetPath, "localization", locale);
                         break;
                     }

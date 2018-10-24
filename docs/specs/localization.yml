@@ -472,3 +472,58 @@ outputs:
   build.manifest:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
+---
+# bilingual build
+# [repository mapping]
+# loc repo[master-sxs]:
+#   docs/a.md: |
+#     sxs content
+#     [link to b](b.md)
+#     [!include[include b](b.md)
+# source repo[master]:
+#   docs/b.md: |
+#     [link to a](a.md)
+#   docs/a.md: a
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies
+inputs:
+  docfx.yml: |
+    localization:
+      bilingual: true
+  docs/b.md: |
+    [link to a](a.md)
+  docs/a.md: a
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+---
+# bilingual build, all loc files are in one loc repo under different locale folder
+# [repository + folder mapping]
+# loc repo[master-sxs]:
+#   zh-cn/docs/a.md: |
+#     sxs content
+#     [link to b](b.md)
+#     [!include[include b](b.md)
+# source repo[master]:
+#   docs/b.md: |
+#     [link to a](a.md)
+#   docs/a.md: a
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies
+inputs:
+  docfx.yml: |
+    localization:
+      mapping: RepositoryAndFolder
+      bilingual: true
+  docs/b.md: |
+    [link to a](a.md)
+  docs/a.md: a
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
