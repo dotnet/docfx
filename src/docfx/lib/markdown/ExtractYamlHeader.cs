@@ -1,36 +1,31 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static (List<Error> errors, JObject metadata) Extract(StreamReader reader)
+        public static (List<Error> errors, JObject metadata) Extract(TextReader reader)
         {
             var builder = new StringBuilder();
             var errors = new List<Error>();
-            var yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n(\-{3}|\.{3})(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(10));
-
-            while (!reader.EndOfStream)
+            if (reader.ReadLine().TrimEnd() != "---")
             {
-                builder.Append(reader.ReadLine()).Append("\n");
-                var content = builder.ToString();
-                if (!content.StartsWith("---"))
-                {
-                    return (errors, new JObject());
-                }
+                return (errors, new JObject());
+            }
 
-                var match = yamlHeaderRegex.Match(content);
-                if (match.Success)
+            while (reader.Peek() != -1)
+            {
+                var line = reader.ReadLine();
+                var trimEnd = line.TrimEnd();
+                if (trimEnd == "---" || trimEnd == "...")
                 {
-                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(match.Groups[1].Value);
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(builder.ToString());
                     errors.AddRange(yamlErrors);
                     if (yamlHeaderObj is JObject obj)
                     {
@@ -38,7 +33,9 @@ namespace Microsoft.Docs.Build
                     }
 
                     errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                    break;
                 }
+                builder.Append(line).Append("\n");
             }
             return (errors, new JObject());
         }

@@ -36,9 +36,13 @@ this: is a frontmatter
 @"---
 this: is a frontmatter
 ...   ", "{'this':'is a frontmatter'}")]
+        [InlineData(
+@"----
+this: is a frontmatter
+---", "{}")]
         public void TestExtract(string content, string expectedMetadata)
         {
-            using (var reader = GetStreamReaderFromString(content))
+            using (var reader = new StringReader(content))
             {
                 var (errors, metadata) = ExtractYamlHeader.Extract(reader);
                 Assert.Empty(errors);
@@ -58,7 +62,7 @@ hello
 ...", "yaml-header-not-object", "Expect yaml header to be an object, but got an array")]
         public void TestNotJObject(string content, string expectedErrorCode, string expectedErrorMessage)
         {
-            using (var reader = GetStreamReaderFromString(content))
+            using (var reader = new StringReader(content))
             {
                 var (errors, metadata) = ExtractYamlHeader.Extract(reader);
                 Assert.Collection(errors, error =>
@@ -67,16 +71,6 @@ hello
                     Assert.Equal(expectedErrorMessage, error.Message);
                 });
             }
-        }
-
-        private StreamReader GetStreamReaderFromString(string content)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(content);
-            writer.Flush();
-            stream.Position = 0;
-            return new StreamReader(stream);
         }
     }
 }
