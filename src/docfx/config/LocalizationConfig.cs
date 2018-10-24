@@ -14,5 +14,11 @@ namespace Microsoft.Docs.Build
         /// Show bilingual for localization pages
         /// </summary>
         public readonly bool Bilingual;
+
+        public LocalizationConfig(LocalizationMapping mapping = LocalizationMapping.Repository, bool enableBilingual = false)
+        {
+            Mapping = mapping;
+            Bilingual = enableBilingual;
+        }
     }
 }

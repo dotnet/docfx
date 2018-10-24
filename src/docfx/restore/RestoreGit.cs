@@ -87,8 +87,8 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var locRemote = LocalizationConvention.GetLocalizationRepo(config.Localization.Mapping, repo.Remote, locale, config.DefaultLocale);
-                var locRepoUrl = $"{locRemote}#{repo.Branch}";
+                var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(config.Localization, repo.Remote, repo.Branch, locale, config.DefaultLocale);
+                var locRepoUrl = $"{locRemote}#{locBranch}";
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
             }

@@ -21,38 +21,44 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static string GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizationRepo(LocalizationConfig localizationConfig, string remote, string branch, string locale, string defaultLocale)
         {
-            if (localizationMapping != LocalizationMapping.Repository && localizationMapping != LocalizationMapping.RepositoryAndFolder)
+            if (localizationConfig == null || (localizationConfig.Mapping != LocalizationMapping.Repository && localizationConfig.Mapping != LocalizationMapping.RepositoryAndFolder))
             {
-                return remote;
+                return (remote, branch);
             }
 
             if (string.Equals(locale, defaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                return remote;
+                return (remote, branch);
             }
 
             if (string.IsNullOrEmpty(remote))
             {
-                return remote;
+                return (remote, branch);
+            }
+
+            if (string.IsNullOrEmpty(branch))
+            {
+                return (remote, branch);
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return remote;
+                return (remote, branch);
             }
 
-            var newLocale = localizationMapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
+            var newLocale = localizationConfig.Mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
+            var newBranch = localizationConfig.Bilingual ? $"{branch}-sxs" : branch;
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return remote.Replace(originLocale, newLocale);
+                return (remote.Replace(originLocale, newLocale), newBranch);
             }
 
-            return $"{remote}{newLocale}";
+            return ($"{remote}{newLocale}", newBranch);
         }
 
         public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale, RestoreMap restoreMap)
@@ -73,8 +79,8 @@ namespace Microsoft.Docs.Build
                         {
                             return null;
                         }
-                        var locRemote = GetLocalizationRepo(config.Localization.Mapping, repo.Remote, locale, config.DefaultLocale);
-                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
+                        var (locRemote, locBranch) = GetLocalizationRepo(config.Localization, repo.Remote, repo.Branch, locale, config.DefaultLocale);
+                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{locBranch}");
                         localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath
                             : Path.Combine(restorePath, locale);
