@@ -21,14 +21,9 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static (string remote, string branch) GetLocalizationRepo(LocalizationConfig localizationConfig, string remote, string branch, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool enableBilingual, string remote, string branch, string locale, string defaultLocale)
         {
-            if (localizationConfig == null)
-            {
-                return (remote, branch);
-            }
-
-            if (localizationConfig.Mapping != LocalizationMapping.Repository && localizationConfig.Mapping != LocalizationMapping.RepositoryAndFolder)
+            if (mapping != LocalizationMapping.Repository && mapping != LocalizationMapping.RepositoryAndFolder)
             {
                 return (remote, branch);
             }
@@ -53,8 +48,8 @@ namespace Microsoft.Docs.Build
                 return (remote, branch);
             }
 
-            var newLocale = localizationConfig.Mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
-            var newBranch = localizationConfig.Bilingual ? $"{branch}-sxs" : branch;
+            var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
+            var newBranch = enableBilingual ? $"{branch}-sxs" : branch;
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
@@ -84,7 +79,13 @@ namespace Microsoft.Docs.Build
                         {
                             return null;
                         }
-                        var (locRemote, locBranch) = GetLocalizationRepo(config.Localization, repo.Remote, repo.Branch, locale, config.DefaultLocale);
+                        var (locRemote, locBranch) = GetLocalizationRepo(
+                            config.Localization.Mapping,
+                            config.Localization.Bilingual,
+                            repo.Remote,
+                            repo.Branch,
+                            locale,
+                            config.Localization.DefaultLocale);
                         var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{locBranch}");
                         localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath

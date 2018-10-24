@@ -36,16 +36,6 @@ namespace Microsoft.Docs.Build
 
         private Func<string, bool> _glob;
 
-        public GlobConfig(string[] include, string[] exclude, T value, bool isGlob = true)
-        {
-            Debug.Assert(value != null);
-
-            Include = include ?? Array.Empty<string>();
-            Exclude = exclude ?? Array.Empty<string>();
-            Value = value;
-            IsGlob = isGlob;
-        }
-
         public bool Match(string filePath)
         {
             Debug.Assert(!string.IsNullOrEmpty(filePath));

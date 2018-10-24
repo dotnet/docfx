@@ -7,20 +7,18 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class FileConfig
     {
+        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*", "localization/**/*" };
+
         /// <summary>
         /// Gets the include patterns of files.
         /// </summary>
-        public readonly string[] Include;
+        public readonly string[] Include = s_defaultContentInclude;
 
         /// <summary>
         /// Gets the exclude patterns of files.
         /// </summary>
-        public readonly string[] Exclude;
+        public readonly string[] Exclude = s_defaultContentExclude;
 
-        public FileConfig(string[] include, string[] exclude)
-        {
-            Include = include ?? Array.Empty<string>();
-            Exclude = exclude ?? Array.Empty<string>();
-        }
     }
 }

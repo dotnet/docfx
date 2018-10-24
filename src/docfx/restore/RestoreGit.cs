@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                if (string.Equals(locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
                 {
                     return default;
                 }
@@ -87,7 +87,13 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(config.Localization, repo.Remote, repo.Branch, locale, config.DefaultLocale);
+                var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(
+                    config.Localization.Mapping,
+                    config.Localization.Bilingual,
+                    repo.Remote,
+                    repo.Branch,
+                    locale,
+                    config.Localization.DefaultLocale);
                 var locRepoUrl = $"{locRemote}#{locBranch}";
 
                 return (GetRestoreRootDir(locRepoUrl), locRepoUrl);

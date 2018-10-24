@@ -3,8 +3,15 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class LocalizationConfig
+    internal sealed class LocalizationConfig
     {
+        public const string DefaultLocaleStr = "en-us";
+
+        /// <summary>
+        /// Gets the default locale of this docset.
+        /// </summary>
+        public readonly string DefaultLocale = DefaultLocaleStr;
+
         /// <summary>
         /// The mapping between source files and localized files
         /// </summary>
@@ -14,11 +21,5 @@ namespace Microsoft.Docs.Build
         /// Show bilingual for localization pages
         /// </summary>
         public readonly bool Bilingual;
-
-        public LocalizationConfig(LocalizationMapping mapping = LocalizationMapping.Repository, bool enableBilingual = false)
-        {
-            Mapping = mapping;
-            Bilingual = enableBilingual;
-        }
     }
 }
