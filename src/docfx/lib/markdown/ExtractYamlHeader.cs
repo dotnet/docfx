@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         {
             var builder = new StringBuilder();
             var errors = new List<Error>();
-            if (reader.ReadLine().TrimEnd() != "---")
+            if (reader.ReadLine()?.TrimEnd() != "---")
             {
                 return (errors, new JObject());
             }
