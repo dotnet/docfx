@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultLocaleStr = "en-us";
         private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
+        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*", "localization/**/*" };
 
         /// <summary>
         /// Gets the default product name

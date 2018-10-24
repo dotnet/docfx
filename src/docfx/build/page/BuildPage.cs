@@ -218,7 +218,11 @@ namespace Microsoft.Docs.Build
                     var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
                     errors.AddIfNotNull(error);
 
-                    dependencies.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
+                    if (child != null && buildChild != null)
+                    {
+                        buildChild(child);
+                        dependencies?.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
+                    }
                     return link;
                 }
             }
