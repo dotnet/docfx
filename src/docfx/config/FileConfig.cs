@@ -19,6 +19,5 @@ namespace Microsoft.Docs.Build
         /// Gets the exclude patterns of files.
         /// </summary>
         public readonly string[] Exclude = s_defaultContentExclude;
-
     }
 }
