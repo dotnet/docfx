@@ -15,12 +15,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the include patterns of files.
         /// </summary>
-        public string[] Include;
+        public string[] Include = Array.Empty<string>();
 
         /// <summary>
         /// Gets the exclude patterns of files.
         /// </summary>
-        public string[] Exclude;
+        public string[] Exclude = Array.Empty<string>();
 
         /// <summary>
         /// Gets the value to apply to files.
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool IsGlob;
+        public bool IsGlob = true;
 
         private Func<string, bool> _glob;
 
