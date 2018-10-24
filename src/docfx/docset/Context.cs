@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -26,6 +27,8 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) LoadYamlFile(Document file) => _cache.LoadYamlFile(file);
 
         public (List<Error> errors, JToken token) LoadJsonFile(Document file) => _cache.LoadJsonFile(file);
+
+        public (List<Error> errors, JObject metadata) ExtractMetadata(Document file) => _cache.ExtractMetadata(file);
 
         public bool Report(string file, IEnumerable<Error> errors)
         {
@@ -125,6 +128,7 @@ namespace Microsoft.Docs.Build
         private sealed class Cache
         {
             private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
+            private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>> _metadataCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>>();
 
             public (List<Error> errors, JToken token) LoadYamlFile(Document file)
                 => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
@@ -140,6 +144,15 @@ namespace Microsoft.Docs.Build
                     var content = file.ReadText();
                     GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                     return JsonUtility.Deserialize(content);
+                })).Value;
+
+            public (List<Error> errors, JObject metadata) ExtractMetadata(Document file)
+                => _metadataCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JObject)>(() =>
+                {
+                    using (var reader = new StreamReader(file.ReadStream()))
+                    {
+                        return ExtractYamlHeader.Extract(reader);
+                    }
                 })).Value;
 
             private string GetKeyFromFile(Document file)
