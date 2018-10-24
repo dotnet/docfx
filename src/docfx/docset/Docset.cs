@@ -157,12 +157,17 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var fileGlob = new FileGlob(Config.Content.Include, Config.Content.Exclude);
-                var files = fileGlob.GetFiles(DocsetPath).Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file))).ToHashSet();
+                var glob = GlobUtility.CreateGlobMatcher(Config.Content.Include, Config.Content.Exclude);
+
+                var files = (
+                    from file in Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories).AsParallel()
+                    let relativePath = file.Substring(DocsetPath.Length).TrimStart('\\', '/')
+                    where glob(relativePath)
+                    select Document.TryCreateFromFile(this, relativePath)).ToHashSet();
 
                 foreach (var redirection in redirections)
                 {
-                    if (fileGlob.IsMatch(redirection.FilePath))
+                    if (glob(redirection.FilePath))
                     {
                         files.Add(redirection);
                     }
