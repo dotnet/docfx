@@ -84,9 +84,9 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.DefaultLocale, options, null)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale, options, null)
         {
-            if (!string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
 
