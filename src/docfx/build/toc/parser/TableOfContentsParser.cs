@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 var content = file.ReadText();
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.LoadMdTocModel(content, filePath);
+                return MarkdownTocMarkup.LoadMdTocModel(content, file, context);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");

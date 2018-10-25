@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                return LoadMarkdown(file, dependencies, bookmarkValidator, buildChild, xrefMap);
+                return LoadMarkdown(context, file, dependencies, bookmarkValidator, buildChild, xrefMap);
             }
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
@@ -93,15 +93,18 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, Schema schema, PageModel model, JObject metadata)
             LoadMarkdown(
-            Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
+            Context context, Document file, DependencyMapBuilder dependencies, BookmarkValidator bookmarkValidator, Action<Document> buildChild, XrefMap xrefMap)
         {
+            var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
             var (html, markup) = Markup.ToHtml(content, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
-
+            errors.AddRange(markup.Errors);
+            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            errors.AddRange(metaErrors);
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var title = markup.Metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
+            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
             var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
 
@@ -117,7 +120,7 @@ namespace Microsoft.Docs.Build
 
             bookmarkValidator.AddBookmarks(file, bookmarks);
 
-            return (markup.Errors, Schema.Conceptual, model, markup.Metadata);
+            return (errors, Schema.Conceptual, model, metadata);
         }
 
         private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>

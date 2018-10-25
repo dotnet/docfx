@@ -86,7 +86,9 @@ namespace Microsoft.Docs.Build
                 var content = file.ReadText();
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    TryAddXref(xrefsByUid, LoadMarkdown(content, file));
+                    var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+                    errors.AddRange(metaErrors);
+                    TryAddXref(xrefsByUid, LoadMarkdown(metadata, file));
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
@@ -125,11 +127,10 @@ namespace Microsoft.Docs.Build
             return result.OrderBy(item => item.Uid).ToDictionary(xref => xref.Uid);
         }
 
-        private static XrefSpec LoadMarkdown(string content, Document file)
+        private static XrefSpec LoadMarkdown(JObject metadata, Document file)
         {
-            var (_, markup) = Markup.ToHtml(content, file, null, null, null, null, MarkdownPipelineType.ConceptualMarkdown);
-            var uid = markup.Metadata.Value<string>("uid");
-            var title = markup.Metadata.Value<string>("title");
+            var uid = metadata.Value<string>("uid");
+            var title = metadata.Value<string>("title");
             if (!string.IsNullOrEmpty(uid))
             {
                 var xref = new XrefSpec
