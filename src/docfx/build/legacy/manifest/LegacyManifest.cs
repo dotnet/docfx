@@ -41,7 +41,11 @@ namespace Microsoft.Docs.Build
                             output.ResourceOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = legacyOutputPathRelativeToBaseSitePath,
+                                OutputPathRelativeToSiteBasePath = docset.Config.Output.CopyResources
+                                    ? legacyOutputPathRelativeToBaseSitePath
+                                    : PathUtility.NormalizeFile(Path.GetRelativePath(
+                                        Path.GetFullPath(Path.Combine(docset.Config.Output.Path, docset.Config.DocumentId.SiteBasePath)),
+                                        Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath)))),
                             };
                         }
 
