@@ -141,6 +141,12 @@ namespace Microsoft.Docs.Build
             return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
 
+        public static Error MonikerNameConflict(string monikerName)
+            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
+
+        public static Error InvalidMonikerRange(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+
         public static Error UidMissing()
             => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
 
