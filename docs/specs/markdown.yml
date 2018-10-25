@@ -285,7 +285,7 @@ inputs:
     http://*.windowsupdate.microsoft.com
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
+    { "content": "<p>http://*.windowsupdate.microsoft.com</p>" }
   build.manifest:
 ---
 # validate bookmarks in markdown documents
