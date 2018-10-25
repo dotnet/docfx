@@ -180,6 +180,14 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(markup.Errors);
                     result = html;
                 }
+
+                if (attribute is InlineMarkdownAttribute)
+                {
+                    var (html, markup) = Markup.ToHtml((string)value, file, null, null, null, null, MarkdownPipelineType.InlineMarkdown);
+                    errors.AddRange(markup.Errors);
+                    result = html;
+                }
+
                 if (attributes.Any(attr => attr is XrefPropertyAttribute))
                 {
                     extensionData[jsonPath] = result;
