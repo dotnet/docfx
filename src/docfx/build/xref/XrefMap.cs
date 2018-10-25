@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Web;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -35,7 +36,9 @@ namespace Microsoft.Docs.Build
         public string ResolveToHtml(string uid, string displayProperty)
         {
             XrefSpec xrefSpec = Resolve(uid);
-            return $"<a href=\"{xrefSpec.Href}\">{xrefSpec.GetXrefProperty(displayProperty.ToLowerInvariant())}</a>";
+            var value = xrefSpec.GetXrefPropertyValue(displayProperty.ToLowerInvariant());
+            var title = xrefSpec.IsXrefPropertyHtml(displayProperty.ToLowerInvariant()) ? value : HttpUtility.HtmlEncode(value);
+            return $"<a href=\"{xrefSpec.Href}\">{title}</a>";
         }
 
         public static XrefMap Create(Context context, Docset docset)
@@ -137,7 +140,10 @@ namespace Microsoft.Docs.Build
                     Uid = uid,
                     Href = file.SitePath,
                 };
-                xref.ExtensionData["name"] = string.IsNullOrEmpty(title) ? uid : title;
+                xref.ExtensionData["name"] = new JObject
+                {
+                    ["value"] = string.IsNullOrEmpty(title) ? uid : title,
+                };
                 return xref;
             }
             return null;
@@ -178,16 +184,22 @@ namespace Microsoft.Docs.Build
             object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
             {
                 string result = (string)value;
+                bool isHtml = false;
                 var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
                 if (attribute is MarkdownAttribute)
                 {
                     var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
                     errors.AddRange(markup.Errors);
                     result = html;
+                    isHtml = true;
                 }
                 if (attributes.Any(attr => attr is XrefPropertyAttribute))
                 {
-                    extensionData[jsonPath] = result;
+                    extensionData[jsonPath] = new JObject
+                    {
+                        ["value"] = result,
+                        ["isHtml"] = isHtml,
+                    };
                 }
                 return result;
             }

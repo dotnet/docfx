@@ -31,7 +31,7 @@ inputs:
     { 
       "references":[{
           "uid": "System.String",
-          "name": "String",
+          "name": {"value":"String"},
           "fullName": "System.String",
           "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
           "nameWithType": "System.String"
@@ -69,12 +69,12 @@ outputs:
         {
           "uid": "a",
           "href": "docs/a.json",
-          "name": "Title from yaml header a"
+          "name": {"value":"Title from yaml header a"}
         },
         {
           "uid": "b",
           "href": "docs/b.json",
-          "name": "Title from yaml header b"
+          "name": {"value":"Title from yaml header b"}
         }
       ]
     }
@@ -135,7 +135,7 @@ inputs:
       "uid": "a",
       "name": "test",
       "fullName": "test.test",
-      "description": "a.description"
+      "description": "<a.description"
     }
   docs/b.json: | 
     {
@@ -146,7 +146,7 @@ outputs:
   docs/a.json:
   docs/b.json: | 
     {
-      "content": {"xref": "<a href=\"docs/a.json\">a.description</a>"}
+      "content": {"xref": "<a href=\"docs/a.json\">&lt;a.description</a>"}
     }
   build.manifest:
   xrefmap.json: | 
@@ -210,4 +210,4 @@ outputs:
   docs/a.json:
   build.manifest:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Hello <code>docfx</code>!</p>"}]}
+    {"references":[{"uid":"a","href":"docs/a.json","summary":{"value":"<p>Hello <code>docfx</code>!</p>\n","isHtml":true}}]}

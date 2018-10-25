@@ -381,7 +381,7 @@ outputs:
   docs/b.json: |
     {"content":"<p>link to <a href=\"docs/a.json\">a</a>\nlink to <a href=\"docs/c.json\">c</a></p>\n"}
   xrefmap.json: |
-    {"references":[{"uid":"a","href":"docs/a.json","name":"a"},{"uid":"c","href":"docs/c.json","name":"c"}]}
+    {"references":[{"uid":"a","href":"docs/a.json","name":{"value":"a"}},{"uid":"c","href":"docs/c.json","name":{"value":"c"}}]}
 ---
 # loc folder should be excluded from source docset during loc docset build
 # source repo:
