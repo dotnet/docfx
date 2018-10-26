@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repoPath));
+                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
                     using (var commitsLoader = await GitCommitLoader.Create(repoPath, commitCachePath))
