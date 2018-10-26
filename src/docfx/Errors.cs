@@ -15,6 +15,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidRedirection(string path, ContentType contentType)
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
+        public static Error InvalidGlobPattern(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
+
         public static Error ConfigNotFound(string docsetPath, string configFile)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
 

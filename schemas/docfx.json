@@ -122,6 +122,26 @@
         }
       }
     },
+    "LocalizationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultLocale": {
+          "type": "string"
+        },
+        "mapping": {
+          "type": "string",
+          "enum": [
+            "repository",
+            "folder",
+            "repositoryAndFolder"
+          ]
+        },
+        "bilingual": {
+          "type": "boolean"
+        }
+      }
+    },
     "OutputConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -166,9 +186,6 @@
       "type": "string"
     },
     "name": {
-      "type": "string"
-    },
-    "defaultLocale": {
       "type": "string"
     },
     "content": {
@@ -256,13 +273,8 @@
         "type": "string"
       }
     },
-    "localizationMapping": {
-      "type": "string",
-      "enum": [
-        "repository",
-        "folder",
-        "repositoryAndFolder"
-      ]
+    "localization": {
+      "$ref": "#/definitions/LocalizationConfig"
     }
   }
 }
