@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,21 +28,26 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("README.md")]
-        public static void GetCommitsSameAsGitExe(string file)
+        public static async Task GetCommitsSameAsGitExe(string file)
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            var pathToRepo = PathUtility.NormalizeFile(file);
+            using (var commitsLoader = await GitCommitLoader.Create(repo))
+            {
+                var pathToRepo = PathUtility.NormalizeFile(file);
 
-            var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
-            var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo }).commitsByFile[0].ToList();
+                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
+                var lib = commitsLoader.LoadCommitHistory(pathToRepo);
 
-            Assert.Equal(
-                exe.Replace("\r", ""),
-                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+                Assert.Equal(
+                    exe.Replace("\r", ""),
+                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+
+                await commitsLoader.SaveCache();
+            }
         }
 
         [Fact]

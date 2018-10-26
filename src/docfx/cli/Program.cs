@@ -146,6 +146,7 @@ namespace Microsoft.Docs.Build
 # docfx crash report: {exception.GetType()}
 
 docfx: `{GetDocfxVersion()}`
+x64: `{Environment.Is64BitProcess}`
 cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
 git: `{GetGitVersion()}`
