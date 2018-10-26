@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-            var (html, markup) = Markup.ToHtml(content, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.ConceptualMarkdown);
+            var (html, markup) = Markup.ToHtml(content, file, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: Transformer.Transform(errors, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), file));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)
@@ -174,62 +174,6 @@ namespace Microsoft.Docs.Build
             };
 
             return (errors, schema, model, metadata);
-
-            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
-            {
-                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-
-                if (attribute is HrefAttribute)
-                {
-                    return GetLink((string)value, file, file);
-                }
-
-                if (attribute is MarkdownAttribute)
-                {
-                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.Markdown);
-                    errors.AddRange(markup.Errors);
-                    return html;
-                }
-
-                if (attribute is InlineMarkdownAttribute)
-                {
-                    var (html, markup) = Markup.ToHtml((string)value, file, xrefMap, dependencies, bookmarkValidator, buildChild, MarkdownPipelineType.InlineMarkdown);
-                    errors.AddRange(markup.Errors);
-                    return html;
-                }
-
-                if (attribute is HtmlAttribute)
-                {
-                    var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file));
-                    return HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
-                }
-
-                if (attribute is XrefAttribute)
-                {
-                    // TODO: how to fill xref resolving data besides href
-                    return xrefMap.Resolve((string)value).Href;
-                }
-
-                return value;
-
-                string GetLink(string path, object relativeTo, object resultRelativeTo)
-                {
-                    Debug.Assert(relativeTo is Document);
-                    Debug.Assert(resultRelativeTo is Document);
-
-                    var self = (Document)relativeTo;
-
-                    var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-                    errors.AddIfNotNull(error);
-
-                    if (child != null && buildChild != null)
-                    {
-                        buildChild(child);
-                        dependencies?.AddDependencyItem(file, child, HrefUtility.FragmentToDependencyType(fragment));
-                    }
-                    return link;
-                }
-            }
         }
     }
 }

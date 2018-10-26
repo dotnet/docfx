@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
+            var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: Transformer.Transform(errors, null, file, extensionData));
             errors.AddRange(schemaErrors);
             var uid = obj.Value<string>("uid");
             if (!string.IsNullOrEmpty(uid))
@@ -169,31 +169,6 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UidMissing());
             }
             return null;
-
-            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
-            {
-                string result = (string)value;
-                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                if (attribute is MarkdownAttribute)
-                {
-                    var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
-                    errors.AddRange(markup.Errors);
-                    result = html;
-                }
-
-                if (attribute is InlineMarkdownAttribute)
-                {
-                    var (html, markup) = Markup.ToHtml((string)value, file, null, null, null, null, MarkdownPipelineType.InlineMarkdown);
-                    errors.AddRange(markup.Errors);
-                    result = html;
-                }
-
-                if (attributes.Any(attr => attr is XrefPropertyAttribute))
-                {
-                    extensionData[jsonPath] = result;
-                }
-                return result;
-            }
         }
 
         private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, XrefSpec spec)
