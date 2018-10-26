@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: Transformer.Transform(errors, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), file));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), file));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)

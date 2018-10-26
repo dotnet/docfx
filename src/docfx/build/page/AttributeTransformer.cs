@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Transformer
+    internal static class AttributeTransformer
     {
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(List<Error> errors, MarkdownPipelineCallback callback, Document file, JObject extensionData = null)
         {
