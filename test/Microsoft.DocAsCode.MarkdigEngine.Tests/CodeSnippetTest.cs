@@ -540,6 +540,28 @@ public static void Foo()
                 marked.Dependency.OrderBy(x => x));
         }
 
+        [Fact]
+        public void CodeSnippetShouldVerifyTagname()
+        {
+            //arange
+            var content = @"    line for start & end
+    // <tag1>
+    line1
+    // <Content=""my"">
+    // </tag1>
+" + " \tline for indent & range";
+
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!code-csharp[name](Program.cs#tag1)]", "Topic.md");
+
+            // assert
+            var expected = @"<pre><code class=""lang-csharp"" name=""name"">line1
+// &lt;Content=&quot;my&quot;&gt;
+</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
 
         [Fact(Skip = "won't support")]
         [Trait("Related", "DfmMarkdown")]
