@@ -168,13 +168,24 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
-                // git edit url, only works for github repo
-                var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
-                var editRemoteWithLocale = LocalizationConvention.GetLocalizationRepo(document.Docset.Config.LocalizationMapping, editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
-
-                if (GitHubUtility.TryParse(editRemoteWithLocale, out _, out _))
+                // only loc docset document can be built, so the current repo is loc repo
+                var (locRemote, locBranch) = (repo.Remote, repo.Branch);
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    return $"{editRemoteWithLocale}/blob/{eidtBranch}/{pathToRepo}";
+                    (locRemote, locBranch) = GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository);
+                    (locRemote, _) = LocalizationConvention.GetLocalizationRepo(
+                        document.Docset.Config.Localization.Mapping,
+                        document.Docset.Config.Localization.Bilingual,
+                        locRemote,
+                        locBranch,
+                        document.Docset.Locale,
+                        document.Docset.Config.Localization.DefaultLocale);
+                }
+
+                // git edit url, only works for github repo
+                if (GitHubUtility.TryParse(locRemote, out _, out _))
+                {
+                    return $"{locRemote}/blob/{locBranch}/{pathToRepo}";
                 }
 
                 return null;
