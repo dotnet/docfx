@@ -281,6 +281,23 @@ namespace Microsoft.Docs.Build
             return (errors, token);
         }
 
+        public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
+        {
+            value = null;
+            if (obj == null || string.IsNullOrEmpty(key))
+            {
+                return false;
+            }
+
+            if (obj.TryGetValue(key, out var valueToken) && valueToken is T valueT)
+            {
+                value = valueT;
+                return true;
+            }
+
+            return false;
+        }
+
         private static (Range, string message, string path) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
