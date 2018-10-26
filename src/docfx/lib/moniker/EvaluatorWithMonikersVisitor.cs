@@ -12,18 +12,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly Dictionary<string, MonikerProductInfo> _monikerProductInfoDictionary;
 
-        private EvaluatorWithMonikersVisitor(Dictionary<string, MonikerProductInfo> monikerProductInfoDictionary)
-        {
-            _monikerProductInfoDictionary = monikerProductInfoDictionary;
-        }
-
-        public static (List<Error>, EvaluatorWithMonikersVisitor) Create(IEnumerable<Moniker> monikers)
+        public EvaluatorWithMonikersVisitor(IEnumerable<Moniker> monikers)
         {
             Debug.Assert(monikers != null);
 
-            var (errors, monikerProductInfoDictionary) = InitializeMonikers(monikers);
-
-            return (errors, new EvaluatorWithMonikersVisitor(monikerProductInfoDictionary));
+            _monikerProductInfoDictionary = InitializeMonikers(monikers);
         }
 
         public IEnumerable<string> Visit(ComparatorExpression expression)
@@ -47,7 +40,7 @@ namespace Microsoft.Docs.Build
                 case ComparatorOperatorType.LessThanOrEqualTo:
                     return monikerProductInfo.OrderedProductMonikerNames.Take(monikerProductInfo.Index + 1);
                 default:
-                    return null;
+                    return Array.Empty<string>();
             }
         }
 
@@ -66,13 +59,12 @@ namespace Microsoft.Docs.Build
                 case LogicOperatorType.Or:
                     return left.Union(right);
                 default:
-                    return null;
+                    return Array.Empty<string>();
             }
         }
 
-        private static (List<Error>, Dictionary<string, MonikerProductInfo>) InitializeMonikers(IEnumerable<Moniker> monikers)
+        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
         {
-            var errors = new List<Error>();
             var monikerName = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var productNameDictionary = new Dictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
 
@@ -80,7 +72,7 @@ namespace Microsoft.Docs.Build
             {
                 if (monikerName.Contains(moniker.MonikerName))
                 {
-                    errors.Add(Errors.MonikerNameConflict(moniker.MonikerName));
+                    throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
                 }
                 else
                 {
@@ -115,7 +107,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, result);
+            return result;
         }
 
         private class MonikerProductInfo

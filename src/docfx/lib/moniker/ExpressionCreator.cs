@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public static IExpression Create(string rangeString)
         {
-            var expression = MonikerRange();
+            var expression = GetMonikerRange();
             if (!Eos())
             {
                 throw new MonikerRangeException($"Parse ends before reaching end of string, unrecognized string: `{rangeString}`");
@@ -31,22 +31,22 @@ namespace Microsoft.Docs.Build
 
             return expression;
 
-            IExpression MonikerRange()
+            IExpression GetMonikerRange()
             {
-                var result = ComparatorSet();
+                var result = GetComparatorSet();
                 while (Accept(SymbolType.Or, out _))
                 {
                     result = new LogicExpression
                     {
                         Left = result,
                         OperatorType = LogicOperatorType.Or,
-                        Right = ComparatorSet(),
+                        Right = GetComparatorSet(),
                     };
                 }
                 return result;
             }
 
-            IExpression ComparatorSet()
+            IExpression GetComparatorSet()
             {
                 IExpression result = null;
                 while (TryGetComparator(out var comparator))
@@ -64,6 +64,10 @@ namespace Microsoft.Docs.Build
                     {
                         result = comparator;
                     }
+                }
+                if (result == null)
+                {
+                    throw new MonikerRangeException($"Expect a comparator set, but got `{rangeString}`");
                 }
                 return result;
             }

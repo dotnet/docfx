@@ -9,20 +9,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
-        private MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
+        public MonikerRangeParser(IEnumerable<Moniker> monikers)
         {
-            _monikersEvaluator = monikersEvaluator;
+            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikers);
         }
 
-        public static (List<Error>, MonikerRangeParser) Create(IEnumerable<Moniker> monikers)
+        public IEnumerable<string> Parse(string rangeString)
         {
-            var (errors, evaluatorWithMonikersVisitor) = EvaluatorWithMonikersVisitor.Create(monikers);
-            return (errors, new MonikerRangeParser(evaluatorWithMonikersVisitor));
-        }
-
-        public (List<Error>, IEnumerable<string>) Parse(string rangeString)
-        {
-            var errors = new List<Error>();
             IEnumerable<string> monikerNames = null;
             try
             {
@@ -31,10 +24,10 @@ namespace Microsoft.Docs.Build
             }
             catch (MonikerRangeException ex)
             {
-                errors.Add(Errors.InvalidMonikerRange(rangeString, ex.Message));
+                throw Errors.InvalidMonikerRange(rangeString, ex.Message).ToException();
             }
 
-            return (errors, monikerNames);
+            return monikerNames;
         }
     }
 }

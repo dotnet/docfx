@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 
 using Xunit;
@@ -53,46 +54,51 @@ namespace Microsoft.Docs.Build.moniker
 
         public MonikerRangeParserTest()
         {
-            (_, _monikerRangeParser) = MonikerRangeParser.Create(_monikers);
+            _monikerRangeParser = new MonikerRangeParser(_monikers);
         }
 
         [Theory]
         [InlineData(
             "netcore-1.0 netcore-3.0",
-            new string[0])]
+            "")]
         [InlineData(
             " netcore-1.0 ",
-            new[] { "netcore-1.0" })]
+            "netcore-1.0")]
         [InlineData(
             "netcore-1.0 || dotnet-3.0",
-            new[] { "netcore-1.0", "dotnet-3.0" })]
+             "netcore-1.0 dotnet-3.0")]
         [InlineData(
             ">netcore-1.0<netcore-3.0",
-            new[] { "netcore-2.0" })]
+            "netcore-2.0")]
+        [InlineData(
+            "netcore-1.0<netcore-3.0",
+            "netcore-1.0")]
         [InlineData(
             ">= netcore-1.0 < netcore-2.0 || dotnet-3.0",
-            new[] { "netcore-1.0", "dotnet-3.0" })]
+            "netcore-1.0 dotnet-3.0")]
         [InlineData(
             ">= netcore-2.0 || > dotnet-2.0",
-            new[] { "netcore-3.0", "netcore-2.0", "dotnet-3.0" })]
-        public void TestEvaluateMonikerRange(string rangeString, string[] expectedMonikers)
+            "netcore-3.0 netcore-2.0 dotnet-3.0")]
+        public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
-            var (errors, result) = _monikerRangeParser.Parse(rangeString);
-            Assert.Empty(errors);
-            Assert.Equal(expectedMonikers.Length, result.ToArray().Length);
-            foreach (var moniker in result)
-            {
-                Assert.Contains(moniker, expectedMonikers);
-            }
+            var result = _monikerRangeParser.Parse(rangeString);
+            Enumerable.SequenceEqual(expectedMonikers.Split(' ', StringSplitOptions.RemoveEmptyEntries), result);
         }
 
-        [Fact]
-        public void TestMonikerNotInMonikerListShouldFail()
+        [Theory]
+        [InlineData("netcore-xp", "Moniker `netcore-xp` is not found in available monikers list")]
+        [InlineData("netcore-1.0 < || netcore-2.0", "Expect a moniker string, but got ` || netcore-2.0`")]
+        [InlineData(">netcore&-1.0", "Parse ends before reaching end of string, unrecognized string: `&-1.0`")]
+        [InlineData(">=>netcore&-1.0", "Expect a moniker string, but got `>netcore&-1.0`")]
+        [InlineData(">netcore<-1.0", "Moniker `netcore` is not found in available monikers list")]
+        [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Expect a comparator set, but got `| >netcore-2.0`")]
+        [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ` ||`")]
+        [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ``")]
+        public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
-            var (errors, result) = _monikerRangeParser.Parse("netcore-xp");
-            Assert.Null(result);
-            Assert.Single(errors);
-            Assert.Equal("MonikerRange `netcore-xp` is invalid: Moniker `netcore-xp` is not found in available monikers list", errors[0].Message);
+            var exception = Assert.Throws<DocfxException>(() => _monikerRangeParser.Parse(rangeString));
+            Assert.Equal("invalid-moniker-range", exception.Error.Code);
+            Assert.Equal(errorMessage, exception.Error.Message.Substring($"MonikerRange `{rangeString}` is invalid: ".Length));
         }
 
         [Fact]
@@ -119,9 +125,9 @@ namespace Microsoft.Docs.Build.moniker
                     ProductName = ".NET Core",
                 },
             };
-            var (errors, monikerRangeParser) = MonikerRangeParser.Create(monikers);
-            Assert.Single(errors);
-            Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", errors[0].Message);
+            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(monikers));
+            Assert.Equal("moniker-name-conflict", exception.Error.Code);
+            Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
         }
     }
 }
