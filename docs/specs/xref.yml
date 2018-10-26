@@ -196,7 +196,7 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
-# [only]Xref property field which supports markdown content
+# Xref property field which supports markdown content
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
@@ -212,7 +212,7 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
-# [only]Xref property field which supports inline markdown content
+# Xref property field which supports inline markdown content
 inputs:
   docfx.yml: |
     buildInternalXrefMap: true
