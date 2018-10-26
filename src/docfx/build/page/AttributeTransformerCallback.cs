@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MarkdownPipelineCallback
+    internal class AttributeTransformerCallback
     {
         public XrefMap XrefMap { get; }
 
@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public Action<Document> BuildChild { get; }
 
-        public MarkdownPipelineCallback(XrefMap xrefMap, DependencyMapBuilder dependencyMap, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+        public AttributeTransformerCallback(XrefMap xrefMap, DependencyMapBuilder dependencyMap, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             XrefMap = xrefMap;
             DependencyMap = dependencyMap;

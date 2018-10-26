@@ -98,7 +98,14 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-            var (html, markup) = Markup.ToHtml(content, file, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), MarkdownPipelineType.ConceptualMarkdown);
+            var callback = new AttributeTransformerCallback(xrefMap, dependencies, bookmarkValidator, buildChild);
+            var (html, markup) = Markup.ToHtml(
+                content,
+                file,
+                (path, relativeTo) => AttributeTransformer.ReadFile(path, relativeTo, dependencies, errors),
+                (path, relativeTo, resultRelativeTo) => AttributeTransformer.GetLink(path, relativeTo, resultRelativeTo, callback, errors),
+                (uid) => AttributeTransformer.ResolveXref(uid, xrefMap),
+                MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
             errors.AddRange(metaErrors);
@@ -154,7 +161,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, new MarkdownPipelineCallback(xrefMap, dependencies, bookmarkValidator, buildChild), file));
+            var (schemaViolationErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, new AttributeTransformerCallback(xrefMap, dependencies, bookmarkValidator, buildChild), file));
             errors.AddRange(schemaViolationErrors);
 
             if (file.Docset.Legacy && schema.Attribute is PageSchemaAttribute)

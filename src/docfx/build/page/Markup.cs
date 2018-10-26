@@ -49,7 +49,13 @@ namespace Microsoft.Docs.Build
         private static MarkupResult t_result;
 
         [ThreadStatic]
-        private static MarkdownPipelineCallback t_callback;
+        private static Func<string, object, (string, object)> t_getFile;
+
+        [ThreadStatic]
+        private static Func<string, object, object, string> t_getLink;
+
+        [ThreadStatic]
+        private static Func<string, XrefSpec> t_resolveXref;
 
         public static MarkupResult Result => t_result;
 
@@ -76,7 +82,9 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            MarkdownPipelineCallback callback,
+            Func<string, object, (string, object)> getFile,
+            Func<string, object, object, string> getLink,
+            Func<string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
             if (t_result != null)
@@ -89,7 +97,9 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     t_result = new MarkupResult();
-                    t_callback = callback;
+                    t_getFile = getFile;
+                    t_getLink = getLink;
+                    t_resolveXref = resolveXref;
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
@@ -101,33 +111,12 @@ namespace Microsoft.Docs.Build
                 finally
                 {
                     t_result = null;
-                    t_callback = null;
+                    t_getFile = null;
+                    t_getLink = null;
+                    t_resolveXref = null;
                 }
             }
         }
-
-        public static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownPipelineCallback callback, List<Error> errors)
-        {
-            Debug.Assert(relativeTo is Document);
-            Debug.Assert(resultRelativeTo is Document);
-
-            var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-            errors.AddIfNotNull(error);
-
-            if (child != null && callback?.BuildChild != null)
-            {
-                callback?.BuildChild(child);
-                callback?.DependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
-            }
-
-            callback?.BookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
-
-            return link;
-        }
-
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
-            => GetLink(path, relativeTo, resultRelativeTo, t_callback, Result.Errors);
 
         private static MarkdownPipeline CreateConceptualMarkdownPipeline()
         {
@@ -192,22 +181,10 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo)
-        {
-            Debug.Assert(relativeTo is Document);
+        private static (string content, object file) ReadFile(string path, object relativeTo) => t_getFile(path, relativeTo);
 
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_getLink(path, relativeTo, resultRelativeTo);
 
-            Result.Errors.AddIfNotNull(error);
-
-            t_callback?.DependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
-
-            return (content, child);
-        }
-
-        private static XrefSpec ResolveXref(string uid)
-        {
-            return t_callback?.XrefMap?.Resolve(uid);
-        }
+        private static XrefSpec ResolveXref(string uid) => t_resolveXref(uid);
     }
 }
