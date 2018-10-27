@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
             if (NativeMethods.GitRemoteLookup(out var pRemote, pRepo, "origin") == 0)
             {
-                remote = NativeMethods.GitRemoteUrl(pRemote);
+                remote = Marshal.PtrToStringUTF8(NativeMethods.GitRemoteUrl(pRemote));
                 NativeMethods.GitRemoteFree(pRemote);
             }
 
@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
                 for (var p = IntPtr.Zero; p != n; p = p + 1)
                 {
                     var entry = NativeMethods.GitTreeEntryByindex(tree, p);
-                    var name = NativeMethods.GitTreeEntryName(entry);
+                    var name = Marshal.PtrToStringUTF8(NativeMethods.GitTreeEntryName(entry));
 
                     if (lookup.TryGetValue(name, out var segment))
                     {

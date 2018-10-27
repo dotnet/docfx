@@ -67,8 +67,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int GitRemoteLookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
 
         [DllImport(LibName, EntryPoint = "git_remote_url")]
-        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
-        public static unsafe extern string GitRemoteUrl(IntPtr remote);
+        public static unsafe extern IntPtr GitRemoteUrl(IntPtr remote);
 
         [DllImport(LibName, EntryPoint = "git_remote_free")]
         public static unsafe extern void GitRemoteFree(IntPtr remote);
@@ -92,8 +91,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void GitObjectFree(IntPtr obj);
 
         [DllImport(LibName, EntryPoint = "git_commit_message")]
-        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
-        public static unsafe extern string GitCommitMessage(IntPtr commit);
+        public static unsafe extern IntPtr GitCommitMessage(IntPtr commit);
 
         [DllImport(LibName, EntryPoint = "git_commit_time")]
         public static unsafe extern long GitCommitTime(IntPtr commit);
@@ -138,7 +136,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern GitOid* GitTreeEntryId(IntPtr entry);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_name")]
-        public static unsafe extern string GitTreeEntryName(IntPtr entry);
+        public static unsafe extern IntPtr GitTreeEntryName(IntPtr entry);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_type")]
         public static unsafe extern int GitTreeEntryType(IntPtr entry);
