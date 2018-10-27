@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                 return Task.CompletedTask;
+                return Task.CompletedTask;
             });
         }
 
