@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
 
         private int _nextLruOrder;
         private int _nextStringId;
+        private bool _cacheUpdated;
         private IntPtr _repo;
 
         private GitCommitLoader(
@@ -72,7 +73,7 @@ namespace Microsoft.Docs.Build
                 return new List<GitCommit>();
             }
 
-            var suppressCacheUpdate = false;
+            var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = stackalloc long[MaxParentBlob];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (commitCache.TryGetValue((commit.Sha.A, blob), out var cachedValue))
                         {
-                            suppressCacheUpdate = result.Count == 0;
+                            updateCache = result.Count != 0;
 
                             var (cachedCommitHistory, lruOrder) = cachedValue;
                             foreach (var cachedCommit in cachedCommitHistory)
@@ -159,10 +160,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (!suppressCacheUpdate)
+            if (updateCache)
             {
                 lock (commitCache)
                 {
+                    _cacheUpdated = true;
                     commitCache.Add((headCommit.Sha.A, headBlob), (result.Select(c => c.Sha.A).ToArray(), 0));
                 }
             }
@@ -172,7 +174,7 @@ namespace Microsoft.Docs.Build
 
         public Task SaveCache()
         {
-            if (string.IsNullOrEmpty(_cacheFilePath))
+            if (!_cacheUpdated || string.IsNullOrEmpty(_cacheFilePath))
             {
                 return Task.CompletedTask;
             }
@@ -184,6 +186,7 @@ namespace Microsoft.Docs.Build
                 using (var stream = File.Create(_cacheFilePath))
                 using (var writer = new BinaryWriter(stream))
                 {
+                    writer.Write(_commitCache.Count);
                     foreach (var (file, value) in _commitCache)
                     {
                         lock (value)
@@ -344,24 +347,25 @@ namespace Microsoft.Docs.Build
                 using (var stream = File.OpenRead(cacheFilePath))
                 using (var reader = new BinaryReader(stream))
                 {
-                    while (stream.Position < stream.Length)
+                    var fileCount = reader.ReadInt32();
+                    for (var fileIndex = 0; fileIndex < fileCount; fileIndex++)
                     {
                         var file = reader.ReadString();
                         var cacheCount = reader.ReadInt32();
                         var cachedCommits = result.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
 
-                        for (var i = 0; i < cacheCount; i++)
+                        for (var cacheIndex = 0; cacheIndex < cacheCount; cacheIndex++)
                         {
                             var commit = reader.ReadInt64();
                             var blob = reader.ReadInt64();
                             var commitCount = reader.ReadInt32();
                             var commitHistory = new long[commitCount];
 
-                            for (var k = 0; k < commitCount; k++)
+                            for (var commitIndex = 0; commitIndex < commitCount; commitIndex++)
                             {
-                                commitHistory[k] = reader.ReadInt64();
+                                commitHistory[commitIndex] = reader.ReadInt64();
                             }
-                            cachedCommits.Add((commit, blob), (commitHistory, i + 1));
+                            cachedCommits.Add((commit, blob), (commitHistory, cacheIndex + 1));
                         }
                     }
                 }
