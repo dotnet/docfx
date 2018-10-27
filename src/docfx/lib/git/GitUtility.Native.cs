@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,14 +23,10 @@ namespace Microsoft.Docs.Build
             var (remote, branch, commit) = default((string, string, string));
             var pRepo = OpenRepo(repoPath);
 
-            // TODO: marshal strings
-            fixed (byte* pRemoteName = NativeMethods.ToUtf8Native("origin"))
+            if (NativeMethods.GitRemoteLookup(out var pRemote, pRepo, "origin") == 0)
             {
-                if (NativeMethods.GitRemoteLookup(out var pRemote, pRepo, pRemoteName) == 0)
-                {
-                    remote = NativeMethods.FromUtf8Native(NativeMethods.GitRemoteUrl(pRemote));
-                    NativeMethods.GitRemoteFree(pRemote);
-                }
+                remote = NativeMethods.GitRemoteUrl(pRemote);
+                NativeMethods.GitRemoteFree(pRemote);
             }
 
             if (NativeMethods.GitRepositoryHead(out var pHead, pRepo) == 0)
@@ -37,7 +34,7 @@ namespace Microsoft.Docs.Build
                 commit = NativeMethods.GitReferenceTarget(pHead)->ToString();
                 if (NativeMethods.GitBranchName(out var pName, pHead) == 0)
                 {
-                    branch = NativeMethods.FromUtf8Native(pName);
+                    branch = Marshal.PtrToStringUTF8(pName);
                 }
                 NativeMethods.GitReferenceFree(pHead);
             }
@@ -109,15 +106,12 @@ namespace Microsoft.Docs.Build
 
         private static unsafe IntPtr OpenRepo(string path)
         {
-            fixed (byte* pRepoPath = NativeMethods.ToUtf8Native(path))
+            if (NativeMethods.GitRepositoryOpen(out var repo, path) != 0)
             {
-                if (NativeMethods.GitRepositoryOpen(out var repo, pRepoPath) != 0)
-                {
-                    throw new ArgumentException($"Invalid git repo {path}");
-                }
-
-                return repo;
+                throw new ArgumentException($"Invalid git repo {path}");
             }
+
+            return repo;
         }
 
         private static unsafe List<Commit> LoadCommits(string repoPath, IntPtr repo)
@@ -160,8 +154,8 @@ namespace Microsoft.Docs.Build
                     Tree = *NativeMethods.GitCommitTreeId(commit),
                     GitCommit = new GitCommit
                     {
-                        AuthorName = NativeMethods.FromUtf8Native(author->Name),
-                        AuthorEmail = NativeMethods.FromUtf8Native(author->Email),
+                        AuthorName = Marshal.PtrToStringUTF8(author->Name),
+                        AuthorEmail = Marshal.PtrToStringUTF8(author->Email),
                         Sha = commitId.ToString(),
                         Time = NativeMethods.ToDateTimeOffset(NativeMethods.GitCommitTime(commit), NativeMethods.GitCommitTimeOffset(commit)),
                     },
@@ -215,7 +209,7 @@ namespace Microsoft.Docs.Build
                 for (var p = IntPtr.Zero; p != n; p = p + 1)
                 {
                     var entry = NativeMethods.GitTreeEntryByindex(tree, p);
-                    var name = NativeMethods.FromUtf8Native(NativeMethods.GitTreeEntryName(entry));
+                    var name = NativeMethods.GitTreeEntryName(entry);
 
                     if (lookup.TryGetValue(name, out var segment))
                     {

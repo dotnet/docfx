@@ -35,25 +35,6 @@ namespace Microsoft.Docs.Build
             RefDelta,
         }
 
-        public static byte[] ToUtf8Native(string str)
-        {
-            var buf = new byte[Encoding.UTF8.GetByteCount(str) + 1];
-            Encoding.UTF8.GetBytes(str, 0, str.Length, buf, 0);
-            return buf;
-        }
-
-        public static unsafe string FromUtf8Native(byte* str)
-        {
-            var n = 0;
-            var p = str;
-            while (*p++ != 0)
-            {
-                n++;
-            }
-
-            return Encoding.UTF8.GetString(str, n);
-        }
-
         public static DateTimeOffset ToDateTimeOffset(long time, int offset)
         {
             DateTimeOffset utcDateTime = s_epoch.AddSeconds(time);
@@ -74,7 +55,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int GitOidFmt(sbyte* str, GitOid* oid);
 
         [DllImport(LibName, EntryPoint = "git_repository_open")]
-        public static unsafe extern int GitRepositoryOpen(out IntPtr repo, byte* path);
+        public static unsafe extern int GitRepositoryOpen(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path);
 
         [DllImport(LibName, EntryPoint = "git_repository_head")]
         public static unsafe extern int GitRepositoryHead(out IntPtr reference, IntPtr repo);
@@ -83,19 +64,20 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void GitRepositoryFree(IntPtr repo);
 
         [DllImport(LibName, EntryPoint = "git_remote_lookup")]
-        public static unsafe extern int GitRemoteLookup(out IntPtr remote, IntPtr repo, byte* name);
+        public static unsafe extern int GitRemoteLookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
 
         [DllImport(LibName, EntryPoint = "git_remote_url")]
-        public static unsafe extern byte* GitRemoteUrl(IntPtr remote);
+        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
+        public static unsafe extern string GitRemoteUrl(IntPtr remote);
 
         [DllImport(LibName, EntryPoint = "git_remote_free")]
         public static unsafe extern void GitRemoteFree(IntPtr remote);
 
         [DllImport(LibName, EntryPoint = "git_branch_lookup")]
-        public static unsafe extern int GitBranchLookup(out IntPtr reference, IntPtr repo, byte* name, int type);
+        public static unsafe extern int GitBranchLookup(out IntPtr reference, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, int type);
 
         [DllImport(LibName, EntryPoint = "git_branch_name")]
-        public static unsafe extern int GitBranchName(out byte* name, IntPtr reference);
+        public static unsafe extern int GitBranchName(out IntPtr name, IntPtr reference);
 
         [DllImport(LibName, EntryPoint = "git_reference_target")]
         public static unsafe extern GitOid* GitReferenceTarget(IntPtr reference);
@@ -110,7 +92,8 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void GitObjectFree(IntPtr obj);
 
         [DllImport(LibName, EntryPoint = "git_commit_message")]
-        public static unsafe extern byte* GitCommitMessage(IntPtr commit);
+        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
+        public static unsafe extern string GitCommitMessage(IntPtr commit);
 
         [DllImport(LibName, EntryPoint = "git_commit_time")]
         public static unsafe extern long GitCommitTime(IntPtr commit);
@@ -146,7 +129,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern IntPtr GitTreeEntryByindex(IntPtr tree, IntPtr i);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_bypath")]
-        public static unsafe extern int GitTreeEntryBypath(out IntPtr tree, IntPtr root, byte* treeentry_path);
+        public static unsafe extern int GitTreeEntryBypath(out IntPtr tree, IntPtr root, [MarshalAs(UnmanagedType.LPUTF8Str)]string treeentry_path);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_free")]
         public static unsafe extern void GitTreeEntryFree(IntPtr treeEntry);
@@ -155,7 +138,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern GitOid* GitTreeEntryId(IntPtr entry);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_name")]
-        public static unsafe extern byte* GitTreeEntryName(IntPtr entry);
+        public static unsafe extern string GitTreeEntryName(IntPtr entry);
 
         [DllImport(LibName, EntryPoint = "git_tree_entry_type")]
         public static unsafe extern int GitTreeEntryType(IntPtr entry);
@@ -170,7 +153,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int GitRevwalkPushHead(IntPtr walk);
 
         [DllImport(LibName, EntryPoint = "git_revwalk_push_glob")]
-        public static unsafe extern int GitRevwalkPushGlob(IntPtr walk, byte* glob);
+        public static unsafe extern int GitRevwalkPushGlob(IntPtr walk, [MarshalAs(UnmanagedType.LPUTF8Str)]string glob);
 
         [DllImport(LibName, EntryPoint = "git_revwalk_next")]
         public static unsafe extern int GitRevwalkNext(out GitOid oid, IntPtr walk);
@@ -188,28 +171,22 @@ namespace Microsoft.Docs.Build
             public int Offset;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
         public unsafe struct GitSignature
         {
-            public byte* Name;
-            public byte* Email;
+            public IntPtr Name;
+            public IntPtr Email;
             public GitTime When;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct GitOid : IEquatable<GitOid>
+        public struct GitOid
         {
             public const int Size = 20;
 
             public long A;
             public long B;
             public int C;
-
-            public static bool Equals(ref GitOid a, ref GitOid b) => a.A == b.A && a.B == b.B && a.C == b.C;
-
-            public bool Equals(GitOid other) => A == other.A && B == other.B && C == other.C;
-
-            public override bool Equals(object obj) => obj is GitOid && Equals((GitOid)obj);
 
             public unsafe override string ToString()
             {
@@ -219,11 +196,6 @@ namespace Microsoft.Docs.Build
                     GitOidFmt(str, p);
                     return new string(str, 0, 40);
                 }
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
             }
         }
     }
