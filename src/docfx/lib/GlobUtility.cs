@@ -7,11 +7,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class GlobUtility
     {
-        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
+        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns = null)
         {
             var ignoreCase = !PathUtility.IsCaseSensitive;
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
-            var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
+            var excludeGlobs = excludePatterns != null ? Array.ConvertAll(excludePatterns, CreateGlob) : null;
 
             return IsGlobMatch;
 
@@ -34,11 +34,14 @@ namespace Microsoft.Docs.Build
                 {
                     if (include != null && include.IsMatch(path))
                     {
-                        foreach (var exclude in excludeGlobs)
+                        if (excludeGlobs != null)
                         {
-                            if (exclude != null && exclude.IsMatch(path))
+                            foreach (var exclude in excludeGlobs)
                             {
-                                return false;
+                                if (exclude != null && exclude.IsMatch(path))
+                                {
+                                    return false;
+                                }
                             }
                         }
                         return true;

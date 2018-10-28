@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -21,7 +22,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (glob, value) in item)
                 {
-                    _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
+                    _rules.Add((GlobUtility.CreateGlobMatcher(new[] { glob }), key, value));
                 }
             }
         }
