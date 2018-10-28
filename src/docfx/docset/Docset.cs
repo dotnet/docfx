@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<Document> ScanScope => _scanScope.Value;
 
-        public MetadataInfo Metadata => _metadata.Value;
+        public MetadataProvider Metadata => _metadata.Value;
 
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<HashSet<Document>> _scanScope;
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
-        private readonly Lazy<MetadataInfo> _metadata;
+        private readonly Lazy<MetadataProvider> _metadata;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
             : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale, options, null)
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                 return map;
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
-            _metadata = new Lazy<MetadataInfo>(() => new MetadataInfo(config));
+            _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
         }
 

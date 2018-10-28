@@ -8,12 +8,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MetadataInfo
+    internal class MetadataProvider
     {
         private readonly Config _config;
         private readonly List<(GlobMatcher glob, string key, JToken value)> _rules = new List<(GlobMatcher glob, string key, JToken value)>();
 
-        public MetadataInfo(Config config)
+        public MetadataProvider(Config config)
         {
             _config = config;
 
