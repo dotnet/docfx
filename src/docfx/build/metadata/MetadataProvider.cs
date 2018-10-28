@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Config _config;
-        private readonly List<(GlobMatcher glob, string key, JToken value)> _rules = new List<(GlobMatcher glob, string key, JToken value)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
         public MetadataProvider(Config config)
         {
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (glob, value) in item)
                 {
-                    _rules.Add((new GlobMatcher(glob), key, value));
+                    _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
                 }
             }
         }
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
-                if (glob.Match(file.FilePath))
+                if (glob(file.FilePath))
                 {
                     fileMetadata[key] = value;
                 }
