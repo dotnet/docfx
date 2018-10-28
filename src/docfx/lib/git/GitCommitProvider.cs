@@ -16,7 +16,7 @@ using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class GitCommitLoader : IDisposable
+    internal sealed class GitCommitProvider : IDisposable
     {
         private const int MaxCommitCacheCountPerFile = 10;
 
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         private bool _cacheUpdated;
         private IntPtr _repo;
 
-        private GitCommitLoader(
+        private GitCommitProvider(
             string repoPath,
             string cacheFilePath,
             ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> commitCache)
@@ -56,12 +56,12 @@ namespace Microsoft.Docs.Build
             var x = _commits.Value;
         }
 
-        public static async Task<GitCommitLoader> Create(string repoPath, string cacheFilePath = null)
+        public static async Task<GitCommitProvider> Create(string repoPath, string cacheFilePath = null)
         {
-            return new GitCommitLoader(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
+            return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
         }
 
-        public unsafe List<GitCommit> LoadCommitHistory(string file)
+        public unsafe List<GitCommit> GetCommitHistory(string file)
         {
             Debug.Assert(!file.Contains('\\'));
 

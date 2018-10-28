@@ -241,14 +241,14 @@ namespace Microsoft.Docs.Build
                     var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsLoader = await GitCommitLoader.Create(repoPath, commitCachePath))
+                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, commitCachePath))
                     {
                         ParallelUtility.ForEach(
                             group,
-                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsLoader.LoadCommitHistory(pair.pathToRepo)),
+                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo)),
                             Progress.Update);
 
-                        await commitsLoader.SaveCache();
+                        await commitsProvider.SaveCache();
                     }
                 }
             }

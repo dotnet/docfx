@@ -35,18 +35,18 @@ namespace Microsoft.Docs.Build
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            using (var commitsLoader = await GitCommitLoader.Create(repo))
+            using (var commitsProvider = await GitCommitProvider.Create(repo))
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
                 var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
-                var lib = commitsLoader.LoadCommitHistory(pathToRepo);
+                var lib = commitsProvider.GetCommitHistory(pathToRepo);
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
                     string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                await commitsLoader.SaveCache();
+                await commitsProvider.SaveCache();
             }
         }
 
