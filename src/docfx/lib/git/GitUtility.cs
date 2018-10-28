@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
             {
                 return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
             }
-            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
+            catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
             }

@@ -92,6 +92,62 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static Task<string> ReadFile(string path)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                using (var reader = new StreamReader(fs))
+                {
+                    return reader.ReadToEnd();
+                }
+            });
+        }
+
+        public static Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                {
+                    return read(fs);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static Task WriteFile(string path, string content)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                using (var writer = new StreamWriter(fs))
+                {
+                    writer.Write(content);
+                }
+                return 0;
+            });
+        }
+
+        public static Task WriteFile(string path, Action<Stream> write)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                {
+                    write(fs);
+                }
+                return 0;
+            });
+        }
+
+        /// <summary>
         /// Create a file mutex to lock a resource/action
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
@@ -104,22 +160,46 @@ namespace Microsoft.Docs.Build
 
             var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
 
-            using (await AcquireFileMutex(mutexName, lockPath))
+            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
             {
                 await action();
             }
+
+            FileStream CreateFile() => new FileStream(
+                lockPath,
+                FileMode.CreateNew,
+                FileAccess.ReadWrite,
+                FileShare.None,
+                1,
+                FileOptions.DeleteOnClose);
         }
 
         /// <summary>
         /// Checks if the exception thrown by Process.Start is caused by file not found.
         /// </summary>
-        public static bool IsNotFound(Win32Exception ex)
+        public static bool IsExeNotFoundException(Win32Exception ex)
         {
             return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
                    ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
-        private static async Task<FileStream> AcquireFileMutex(string mutexName, string lockPath)
+        /// <summary>
+        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
+        /// </summary>
+        public static bool IsFileUsedByAnotherProcessException(IOException ex)
+        {
+            return ex.HResult == 35 /*|| ex.HResult == 17*/;
+        }
+
+        /// <summary>
+        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
+        /// </summary>
+        public static bool IsFileAlreadyExistsException(IOException ex)
+        {
+            return ex.HResult == 17;
+        }
+
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<IOException, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -128,9 +208,9 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
+                    return action();
                 }
-                catch
+                catch (IOException ex) when (expectException(ex))
                 {
                     if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
                     {
@@ -140,7 +220,7 @@ namespace Microsoft.Docs.Build
 #pragma warning restore CA2002
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                            Console.WriteLine($"Waiting for another process to access '{name}'");
                             Console.ResetColor();
                         }
                     }
