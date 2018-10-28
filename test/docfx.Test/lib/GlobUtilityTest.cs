@@ -15,8 +15,10 @@ namespace Microsoft.Docs.Build
         [InlineData("**/a/*/b.cs", "b/a/a/a/b.cs", true)]
 
         // ** is a shortcut for **/*
-        [InlineData("**", "a b abc bdir/cfile", true)]
-        [InlineData("**/*", "a ab bdir/cfile a/b/c", true)]
+        [InlineData("**", "a a/b", true)]
+        [InlineData("**/*", "a a/b a/b/c", true)]
+        [InlineData("a/**", "a/b a/b a/b/c", true)]
+        [InlineData("a/**", "a", false)]
 
         // Ignore files starting with dot
         [InlineData("**", ".git .git/a a/.git a\\.git", false)]
