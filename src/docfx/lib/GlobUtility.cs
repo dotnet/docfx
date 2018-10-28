@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using GlobExpressions;
 
 namespace Microsoft.Docs.Build
 {
@@ -9,7 +10,6 @@ namespace Microsoft.Docs.Build
     {
         public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
         {
-            var ignoreCase = !PathUtility.IsCaseSensitive;
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
             var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
 
@@ -21,13 +21,6 @@ namespace Microsoft.Docs.Build
                 if (path.StartsWith('.') || path.Contains("/.") || path.Contains("\\."))
                 {
                     return false;
-                }
-
-                path = path.Replace('\\', '/');
-
-                if (ignoreCase)
-                {
-                    path = path.ToLowerInvariant();
                 }
 
                 foreach (var include in includeGlobs)
@@ -47,20 +40,15 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            Glob.Glob CreateGlob(string pattern)
+            Glob CreateGlob(string pattern)
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(pattern))
-                    {
-                        // https://github.com/kthompson/glob/issues/35
-                        return null;
-                    }
-                    if (ignoreCase)
-                    {
-                        pattern = pattern.ToLowerInvariant();
-                    }
-                    return new Glob.Glob(pattern.Replace('\\', '/'), Glob.GlobOptions.Compiled);
+                    var options = PathUtility.IsCaseSensitive
+                        ? GlobOptions.Compiled
+                        : GlobOptions.Compiled | GlobOptions.CaseInsensitive;
+
+                    return new Glob(pattern, options);
                 }
                 catch (Exception ex)
                 {

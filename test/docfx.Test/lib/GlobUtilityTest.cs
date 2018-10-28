@@ -48,13 +48,14 @@ namespace Microsoft.Docs.Build
         [InlineData("**/J/**", "Root/JK/K.md Root/JK\\K.md", false)]
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/E/K.md Root/J\\K.cs", true)]
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/M/K.md Root/J\\K.csp", false)]
-
+        [InlineData("a**/*.md", "ab/c.md a/b.md", true)]
+        [InlineData("a**/*.md", "a/b/c.md a/b.cs", false)]
         public void MatchFilesUsingGlobPattern(string pattern, string files, bool match)
         {
             var glob = GlobUtility.CreateGlobMatcher(new[] { pattern }, Array.Empty<string>());
             foreach (var file in files.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             {
-                Assert.Equal(match, glob(file));
+                Assert.True(match == glob(file), pattern + " " + files);
             }
         }
 
@@ -69,10 +70,6 @@ namespace Microsoft.Docs.Build
         [InlineData("a[\\\\b]c")]
         [InlineData("{{a,b}}")]
         [InlineData("z{a,b{,c}d")]
-        [InlineData("**/")]
-        [InlineData("\\[*")]
-        [InlineData("a{b,c,d}e{d}{}")]
-        [InlineData("b*/")]
         public void InvalidGlobPattern(string pattern)
         {
             Assert.Equal(
