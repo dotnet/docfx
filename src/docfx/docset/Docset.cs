@@ -2,10 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -88,9 +90,9 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<MetadataInfo> _metadata;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.DefaultLocale, options, null)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale, options, null)
         {
-            if (!string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
 
@@ -161,14 +163,27 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var fileGlob = new FileGlob(Config.Content.Include, Config.Content.Exclude);
-                var files = fileGlob.GetFiles(DocsetPath).Select(file => Document.TryCreateFromFile(this, Path.GetRelativePath(DocsetPath, file))).ToHashSet();
+                var glob = GlobUtility.CreateGlobMatcher(Config.Content.Include, Config.Content.Exclude);
+                var files = new ConcurrentBag<Document>();
+
+                ParallelUtility.ForEach(
+                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
+                    file =>
+                    {
+                        var relativePath = Path.GetRelativePath(DocsetPath, file);
+                        if (glob(relativePath))
+                        {
+                            files.Add(Document.TryCreateFromFile(this, relativePath));
+                        }
+                    });
+
+                var result = new HashSet<Document>(files);
 
                 foreach (var redirection in redirections)
                 {
-                    if (fileGlob.IsMatch(redirection.FilePath))
+                    if (glob(redirection.FilePath))
                     {
-                        files.Add(redirection);
+                        result.Add(redirection);
                     }
                     else
                     {
@@ -176,7 +191,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return files;
+                return result;
             }
         }
 

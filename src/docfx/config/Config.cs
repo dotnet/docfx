@@ -12,10 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private const string DefaultLocaleStr = "en-us";
-        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
-
         /// <summary>
         /// Gets the default product name
         /// </summary>
@@ -27,14 +23,9 @@ namespace Microsoft.Docs.Build
         public readonly string Name = string.Empty;
 
         /// <summary>
-        /// Gets the default locale of this docset.
-        /// </summary>
-        public readonly string DefaultLocale = DefaultLocaleStr;
-
-        /// <summary>
         /// Gets the contents that are managed by this docset.
         /// </summary>
-        public readonly FileConfig Content = new FileConfig(s_defaultContentInclude, s_defaultContentExclude);
+        public readonly FileConfig Content = new FileConfig();
 
         /// <summary>
         /// Gets the output config.
@@ -131,9 +122,9 @@ namespace Microsoft.Docs.Build
         public readonly string[] Xref = Array.Empty<string>();
 
         /// <summary>
-        /// The mapping between source files and localized files
+        /// The configurations for localization build
         /// </summary>
-        public readonly LocalizationMapping LocalizationMapping;
+        public readonly LocalizationConfig Localization = new LocalizationConfig();
 
         /// <summary>
         /// Gets the config file name.
@@ -285,10 +276,15 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(locale))
             {
-                if (config.TryGetValue(ConfigConstants.DefaultLocale, out var defaultLocale) && defaultLocale is JValue defaultLocaleValue)
-                    locale = defaultLocaleValue.Value<string>();
+                if (config.TryGetValue<JObject>(ConfigConstants.Localization, out var localizationConfig) &&
+                    localizationConfig.TryGetValue<JValue>(ConfigConstants.DefaultLocale, out var defaultLocale))
+                {
+                    locale = defaultLocale.Value<string>();
+                }
                 else
-                    locale = DefaultLocaleStr;
+                {
+                    locale = LocalizationConfig.DefaultLocaleStr;
+                }
             }
 
             var result = new JObject();

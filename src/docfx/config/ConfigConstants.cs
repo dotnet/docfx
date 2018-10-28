@@ -16,5 +16,6 @@ namespace Microsoft.Docs.Build
         internal const string Redirections = "redirections";
         internal const string RedirectionsWithoutId = "redirectionsWithoutId";
         internal const string DefaultLocale = "defaultLocale";
+        internal const string Localization = "localization";
     }
 }
