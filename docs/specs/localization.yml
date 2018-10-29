@@ -253,10 +253,10 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"toc_rel": "TOC.json"}
+    {"toc_rel": "toc.json"}
   docs/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
@@ -282,8 +282,8 @@ inputs:
 outputs:
   build.manifest:
   docs/b/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/a/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
@@ -310,8 +310,8 @@ inputs:
 outputs:
   build.manifest:
   docs/b/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/a/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority
