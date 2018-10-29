@@ -1,4 +1,4 @@
-# Restore loc repo with dependencies
+# restore loc repo with dependencies
 # [repository mapping] 
 commands:
   - restore --locale zh-cn
@@ -14,7 +14,7 @@ restores:
 outputs:
   build.manifest:
 ---
-# Restore loc repo, all loc files are in one repo
+# restore loc repo, all loc files are in one repo
 # [repository + folder mapping]
 commands:
   - restore --locale zh-cn
@@ -30,6 +30,56 @@ restores:
     {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master":"18d3d65979413ce8342fd709dbce1c78ab45ffeb"}}
 outputs:
   build.manifest:
+---
+# loc docset share the source docset's restore map
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-restore-map
+inputs:
+  docfx.yml: |
+    github:
+      userCache: github-user.json
+    dependencies:
+      child1: https://github.com/docascode/docfx-test-dependencies.localization#master
+  github-user.json: |
+    {
+      "users": [
+        {
+          "name": "Osmond Jiang",
+          "login": "OsmondJiang",
+          "id": 19990166,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "xinjiang@microsoft.com"
+          ]
+        },
+        {
+          "name": "Renze Yu",
+          "login": "superyyrrzz",
+          "id": 3831744,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "renzeyu@microsoft.com",
+            "superyyrrzz@gmail.com"
+          ]
+        },
+        {
+          "name": "Yufei Huang",
+          "login": "yufeih",
+          "id": 511355,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "yufeih@users.noreply.github.com",
+            "yufeih@live.com"
+          ]
+        }
+      ]
+    }
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Yufei Huang","id":"yufeih@users.noreply.github.com"}]}
 ---
 # loc config convention without source locale
 # [repository mapping] 
