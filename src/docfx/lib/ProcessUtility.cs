@@ -179,27 +179,35 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static bool IsExeNotFoundException(Win32Exception ex)
         {
-            return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
-                   ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
+            return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
+                || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
         /// <summary>
         /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
         /// </summary>
-        public static bool IsFileUsedByAnotherProcessException(IOException ex)
+        public static bool IsFileUsedByAnotherProcessException(Exception ex)
         {
-            return ex.HResult == 35 || ex.HResult == -2147024864;
+            return ex is IOException ioe && (
+                   ioe.HResult == 35 // Mac
+                || ioe.HResult == 11 // Linux
+                || ioe.HResult == -2147024864); // Windows
         }
 
         /// <summary>
         /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
         /// </summary>
-        public static bool IsFileAlreadyExistsException(IOException ex)
+        public static bool IsFileAlreadyExistsException(Exception ex)
         {
-            return ex.HResult == 17;
+            if (ex is IOException ioe)
+            {
+                return ex.HResult == 17 // Mac
+                    || ex.HResult == -2147024816; // Windows
+            }
+            return ex is UnauthorizedAccessException;
         }
 
-        private static async Task<T> RetryUntilSucceed<T>(string name, Func<IOException, bool> expectException, Func<T> action)
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -210,7 +218,7 @@ namespace Microsoft.Docs.Build
                 {
                     return action();
                 }
-                catch (IOException ex) when (expectException(ex))
+                catch (Exception ex) when (expectException(ex))
                 {
                     if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
                     {

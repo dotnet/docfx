@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
                             Assert.Equal(0, Interlocked.Decrement(ref concurrencyLevel));
                         }));
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
-                Assert.False(ProcessUtility.IsFileAlreadyExistsException(ex), ex.HResult + " " + ex.Message);
+                Assert.True(false, ex.HResult + " " + ex.Message);
             }
         }
     }
