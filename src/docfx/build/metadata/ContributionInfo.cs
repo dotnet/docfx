@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             }
 
             var path = docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime);
-            var content = ProcessUtility.ReadFile(path).Result; // TODO:
+            var content = ProcessUtility.ReadFile(path).Result; // TODO: Merge with https://github.com/dotnet/docfx/pull/3530
             return JsonUtility.Deserialize<GitCommitsTime>(content).Item2.ToDictionary();
         }
 
