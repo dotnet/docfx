@@ -4,6 +4,10 @@ Version Notes (Current Version: v2.41)
 v2.41(Pre-release)
 -----------
 
+v2.40.1
+-----------
+1. Fix codesnippet tagname bug.
+
 v2.40
 -----------
 1. Upgrade Markdig to 0.15.4
