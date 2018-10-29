@@ -19,13 +19,19 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private readonly IReadOnlyDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile;
+        private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
 
-        public ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
+        private ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
-            _commitsByFile = LoadCommits(docset);
             _updateTimeByCommit = LoadCommitsTime(docset);
+        }
+
+        public static async Task<ContributionInfo> Create(Docset docset, GitHubUserCache cache)
+        {
+            var result = new ContributionInfo(docset, cache);
+            await result.LoadCommits(docset);
+            return result;
         }
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
@@ -223,10 +229,9 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<GitCommitsTime>(content).Item2.ToDictionary();
         }
 
-        private Dictionary<string, (Repository, List<GitCommit> commits)> LoadCommits(Docset docset)
+        private async Task LoadCommits(Docset docset)
         {
             var errors = new List<Error>();
-            var result = new Dictionary<string, (Repository, List<GitCommit> commits)>();
 
             if (docset.Config.Contribution.ShowContributors)
             {
@@ -235,23 +240,27 @@ namespace Microsoft.Docs.Build
                     where file.ContentType == ContentType.Page
                     let fileInRepo = GetRepository(file)
                     where fileInRepo.repo != null
-                    group (file, fileInRepo.pathToRepo) by fileInRepo.repo;
+                    group (file, fileInRepo.pathToRepo)
+                    by fileInRepo.repo;
 
                 foreach (var group in filesByRepo)
                 {
-                    var pathToDocset = group.Select(pair => pair.file.FilePath).ToList();
-                    var pathToRepo = group.Select(pair => pair.pathToRepo).ToList();
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var (commitsByFile, allCommits) = GitUtility.GetCommits(repoPath, pathToRepo);
-                    for (var i = 0; i < pathToDocset.Count; i++)
+                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
+
+                    using (Progress.Start($"Loading commits for '{repoPath}'"))
+                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, commitCachePath))
                     {
-                        result.Add(pathToDocset[i], (group.Key, commitsByFile[i]));
+                        ParallelUtility.ForEach(
+                            group,
+                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo)),
+                            Progress.Update);
+
+                        await commitsProvider.SaveCache();
                     }
                 }
             }
-
-            return result;
         }
 
         private enum GitHost
