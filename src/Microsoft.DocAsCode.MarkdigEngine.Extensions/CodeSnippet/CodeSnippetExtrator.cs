@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Text.RegularExpressions;
     using Markdig.Helpers;
 
     public class CodeSnippetExtrator
     {
+        private static readonly Regex TagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private readonly string StartLineTemplate;
         private readonly string EndLineTemplate;
         private readonly bool IsEndLineContainsTagName;
@@ -37,7 +39,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 string tagName;
 
-                if(MatchTag(line, EndLineTemplate, out tagName))
+                if(MatchTag(line, EndLineTemplate, out tagName, IsEndLineContainsTagName))
                 {
                     tagLines.Add(index);
                     if (!IsEndLineContainsTagName)
@@ -73,7 +75,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return result;
         }
 
-        private bool MatchTag(string line, string template, out string tagName)
+        private bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
         {
             tagName = string.Empty;
             if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;
@@ -121,8 +123,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (index != afterTagName.Length) return false;
             while (column < line.Length && CharHelper.IsWhitespace(line[column])) column++;
-            
-            return column == line.Length;
+
+            return column == line.Length && (!containTagname || TagnameFormat.IsMatch(tagName));
         }
     }
 }
