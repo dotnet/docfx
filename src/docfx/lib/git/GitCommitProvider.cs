@@ -34,7 +34,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<long, Dictionary<int, GitOid>> _trees
                    = new ConcurrentDictionary<long, Dictionary<int, GitOid>>();
 
-        // Commit history LRU cache per file.
+        // Commit history LRU cache per file. Key is the file path relative to repository root.
+        // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
+        // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
         private readonly ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> _commitCache;
 
         private int _nextLruOrder;
@@ -52,8 +54,6 @@ namespace Microsoft.Docs.Build
             _repo = GitUtility.OpenRepo(repoPath);
             _commits = new Lazy<(List<Commit>, Dictionary<long, Commit>)>(LoadCommits);
             _commitCache = commitCache;
-
-            var x = _commits.Value;
         }
 
         public static async Task<GitCommitProvider> Create(string repoPath, string cacheFilePath = null)
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
         }
 
-        public unsafe List<GitCommit> GetCommitHistory(string file)
+        public List<GitCommit> GetCommitHistory(string file)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             var updateCache = true;
             var result = new List<Commit>();
-            var parentBlobs = stackalloc long[MaxParentBlob];
+            var parentBlobs = new long[MaxParentBlob];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
             var commitCache = _commitCache.GetOrAdd(file, _ => new Dictionary<(long, long), (long[], int)>());
 
