@@ -1,22 +1,24 @@
-# Conceptual versioning - Phase 1
+# Versioning Dev Spec
 
-This document specifies Docfx vnext conceptual versioning phase 1 design.
+This document specifies Docfx vnext versioning dev design.
 
-## 1 Scope
+## Conceptual versioning - Phase 1
 
-### 1.1 In scope
+### 1 Scope
 
-#### For content writer
+#### 1.1 In scope
+
+##### For content writer
 
 1. Support expressing version constrains as [moniker range](#21-moniker-range)
 
 2. Support moniker zone markdown syntax.
 
-3. Support publishing two files with same *sitePath* but different monikerRange(mutually exclusive with others), where the appropriate file is selected by URL with query `view={moniker}`.
+3. Support publishing multiple files with same *sitePath* but different monikerRange(mutually exclusive with others), where the appropriate file is selected by URL with query `view={moniker}`.
 
 4. All files will be built in one round, which will bring a better performance.
 
-#### For content reader
+##### For content reader
 
 1. Support viewing page with specific version by query `?view={moniker}`
 
@@ -24,7 +26,7 @@ This document specifies Docfx vnext conceptual versioning phase 1 design.
 
 3. [Empty page](#42-empty-page) should be handled.
 
-### 1.2 Out of scope
+#### 1.2 Out of scope
 
 1. Not support specific version reference, including link and xref.
 
@@ -82,15 +84,15 @@ This document specifies Docfx vnext conceptual versioning phase 1 design.
 
 3. Not support generating static website. In phase 1, since docfx doesn't handle fallback case, there have to be host server.
 
-## 2 User Experience
+### 2 User Experience
 
-### 2.1 Moniker Range
+#### 2.1 Moniker Range
 
 In order to ease version configuration and content maintenance, [moniker range](https://review.docs.microsoft.com/en-us/new-hope/resources/conceptual-versioning?branch=master#moniker-ranges) enable the writer to associate more than one moniker with content, but without needing to list monikers.
 
 We support three level moniker range setting:
 
-#### 2.1.1 Config file
+##### 2.1.1 Config file
 
 ```yml
 name: dotnet
@@ -104,7 +106,7 @@ routing:
 monikerDefinition: "https://api.docs.com/monikers/"
 ```
 
-#### Explanation
+##### Explanation
 
 1. `content` contains all the articles to build, including all version.
 
@@ -151,7 +153,7 @@ monikerDefinition: "https://api.docs.com/monikers/"
 
     But in docfx v3, you just need to maintenance one `c.md`
 
-#### 2.1.2 YAML Header
+##### 2.1.2 YAML Header
 
 For conceptual file, file level monikerRange setting is supported by using YAML header.
 
@@ -161,7 +163,7 @@ monikerRange: >=netcore-1.0
 ---
 ```
 
-#### 2.1.3 Moniker zone
+##### 2.1.3 Moniker zone
 
 Inside the file, with help of [versioned zone syntax](https://review.docs.microsoft.com/en-us/new-hope/resources/conceptual-versioning?branch=master#configuring-markdown-files-with-versioned-zones), the file has ability to wrap versioned content into different zones.
 
@@ -188,15 +190,66 @@ content just in `>netcore-1.0`
 > 2. The final file moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, an error throws.
 > 3. The final zone moniker range is the intersection of moniker range of this file and moniker range of this zone. If the intersection is empty, an error throws.
 
-### 2.2 Link/Xref
+#### 2.2 Link/Xref
 
 In phase 1, content writer is not allowed to reference another file with specific version.
 
 If the referenced file has the same moniker as current page, they will jump to the referenced page with the same moniker. If not, DHS will fallback to the the latest version.
 
-## 3 Output
+#### 2.3 Redirection
 
-### 3.1 Output file path
+The redirection URL returned by DHS will not contains original moniker query `?view={moniker}`.
+
+Sample:
+
+```txt
+|- articles/
+|    |- v1.0/
+|    |   |- a.md
+|    |- v2.0/
+|        |- a.md
+|- config.yml
+```
+
+Then content of `config.yml` is:
+
+```yml
+name: dotnet
+content: "articles/**.{md,yml}"
+monikerRange:
+    "articles/v1.0/**.{md,yml}": "netcore-1.0"
+    "articles/v2.0/**.{md,yml}": "netcore-2.0"
+routing:
+    "articles/v1.0/": "articles/"
+    "articles/v2.0/": "articles/"
+monikerDefinition: "https://api.docs.com/monikers/"
+redirections:
+    articles/v1.0/old/a: /articles/a
+    articles/v2.0/old/a: /articles/a
+```
+
+If user access the URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` or `{host}/{docset-base-path}/articles/old/a?view=netcore-2.0`, they will both be redirected to `{host}/{docset-base-path}/articles/a`, and DHS will fallback to the latest version since it has no moniker query.
+
+So if the content writer want redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they have to make the config as
+
+```yml
+name: dotnet
+content: "articles/**.{md,yml}"
+monikerRange:
+    "articles/v1.0/**.{md,yml}": "netcore-1.0"
+    "articles/v2.0/**.{md,yml}": "netcore-2.0"
+routing:
+    "articles/v1.0/": "articles/"
+    "articles/v2.0/": "articles/"
+monikerDefinition: "https://api.docs.com/monikers/"
+redirections:
+    articles/v1.0/old/a: /articles/a?view=netcore-1.0
+    articles/v2.0/old/a: /articles/a
+```
+
+### 3 Output
+
+#### 3.1 Output file path
 
 For dynamic, the output path shares the same schema:
 
@@ -212,7 +265,7 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
 > When the file have no version, the output path will be `{output-dir}/{local?}/{site-path}`  
 > `monikerRangeHash` is the hash of the monikers, that evaluated from the monikerRange this file belongs to, joined by `','`.
 
-### 3.2 Output content
+#### 3.2 Output content
 
 - Content for conceptual file
 
@@ -225,6 +278,24 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
         ...
     ]
     ...,
+}
+```
+
+- Content for redirection file
+
+```json
+{
+  "outputRootRelativePath": "../",
+  "rawMetadata": {
+    "locale": "en-us",
+    "redirect_url": "/azure/active-directory/b2b/user-token",
+    "monikers":
+        [
+            "moniker1",
+            ...
+        ]
+  },
+  "themesRelativePathToOutputRoot": "_themes/"
 }
 ```
 
@@ -247,7 +318,7 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
 
 - Content for .manifest.json
 
-    #### Ideal output
+    ##### Ideal output
 
     ```json
     {
@@ -265,7 +336,7 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
     }
     ```
 
-    #### Legacy output
+    ##### Legacy output
 
     ```json
     {
@@ -290,9 +361,9 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
 
     > `monikerRangeHash` is the hash of the monikers, that evaluated from the monikerRange this file belongs to, joined by `','`.
 
-## 4 Implementation
+### 4 Implementation
 
-### 4.1 MonikerRange evaluation
+#### 4.1 MonikerRange evaluation
 
 Moniker range itself cannot be interpreted, but within an ordered moniker list, moniker range can be simply evaluated to a list of monikers.
 
@@ -317,7 +388,7 @@ we can get an ordered moniker list by the API set in config as `monikerDefinitio
 
 3. `order` defines the order of this moniker in its product. If two moniker with same `productName` define the same `order`, an error throws.
 
-### 4.2 Empty page
+#### 4.2 Empty page
 
 When there is a file contains a moniker, but no content is included in this moniker, there will be a empty page.
 
@@ -348,13 +419,13 @@ After doing doing this,
 1. User can not find this file in the Toc when they select the moniker of Toc as `netcore-2.0`.
 1. If user access URL `{page_url}?view=netcore-2.0`, the DHS will fallback to `{page_url}?netcore-1.0`
 
-### 4.3 Reference resolve
+#### 4.3 Reference resolve
 
-#### 4.3.1 Link resolve
+##### 4.3.1 Link resolve
 
 In phase 1, link will be resolved to relative sitePath without version info, DHS will handle the fallback behavior if the referenced page doesn't the version of current page.
 
-#### 4.3.2 Xref resolve
+##### 4.3.2 Xref resolve
 
 In v2, each group will build one round, and in each group, there should be not be two files with the same uid, so the xref can be resolved correctly.
 But in v3, there is no group, all files will be built in one round, so there will be two file with same uid but different version, which is not acceptable, and we have to handle this case.
@@ -366,11 +437,38 @@ If in one round of build, different files with the same **Uid** are included:
 2. When the files have `monikerRange` option set, but have different **SitePath**, an error throws.
 3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed.
 
-### 4.4 Toc build
+#### 4.4 Toc build
 
 In current docfx v3, Toc file is build at the same time with `page` files, because they don't depend on the build result of those files, but consider of files with version information, the nodes in Toc files build result will contains `monikers` attribute, which depends on the build result of those nodes, so we have to move Toc building to the post-build step.
 
-### 5. Dependencies
+#### 4.5 Redirection
+
+For redirection file, the output also need `monikers` information, which will be used by DHS to do fallback.
+
+#### 5. Dependencies
 
 1. Support publishing with overlapping monikerRange in DHS.
 2. API to generate moniker definition file.
+
+## Conceptual versioning - Phase 2
+
+In phase2, we are going to support:
+
+1. Cross version reference
+
+    User can reference to a file/Uid with specific version, and a warning should be reported if the file/Uid does not contains this version.
+
+2. Bookmark validation with moniker info.
+
+## Scenarios supported
+
+- Be able to link to a file in the same group by relative path with query `?view={moniker}`, a warning should be reported if the file does not contains this moniker.  
+- Be able to link to a file in different group by relative path with query `?view={moniker}`, a warning should be reported if the file does not contains this moniker.  
+- Be able to reference a internal Uid with query `?view={moniker}`, a warning should be reported if the Uid does not contains this moniker.
+- Be able to reference a external Uid with query `?view={moniker}`, a warning should be reported if the Uid does not contains this moniker.
+
+## Conceptual versioning - Phase 3
+
+In phase 3, we are going to support:
+
+1. Generating pure `static` website.
