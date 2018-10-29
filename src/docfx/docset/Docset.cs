@@ -2,10 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -158,18 +160,26 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Globbing files"))
             {
                 var glob = GlobUtility.CreateGlobMatcher(Config.Content.Include, Config.Content.Exclude);
+                var files = new ConcurrentBag<Document>();
 
-                var files = (
-                    from file in Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories).AsParallel()
-                    let relativePath = file.Substring(DocsetPath.Length).TrimStart('\\', '/')
-                    where glob(relativePath)
-                    select Document.TryCreateFromFile(this, relativePath)).ToHashSet();
+                ParallelUtility.ForEach(
+                    Directory.EnumerateFiles(DocsetPath, "*.*", SearchOption.AllDirectories),
+                    file =>
+                    {
+                        var relativePath = Path.GetRelativePath(DocsetPath, file);
+                        if (glob(relativePath))
+                        {
+                            files.Add(Document.TryCreateFromFile(this, relativePath));
+                        }
+                    });
+
+                var result = new HashSet<Document>(files);
 
                 foreach (var redirection in redirections)
                 {
                     if (glob(redirection.FilePath))
                     {
-                        files.Add(redirection);
+                        result.Add(redirection);
                     }
                     else
                     {
@@ -177,7 +187,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return files;
+                return result;
             }
         }
 
