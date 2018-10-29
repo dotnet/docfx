@@ -6482,6 +6482,19 @@ references:
   isSpec: "True"
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Load
   nameWithType: BuildInfo.Load
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message
+  name: Message
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_Message
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message
+  nameWithType: BuildInfo.Message
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message*
+  name: Message
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_Message_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message
+  isSpec: "True"
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Message
+  nameWithType: BuildInfo.Message
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.PluginHash
   name: PluginHash
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_PluginHash
