@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         /// <summary>
         /// Return if a property is legal to appear in markdown fragmetns
-        /// </summary
+        /// </summary>
         public static bool IsLegalInFragments(this BaseSchema schema) => IsEditable(schema);
 
         private static bool IsEditable(this BaseSchema schema)

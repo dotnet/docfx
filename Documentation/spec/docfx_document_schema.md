@@ -128,7 +128,7 @@ It defines how applications interpret the property. If not defined, the behavior
 | `href`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
 | `xref`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
-| `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
+| `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](../spec/docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
 ### 6.4 tags
 The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*.
