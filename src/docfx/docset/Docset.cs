@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool fallback = true)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale, options, null, null)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale.ToLowerInvariant(), options, null, null)
         {
             if (fallback && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
 
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
