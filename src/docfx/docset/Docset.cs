@@ -85,10 +85,10 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
 
-        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool fallback = true)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale.ToLowerInvariant(), options, null, null)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null, null)
         {
-            if (fallback && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
 
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             _context = context;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-            Locale = locale;
+            Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
             RestoreMap = restoreMap ?? new RestoreMap(DocsetPath);
             FallbackDocset = fallbackDocset;
@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, false));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, isDependency: true));
             }
             return (errors, result);
         }
