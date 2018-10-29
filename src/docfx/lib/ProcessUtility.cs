@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static bool IsFileUsedByAnotherProcessException(IOException ex)
         {
-            return ex.HResult == 35 /*|| ex.HResult == 17*/;
+            return ex.HResult == 35 || ex.HResult == -2147024864;
         }
 
         /// <summary>
