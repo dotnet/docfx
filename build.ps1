@@ -11,7 +11,7 @@ $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
 $version = "3.0.0-alpha-$revision-$commitSha"
 
-Remove-Item ./drop -Force -Recurse
+Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
 
 exec "dotnet run -p tools/CreateJsonSchema"
 exec "dotnet test test\docfx.Test"
