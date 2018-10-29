@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class NativeMethods
+    internal static class LibGit2
     {
         private const string LibName = "git2-8e0b172";
         private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        static NativeMethods()
+        static LibGit2()
         {
             if (GitLibGit2Init() == 1)
                 GitOpensslSetLocking();
@@ -197,19 +197,13 @@ namespace Microsoft.Docs.Build
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct GitOid : IEquatable<GitOid>
+        public struct GitOid
         {
             public const int Size = 20;
 
             public long A;
             public long B;
             public int C;
-
-            public static bool Equals(ref GitOid a, ref GitOid b) => a.A == b.A && a.B == b.B && a.C == b.C;
-
-            public bool Equals(GitOid other) => A == other.A && B == other.B && C == other.C;
-
-            public override bool Equals(object obj) => obj is GitOid && Equals((GitOid)obj);
 
             public unsafe override string ToString()
             {
@@ -219,11 +213,6 @@ namespace Microsoft.Docs.Build
                     GitOidFmt(str, p);
                     return new string(str, 0, 40);
                 }
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
             }
         }
     }

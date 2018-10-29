@@ -165,9 +165,9 @@ outputs:
   output/a.json:
   output/b.json:
   output/d.svg:
-  outputB/docs/c.png:
-  outputB/docs/g/a.json:
-  outputB/docs/g/e.jpg:
+  outputb/docs/c.png:
+  outputb/docs/g/a.json:
+  outputb/docs/g/e.jpg:
   build.manifest:
 ---
 # latter routes rule takes precedence - 1
@@ -181,8 +181,8 @@ inputs:
     [link](c.gif)
   docs/a/c.gif:
 outputs:
-  outputB/b.json:
-  outputC/c.gif:
+  outputb/b.json:
+  outputc/c.gif:
   build.manifest:
 ---
 # latter routes rule takes precedence - 2

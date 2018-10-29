@@ -158,6 +158,9 @@
         "uglifyUrl": {
           "type": "boolean"
         },
+        "lowerCaseUrl": {
+          "type": "boolean"
+        },
         "copyResources": {
           "type": "boolean"
         },
