@@ -17,7 +17,7 @@ outputs:
   docs/index.json:
   docs/n1.json:
   docs/f1/n1.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -59,7 +59,7 @@ inputs:
   docs/TOC.json: |
     [{ "name": "title" }]
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[
           {
@@ -88,7 +88,7 @@ inputs:
     [{ "name": "b", "href": "b.md" }]
   docs/a/b.md:
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {
       "items": [
         {
@@ -97,7 +97,7 @@ outputs:
         }
       ]
     }
-  docs/a/TOC.json: |
+  docs/a/toc.json: |
     {
       "items": [
         {
@@ -122,7 +122,7 @@ inputs:
     ### [Reference No-Existing File 4](~/docs/no-existing.md)
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -172,7 +172,7 @@ inputs:
     ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -211,7 +211,7 @@ inputs:
   docs/f1/index.md:
 outputs:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -264,7 +264,7 @@ inputs:
   docs/f1/f11/index.md:
 outputs:
   docs/f1/f11/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -307,7 +307,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -400,7 +400,7 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -435,7 +435,7 @@ inputs:
   docs/f1/index.md:
 outputs:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -444,7 +444,7 @@ outputs:
           }
        ]
     }
-  docs/f1/TOC.json:
+  docs/f1/toc.json:
   build.manifest:
 ---
 # Reference to a folder, first child
@@ -468,7 +468,7 @@ inputs:
 outputs:
   docs/f2/a.json:
   docs/f1/b.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -481,8 +481,8 @@ outputs:
           }
        ]
     }
-  docs/f1/TOC.json:
-  docs/f2/TOC.json:
+  docs/f1/toc.json:
+  docs/f2/toc.json:
   build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
@@ -496,7 +496,7 @@ inputs:
   docs/f1/a.md:
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -519,7 +519,7 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -548,7 +548,7 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -578,8 +578,8 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f2/a.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -606,7 +606,7 @@ inputs:
       href: ~/docs/f1/n1.md
       topicHref: ~/docs/f1/n2.md
 outputs:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {  
        "items":[  
           {  
@@ -634,7 +634,7 @@ inputs:
     # [Index Reference](n1.md)
   docs/f1/f11/n1.md:
 outputs:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {  
        "items":[  
           {  
@@ -669,8 +669,8 @@ inputs:
   docs/f1/TOC.md:
 outputs:
   docs/f1/a.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -695,8 +695,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -724,8 +724,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -749,7 +749,7 @@ inputs:
       href: /abc/def
   docs/f1/TOC.md:
 outputs:
-  docs/f1/TOC.json:
+  docs/f1/toc.json:
   build.manifest:
   build.log: |
     ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml"]
@@ -767,7 +767,7 @@ inputs:
   docs/f1/TOC.md:
   docs/f1/a.md:
 outputs:
-  docs/f1/TOC.json:
+  docs/f1/toc.json:
   docs/f1/a.json:
   build.manifest:
   build.log: |
@@ -824,11 +824,11 @@ inputs:
 outputs:
   docs/index.json:
   build.manifest:
-  docs/f1/TOC.experimental.json: |
+  docs/f1/toc.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}]}
-  docs/f2/TOC.experimental.json: |
+  docs/f2/toc.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}]}
-  docs/f3/TOC.experimental.json: |
+  docs/f3/toc.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}]}
 ---
 # Paired experimental TOC should be built 
@@ -841,8 +841,8 @@ inputs:
 outputs:
   docs/index.json:
   build.manifest:
-  docs/f1/TOC.json:
-  docs/f1/TOC.experimental.json: |
+  docs/f1/toc.json:
+  docs/f1/toc.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}]}
 ---
 # Paired experimental markdown TOCs' metadata
@@ -863,9 +863,9 @@ inputs:
 outputs:
   docs/index.json:
   build.manifest:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
-  docs/f1/TOC.experimental.json: |
+  docs/f1/toc.experimental.json: |
     {"items":[{"toc_title":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
 ---
 # Paired experimental yml TOCs' metadata
@@ -883,9 +883,9 @@ inputs:
       experiment_id: "d1c17cc0-2ae0-4b"
 outputs:
   build.manifest:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
-  docs/f1/TOC.experimental.json: |
+  docs/f1/toc.experimental.json: |
     {"items":[{"toc_title":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
 ---
 # Experimental TOC should be removed from toc map
@@ -900,12 +900,12 @@ inputs:
   docs/a.md:
 outputs:
   docs/index.json: |
-    {"toc_rel": "f1/TOC.json"}
+    {"toc_rel": "f1/toc.json"}
   docs/a.json: |
     {"!toc_rel": null}
   build.manifest:
-  docs/f1/TOC.json:
-  docs/f1/TOC.experimental.json:
+  docs/f1/toc.json:
+  docs/f1/toc.experimental.json:
 ---
 # Experimental TOC should be included using toc ref
 inputs:
@@ -918,7 +918,7 @@ inputs:
 outputs:
   docs/index.json:
   build.manifest:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {"items":[{"toc_title":"TOC Reference","children":[{"toc_title": "Index Reference", "href": "../"}]}]}
 ---
 # Experimental TOC should be excluded using folder ref
@@ -932,8 +932,8 @@ inputs:
 outputs:
   docs/index.json:
   build.manifest:
-  docs/f2/TOC.experimental.json:
-  docs/f1/TOC.json: |
+  docs/f2/toc.experimental.json:
+  docs/f1/toc.json: |
     {"items":[{"toc_title":"TOC Reference"}]}
 ---
 # Toc with null value
@@ -949,7 +949,7 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/TOC.json:
+  docs/toc.json:
   build.manifest:
   build.log: |
     ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",3,3]
@@ -981,11 +981,11 @@ inputs:
   docs/file-with-no-toc.md:
   docs/dir1/dir2/file-with-toc.md:
 outputs:
-  docs/dir1/TOC.json:
+  docs/dir1/toc.json:
   docs/file-with-no-toc.json: |
     {"!toc_rel": null}
   docs/dir1/dir2/file-with-toc.json: |
-    {"toc_rel": "../TOC.json"}
+    {"toc_rel": "../toc.json"}
   build.manifest:
 ---
 # File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
@@ -1002,11 +1002,11 @@ inputs:
       href: ../c/file1.md
   docs/dir1/c/file1.md:
 outputs:
-  docs/dir1/a/TOC.json:
-  docs/dir1/b/TOC.json:
-  docs/dir1/aa/TOC.json:
+  docs/dir1/a/toc.json:
+  docs/dir1/b/toc.json:
+  docs/dir1/aa/toc.json:
   docs/dir1/c/file1.json: |
-    {"toc_rel": "../a/TOC.json"}
+    {"toc_rel": "../a/toc.json"}
   build.manifest:
 ---
 # Bad Toc markdown
@@ -1057,7 +1057,7 @@ inputs:
   docs/TOC.md: |
     # Title **Title2** [Title3](https://github.com/docfx)
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
   build.manifest:
 ---
@@ -1070,6 +1070,6 @@ inputs:
       expanded: true
       name: "test"
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {"items": [{"maintainContext": true, "expanded": true}]}
   build.manifest:

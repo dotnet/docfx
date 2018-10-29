@@ -32,6 +32,11 @@ namespace Microsoft.Docs.Build
         public readonly bool UglifyUrl = false;
 
         /// <summary>
+        /// Gets whether to lowercase all URLs and output file path.
+        /// </summary>
+        public readonly bool LowerCaseUrl = true;
+
+        /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
         public readonly bool CopyResources = true;

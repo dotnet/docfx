@@ -2,7 +2,7 @@
 # Show git contribution info when userProfile & commitsTime is set to URL
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-url
 outputs:
-  README.json: |
+  readme.json: |
     {
       "author": {
         "name": "superyyrrzz",
@@ -38,7 +38,7 @@ inputs:
   contribution:
     gitCommitsTime: build_history.json
 outputs:
-  README.json: |
+  readme.json: |
     {
       "author": {
         "name": "superyyrrzz",
@@ -82,7 +82,7 @@ inputs:
       ]
     }
 outputs:
-  README.json:
+  readme.json:
   build.manifest:
   build.log: |
     ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","README.md"]
@@ -105,7 +105,7 @@ inputs:
       ]
     }
 outputs:
-  README.json: |
+  readme.json: |
     {
       "author": {
         "name": "real_author",
@@ -154,7 +154,7 @@ inputs:
         - superyyrrZZ
         - YUFEIH
 outputs:
-  README.json: |
+  readme.json: |
     {
       "author":  {
         "name": "OsmondJiang",
@@ -193,7 +193,7 @@ inputs:
       excludedContributors:
         - superyyrrZZ
 outputs:
-  README.json: |
+  readme.json: |
     {
       "!author": null,
       "contributors": [
@@ -216,7 +216,7 @@ outputs:
 # Show content_git_url, original_content_git_url and gitcommit
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 outputs:
-  README.json: |
+  readme.json: |
     {
       "open_to_public_contributors": true,
       "content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
@@ -236,7 +236,7 @@ inputs:
     contribution:
       repository: https://github.com/test-org/test-repo#contribution
 outputs:
-  README.json: |
+  readme.json: |
     {
       "content_git_url": "https://github.com/test-org/test-repo/blob/contribution/README.md",
       "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
@@ -247,7 +247,7 @@ outputs:
 # Don't load git commits when showContributors is set to false
 repo: https://github.com/docascode/docfx-test-dependencies#no-load-commits
 outputs:
-  README.json: |
+  readme.json: |
     {
       "contributors": [],
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/5087ddfc6ee4886bcabe8cc93673edd8605fe15c/README.md"
@@ -264,7 +264,7 @@ inputs:
       resolveUsers: true
     contribution:
 outputs:
-  README.json: |
+  readme.json: |
     {
       "updated_at": "2018-07-27T02:15:49Z",
     }
@@ -273,12 +273,12 @@ outputs:
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
 outputs:
-  README.json: |
+  readme.json: |
     {
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/c467c848311ccd2550fdb25a77ef26f9d8a33d00/README.md",
       "updated_at": "2018-04-23T03:23:37Z"
     }
-  docfx-test-submodule/README.json: |
+  docfx-test-submodule/readme.json: |
     {
       "gitcommit": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
       "updated_at": "2018-07-18T05:03:26Z"
