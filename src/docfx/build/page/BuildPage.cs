@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
+            ContributionProvider contribution,
             PageCallback callback)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
