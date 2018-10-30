@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
                     return new Glob(pattern, options);
                 }
-                catch (Exception ex)
+                catch (GlobPatternException ex)
                 {
                     throw Errors.InvalidGlobPattern(pattern, ex).ToException(ex);
                 }
