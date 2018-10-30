@@ -197,7 +197,10 @@ namespace Microsoft.Docs.Build
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
-                errors.AddRange(t_schemaViolationErrors);
+                if (t_schemaViolationErrors != null)
+                {
+                    errors.AddRange(t_schemaViolationErrors);
+                }
                 return (errors, value);
             }
             finally
