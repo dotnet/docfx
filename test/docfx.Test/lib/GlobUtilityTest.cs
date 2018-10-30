@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         // ** is a shortcut for **/*
         [InlineData("**", "a a/b", true)]
         [InlineData("**/*", "a a/b a/b/c", true)]
-        [InlineData("a/**", "a/b a/b a/b/c", true)]
+        [InlineData("a/**", "a/b a/b a/b/c a/", true)]
         [InlineData("a/**", "a", false)]
 
         // Ignore files starting with dot
