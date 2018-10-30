@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -261,8 +262,8 @@ namespace Microsoft.Docs.Build
                     Tree = *GitCommitTreeId(commit),
                     GitCommit = new GitCommit
                     {
-                        AuthorName = FromUtf8Native(author->Name),
-                        AuthorEmail = FromUtf8Native(author->Email),
+                        AuthorName = Marshal.PtrToStringUTF8(author->Name),
+                        AuthorEmail = Marshal.PtrToStringUTF8(author->Email),
                         Sha = commitId.ToString(),
                         Time = ToDateTimeOffset(GitCommitTime(commit), GitCommitTimeOffset(commit)),
                     },
@@ -316,7 +317,7 @@ namespace Microsoft.Docs.Build
             for (var p = IntPtr.Zero; p != n; p = p + 1)
             {
                 var entry = GitTreeEntryByindex(tree, p);
-                var name = FromUtf8Native(GitTreeEntryName(entry));
+                var name = Marshal.PtrToStringUTF8(GitTreeEntryName(entry));
 
                 blobs[GetStringId(name)] = *GitTreeEntryId(entry);
             }
