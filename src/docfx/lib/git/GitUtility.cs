@@ -71,6 +71,52 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Retrieve git repo information.
+        /// </summary>
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        {
+            var (remote, branch, commit) = default((string, string, string));
+            var pRepo = OpenRepo(repoPath);
+
+            // TODO: marshal strings
+            fixed (byte* pRemoteName = LibGit2.ToUtf8Native("origin"))
+            {
+                if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, pRemoteName) == 0)
+                {
+                    remote = LibGit2.FromUtf8Native(LibGit2.GitRemoteUrl(pRemote));
+                    LibGit2.GitRemoteFree(pRemote);
+                }
+            }
+
+            if (LibGit2.GitRepositoryHead(out var pHead, pRepo) == 0)
+            {
+                commit = LibGit2.GitReferenceTarget(pHead)->ToString();
+                if (LibGit2.GitBranchName(out var pName, pHead) == 0)
+                {
+                    branch = LibGit2.FromUtf8Native(pName);
+                }
+                LibGit2.GitReferenceFree(pHead);
+            }
+
+            LibGit2.GitRepositoryFree(pRepo);
+
+            return (remote, branch, commit);
+        }
+
+        public static unsafe IntPtr OpenRepo(string path)
+        {
+            fixed (byte* pRepoPath = LibGit2.ToUtf8Native(path))
+            {
+                if (LibGit2.GitRepositoryOpen(out var repo, pRepoPath) != 0)
+                {
+                    throw new ArgumentException($"Invalid git repo {path}");
+                }
+
+                return repo;
+            }
+        }
+
+        /// <summary>
         /// Clone git repository from remote to local
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -186,7 +232,7 @@ namespace Microsoft.Docs.Build
             {
                 return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
             }
-            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
+            catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
             }

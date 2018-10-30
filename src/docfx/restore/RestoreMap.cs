@@ -9,16 +9,19 @@ namespace Microsoft.Docs.Build
     internal class RestoreMap
     {
         private readonly RestoreLock _restoreLock;
+        private readonly string _docsetPath;
 
         public RestoreMap(string docsetPath)
-            : this(RestoreLocker.Load(docsetPath).GetAwaiter().GetResult())
+            : this(docsetPath, RestoreLocker.Load(docsetPath).GetAwaiter().GetResult())
         {
         }
 
-        public RestoreMap(RestoreLock restoreLock)
+        public RestoreMap(string docsetPath, RestoreLock restoreLock)
         {
+            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
             Debug.Assert(restoreLock != null);
 
+            _docsetPath = docsetPath;
             _restoreLock = restoreLock;
         }
 
@@ -38,15 +41,15 @@ namespace Microsoft.Docs.Build
             throw Errors.NeedRestore(remote).ToException();
         }
 
-        public string GetUrlRestorePath(string docsetPath, string path)
+        public string GetUrlRestorePath(string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
             if (!HrefUtility.IsHttpHref(path))
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, path);
-                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(docsetPath, path).ToException();
+                var fullPath = Path.Combine(_docsetPath, path);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
             }
 
             // get the file path from restore map
