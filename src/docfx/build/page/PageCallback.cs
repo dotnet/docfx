@@ -5,20 +5,20 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class AttributeTransformerCallback
+    internal class PageCallback
     {
         public XrefMap XrefMap { get; }
 
-        public DependencyMapBuilder DependencyMap { get; }
-
         public BookmarkValidator BookmarkValidator { get; }
+
+        public DependencyMapBuilder DependencyMapBuilder { get; }
 
         public Action<Document> BuildChild { get; }
 
-        public AttributeTransformerCallback(XrefMap xrefMap, DependencyMapBuilder dependencyMap, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
+        public PageCallback(XrefMap xrefMap, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator, Action<Document> buildChild)
         {
             XrefMap = xrefMap;
-            DependencyMap = dependencyMap;
+            DependencyMapBuilder = dependencyMapBuilder;
             BookmarkValidator = bookmarkValidator;
             BuildChild = buildChild;
         }

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -13,8 +12,8 @@ namespace Microsoft.Docs.Build
     {
         public static Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform(
             List<Error> errors,
-            AttributeTransformerCallback callback,
             Document file,
+            PageCallback callback,
             JObject extensionData = null)
         {
             return TransformContent;
@@ -25,7 +24,7 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HrefAttribute)
                 {
-                    result = GetLink((string)value, file, file, callback, errors);
+                    result = Resolve.GetLink((string)value, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
                 }
 
                 if (attribute is MarkdownAttribute)
@@ -44,14 +43,14 @@ namespace Microsoft.Docs.Build
 
                 if (attribute is HtmlAttribute)
                 {
-                    var html = HtmlUtility.TransformLinks((string)value, href => GetLink(href, file, file, callback, errors));
+                    var html = HtmlUtility.TransformLinks((string)value, href => Resolve.GetLink(href, file, file, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator));
                     result = HtmlUtility.StripTags(HtmlUtility.LoadHtml(html)).OuterHtml;
                 }
 
                 if (attribute is XrefAttribute)
                 {
                     // TODO: how to fill xref resolving data besides href
-                    result = callback?.XrefMap.Resolve((string)value).Href;
+                    result = Resolve.ResolveXref((string)value, callback?.XrefMap)?.Href;
                 }
 
                 if (extensionData != null && attributes.Any(attr => attr is XrefPropertyAttribute))
@@ -62,52 +61,14 @@ namespace Microsoft.Docs.Build
                 return result;
 
                 (string content, object file) ReadFileDelegate(string path, object relativeTo)
-                    => ReadFile(path, relativeTo, callback?.DependencyMap, errors);
+                    => Resolve.ReadFile(path, relativeTo, errors, callback?.DependencyMapBuilder);
 
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
-                    => GetLink(path, relativeTo, resultRelativeTo, callback, errors);
+                    => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
 
                 XrefSpec ResolveXrefDelegate(string uid)
-                    => ResolveXref(uid, callback?.XrefMap);
+                    => Resolve.ResolveXref(uid, callback?.XrefMap);
             }
-        }
-
-        public static (string content, object file) ReadFile(string path, object relativeTo, DependencyMapBuilder dependencyMapBuilder, List<Error> errors)
-        {
-            Debug.Assert(relativeTo is Document);
-
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
-
-            errors.AddIfNotNull(error);
-
-            dependencyMapBuilder?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
-
-            return (content, child);
-        }
-
-        public static string GetLink(string path, object relativeTo, object resultRelativeTo, AttributeTransformerCallback callback, List<Error> errors)
-        {
-            Debug.Assert(relativeTo is Document);
-            Debug.Assert(resultRelativeTo is Document);
-
-            var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-            errors.AddIfNotNull(error);
-
-            if (child != null && callback?.BuildChild != null)
-            {
-                callback?.BuildChild(child);
-                callback?.DependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
-            }
-
-            callback?.BookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
-
-            return link;
-        }
-
-        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap)
-        {
-            return xrefMap?.Resolve(uid);
         }
     }
 }
