@@ -4,14 +4,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>Latest</LangVersion>
-    <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="../stylecop.json" />
+    <AdditionalFiles Include="../../stylecop.json" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
