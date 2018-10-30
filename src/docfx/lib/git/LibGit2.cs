@@ -100,9 +100,6 @@ namespace Microsoft.Docs.Build
         [DllImport(LibName, EntryPoint = "git_reference_target")]
         public static unsafe extern GitOid* GitReferenceTarget(IntPtr reference);
 
-        [DllImport(LibName, EntryPoint = "git_reference_name_to_id")]
-        public static unsafe extern int GitReferenceNameToId(out GitOid obj, IntPtr repo, byte* name);
-
         [DllImport(LibName, EntryPoint = "git_reference_free")]
         public static unsafe extern void GitReferenceFree(IntPtr reference);
 
