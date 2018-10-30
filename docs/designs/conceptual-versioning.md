@@ -88,7 +88,7 @@ This document specifies Docfx vnext versioning dev design.
 
 #### 2.1 Moniker Range
 
-In order to ease version configuration and content maintenance, [moniker range](https://review.docs.microsoft.com/en-us/new-hope/resources/conceptual-versioning?branch=master#moniker-ranges) enable the writer to associate more than one moniker with content, but without needing to list monikers.
+In order to ease version configuration and content maintenance, [moniker range](./versioning.md#moniker-ranges) enable the writer to associate more than one moniker with content, but without needing to list monikers.
 
 We support three level moniker range setting:
 
@@ -143,11 +143,11 @@ monikerDefinition: "https://api.docs.com/monikers/"
     2. When the files have `monikerRange` option set, and *moniker list* for each file are mutually exclusive with others, these files are considered as different versions of the same **SitePath**, this is allowed.
     3. When the *moniker list* for the files are not mutually exclusive with others, for example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
 
-4. `monikerRangeDefinition` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
+4. `monikerDefinition` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
 
     A better user experience sample:
 
-    Think about this case: if there is a file `articles/folder1/a.md` with monikerRange `'netcore-1.0'`, and file `articles/folder2/b.md` with monikerRange `'netcore-2.0'`, and you have to add a file `c.md` with monikerRange `'netcore-1.0 || netcore-2.0'`.
+    If there is a file `articles/folder1/a.md` with monikerRange `'netcore-1.0'`, and file `articles/folder2/b.md` with monikerRange `'netcore-2.0'`, and you have to add a file `c.md` with monikerRange `'netcore-1.0 || netcore-2.0'`.
 
     In docfx v2, since you cannot have overlap monikerRange in config, you have to copy `c.md` to `articles/folder1/` and `articles/folder2/`, which will bring you more maintenance cost for `c.md`.
 
@@ -288,7 +288,7 @@ _site/en-us/01ddf122d54d0f939d1ecf8c6b930ec0/dotnet/api/system.string/index.html
   "outputRootRelativePath": "../",
   "rawMetadata": {
     "locale": "en-us",
-    "redirect_url": "/azure/active-directory/b2b/user-token",
+    "redirect_url": "{redirectURL}",
     "monikers":
         [
             "moniker1",
@@ -443,7 +443,7 @@ In current docfx v3, Toc file is build at the same time with `page` files, becau
 
 #### 4.5 Redirection
 
-For redirection file, the output also need `monikers` information, which will be used by DHS to do fallback.
+For redirection file, the output file also contains `monikers` information, which will be used by DHS to do fallback.
 
 #### 5. Dependencies
 
