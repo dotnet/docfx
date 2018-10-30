@@ -11,26 +11,26 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContributionInfo
+    internal class ContributionProvider
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
-        private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
+        private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
         private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
 
-        private ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
+        private ContributionProvider(Docset docset, GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
-            _updateTimeByCommit = LoadCommitsTime(docset);
         }
 
-        public static async Task<ContributionInfo> Create(Docset docset, GitHubUserCache cache)
+        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache)
         {
-            var result = new ContributionInfo(docset, cache);
+            var result = new ContributionProvider(docset, cache);
             await result.LoadCommits(docset);
+            await result.LoadCommitsTime(docset);
             return result;
         }
 
@@ -217,16 +217,18 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private Dictionary<string, DateTime> LoadCommitsTime(Docset docset)
+        private async Task LoadCommitsTime(Docset docset)
         {
-            if (string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
+            if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                return new Dictionary<string, DateTime>();
-            }
+                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var content = await ProcessUtility.ReadFile(path);
 
-            var path = docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime);
-            var content = ProcessUtility.ReadFile(path).Result; // TODO: Merge with https://github.com/dotnet/docfx/pull/3530
-            return JsonUtility.Deserialize<GitCommitsTime>(content).Item2.ToDictionary();
+                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
+                {
+                    _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
+                }
+            }
         }
 
         private async Task LoadCommits(Docset docset)

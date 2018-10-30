@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
             // extend the config before loading
-            var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(restoreLock));
+            var (errors, extendedConfig) = Config.Load(docsetPath, options, true, new RestoreMap(docsetPath, restoreLock));
             ReportErrors(report, errors);
 
             // restore git repos includes dependency repos and loc repos
