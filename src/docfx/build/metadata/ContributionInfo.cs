@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
                ? new Dictionary<string, DateTime>()
                : JsonUtility.ReadJsonFile<GitCommitsTime>(
-                   docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
+                   docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime)).ToDictionary();
         }
 
         public static async Task<ContributionInfo> Create(Docset docset, GitHubUserCache cache)
