@@ -21,14 +21,14 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
 
-        private ContributionProvider(Docset docset, GitHubUserCache gitHubUserCache)
+        private ContributionProvider(GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
         }
 
         public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache)
         {
-            var result = new ContributionProvider(docset, cache);
+            var result = new ContributionProvider(cache);
             await result.LoadCommits(docset);
             await result.LoadCommitsTime(docset);
             return result;
