@@ -172,12 +172,12 @@ inputs:
     items:
       - name: title
 outputs:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "metadata": {"a": "b"},
       "items":[{"toc_title":"title"}]
     }
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "metadata": {"a": "b"},
       "items":[{"toc_title":"title"}]
@@ -193,11 +193,11 @@ inputs:
     - name: title
       a: b
 outputs:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "items":[{"toc_title":"title", "a": "b"}]
     }
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"title", "a": "b"}]
     }
@@ -216,7 +216,7 @@ inputs:
     - name: toc reference
       tocHref: ../json/TOC.json
 outputs:
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"toc reference", "children": [{"toc_title":"title", "c": "d"}]}]
     }
@@ -237,15 +237,15 @@ inputs:
   docs/md/TOC.md: |
     # title
 outputs:
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b", "c": "d"}
     }
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }
-  docs/md/TOC.json: |
+  docs/md/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }

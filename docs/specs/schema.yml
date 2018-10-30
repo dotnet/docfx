@@ -68,10 +68,10 @@ inputs:
     breadcrumb_path: TOC.yml
     toc_rel: ../TOC.yml
 outputs:
-  docs/TOC.json:
+  docs/toc.json:
   docs/a.json: |
     {
-      "content": { "brand": "azure", "breadcrumb_path": "TOC.json", "toc_rel": "../TOC.json" },
+      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
     }
   build.manifest: |
     {  
@@ -101,7 +101,7 @@ inputs:
     breadcrumb_path: {}
     toc_rel: ../TOC.yml
 outputs:
-  docs/TOC.json:
+  docs/toc.json:
   build.manifest:
   build.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
