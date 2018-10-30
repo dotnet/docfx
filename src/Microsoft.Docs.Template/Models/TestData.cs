@@ -21,6 +21,10 @@ namespace Microsoft.Docs.Build
         [Markdown]
         public string Summary { get; set; }
 
+        [XrefProperty]
+        [InlineMarkdown]
+        public string InlineDescription { get; set; }
+
         public string Uid { get; set; }
 
         [Xref]
