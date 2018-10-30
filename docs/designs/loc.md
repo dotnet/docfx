@@ -56,3 +56,6 @@ Below kinds of mappings are considered to be supported:
   - Repo + folder mapping like
     - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
     - en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
+  - Repo + branch mapping like
+    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
+    - master and ja-jp-master
