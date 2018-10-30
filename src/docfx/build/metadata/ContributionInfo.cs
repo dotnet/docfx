@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo, _) = GetRepository(document);
+            var (repo, pathToRepo) = GetRepository(document);
             if (repo == null)
                 return default;
 
@@ -198,15 +198,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
+        private (Repository repo, string pathToRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var repo = GetRepository(fullPath);
             if (repo == null)
                 return default;
 
-            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.Path, PathUtility.PathComparison);
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)), isDocsetRepo);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)));
         }
 
         private Repository GetRepository(string path)
@@ -226,6 +225,7 @@ namespace Microsoft.Docs.Build
 
             if (docset.Config.Contribution.ShowContributors)
             {
+                var bilingual = docset.FallbackDocset != null && docset.Config.Localization.Bilingual;
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
@@ -238,6 +238,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = group.Key;
                     var repoPath = repo.Path;
+                    var repoBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
                     var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
@@ -245,7 +246,7 @@ namespace Microsoft.Docs.Build
                     {
                         ParallelUtility.ForEach(
                             group,
-                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo)),
+                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo, repoBranch)),
                             Progress.Update);
 
                         await commitsProvider.SaveCache();
