@@ -215,6 +215,11 @@ namespace Microsoft.Docs.Build
             var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
+            if (docset.Config.Output.LowerCaseUrl)
+            {
+                sitePath = sitePath.ToLowerInvariant();
+            }
+
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
             var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
