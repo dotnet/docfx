@@ -50,9 +50,12 @@ namespace Microsoft.Docs.Build
             string cacheFilePath,
             ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> commitCache)
         {
+            if (GitRepositoryOpen(out _repo, repoPath) != 0)
+            {
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
             _repoPath = repoPath;
             _cacheFilePath = cacheFilePath;
-            _repo = GitUtility.OpenRepo(repoPath);
             _commits = new Lazy<(List<Commit>, Dictionary<long, Commit>)>(LoadCommits);
             _commitCache = commitCache;
         }

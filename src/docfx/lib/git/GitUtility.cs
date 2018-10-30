@@ -77,9 +77,13 @@ namespace Microsoft.Docs.Build
         public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
         {
             var (remote, branch, commit) = default((string, string, string));
-            var pRepo = OpenRepo(repoPath);
 
-            if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, remote) == 0)
+            if (LibGit2.GitRepositoryOpen(out var pRepo, repoPath) != 0)
+            {
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
+
+            if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, "origin") == 0)
             {
                 remote = Marshal.PtrToStringUTF8(LibGit2.GitRemoteUrl(pRemote));
                 LibGit2.GitRemoteFree(pRemote);
@@ -98,16 +102,6 @@ namespace Microsoft.Docs.Build
             LibGit2.GitRepositoryFree(pRepo);
 
             return (remote, branch, commit);
-        }
-
-        public static unsafe IntPtr OpenRepo(string path)
-        {
-            if (LibGit2.GitRepositoryOpen(out var repo, path) != 0)
-            {
-                throw new ArgumentException($"Invalid git repo {path}");
-            }
-
-            return repo;
         }
 
         /// <summary>
