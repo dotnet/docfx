@@ -45,7 +45,63 @@ DocFX build supports localization contents, there are a few features need to be 
 
 ### [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
-Follow the spec defined at [here](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema).
+#### Dynamic rendering
+
+For dynamic rendering, some fallbacks happen in rendering side, so the build output only need contain loc built content, the source content are involved in the build, but they will not show in the output package.
+
+Input:(docfx build --locale zh-cn)
+```text
+#en-us(repo):
+    |- articles/
+    |   |- a.md(include token.md and links to b.md and a.png)
+    |   |- token.md
+    |   |- a.png
+    |   |- b.md
+#zh-cn(repo/folder/branch):
+    |- articles/
+    |   |- a.md(includes token.md and links to b.md and a.png)
+```
+
+For above case, there is only `a.md` in loc docset, the source docset's `token.md`, `a.png` and `b.md` will be involved in loc docset build(resolving link, inclusion) but not going to show in output package.
+
+Output:
+```text
+|- zh-cn
+|   |- articles
+|   |   |- a.json
+```
+
+#### Static rendering
+
+For static rendering site, localization content are more like parts of whole site, all fallback need to be supported during build.
+
+Input:(docfx build --locales en-us,zh-cn)
+
+```text
+#en-us(repo):
+    |- articles/
+    |   |- a.md(include token.md and links to b.md and a.png)
+    |   |- token.md
+    |   |- a.png
+    |   |- b.md
+#zh-cn(repo/folder/branch):
+    |- articles/
+    |   |- a.md(includes token.md and links to b.md and a.png)
+```
+
+The source docset and loc docsets are built together to consitute one static site, the output includes all localization built pages and also all links' locale should be resolved correctly.
+
+Output:
+```text
+|- en-us
+|   |- articles/
+|   |   |- a.html(en-us/a.png and en-us/b.html)
+|   |   |- a.png
+|   |   |- b.html
+|- zh-cn
+|   |- articles
+|   |   |- a.html(en-us/a.png and en-us/b.html)
+```
 
 ### Mappings between source content and loc content
 
@@ -97,7 +153,7 @@ All localization content is delayed translated, which means that the content ver
     |- articles/
     |   |- a.md(v2)(token.md inclusion has been deleted)
     |   |- token.md(v1, deleted)
-#zh-cn(repo):
+#zh-cn(repo/folder/branch):
     |- articles/
     |   |- a.md(v1)(still include token.md)
 ```
