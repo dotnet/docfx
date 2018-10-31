@@ -155,7 +155,7 @@ inputs:
   docfx.yml:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/master/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/bc5ae3ec85617bcd5a66124b3e916be0714d32e8/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/loc-contribution/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/loc-contribution/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/bc5ae3ec85617bcd5a66124b3e916be0714d32e8/docs/a.md"}
   build.manifest:
 ---
 # loc file contributor info, all loc files are in one repo
@@ -170,7 +170,7 @@ inputs:
       mapping: RepositoryAndFolder
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/master/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/loc-contribution/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/loc-contribution/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
   build.manifest:
 ---
 # loc file contributor info, all loc file are in source repo under different locale folder
