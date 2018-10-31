@@ -128,43 +128,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Clones or update a git repository to the latest version.
-        /// </summary>
-        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
-        {
-            // Unifies clone and fetch using a single flow:
-            // - git init
-            // - git remote set url
-            // - git fetch
-            // - git checkout (if not a bar repo)
-            Directory.CreateDirectory(path);
-
-            if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
-            {
-                throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
-            }
-
-            if (git_remote_create(out var remote, repo, "origin", url) == 0)
-            {
-                git_remote_free(remote);
-            }
-
-            git_repository_free(repo);
-
-            // Fetch from local file system if we are using a mock repo for testing
-            var mockedRepos = MockedRepos.Value;
-            if (mockedRepos != null && mockedRepos.TryGetValue(url, out var mockedLocation))
-            {
-                url = mockedLocation;
-            }
-
-            var httpConfig = GetGitCommandLineConfig(url, config);
-            var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
-
-            return ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
-        }
-
-        /// <summary>
         /// List work trees for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -222,6 +185,43 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.MergeConflict(file).ToException();
             }
+        }
+
+        /// <summary>
+        /// Clones or update a git repository to the latest version.
+        /// </summary>
+        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
+        {
+            // Unifies clone and fetch using a single flow:
+            // - git init
+            // - git remote set url
+            // - git fetch
+            // - git checkout (if not a bar repo)
+            Directory.CreateDirectory(path);
+
+            if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
+            {
+                throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
+            }
+
+            if (git_remote_create(out var remote, repo, "origin", url) == 0)
+            {
+                git_remote_free(remote);
+            }
+
+            git_repository_free(repo);
+
+            // Fetch from local file system if we are using a mock repo for testing
+            var mockedRepos = MockedRepos.Value;
+            if (mockedRepos != null && mockedRepos.TryGetValue(url, out var mockedLocation))
+            {
+                url = mockedLocation;
+            }
+
+            var httpConfig = GetGitCommandLineConfig(url, config);
+            var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
+
+            return ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
         }
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
