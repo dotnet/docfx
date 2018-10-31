@@ -1,4 +1,4 @@
-# Localization Support
+# Localization(Loc) Support
 
 ## Description
 
@@ -42,6 +42,24 @@ DocFX build supports localization contents, there are a few features need to be 
     localization:
       bilingual: false
   ```
+
+## Mappings between source content and loc content
+
+Below kinds of mappings are considered to be supported:
+  - Folder mapping like en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
+  - Repo mapping like https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.de-de
+  - Repo + folder mapping like
+    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
+    - en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
+  - Repo + branch mapping like
+    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
+    - master and ja-jp-master
+
+## Usage
+
+- Clone source docset and get loc overwrite configuration, add loc overwrite configuration as source configuration extensions
+- `docfx restore --locale {locale}` to restore loc docset and other dependencies
+- `docfx build --loale {locale}` to build loc docset with source docset.
 
 ## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
@@ -102,18 +120,6 @@ Output:
 |   |- articles
 |   |   |- a.html(en-us/a.png and en-us/b.html)
 ```
-
-## Mappings between source content and loc content
-
-Below kinds of mappings are considered to be supported:
-  - Folder mapping like en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
-  - Repo mapping like https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.de-de
-  - Repo + folder mapping like
-    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
-    - en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
-  - Repo + branch mapping like
-    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
-    - master and ja-jp-master
 
 ## Features
 
