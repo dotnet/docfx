@@ -630,4 +630,5 @@ inputs:
     }
 outputs:
   build.manifest:
-  docs/a.json:
+  docs/a.json: |
+    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Wei Hu","id":"huwe@microsoft.com"}]}
