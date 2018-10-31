@@ -55,9 +55,9 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
 
         /// <summary>
-        /// Gets the input and output path mapping configuration of documents.
+        /// Gets a map from source folder path and output URL path.
         /// </summary>
-        public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
+        public readonly Dictionary<string, string> Routes = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.
@@ -317,7 +317,7 @@ namespace Microsoft.Docs.Build
         private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
-            config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
@@ -344,22 +344,20 @@ namespace Microsoft.Docs.Build
             return redirection;
         }
 
-        private static JToken ExpandRouteConfigs(JToken token)
+        private static JToken NormalizeRouteConfig(JToken token)
         {
             if (token is JObject obj)
             {
-                var result = new JArray();
+                var result = new JObject();
                 foreach (var (key, value) in obj)
                 {
-                    result.Add(new JObject
-                    {
-                        [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\')
+                    result.Add(
+                        key.EndsWith('/') || key.EndsWith('\\')
                             ? PathUtility.NormalizeFolder(key)
                             : PathUtility.NormalizeFile(key),
-                        [ConfigConstants.Destination] = value is JValue v && v.Value is string str
+                        value is JValue v && v.Value is string str
                             ? PathUtility.NormalizeFile(str)
-                            : value,
-                    });
+                            : value);
                 }
                 return result;
             }
