@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
         private static ImmutableStack<List<Error>> t_schemaViolationErrors;
 
         [ThreadStatic]
-        private static Func<IEnumerable<DataTypeAttribute>, object, string, object> t_transform;
+        private static ImmutableStack<Func<IEnumerable<DataTypeAttribute>, object, string, object>> t_transform;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -176,15 +176,8 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             try
             {
-                t_transform = transform;
-                if (t_schemaViolationErrors == null)
-                {
-                    t_schemaViolationErrors = ImmutableStack.Create(new List<Error>());
-                }
-                else
-                {
-                    t_schemaViolationErrors = t_schemaViolationErrors.Push(new List<Error>());
-                }
+                t_transform = t_transform == null ? ImmutableStack.Create(transform) : t_transform.Push(transform);
+                t_schemaViolationErrors = t_schemaViolationErrors == null ? ImmutableStack.Create(new List<Error>()) : t_schemaViolationErrors.Push(new List<Error>());
 
                 token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
@@ -199,7 +192,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_transform = null;
+                t_transform = t_transform.Pop();
                 t_schemaViolationErrors = t_schemaViolationErrors.Pop();
             }
 
@@ -519,7 +512,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return t_transform != null ? t_transform(_attributes, value, reader.Path) : value;
+                return t_transform.Peek() != null ? t_transform.Peek()(_attributes, value, reader.Path) : value;
             }
         }
     }

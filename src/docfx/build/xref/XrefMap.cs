@@ -14,20 +14,22 @@ namespace Microsoft.Docs.Build
     internal class XrefMap
     {
         // TODO: key could be uid+moniker+locale
-        private readonly IReadOnlyDictionary<string, Lazy<XrefSpec>> _internalXrefMap;
+        private readonly IReadOnlyDictionary<string, Lazy<(List<Error>, XrefSpec)>> _internalXrefMap;
         private readonly IReadOnlyDictionary<string, XrefSpec> _externalXrefMap;
+        private readonly Context _context;
 
-        public IEnumerable<XrefSpec> InternalReferences => _internalXrefMap.Values.Select(v => v.Value);
+        public IEnumerable<XrefSpec> InternalReferences
+            => _internalXrefMap.Values.Select(v => LoadXrefSpec(v, _context));
 
         public XrefSpec Resolve(string uid)
         {
-            if (_internalXrefMap.TryGetValue(uid, out var sepc))
+            if (_internalXrefMap.TryGetValue(uid, out var internalSpec))
             {
-                return sepc?.Value;
+                return LoadXrefSpec(internalSpec, _context);
             }
-            if (_externalXrefMap.TryGetValue(uid, out var xrefSpec))
+            if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
             {
-                return xrefSpec;
+                return externalSpec;
             }
             return null;
         }
@@ -44,7 +46,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.ScanScope) : new Dictionary<string, Lazy<XrefSpec>>());
+            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.ScanScope) : new Dictionary<string, Lazy<(List<Error>, XrefSpec)>>(), context);
         }
 
         public void OutputXrefMap(Context context)
@@ -54,9 +56,9 @@ namespace Microsoft.Docs.Build
             context.WriteJson(models, "xrefmap.json");
         }
 
-        private static IReadOnlyDictionary<string, Lazy<XrefSpec>> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
+        private static IReadOnlyDictionary<string, Lazy<(List<Error>, XrefSpec)>> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
-            ConcurrentDictionary<string, ConcurrentBag<Lazy<XrefSpec>>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<Lazy<XrefSpec>>>();
+            ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>>();
             Debug.Assert(files != null);
             using (Progress.Start("Building Xref map"))
             {
@@ -66,13 +68,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, Lazy<XrefSpec>> internalXrefMap)
+        private XrefMap(IReadOnlyDictionary<string, XrefSpec> externalXrefMap, IReadOnlyDictionary<string, Lazy<(List<Error>, XrefSpec)>> internalXrefMap, Context context)
         {
             _externalXrefMap = externalXrefMap;
             _internalXrefMap = internalXrefMap;
+            _context = context;
         }
 
-        private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<XrefSpec>>> xrefsByUid, Document file)
+        private static void Load(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, Document file)
         {
             try
             {
@@ -89,14 +92,14 @@ namespace Microsoft.Docs.Build
                 {
                     var (yamlErrors, token) = YamlUtility.Deserialize(file, context);
                     errors.AddRange(yamlErrors);
-                    var (uid, spec) = LoadSchemaDocument(errors, token, file);
+                    var (uid, spec) = LoadSchemaDocument(token, file);
                     TryAddXref(xrefsByUid, uid, spec);
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
                     var (jsonErrors, token) = JsonUtility.Deserialize(file, context);
                     errors.AddRange(jsonErrors);
-                    var (uid, spec) = LoadSchemaDocument(errors, token, file);
+                    var (uid, spec) = LoadSchemaDocument(token, file);
                     TryAddXref(xrefsByUid, uid, spec);
                 }
                 context.Report(file.ToString(), errors);
@@ -107,30 +110,43 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static SortedDictionary<string, Lazy<XrefSpec>> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<XrefSpec>>> xrefsByUid)
+        private static XrefSpec LoadXrefSpec(Lazy<(List<Error>, XrefSpec)> value, Context context)
         {
-            var result = new SortedDictionary<string, Lazy<XrefSpec>>();
+            if (value is null)
+                return null;
+
+            var (errors, spec) = value.Value;
+            foreach (var error in errors)
+            {
+                context.Report(error);
+            }
+            return spec;
+        }
+
+        private static Dictionary<string, Lazy<(List<Error>, XrefSpec)>> HandleXrefConflicts(Context context, ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid)
+        {
+            var result = new List<(string, Lazy<(List<Error>, XrefSpec)>)>();
             foreach (var (uid, conflict) in xrefsByUid)
             {
                 if (conflict.Count > 1)
                 {
-                    var orderedConflict = conflict.OrderBy(spec => spec.Value.Href);
-                    context.Report(Errors.UidConflict(uid, orderedConflict.Select(v => v.Value)));
-                    result.Add(uid, orderedConflict.First());
+                    var orderedConflict = conflict.OrderBy(item => LoadXrefSpec(item, context)?.Href);
+                    context.Report(Errors.UidConflict(uid, orderedConflict.Select(v => v.Value.Item2)));
+                    result.Add((uid, orderedConflict.First()));
                     continue;
                 }
-                result.Add(uid, conflict.First());
+                result.Add((uid, conflict.First()));
             }
-            return result;
+            return result.OrderBy(item => item.Item1).ToDictionary(item => item.Item1, item => item.Item2);
         }
 
-        private static (string uid, Lazy<XrefSpec> spec) LoadMarkdown(JObject metadata, Document file)
+        private static (string uid, Lazy<(List<Error>, XrefSpec)> spec) LoadMarkdown(JObject metadata, Document file)
         {
             var uid = metadata.Value<string>("uid");
             var title = metadata.Value<string>("title");
             if (!string.IsNullOrEmpty(uid))
             {
-                return (uid, new Lazy<XrefSpec>(() =>
+                return (uid, new Lazy<(List<Error>, XrefSpec)>(() =>
                 {
                     var xref = new XrefSpec
                     {
@@ -138,13 +154,13 @@ namespace Microsoft.Docs.Build
                         Href = file.SitePath,
                     };
                     xref.ExtensionData["name"] = string.IsNullOrEmpty(title) ? uid : title;
-                    return xref;
+                    return (new List<Error>(), xref);
                 }));
             }
             return default;
         }
 
-        private static (string uid, Lazy<XrefSpec> spec) LoadSchemaDocument(List<Error> errors, JToken token, Document file)
+        private static (string uid, Lazy<(List<Error>, XrefSpec)> spec) LoadSchemaDocument(JToken token, Document file)
         {
             var extensionData = new JObject();
 
@@ -160,8 +176,9 @@ namespace Microsoft.Docs.Build
             var uid = obj.Value<string>("uid");
             if (!string.IsNullOrEmpty(uid))
             {
-                return (uid, new Lazy<XrefSpec>(() =>
+                return (uid, new Lazy<(List<Error>, XrefSpec)>(() =>
                 {
+                    var errors = new List<Error>();
                     var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
                     errors.AddRange(schemaErrors);
                     var xref = new XrefSpec
@@ -170,19 +187,19 @@ namespace Microsoft.Docs.Build
                         Href = file.SitePath,
                     };
                     xref.ExtensionData.Merge(extensionData);
-                    return xref;
+                    return (errors, xref);
                 }));
             }
             return default;
         }
 
-        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<Lazy<XrefSpec>>> xrefsByUid, string uid, Lazy<XrefSpec> spec)
+        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, string uid, Lazy<(List<Error>, XrefSpec)> spec)
         {
             if (spec is null)
             {
                 return;
             }
-            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<Lazy<XrefSpec>>()).Add(spec);
+            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>()).Add(spec);
         }
     }
 }

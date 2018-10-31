@@ -49,13 +49,13 @@ namespace Microsoft.Docs.Build
         private static ImmutableStack<MarkupResult> t_result;
 
         [ThreadStatic]
-        private static Func<string, object, (string, object)> t_getFile;
+        private static ImmutableStack<Func<string, object, (string, object)>> t_getFile;
 
         [ThreadStatic]
-        private static Func<string, object, object, string> t_getLink;
+        private static ImmutableStack<Func<string, object, object, string>> t_getLink;
 
         [ThreadStatic]
-        private static Func<string, XrefSpec> t_resolveXref;
+        private static ImmutableStack<Func<string, XrefSpec>> t_resolveXref;
 
         public static MarkupResult Result => t_result.Peek();
 
@@ -63,15 +63,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                if (t_result == null)
-                {
-                    t_result = ImmutableStack.Create(new MarkupResult());
-                }
-                else
-                {
-                    t_result = t_result.Push(new MarkupResult());
-                }
-
+                t_result = t_result == null ? ImmutableStack.Create(new MarkupResult()) : t_result.Push(new MarkupResult());
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
                 return (ast, Result);
@@ -94,18 +86,10 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    if (t_result == null)
-                    {
-                        t_result = ImmutableStack.Create(new MarkupResult());
-                    }
-                    else
-                    {
-                        t_result = t_result.Push(new MarkupResult());
-                    }
-
-                    t_getFile = getFile;
-                    t_getLink = getLink;
-                    t_resolveXref = resolveXref;
+                    t_result = t_result is null ? ImmutableStack.Create(new MarkupResult()) : t_result.Push(new MarkupResult());
+                    t_getFile = t_getFile is null ? ImmutableStack.Create(getFile) : t_getFile.Push(getFile);
+                    t_getLink = t_getLink is null ? ImmutableStack.Create(getLink) : t_getLink.Push(getLink);
+                    t_resolveXref = t_resolveXref is null ? ImmutableStack.Create(resolveXref) : t_resolveXref.Push(resolveXref);
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
@@ -117,9 +101,9 @@ namespace Microsoft.Docs.Build
                 finally
                 {
                     t_result = t_result.Pop();
-                    t_getFile = null;
-                    t_getLink = null;
-                    t_resolveXref = null;
+                    t_getFile = t_getFile.Pop();
+                    t_getLink = t_getLink.Pop();
+                    t_resolveXref = t_resolveXref.Pop();
                 }
             }
         }
@@ -187,10 +171,10 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo) => t_getFile(path, relativeTo);
+        private static (string content, object file) ReadFile(string path, object relativeTo) => t_getFile.Peek()(path, relativeTo);
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_getLink(path, relativeTo, resultRelativeTo);
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_getLink.Peek()(path, relativeTo, resultRelativeTo);
 
-        private static XrefSpec ResolveXref(string uid) => t_resolveXref(uid);
+        private static XrefSpec ResolveXref(string uid) => t_resolveXref.Peek()(uid);
     }
 }
