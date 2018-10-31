@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     var uid = metadata.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        TryAddXref(xrefsByUid, uid, new Lazy<(List<Error>, XrefSpec)>(() => (new List<Error>(), LoadMarkdown(uid, metadata, file))));
+                        TryAddXref(xrefsByUid, uid, () => (new List<Error>(), LoadMarkdown(uid, metadata, file)));
                     }
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                     var uid = obj.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        TryAddXref(xrefsByUid, uid, new Lazy<(List<Error>, XrefSpec)>(() => LoadSchemaDocument(obj, file, uid)));
+                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid));
                     }
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                     var uid = obj.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        TryAddXref(xrefsByUid, uid, new Lazy<(List<Error>, XrefSpec)>(() => LoadSchemaDocument(obj, file, uid)));
+                        TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid));
                     }
                 }
                 context.Report(file.ToString(), errors);
@@ -189,13 +189,14 @@ namespace Microsoft.Docs.Build
             return (errors, xref);
         }
 
-        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, string uid, Lazy<(List<Error>, XrefSpec)> spec)
+        private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>> xrefsByUid, string uid, Func<(List<Error>, XrefSpec)> func)
         {
-            if (spec is null)
+            if (func is null)
             {
-                return;
+                throw new ArgumentNullException(nameof(func));
             }
-            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>()).Add(spec);
+
+            xrefsByUid.GetOrAdd(uid, _ => new ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>()).Add(new Lazy<(List<Error>, XrefSpec)>(func));
         }
     }
 }
