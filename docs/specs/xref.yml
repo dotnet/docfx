@@ -8,7 +8,6 @@ outputs:
     { "content": "<p>Link to &lt;xref:a&gt;</p>" }
   build.log: |
     ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
-  build.manifest:
 ---
 # Unknown xrefs using @ syntax are output as is with a informational message
 inputs:
@@ -19,7 +18,6 @@ outputs:
     { "content": "<p>Link to @a</p>" }
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
-  build.manifest:
 ---
 # Restore xref map from configured url and use the map for resolving
 inputs:
@@ -40,7 +38,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
-  build.manifest:
 ---
 # Define uid in conceptual, resolve it
 inputs:
@@ -61,7 +58,6 @@ outputs:
     {"content":"<p>Link to <a href=\"docs/a.json\">Title from yaml header a</a></p>\n"}
   docs/a.json:
   docs/b.json:
-  build.manifest:
   xrefmap.json: | 
     {
       "references":[
@@ -94,7 +90,6 @@ outputs:
   docs/c.json: | 
     {"content":"<p>Link to <a href=\"docs/a.json\">test</a></p>\n"}
   docs/a.json:
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
@@ -118,7 +113,6 @@ outputs:
     {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
   build.log: |
     ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.json,docs/b.json"]
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
@@ -144,7 +138,6 @@ outputs:
     {
       "content": {"xref": "docs/a.json"}
     }
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
@@ -164,7 +157,6 @@ outputs:
   docs/a.json:
   build.log: |
     ["warning","uid-missing","Uid is missing for xref property assignment, uid should be defined at the root level.","docs/a.json"]
-  build.manifest:
   xrefmap.json: | 
     {"references":[]}
 ---
@@ -186,7 +178,6 @@ outputs:
   docs/b.json:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
@@ -201,7 +192,6 @@ inputs:
     }
 outputs:
   docs/a.json:
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
@@ -216,7 +206,6 @@ inputs:
     }
 outputs:
   docs/a.json:
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
@@ -234,6 +223,5 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}

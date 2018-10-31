@@ -76,8 +76,7 @@ namespace Microsoft.Docs.Build
 
             // These files output mostly contains empty content which e2e tests are not intrested in
             // we can just skip the verification for them
-            var skippableOutput = new string[] { "xrefmap.json", "build.manifest" };
-            foreach (var skippableItem in skippableOutput)
+            foreach (var skippableItem in spec.SkippableOutputs)
             {
                 if (!spec.Outputs.ContainsKey(skippableItem))
                 {
