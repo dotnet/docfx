@@ -132,7 +132,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
           ""errorDetail"": {
             ""type"": ""array"",
             ""items"": {
-              ""x-internal-loop-ref-name"": ""contact""
+              ""x-internal-loop-ref-name"": ""contact"",
+              ""Token"": {}
             }
           }
         },
@@ -170,7 +171,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
           ""errorDetail"": {
             ""type"": ""array"",
             ""items"": {
-              ""x-internal-loop-ref-name"": ""contact""
+              ""x-internal-loop-ref-name"": ""contact"",
+              ""Token"": {}
             }
           }
         },
