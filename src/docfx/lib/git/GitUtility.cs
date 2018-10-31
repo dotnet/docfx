@@ -78,28 +78,28 @@ namespace Microsoft.Docs.Build
         {
             var (remote, branch, commit) = default((string, string, string));
 
-            if (LibGit2.GitRepositoryOpen(out var pRepo, repoPath) != 0)
+            if (LibGit2.git_repository_open(out var pRepo, repoPath) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repoPath}");
             }
 
-            if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, "origin") == 0)
+            if (LibGit2.git_remote_lookup(out var pRemote, pRepo, "origin") == 0)
             {
-                remote = Marshal.PtrToStringUTF8(LibGit2.GitRemoteUrl(pRemote));
-                LibGit2.GitRemoteFree(pRemote);
+                remote = Marshal.PtrToStringUTF8(LibGit2.git_remote_url(pRemote));
+                LibGit2.git_remote_free(pRemote);
             }
 
-            if (LibGit2.GitRepositoryHead(out var pHead, pRepo) == 0)
+            if (LibGit2.git_repository_head(out var pHead, pRepo) == 0)
             {
-                commit = LibGit2.GitReferenceTarget(pHead)->ToString();
-                if (LibGit2.GitBranchName(out var pName, pHead) == 0)
+                commit = LibGit2.git_reference_target(pHead)->ToString();
+                if (LibGit2.git_branch_name(out var pName, pHead) == 0)
                 {
                     branch = Marshal.PtrToStringUTF8(pName);
                 }
-                LibGit2.GitReferenceFree(pHead);
+                LibGit2.git_reference_free(pHead);
             }
 
-            LibGit2.GitRepositoryFree(pRepo);
+            LibGit2.git_repository_free(pRepo);
 
             return (remote, branch, commit);
         }
