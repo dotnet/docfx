@@ -15,8 +15,10 @@ namespace Microsoft.Docs.Build
         [InlineData("**/a/*/b.cs", "b/a/a/a/b.cs", true)]
 
         // ** is a shortcut for **/*
-        [InlineData("**", "a b abc bdir/cfile", true)]
-        [InlineData("**/*", "a ab bdir/cfile a/b/c", true)]
+        [InlineData("**", "a a/b", true)]
+        [InlineData("**/*", "a a/b a/b/c", true)]
+        [InlineData("a/**", "a/b a/b a/b/c a/", true)]
+        [InlineData("a/**", "a", false)]
 
         // Ignore files starting with dot
         [InlineData("**", ".git .git/a a/.git a\\.git", false)]
@@ -41,6 +43,10 @@ namespace Microsoft.Docs.Build
         [InlineData("a{b,c}d", "abd acd", true)]
         [InlineData("a{b,c}d", "a", false)]
 
+        // Directory match
+        [InlineData("**/", "a/ a/b/", true)]
+        [InlineData("**/", "a", false)]
+
         // File glob
         [InlineData("**/*.md", "a.md Root/J/K.md Root/M/N.md Root/M/L/O.md", true)]
         [InlineData("**/*.md", "Root/A.cs Root/B.cs Root/C/D.cs Root/E/F.cs", false)]
@@ -48,13 +54,14 @@ namespace Microsoft.Docs.Build
         [InlineData("**/J/**", "Root/JK/K.md Root/JK\\K.md", false)]
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/E/K.md Root/J\\K.cs", true)]
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/M/K.md Root/J\\K.csp", false)]
-
+        [InlineData("a**/*.md", "ab/c.md a/b.md", true)]
+        [InlineData("a**/*.md", "a/b/c.md a/b.cs", false)]
         public void MatchFilesUsingGlobPattern(string pattern, string files, bool match)
         {
-            var glob = GlobUtility.CreateGlobMatcher(new[] { pattern }, Array.Empty<string>());
+            var glob = GlobUtility.CreateGlobMatcher(pattern);
             foreach (var file in files.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             {
-                Assert.Equal(match, glob(file));
+                Assert.True(match == glob(file), pattern + " " + files);
             }
         }
 
@@ -69,15 +76,11 @@ namespace Microsoft.Docs.Build
         [InlineData("a[\\\\b]c")]
         [InlineData("{{a,b}}")]
         [InlineData("z{a,b{,c}d")]
-        [InlineData("**/")]
-        [InlineData("\\[*")]
-        [InlineData("a{b,c,d}e{d}{}")]
-        [InlineData("b*/")]
         public void InvalidGlobPattern(string pattern)
         {
             Assert.Equal(
                 "invalid-glob-pattern",
-                Assert.Throws<DocfxException>(() => GlobUtility.CreateGlobMatcher(new[] { pattern }, Array.Empty<string>())).Error.Code);
+                Assert.Throws<DocfxException>(() => GlobUtility.CreateGlobMatcher(pattern)).Error.Code);
         }
     }
 }
