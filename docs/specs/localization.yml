@@ -577,3 +577,57 @@ outputs:
   build.manifest:
   docs/a.json: |
     {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+---
+# bilingual contributor
+# loc repo:
+#   loc-bilingual branch:
+#     zh-cn/docs/a.md(modified by A and B)
+#   loc-bilingual-sxs branch:
+#     zh-cn/docs/a.md(modified by B and C)
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-bilingual
+inputs:
+  docfx.yml: |
+    localization:
+      mapping: RepositoryAndFolder
+      bilingual: true
+    github:
+      userCache: github-user.json
+  github-user.json: |
+    {
+      "users": [
+        {
+          "name": "Osmond Jiang",
+          "login": "OsmondJiang",
+          "id": 19990166,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "xinjiang@microsoft.com"
+          ]
+        },
+        {
+          "name": "Wei Hu",
+          "login": "live1206",
+          "id": 1234567,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "live1206@microsoft.com",
+          ]
+        },
+        {
+          "name": "Yufei Huang",
+          "login": "yufeih",
+          "id": 511355,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "yufeih@users.noreply.github.com",
+            "yufeih@live.com"
+          ]
+        }
+      ]
+    }
+outputs:
+  build.manifest:
+  docs/a.json:
