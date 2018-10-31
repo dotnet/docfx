@@ -86,7 +86,8 @@
     <!-- CA2007DoNotDirectlyAwaitATaskAnalyzer -->
     <Rule Id="CA2007" Action="None" />
     <Rule Id="CA2100" Action="Warning" />
-    <Rule Id="CA2101" Action="Warning" />
+    <!-- CA2101SpecifyMarshalingForPInvokeStringArguments -->
+    <Rule Id="CA2101" Action="None" />
     <Rule Id="CA2108" Action="Warning" />
     <Rule Id="CA2111" Action="Warning" />
     <Rule Id="CA2112" Action="Warning" />
