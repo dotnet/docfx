@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
-            var contribution = await ContributionInfo.Create(docset, githubUserCache);
+            var contribution = await ContributionProvider.Create(docset, githubUserCache);
 
             // TODO: toc map and xref map should always use source docset?
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
-            ContributionInfo contribution)
+            ContributionProvider contribution)
         {
             using (Progress.Start("Building files"))
             {
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
+            ContributionProvider contribution,
             PageCallback callback)
         {
             try
