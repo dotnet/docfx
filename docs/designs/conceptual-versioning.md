@@ -412,7 +412,6 @@ To handle this case, we have to:
 
 1. Remove this moniker from the moniker range from this file's build result.
 1. Remove this moniker from the moniker range of this file in the Toc.
-1. Remove this moniker from the moniker range of this file in the Xref map.
 
 After doing doing this,
 
