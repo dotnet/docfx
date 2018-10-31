@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (glob, value) in item)
                 {
-                    _rules.Add((GlobUtility.CreateGlobMatcher(new[] { glob }), key, value));
+                    _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
                 }
             }
         }
