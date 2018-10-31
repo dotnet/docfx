@@ -115,11 +115,9 @@ inputs:
       key:
         docs/**: value
         docs/index.md: another value
-        docs/special/chars/allowed,.md: special chars
   docs/a.md:
   docs/b.md:
   docs/index.md:
-  docs/special/chars/allowed,.md:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "value" } }
@@ -127,8 +125,6 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/index.json: |
     { "metadata": { "key": "another value" } }
-  docs/special/chars/allowed,.json: |
-    { "metadata": { "key": "special chars" } }
   build.manifest:
 ---
 # File metadata overwrite global metadata
