@@ -164,16 +164,28 @@ namespace Microsoft.Docs.Build
 
             if (Directory.Exists(docsetPath))
             {
-                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+                {
+                    Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                }
             }
             else
             {
                 var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
                 if (!string.IsNullOrEmpty(inputRepo))
                 {
-                    var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
-                    await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
-                    Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                    try
+                    {
+                        GitUtility.MockedRepos.Value = mockedRepos;
+
+                        var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
+                        await GitUtility.CloneOrFetch(docsetPath, remote, new[] { refspec });
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                    }
+                    finally
+                    {
+                        GitUtility.MockedRepos.Value = null;
+                    }
                 }
 
                 foreach (var (file, content) in spec.Inputs)
@@ -221,7 +233,7 @@ namespace Microsoft.Docs.Build
             {
                 var remote = repoInfo.Key;
                 var repoPath = Path.Combine("repos", name, ToSafePathString(remote));
-                result[remote] = repoPath;
+                result[remote] = Path.GetFullPath(repoPath);
                 if (Directory.Exists(repoPath))
                 {
                     return;

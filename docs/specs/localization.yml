@@ -190,7 +190,7 @@ outputs:
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/docfx-test-dependencies/blob/3fbb3c7939d52cd16ce96d90185cf27f85c94437/localization/zh-cn/docs/a.md"}
   build.manifest:
 ---
-# [ONLY]loc page link and content fallback
+# loc page link and content fallback
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn

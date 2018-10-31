@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,8 +32,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
 
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
-        private readonly ConcurrentDictionary<long, Dictionary<int, GitOid>> _trees
-                   = new ConcurrentDictionary<long, Dictionary<int, GitOid>>();
+        private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>> _trees
+                   = new ConcurrentDictionary<long, Dictionary<int, git_oid>>();
 
         // Commit history LRU cache per file. Key is the file path relative to repository root.
         // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
@@ -49,9 +50,12 @@ namespace Microsoft.Docs.Build
             string cacheFilePath,
             ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> commitCache)
         {
+            if (git_repository_open(out _repo, repoPath) != 0)
+            {
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
             _repoPath = repoPath;
             _cacheFilePath = cacheFilePath;
-            _repo = GitUtility.OpenRepo(repoPath);
             _commits = new Lazy<(List<Commit>, Dictionary<long, Commit>)>(LoadCommits);
             _commitCache = commitCache;
         }
@@ -112,7 +116,7 @@ namespace Microsoft.Docs.Build
                 {
                     lock (commitCache)
                     {
-                        if (commitCache.TryGetValue((commit.Sha.A, blob), out var cachedValue))
+                        if (commitCache.TryGetValue((commit.Sha.a, blob), out var cachedValue))
                         {
                             updateCache = result.Count != 0;
 
@@ -121,7 +125,7 @@ namespace Microsoft.Docs.Build
                             {
                                 result.Add(commitsBySha[cachedCommit]);
                             }
-                            commitCache[(commit.Sha.A, blob)] = (cachedCommitHistory, _nextLruOrder--);
+                            commitCache[(commit.Sha.a, blob)] = (cachedCommitHistory, _nextLruOrder--);
                             break;
                         }
                     }
@@ -165,7 +169,7 @@ namespace Microsoft.Docs.Build
                 lock (commitCache)
                 {
                     _cacheUpdated = true;
-                    commitCache.Add((headCommit.Sha.A, headBlob), (result.Select(c => c.Sha.A).ToArray(), 0));
+                    commitCache.Add((headCommit.Sha.a, headBlob), (result.Select(c => c.Sha.a).ToArray(), 0));
                 }
             }
 
@@ -217,7 +221,7 @@ namespace Microsoft.Docs.Build
             var repo = Interlocked.Exchange(ref _repo, IntPtr.Zero);
             if (repo != IntPtr.Zero)
             {
-                GitRepositoryFree(_repo);
+                git_repository_free(_repo);
             }
         }
 
@@ -227,13 +231,13 @@ namespace Microsoft.Docs.Build
             var commitsBySha = new Dictionary<long, Commit>();
 
             // walk commit list
-            GitRevwalkNew(out var walk, _repo);
-            GitRevwalkSorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
-            GitRevwalkPushHead(walk);
+            git_revwalk_new(out var walk, _repo);
+            git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
+            git_revwalk_push_head(walk);
 
             while (true)
             {
-                var error = GitRevwalkNext(out var commitId, walk);
+                var error = git_revwalk_next(out var commitId, walk);
                 if (error == -31 /* GIT_ITEROVER */)
                     break;
 
@@ -244,34 +248,34 @@ namespace Microsoft.Docs.Build
                 if (error != 0)
                     throw new InvalidOperationException($"Unknown error calling git_revwalk_next: {error}");
 
-                GitObjectLookup(out var commit, _repo, &commitId, GitObjectType.Commit);
-                var author = GitCommitAuthor(commit);
-                var committer = GitCommitCommitter(commit);
-                var parentCount = GitCommitParentcount(commit);
-                var parents = new GitOid[parentCount];
+                git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
+                var author = git_commit_author(commit);
+                var committer = git_commit_committer(commit);
+                var parentCount = git_commit_parentcount(commit);
+                var parents = new git_oid[parentCount];
                 for (var i = 0; i < parentCount; i++)
                 {
-                    parents[i] = *GitCommitParentId(commit, i);
+                    parents[i] = *git_commit_parent_id(commit, i);
                 }
 
                 var item = new Commit
                 {
                     Sha = commitId,
                     ParentShas = parents,
-                    Tree = *GitCommitTreeId(commit),
+                    Tree = *git_commit_tree_id(commit),
                     GitCommit = new GitCommit
                     {
-                        AuthorName = FromUtf8Native(author->Name),
-                        AuthorEmail = FromUtf8Native(author->Email),
+                        AuthorName = Marshal.PtrToStringUTF8(author->name),
+                        AuthorEmail = Marshal.PtrToStringUTF8(author->email),
                         Sha = commitId.ToString(),
-                        Time = ToDateTimeOffset(GitCommitTime(commit), GitCommitTimeOffset(commit)),
+                        Time = new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset(),
                     },
                 };
-                commitsBySha.Add(commitId.A, item);
+                commitsBySha.Add(commitId.a, item);
                 commits.Add(item);
-                GitObjectFree(commit);
+                git_object_free(commit);
             }
-            GitRevwalkFree(walk);
+            git_revwalk_free(walk);
 
             // build parent indices
             Parallel.ForEach(commits, commit =>
@@ -279,7 +283,7 @@ namespace Microsoft.Docs.Build
                 commit.Parents = new Commit[commit.ParentShas.Length];
                 for (var i = 0; i < commit.ParentShas.Length; i++)
                 {
-                    commit.Parents[i] = commitsBySha[commit.ParentShas[i].A];
+                    commit.Parents[i] = commitsBySha[commit.ParentShas[i].a];
                 }
                 commit.ParentShas = null;
             });
@@ -287,41 +291,41 @@ namespace Microsoft.Docs.Build
             return (commits, commitsBySha);
         }
 
-        private long GetBlob(GitOid treeId, int[] pathSegments)
+        private long GetBlob(git_oid treeId, int[] pathSegments)
         {
             var blob = treeId;
 
             for (var i = 0; i < pathSegments.Length; i++)
             {
-                var files = _trees.GetOrAdd(blob.A, _ => LoadTree(blob));
+                var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
                 if (files == null || !files.TryGetValue(pathSegments[i], out blob))
                 {
                     return default;
                 }
             }
 
-            return blob.A;
+            return blob.a;
         }
 
-        private unsafe Dictionary<int, GitOid> LoadTree(GitOid treeId)
+        private unsafe Dictionary<int, git_oid> LoadTree(git_oid treeId)
         {
-            if (GitObjectLookup(out var tree, _repo, &treeId, GitObjectType.Tree) != 0)
+            if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
             {
                 return null;
             }
 
-            var n = GitTreeEntrycount(tree);
-            var blobs = new Dictionary<int, GitOid>((int)n);
+            var n = git_tree_entrycount(tree);
+            var blobs = new Dictionary<int, git_oid>((int)n);
 
             for (var p = IntPtr.Zero; p != n; p = p + 1)
             {
-                var entry = GitTreeEntryByindex(tree, p);
-                var name = FromUtf8Native(GitTreeEntryName(entry));
+                var entry = git_tree_entry_byindex(tree, p);
+                var name = Marshal.PtrToStringUTF8(git_tree_entry_name(entry));
 
-                blobs[GetStringId(name)] = *GitTreeEntryId(entry);
+                blobs[GetStringId(name)] = *git_tree_entry_id(entry);
             }
 
-            GitObjectFree(tree);
+            git_object_free(tree);
 
             return blobs;
         }
@@ -372,11 +376,11 @@ namespace Microsoft.Docs.Build
 
         private class Commit
         {
-            public GitOid Sha;
+            public git_oid Sha;
 
-            public GitOid Tree;
+            public git_oid Tree;
 
-            public GitOid[] ParentShas;
+            public git_oid[] ParentShas;
 
             public Commit[] Parents;
 

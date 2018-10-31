@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
                     case GitHost.GitHub:
                         return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
                     default:
-                        throw new NotSupportedException($"{repoHost}");
+                        return null;
                 }
             }
 
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                     case GitHost.GitHub:
                         return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
                     default:
-                        throw new NotSupportedException($"{repoHost}");
+                        return null;
                 }
             }
 
