@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
 
         [ThreadStatic]
-        private static List<Error> t_schemaViolationErrors;
+        private static ImmutableStack<List<Error>> t_schemaViolationErrors;
 
         [ThreadStatic]
         private static Func<IEnumerable<DataTypeAttribute>, object, string, object> t_transform;
@@ -187,7 +188,14 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_transform = transform;
-                t_schemaViolationErrors = new List<Error>();
+                if (t_schemaViolationErrors == null)
+                {
+                    t_schemaViolationErrors = ImmutableStack.Create(new List<Error>());
+                }
+                else
+                {
+                    t_schemaViolationErrors = t_schemaViolationErrors.Push(new List<Error>());
+                }
 
                 token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
@@ -197,16 +205,13 @@ namespace Microsoft.Docs.Build
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
-                if (t_schemaViolationErrors != null)
-                {
-                    errors.AddRange(t_schemaViolationErrors);
-                }
+                errors.AddRange(t_schemaViolationErrors.Peek());
                 return (errors, value);
             }
             finally
             {
                 t_transform = null;
-                t_schemaViolationErrors = null;
+                t_schemaViolationErrors = t_schemaViolationErrors.Pop();
             }
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -521,7 +526,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_schemaViolationErrors.Peek().Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 

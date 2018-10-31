@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -45,7 +46,7 @@ namespace Microsoft.Docs.Build
                 };
 
         [ThreadStatic]
-        private static MarkupResult t_result;
+        private static ImmutableStack<MarkupResult> t_result;
 
         [ThreadStatic]
         private static Func<string, object, (string, object)> t_getFile;
@@ -56,25 +57,28 @@ namespace Microsoft.Docs.Build
         [ThreadStatic]
         private static Func<string, XrefSpec> t_resolveXref;
 
-        public static MarkupResult Result => t_result;
+        public static MarkupResult Result => t_result.Peek();
 
         public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             try
             {
-                t_result = new MarkupResult();
+                if (t_result == null)
+                {
+                    t_result = ImmutableStack.Create(new MarkupResult());
+                }
+                else
+                {
+                    t_result = t_result.Push(new MarkupResult());
+                }
+
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
-                return (ast, t_result);
+                return (ast, Result);
             }
             finally
             {
-                t_result = null;
+                t_result = t_result.Pop();
             }
         }
 
@@ -86,30 +90,33 @@ namespace Microsoft.Docs.Build
             Func<string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    t_result = new MarkupResult();
+                    if (t_result == null)
+                    {
+                        t_result = ImmutableStack.Create(new MarkupResult());
+                    }
+                    else
+                    {
+                        t_result = t_result.Push(new MarkupResult());
+                    }
+
                     t_getFile = getFile;
                     t_getLink = getLink;
                     t_resolveXref = resolveXref;
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
-                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
+                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
-                        t_result.Errors.Add(Errors.HeadingNotFound(file));
+                        Result.Errors.Add(Errors.HeadingNotFound(file));
                     }
-                    return (html, t_result);
+                    return (html, Result);
                 }
                 finally
                 {
-                    t_result = null;
+                    t_result = t_result.Pop();
                     t_getFile = null;
                     t_getLink = null;
                     t_resolveXref = null;
