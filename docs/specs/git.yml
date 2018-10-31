@@ -26,7 +26,6 @@ outputs:
       ],
       "updated_at": "1874-01-01T00:00:00.0000000"
     }
-  build.manifest:
 ---
 # Show git contribution info when userProfile & commitsTime is set to relative file path
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -62,7 +61,6 @@ outputs:
       ],
       "updated_at": "1874-01-01T00:00:00.0000000"
     }
-  build.manifest:
 ---
 # Specify invalid author in YAML header should log warning
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -83,7 +81,6 @@ inputs:
     }
 outputs:
   readme.json:
-  build.manifest:
   build.log: |
     ["warning","github-user-not-found","Cannot find user 'invalid_user' on GitHub","README.md"]
 ---
@@ -134,7 +131,6 @@ outputs:
         }
       ],
     }
-  build.manifest:
 ---
 # Author is case-insensitive
 # Contributors can be excluded, it's case insensitive
@@ -165,7 +161,6 @@ outputs:
       "contributors": [
       ],
     }
-  build.manifest:
 ---
 # Use the earliest contributor as author if author not specified in YAML header
 repo: https://github.com/docascode/docfx-test-dependencies#contributors
@@ -179,7 +174,6 @@ outputs:
         "id": "3831744"
       }
     }
-  build.manifest:
 ---
 # Author can be excluded, it's case insensitive
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -211,7 +205,6 @@ outputs:
         }
       ],
     }
-  build.manifest:
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -223,7 +216,6 @@ outputs:
       "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
     }
-  build.manifest:
 ---
 # Specify editLink repo and branch in config
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -242,7 +234,6 @@ outputs:
       "original_content_git_url": "https://github.com/docascode/docfx-test-dependencies/blob/github-user-cache-file/README.md",
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/b1f007c5a4a65274e64c0d4cfd128183c1a7e600/README.md",
     }
-  build.manifest:
 ---
 # Don't load git commits when showContributors is set to false
 repo: https://github.com/docascode/docfx-test-dependencies#no-load-commits
@@ -252,7 +243,6 @@ outputs:
       "contributors": [],
       "gitcommit": "https://github.com/docascode/docfx-test-dependencies/blob/5087ddfc6ee4886bcabe8cc93673edd8605fe15c/README.md"
     }
-  build.manifest:
 ---
 # Use commit's time when gitCommitsTime file not given
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
@@ -268,7 +258,6 @@ outputs:
     {
       "updated_at": "2018-07-27T02:15:49Z",
     }
-  build.manifest:
 ---
 # Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#docset-with-submodule
@@ -283,5 +272,4 @@ outputs:
       "gitcommit": "https://github.com/docascode/docfx-test-submodule/blob/b6601c200859547c7fcd44a44788f77a08576505/README.md",
       "updated_at": "2018-07-18T05:03:26Z"
     }
-  build.manifest:
 ---
