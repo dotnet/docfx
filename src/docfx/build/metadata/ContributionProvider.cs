@@ -11,29 +11,26 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContributionInfo
+    internal class ContributionProvider
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
-        private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
+        private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
         private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
 
-        private ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
+        private ContributionProvider(GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
-            _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
-               ? new Dictionary<string, DateTime>()
-               : JsonUtility.ReadJsonFile<GitCommitsTime>(
-                   docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
         }
 
-        public static async Task<ContributionInfo> Create(Docset docset, GitHubUserCache cache)
+        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache)
         {
-            var result = new ContributionInfo(docset, cache);
+            var result = new ContributionProvider(cache);
             await result.LoadCommits(docset);
+            await result.LoadCommitsTime(docset);
             return result;
         }
 
@@ -218,6 +215,20 @@ namespace Microsoft.Docs.Build
             return Directory.Exists(parent)
                 ? _repositoryByFolder.GetOrAdd(parent, GetRepository)
                 : null;
+        }
+
+        private async Task LoadCommitsTime(Docset docset)
+        {
+            if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
+            {
+                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var content = await ProcessUtility.ReadFile(path);
+
+                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
+                {
+                    _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
+                }
+            }
         }
 
         private async Task LoadCommits(Docset docset)

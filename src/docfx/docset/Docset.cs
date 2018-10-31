@@ -89,28 +89,28 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
         private readonly Lazy<MetadataProvider> _metadata;
 
-        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale.ToLowerInvariant() : config.Localization.DefaultLocale, options, null)
+        public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null, null)
         {
-            if (!string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
 
                 // localization docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwrote by build locale overwrite configuration
-                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this);
+                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this, RestoreMap);
             }
         }
 
-        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset)
+        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset, RestoreMap restoreMap)
         {
             _options = options;
             _context = context;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-            Locale = locale;
+            Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
-            RestoreMap = new RestoreMap(DocsetPath);
+            RestoreMap = restoreMap ?? new RestoreMap(DocsetPath);
             FallbackDocset = fallbackDocset;
 
             var configErrors = new List<Error>();
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"])));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 // todo: what parent config should be pass on its children
                 Config.LoadIfExists(dir, _options, out var loadErrors, out var subConfig);
                 errors.AddRange(loadErrors);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(_context, dir, subConfig, _options, isDependency: true));
             }
             return (errors, result);
         }
