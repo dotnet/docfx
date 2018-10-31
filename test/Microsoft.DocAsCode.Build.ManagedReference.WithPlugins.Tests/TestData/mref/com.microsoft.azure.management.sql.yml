@@ -1,0 +1,67 @@
+### YamlMime:ManagedReference
+items:
+- uid: com.microsoft.azure.management.sql
+  id: sql
+  children:
+  - com.microsoft.azure.management.sql.SqlServer
+  - com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  - com.microsoft.azure.management.sql.SqlServer.firewallRules
+  href: com.microsoft.azure.management.sql.yml
+  langs:
+  - java
+  name: com.microsoft.azure.management.sql
+  nameWithType: com.microsoft.azure.management.sql
+  fullName: com.microsoft.azure.management.sql
+  type: Namespace
+  source:
+    remote:
+      path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/AuthenticationType.java
+      branch: master
+      repo: https://github.com/Azure/azure-libraries-for-java
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/AuthenticationType.java
+    startLine: 8
+  summary: <p>This package contains the classes for SqlManagementClient. The Azure SQL Database management API provides a RESTful set of web services that interact with Azure SQL Database services to manage your databases. The API enables you to create, retrieve, update, and delete databases. </p>
+  syntax:
+    content: package com.microsoft.azure.management.sql
+- uid: com.microsoft.azure.management.sql.SqlServer.firewallRules
+  id: firewallRules
+  parent: com.microsoft.azure.management.sql
+  href: com.microsoft.azure.management.sql.yml
+  langs:
+  - java
+  name: SqlServer.firewallRules
+  nameWithType: SqlServer.firewallRules
+  fullName: com.microsoft.azure.management.sql.SqlServer.firewallRules
+  type: Interface
+  source:
+    remote: &o0
+      path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/AuthenticationType.java
+      branch: v1.3.0
+      repo: https://github.com/Azure/azure-sdk-for-java
+    path: azure-mgmt-sql/src/main/java/com/microsoft/azure/management/sql/AuthenticationType.java
+    startLine: 88
+  package: com.microsoft.azure.management.sql
+  summary: <p>duplicate interface</p>
+  syntax:
+    content: public interface FirewallRules
+references:
+- uid: com.microsoft.azure.management.sql.SqlServer
+  parent: com.microsoft.azure.management.sql
+  href: com.microsoft.azure.management.sql.SqlServer.yml
+  name: SqlServer
+  nameWithType: SqlServer
+  fullName: com.microsoft.azure.management.sql.SqlServer
+  type: Interface
+  summary: <p>An immutable client-side representation of an Azure SQL Server. </p>
+  syntax:
+    content: public interface SqlServer extends GroupableResource<SqlServerManager, ServerInner>,Refreshable<SqlServer>,Updatable<SqlServer.Update>,GroupableResource<SqlServerManager, ServerInner>,Refreshable<SqlServer>,Updatable<SqlServer.Update>
+- uid: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  parent: com.microsoft.azure.management.sql
+  href: com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml
+  name: SqlServer.FirewallRules
+  nameWithType: SqlServer.FirewallRules
+  fullName: com.microsoft.azure.management.sql.SqlServer.FirewallRules
+  type: Interface
+  summary: <p>Entry point to firewall rules from the SQL Server. </p>
+  syntax:
+    content: public interface FirewallRules

@@ -231,6 +231,54 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             }
         }
 
+        [Fact]
+        public void CheckDuplicateFileName()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.SqlServer.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/com.microsoft.azure.management.sql.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/sql/toc.yml" }, "TestData/");
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).html", model.Metadata["_path"]);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).yml", model.Metadata["_key"]);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).html", model.Metadata["_path"]);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).yml", model.Metadata["_key"]);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.html", model.Metadata["_path"]);
+                Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.yml", model.Metadata["_key"]);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("sql\\toc.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Method%29.html", model.Items[0].Items[0].Items[0].TopicHref);
+                Assert.Equal("../com.microsoft.azure.management.sql.SqlServer.FirewallRules%28Interface%29.html", model.Items[0].Items[1].TopicHref);
+                Assert.Equal("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Interface%29_1.html", model.Items[0].Items[2].TopicHref);
+            }
+        }
+
         private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
