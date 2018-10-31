@@ -1,4 +1,4 @@
-# Restore loc repo with dependencies
+# restore loc repo with dependencies
 # [repository mapping] 
 commands:
   - restore --locale zh-cn
@@ -7,14 +7,14 @@ repo: https://github.com/docascode/docfx-test-dependencies#master
 restores:
   git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a/dep.md: loc-DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/* Restore loc repo with dependencies-*-lock.json: |
+  restore-lock/* restore loc repo with dependencies-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a", "https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
   restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
   build.manifest:
 ---
-# Restore loc repo, all loc files are in one repo
+# restore loc repo, all loc files are in one repo
 # [repository + folder mapping]
 commands:
   - restore --locale zh-cn
@@ -26,10 +26,60 @@ inputs:
       mapping: RepositoryAndFolder
 restores:
   git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb/dep.md: loc-DEP
-  restore-lock/*Restore loc repo, all loc files are in one repo-*-lock.json: |
+  restore-lock/*restore loc repo, all loc files are in one repo-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master":"18d3d65979413ce8342fd709dbce1c78ab45ffeb"}}
 outputs:
   build.manifest:
+---
+# loc docset share the source docset's restore map
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#loc-restore-map
+inputs:
+  docfx.yml: |
+    github:
+      userCache: github-user.json
+    dependencies:
+      child1: https://github.com/docascode/docfx-test-dependencies.localization#master
+  github-user.json: |
+    {
+      "users": [
+        {
+          "name": "Osmond Jiang",
+          "login": "OsmondJiang",
+          "id": 19990166,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "xinjiang@microsoft.com"
+          ]
+        },
+        {
+          "name": "Renze Yu",
+          "login": "superyyrrzz",
+          "id": 3831744,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "renzeyu@microsoft.com",
+            "superyyrrzz@gmail.com"
+          ]
+        },
+        {
+          "name": "Yufei Huang",
+          "login": "yufeih",
+          "id": 511355,
+          "expiry":"2099-01-01T00:00:00.00000Z",
+          "emails": [
+            "yufeih@users.noreply.github.com",
+            "yufeih@live.com"
+          ]
+        }
+      ]
+    }
+outputs:
+  build.manifest:
+  docs/a.json: |
+    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Yufei Huang","id":"yufeih@users.noreply.github.com"}]}
 ---
 # loc config convention without source locale
 # [repository mapping] 
@@ -255,10 +305,10 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"toc_rel": "TOC.json"}
+    {"toc_rel": "toc.json"}
   docs/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
@@ -284,8 +334,8 @@ inputs:
 outputs:
   build.manifest:
   docs/b/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/a/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
@@ -312,8 +362,8 @@ inputs:
 outputs:
   build.manifest:
   docs/b/b.json: |
-    {"toc_rel": "TOC.json"}
-  docs/a/TOC.json: |
+    {"toc_rel": "toc.json"}
+  docs/a/toc.json: |
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority

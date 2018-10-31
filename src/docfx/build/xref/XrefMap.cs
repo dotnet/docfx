@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, url));
+                var json = File.ReadAllText(docset.RestoreMap.GetUrlRestorePath(url));
                 var (_, xRefMap) = JsonUtility.Deserialize<XrefMapModel>(json);
                 foreach (var sepc in xRefMap.References)
                 {
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.SchemaNotFound(file.Mime).ToException();
             }
 
-            var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: TransformContent);
+            var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
             errors.AddRange(schemaErrors);
             var uid = obj.Value<string>("uid");
             if (!string.IsNullOrEmpty(uid))
@@ -169,23 +169,6 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.UidMissing());
             }
             return null;
-
-            object TransformContent(IEnumerable<DataTypeAttribute> attributes, object value, string jsonPath)
-            {
-                string result = (string)value;
-                var attribute = attributes.SingleOrDefault(attr => !(attr is XrefPropertyAttribute));
-                if (attribute is MarkdownAttribute)
-                {
-                    var (html, markup) = Markup.ToHtml(result, file, null, null, null, null, MarkdownPipelineType.Markdown);
-                    errors.AddRange(markup.Errors);
-                    result = html;
-                }
-                if (attributes.Any(attr => attr is XrefPropertyAttribute))
-                {
-                    extensionData[jsonPath] = result;
-                }
-                return result;
-            }
         }
 
         private static void TryAddXref(ConcurrentDictionary<string, ConcurrentBag<XrefSpec>> xrefsByUid, XrefSpec spec)

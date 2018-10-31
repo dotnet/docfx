@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -49,16 +48,13 @@ namespace Microsoft.Docs.Build
         private static MarkupResult t_result;
 
         [ThreadStatic]
-        private static DependencyMapBuilder t_dependencyMap;
+        private static Func<string, object, (string, object)> t_getFile;
 
         [ThreadStatic]
-        private static BookmarkValidator t_bookmarkValidator;
+        private static Func<string, object, object, string> t_getLink;
 
         [ThreadStatic]
-        private static Action<Document> t_buildChild;
-
-        [ThreadStatic]
-        private static XrefMap t_xrefMap;
+        private static Func<string, XrefSpec> t_resolveXref;
 
         public static MarkupResult Result => t_result;
 
@@ -85,10 +81,9 @@ namespace Microsoft.Docs.Build
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            XrefMap xrefMap,
-            DependencyMapBuilder dependencyMap,
-            BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild,
+            Func<string, object, (string, object)> getFile,
+            Func<string, object, object, string> getLink,
+            Func<string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
             if (t_result != null)
@@ -101,10 +96,9 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     t_result = new MarkupResult();
-                    t_dependencyMap = dependencyMap;
-                    t_bookmarkValidator = bookmarkValidator;
-                    t_buildChild = buildChild;
-                    t_xrefMap = xrefMap;
+                    t_getFile = getFile;
+                    t_getLink = getLink;
+                    t_resolveXref = resolveXref;
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
@@ -116,10 +110,9 @@ namespace Microsoft.Docs.Build
                 finally
                 {
                     t_result = null;
-                    t_dependencyMap = null;
-                    t_bookmarkValidator = null;
-                    t_buildChild = null;
-                    t_xrefMap = null;
+                    t_getFile = null;
+                    t_getLink = null;
+                    t_resolveXref = null;
                 }
             }
         }
@@ -187,43 +180,10 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo)
-        {
-            Debug.Assert(relativeTo is Document);
+        private static (string content, object file) ReadFile(string path, object relativeTo) => t_getFile(path, relativeTo);
 
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_getLink(path, relativeTo, resultRelativeTo);
 
-            Result.Errors.AddIfNotNull(error);
-
-            t_dependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
-
-            return (content, child);
-        }
-
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
-        {
-            Debug.Assert(relativeTo is Document);
-            Debug.Assert(resultRelativeTo is Document);
-
-            var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-
-            Result.Errors.AddIfNotNull(error);
-
-            if (child != null && t_buildChild != null)
-            {
-                t_buildChild(child);
-                t_dependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
-            }
-
-            t_bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
-
-            return link;
-        }
-
-        private static XrefSpec ResolveXref(string uid)
-        {
-            return t_xrefMap?.Resolve(uid);
-        }
+        private static XrefSpec ResolveXref(string uid) => t_resolveXref(uid);
     }
 }

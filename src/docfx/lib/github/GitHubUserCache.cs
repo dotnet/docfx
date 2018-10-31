@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
                 ? Path.Combine(AppData.CacheDir, "github-users.json")
-                : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.GitHub.UserCache);
+                : docset.RestoreMap.GetUrlRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
 
@@ -125,19 +125,18 @@ namespace Microsoft.Docs.Build
 
         public Task SaveChanges()
         {
-            return _updated ? ProcessUtility.RunInsideMutex(_cachePath, WriteCache) : Task.CompletedTask;
-
-            Task WriteCache()
+            if (!_updated)
             {
-                lock (_lock)
-                {
-                    var file = new GitHubUserCacheFile
-                    {
-                        Users = Users.ToArray(),
-                    };
-                    JsonUtility.WriteJsonFile(_cachePath, file);
-                }
                 return Task.CompletedTask;
+            }
+
+            lock (_lock)
+            {
+                var file = new GitHubUserCacheFile
+                {
+                    Users = Users.ToArray(),
+                };
+                return ProcessUtility.WriteFile(_cachePath, JsonUtility.Serialize(file));
             }
         }
 
@@ -214,24 +213,19 @@ namespace Microsoft.Docs.Build
         private DateTime NextExpiry()
             => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours));
 
-        private Task ReadCacheFile()
+        private async Task ReadCacheFile()
         {
-            return ProcessUtility.RunInsideMutex(_cachePath, UpdateCache);
-
-            Task UpdateCache()
+            if (File.Exists(_cachePath))
             {
-                if (File.Exists(_cachePath))
+                var content = await ProcessUtility.ReadFile(_cachePath);
+                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Item2?.Users;
+                if (users != null)
                 {
-                    var users = JsonUtility.ReadJsonFile<GitHubUserCacheFile>(_cachePath)?.Users;
-                    if (users != null)
+                    lock (_lock)
                     {
-                        lock (_lock)
-                        {
-                            UnsafeUpdateUsers(users);
-                        }
+                        UnsafeUpdateUsers(users);
                     }
                 }
-                return Task.CompletedTask;
             }
         }
 
