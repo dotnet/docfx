@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -15,6 +16,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
+        internal static readonly AsyncLocal<IReadOnlyDictionary<string, string>> MockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+
         private static readonly char[] s_newline = new[] { '\r', '\n' };
         private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
 
@@ -22,17 +25,17 @@ namespace Microsoft.Docs.Build
         /// Get the git remote information from remote href
         /// </summary>
         /// <param name="remoteHref">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string url, string branch) GetGitRemoteInfo(string remoteHref)
+        public static (string remote, string refspec) GetGitRemoteInfo(string remoteHref)
         {
             Debug.Assert(!string.IsNullOrEmpty(remoteHref));
 
             var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
 
-            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
             var uri = new Uri(path);
-            var url = uri.GetLeftPart(UriPartial.Path);
+            var remote = uri.GetLeftPart(UriPartial.Path);
 
-            return (url, refSpec);
+            return (remote, refspec);
         }
 
         /// <summary>
@@ -68,6 +71,14 @@ namespace Microsoft.Docs.Build
             var gitPath = Path.Combine(path, ".git");
 
             return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
+        }
+
+        /// <summary>
+        /// Clones or update a git repository to the latest version.
+        /// </summary>
+        public static async Task CloneOrFetchBare(string remote, string path, string branch, string gitConfig = null)
+        {
+            Directory.CreateDirectory(path);
         }
 
         /// <summary>

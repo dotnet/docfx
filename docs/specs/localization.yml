@@ -140,23 +140,25 @@ outputs:
     { "content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/docfx-test-dependencies/blob/3fbb3c7939d52cd16ce96d90185cf27f85c94437/localization/zh-cn/docs/a.md"}
   build.manifest:
 ---
-# loc page fallback
-# loc repo: 
-# a.md: |
-#   [link to b](b.md)
-#   [!include[include b](b.md)
-# source repo:
-# b.md: |
-#   [link to a](a.md)
+# [ONLY]loc page link and content fallback
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
-inputs:
-  docfx.yml:
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          [link in a](a.md)
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
 outputs:
   docs/a.json: |
-    { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+    { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
   build.manifest:
 ---
 # loc page fallback, all loc files are in one repo
