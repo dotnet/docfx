@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a**/*.md", "a/b/c.md a/b.cs", false)]
         public void MatchFilesUsingGlobPattern(string pattern, string files, bool match)
         {
-            var glob = GlobUtility.CreateGlobMatcher(new[] { pattern }, Array.Empty<string>());
+            var glob = GlobUtility.CreateGlobMatcher(pattern);
             foreach (var file in files.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             {
                 Assert.True(match == glob(file), pattern + " " + files);
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(
                 "invalid-glob-pattern",
-                Assert.Throws<DocfxException>(() => GlobUtility.CreateGlobMatcher(new[] { pattern }, Array.Empty<string>())).Error.Code);
+                Assert.Throws<DocfxException>(() => GlobUtility.CreateGlobMatcher(pattern)).Error.Code);
         }
     }
 }

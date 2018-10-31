@@ -8,17 +8,23 @@ namespace Microsoft.Docs.Build
 {
     internal static class GlobUtility
     {
+        public static Func<string, bool> CreateGlobMatcher(string pattern)
+        {
+            var glob = CreateGlob(pattern);
+
+            return path => !IsFileStartingWithDot(path) && glob.IsMatch(path);
+        }
+
         public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
         {
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
             var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
 
-            return IsGlobMatch;
+            return IsMatch;
 
-            bool IsGlobMatch(string path)
+            bool IsMatch(string path)
             {
-                // Ignore files starting with dot
-                if (path.StartsWith('.') || path.Contains("/.") || path.Contains("\\."))
+                if (IsFileStartingWithDot(path))
                 {
                     return false;
                 }
@@ -39,21 +45,26 @@ namespace Microsoft.Docs.Build
                 }
                 return false;
             }
+        }
 
-            Glob CreateGlob(string pattern)
+        private static bool IsFileStartingWithDot(string path)
+        {
+            return path.StartsWith('.') || path.Contains("/.") || path.Contains("\\.");
+        }
+
+        private static Glob CreateGlob(string pattern)
+        {
+            try
             {
-                try
-                {
-                    var options = PathUtility.IsCaseSensitive
-                        ? GlobOptions.Compiled
-                        : GlobOptions.Compiled | GlobOptions.CaseInsensitive;
+                var options = PathUtility.IsCaseSensitive
+                    ? GlobOptions.Compiled
+                    : GlobOptions.Compiled | GlobOptions.CaseInsensitive;
 
-                    return new Glob(pattern, options);
-                }
-                catch (Exception ex)
-                {
-                    throw Errors.InvalidGlobPattern(pattern, ex).ToException(ex);
-                }
+                return new Glob(pattern, options);
+            }
+            catch (Exception ex)
+            {
+                throw Errors.InvalidGlobPattern(pattern, ex).ToException(ex);
             }
         }
     }
