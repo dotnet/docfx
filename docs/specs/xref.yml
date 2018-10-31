@@ -44,8 +44,7 @@ outputs:
 ---
 # Define uid in conceptual, resolve it
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.md: |
     ---
     title: Title from yaml header a
@@ -81,8 +80,7 @@ outputs:
 ---
 # Define uid in SDP, resolve it
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -103,8 +101,7 @@ outputs:
 # Define duplicate uid in conceptual and SDP 
 # should output warning and resolve it with the first one ordered by href
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
@@ -127,8 +124,7 @@ outputs:
 ---
 # Resolve xref in SDP
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -154,8 +150,7 @@ outputs:
 ---
 # Define xref property without uid at root level, should output warning
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -175,8 +170,7 @@ outputs:
 ---
 # Define uid in non-root object level, it will be ignored
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -198,8 +192,7 @@ outputs:
 ---
 # Xref property field which supports markdown content
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -214,8 +207,7 @@ outputs:
 ---
 # Xref property field which supports inline markdown content
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -230,8 +222,7 @@ outputs:
 ---
 # Xref property field with dependecy
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",

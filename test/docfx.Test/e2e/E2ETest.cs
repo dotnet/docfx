@@ -74,6 +74,17 @@ namespace Microsoft.Docs.Build
                 VerifyFile(restoredFile, content);
             }
 
+            // These files output mostly contains empty content which e2e tests are not intrested in
+            // we can just skip the verification for them
+            var skippableOutput = new string[] { "xrefmap.json", "build.manifest" };
+            foreach (var skippableItem in skippableOutput)
+            {
+                if (!spec.Outputs.ContainsKey(skippableItem))
+                {
+                    outputFileNames.Remove(skippableItem);
+                }
+            }
+
             // Verify output
             Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 

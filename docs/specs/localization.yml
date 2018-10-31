@@ -375,8 +375,7 @@ commands:
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#loc-xrefmap
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.md: |
     ---
     uid: c
@@ -399,7 +398,6 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    buildInternalXrefMap: true
     localization:
       mapping: Folder
   docs/a.md: |
@@ -430,8 +428,7 @@ commands:
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-xrefmap
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/c.md: |
     ---
     uid: c
