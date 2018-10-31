@@ -43,6 +43,10 @@ namespace Microsoft.Docs.Build
         [InlineData("a{b,c}d", "abd acd", true)]
         [InlineData("a{b,c}d", "a", false)]
 
+        // Directory match
+        [InlineData("**/", "a/ a/b/", true)]
+        [InlineData("**/", "a", false)]
+
         // File glob
         [InlineData("**/*.md", "a.md Root/J/K.md Root/M/N.md Root/M/L/O.md", true)]
         [InlineData("**/*.md", "Root/A.cs Root/B.cs Root/C/D.cs Root/E/F.cs", false)]
