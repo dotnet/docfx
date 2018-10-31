@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                     {
                         // TODO: group worktrees to avoid calling `GitUtility.GetGitRemoteInfo` repeatedly.
                         var refspecs = hrefs.Select(h => GitUtility.GetGitRemoteInfo(h).refspec);
-                        await GitUtility.CloneOrFetch(restorePath, url, refspecs, bare: true, config);
+                        await GitUtility.CloneOrUpdateBare(restorePath, url, refspecs, config);
                         await AddWorkTrees();
                     }
                     catch (Exception ex)

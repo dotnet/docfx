@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                         GitUtility.MockedRepos.Value = mockedRepos;
 
                         var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
-                        await GitUtility.CloneOrFetch(docsetPath, remote, new[] { refspec });
+                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
                     }
                     finally

@@ -113,7 +113,24 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static async Task CloneOrFetch(string path, string url, IEnumerable<string> refspecs, bool bare = false, Config config = null)
+        public static async Task CloneOrUpdate(string path, string url, string refspec, Config config = null)
+        {
+            await CloneOrUpdate(path, url, new[] { refspec }, bare: false, config);
+            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout -f {refspec}");
+        }
+
+        /// <summary>
+        /// Clones or update a git bare repository to the latest version.
+        /// </summary>
+        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> refspecs, Config config = null)
+        {
+            return CloneOrUpdate(path, url, refspecs, bare: true, config);
+        }
+
+        /// <summary>
+        /// Clones or update a git repository to the latest version.
+        /// </summary>
+        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -144,12 +161,7 @@ namespace Microsoft.Docs.Build
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
 
-            await ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
-
-            if (!bare)
-            {
-                await ExecuteNonQuery(path, $"-c core.longpaths=true checkout -f {refspec}");
-            }
+            return ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
         }
 
         /// <summary>
