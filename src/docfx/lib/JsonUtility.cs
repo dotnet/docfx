@@ -57,10 +57,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
 
         [ThreadStatic]
-        private static ImmutableStack<List<Error>> t_schemaViolationErrors;
-
-        [ThreadStatic]
-        private static ImmutableStack<Func<IEnumerable<DataTypeAttribute>, object, string, object>> t_transform;
+        private static ImmutableStack<Status> t_status;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -176,8 +173,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             try
             {
-                t_transform = t_transform == null ? ImmutableStack.Create(transform) : t_transform.Push(transform);
-                t_schemaViolationErrors = t_schemaViolationErrors == null ? ImmutableStack.Create(new List<Error>()) : t_schemaViolationErrors.Push(new List<Error>());
+                var status = new Status
+                {
+                    SchemaViolationErrors = new List<Error>(),
+                    Transform = transform,
+                };
+                t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
                 token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
@@ -187,13 +188,12 @@ namespace Microsoft.Docs.Build
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
-                errors.AddRange(t_schemaViolationErrors.Peek());
+                errors.AddRange(t_status.Peek().SchemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
-                t_transform = t_transform.Pop();
-                t_schemaViolationErrors = t_schemaViolationErrors.Pop();
+                t_status = t_status.Pop();
             }
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -508,12 +508,19 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_schemaViolationErrors.Peek().Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_status.Peek().SchemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 
-                return t_transform.Peek() != null ? t_transform.Peek()(_attributes, value, reader.Path) : value;
+                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
             }
+        }
+
+        private sealed class Status
+        {
+            public List<Error> SchemaViolationErrors { get; set; }
+
+            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
         }
     }
 }
