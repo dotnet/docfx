@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             // Verify output
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetOutputPath));
+            Assert.True(Directory.Exists(docsetOutputPath), $"{docsetOutputPath} does not exist");
 
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
@@ -209,6 +209,7 @@ namespace Microsoft.Docs.Build
 
         private static string ToSafePathString(string value)
         {
+            value = value.Replace('/', ' ').Replace('\\', ' ');
             foreach (var ch in Path.GetInvalidPathChars())
             {
                 value = value.Replace(ch.ToString(), "");
