@@ -43,9 +43,9 @@ DocFX build supports localization contents, there are a few features need to be 
       bilingual: false
   ```
 
-### [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
+## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
-#### Dynamic rendering
+### Dynamic rendering
 
 For dynamic rendering, some fallbacks happen in rendering side, so the build output only need contain loc built content, the source content are involved in the build, but they will not show in the output package.
 
@@ -71,7 +71,7 @@ Output:
 |   |   |- a.json
 ```
 
-#### Static rendering
+### Static rendering
 
 For static rendering site, localization content are more like parts of whole site, all fallback need to be supported during build.
 
@@ -103,7 +103,7 @@ Output:
 |   |   |- a.html(en-us/a.png and en-us/b.html)
 ```
 
-### Mappings between source content and loc content
+## Mappings between source content and loc content
 
 Below kinds of mappings are considered to be supported:
   - Folder mapping like en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
