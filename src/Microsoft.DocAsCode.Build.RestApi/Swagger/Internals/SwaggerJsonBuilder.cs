@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         private const string ReferenceKey = "$ref";
         private const string InternalRefNameKey = "x-internal-ref-name";
         private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
-        private const string TokenNameKey = "Token";
+        private const string InternalLoopTokenKey = "x-internal-loop-token";
 
 
         public SwaggerJsonBuilder()
@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             {
                                 var loopRef = new SwaggerLoopReferenceObject();
                                 loopRef.Dictionary.Add(InternalLoopRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
-                                loopRef.Dictionary.Add(TokenNameKey, new SwaggerValue { Token = swagger.Token });
+                                loopRef.Dictionary.Add(InternalLoopTokenKey, new SwaggerValue { Token = swagger.Token });
                                 return loopRef;
                             }
 
