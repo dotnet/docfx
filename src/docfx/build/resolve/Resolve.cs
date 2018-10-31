@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,44 @@ namespace Microsoft.Docs.Build
 {
     internal static class Resolve
     {
+        public static (string content, object file) ReadFile(string path, object relativeTo, List<Error> errors, DependencyMapBuilder dependencyMapBuilder)
+        {
+            Debug.Assert(relativeTo is Document);
+
+            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+
+            errors.AddIfNotNull(error);
+
+            dependencyMapBuilder?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+
+            return (content, child);
+        }
+
+        public static string GetLink(string path, object relativeTo, object resultRelativeTo, List<Error> errors, Action<Document> buildChild, DependencyMapBuilder dependencyMapBuilder, BookmarkValidator bookmarkValidator)
+        {
+            Debug.Assert(relativeTo is Document);
+            Debug.Assert(resultRelativeTo is Document);
+
+            var self = (Document)relativeTo;
+            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
+            errors.AddIfNotNull(error);
+
+            if (child != null && buildChild != null)
+            {
+                buildChild(child);
+                dependencyMapBuilder?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
+            }
+
+            bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
+
+            return link;
+        }
+
+        public static XrefSpec ResolveXref(string uid, XrefMap xrefMap)
+        {
+            return xrefMap?.Resolve(uid);
+        }
+
         public static (Error error, string content, Document file) TryResolveContent(this Document relativeTo, string href)
         {
             var (error, file, redirect, _, _, _) = TryResolveFile(relativeTo, href);

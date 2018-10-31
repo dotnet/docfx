@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
-            var contribution = await ContributionInfo.Create(docset, githubUserCache);
+            var contribution = await ContributionProvider.Create(docset, githubUserCache);
 
             // TODO: toc map and xref map should always use source docset?
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             TableOfContentsMap tocMap,
             XrefMap xrefMap,
-            ContributionInfo contribution)
+            ContributionProvider contribution)
         {
             using (Progress.Start("Building files"))
             {
@@ -92,7 +92,9 @@ namespace Microsoft.Docs.Build
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var (hasError, dependencyMap) = await BuildFile(context, file, xrefMap, tocMap, contribution, bookmarkValidator, buildChild);
+                    var dependencyMapBuilder = new DependencyMapBuilder();
+                    var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, callback);
                     if (hasError)
                     {
                         filesWithErrors.Add(file);
@@ -130,11 +132,9 @@ namespace Microsoft.Docs.Build
         private static async Task<(bool hasError, DependencyMap)> BuildFile(
             Context context,
             Document file,
-            XrefMap xrefMap,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
-            BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild)
+            ContributionProvider contribution,
+            PageCallback callback)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
                     case ContentType.Page:
-                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, bookmarkValidator, buildChild, xrefMap);
+                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);

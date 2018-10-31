@@ -204,10 +204,45 @@ inputs:
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "a",
-      "summary": "Hello `docfx`!"
+      "summary": "    Hello `docfx`!"
     }
 outputs:
   docs/a.json:
   build.manifest:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Hello <code>docfx</code>!</p>"}]}
+    {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+---
+# Xref property field which supports inline markdown content
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "inlineDescription": "    Hello `docfx`!"
+    }
+outputs:
+  docs/a.json:
+  build.manifest:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+---
+# Xref property field with dependecy
+inputs:
+  docfx.yml: |
+    buildInternalXrefMap: true
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "inlineDescription": "[!INCLUDE[B](b.md)]"
+    }
+  docs/b.md: |
+    Hello `docfx`!
+outputs:
+  docs/a.json:
+  docs/b.json:
+  build.manifest:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}

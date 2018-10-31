@@ -184,9 +184,8 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(Path.GetDirectoryName(_cacheFilePath));
 
-            return ProcessUtility.RunInsideMutex(_cacheFilePath, () =>
+            return ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {
-                using (var stream = File.Create(_cacheFilePath))
                 using (var writer = new BinaryWriter(stream))
                 {
                     writer.Write(_commitCache.Count);
@@ -213,7 +212,6 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                return Task.CompletedTask;
             });
         }
 
@@ -360,15 +358,14 @@ namespace Microsoft.Docs.Build
         private static async Task<ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>>
             LoadCommitCache(string cacheFilePath)
         {
-            var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
             if (string.IsNullOrEmpty(cacheFilePath) || !File.Exists(cacheFilePath))
             {
-                return result;
+                return new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
             }
 
-            await ProcessUtility.RunInsideMutex(cacheFilePath, () =>
+            return await ProcessUtility.ReadFile(cacheFilePath, stream =>
             {
-                using (var stream = File.OpenRead(cacheFilePath))
+                var result = new ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>>();
                 using (var reader = new BinaryReader(stream))
                 {
                     var fileCount = reader.ReadInt32();
@@ -393,10 +390,8 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                return Task.CompletedTask;
+                return result;
             });
-
-            return result;
         }
 
         private class Commit
