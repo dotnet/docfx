@@ -244,11 +244,11 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                if (git_branch_lookup(out var refBranch, _repo, $"{branchName}", 1 /*locale branch*/) != 0 ||
+                if (git_branch_lookup(out var refBranch, _repo, $"{branchName}", 1 /*locale branch*/) != 0 &&
                     git_branch_lookup(out refBranch, _repo, $"origin/{branchName}", 2 /*remote branch*/) != 0)
                 {
                     git_object_free(walk);
-                    throw Errors.GitBranchNotFound(branchName).ToException();
+                    throw Errors.GitBranchNotFound(_repoPath, branchName).ToException();
                 }
 
                 var commit = git_reference_target(refBranch);
