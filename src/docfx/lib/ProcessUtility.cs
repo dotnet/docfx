@@ -5,7 +5,6 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -153,7 +152,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        public static async Task RunInsideMutex(string mutexName, Func<Task> action, [CallerMemberName] string callerName = "", [CallerFilePath] string fileName = "", [CallerLineNumber] int lineNumber = 0)
+        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
@@ -161,7 +160,7 @@ namespace Microsoft.Docs.Build
 
             var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
 
-            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile, callerName, fileName, lineNumber))
+            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
             {
                 await action();
             }
@@ -208,7 +207,7 @@ namespace Microsoft.Docs.Build
             return ex is UnauthorizedAccessException;
         }
 
-        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action, string callerName = "", string fileName = "", int lineNumber = 0)
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -229,12 +228,7 @@ namespace Microsoft.Docs.Build
 #pragma warning restore CA2002
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            var message = $"Waiting for another process to access '{name}'.";
-                            if (!string.IsNullOrEmpty(callerName))
-                            {
-                                message += $" Current caller name: {callerName}, file: {fileName}, line: {lineNumber}";
-                            }
-                            Console.WriteLine(message);
+                            Console.WriteLine($"Waiting for another process to access '{name}'");
                             Console.ResetColor();
                         }
                     }
