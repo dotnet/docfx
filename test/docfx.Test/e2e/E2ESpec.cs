@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Commands = new[] { "restore", "build" };
 
+        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
+
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

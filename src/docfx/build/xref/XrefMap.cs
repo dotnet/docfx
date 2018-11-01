@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.ScanScope) : new Dictionary<string, Lazy<(List<Error>, XrefSpec)>>(), context);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
         public void OutputXrefMap(Context context)

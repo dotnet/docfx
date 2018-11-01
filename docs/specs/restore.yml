@@ -13,7 +13,6 @@ restores:
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
-  build.manifest:
 ---
 # Restore urls
 inputs:
@@ -33,7 +32,6 @@ restores:
   restore-lock/*Restore urls-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
 ---
 # Restore urls with extends
 inputs:
@@ -52,7 +50,6 @@ restores:
   restore-lock/*Restore urls with extends-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
 ---
 # Restore dependencies with extends
 inputs:
@@ -66,7 +63,6 @@ restores:
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
     {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
 outputs:
-  build.manifest:
 ---
 # Show error when download failed
 inputs:
@@ -134,7 +130,6 @@ outputs:
     {
       "content": "<p>for long file path test.</p>"
     }
-  build.manifest:
 ---
 # Restore private repos with dependencies
 inputs:
@@ -150,4 +145,3 @@ environments:
 restores:
   git/ceapex.visualstudio.com/Engineering/_git/docs-host-vnext/c9c018ce36b67713af186be2aaddeb734d8b1dbd/README.md:
 outputs:
-  build.manifest:
