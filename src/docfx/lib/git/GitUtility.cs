@@ -6,13 +6,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-<<<<<<< HEAD
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-=======
-using System.Runtime.InteropServices;
->>>>>>> dotnet/v3
 using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
