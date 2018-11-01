@@ -24,9 +24,9 @@ namespace Microsoft.Docs.Build
         private readonly string _repoPath;
         private readonly string _cacheFilePath;
 
-        // Commit history of the current branch and a lookup table from commit hash to commit.
+        // Commit history and a lookup table from commit hash to commit.
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
-        private readonly Lazy<(List<Commit>, Dictionary<long, Commit>)> _commits;
+        private readonly ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>> _commits;
 
         // Intern path strings by given each path segment a string ID. For faster string lookup.
         private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             }
             _repoPath = repoPath;
             _cacheFilePath = cacheFilePath;
-            _commits = new Lazy<(List<Commit>, Dictionary<long, Commit>)>(LoadCommits);
+            _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
             _commitCache = commitCache;
         }
 
@@ -65,13 +65,16 @@ namespace Microsoft.Docs.Build
             return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
         }
 
-        public List<GitCommit> GetCommitHistory(string file)
+        public List<GitCommit> GetCommitHistory(string file, string branch = null)
         {
             Debug.Assert(!file.Contains('\\'));
 
             const int MaxParentBlob = 32;
 
-            var (commits, commitsBySha) = _commits.Value;
+            var (commits, commitsBySha) = _commits.GetOrAdd(
+                branch ?? "",
+                key => new Lazy<(List<Commit>, Dictionary<long, Commit>)>(() => LoadCommits(key))).Value;
+
             if (commits.Count <= 0)
             {
                 return new List<GitCommit>();
@@ -225,7 +228,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits()
+        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string branchName = null)
         {
             var commits = new List<Commit>();
             var commitsBySha = new Dictionary<long, Commit>();
@@ -233,7 +236,27 @@ namespace Microsoft.Docs.Build
             // walk commit list
             GitRevwalkNew(out var walk, _repo);
             GitRevwalkSorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
-            GitRevwalkPushHead(walk);
+
+            if (string.IsNullOrEmpty(branchName))
+            {
+                GitRevwalkPushHead(walk);
+            }
+            else
+            {
+                if (GitBranchLookup(out var refBranch, _repo, $"{branchName}", 1 /*locale branch*/) == 0 ||
+                        GitBranchLookup(out refBranch, _repo, $"origin/{branchName}", 2 /*remote branch*/) == 0)
+                {
+                    var commit = GitReferenceTarget(refBranch);
+                    GitRevwalkPush(walk, commit);
+                    GitObjectFree(refBranch);
+                }
+                else
+                {
+                    GitObjectFree(refBranch);
+                    GitObjectFree(walk);
+                    throw Errors.GitBranchNotFound(branchName).ToException();
+                }
+            }
 
             while (true)
             {
