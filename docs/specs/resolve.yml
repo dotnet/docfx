@@ -9,7 +9,6 @@ outputs:
     { "content": "<p>Link to <a href=\"b\">b</a></p>" }
   docs/b.json: |
     { "content": "<p>Link to <a href=\"a\">a</a></p>" }
-  build.manifest:
 ---
 # Preserve query and fragment for links to files
 inputs:
@@ -24,7 +23,6 @@ outputs:
   build.log: |
     ["warning","bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md"]
-  build.manifest:
 ---
 # Links to URLs are preserved as is
 inputs:
@@ -33,7 +31,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
-  build.manifest:
 ---
 # Links to bookmarks in the same article
 inputs:
@@ -48,7 +45,6 @@ outputs:
     { "content": "<h2 id=\"hello-world\">Hello World</h2><p>Link to <a href=\"#hello-world\">bookmark</a></p>" }
   docs/b.json: |
     { "content": "<p>Link to <a href=\"#\">self</a></p>" }
-  build.manifest:
 ---
 # Support both / and \ as directory seperator
 inputs:
@@ -60,7 +56,6 @@ outputs:
     { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
   docs/dir-b/b.json: |
     { "content": "<p>Link to <a href=\"../dir-a/a\">a</a></p>" }
-  build.manifest:
 ---
 # Path starting with ~ resolves from docset root directory
 inputs:
@@ -72,7 +67,6 @@ outputs:
     { "content": "<p>Link to <a href=\"../dir-b/b\">b</a></p>" }
   docs/dir-b/b.json: |
     { "content": "<p>Link to <a href=\"%7Edocs/dir-a/a.md\">a</a></p>" }
-  build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file '~docs/dir-a/a.md' relative to 'docs/dir-b/b.md'","docs/dir-b/b.md"]
 ---
@@ -88,7 +82,6 @@ outputs:
   docs/dir/b.json: |
     { "content": "<p><a href=\"c\">c</a></p>" }
   docs/dir/c.json:
-  build.manifest:
 ---
 # Resolve <a> and <img> tags embeded inside markdown
 inputs:
@@ -102,7 +95,6 @@ outputs:
   docs/b.json: |
     { "content": "<div>Link to <img src=\"c.png\" /></div>" }
   docs/c.png:
-  build.manifest:
 ---
 # Html links in include files are resolved relative to the include file
 inputs:
@@ -116,7 +108,6 @@ outputs:
   docs/dir/b.json: |
     { "content": "<p><a target=\"_blank\" href=\"c\">c</a></p>" }
   docs/dir/c.json:
-  build.manifest:
 ---
 # Show warning if the link is empty, missing or points to absolute file path
 inputs:
@@ -128,7 +119,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
-  build.manifest:
   build.log: |
     ["info","link-is-empty","Link is empty","docs/a.md"]
     ["warning","file-not-found","Cannot find file 'a<>b.md' relative to 'docs/a.md'","docs/a.md"]
@@ -143,7 +133,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p><a href=\"C:/a.md\">Absolute</a></p>" }
-  build.manifest:
   build.log: |
     ["warning","absolute-file-path","File path cannot be absolute: 'C:/a.md'","docs/a.md"]
 ---
@@ -153,7 +142,6 @@ inputs:
   docs/a.png.md: '![](a.png)'
   docs/a.png:
 outputs:
-  build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
@@ -170,7 +158,6 @@ outputs:
     { "content": "<p>Link to <a href=\".\">index</a></p>" }
   docs/a.json: |
     { "content": "<p>Link to <a href=\"a/\">index</a></p>" }
-  build.manifest:
 ---
 # Escape special charactors in path
 inputs:
@@ -181,7 +168,6 @@ outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"b%26/c%7E\">b</a></p>" }
   docs/b&/c~.json:
-  build.manifest:
 ---
 # Files redirected to an aboslute URL
 inputs:
@@ -191,7 +177,6 @@ inputs:
   docs/a.md: |
     [redirect](redirect.md?a#b)
 outputs:
-  build.manifest:
   docs/a.json: |
     {"content":"<p><a href=\"/absolute/path?a#b\">redirect</a></p>"}
   docs/redirect.json: |
@@ -205,7 +190,6 @@ inputs:
   docs/a.md: |
     [redirect](redirect.md)
 outputs:
-  build.manifest:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
   docs/redirect.json: |
@@ -219,7 +203,6 @@ inputs:
   docs/a.md: |
     Link to [!INCLUDE[](redirect.md)]
 outputs:
-  build.manifest:
   docs/a.json: |
     {"content":"<p>Link to [!include[](redirect.md)]</p>"}
   docs/redirect.json: |
@@ -235,7 +218,6 @@ inputs:
       docs/redirect.md: /absolute/path
   docs/redirect.md:
 outputs:
-  build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/redirect': 'docs/redirect.md <redirection>', 'docs/redirect.md'"]
 ---
@@ -253,7 +235,6 @@ outputs:
   build.log: |
     ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in docfx.yml","docs/a.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md"]
-  build.manifest:
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:
@@ -264,7 +245,6 @@ outputs:
   docs/a.json: |
     {"content":"<p><a href=\"../b.png\">a</a></p>"}
   b.png:
-  build.manifest:
 ---
 # Don't show warning if include a page outside build scope
 inputs:
@@ -274,7 +254,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>b</p>"}
-  build.manifest:
 ---
 # Show warning if link to a file in dependency repo
 inputs:
@@ -287,7 +266,6 @@ outputs:
     {"content":"<p>Link to <a href=\"%7E/dep/logo.svg\">dep</a></p>"}
   build.log: |
     ["warning","link-is-dependency","File 'logo.svg' referenced by link '~/dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md"]
-  build.manifest:
 ---
 # Don't show warning if include a file from dependency repo
 inputs:
@@ -298,4 +276,3 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}
-  build.manifest:
