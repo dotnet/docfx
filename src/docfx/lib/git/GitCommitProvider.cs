@@ -247,10 +247,13 @@ namespace Microsoft.Docs.Build
                     {
                         var commit = GitReferenceTarget(refBranch);
                         GitRevwalkPush(walk, commit);
+                        GitObjectFree(refBranch);
                     }
                     else
                     {
-                        throw new ArgumentException($"{branchName} can't not be resolved");
+                        GitObjectFree(refBranch);
+                        GitObjectFree(walk);
+                        throw Errors.GitBranchNotFound(branchName).ToException();
                     }
                 }
             }
