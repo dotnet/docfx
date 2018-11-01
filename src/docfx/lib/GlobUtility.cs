@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
         {
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
-            var excludeGlobs = excludePatterns != null ? Array.ConvertAll(excludePatterns, CreateGlob) : null;
+            var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
 
             return IsMatch;
 
@@ -33,14 +33,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (include != null && include.IsMatch(path))
                     {
-                        if (excludeGlobs != null)
+                        foreach (var exclude in excludeGlobs)
                         {
-                            foreach (var exclude in excludeGlobs)
+                            if (exclude != null && exclude.IsMatch(path))
                             {
-                                if (exclude != null && exclude.IsMatch(path))
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
                         }
                         return true;
