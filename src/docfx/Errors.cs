@@ -150,9 +150,6 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMonikerRange(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
 
-        public static Error UidMissing()
-            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
-
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
         /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>

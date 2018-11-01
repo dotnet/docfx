@@ -141,22 +141,27 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
-# Define xref property without uid at root level, should output warning
+# Define uid with error
 inputs:
   docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "",
+      "uid": "a",
       "name": "test",
       "fullName": "test.test",
-      "description": "a.description",
-      "data": {"name": "name without uid"}
+      "description":
+    }
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a"
     }
 outputs:
-  docs/a.json:
+  docs/b.json: | 
+    { "content": {"!xref": null}}
   build.log: |
-    ["warning","uid-missing","Uid is missing for xref property assignment, uid should be defined at the root level.","docs/a.json"]
+    ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json","description",7]
   xrefmap.json: | 
     {"references":[]}
 ---
