@@ -1,5 +1,4 @@
 # default config for specs in docfx
-buildInternalXrefMap: false
 rules:
   heading-not-found: off
   resolve-author-failed: off

@@ -18,4 +18,3 @@ outputs:
   build.log: |
     ["error","merge-conflict","File contains merge conflict","docs/toc.md"]
     ["error","merge-conflict","File contains merge conflict","docs/a.md"]
-  build.manifest:

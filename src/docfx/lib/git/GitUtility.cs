@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -76,16 +77,16 @@ namespace Microsoft.Docs.Build
         public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
         {
             var (remote, branch, commit) = default((string, string, string));
-            var pRepo = OpenRepo(repoPath);
 
-            // TODO: marshal strings
-            fixed (byte* pRemoteName = LibGit2.ToUtf8Native("origin"))
+            if (LibGit2.GitRepositoryOpen(out var pRepo, repoPath) != 0)
             {
-                if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, pRemoteName) == 0)
-                {
-                    remote = LibGit2.FromUtf8Native(LibGit2.GitRemoteUrl(pRemote));
-                    LibGit2.GitRemoteFree(pRemote);
-                }
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
+
+            if (LibGit2.GitRemoteLookup(out var pRemote, pRepo, "origin") == 0)
+            {
+                remote = Marshal.PtrToStringUTF8(LibGit2.GitRemoteUrl(pRemote));
+                LibGit2.GitRemoteFree(pRemote);
             }
 
             if (LibGit2.GitRepositoryHead(out var pHead, pRepo) == 0)
@@ -93,7 +94,7 @@ namespace Microsoft.Docs.Build
                 commit = LibGit2.GitReferenceTarget(pHead)->ToString();
                 if (LibGit2.GitBranchName(out var pName, pHead) == 0)
                 {
-                    branch = LibGit2.FromUtf8Native(pName);
+                    branch = Marshal.PtrToStringUTF8(pName);
                 }
                 LibGit2.GitReferenceFree(pHead);
             }
@@ -101,19 +102,6 @@ namespace Microsoft.Docs.Build
             LibGit2.GitRepositoryFree(pRepo);
 
             return (remote, branch, commit);
-        }
-
-        public static unsafe IntPtr OpenRepo(string path)
-        {
-            fixed (byte* pRepoPath = LibGit2.ToUtf8Native(path))
-            {
-                if (LibGit2.GitRepositoryOpen(out var repo, pRepoPath) != 0)
-                {
-                    throw new ArgumentException($"Invalid git repo {path}");
-                }
-
-                return repo;
-            }
         }
 
         /// <summary>
