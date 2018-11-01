@@ -63,6 +63,11 @@ namespace Microsoft.Docs.Build
         public RestoreMap RestoreMap { get; }
 
         /// <summary>
+        /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> ReversedRoutes { get; }
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -110,6 +115,7 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
+            ReversedRoutes = new Dictionary<string, string>(config.Routes.Reverse());
             RestoreMap = restoreMap ?? new RestoreMap(DocsetPath);
             FallbackDocset = fallbackDocset;
 
