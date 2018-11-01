@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -45,74 +46,60 @@ namespace Microsoft.Docs.Build
                 };
 
         [ThreadStatic]
-        private static MarkupResult t_result;
+        private static ImmutableStack<Status> t_status;
 
-        [ThreadStatic]
-        private static Func<string, object, (string, object)> t_getFile;
-
-        [ThreadStatic]
-        private static Func<string, object, object, string> t_getLink;
-
-        [ThreadStatic]
-        private static Func<string, XrefSpec> t_resolveXref;
-
-        public static MarkupResult Result => t_result;
+        public static MarkupResult Result => t_status.Peek().Result;
 
         public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             try
             {
-                t_result = new MarkupResult();
+                var status = new Status
+                {
+                    Result = new MarkupResult(),
+                };
+                t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
-                return (ast, t_result);
+                return (ast, Result);
             }
             finally
             {
-                t_result = null;
+                t_status = t_status.Pop();
             }
         }
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            Func<string, object, (string, object)> getFile,
+            Func<string, object, (string, object)> readFile,
             Func<string, object, object, string> getLink,
             Func<string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    t_result = new MarkupResult();
-                    t_getFile = getFile;
-                    t_getLink = getLink;
-                    t_resolveXref = resolveXref;
+                    var status = new Status
+                    {
+                        Result = new MarkupResult(),
+                        ReadFileDelegate = readFile,
+                        GetLinkDelegate = getLink,
+                        ResolveXrefDelegate = resolveXref,
+                    };
+                    t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
-                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
+                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
-                        t_result.Errors.Add(Errors.HeadingNotFound(file));
+                        Result.Errors.Add(Errors.HeadingNotFound(file));
                     }
-                    return (html, t_result);
+                    return (html, Result);
                 }
                 finally
                 {
-                    t_result = null;
-                    t_getFile = null;
-                    t_getLink = null;
-                    t_resolveXref = null;
+                    t_status = t_status.Pop();
                 }
             }
         }
@@ -180,10 +167,21 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo) => t_getFile(path, relativeTo);
+        private static (string content, object file) ReadFile(string path, object relativeTo) => t_status.Peek().ReadFileDelegate(path, relativeTo);
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_getLink(path, relativeTo, resultRelativeTo);
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_status.Peek().GetLinkDelegate(path, relativeTo, resultRelativeTo);
 
-        private static XrefSpec ResolveXref(string uid) => t_resolveXref(uid);
+        private static XrefSpec ResolveXref(string uid) => t_status.Peek().ResolveXrefDelegate(uid);
+
+        private sealed class Status
+        {
+            public MarkupResult Result { get; set; }
+
+            public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
+
+            public Func<string, object, object, string> GetLinkDelegate { get; set; }
+
+            public Func<string, XrefSpec> ResolveXrefDelegate { get; set; }
+        }
     }
 }
