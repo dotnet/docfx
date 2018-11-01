@@ -50,7 +50,11 @@ namespace Microsoft.Docs.Build
             string cacheFilePath,
             ConcurrentDictionary<string, Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>> commitCache)
         {
+<<<<<<< HEAD
             if (git_repository_open(out _repo, repoPath) != 0)
+=======
+            if (GitRepositoryOpen(out _repo, repoPath) != 0)
+>>>>>>> dotnet/v3
             {
                 throw new ArgumentException($"Invalid git repo {repoPath}");
             }
@@ -265,8 +269,13 @@ namespace Microsoft.Docs.Build
                     Tree = *git_commit_tree_id(commit),
                     GitCommit = new GitCommit
                     {
+<<<<<<< HEAD
                         AuthorName = Marshal.PtrToStringUTF8(author->name),
                         AuthorEmail = Marshal.PtrToStringUTF8(author->email),
+=======
+                        AuthorName = Marshal.PtrToStringUTF8(author->Name),
+                        AuthorEmail = Marshal.PtrToStringUTF8(author->Email),
+>>>>>>> dotnet/v3
                         Sha = commitId.ToString(),
                         Time = new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset(),
                     },
