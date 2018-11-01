@@ -7,7 +7,6 @@ inputs:
   docs/a.md:
 outputs:
   docs/a/index.html:
-  build.manifest:
 ---
 # Use .html extension on uglify url
 inputs:
@@ -18,4 +17,3 @@ inputs:
   docs/a.md:
 outputs:
   docs/a.html:
-  build.manifest:

@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, docset.Config.BuildInternalXrefMap ? CreateInternalXrefMap(context, docset.ScanScope) : new Dictionary<string, XrefSpec>());
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope));
         }
 
         public void OutputXrefMap(Context context)
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
 
             var (schemaErrors, content) = JsonUtility.ToObject(token, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
             errors.AddRange(schemaErrors);
-            var uid = obj.Value<string>("uid");
+            var uid = obj?.Value<string>("uid");
             if (!string.IsNullOrEmpty(uid))
             {
                 var xref = new XrefSpec

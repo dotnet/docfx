@@ -112,11 +112,6 @@ namespace Microsoft.Docs.Build
         public readonly bool WarningsAsErrors;
 
         /// <summary>
-        /// Gets whether to build internal xref map
-        /// </summary>
-        public readonly bool BuildInternalXrefMap;
-
-        /// <summary>
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
