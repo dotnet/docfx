@@ -145,18 +145,6 @@
           "type": "integer"
         }
       }
-    },
-    "RouteConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "source": {
-          "type": "string"
-        },
-        "destination": {
-          "type": "string"
-        }
-      }
     }
   },
   "type": "object",
@@ -192,9 +180,9 @@
       }
     },
     "routes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/RouteConfig"
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
       }
     },
     "contribution": {

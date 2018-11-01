@@ -348,12 +348,8 @@ namespace Microsoft.Docs.Build
                 foreach (var (key, value) in obj)
                 {
                     result.Add(
-                        key.EndsWith('/') || key.EndsWith('\\')
-                            ? PathUtility.NormalizeFolder(key)
-                            : PathUtility.NormalizeFile(key),
-                        value is JValue v && v.Value is string str
-                            ? PathUtility.NormalizeFile(str)
-                            : value);
+                        key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
+                        value is JValue v && v.Value is string str ? PathUtility.NormalizeFile(str) : value);
                 }
                 return result;
             }
