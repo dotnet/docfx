@@ -236,7 +236,6 @@ namespace Microsoft.Docs.Build
             // walk commit list
             git_revwalk_new(out var walk, _repo);
             git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
-            git_revwalk_push_head(walk);
 
             if (string.IsNullOrEmpty(branchName))
             {
