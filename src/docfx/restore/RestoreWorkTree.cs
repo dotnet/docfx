@@ -75,7 +75,9 @@ namespace Microsoft.Docs.Build
                     var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                     if (existingWorkTrees.TryAdd(workTreePath, 0))
                     {
-                        await GitUtility.AddWorkTree(restorePath, workTreeHead, workTreePath);
+                        // use branch name instead of commit hash
+                        // https://git-scm.com/docs/git-worktree#_commands
+                        await GitUtility.AddWorkTree(restorePath, rev, workTreePath);
                     }
 
                     workTreeHeads.Add((href, workTreeHead));

@@ -173,10 +173,10 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
+        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitHash, string path)
-            => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
+        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+            => ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh}");
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo

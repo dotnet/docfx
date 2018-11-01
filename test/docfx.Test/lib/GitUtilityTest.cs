@@ -39,8 +39,17 @@ namespace Microsoft.Docs.Build
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
+                // current branch
                 var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
                 var lib = commitsProvider.GetCommitHistory(pathToRepo);
+
+                Assert.Equal(
+                    exe.Replace("\r", ""),
+                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+
+                // another branch
+                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" origin/test -- \"{pathToRepo}\"", repo);
+                lib = commitsProvider.GetCommitHistory(pathToRepo, "test");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
@@ -63,7 +72,6 @@ namespace Microsoft.Docs.Build
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
-            p.WaitForExit();
             return p.StandardOutput.ReadToEnd().Trim();
         }
     }
