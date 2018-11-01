@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     map[sepc.Uid] = sepc;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope));
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context);
         }
 
         public void OutputXrefMap(Context context)
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(yamlErrors);
 
                     var obj = token as JObject;
-                    var uid = obj.Value<string>("uid");
+                    var uid = obj?.Value<string>("uid");
                     if (!string.IsNullOrEmpty(uid))
                     {
                         TryAddXref(xrefsByUid, uid, () => LoadSchemaDocument(obj, file, uid));
