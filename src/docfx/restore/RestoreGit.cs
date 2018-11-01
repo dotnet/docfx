@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
             // process git restore items
             await ParallelUtility.ForEach(
-               GetRestoreItems(),
+               GetRestoreItems(docsetPath, config, locale),
                async restoreItem =>
                {
                    var (restoreDir, hrefs) = restoreItem;
@@ -47,62 +47,11 @@ namespace Microsoft.Docs.Build
 
                 return workTreeHeads;
             }
-
-            List<(string restoreDir, List<string> hrefs)> GetRestoreItems()
-            {
-                // restore dependency repositories
-                var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
-
-                // restore loc repository
-                var (locRestoreDir, locRepoHref) = GetLocRestoreItem();
-                if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
-                {
-                    restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
-                }
-
-                return restoreItems;
-            }
-
-            (string locRestoreDir, string href) GetLocRestoreItem()
-            {
-                // restore loc repository
-                if (string.IsNullOrEmpty(locale))
-                {
-                    return default;
-                }
-
-                if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
-                {
-                    return default;
-                }
-
-                if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
-                {
-                    return default;
-                }
-
-                var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
-                if (repo == null)
-                {
-                    return default;
-                }
-
-                var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(
-                    config.Localization.Mapping,
-                    config.Localization.Bilingual,
-                    repo.Remote,
-                    repo.Branch,
-                    locale,
-                    config.Localization.DefaultLocale);
-                var locRepoUrl = $"{locRemote}#{locBranch}";
-
-                return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
-            }
         }
 
-        public static async Task GC(Config config, Func<string, Task> gcChild)
+        public static async Task GC(string docsetPath, Config config, Func<string, Task> gcChild, string locale)
         {
-            var restoreDirs = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => g.Key);
+            var restoreDirs = GetRestoreItems(docsetPath, config, locale).Select(i => i.restoreDir);
 
             await ParallelUtility.ForEach(
                restoreDirs,
@@ -115,6 +64,57 @@ namespace Microsoft.Docs.Build
                    }
                },
                progress: Progress.Update);
+        }
+
+        private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
+        {
+            // restore dependency repositories
+            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+
+            // restore loc repository
+            var (locRestoreDir, locRepoHref) = GetLocRestoreItem(docsetPath, config, locale);
+            if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
+            {
+                restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
+            }
+
+            return restoreItems;
+        }
+
+        private static (string locRestoreDir, string href) GetLocRestoreItem(string docsetPath, Config config, string locale)
+        {
+            // restore loc repository
+            if (string.IsNullOrEmpty(locale))
+            {
+                return default;
+            }
+
+            if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                return default;
+            }
+
+            if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
+            {
+                return default;
+            }
+
+            var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+            if (repo == null)
+            {
+                return default;
+            }
+
+            var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(
+                config.Localization.Mapping,
+                config.Localization.Bilingual,
+                repo.Remote,
+                repo.Branch,
+                locale,
+                config.Localization.DefaultLocale);
+            var locRepoUrl = $"{locRemote}#{locBranch}";
+
+            return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
         }
     }
 }
