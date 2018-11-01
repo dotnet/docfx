@@ -120,6 +120,9 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
+        public static Error GitBranchNotFound(string repo, string branch)
+            => new Error(ErrorLevel.Error, "git-branch-not-found", $"Cannot find branch '{branch}'for repo '{repo}'.");
+
         public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
 
@@ -149,9 +152,6 @@ namespace Microsoft.Docs.Build
 
         public static Error InvalidMonikerRange(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
-
-        public static Error UidMissing()
-            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
