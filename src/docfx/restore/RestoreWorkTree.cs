@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
                     {
-                        if (new DirectoryInfo(existingWorkTreeFolder).LastWriteTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
+                        if (new DirectoryInfo(existingWorkTreeFolder).LastAccessTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
                         {
                             Directory.Delete(existingWorkTreeFolder, true);
                         }

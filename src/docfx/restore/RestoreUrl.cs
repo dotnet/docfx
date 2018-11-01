@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var existingVersionPath in existingVersionPaths)
                     {
-                        if (new FileInfo(existingVersionPath).LastWriteTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
+                        if (new FileInfo(existingVersionPath).LastAccessTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
                         {
                             File.Delete(existingVersionPath);
                         }
