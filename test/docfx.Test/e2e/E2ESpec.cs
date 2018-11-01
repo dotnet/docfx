@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Commands = new[] { "restore", "build" };
 
+        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
+
         public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();
