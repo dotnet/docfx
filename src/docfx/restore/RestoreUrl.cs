@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreUrl
     {
-        private const int MaxVersionCount = 5;
+        public const int MaxKeepingDays = 10;
 
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
@@ -65,31 +65,21 @@ namespace Microsoft.Docs.Build
 
             await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
-                async () =>
+                () =>
                 {
                     var existingVersionPaths = Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
                                                .Select(f => PathUtility.NormalizeFile(f)).ToList();
 
-                    if (NeedCleanupVersions(existingVersionPaths.Count))
+                    foreach (var existingVersionPath in existingVersionPaths)
                     {
-                        await CleanupVersions(restoreDir, existingVersionPaths);
+                        if (new FileInfo(existingVersionPath).LastWriteTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
+                        {
+                            File.Delete(existingVersionPath);
+                        }
                     }
+
+                    return Task.CompletedTask;
                 });
-
-            bool NeedCleanupVersions(int versionCount) => versionCount > MaxVersionCount;
-
-            async Task CleanupVersions(string root, List<string> existingVersionPaths)
-            {
-                var inUseVersionPaths = await GetAllVersionPaths(root);
-
-                foreach (var existingVersionPath in existingVersionPaths)
-                {
-                    if (!inUseVersionPaths.Contains(existingVersionPath, PathUtility.PathComparer))
-                    {
-                        File.Delete(existingVersionPath);
-                    }
-                }
-            }
         }
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
@@ -112,26 +102,6 @@ namespace Microsoft.Docs.Build
                 throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
             }
             return tempFile;
-        }
-
-        private static async Task<HashSet<string>> GetAllVersionPaths(string restoreDir)
-        {
-            var allLocks = await RestoreLocker.LoadAll();
-            var versionPath = new HashSet<string>();
-
-            foreach (var restoreLock in allLocks)
-            {
-                foreach (var (href, version) in restoreLock.Url)
-                {
-                    var rootDir = GetRestoreRootDir(href);
-                    if (string.Equals(rootDir, restoreDir, PathUtility.PathComparison))
-                    {
-                        versionPath.Add(GetRestoreVersionPath(restoreDir, version));
-                    }
-                }
-            }
-
-            return versionPath;
         }
     }
 }
