@@ -34,7 +34,6 @@ target/
 *.sln.ide
 *.cache
 *.sln.metaproj
-.gitattributes
 .settings
 log.txt
 debugSettings.json
