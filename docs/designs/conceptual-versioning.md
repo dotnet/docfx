@@ -327,11 +327,21 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
                 "moniker1",
                 ...
             ],
-            "href": "{href}"
-            "children": [...]
+            "href": "{href}",
+            "children": [
+                {
+                    "toc_title": "title",
+                    "monikers": [
+                        "moniker1",
+                        ...
+                    ],
+                    "href": "{href}",
+                    "children": [...]
+                }
+            ]
         }
     ...,
-    ]
+    ],
     "metadata": {
         "monikers": [
             "moniker1",
@@ -375,7 +385,7 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
         },
         "files":[
             {
-                "siteUrl": "/{SitePath}",
+                "siteUrl": "{SitePath}",
                 "outputPath": "{outputPath}",
                 "sourcePath": "{sourcePath}",
                 "group": "{groupid}"
@@ -392,32 +402,30 @@ _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
 
 Moniker range itself cannot be interpreted, but within an ordered moniker list, moniker range can be simply evaluated to a list of monikers.
 
-we can get an ordered moniker list by the API set in config as `monikerDefinitionUrl`, the response structure should be:
+An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinitionUrl`, the file structure should be:
 
 ```json
-[
-    {
-        "monikerName": "{monikerName}",
-        "productName": "{productName}",
-        "order" : {order},
-        "productFamilyName": "{productFamilyName}",
-        "platform": "{platform}",
-        "displayName": "{displayName}"
-    },
-    ...
-]
-
+{
+    "monikers": [
+        {
+            "moniker": "{monikerName}",
+            "product": "{productName}",
+            "product_family": "{productFamilyName}",
+            "platform": "{platform}",
+            "display_name": "{displayName}"
+        },
+        ...
+    ]
+}
 ```
 
-1. `monikerName` is an unique identifier of this moniker. If two moniker define the same `monikerName`, an error throws.
+1. `moniker` is an unique identifier of this moniker. If two moniker define the same `monikerName`, an error throws.
 
-2. `productName` defines the product this moniker belongs to, and the operators in monikerRange will be interpreted inside the product it belongs to.
+2. `product` defines the product this moniker belongs to, and the operators in monikerRange will be interpreted inside the product it belongs to.
 
-3. `order` defines the order of this moniker in its product. If two moniker with same `productName` define the same `order`, an error throws.
+3. `product_family` and `platform` is the attributes of this product, which is used by portal to manage the monikers.
 
-4. `productFamilyName` and `platform` is the attributes of this product, which is used by the portal to 
-
-5. `displayName` is used by the template to display this product on docs page.
+4. `display_name` is used by the template to display this product on docs page.
 
 #### 4.2 Blank page
 
