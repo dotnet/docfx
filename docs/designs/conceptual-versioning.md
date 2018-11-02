@@ -440,12 +440,14 @@ In this case, there is no content under moniker `netcore-2.0`, when user view th
 
 To handle this case, we have to:
 
-1. Remove this moniker from the moniker range from this file's build result.
-1. Remove this moniker from the moniker range of this file in the Toc.
+1. Remove this moniker from the moniker range from this file's build result, and add it to the `blank_page_monikers` attributes.
+1. Remove this moniker from the moniker range of this file in the Toc, and add it to the `blank_page_monikers` attributes.
 
-After doing doing this,
+> For now, `blank_page_monikers` is just used for easily trouble shouting, it will not be consumed by DHS, but we will keep this attribute for the future using.
 
-1. User can not find this file in the Toc when they select the moniker of Toc as `netcore-2.0`.
+After doing this,
+
+1. This file will be hidden from the Toc when they select the moniker of Toc as `netcore-2.0`.
 1. If user access URL `{page_url}?view=netcore-2.0`, the DHS will fallback to `{page_url}?netcore-1.0`
 
 #### 4.3 Reference resolve
