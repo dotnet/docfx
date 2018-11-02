@@ -93,6 +93,10 @@ namespace Microsoft.Docs.Build
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
                     return (error, selfUrl + query + fragment, fragment, null);
                 }
+                if (string.IsNullOrEmpty(fragment))
+                {
+                    fragment = "#";
+                }
                 return (error, query + fragment, fragment, null);
             }
 
