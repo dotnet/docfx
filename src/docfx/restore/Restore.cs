@@ -44,12 +44,12 @@ namespace Microsoft.Docs.Build
 
                 await GCDocset(docsetPath);
 
-                async Task GCDocset(string docset)
+                async Task GCDocset(string docset, bool root = true)
                 {
                     if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var errors, out var config))
                     {
                         ReportErrors(report, errors);
-                        await GCOneDocset(config, GCDocset);
+                        await GCOneDocset(docset, config, childDocset => GCDocset(childDocset, false), root ? options.Locale : null);
                     }
                 }
             }
@@ -125,9 +125,9 @@ namespace Microsoft.Docs.Build
             return restoreLock;
         }
 
-        private static async Task GCOneDocset(Config config, Func<string, Task> gcChild)
+        private static async Task GCOneDocset(string docsetPath, Config config, Func<string, Task> gcChild, string locale)
         {
-            await RestoreGit.GC(config, gcChild);
+            await RestoreGit.GC(docsetPath, config, gcChild, locale);
 
             var restoreUrls = GetRestoreUrls(config.GetExternalReferences().Concat(config.Extend));
             await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>

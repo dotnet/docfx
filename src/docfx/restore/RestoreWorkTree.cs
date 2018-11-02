@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreWorkTree
     {
-        private const int MaxWorkTreeCount = 5;
+        private const int MaxKeepingDays = 10;
 
         public static string GetRestoreWorkTreeDir(string restoreDir, string workTreeHead)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
-                    var workTreeHead = await GitUtility.Revision(restorePath, rev);
+                    var workTreeHead = $"{await GitUtility.Revision(restorePath, rev)}-{rev}";
                     var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                     if (existingWorkTrees.TryAdd(workTreePath, 0))
                     {
@@ -85,59 +85,22 @@ namespace Microsoft.Docs.Build
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
                 async () =>
                 {
-                    var existingWorkTrees = await GitUtility.ListWorkTrees(restorePath, false);
-                    if (NeedCleanupWorkTrees(existingWorkTrees.Count))
+                    var existingWorkTreeFolders = Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                                               .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
+
+                    foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
                     {
-                        remainingWorkTrees = await CleanupWorkTrees(existingWorkTrees);
+                        if (new DirectoryInfo(existingWorkTreeFolder).LastAccessTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
+                        {
+                            Directory.Delete(existingWorkTreeFolder, true);
+                        }
                     }
+
+                    await GitUtility.PruneWorkTrees(restorePath);
+                    remainingWorkTrees = await GitUtility.ListWorkTrees(restorePath, false);
                 });
 
             return remainingWorkTrees;
-
-            bool NeedCleanupWorkTrees(int existingWorkTreeCount) => existingWorkTreeCount > MaxWorkTreeCount;
-
-            async Task<List<string>> CleanupWorkTrees(List<string> existingWorkTrees)
-            {
-                var allWorkTreesInUse = await GetAllWorkTreePaths(restoreDir);
-                var leftWorkTrees = new List<string>();
-                foreach (var workTree in existingWorkTrees)
-                {
-                    if (!allWorkTreesInUse.Contains(workTree))
-                    {
-                        // remove not used work tree
-                        Directory.Delete(workTree, true);
-                    }
-                    else
-                    {
-                        leftWorkTrees.Add(workTree);
-                    }
-                }
-                await GitUtility.PruneWorkTrees(restorePath);
-
-                return leftWorkTrees;
-            }
-        }
-
-        public static async Task<HashSet<string>> GetAllWorkTreePaths(string restoreDir)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(restoreDir));
-
-            var allLocks = await RestoreLocker.LoadAll();
-            var workTreePaths = new HashSet<string>();
-
-            foreach (var restoreLock in allLocks)
-            {
-                foreach (var (href, workTreeHead) in restoreLock.Git)
-                {
-                    var rootDir = RestoreGit.GetRestoreRootDir(href);
-                    if (string.Equals(rootDir, restoreDir, PathUtility.PathComparison))
-                    {
-                        workTreePaths.Add(GetRestoreWorkTreeDir(restoreDir, workTreeHead));
-                    }
-                }
-            }
-
-            return workTreePaths;
         }
     }
 }

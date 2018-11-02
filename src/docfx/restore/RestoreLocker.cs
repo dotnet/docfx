@@ -62,27 +62,6 @@ namespace Microsoft.Docs.Build
             return restore;
         }
 
-        public static async Task<List<RestoreLock>> LoadAll()
-        {
-            var restoreLocks = new ConcurrentBag<RestoreLock>();
-            await ParallelUtility.ForEach(Directory.EnumerateFiles(AppData.RestoreLockDir, "*", SearchOption.TopDirectoryOnly), async restoreLockFilePath =>
-            {
-                await ProcessUtility.RunInsideMutex(
-                Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
-                () =>
-                {
-                    if (File.Exists(restoreLockFilePath))
-                    {
-                        restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
-                    }
-
-                    return Task.CompletedTask;
-                });
-            });
-
-            return restoreLocks.ToList();
-        }
-
         public static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
