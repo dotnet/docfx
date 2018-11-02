@@ -18,6 +18,6 @@ namespace Microsoft.Docs.Build
         public string GetName() => GetXrefPropertyValue("name");
 
         public string GetXrefPropertyValue(string property)
-            => ExtensionData.TryGetValue(property, out var prop) && prop is JValue v && v.Value is string str ? str : null;
+            => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
     }
 }
