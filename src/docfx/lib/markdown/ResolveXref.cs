@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Markdig;
 using Markdig.Renderers.Html;
 using Markdig.Syntax.Inlines;
@@ -34,17 +35,16 @@ namespace Microsoft.Docs.Build
                              return new LiteralInline(raw);
                          }
 
-                         // TODO: Support advanced cross reference
-                         // e.g.: <a href="xref:System.String?displayProperty=fullName"/>
-                         var queries = HrefUtility.ParseQuery(query);
+                         var queries = HttpUtility.ParseQueryString(query);
+                         var displayProperty = queries["dispalyProperty"];
                          string content;
-                         if (queries.TryGetValue("displayProperty", out var displayProperty))
+                         if (displayProperty is null)
                          {
-                             content = xrefSpec.GetXrefPropertyValue(displayProperty);
+                             content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
                          }
                          else
                          {
-                             content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
+                             content = displayProperty;
                          }
                          return new LinkInline(xrefSpec.Href, null).AppendChild(new LiteralInline(content));
                      }

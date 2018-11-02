@@ -91,11 +91,7 @@ namespace Microsoft.Docs.Build
                     }
                     var selfUrl = HrefUtility.EscapeUrl(Document.PathToRelativeUrl(
                         Path.GetFileName(file.SitePath), file.ContentType, file.Schema, file.Docset.Config.Output.Json));
-                    return (error, selfUrl + query + fragment, fragment, null);
-                }
-                if (string.IsNullOrEmpty(fragment))
-                {
-                    fragment = "#";
+                    return (error, selfUrl + "?" + query + "#" + fragment, fragment, null);
                 }
                 return (error, query + fragment, fragment, null);
             }

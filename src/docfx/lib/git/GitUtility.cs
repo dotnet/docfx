@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
             var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
 
-            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
+            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment;
             var uri = new Uri(path);
             var url = uri.GetLeftPart(UriPartial.Path);
 

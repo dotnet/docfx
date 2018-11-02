@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -55,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public static DependencyType FragmentToDependencyType(string fragment)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
+            Debug.Assert(string.IsNullOrEmpty(fragment));
 
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
@@ -74,20 +73,6 @@ namespace Microsoft.Docs.Build
         public static string EscapeUrl(string path)
         {
             return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
-        }
-
-        public static Dictionary<string, string> ParseQuery(string query)
-        {
-            if (string.IsNullOrEmpty(query))
-                return new Dictionary<string, string>();
-
-            return query.Split('&').Select(item =>
-            {
-                var index = item.IndexOf('=');
-                var key = item.Substring(0, index);
-                var value = item.Substring(index + 1);
-                return (key, value);
-            }).ToDictionary(item => item.key, item => item.value);
         }
     }
 }

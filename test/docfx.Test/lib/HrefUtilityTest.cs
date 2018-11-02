@@ -67,16 +67,5 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(expected, HrefUtility.EscapeUrl(path));
         }
-
-        [Theory]
-        [InlineData("", "", "")]
-        [InlineData("displayProperty=fullName&view=netcore1.0", "displayProperty\nview", "fullName\nnetcore1.0")]
-        public static void ParseQuery(string query, string expectedKeys, string expectedValues)
-        {
-            var parsed = HrefUtility.ParseQuery(query);
-            var temp = parsed.Keys.ToArray();
-            Assert.Equal(expectedKeys, string.Join("\n", parsed.Keys));
-            Assert.Equal(expectedValues, string.Join("\n", parsed.Values));
-        }
     }
 }
