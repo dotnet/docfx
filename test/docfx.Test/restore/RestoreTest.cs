@@ -55,7 +55,7 @@ dependencies:
 
             foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
             {
-                Directory.SetLastAccessTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(RestoreWorkTree.MaxKeepingDays + 1));
+                Directory.SetLastAccessTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
             }
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -87,7 +87,7 @@ dependencies:
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
                 Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
                 File.WriteAllText(restorePath, $"{version}");
-                File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(RestoreUrl.MaxKeepingDays + 1));
+                File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;
             });
 

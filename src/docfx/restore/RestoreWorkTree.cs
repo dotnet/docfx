@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreWorkTree
     {
-        public const int MaxKeepingDays = 10;
+        private const int MaxKeepingDays = 10;
 
         public static string GetRestoreWorkTreeDir(string restoreDir, string workTreeHead)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));

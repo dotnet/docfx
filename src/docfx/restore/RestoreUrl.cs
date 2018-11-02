@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreUrl
     {
-        public const int MaxKeepingDays = 10;
+        private const int MaxKeepingDays = 10;
 
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
