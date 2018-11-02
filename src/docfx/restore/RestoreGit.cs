@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                progress: Progress.Update);
         }
 
-        private static List<(string restoreDir, List<string> hrefs)> GetGitDependencies(string docsetPath, Config config, string locale)
+        private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
         {
             var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
 
