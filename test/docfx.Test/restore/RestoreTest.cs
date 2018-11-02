@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,10 +41,10 @@ namespace Microsoft.Docs.Build
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep1: {gitUrl}#test-clean-1
-  dep2: {gitUrl}#test-clean-2
-  dep3: {gitUrl}#test-clean-3
-  dep4: {gitUrl}#test-clean-4
+  dep1: {gitUrl}#test-1-clean
+  dep2: {gitUrl}#test-2-clean
+  dep3: {gitUrl}#test-3-clean
+  dep4: {gitUrl}#test-4-clean
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
@@ -51,6 +52,11 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(6, workTreeList.Count);
+
+            foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
+            {
+                Directory.SetLastAccessTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
+            }
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -81,6 +87,7 @@ dependencies:
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
                 Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
                 File.WriteAllText(restorePath, $"{version}");
+                File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;
             });
 
