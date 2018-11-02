@@ -345,6 +345,17 @@ outputs:
   docs/a.json: |
     { "content": "<p><a href=\"b.md\">b</a></p>" }
 ---
+# log with default log level when docfx crashes, even the corresponding rule is turned off
+inputs:
+  docfx.yml: |
+    rules:
+      file-not-found: off
+    gitHub:
+      userCache: user_profile.json
+outputs:
+  build.log: |
+    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*"]
+---
 # Treat warnings as errors
 inputs:
   docfx.yml: |
