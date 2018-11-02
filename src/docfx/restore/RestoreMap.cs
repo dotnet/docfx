@@ -24,12 +24,17 @@ namespace Microsoft.Docs.Build
         _ =>
         {
             Debug.Assert(!string.IsNullOrEmpty(remote));
-            var (url, _) = GitUtility.GetGitRemoteInfo(remote);
+            var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
             var restoreDir = RestoreGit.GetRestoreRootDir(url);
+
+            if (!Directory.Exists(restoreDir))
+            {
+                throw Errors.NeedRestore(remote).ToException();
+            }
 
             var worktree = Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
                 .Select(f => PathUtility.NormalizeFolder(f))
-                .Where(f => f.EndsWith(".git/"))
+                .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
                 .OrderByDescending(f => new DirectoryInfo(f).LastAccessTimeUtc)
                 .FirstOrDefault();
 
@@ -56,6 +61,11 @@ namespace Microsoft.Docs.Build
 
                 // get the file path from restore map
                 var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+
+                if (!Directory.Exists(restoreDir))
+                {
+                    throw Errors.NeedRestore(path).ToException();
+                }
 
                 var file = Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
                 .OrderByDescending(f => new FileInfo(f).LastAccessTimeUtc)

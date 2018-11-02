@@ -140,13 +140,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true)
         {
             if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
                 throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
-            var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            var (errors, config) = LoadCore(docsetPath, configPath, options, extend);
             config.ConfigFileName = configFileName;
             return (errors, config);
         }
@@ -155,12 +155,12 @@ namespace Microsoft.Docs.Build
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true)
         {
             var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
             if (exists)
             {
-                (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+                (errors, config) = LoadCore(docsetPath, configPath, options, extend);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
+        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
             var errors = new List<Error>();
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, restoreMap ?? new RestoreMap(docsetPath));
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, new RestoreMap(docsetPath));
                 errors.AddRange(extendErrors);
             }
 

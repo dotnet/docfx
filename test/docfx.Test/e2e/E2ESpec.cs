@@ -21,7 +21,5 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
 }
