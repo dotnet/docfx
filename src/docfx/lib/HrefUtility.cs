@@ -23,11 +23,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = href.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = href.Substring(fragmentIndex + 1);
+                fragment = href.Substring(fragmentIndex);
                 var queryIndex = href.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex + 1, fragmentIndex - (queryIndex + 1));
+                    query = href.Substring(queryIndex, fragmentIndex - queryIndex);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = href.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex + 1);
+                    query = href.Substring(queryIndex);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public static DependencyType FragmentToDependencyType(string fragment)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment));
+            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }

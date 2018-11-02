@@ -35,17 +35,25 @@ namespace Microsoft.Docs.Build
                              return new LiteralInline(raw);
                          }
 
-                         var queries = HttpUtility.ParseQueryString(query);
-                         var displayProperty = queries["dispalyProperty"];
                          string content;
-                         if (displayProperty is null)
+                         if (!string.IsNullOrEmpty(query))
                          {
-                             content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
+                             var queries = HttpUtility.ParseQueryString(query.Substring(1));
+                             var displayProperty = queries["displayProperty"];
+                             if (displayProperty is null)
+                             {
+                                 content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
+                             }
+                             else
+                             {
+                                 content = xrefSpec.GetXrefPropertyValue(displayProperty);
+                             }
                          }
                          else
                          {
-                             content = displayProperty;
+                             content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
                          }
+
                          return new LinkInline(xrefSpec.Href, null).AppendChild(new LiteralInline(content));
                      }
                      return node;
