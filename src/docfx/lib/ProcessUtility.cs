@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -15,6 +16,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
+
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
@@ -155,6 +158,10 @@ namespace Microsoft.Docs.Build
         public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
+
+            // avoid the RunInsideMutex to be nested used
+            Debug.Assert(t_innerCall.Value == null);
+            t_innerCall.Value = new object();
 
             Directory.CreateDirectory(AppData.MutexDir);
 
