@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -23,11 +24,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = href.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = href.Substring(fragmentIndex);
+                fragment = href.Substring(fragmentIndex + 1);
                 var queryIndex = href.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex, fragmentIndex - queryIndex);
+                    query = href.Substring(queryIndex + 1, fragmentIndex - (queryIndex + 1));
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -40,7 +41,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = href.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = href.Substring(queryIndex);
+                    query = href.Substring(queryIndex + 1);
                     path = href.Substring(0, queryIndex);
                 }
                 else
@@ -73,6 +74,20 @@ namespace Microsoft.Docs.Build
         public static string EscapeUrl(string path)
         {
             return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
+        }
+
+        public static Dictionary<string, string> ParseQuery(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+                return new Dictionary<string, string>();
+
+            return query.Split('&').Select(item =>
+            {
+                var index = item.IndexOf('=');
+                var key = item.Substring(0, index);
+                var value = item.Substring(index + 1);
+                return (key, value);
+            }).ToDictionary(item => item.key, item => item.value);
         }
     }
 }

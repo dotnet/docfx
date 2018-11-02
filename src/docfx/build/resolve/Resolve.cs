@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
 
             if (redirectTo != null)
             {
-                return (error, relativeUrl + query + fragment, fragment, null);
+                return (error, relativeUrl + "?" + query + "#" + fragment, fragment, null);
             }
 
             // Pages outside build scope, don't build the file, use relative href
