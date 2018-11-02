@@ -80,6 +80,9 @@ namespace Microsoft.Docs.Build
                         await GitUtility.AddWorkTree(restorePath, rev, workTreePath);
                     }
 
+                    // update the last access time
+                    Directory.SetLastAccessTimeUtc(workTreePath, DateTime.UtcNow);
+
                     workTreeHeads.Add((href, workTreeHead));
                 });
             }
