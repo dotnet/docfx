@@ -10,7 +10,7 @@ This document specifies Docfx vnext versioning dev design.
 
 ##### For content writer
 
-1. Support expressing version constrains as [moniker range](#21-moniker-range)
+1. Support expressing version constrains as [moniker range](#21-moniker-range).
 
 2. Support moniker zone markdown syntax.
 
@@ -20,9 +20,9 @@ This document specifies Docfx vnext versioning dev design.
 
 ##### For content reader
 
-1. Support viewing page with specific version by query `?view={moniker}`.
+1. Support viewing page with specific version by query `?view={moniker}`. If the version is not existed, they should be redirected to some other version, but not get a `404` page.
 
-2. Support select Toc in available monikers.
+2. Support selecting Toc version in available versions.
 
 3. Prevent user to visit a [blank page](#42-blank-page) in different version.
 
@@ -279,8 +279,7 @@ For dynamic, the output path shares the same schema:
 _site/en-us/group-01ddf122/dotnet/api/system.string/index.html
 ```
 
-> `?` means optional.
-> When the file have no version, the output path will be `{output-dir}/{locale}?/{site-path}`  
+> `?` means optional. When the file have no version, the output path will be `{output-dir}/{locale}?/{site-path}`  
 > `monikerListHash` is the first 8 characters of the hash of this file's final moniker list, joined by whitespace.
 
 #### 3.2 Output content
