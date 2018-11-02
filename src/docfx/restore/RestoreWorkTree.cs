@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreWorkTree
     {
-        private const int MaxKeepingDays = 10;
-
         public static string GetRestoreWorkTreeDir(string restoreDir, string workTreeHead)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, workTreeHead));
 
@@ -86,42 +84,6 @@ namespace Microsoft.Docs.Build
 
             Debug.Assert(hrefs.Count == workTreeHeads.Count);
             return workTreeHeads.ToList();
-        }
-
-        // clean up un-used work trees
-        public static async Task<List<string>> CleanupWorkTrees(string restoreDir)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(restoreDir));
-
-            var remainingWorkTrees = new List<string>();
-
-            if (!GitUtility.IsRepo(restoreDir))
-            {
-                return remainingWorkTrees;
-            }
-
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
-
-            await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, restorePath)),
-                async () =>
-                {
-                    var existingWorkTreeFolders = Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                                               .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
-
-                    foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
-                    {
-                        if (new DirectoryInfo(existingWorkTreeFolder).LastAccessTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
-                        {
-                            Directory.Delete(existingWorkTreeFolder, true);
-                        }
-                    }
-
-                    await GitUtility.PruneWorkTrees(restorePath);
-                    remainingWorkTrees = await GitUtility.ListWorkTrees(restorePath, false);
-                });
-
-            return remainingWorkTrees;
         }
     }
 }

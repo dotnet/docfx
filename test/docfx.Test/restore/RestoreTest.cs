@@ -48,6 +48,7 @@ dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
+
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
@@ -66,6 +67,8 @@ dependencies:
             // run restore again to clean up
             // check the work trees
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
+
             workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(2, workTreeList.Count);
 
@@ -97,6 +100,7 @@ github:
 
             // run restore again to clean up
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
 
             Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
 

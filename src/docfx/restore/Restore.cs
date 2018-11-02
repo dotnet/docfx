@@ -37,22 +37,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-
-            using (Progress.Start("GC dependencies"))
-            {
-                var gcDocsets = new ConcurrentDictionary<string, int>(PathUtility.PathComparer);
-
-                await GCDocset(docsetPath);
-
-                async Task GCDocset(string docset, bool root = true)
-                {
-                    if (gcDocsets.TryAdd(docset, 0) && Config.LoadIfExists(docset, options, out var errors, out var config))
-                    {
-                        ReportErrors(report, errors);
-                        await GCOneDocset(docset, config, childDocset => GCDocset(childDocset, false), root ? options.Locale : null);
-                    }
-                }
-            }
         }
 
         public static string GetRestoreRootDir(string url, string root)
@@ -123,17 +107,6 @@ namespace Microsoft.Docs.Build
             restoreLock.Url = restoreUrlMappings.ToDictionary(k => k.Key, v => v.Value);
 
             return restoreLock;
-        }
-
-        private static async Task GCOneDocset(string docsetPath, Config config, Func<string, Task> gcChild, string locale)
-        {
-            await RestoreGit.GC(docsetPath, config, gcChild, locale);
-
-            var restoreUrls = GetRestoreUrls(config.GetExternalReferences().Concat(config.Extend));
-            await ParallelUtility.ForEach(restoreUrls, async restoreUrl =>
-            {
-                await RestoreUrl.GC(restoreUrl);
-            });
         }
     }
 }

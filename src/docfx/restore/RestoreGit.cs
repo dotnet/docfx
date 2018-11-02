@@ -49,23 +49,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static async Task GC(string docsetPath, Config config, Func<string, Task> gcChild, string locale)
-        {
-            var restoreDirs = GetRestoreItems(docsetPath, config, locale).Select(i => i.restoreDir);
-
-            await ParallelUtility.ForEach(
-               restoreDirs,
-               async restoreDir =>
-               {
-                   var leftWorkTrees = await RestoreWorkTree.CleanupWorkTrees(restoreDir);
-                   foreach (var leftWorkTree in leftWorkTrees)
-                   {
-                       await gcChild(leftWorkTree);
-                   }
-               },
-               progress: Progress.Update);
-        }
-
         private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
         {
             // restore dependency repositories

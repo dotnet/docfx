@@ -59,6 +59,10 @@ namespace Microsoft.Docs.Build
                             await Build.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report);
                             break;
+                        case "gc":
+                            await GarbageCollector.Collect(options.NotAccessedDays);
+                            Done(stopwatch.Elapsed, report);
+                            break;
                     }
                     return 0;
                 }
@@ -98,6 +102,11 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("github-token", ref options.GitHubToken, "The GitHub token used to get contribution information from GitHub API");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+
+                // GC command
+                // usage: docfx gc [-d/--days days]
+                syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
+                syntax.DefineOption("d|days", ref options.NotAccessedDays, "Collect files not accessed for <d> days");
             });
 
             return (command, docset, options);
