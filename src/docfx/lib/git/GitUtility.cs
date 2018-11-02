@@ -20,10 +20,10 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        internal static readonly AsyncLocal<IReadOnlyDictionary<string, string>> MockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
-
         private static readonly char[] s_newline = new[] { '\r', '\n' };
         private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
+
+        internal static Func<string, string> GitRemoteProxy;
 
         /// <summary>
         /// Get the git remote information from remote href
@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
+        /// <param name="commitHash">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
         public static Task AddWorkTree(string cwd, string commitHash, string path)
             => ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitHash}");
@@ -211,11 +211,10 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            // Fetch from local file system if we are using a mock repo for testing
-            var mockedRepos = MockedRepos.Value;
-            if (mockedRepos != null && mockedRepos.TryGetValue(url, out var mockedLocation))
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
             {
-                url = mockedLocation;
+                url = GitRemoteProxy(url);
             }
 
             var httpConfig = GetGitCommandLineConfig(url, config);

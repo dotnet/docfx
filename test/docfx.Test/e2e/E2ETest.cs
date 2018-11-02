@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -20,6 +21,21 @@ namespace Microsoft.Docs.Build
     public static class E2ETest
     {
         public static readonly TheoryData<string> Specs = FindTestSpecs();
+
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_mockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+
+        static E2ETest()
+        {
+            GitUtility.GitRemoteProxy = remote =>
+            {
+                var mockedRepos = t_mockedRepos.Value;
+                if (mockedRepos != null && mockedRepos.TryGetValue(remote, out var mockedLocation))
+                {
+                    return mockedLocation;
+                }
+                return remote;
+            };
+        }
 
         [Theory]
         [MemberData(nameof(Specs))]
@@ -33,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                GitUtility.MockedRepos.Value = mockedRepos;
+                t_mockedRepos.Value = mockedRepos;
 
                 var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                     os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
@@ -49,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                GitUtility.MockedRepos.Value = null;
+                t_mockedRepos.Value = null;
             }
         }
 
@@ -186,7 +202,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        GitUtility.MockedRepos.Value = mockedRepos;
+                        t_mockedRepos.Value = mockedRepos;
 
                         var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
                         await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
@@ -194,7 +210,7 @@ namespace Microsoft.Docs.Build
                     }
                     finally
                     {
-                        GitUtility.MockedRepos.Value = null;
+                        t_mockedRepos.Value = null;
                     }
                 }
 
