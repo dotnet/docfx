@@ -13,7 +13,6 @@ outputs:
       "content": { "title": "my title" },
       "metadata": { "key": "value" }
     }
-  build.manifest:
 ---
 # Support schema documents in JSON format
 inputs:
@@ -30,7 +29,6 @@ outputs:
       "content": { "title": "my title" },
       "metadata": { "key": "value" }
     }
-  build.manifest:
 ---
 # Throw error when schema is not specified
 inputs:
@@ -38,7 +36,6 @@ inputs:
   docs/a.yml: |
     title: my title
 outputs:
-  build.manifest:
   build.log: |
    ["error","schema-not-found","Unknown schema ''","docs/a.yml"]
 ---
@@ -54,7 +51,6 @@ outputs:
     {
       "content": { "title": "my title" }
     }
-  build.manifest:
 ---
 # Support schema documents with Href content
 inputs:
@@ -68,12 +64,12 @@ inputs:
     breadcrumb_path: TOC.yml
     toc_rel: ../TOC.yml
 outputs:
-  docs/TOC.json:
+  docs/toc.json:
   docs/a.json: |
     {
-      "content": { "brand": "azure", "breadcrumb_path": "TOC.json", "toc_rel": "../TOC.json" },
+      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
     }
-  build.manifest: |
+build.manifest: |
     {  
        "dependencies":{  
           "docs/a.yml":[  
@@ -101,10 +97,21 @@ inputs:
     breadcrumb_path: {}
     toc_rel: ../TOC.yml
 outputs:
-  docs/TOC.json:
-  build.manifest:
+  docs/toc.json:
   build.log: |
     ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
+---
+# Schema documents with Href content referencing resource file, the resouce file should be outputed
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    Href: image.png
+  docs/image.png:
+outputs:
+  docs/a.json: |
+    {"content": {"href": "image.png"}}
+  docs/image.png:
 ---
 # Support schema documents with Markdown content
 inputs:
@@ -117,7 +124,6 @@ outputs:
   docs/index.json: |
     { "content": { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" } }
   docs/a.json:
-  build.manifest:
 ---
 # Markdown content with null value
 inputs:
@@ -126,7 +132,6 @@ inputs:
     #YamlMime:TestPage
     description:
 outputs:
-  build.manifest:
   docs/a.json: |
     { "content": {} }
   build.log: |
@@ -147,7 +152,6 @@ inputs:
 
       ## Not heading
 outputs:
-  build.manifest:
   docs/a.json: |
     { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
 ---
@@ -162,7 +166,6 @@ outputs:
   docs/a.json: |
     { "content": { "html": "link <a href=\"b\"></a> " } }
   docs/b.json:
-  build.manifest:
 ---
 # Support schema documents with href content
 inputs:
@@ -175,7 +178,6 @@ outputs:
   docs/a.json: |
     { "content": { "href": "b" } }
   docs/b.json:
-  build.manifest:
 ---
 # Output data schema to json, output page schema to html
 inputs:
@@ -191,7 +193,6 @@ outputs:
     { "content": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
   docs/data.json:
   docs/page.json:
-  build.manifest:
 ---
 # Markdown field with heading should not be removed
 inputs:
@@ -208,7 +209,6 @@ outputs:
     {
       "content": { "description": "<h1 id=\"heading\">Heading</h1>" }
     }
-  build.manifest:
 ---
 # Show yaml, json syntax error
 inputs:
@@ -222,5 +222,4 @@ outputs:
   build.log: |
     ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml","",2,5]
     ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json","",2]
-  build.manifest:
 ---

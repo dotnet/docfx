@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,21 +28,35 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("README.md")]
-        public static void GetCommitsSameAsGitExe(string file)
+        public static async Task GetCommitsSameAsGitExe(string file)
         {
             Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
 
             var repo = GitUtility.FindRepo(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            var pathToRepo = PathUtility.NormalizeFile(file);
+            using (var commitsProvider = await GitCommitProvider.Create(repo))
+            {
+                var pathToRepo = PathUtility.NormalizeFile(file);
 
-            var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
-            var lib = GitUtility.GetCommits(repo, new List<string> { pathToRepo }).commitsByFile[0].ToList();
+                // current branch
+                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
+                var lib = commitsProvider.GetCommitHistory(pathToRepo);
 
-            Assert.Equal(
-                exe.Replace("\r", ""),
-                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+                Assert.Equal(
+                    exe.Replace("\r", ""),
+                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+
+                // another branch
+                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" origin/test -- \"{pathToRepo}\"", repo);
+                lib = commitsProvider.GetCommitHistory(pathToRepo, "test");
+
+                Assert.Equal(
+                    exe.Replace("\r", ""),
+                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+
+                await commitsProvider.SaveCache();
+            }
         }
 
         [Fact]
@@ -59,7 +72,6 @@ namespace Microsoft.Docs.Build
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
-            p.WaitForExit();
             return p.StandardOutput.ReadToEnd().Trim();
         }
     }

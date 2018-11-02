@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -56,10 +57,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
 
         [ThreadStatic]
-        private static List<Error> t_schemaViolationErrors;
-
-        [ThreadStatic]
-        private static Func<IEnumerable<DataTypeAttribute>, object, string, object> t_transform;
+        private static ImmutableStack<Status> t_status;
 
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
@@ -125,17 +123,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static T ReadJsonFile<T>(string path)
-        {
-            var (_, result) = Deserialize<T>(File.ReadAllText(path));
-            return result;
-        }
-
-        public static void WriteJsonFile(string path, object value)
-        {
-            File.WriteAllText(path, Serialize(value));
-        }
-
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
@@ -186,8 +173,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             try
             {
-                t_transform = transform;
-                t_schemaViolationErrors = new List<Error>();
+                var status = new Status
+                {
+                    SchemaViolationErrors = new List<Error>(),
+                    Transform = transform,
+                };
+                t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
                 token.ReportUnknownFields(errors, type);
                 var serializer = new JsonSerializer
@@ -197,13 +188,12 @@ namespace Microsoft.Docs.Build
                 };
                 serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
-                errors.AddRange(t_schemaViolationErrors);
+                errors.AddRange(t_status.Peek().SchemaViolationErrors);
                 return (errors, value);
             }
             finally
             {
-                t_transform = null;
-                t_schemaViolationErrors = null;
+                t_status = t_status.Pop();
             }
 
             void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
@@ -279,6 +269,23 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
+        {
+            value = null;
+            if (obj == null || string.IsNullOrEmpty(key))
+            {
+                return false;
+            }
+
+            if (obj.TryGetValue(key, out var valueToken) && valueToken is T valueT)
+            {
+                value = valueT;
+                return true;
+            }
+
+            return false;
         }
 
         private static (Range, string message, string path) ParseException(Exception ex)
@@ -501,12 +508,19 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception e)
                     {
-                        t_schemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                        t_status.Peek().SchemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
                     }
                 }
 
-                return t_transform != null ? t_transform(_attributes, value, reader.Path) : value;
+                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
             }
+        }
+
+        private sealed class Status
+        {
+            public List<Error> SchemaViolationErrors { get; set; }
+
+            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
         }
     }
 }

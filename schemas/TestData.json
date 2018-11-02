@@ -14,6 +14,9 @@
     "summary": {
       "type": "string"
     },
+    "inlineDescription": {
+      "type": "string"
+    },
     "uid": {
       "type": "string"
     },

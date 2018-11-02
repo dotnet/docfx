@@ -11,24 +11,27 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContributionInfo
+    internal class ContributionProvider
     {
         private readonly GitHubUserCache _gitHubUserCache;
 
-        private readonly IReadOnlyDictionary<string, DateTime> _updateTimeByCommit;
+        private readonly Dictionary<string, DateTime> _updateTimeByCommit = new Dictionary<string, DateTime>();
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private readonly IReadOnlyDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile;
+        private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
 
-        public ContributionInfo(Docset docset, GitHubUserCache gitHubUserCache)
+        private ContributionProvider(GitHubUserCache gitHubUserCache)
         {
             _gitHubUserCache = gitHubUserCache;
-            _commitsByFile = LoadCommits(docset);
-            _updateTimeByCommit = string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime)
-               ? new Dictionary<string, DateTime>()
-               : JsonUtility.ReadJsonFile<GitCommitsTime>(
-                   docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, docset.Config.Contribution.GitCommitsTime)).ToDictionary();
+        }
+
+        public static async Task<ContributionProvider> Create(Docset docset, GitHubUserCache cache)
+        {
+            var result = new ContributionProvider(cache);
+            await result.LoadCommits(docset);
+            await result.LoadCommitsTime(docset);
+            return result;
         }
 
         public async Task<(List<Error> error, Contributor author, List<Contributor> contributors, DateTime updatedAt)> GetAuthorAndContributors(
@@ -128,7 +131,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
-            var (repo, pathToRepo, _) = GetRepository(document);
+            var (repo, pathToRepo) = GetRepository(document);
             if (repo == null)
                 return default;
 
@@ -168,28 +171,38 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
 
-                // git edit url, only works for github repo
-                var (editRemote, eidtBranch) = !string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) ? GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository) : (repo.Remote, repo.Branch);
-                var editRemoteWithLocale = LocalizationConvention.GetLocalizationRepo(document.Docset.Config.LocalizationMapping, editRemote, document.Docset.Locale, document.Docset.Config.DefaultLocale);
-
-                if (GitHubUtility.TryParse(editRemoteWithLocale, out _, out _))
+                // only loc docset document can be built, so the current repo is loc repo
+                var (locRemote, locBranch) = (repo.Remote, repo.Branch);
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    return $"{editRemoteWithLocale}/blob/{eidtBranch}/{pathToRepo}";
+                    (locRemote, locBranch) = GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository);
+                    (locRemote, _) = LocalizationConvention.GetLocalizationRepo(
+                        document.Docset.Config.Localization.Mapping,
+                        document.Docset.Config.Localization.Bilingual,
+                        locRemote,
+                        locBranch,
+                        document.Docset.Locale,
+                        document.Docset.Config.Localization.DefaultLocale);
+                }
+
+                // git edit url, only works for github repo
+                if (GitHubUtility.TryParse(locRemote, out _, out _))
+                {
+                    return $"{locRemote}/blob/{locBranch}/{pathToRepo}";
                 }
 
                 return null;
             }
         }
 
-        private (Repository repo, string pathToRepo, bool isDocsetRepo) GetRepository(Document document)
+        private (Repository repo, string pathToRepo) GetRepository(Document document)
         {
             var fullPath = PathUtility.NormalizeFile(Path.Combine(document.Docset.DocsetPath, document.FilePath));
             var repo = GetRepository(fullPath);
             if (repo == null)
                 return default;
 
-            var isDocsetRepo = document.Docset.DocsetPath.StartsWith(repo.Path, PathUtility.PathComparison);
-            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)), isDocsetRepo);
+            return (repo, PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath)));
         }
 
         private Repository GetRepository(string path)
@@ -203,35 +216,54 @@ namespace Microsoft.Docs.Build
                 : null;
         }
 
-        private Dictionary<string, (Repository, List<GitCommit> commits)> LoadCommits(Docset docset)
+        private async Task LoadCommitsTime(Docset docset)
+        {
+            if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
+            {
+                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var content = await ProcessUtility.ReadFile(path);
+
+                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
+                {
+                    _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
+                }
+            }
+        }
+
+        private async Task LoadCommits(Docset docset)
         {
             var errors = new List<Error>();
-            var result = new Dictionary<string, (Repository, List<GitCommit> commits)>();
 
             if (docset.Config.Contribution.ShowContributors)
             {
+                var bilingual = docset.FallbackDocset != null && docset.Config.Localization.Bilingual;
                 var filesByRepo =
                     from file in docset.BuildScope
                     where file.ContentType == ContentType.Page
                     let fileInRepo = GetRepository(file)
                     where fileInRepo.repo != null
-                    group (file, fileInRepo.pathToRepo) by fileInRepo.repo;
+                    group (file, fileInRepo.pathToRepo)
+                    by fileInRepo.repo;
 
                 foreach (var group in filesByRepo)
                 {
-                    var pathToDocset = group.Select(pair => pair.file.FilePath).ToList();
-                    var pathToRepo = group.Select(pair => pair.pathToRepo).ToList();
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var (commitsByFile, allCommits) = GitUtility.GetCommits(repoPath, pathToRepo);
-                    for (var i = 0; i < pathToDocset.Count; i++)
+                    var repoBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
+                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
+
+                    using (Progress.Start($"Loading commits for '{repoPath}'"))
+                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, commitCachePath))
                     {
-                        result.Add(pathToDocset[i], (group.Key, commitsByFile[i]));
+                        ParallelUtility.ForEach(
+                            group,
+                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo, repoBranch)),
+                            Progress.Update);
+
+                        await commitsProvider.SaveCache();
                     }
                 }
             }
-
-            return result;
         }
 
         private enum GitHost

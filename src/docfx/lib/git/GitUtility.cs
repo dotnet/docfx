@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
+using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
 {
@@ -68,6 +71,39 @@ namespace Microsoft.Docs.Build
             var gitPath = Path.Combine(path, ".git");
 
             return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
+        }
+
+        /// <summary>
+        /// Retrieve git repo information.
+        /// </summary>
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        {
+            var (remote, branch, commit) = default((string, string, string));
+
+            if (git_repository_open(out var pRepo, repoPath) != 0)
+            {
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
+
+            if (git_remote_lookup(out var pRemote, pRepo, "origin") == 0)
+            {
+                remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                git_remote_free(pRemote);
+            }
+
+            if (git_repository_head(out var pHead, pRepo) == 0)
+            {
+                commit = git_reference_target(pHead)->ToString();
+                if (git_branch_name(out var pName, pHead) == 0)
+                {
+                    branch = Marshal.PtrToStringUTF8(pName);
+                }
+                git_reference_free(pHead);
+            }
+
+            git_repository_free(pRepo);
+
+            return (remote, branch, commit);
         }
 
         /// <summary>
@@ -137,10 +173,10 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
+        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitHash, string path)
-            => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
+        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+            => ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh}");
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
@@ -186,7 +222,7 @@ namespace Microsoft.Docs.Build
             {
                 return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
             }
-            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
+            catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
             }

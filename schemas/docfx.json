@@ -122,6 +122,26 @@
         }
       }
     },
+    "LocalizationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultLocale": {
+          "type": "string"
+        },
+        "mapping": {
+          "type": "string",
+          "enum": [
+            "repository",
+            "folder",
+            "repositoryAndFolder"
+          ]
+        },
+        "bilingual": {
+          "type": "boolean"
+        }
+      }
+    },
     "OutputConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -136,6 +156,9 @@
           "type": "boolean"
         },
         "uglifyUrl": {
+          "type": "boolean"
+        },
+        "lowerCaseUrl": {
           "type": "boolean"
         },
         "copyResources": {
@@ -166,9 +189,6 @@
       "type": "string"
     },
     "name": {
-      "type": "string"
-    },
-    "defaultLocale": {
       "type": "string"
     },
     "content": {
@@ -247,22 +267,14 @@
     "warningsAsErrors": {
       "type": "boolean"
     },
-    "buildInternalXrefMap": {
-      "type": "boolean"
-    },
     "xref": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "localizationMapping": {
-      "type": "string",
-      "enum": [
-        "repository",
-        "folder",
-        "repositoryAndFolder"
-      ]
+    "localization": {
+      "$ref": "#/definitions/LocalizationConfig"
     }
   }
 }

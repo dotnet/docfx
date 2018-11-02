@@ -12,10 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private const string DefaultLocaleStr = "en-us";
-        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
-
         /// <summary>
         /// Gets the default product name
         /// </summary>
@@ -27,14 +23,9 @@ namespace Microsoft.Docs.Build
         public readonly string Name = string.Empty;
 
         /// <summary>
-        /// Gets the default locale of this docset.
-        /// </summary>
-        public readonly string DefaultLocale = DefaultLocaleStr;
-
-        /// <summary>
         /// Gets the contents that are managed by this docset.
         /// </summary>
-        public readonly FileConfig Content = new FileConfig(s_defaultContentInclude, s_defaultContentExclude);
+        public readonly FileConfig Content = new FileConfig();
 
         /// <summary>
         /// Gets the output config.
@@ -119,20 +110,15 @@ namespace Microsoft.Docs.Build
         public readonly bool WarningsAsErrors;
 
         /// <summary>
-        /// Gets whether to build internal xref map
-        /// </summary>
-        public readonly bool BuildInternalXrefMap;
-
-        /// <summary>
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
         public readonly string[] Xref = Array.Empty<string>();
 
         /// <summary>
-        /// The mapping between source files and localized files
+        /// The configurations for localization build
         /// </summary>
-        public readonly LocalizationMapping LocalizationMapping;
+        public readonly LocalizationConfig Localization = new LocalizationConfig();
 
         /// <summary>
         /// Gets the config file name.
@@ -215,7 +201,7 @@ namespace Microsoft.Docs.Build
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath, restoreMap ?? new RestoreMap(docsetPath));
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, restoreMap ?? new RestoreMap(docsetPath));
                 errors.AddRange(extendErrors);
             }
 
@@ -250,7 +236,7 @@ namespace Microsoft.Docs.Build
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
-        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath, RestoreMap restoreMap)
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
         {
             var result = new JObject();
             var errors = new List<Error>();
@@ -258,7 +244,7 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(docsetPath, globalConfigPath);
+                var filePath = restoreMap.GetUrlRestorePath(globalConfigPath);
                 (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
@@ -268,7 +254,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var filePath = restoreMap.GetUrlRestorePath(docsetPath, str);
+                        var filePath = restoreMap.GetUrlRestorePath(str);
                         var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
                         result.Merge(extendConfigObject, JsonUtility.MergeSettings);
@@ -284,10 +270,15 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(locale))
             {
-                if (config.TryGetValue(ConfigConstants.DefaultLocale, out var defaultLocale) && defaultLocale is JValue defaultLocaleValue)
-                    locale = defaultLocaleValue.Value<string>();
+                if (config.TryGetValue<JObject>(ConfigConstants.Localization, out var localizationConfig) &&
+                    localizationConfig.TryGetValue<JValue>(ConfigConstants.DefaultLocale, out var defaultLocale))
+                {
+                    locale = defaultLocale.Value<string>();
+                }
                 else
-                    locale = DefaultLocaleStr;
+                {
+                    locale = LocalizationConfig.DefaultLocaleStr;
+                }
             }
 
             var result = new JObject();

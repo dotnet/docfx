@@ -54,7 +54,18 @@ namespace Microsoft.Docs.Build
         [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
         [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization")]
         [InlineData(LocalizationMapping.RepositoryAndFolder, "https://test.visualstudio.com/_git/TripleCrown.Backend.zh-cn", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.localization")]
-        public static void LocConfigConventionEditRepoName(LocalizationMapping locMappingType, string sourceName, string locale, string locName)
-            => Assert.Equal(locName, LocalizationConvention.GetLocalizationRepo(locMappingType, sourceName, locale, "en-us"));
+        public static void LocConfigConventionRepoRemote(LocalizationMapping locMappingType, string sourceName, string locale, string locName)
+            => Assert.Equal(locName, LocalizationConvention.GetLocalizationRepo(locMappingType, false, sourceName, "master", locale, "en-us").remote);
+
+        [Theory]
+        [InlineData(LocalizationMapping.Folder, true, "master", "zh-cn", "master")]
+        [InlineData(LocalizationMapping.Repository, true, "", "zh-cn", "")]
+        [InlineData(LocalizationMapping.Repository, true, null, "zh-cn", null)]
+        [InlineData(LocalizationMapping.Repository, false, "master", "zh-cn", "master")]
+        [InlineData(LocalizationMapping.Repository, false, "master", "en-us", "master")]
+        [InlineData(LocalizationMapping.Repository, true, "master", "zh-cn", "master-sxs")]
+        [InlineData(LocalizationMapping.RepositoryAndFolder, true, "master", "zh-cn", "master-sxs")]
+        public static void LocConfigConventionRepoBranch(LocalizationMapping locMappingType, bool enableBilingual, string sourceBranch, string locale, string targetBranch)
+            => Assert.Equal(targetBranch, LocalizationConvention.GetLocalizationRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
     }
 }
