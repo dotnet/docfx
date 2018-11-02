@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool enableBilingual, string remote, string branch, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
             if (mapping != LocalizationMapping.Repository && mapping != LocalizationMapping.RepositoryAndFolder)
             {
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             }
 
             var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
-            var newBranch = enableBilingual ? $"{branch}-sxs" : branch;
+            var newBranch = bilingual ? $"{branch}-sxs" : branch;
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))

@@ -220,6 +220,7 @@ namespace Microsoft.Docs.Build
             var httpConfig = GetGitCommandLineConfig(url, config);
             var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
 
+            // TODO: handle branch not found error
             return ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
         }
 
