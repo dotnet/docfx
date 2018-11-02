@@ -34,26 +34,12 @@ namespace Microsoft.Docs.Build
                              return new LiteralInline(raw);
                          }
 
-                         string display;
-                         var content = string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName();
+                         string displayPropertyName = "name";
                          if (!string.IsNullOrEmpty(query))
                          {
-                             var queries = HttpUtility.ParseQueryString(query.Substring(1));
-                             var displayProperty = queries["displayProperty"];
-                             if (!string.IsNullOrEmpty(displayProperty))
-                             {
-                                 display = xrefSpec.GetXrefPropertyValue(displayProperty);
-                             }
-                             else
-                             {
-                                 display = content;
-                             }
+                             displayPropertyName = HttpUtility.ParseQueryString(query.Substring(1))?["displayProperty"] ?? "name";
                          }
-                         else
-                         {
-                             display = content;
-                         }
-
+                         string display = xrefSpec.GetXrefPropertyValue(displayPropertyName) ?? uid;
                          return new LinkInline(xrefSpec.Href, null).AppendChild(new LiteralInline(display));
                      }
                      return node;
