@@ -162,7 +162,11 @@ namespace Microsoft.Docs.Build
             // avoid the RunInsideMutex to be nested used
             // doesn't support to require a lock before releasing a lock
             // which may cause deadlock
-            Debug.Assert(t_innerCall.Value == null);
+            if (t_innerCall.Value != null)
+            {
+                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
+            }
+
             t_innerCall.Value = new object();
 
             try
