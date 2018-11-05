@@ -12,11 +12,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly Dictionary<string, MonikerProductInfo> _monikerProductInfoDictionary;
 
-        public EvaluatorWithMonikersVisitor(IEnumerable<Moniker> monikers)
+        public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
-            Debug.Assert(monikers != null);
+            Debug.Assert(monikerDefinition != null);
 
-            _monikerProductInfoDictionary = InitializeMonikers(monikers);
+            _monikerProductInfoDictionary = InitializeMonikers(monikerDefinition.Monikers);
         }
 
         public IEnumerable<string> Visit(ComparatorExpression expression)
@@ -63,29 +63,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
+        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<MonikerSpec> monikers)
         {
             var monikerName = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var productNameDictionary = new Dictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
+            var productNameDictionary = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var moniker in monikers)
+            foreach (var monikerSpec in monikers)
             {
-                if (monikerName.Contains(moniker.MonikerName))
+                if (monikerName.Contains(monikerSpec.Moniker))
                 {
-                    throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
+                    throw Errors.MonikerNameConflict(monikerSpec.Moniker).ToException();
                 }
                 else
                 {
-                    monikerName.Add(moniker.MonikerName);
+                    monikerName.Add(monikerSpec.Moniker);
 
-                    List<Moniker> list;
-                    if (productNameDictionary.TryGetValue(moniker.ProductName, out list))
+                    List<string> list;
+                    if (productNameDictionary.TryGetValue(monikerSpec.Product, out list))
                     {
-                        list.Add(moniker);
+                        list.Add(monikerSpec.Moniker);
                     }
                     else
                     {
-                        productNameDictionary[moniker.ProductName] = new List<Moniker> { moniker };
+                        productNameDictionary[monikerSpec.Product] = new List<string> { monikerSpec.Moniker };
                     }
                 }
             }
@@ -93,16 +93,12 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, MonikerProductInfo>();
             foreach (var productMonikerList in productNameDictionary.Values)
             {
-                var orderedMonikerNameList = productMonikerList
-                    .OrderBy(m => m.Order)
-                    .Select(m => m.MonikerName)
-                    .ToList();
-                for (var i = 0; i < orderedMonikerNameList.Count(); i++)
+                for (var i = 0; i < productMonikerList.Count(); i++)
                 {
-                    result[orderedMonikerNameList[i]] = new MonikerProductInfo
+                    result[productMonikerList[i]] = new MonikerProductInfo
                     {
                         Index = i,
-                        OrderedProductMonikerNames = orderedMonikerNameList,
+                        OrderedProductMonikerNames = productMonikerList,
                     };
                 }
             }
