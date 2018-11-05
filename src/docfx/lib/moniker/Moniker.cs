@@ -6,18 +6,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikerSpec
+    internal class Moniker
     {
         [JsonRequired]
-        public string Moniker { get; set; }
+        public string Name { get; set; }
 
         [JsonRequired]
         public string Product { get; set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
-
-        public string GetMonikerPropertyValue(string property)
-            => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
     }
 }

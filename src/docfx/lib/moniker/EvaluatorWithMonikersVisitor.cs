@@ -63,29 +63,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<MonikerSpec> monikers)
+        private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
         {
-            var monikerName = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var monikerNameList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var productNameDictionary = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var monikerSpec in monikers)
+            foreach (var moniker in monikers)
             {
-                if (monikerName.Contains(monikerSpec.Moniker))
+                if (monikerNameList.Contains(moniker.Name))
                 {
-                    throw Errors.MonikerNameConflict(monikerSpec.Moniker).ToException();
+                    throw Errors.MonikerNameConflict(moniker.Name).ToException();
                 }
                 else
                 {
-                    monikerName.Add(monikerSpec.Moniker);
+                    monikerNameList.Add(moniker.Name);
 
                     List<string> list;
-                    if (productNameDictionary.TryGetValue(monikerSpec.Product, out list))
+                    if (productNameDictionary.TryGetValue(moniker.Product, out list))
                     {
-                        list.Add(monikerSpec.Moniker);
+                        list.Add(moniker.Name);
                     }
                     else
                     {
-                        productNameDictionary[monikerSpec.Product] = new List<string> { monikerSpec.Moniker };
+                        productNameDictionary[moniker.Product] = new List<string> { moniker.Name };
                     }
                 }
             }

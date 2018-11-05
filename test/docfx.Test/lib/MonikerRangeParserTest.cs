@@ -14,34 +14,34 @@ namespace Microsoft.Docs.Build
         {
             Monikers =
             {
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "netcore-1.0",
+                    Name = "netcore-1.0",
                     Product = ".NET Core",
                 },
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "netcore-2.0",
+                    Name = "netcore-2.0",
                     Product = ".NET Core",
                 },
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "netcore-3.0",
+                    Name = "netcore-3.0",
                     Product = ".NET Core",
                 },
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "dotnet-1.0",
+                    Name = "dotnet-1.0",
                     Product = ".NET Framework",
                 },
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "dotnet-2.0",
+                    Name = "dotnet-2.0",
                     Product = ".NET Framework",
                 },
-                new MonikerSpec
+                new Moniker
                 {
-                    Moniker = "dotnet-3.0",
+                    Name = "dotnet-3.0",
                     Product = ".NET Framework",
                 },
             }
@@ -105,19 +105,19 @@ namespace Microsoft.Docs.Build
             {
                 Monikers =
                 {
-                    new MonikerSpec
+                    new Moniker
                     {
-                        Moniker = "netcore-1.0",
+                        Name = "netcore-1.0",
                         Product = ".NET Core",
                     },
-                    new MonikerSpec
+                    new Moniker
                     {
-                        Moniker = "netcore-1.0",
+                        Name = "netcore-1.0",
                         Product = ".NET Core",
                     },
-                   new MonikerSpec
+                   new Moniker
                     {
-                        Moniker = "netcore-2.0",
+                        Name = "netcore-2.0",
                         Product = ".NET Core",
                     },
                 }
@@ -126,6 +126,15 @@ namespace Microsoft.Docs.Build
             var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(monikerDefinition));
             Assert.Equal("moniker-name-conflict", exception.Error.Code);
             Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
+        }
+
+        [Fact]
+        public void TestNullDefinitionShouldFail()
+        {
+            var monikerRangeParser = new MonikerRangeParser(null);
+            var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
+            Assert.Equal("moniker-definition-not-found", exception.Error.Code);
+            Assert.Equal("Cannot find a valid moniker definition, but you have used monikerRange expression `netcore-1.0`", exception.Error.Message);
         }
     }
 }

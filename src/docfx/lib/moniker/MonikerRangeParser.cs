@@ -16,10 +16,13 @@ namespace Microsoft.Docs.Build
             {
                 _monikersEvaluator = null;
             }
-            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            else
+            {
+                _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            }
         }
 
-        public static (List<Error>, MonikerRangeParser) Create(Context context, string monikerDefinitionFile)
+        public static (List<Error>, MonikerRangeParser) Create(string monikerDefinitionFile)
         {
             if (string.IsNullOrEmpty(monikerDefinitionFile))
             {

@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerDefinitionModel
     {
-        public List<MonikerSpec> Monikers { get; } = new List<MonikerSpec>();
+        public List<Moniker> Monikers { get; } = new List<Moniker>();
     }
 }
