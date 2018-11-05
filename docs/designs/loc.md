@@ -3,15 +3,18 @@
 ## Description
 
 DocFX build supports localization contents, there are a few features need to be supported for localization contents:
-  - Partial contents: the localization contents are often a part of source content.
+  - Partial contents:
+    - The localization contents are often a part of source content.
+    - There maybe extra localization content which doesn't exist in source repo.
   - Localization contents are not required to be stored in the same repo of source content, they can be anywhere.
-  - Localization publishing may have a few specific requirements which are different with source publishing, they need overwrite the source configuration
-
+  - Localization publishing may have a few specific requirements which are different with source publishing:
+    - Most of the localization configuration would be same with source configuration, a few are different, set based on scenarios, so we don't know the exact set of different configurations.
+    - They may applies different configuration per branches.
 ## Design
 
 - Treats localization content as the replacing content of source, they are not independent repo for publishing but only stores the corresponding loc content.
 - Localization publishing mixes the loc content and source content, loc content has higher priority to replace the source content.
-- Localization publishing uses source configuration and localization overwrite configuration
+- Localization publishing uses source configuration and localization **overwrite** configuration
 
 ## Workflow
 
@@ -23,6 +26,31 @@ DocFX build supports localization contents, there are a few features need to be 
   - All features are equal to Source + Loc, less Loc repo specified features  
   - Less Loc configurations to maintain and configuration changes in source repo will immediately be applied to Loc  
   - Loc content can be stored in any places(one repo or multiple repo), what we need is the **mappings between Source content and Loc content**  
+  
+Below kinds of mappings are considered to be supported:
+  - **Folder**, localization files are stored in the **same repository** with source files but under different **locale folder**
+    ```txt
+    source file         -->         localization files
+    /readme.md          -->         /localization/zh-cn/readme.md
+    /files/a.md         -->         /localization/de-de/files/a.md
+    ```
+  - **Repository**, localization files are stored in an **independent repository** per locale but keep the **same folder structure**
+  ```txt
+    source repo       ->locale->      localization repo
+    dotnet/docfx        zh-cn         dotnet/docfx.zh-cn
+    dotnet/docfx        de-de         dotnet/docfx.de-de
+  ```
+  - **RepositoryAndFolder**, localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
+  ```txt
+    repo mapping example:
+    source repo       ->locale->      localization repo
+    dotnet/docfx        zh-cn         dotnet/docfx.localization
+    dotnet/docfx        de-de         dotnet/docfx.localization
+    folder mapping example:
+    source repo         -->           localization repo
+    /readme.md          -->           /zh-cn/readme.md
+    /files/a.md         -->           /zh-cn/files/a.md
+  ```
 
 ### Loc Overwrite Configuration
 
@@ -42,24 +70,19 @@ DocFX build supports localization contents, there are a few features need to be 
     localization:
       bilingual: false
   ```
-
-## Mappings between source content and loc content
-
-Below kinds of mappings are considered to be supported:
-  - Folder mapping like en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
-  - Repo mapping like https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.de-de
-  - Repo + folder mapping like
-    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
-    - en-us/\*\*/\*.md and ja-jp/\*\*/\*.md
-  - Repo + branch mapping like
-    - https://github.com/MicrosoftDocs/azure-docs and https://github.com/MicrosoftDocs/azure-docs.localization/
-    - master and ja-jp-master
-
-## Usage
-
-- Clone source docset and get loc overwrite configuration, add loc overwrite configuration as source configuration extensions
-- `docfx restore --locale {locale}` to restore loc docset and other dependencies
-- `docfx build --loale {locale}` to build loc docset with source docset.
+  - Follow some localization configuration conventions:
+    - Localization edit repo(source -> source.<locale> | source.<source-locale> -> source.<loc-locale>)
+    ```txt
+    source repo's eidt repo                      -> locale ->                      localization repo's edit repo
+    https://github.com/microsoft/azure-docs         de-de                          https://github.com/microsoft/azure-docs.de-de
+    https://github.com/wcan/azure-docs.en-us        de-de                          https://github.com/wcan/azure-docs.de-de
+    ```
+    - Localization bingual branch(branch -> branch-sxs)
+    ```txt
+    source repo's branch to build                       ->                         loc repo's bilingual branch to build
+    live                                                                           live-sxs
+    master                                                                         master-sxs
+    ```
 
 ## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
@@ -90,6 +113,8 @@ Output:
 ```
 
 ### Static rendering
+
+> Static rendering is not considered carefully, it's not in our discussion scope rigt now.
 
 For static rendering site, localization content are more like parts of whole site, all fallback need to be supported during build.
 
@@ -166,7 +191,8 @@ All localization content is delayed translated, which means that the content ver
 
 Above example shows that the a.md(v1) in loc repo is still including token.md(v1, deleted) but it was deleted from source repo, the **requirement** is that loc content need to be still built successfully.
 
-From the localization delayed translation point, the above requirement makes senses, so we define below default fallback rules:
+From the localization delayed translation point, the above requirement makes senses, so we define below default fallback rules, always fallback to the latest existing version or latest git history version:
+
 - linked page:
   - resolve from current docset
   - resolve from fallback docset
@@ -178,3 +204,5 @@ From the localization delayed translation point, the above requirement makes sen
   - resolve from current docset
   - resolve from fallback docset
   - resolve from fallback docset git history
+  
+  For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
