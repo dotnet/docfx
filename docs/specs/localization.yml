@@ -199,7 +199,6 @@ repos:
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
-  build.manifest:
 ---
 # loc page fallback, all loc files are in one repo
 # loc repo:
