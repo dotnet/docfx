@@ -36,10 +36,8 @@ namespace Microsoft.Docs.Build
             var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
 
             var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
-            var uri = new Uri(path);
-            var remote = uri.GetLeftPart(UriPartial.Path);
 
-            return (remote, refspec);
+            return (path, refspec);
         }
 
         /// <summary>
