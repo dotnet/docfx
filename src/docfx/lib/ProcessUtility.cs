@@ -160,25 +160,34 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
             // avoid the RunInsideMutex to be nested used
+            // doesn't support to require a lock before releasing a lock
+            // which will cause deadlock
             Debug.Assert(t_innerCall.Value == null);
             t_innerCall.Value = new object();
 
-            Directory.CreateDirectory(AppData.MutexDir);
-
-            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
-
-            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+            try
             {
-                await action();
-            }
+                Directory.CreateDirectory(AppData.MutexDir);
 
-            FileStream CreateFile() => new FileStream(
-                lockPath,
-                FileMode.CreateNew,
-                FileAccess.ReadWrite,
-                FileShare.None,
-                1,
-                FileOptions.DeleteOnClose);
+                var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+                using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                {
+                    await action();
+                }
+
+                FileStream CreateFile() => new FileStream(
+                    lockPath,
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    1,
+                    FileOptions.DeleteOnClose);
+            }
+            finally
+            {
+                t_innerCall.Value = null;
+            }
         }
 
         /// <summary>
