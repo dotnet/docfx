@@ -92,15 +92,6 @@ namespace Microsoft.Docs.Build
                 Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
-            // Verify restored files
-            foreach (var (file, content) in spec.Restores)
-            {
-                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
-                Assert.NotNull(restoredFile);
-                Assert.True(File.Exists(restoredFile));
-                VerifyFile(restoredFile, content);
-            }
-
             // These files output mostly contains empty content which e2e tests are not intrested in
             // we can just skip the verification for them
             foreach (var skippableItem in spec.SkippableOutputs)
