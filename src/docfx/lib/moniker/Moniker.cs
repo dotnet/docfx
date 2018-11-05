@@ -8,10 +8,8 @@ namespace Microsoft.Docs.Build
 {
     internal class Moniker
     {
-        [JsonRequired]
         public string Name { get; set; }
 
-        [JsonRequired]
         public string Product { get; set; }
 
         [JsonExtensionData]

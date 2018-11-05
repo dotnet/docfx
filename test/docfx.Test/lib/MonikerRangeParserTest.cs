@@ -130,42 +130,32 @@ namespace Microsoft.Docs.Build
             Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
         }
 
-        [Fact]
-        public void TestEmptyMonikerNameShouldFail()
-        {
-            var path = $"moniker-definition-test/{Guid.NewGuid()}";
-            
-            File.WriteAllText(path, @"{
+        [Theory]
+        [InlineData(@"{
     ""monikers"": [
         {
             ""name"": """",
             ""product"": ""product-test""
         }
     ]
-}");
-
-            var exception = Assert.Throws<DocfxException>(() => MonikerRangeParser.Create(path));
-            Assert.Equal("invalid-moniker-definition", exception.Error.Code);
-            Assert.Equal("Invalid moniker definition file: Moniker name cannot be null or empty", exception.Error.Message);
-        }
-
-        [Fact]
-        public void TestEmptyMonikerProductShouldFail()
-        {
-            var path = $"moniker-definition-test/{Guid.NewGuid()}";
-
-            File.WriteAllText(path, @"{
+}", "Invalid moniker definition file: Moniker name cannot be null or empty")]
+        [InlineData(@"{
     ""monikers"": [
         {
             ""name"": ""netcore-1.0"",
             ""product"": """"
         }
     ]
-}");
+}", "Invalid moniker definition file: Product name cannot be null or empty")]
+        public void TestInvalidMonikerDefinitionShouldFail(string content, string errorMessage)
+        {
+            var path = $"moniker-definition-test/{Guid.NewGuid()}";
+
+            File.WriteAllText(path, content);
 
             var exception = Assert.Throws<DocfxException>(() => MonikerRangeParser.Create(path));
             Assert.Equal("invalid-moniker-definition", exception.Error.Code);
-            Assert.Equal("Invalid moniker definition file: Product name cannot be null or empty", exception.Error.Message);
+            Assert.Equal(errorMessage, exception.Error.Message);
         }
 
         [Fact]

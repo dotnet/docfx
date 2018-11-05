@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsInputItem
     {
-        [JsonRequired]
         public string Name { get; set; }
 
         public string DisplayName { get; set; }

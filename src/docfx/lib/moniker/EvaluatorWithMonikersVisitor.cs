@@ -78,12 +78,10 @@ namespace Microsoft.Docs.Build
                 {
                     throw Errors.InvalidMonikerDefinition("Product name cannot be null or empty").ToException();
                 }
-                if (monikerNameList.Contains(moniker.Name))
+                if (!monikerNameList.Add(moniker.Name))
                 {
                     throw Errors.MonikerNameConflict(moniker.Name).ToException();
                 }
-
-                monikerNameList.Add(moniker.Name);
 
                 if (productNameDictionary.TryGetValue(moniker.Product, out List<string> list))
                 {
