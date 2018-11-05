@@ -6,7 +6,7 @@ using System.Linq;
 
 using Xunit;
 
-namespace Microsoft.Docs.Build.moniker
+namespace Microsoft.Docs.Build
 {
     public class MonikerRangeParserTest
     {
