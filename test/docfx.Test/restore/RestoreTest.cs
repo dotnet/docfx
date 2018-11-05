@@ -71,10 +71,6 @@ dependencies:
 
             workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(2, workTreeList.Count);
-
-            // check restore lock file
-            var restoreLock = await RestoreLocker.Load(docsetPath);
-            Assert.Equal(2, restoreLock.Git.Count);
         }
 
         [Fact]
@@ -103,10 +99,6 @@ github:
             await Program.Run(new[] { "gc" });
 
             Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
-
-            // check restore lock file
-            var restoreLock = await RestoreLocker.Load(docsetPath);
-            Assert.Single(restoreLock.Url);
         }
     }
 }

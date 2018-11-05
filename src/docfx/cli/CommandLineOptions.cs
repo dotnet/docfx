@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                     ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
+                    ["copyResources"] = Legacy ? (JValue)false : JValue.CreateNull(),
                 },
                 ["gitHub"] = new JObject
                 {
