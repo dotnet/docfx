@@ -76,5 +76,27 @@ namespace Microsoft.Docs.Build
                 Assert.True(false, ex.HResult + " " + ex.Message);
             }
         }
+
+        [Fact]
+        public static async Task NestedRunInMutexTest()
+        {
+            // works for one lock one file
+            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}", async () => { await Task.Delay(100); });
+            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}", async () => { await Task.Delay(100); });
+
+            // doesn't work for requiring a lock before releasing a lock
+            await Assert.ThrowsAnyAsync<Exception>(async () =>
+            {
+                await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                        async () =>
+                        {
+                            await ProcessUtility.RunInsideMutex($"process-test/{Guid.NewGuid()}",
+                                async () =>
+                                {
+                                    await Task.Delay(100);
+                                });
+                        });
+            });
+        }
     }
 }

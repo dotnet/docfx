@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
-                    var workTreeHead = $"{await GitUtility.Revision(restorePath, rev)}-{rev}";
+                    var workTreeHead = $"{await GitUtility.Revision(restorePath, rev)}-{PathUtility.Encode(rev)}";
                     var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                     if (existingWorkTrees.TryAdd(workTreePath, 0))
                     {
@@ -79,6 +79,9 @@ namespace Microsoft.Docs.Build
                         // https://git-scm.com/docs/git-worktree#_commands
                         await GitUtility.AddWorkTree(restorePath, rev, workTreePath);
                     }
+
+                    // update the last access time
+                    Directory.SetLastAccessTimeUtc(workTreePath, DateTime.UtcNow);
 
                     workTreeHeads.Add((href, workTreeHead));
                 });
