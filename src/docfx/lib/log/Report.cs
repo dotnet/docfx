@@ -48,9 +48,11 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public bool Write(Error error)
+        public bool Write(Error error, bool force = false)
         {
-            var level = _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
+            var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
+                ? overrideLevel
+                : error.Level;
             if (level == ErrorLevel.Off)
             {
                 return false;
