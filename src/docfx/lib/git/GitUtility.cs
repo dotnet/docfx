@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
         {
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
-            return ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh} --force");
+            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitIsh} --force");
         }
 
         /// <summary>
