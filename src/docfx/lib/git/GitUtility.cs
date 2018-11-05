@@ -160,8 +160,12 @@ namespace Microsoft.Docs.Build
         /// <param name="cwd">The current working directory</param>
         /// <param name="commitHash">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitHash, string path)
-            => ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitHash}");
+        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+        {
+            // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
+            // -f/ --force overrides these safeguards.
+            return ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh} --force");
+        }
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
