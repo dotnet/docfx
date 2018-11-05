@@ -153,8 +153,8 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMonikerRange(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
 
-        public static Error MonikerDefinitionNotFound(string rangeString)
-            => new Error(ErrorLevel.Error, "moniker-definition-not-found", $"Cannot find a valid moniker definition, but you have used monikerRange expression `{rangeString}`");
+        public static Error InvalidMonikerDefinition(string message)
+            => new Error(ErrorLevel.Error, "invalid-moniker-definition", $"Invalid moniker definition file: {message}");
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

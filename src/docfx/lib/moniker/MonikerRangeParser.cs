@@ -12,32 +12,22 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
-            if (monikerDefinition == null)
-            {
-                _monikersEvaluator = null;
-            }
-            else
-            {
-                _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
-            }
+            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
         public static (List<Error>, MonikerRangeParser) Create(string monikerDefinitionFile)
         {
-            if (string.IsNullOrEmpty(monikerDefinitionFile))
+            var errors = new List<Error>();
+            var monikerDefinition = new MonikerDefinitionModel();
+            if (!string.IsNullOrEmpty(monikerDefinitionFile))
             {
-                return (new List<Error>(), new MonikerRangeParser(null));
+                (errors, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(monikerDefinitionFile));
             }
-            var (errors, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(monikerDefinitionFile));
             return (errors, new MonikerRangeParser(monikerDefinition));
         }
 
         public IEnumerable<string> Parse(string rangeString)
         {
-            if (_monikersEvaluator == null)
-            {
-                throw Errors.MonikerDefinitionNotFound(rangeString).ToException();
-            }
             IEnumerable<string> monikerNames = null;
             try
             {

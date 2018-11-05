@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Linq;
 
 using Xunit;
@@ -51,6 +52,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParserTest()
         {
+            Directory.CreateDirectory("moniker-definition-test");
             _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
         }
 
@@ -83,11 +85,11 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("netcore-xp", "Moniker `netcore-xp` is not found in available monikers list")]
+        [InlineData("netcore-xp", "Moniker `netcore-xp` is not defined")]
         [InlineData("netcore-1.0 < || netcore-2.0", "Expect a moniker string, but got ` || netcore-2.0`")]
         [InlineData(">netcore&-1.0", "Parse ends before reaching end of string, unrecognized string: `&-1.0`")]
         [InlineData(">=>netcore&-1.0", "Expect a moniker string, but got `>netcore&-1.0`")]
-        [InlineData(">netcore<-1.0", "Moniker `netcore` is not found in available monikers list")]
+        [InlineData(">netcore<-1.0", "Moniker `netcore` is not defined")]
         [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Expect a comparator set, but got `| >netcore-2.0`")]
         [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ` ||`")]
         [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ``")]
@@ -129,12 +131,50 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestEmptyMonikerNameShouldFail()
+        {
+            var path = $"moniker-definition-test/{Guid.NewGuid()}";
+            
+            File.WriteAllText(path, @"{
+    ""monikers"": [
+        {
+            ""name"": """",
+            ""product"": ""product-test""
+        }
+    ]
+}");
+
+            var exception = Assert.Throws<DocfxException>(() => MonikerRangeParser.Create(path));
+            Assert.Equal("invalid-moniker-definition", exception.Error.Code);
+            Assert.Equal("Invalid moniker definition file: Moniker name cannot be null or empty", exception.Error.Message);
+        }
+
+        [Fact]
+        public void TestEmptyMonikerProductShouldFail()
+        {
+            var path = $"moniker-definition-test/{Guid.NewGuid()}";
+
+            File.WriteAllText(path, @"{
+    ""monikers"": [
+        {
+            ""name"": ""netcore-1.0"",
+            ""product"": """"
+        }
+    ]
+}");
+
+            var exception = Assert.Throws<DocfxException>(() => MonikerRangeParser.Create(path));
+            Assert.Equal("invalid-moniker-definition", exception.Error.Code);
+            Assert.Equal("Invalid moniker definition file: Product name cannot be null or empty", exception.Error.Message);
+        }
+
+        [Fact]
         public void TestNullDefinitionShouldFail()
         {
-            var monikerRangeParser = new MonikerRangeParser(null);
+            var (_, monikerRangeParser) = MonikerRangeParser.Create(null);
             var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
-            Assert.Equal("moniker-definition-not-found", exception.Error.Code);
-            Assert.Equal("Cannot find a valid moniker definition, but you have used monikerRange expression `netcore-1.0`", exception.Error.Message);
+            Assert.Equal("invalid-moniker-range", exception.Error.Code);
+            Assert.Equal("MonikerRange `netcore-1.0` is invalid: Moniker `netcore-1.0` is not defined", exception.Error.Message);
         }
     }
 }

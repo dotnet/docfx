@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(expression.Operand != null);
             if (!_monikerProductInfoDictionary.TryGetValue(expression.Operand, out var monikerProductInfo))
             {
-                throw new MonikerRangeException($"Moniker `{expression.Operand}` is not found in available monikers list");
+                throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
             }
 
             switch (expression.Operator)
@@ -70,23 +70,28 @@ namespace Microsoft.Docs.Build
 
             foreach (var moniker in monikers)
             {
+                if (string.IsNullOrEmpty(moniker.Name))
+                {
+                    throw Errors.InvalidMonikerDefinition("Moniker name cannot be null or empty").ToException();
+                }
+                if (string.IsNullOrEmpty(moniker.Product))
+                {
+                    throw Errors.InvalidMonikerDefinition("Product name cannot be null or empty").ToException();
+                }
                 if (monikerNameList.Contains(moniker.Name))
                 {
                     throw Errors.MonikerNameConflict(moniker.Name).ToException();
                 }
+
+                monikerNameList.Add(moniker.Name);
+
+                if (productNameDictionary.TryGetValue(moniker.Product, out List<string> list))
+                {
+                    list.Add(moniker.Name);
+                }
                 else
                 {
-                    monikerNameList.Add(moniker.Name);
-
-                    List<string> list;
-                    if (productNameDictionary.TryGetValue(moniker.Product, out list))
-                    {
-                        list.Add(moniker.Name);
-                    }
-                    else
-                    {
-                        productNameDictionary[moniker.Product] = new List<string> { moniker.Name };
-                    }
+                    productNameDictionary[moniker.Product] = new List<string> { moniker.Name };
                 }
             }
 
