@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                      SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
                  }).ToImmutableList();
 
-            return modelsDict.Values.ToList();
+            return modelsDict.Values;
         }
 
         private string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
