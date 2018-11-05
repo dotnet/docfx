@@ -22,25 +22,26 @@ namespace Microsoft.Docs.Build
 
         public string GetGitRestorePath(string remote)
         {
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+
             var gitRestorePath = s_mappings.GetOrAdd(
-            $"{remote}",
-            new Lazy<string>(() =>
-            {
-                Debug.Assert(!string.IsNullOrEmpty(remote));
-                var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
-                var restoreDir = RestoreGit.GetRestoreRootDir(url);
-
-                if (!Directory.Exists(restoreDir))
+                $"{remote}",
+                new Lazy<string>(() =>
                 {
-                    throw Errors.NeedRestore(remote).ToException();
-                }
+                    var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
+                    var restoreDir = RestoreGit.GetRestoreRootDir(url);
 
-                return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                    .Select(f => PathUtility.NormalizeFolder(f))
-                    .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
-                    .OrderByDescending(f => new DirectoryInfo(f).LastAccessTimeUtc)
-                    .FirstOrDefault();
-            })).Value;
+                    if (!Directory.Exists(restoreDir))
+                    {
+                        throw Errors.NeedRestore(remote).ToException();
+                    }
+
+                    return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                        .Select(f => PathUtility.NormalizeFolder(f))
+                        .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
+                        .OrderByDescending(f => new DirectoryInfo(f).LastAccessTimeUtc)
+                        .FirstOrDefault();
+                })).Value;
 
             if (!Directory.Exists(gitRestorePath))
             {
@@ -52,31 +53,31 @@ namespace Microsoft.Docs.Build
 
         public string GetUrlRestorePath(string path)
         {
-            var urlRestorePath = s_mappings.GetOrAdd(
-            $"{_docsetPath}:{path}",
-            new Lazy<string>(() =>
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            if (!HrefUtility.IsHttpHref(path))
             {
-                Debug.Assert(!string.IsNullOrEmpty(path));
+                // directly return the relative path
+                var fullPath = Path.Combine(_docsetPath, path);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
+            }
 
-                if (!HrefUtility.IsHttpHref(path))
+            var urlRestorePath = s_mappings.GetOrAdd(
+                $"{_docsetPath}:{path}",
+                new Lazy<string>(() =>
                 {
-                    // directly return the relative path
-                    var fullPath = Path.Combine(_docsetPath, path);
-                    return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
-                }
+                    // get the file path from restore map
+                    var restoreDir = RestoreUrl.GetRestoreRootDir(path);
 
-                // get the file path from restore map
-                var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+                    if (!Directory.Exists(restoreDir))
+                    {
+                        throw Errors.NeedRestore(path).ToException();
+                    }
 
-                if (!Directory.Exists(restoreDir))
-                {
-                    throw Errors.NeedRestore(path).ToException();
-                }
-
-                return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                       .OrderByDescending(f => new FileInfo(f)
-                       .LastAccessTimeUtc).FirstOrDefault();
-            })).Value;
+                    return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                           .OrderByDescending(f => new FileInfo(f)
+                           .LastAccessTimeUtc).FirstOrDefault();
+                })).Value;
 
             if (!File.Exists(urlRestorePath))
             {
