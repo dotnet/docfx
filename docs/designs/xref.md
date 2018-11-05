@@ -1,5 +1,6 @@
 # Xref
-User can define uid with some properties in markdown, JSON and YAML files. Then output xrefmap.json for others to reference to.
+- User can define uid with some properties in markdown, JSON and YAML files. Then output xrefmap.json for others to reference to. 
+- User can reference to uids in markdown, JSON and YAML files, they will be resolved during `docfx build`.
 
 ## Define uid
 - User can define uid in YAML header of markdown file
@@ -22,7 +23,7 @@ description: Learn how to develop ASP.NET and ASP.NET web applications. Get docu
 - And define uid in YAML
 ```yml
 #YamlMime:TestData
-uid: index
+uid: a
 title: ASP.NET Documentation
 description: Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more.
 ```
@@ -34,7 +35,7 @@ Docfx will output a JSON file named `xrefmap.json`. In V2, docfx used to output 
     "references": [
         {
             "uid": "a",
-            "href": "aspnet/index.html",
+            "href": "aspnet/a.md",
             "name": "ASP.NET Documentation",
             "fullName": "ASP.NET Full Documentation"
         }
@@ -65,7 +66,7 @@ Link to @a
 ```
   The file above would be resolved using the restored xref map
 ```json
-{"content":"<p>Link to <a href=\"aspnet/index.html\">ASP.NET Documentation</a></p>\n"}
+{"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Documentation</a></p>\n"}
 ```
 - User can also define which property to display for the referenced uid
 ```
@@ -73,7 +74,7 @@ Link to <xref:a?displayProperty=fullName>
 ```
   And it will be resolved as below, notice that the display title is from `fullName` not `name`
 ```json
-{"content":"<p>Link to <a href=\"aspnet/index.html\">ASP.NET Full Documentation</a></p>\n"}
+{"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Full Documentation</a></p>\n"}
 ```
 - For SDP(JSON/YAML) files
 ```json
