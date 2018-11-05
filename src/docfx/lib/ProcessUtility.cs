@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
 
             // avoid the RunInsideMutex to be nested used
             // doesn't support to require a lock before releasing a lock
-            // which will cause deadlock
+            // which may cause deadlock
             Debug.Assert(t_innerCall.Value == null);
             t_innerCall.Value = new object();
 
