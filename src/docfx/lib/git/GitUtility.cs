@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         public static async Task CloneOrUpdate(string path, string url, string refspec, Config config = null)
         {
             await CloneOrUpdate(path, url, new[] { refspec }, bare: false, config);
-            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout -f {refspec}");
+            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {refspec}");
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
             var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
 
             // TODO: handle branch not found error
-            return ExecuteNonQuery(path, $"{httpConfig} fetch --prune --update-head-ok \"{url}\" {refspec}");
+            return ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspec}");
         }
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
