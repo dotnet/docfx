@@ -84,29 +84,6 @@
         }
       }
     },
-    "GlobConfig<JObject>": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "include": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "exclude": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "value": {},
-        "isGlob": {
-          "type": "boolean",
-          "default": true
-        }
-      }
-    },
     "HttpConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -168,18 +145,6 @@
           "type": "integer"
         }
       }
-    },
-    "RouteConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "source": {
-          "type": "string"
-        },
-        "destination": {
-          "type": "string"
-        }
-      }
     }
   },
   "type": "object",
@@ -208,15 +173,16 @@
       }
     },
     "fileMetadata": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/GlobConfig<JObject>"
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {}
       }
     },
     "routes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/RouteConfig"
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
       }
     },
     "contribution": {
