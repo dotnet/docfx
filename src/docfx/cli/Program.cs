@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "gc":
-                            await GarbageCollector.Collect(options.NotAccessedDays);
+                            await GarbageCollector.Collect(options.RetentionDays, report);
                             Done(stopwatch.Elapsed, report);
                             break;
                     }
@@ -104,9 +104,9 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // GC command
-                // usage: docfx gc [-d/--days days]
+                // usage: docfx gc [--retention-days days]
                 syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
-                syntax.DefineOption("d|days", ref options.NotAccessedDays, "Collect files not accessed for <d> days");
+                syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed within <d> days");
             });
 
             return (command, docset, options);

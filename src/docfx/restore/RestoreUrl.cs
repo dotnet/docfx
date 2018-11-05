@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     // update the last access date
-                    File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow);
+                    File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow);
 
                     return Task.CompletedTask;
                 });

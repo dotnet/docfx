@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     // update the last access time
-                    Directory.SetLastAccessTimeUtc(workTreePath, DateTime.UtcNow);
+                    Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
 
                     workTreeHeads.Add((href, workTreeHead));
                 });
