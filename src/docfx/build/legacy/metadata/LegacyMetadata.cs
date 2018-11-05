@@ -1,21 +1,32 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyMetadata
     {
-        private static readonly string[] s_pageMetadataBlackList = { "_op_", "absolutePath", "canonical_url", "content_git_url", "open_to_public_contributors", "fileRelativePath", "layout", "title", "redirect_url" };
-
         private static readonly string[] s_metadataBlackList = { "_op_", "fileRelativePath" };
+
+        private static readonly HashSet<string> s_excludedHtmlMetaTags = new HashSet<string>
+        {
+            "absolutePath",
+            "canonical_url",
+            "content_git_url",
+            "open_to_public_contributors",
+            "fileRelativePath",
+            "layout",
+            "title",
+            "redirect_url",
+            "contributors_to_exclude",
+            "f1_keywords",
+        };
 
         public static JObject GenerataCommonMetadata(JObject metadata, Docset docset)
         {
@@ -28,56 +39,61 @@ namespace Microsoft.Docs.Build
             newMetadata["search.ms_product"] = docset.Config.Product;
             newMetadata["search.ms_sitename"] = "Docs";
 
-            newMetadata["locale"] = docset.Config.Locale;
+            newMetadata["locale"] = docset.Locale;
             newMetadata["site_name"] = "Docs";
             newMetadata["version"] = 0;
 
-            newMetadata["__global"] = new JObject
-            {
-                ["tutorial_allContributors"] = "all {0} contributors",
-            };
+            newMetadata["__global"] = docset.LegacyTemplate.Global;
 
-            return newMetadata;
+            return newMetadata.RemoveNulls();
         }
 
+        public static JObject GenerateLegacyRedirectionRawMetadata(Docset docset, PageModel pageModel)
+            => new JObject
+            {
+                ["redirect_url"] = pageModel.RedirectUrl,
+                ["locale"] = docset.Locale,
+            }.RemoveNulls();
+
         public static JObject GenerateLegacyRawMetadata(
-            PageModel pageModel,
-            Docset docset,
-            Document file,
-            LegacyManifestOutput legacyManifestOutput,
-            TableOfContentsMap tocMap)
+                PageModel pageModel,
+                string content,
+                Document file)
         {
-            var rawMetadata = pageModel.Metadata != null ? new JObject(pageModel.Metadata) : new JObject();
+            var docset = file.Docset;
+            var rawMetadata = pageModel.Metadata != null ? JObject.FromObject(pageModel.Metadata) : new JObject();
 
             rawMetadata = GenerataCommonMetadata(rawMetadata, docset);
-            rawMetadata["fileRelativePath"] = legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath.Replace(".raw.page.json", ".html");
-            rawMetadata["toc_rel"] = pageModel.TocRelativePath ?? tocMap.FindTocRelativePath(file);
+            rawMetadata["conceptual"] = content;
+
+            var path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.Config.DocumentId.SiteBasePath, file.SitePath));
+
+            rawMetadata["_path"] = path;
+            rawMetadata["fileRelativePath"] = Path.ChangeExtension(path, ".html");
+            rawMetadata["toc_rel"] = pageModel.TocRel;
 
             rawMetadata["wordCount"] = rawMetadata["word_count"] = pageModel.WordCount;
 
             rawMetadata["title"] = pageModel.Title;
-            rawMetadata["rawTitle"] = pageModel.TitleHtml ?? "";
+            rawMetadata["rawTitle"] = pageModel.RawTitle ?? "";
 
-            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Config.Locale}/{docset.Config.SiteBasePath}/";
+            rawMetadata["_op_canonicalUrlPrefix"] = $"{docset.Config.BaseUrl}/{docset.Locale}/{docset.Config.DocumentId.SiteBasePath}/";
 
-            if (docset.Config.NeedGeneratePdfUrlTemplate)
+            if (docset.Config.Output.Pdf)
             {
-                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{$"{docset.Config.Product}.{docset.Config.Name}"}/{{branchName}}";
+                rawMetadata["_op_pdfUrlPrefixTemplate"] = $"{docset.Config.BaseUrl}/pdfstore/{pageModel.Locale}/{docset.Config.Product}.{docset.Config.Name}/{{branchName}}";
             }
 
             rawMetadata["layout"] = rawMetadata.TryGetValue("layout", out JToken layout) ? layout : "Conceptual";
 
-            rawMetadata["_path"] = PathUtility.NormalizeFile(file.ToLegacyPathRelativeToBasePath(docset));
+            rawMetadata["document_id"] = pageModel.DocumentId;
+            rawMetadata["document_version_independent_id"] = pageModel.DocumentVersionIndependentId;
 
-            rawMetadata["document_id"] = pageModel.Id;
-            rawMetadata["document_version_independent_id"] = pageModel.VersionIndependentId;
-
-            if (!string.IsNullOrEmpty(pageModel.RedirectionUrl))
+            if (!string.IsNullOrEmpty(pageModel.RedirectUrl))
             {
-                rawMetadata["redirect_url"] = pageModel.RedirectionUrl;
+                rawMetadata["redirect_url"] = pageModel.RedirectUrl;
             }
 
-            var culture = new CultureInfo(docset.Config.Locale);
             if (pageModel.UpdatedAt != default)
             {
                 rawMetadata["_op_gitContributorInformation"] = new JObject
@@ -86,61 +102,33 @@ namespace Microsoft.Docs.Build
                     ["contributors"] = pageModel.Contributors != null
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
-                    ["update_at"] = pageModel.UpdatedAt.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
+                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern, docset.Culture),
+                    ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
             if (pageModel.UpdatedAt != default)
-                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", culture);
+                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", docset.Culture);
 
-            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.Enabled;
+            rawMetadata["_op_openToPublicContributors"] = docset.Config.Contribution.ShowEdit;
 
             if (file.ContentType != ContentType.Redirection)
             {
-                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.Enabled;
+                rawMetadata["open_to_public_contributors"] = docset.Config.Contribution.ShowEdit;
 
-                if (!string.IsNullOrEmpty(pageModel.EditUrl))
-                    rawMetadata["content_git_url"] = pageModel.EditUrl;
+                if (!string.IsNullOrEmpty(pageModel.ContentGitUrl))
+                    rawMetadata["content_git_url"] = pageModel.ContentGitUrl;
 
-                if (!string.IsNullOrEmpty(pageModel.CommitUrl))
-                    rawMetadata["gitcommit"] = pageModel.CommitUrl;
-                if (!string.IsNullOrEmpty(pageModel.ContentUrl))
-                    rawMetadata["original_content_git_url"] = pageModel.ContentUrl;
+                if (!string.IsNullOrEmpty(pageModel.Gitcommit))
+                    rawMetadata["gitcommit"] = pageModel.Gitcommit;
+                if (!string.IsNullOrEmpty(pageModel.OriginalContentGitUrl))
+                    rawMetadata["original_content_git_url"] = pageModel.OriginalContentGitUrl;
             }
 
-            return rawMetadata;
-        }
-
-        public static string GenerateLegacyPageMetadata(JObject rawMetadata)
-        {
-            StringBuilder pageMetadataOutput = new StringBuilder(string.Empty);
-
-            foreach (var item in rawMetadata)
-            {
-                if (!s_pageMetadataBlackList.Any(blackList => item.Key.StartsWith(blackList)))
-                {
-                    string content;
-                    if (item.Value is JArray)
-                    {
-                        content = string.Join(",", item.Value);
-                    }
-                    else if (item.Value.Type == JTokenType.Boolean)
-                    {
-                        content = (bool)item.Value ? "true" : "false";
-                    }
-                    else
-                    {
-                        content = item.Value.ToString();
-                    }
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        pageMetadataOutput.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(item.Key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
-                    }
-                }
-            }
-
-            return pageMetadataOutput.ToString();
+            return RemoveUpdatedAtDateTime(
+                LegacySchema.Transform(
+                    docset.LegacyTemplate.TransformMetadata("conceptual", rawMetadata), pageModel)).RemoveNulls();
         }
 
         public static JObject GenerateLegacyMetadateOutput(JObject rawMetadata)
@@ -159,7 +147,60 @@ namespace Microsoft.Docs.Build
             return metadataOutput;
         }
 
-        private static JObject ToJObject(this GitUserInfo info)
+        public static string CreateHtmlMetaTags(JObject metadata)
+        {
+            var result = new StringBuilder();
+
+            foreach (var (key, value) in metadata)
+            {
+                if (value is JObject || key.StartsWith("_op_") || s_excludedHtmlMetaTags.Contains(key))
+                {
+                    continue;
+                }
+
+                var content = "";
+                if (value is JArray arr)
+                {
+                    if (!arr.All(item => item is JValue))
+                    {
+                        continue;
+                    }
+
+                    content = string.Join(",", value);
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    content = (bool)value ? "true" : "false";
+                }
+                else
+                {
+                    content = value.ToString();
+                }
+
+                result.AppendLine($"<meta name=\"{HttpUtility.HtmlEncode(key)}\" content=\"{HttpUtility.HtmlEncode(content)}\" />");
+            }
+
+            return result.ToString();
+        }
+
+        private static JObject RemoveNulls(this JObject graph)
+        {
+            var (_, jtoken) = ((JToken)graph).RemoveNulls();
+            return (JObject)jtoken;
+        }
+
+        private static JObject RemoveUpdatedAtDateTime(JObject rawMetadata)
+        {
+            JToken gitContributorInformation;
+            if (rawMetadata.TryGetValue("_op_gitContributorInformation", out gitContributorInformation)
+                && ((JObject)gitContributorInformation).ContainsKey("updated_at_date_time"))
+            {
+                ((JObject)rawMetadata["_op_gitContributorInformation"]).Remove("updated_at_date_time");
+            }
+            return rawMetadata;
+        }
+
+        private static JObject ToJObject(this Contributor info)
         {
             return new JObject
             {

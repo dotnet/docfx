@@ -5,12 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 using HtmlAgilityPack;
 
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
+        private static readonly Regex s_uriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -25,17 +29,15 @@ namespace Microsoft.Docs.Build
             return transform(document.DocumentNode).OuterHtml;
         }
 
-        public static string GetInnerText(string html)
+        public static string GetInnerText(this HtmlNode html)
         {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return doc.DocumentNode.InnerText;
+            return html.InnerText;
         }
 
-        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale, bool legacy = false)
         {
-            AddLinkType(html, "a", "href", locale);
-            AddLinkType(html, "img", "src", locale);
+            AddLinkType(html, "a", "href", locale, legacy);
+            AddLinkType(html, "img", "src", locale, legacy);
             return html;
         }
 
@@ -96,6 +98,23 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
+        public static IEnumerable<string> GetBookmarks(this HtmlNode html)
+        {
+            foreach (var node in html.DescendantsAndSelf())
+            {
+                var id = node.GetAttributeValue("id", "");
+                if (!string.IsNullOrEmpty(id))
+                {
+                    yield return id;
+                }
+                var name = node.GetAttributeValue("name", "");
+                if (!string.IsNullOrEmpty(name))
+                {
+                    yield return name;
+                }
+            }
+        }
+
         public static string TransformLinks(this string html, Func<string, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
@@ -128,7 +147,11 @@ namespace Microsoft.Docs.Build
                 {
                     result.Append(html, pos, link.ValueStartIndex - pos);
                 }
-                result.Append(transform(link.Value));
+                var transformed = transform(link.Value);
+                if (!string.IsNullOrEmpty(transformed))
+                {
+                    result.Append(HttpUtility.HtmlAttributeEncode(transformed));
+                }
                 pos = link.ValueStartIndex + link.ValueLength;
             }
 
@@ -139,7 +162,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale, bool legacy = false)
         {
             foreach (var node in html.Descendants(tag))
             {
@@ -153,27 +176,27 @@ namespace Microsoft.Docs.Build
                     node.SetAttributeValue("data-linktype", "self-bookmark");
                     continue;
                 }
-                if (href[0] == '/' || href[0] == '\\')
+                if ((href[0] == '/' || href[0] == '\\') && !href.StartsWith("//"))
                 {
-                    node.SetAttributeValue(attribute, AddLocaleIfMissing(HrefToLower(href), locale));
+                    node.SetAttributeValue(attribute, AddLocaleIfMissing(href, locale));
                     node.SetAttributeValue("data-linktype", "absolute-path");
                     continue;
                 }
-                if (Uri.TryCreate(href, UriKind.Absolute, out _))
+                if (IsUri(href, legacy))
                 {
                     node.SetAttributeValue("data-linktype", "external");
                     continue;
                 }
-                node.SetAttributeValue(attribute, HrefToLower(href));
+                node.SetAttributeValue(attribute, href);
                 node.SetAttributeValue("data-linktype", "relative-path");
             }
         }
 
-        private static string HrefToLower(string href)
+        private static bool IsUri(string href, bool legacy = false)
         {
-            // TODO: legacy only, should not touch href
-            var i = href.IndexOfAny(new[] { '#', '?' });
-            return i >= 0 ? href.Substring(0, i).ToLowerInvariant() + href.Substring(i) : href.ToLowerInvariant();
+            return legacy
+                ? href.StartsWith("//") || s_uriWithProtocol.IsMatch(href)
+                : Uri.TryCreate(href, UriKind.Absolute, out _);
         }
 
         private static string AddLocaleIfMissing(string href, string locale)

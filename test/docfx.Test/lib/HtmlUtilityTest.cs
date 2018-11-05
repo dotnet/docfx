@@ -13,18 +13,19 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='(https://a)' />", "<a href='(https://a)' data-linktype='relative-path' />")]
         [InlineData("<a href='#aA' />", "<a href='#aA' data-linktype='self-bookmark' />")]
         [InlineData("<a href='/a' />", "<a href='/zh-cn/a' data-linktype='absolute-path' />")]
-        [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/zh-cn/alink#fraGMENT' data-linktype='absolute-path' />")]
-        [InlineData("<a href='/Alink?quERY' />", "<a href='/zh-cn/alink?quERY' data-linktype='absolute-path' />")]
+        [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/zh-cn/Alink#fraGMENT' data-linktype='absolute-path' />")]
+        [InlineData("<a href='/Alink?quERY' />", "<a href='/zh-cn/Alink?quERY' data-linktype='absolute-path' />")]
         [InlineData("<a href='/a#x' />", "<a href='/zh-cn/a#x' data-linktype='absolute-path' />")]
         [InlineData("<a href='\\a#x' />", "<a href='/zh-cn\\a#x' data-linktype='absolute-path' />")]
         [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
         public void AddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.AddLinkType("zh-cn"));
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.RemoveRerunCodepenIframes());
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -48,23 +49,25 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(input, node => node.StripTags());
 
-            Assert.Equal(TestHelper.NormalizeHtml(output), TestHelper.NormalizeHtml(actual));
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("</a>", "</a>")]
-        [InlineData("<a href='hello'>", "<a href='666'>")]
-        [InlineData("<A hrEf=''>", "<A hrEf='666'>")]
-        [InlineData("<a href = 'hello'>", "<a href = '666'>")]
-        [InlineData("<a   target='_blank'   href='h'>", "<a   target='_blank'   href='666'>")]
-        [InlineData("<img src='a/b.png' />", "<img src='666' />")]
-        [InlineData("<iMg sRc = 'a/b.png' />", "<iMg sRc = '666' />")]
-        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "<div><a href='666'><img src='666' /></div>")]
-        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "<div><img src='666' /><a href='666'></div>")]
-        public void TransformLinks(string input, string output)
+        [InlineData("", "666", "")]
+        [InlineData("</a>", "666", "</a>")]
+        [InlineData("<a href='hello'>", "666", "<a href='666'>")]
+        [InlineData("<a href='hello'>", null, "<a href=''>")]
+        [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;>?:,./][{}|'>")]
+        [InlineData("<A hrEf=''>", "666", "<A hrEf='666'>")]
+        [InlineData("<a href = 'hello'>", "666", "<a href = '666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "666", "<a   target='_blank'   href='666'>")]
+        [InlineData("<img src='a/b.png' />", "666", "<img src='666' />")]
+        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc = '666' />")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666' /></div>")]
+        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666' /><a href='666'></div>")]
+        public void TransformLinks(string input, string link, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => "666"));
+            Assert.Equal(output, HtmlUtility.TransformLinks(input, _ => link));
         }
 
         [Theory]
@@ -72,7 +75,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<p id='1'>a</p>", "a")]
         public void GetInnerText(string input, string output)
         {
-            Assert.Equal(output, HtmlUtility.GetInnerText(input));
+            Assert.Equal(output, HtmlUtility.GetInnerText(HtmlUtility.LoadHtml(input)));
         }
 
         [Theory]
@@ -90,6 +93,17 @@ namespace Microsoft.Docs.Build
         public static void CountWord(string html, long expectedCount)
         {
             Assert.Equal(expectedCount, HtmlUtility.CountWord(HtmlUtility.LoadHtml(html)));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("<h1 id='a'></h1>", "a")]
+        [InlineData("<h1 id='a'></h1><h2 id='b'></h2>", "a, b")]
+        [InlineData("<a id='a'></a>", "a")]
+        [InlineData("<a name='a'></a>", "a")]
+        public static void GetBookmarks(string html, string expected)
+        {
+            Assert.Equal(expected, string.Join(", ", HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(html))));
         }
     }
 }

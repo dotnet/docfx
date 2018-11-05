@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -19,13 +21,13 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class JsonUtility
     {
-        public static readonly JsonSerializer DefaultDeserializer = new JsonSerializer
+        public static readonly JsonSerializer DefaultSerializer = new JsonSerializer
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new JsonContractResolver(),
         };
 
-        private static readonly JsonMergeSettings s_defaultMergeSettings = new JsonMergeSettings
+        public static readonly JsonMergeSettings MergeSettings = new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Replace,
         };
@@ -54,6 +56,73 @@ namespace Microsoft.Docs.Build
         private static readonly JsonSerializer s_defaultIndentedFormatSerializer = JsonSerializer.Create(s_indentedFormatJsonSerializerSettings);
         private static readonly JsonSerializer s_defaultNoneFormatSerializer = JsonSerializer.Create(s_noneFormatJsonSerializerSettings);
 
+        [ThreadStatic]
+        private static ImmutableStack<Status> t_status;
+
+        /// <summary>
+        /// Fast pass to read MIME from $schema attribute.
+        /// </summary>
+        public static string ReadMime(TextReader reader)
+        {
+            var schema = ReadSchema(reader);
+            if (schema == null)
+                return null;
+
+            // TODO: be more strict
+            var mime = schema.Split('/').LastOrDefault();
+            if (mime != null)
+                return Path.GetFileNameWithoutExtension(schema);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Fast pass to read the value of $schema specified in JSON.
+        /// $schema must be the first attribute in the root object.
+        /// Assume input is a valid JSON. Bad input will be process though Json.NET
+        /// </summary>
+        public static string ReadSchema(TextReader reader)
+        {
+            SkipSpaces();
+
+            if (reader.Read() != '{')
+                return null;
+
+            SkipSpaces();
+
+            foreach (var expect in "\"$schema\"")
+            {
+                if (reader.Read() != expect)
+                    return null;
+            }
+
+            SkipSpaces();
+
+            if (reader.Read() != ':')
+                return null;
+
+            SkipSpaces();
+
+            if (reader.Peek() != '\"')
+                return null;
+
+            return new JsonTextReader(reader).ReadAsString();
+
+            void SkipSpaces()
+            {
+                while (true)
+                {
+                    var ch = reader.Peek();
+                    if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')
+                    {
+                        reader.Read();
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         /// Serialize an object to TextWriter
         /// </summary>
@@ -76,44 +145,100 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, JToken) Deserialize(string json)
-        {
-            return Deserialize(new StringReader(json));
-        }
-
-        /// <summary>
-        /// Deserialize from TextReader to an object
-        /// </summary>
-        public static (List<Error>, T) Deserialize<T>(TextReader reader)
-        {
-            var (errors, token) = Deserialize(reader);
-            return (errors, token.ToObject<T>(DefaultDeserializer));
-        }
-
-        /// <summary>
-        /// Deserialize a string to an object
+        /// De-serialize a string to an object
         /// </summary>
         public static (List<Error>, T) Deserialize<T>(string json)
         {
-            return Deserialize<T>(new StringReader(json));
+            var (errors, token) = Deserialize(json);
+            var (mismatchingErrors, result) = ToObject<T>(token);
+            errors.AddRange(mismatchingErrors);
+            return (errors, result);
         }
 
         /// <summary>
-        /// Merge multiple JSON objects.
-        /// The latter value overwrites the former value for a given key.
+        /// Creates an instance of the specified .NET type from the JToken
+        /// And validate mismatching field types
         /// </summary>
-        public static JObject Merge(params JObject[] objs)
+        public static (List<Error>, T) ToObject<T>(JToken token)
         {
-            var result = new JObject();
-            foreach (var obj in objs)
+            var (errors, obj) = ToObject(token, typeof(T));
+            return (errors, (T)obj);
+        }
+
+        public static (List<Error>, object) ToObject(
+            JToken token,
+            Type type,
+            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
+        {
+            var errors = new List<Error>();
+            try
             {
-                if (obj != null)
+                var status = new Status
                 {
-                    result.Merge(obj, s_defaultMergeSettings);
+                    SchemaViolationErrors = new List<Error>(),
+                    Transform = transform,
+                };
+                t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
+
+                token.ReportUnknownFields(errors, type);
+                var serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ContractResolver = DefaultSerializer.ContractResolver,
+                };
+                serializer.Error += HandleError;
+                var value = token.ToObject(type, serializer);
+                errors.AddRange(t_status.Peek().SchemaViolationErrors);
+                return (errors, value);
+            }
+            finally
+            {
+                t_status = t_status.Pop();
+            }
+
+            void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+            {
+                // only log an error once
+                if (args.CurrentObject == args.ErrorContext.OriginalObject)
+                {
+                    if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException jse)
+                    {
+                        var (range, message, path) = ParseException(args.ErrorContext.Error);
+                        errors.Add(Errors.ViolateSchema(range, message, path));
+                        args.ErrorContext.Handled = true;
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Deserialize from JSON file, get from or add to cache
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(Document file, Context context) => context.LoadJsonFile(file);
+
+        /// <summary>
+        /// Parse a string to JToken.
+        /// Validate null value during the process.
+        /// </summary>
+        public static (List<Error>, JToken) Deserialize(string json)
+        {
+            try
+            {
+                var (errors, token) = JToken.Parse(json).RemoveNulls();
+                return (errors, token ?? JValue.CreateNull());
+            }
+            catch (JsonReaderException ex)
+            {
+                var (range, message, path) = ParseException(ex);
+                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+            }
+        }
+
+        public static JObject Merge(JObject a, JObject b)
+        {
+            var result = new JObject();
+            result.Merge(a, MergeSettings);
+            result.Merge(b, MergeSettings);
             return result;
         }
 
@@ -125,22 +250,54 @@ namespace Microsoft.Docs.Build
             {
                 if (obj != null)
                 {
-                    result.Merge(obj, s_defaultMergeSettings);
+                    result.Merge(obj, MergeSettings);
                 }
             }
             return result;
         }
 
-        public static (List<Error>, JToken) ValidateNullValue(this JToken token, JTokenSourceMap mappings = null)
+        public static (List<Error>, JToken) RemoveNulls(this JToken token)
         {
             var errors = new List<Error>();
             var nullNodes = new List<JToken>();
-            token.Traverse(errors, mappings, nullNodes);
+            token.FindNulls(errors, nullNodes);
             foreach (var node in nullNodes)
             {
+                var lineInfo = (IJsonLineInfo)node;
+                var name = node is JProperty prop ? prop.Name : (node.Parent?.Parent is JProperty p ? p.Name : node.Path);
+                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name, node.Path));
                 node.Remove();
             }
             return (errors, token);
+        }
+
+        public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
+        {
+            value = null;
+            if (obj == null || string.IsNullOrEmpty(key))
+            {
+                return false;
+            }
+
+            if (obj.TryGetValue(key, out var valueToken) && valueToken is T valueT)
+            {
+                value = valueT;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static (Range, string message, string path) ParseException(Exception ex)
+        {
+            // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
+            var match = Regex.Match(ex.Message, "^([\\s\\S]*)\\sPath '(.*)', line (\\d+), position (\\d+).$");
+            if (match.Success)
+            {
+                var range = new Range(int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
+                return (range, match.Groups[1].Value, match.Groups[2].Value);
+            }
+            return (default, ex.Message, null);
         }
 
         private static bool IsNullOrUndefined(this JToken token)
@@ -151,27 +308,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        /// <summary>
-        /// Parse a string to JToken.
-        /// Validate null value during the process.
-        /// </summary>
-        private static (List<Error>, JToken) Deserialize(TextReader reader)
-        {
-            try
-            {
-                using (JsonReader json = new JsonTextReader(reader))
-                {
-                    var (errors, token) = DefaultDeserializer.Deserialize<JToken>(json).ValidateNullValue();
-                    return (errors, token ?? JValue.CreateNull());
-                }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.JsonSyntaxError(ex).ToException();
-            }
-        }
-
-        private static void Traverse(this JToken token, List<Error> errors, JTokenSourceMap mappings, List<JToken> nullNodes, string name = null)
+        private static void FindNulls(this JToken token, List<Error> errors, List<JToken> nullNodes)
         {
             if (token is JArray array)
             {
@@ -179,12 +316,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(array, errors, mappings, name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        Traverse(item, errors, mappings, nullNodes, name);
+                        item.FindNulls(errors, nullNodes);
                     }
                 }
             }
@@ -195,29 +331,110 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
                     if (prop.Value.IsNullOrUndefined())
                     {
-                        LogWarningForNullValue(token, errors, mappings, prop.Name);
                         nullNodes.Add(item);
                     }
                     else
                     {
-                        prop.Value.Traverse(errors, mappings, nullNodes, prop.Name);
+                        prop.Value.FindNulls(errors, nullNodes);
                     }
                 }
             }
         }
 
-        private static void LogWarningForNullValue(JToken item, List<Error> errors, JTokenSourceMap mappings, string name)
+        private static void ReportUnknownFields(this JToken token, List<Error> errors, Type type)
         {
-            if (mappings == null)
+            if (token is JArray array)
             {
-                var lineInfo = item as IJsonLineInfo;
-                errors.Add(Errors.NullValue(new Range(lineInfo.LineNumber, lineInfo.LinePosition), name));
+                var itemType = GetCollectionItemTypeIfArrayType(type);
+                foreach (var item in token.Children())
+                {
+                    item.ReportUnknownFields(errors, itemType);
+                }
             }
-            else
+            else if (token is JObject obj)
             {
-                Debug.Assert(mappings.ContainsKey(item));
-                var value = mappings[item];
-                errors.Add(Errors.NullValue(new Range(value.StartLine, value.StartCharacter, value.EndLine, value.EndCharacter), name));
+                foreach (var item in token.Children())
+                {
+                    var prop = item as JProperty;
+
+                    // skip the special property
+                    if (prop.Name.StartsWith('$'))
+                        continue;
+
+                    var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);
+                    if (nestedType != null)
+                    {
+                        prop.Value.ReportUnknownFields(errors, nestedType);
+                    }
+                }
+            }
+        }
+
+        private static Type GetCollectionItemTypeIfArrayType(Type type)
+        {
+            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+            if (contract is JsonObjectContract)
+            {
+                return type;
+            }
+            else if (contract is JsonArrayContract arrayContract)
+            {
+                var itemType = arrayContract.CollectionItemType;
+                if (itemType is null)
+                {
+                    return type;
+                }
+                else
+                {
+                    return itemType;
+                }
+            }
+            return type;
+        }
+
+        private static Type GetNestedTypeAndCheckForUnknownField(Type type, JProperty prop, List<Error> errors)
+        {
+            var contract = DefaultSerializer.ContractResolver.ResolveContract(type);
+
+            if (contract is JsonObjectContract objectContract)
+            {
+                var matchingProperty = objectContract.Properties.GetClosestMatchProperty(prop.Name);
+                if (matchingProperty == null && type.IsSealed)
+                {
+                    var lineInfo = prop as IJsonLineInfo;
+                    errors.Add(Errors.UnknownField(
+                        new Range(lineInfo.LineNumber, lineInfo.LinePosition), prop.Name, type.Name, prop.Path));
+                }
+                return matchingProperty?.PropertyType;
+            }
+
+            if (contract is JsonArrayContract arrayContract)
+            {
+                var matchingProperty = GetPropertiesFromJsonArrayContract(arrayContract).GetClosestMatchProperty(prop.Name);
+                return matchingProperty?.PropertyType;
+            }
+
+            return null;
+        }
+
+        private static JsonPropertyCollection GetPropertiesFromJsonArrayContract(JsonArrayContract arrayContract)
+        {
+            var itemContract = DefaultSerializer.ContractResolver.ResolveContract(arrayContract.CollectionItemType);
+            if (itemContract is JsonObjectContract objectContract)
+                return objectContract.Properties;
+            else if (itemContract is JsonArrayContract contract)
+                return GetPropertiesFromJsonArrayContract(contract);
+            return null;
+        }
+
+        private static void SetFieldWritable(MemberInfo member, JsonProperty prop)
+        {
+            if (!prop.Writable)
+            {
+                if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                {
+                    prop.Writable = true;
+                }
             }
         }
 
@@ -226,16 +443,84 @@ namespace Microsoft.Docs.Build
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 var prop = base.CreateProperty(member, memberSerialization);
+                var converter = GetConverter(member);
 
-                if (!prop.Writable)
+                if (converter != null)
                 {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
+                    if (prop.PropertyType.IsArray)
                     {
-                        prop.Writable = true;
+                        prop.ItemConverter = converter;
+                    }
+                    else
+                    {
+                        prop.Converter = converter;
                     }
                 }
+
+                SetFieldWritable(member, prop);
                 return prop;
             }
+
+            private SchemaValidationAndTransformConverter GetConverter(MemberInfo member)
+            {
+                var validators = member.GetCustomAttributes<ValidationAttribute>(false);
+                var contentTypeAttributes = member.GetCustomAttributes<DataTypeAttribute>(false);
+                if (contentTypeAttributes.Any() || validators.Any())
+                {
+                    return new SchemaValidationAndTransformConverter(contentTypeAttributes, validators, member.Name);
+                }
+                return null;
+            }
+        }
+
+        private sealed class SchemaValidationAndTransformConverter : JsonConverter
+        {
+            private readonly IEnumerable<ValidationAttribute> _validators;
+            private readonly IEnumerable<DataTypeAttribute> _attributes;
+            private readonly string _fieldName;
+
+            public SchemaValidationAndTransformConverter(IEnumerable<DataTypeAttribute> attributes, IEnumerable<ValidationAttribute> validators, string fieldName)
+            {
+                _attributes = attributes;
+                _validators = validators;
+                _fieldName = fieldName;
+            }
+
+            public override bool CanConvert(Type objectType) => true;
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => new NotSupportedException();
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                var lineInfo = (IJsonLineInfo)reader;
+                var range = new Range(lineInfo.LineNumber, lineInfo.LinePosition);
+                var value = serializer.Deserialize(reader, objectType);
+                if (value == null)
+                {
+                    return null;
+                }
+
+                foreach (var validator in _validators)
+                {
+                    try
+                    {
+                        validator.Validate(value, new ValidationContext(value) { DisplayName = _fieldName });
+                    }
+                    catch (Exception e)
+                    {
+                        t_status.Peek().SchemaViolationErrors.Add(Errors.ViolateSchema(range, e.Message, reader.Path));
+                    }
+                }
+
+                return t_status.Peek().Transform != null ? t_status.Peek().Transform(_attributes, value, reader.Path) : value;
+            }
+        }
+
+        private sealed class Status
+        {
+            public List<Error> SchemaViolationErrors { get; set; }
+
+            public Func<IEnumerable<DataTypeAttribute>, object, string, object> Transform { get; set; }
         }
     }
 }

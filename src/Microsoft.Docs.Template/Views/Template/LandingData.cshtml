@@ -1,0 +1,145 @@
+@* Copyright (c) Microsoft. All rights reserved.
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
+@using Microsoft.Docs.Build;
+@using Newtonsoft.Json.Linq;
+@model LandingData
+@functions
+{
+private void UpdateAbstract()
+{
+    if (Model.Abstract?.Aside?.Title != null && Model.Abstract?.Aside?.Image != null && string.IsNullOrEmpty(Model.Abstract?.Aside?.Image?.Alt))
+    {
+        Model.Abstract.Aside.Image.Alt = Model.Abstract.Aside.Title;
+    }
+
+    if (Model.Abstract?.Menu != null)
+    {
+        Model.Abstract.Aside = null;
+    }
+}
+}
+@{
+    UpdateAbstract();
+}
+@if (Model.Abstract != null)
+{
+    <div class="abstractHolder">
+        <div class="abstract">
+            @Html.Raw(Model.Abstract?.Description)
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title))
+        {
+            <div class="menu">
+                <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+            </div>
+        }
+        @if (Model.Abstract?.Aside != null)
+        {
+            <div class="aside">
+                @if (Model.Abstract?.Aside?.Image != null)
+                {
+                    var link = Model.Abstract?.Aside?.Href ?? "";
+                    <a href="@link">
+                        <img src="@Model.Abstract?.Aside?.Image?.Src" alt="@Model.Abstract?.Aside?.Image?.Alt" />
+                    </a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Abstract?.Aside?.Title))
+                {
+                    <a href="@Model.Abstract?.Aside?.Href">@Model.Abstract?.Aside?.Title</a>
+                }
+            </div>
+        }
+    </div>
+}
+@if (Model.Sections != null)
+{
+    @foreach (var sect in Model.Sections)
+    {
+        if (!string.IsNullOrEmpty(sect.Title))
+        {
+            <h2>@sect.Title</h2>
+        }
+        if (sect.Items != null)
+        {
+            @foreach (var item in sect.Items)
+            {
+                @if (item.Type == LandingDataType.Paragraph || item.Type == LandingDataType.Markdown)
+                {
+                    @Html.Raw(item.Text)
+                }
+                if (item.Type == LandingDataType.Text)
+                {
+                    @Html.Raw(item.Html)
+                }
+                else if (item.Type == LandingDataType.List)
+                {
+                    @await Html.PartialAsync("BuildItemListPartial", item)
+                }
+                else if (item.Type == LandingDataType.Table)
+                {
+                    if (item.Style == "dataMatrix")
+                    {
+                        <table class="dataMatrix">
+                            @if (item.Columns != null && item.Columns is JArray array)
+                            {
+                                var columns = array.ToObject<LandingDataColumn[]>();
+                                <tr>
+                                    <th></th>
+                                    @for (var i = 0; i < columns.Length; i++)
+                                    {
+                                        var column = columns[i];
+                                        var width = column.Image.Width ?? "48px";
+                                        var alt = column.Title ?? $"column {i + 2}";
+                                        if (column.Image != null)
+                                        {
+                                            <th>
+                                                @if (!string.IsNullOrEmpty(column.Image.Role))
+                                                {
+                                                    <img role="@column.Image.Role" alt="@alt" src="@column.Image.Src" width="@width">
+                                                }
+                                                else if (!string.IsNullOrEmpty(column.Title))
+                                                {
+                                                    <img role="presentation" alt="@alt" src="@column.Image.Src" width="@width">
+                                                    <span>@column.Title</span>
+                                                }
+                                                else
+                                                {
+                                                    <img alt="@alt" src="@column.Image.Src" width="@width">
+                                                }
+                                            </th>
+                                        }
+                                    }
+                                </tr>
+                                @if (item.Rows != null)
+                                {
+                                    foreach (var row in item.Rows)
+                                    {
+                                        <tr>
+                                            <td>@row.Title</td>
+                                            @for (var i = 0; i < columns.Length; i++)
+                                            {
+                                                <td>
+                                                    @if (row.Values != null && row.Values.Length > i && row.Values[i]?.Href != null)
+                                                    {
+                                                        var title = row.Title;
+                                                        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(columns[i].Title))
+                                                        {
+                                                            title = columns[i].Title + " " + title;
+                                                        }
+                                                        <a href="@row.Values[i].Href" aria-label="@title">
+                                                            <span role="presentation" class="docons docon-external-link" aria-hidden="true"></span>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </table>
+                    }
+                }
+            }
+        }
+    }
+}

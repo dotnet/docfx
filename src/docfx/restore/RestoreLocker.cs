@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
             var restoreLockFilePath = GetRestoreLockFilePath(docset);
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInsideMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 async () =>
                 {
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             if (!File.Exists(restoreLockFilePath))
                 return restore;
 
-            await ProcessUtility.CreateFileMutex(
+            await ProcessUtility.RunInsideMutex(
                 Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
                 () =>
                 {
@@ -62,31 +62,10 @@ namespace Microsoft.Docs.Build
             return restore;
         }
 
-        public static async Task<List<RestoreLock>> LoadAll()
-        {
-            var restoreLocks = new ConcurrentBag<RestoreLock>();
-            await ParallelUtility.ForEach(Directory.EnumerateFiles(AppData.RestoreLockDir, "*", SearchOption.TopDirectoryOnly), async restoreLockFilePath =>
-            {
-                await ProcessUtility.CreateFileMutex(
-                Path.GetRelativePath(AppData.RestoreLockDir, restoreLockFilePath),
-                () =>
-                {
-                    if (File.Exists(restoreLockFilePath))
-                    {
-                        restoreLocks.Add(JsonUtility.Deserialize<RestoreLock>(File.ReadAllText(restoreLockFilePath)).Item2);
-                    }
-
-                    return Task.CompletedTask;
-                });
-            });
-
-            return restoreLocks.ToList();
-        }
-
         public static string GetRestoreLockFilePath(string docset)
         {
             docset = PathUtility.NormalizeFile(Path.GetFullPath(docset));
-            var docsetKey = Path.GetFileName(docset) + "-" + HashUtility.GetSha1HashString(docset);
+            var docsetKey = Path.GetFileName(docset) + "-" + HashUtility.GetSha1Hash(docset);
 
             return Path.Combine(AppData.RestoreLockDir, $"{docsetKey}-lock.json");
         }

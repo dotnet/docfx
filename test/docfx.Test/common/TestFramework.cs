@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
         protected override ITestFrameworkExecutor CreateExecutor(AssemblyName assemblyName)
         {
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
+            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
+
             MakeDebugAssertThrowException();
             return new ParallelExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);
         }

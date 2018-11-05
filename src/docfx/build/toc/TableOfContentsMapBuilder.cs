@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         /// Tracks toc files which are included by other toc files
         /// Included toc files are excluded when finding nearest toc for an article.
         /// </summary>
-        private readonly ConcurrentDictionary<Document, byte> _referencedTocs = new ConcurrentDictionary<Document, byte>();
+        private readonly ConcurrentHashSet<Document> _referencedTocs = new ConcurrentHashSet<Document>();
 
         /// <summary>
         /// Mappings between toc and a collection of document
@@ -31,10 +31,9 @@ namespace Microsoft.Docs.Build
         public void Add(Document tocFile, IEnumerable<Document> referencedDocuments, IEnumerable<Document> referencedTocs)
         {
             _tocToDocuments.TryAdd(tocFile, referencedDocuments);
-
             foreach (var referencedToc in referencedTocs)
             {
-                _referencedTocs.TryAdd(referencedToc, 0);
+                _referencedTocs.TryAdd(referencedToc);
             }
         }
 
@@ -49,15 +48,26 @@ namespace Microsoft.Docs.Build
             // reverse the mapping between toc and documents
             // order by toc path
             var allTocs = new List<Document>();
+            var experimentalTocs = new List<Document>();
             foreach (var (toc, documents) in _tocToDocuments)
             {
-                if (_referencedTocs.ContainsKey(toc))
+                if (_referencedTocs.Contains(toc))
                 {
                     // referenced toc's mapping will be ignored
                     continue;
                 }
 
-                allTocs.Add(toc);
+                if (toc.IsExperimental)
+                {
+                    // experimental toc will be ignored
+                    experimentalTocs.Add(toc);
+                    continue;
+                }
+                else
+                {
+                    allTocs.Add(toc);
+                }
+
                 foreach (var document in documents)
                 {
                     if (!documentToTocs.TryGetValue(document, out var tocs))
@@ -69,7 +79,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return new TableOfContentsMap(allTocs, documentToTocs);
+            return new TableOfContentsMap(allTocs, experimentalTocs, documentToTocs);
         }
     }
 }

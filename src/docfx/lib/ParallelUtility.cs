@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -19,12 +21,23 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null)
+        {
+            var done = 0;
+            var total = source.Count();
+
+            Parallel.ForEach(source, item =>
+            {
+                action(item);
+                progress?.Invoke(Interlocked.Increment(ref done), total);
+            });
+        }
+
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
         {
             var done = 0;
             var total = 0;
             var queue = new ActionBlock<T>(Run, s_dataflowOptions);
-
             foreach (var item in source)
             {
                 var posted = queue.Post(item);
@@ -40,11 +53,28 @@ namespace Microsoft.Docs.Build
             }
 
             queue.Complete();
-            return queue.Completion;
+
+            try
+            {
+                await queue.Completion;
+            }
+            catch (WrapException we)
+            {
+                ExceptionDispatchInfo.Capture(we.InnerException).Throw();
+            }
 
             async Task Run(T item)
             {
-                await action(item);
+                try
+                {
+                    await action(item);
+                }
+                catch (OperationCanceledException oce)
+                {
+                    // Action block catches cancellation exceptions
+                    // https://github.com/dotnet/corefx/blob/4b36fba308d8e2d3207773952c30268ac3365eed/src/System.Threading.Tasks.Dataflow/src/Blocks/ActionBlock.cs#L142
+                    throw new WrapException(oce);
+                }
                 progress?.Invoke(Interlocked.Increment(ref done), total);
             }
         }
@@ -52,7 +82,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Parallel run actions including their returned children actions
         /// </summary>
-        public static Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Action<T>, Task> action, Func<T, bool> predicate = null, Action<int, int> progress = null)
         {
             ActionBlock<(T, bool)> queue = null;
 
@@ -65,7 +95,15 @@ namespace Microsoft.Docs.Build
             // Enqueue a virtual root node as a placeholder,
             // it is responsible for queueing each items in source parameter
             queue.Post((default, true));
-            return queue.Completion;
+
+            try
+            {
+                await queue.Completion;
+            }
+            catch (WrapException we)
+            {
+                ExceptionDispatchInfo.Capture(we.InnerException).Throw();
+            }
 
             async Task Run((T, bool) input)
             {
@@ -80,7 +118,14 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await action(item, Enqueue);
+                    try
+                    {
+                        await action(item, Enqueue);
+                    }
+                    catch (OperationCanceledException oce)
+                    {
+                        throw new WrapException(oce);
+                    }
                 }
 
                 if (Interlocked.Decrement(ref running) == 0)
@@ -122,6 +167,12 @@ namespace Microsoft.Docs.Build
 
                 Debug.Assert(queue.Completion.IsFaulted);
             }
+        }
+
+        private class WrapException : Exception
+        {
+            public WrapException(Exception innerException)
+                : base("", innerException) { }
         }
     }
 }

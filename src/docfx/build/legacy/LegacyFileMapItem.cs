@@ -22,8 +22,7 @@ namespace Microsoft.Docs.Build
         {
             switch (contentType)
             {
-                case ContentType.Markdown:
-                case ContentType.SchemaDocument:
+                case ContentType.Page:
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(Path.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = PathUtility.NormalizeFile(RemoveExtension(legacyOutputFilePathRelativeToSiteBasePath));

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "inlineDescription": {
+      "type": "string"
+    },
+    "html": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string"
+    }
+  }
+}

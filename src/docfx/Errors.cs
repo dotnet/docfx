@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using YamlDotNet.Core;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,38 +15,23 @@ namespace Microsoft.Docs.Build
         public static Error InvalidRedirection(string path, ContentType contentType)
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
-        public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find docfx.yml at '{docsetPath}'");
+        public static Error InvalidGlobPattern(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
 
-        public static Error InvalidConfig(string configPath, string message, Exception ex = null)
-            => new Error(ErrorLevel.Error, "invalid-config", $"Error parsing docset config: {message ?? ex.Message}", configPath);
-
-        public static Error InvalidLocale(string locale)
-            => new Error(ErrorLevel.Error, "invalid-locale", $"Local {locale} is not supported ");
+        public static Error ConfigNotFound(string docsetPath, string configFile)
+            => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
 
         public static Error CircularReference<T>(T filePath, IEnumerable<T> dependencyChain)
             => new Error(ErrorLevel.Error, "circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{filePath}'", filePath.ToString());
 
-        public static Error UserProfileCacheNotFound(string userProfilePath)
-          => new Error(ErrorLevel.Error, "user-profile-cache-not-found", $"Cannot find user profile cache file at '{userProfilePath}'");
+        public static Error NeedRestore(string dependenyRepoHref)
+            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forget to run `docfx restore`?");
 
-        public static Error GitCommitsTimeNotFound(string gitCommitsTimePath)
-            => new Error(ErrorLevel.Error, "git-commits-time-not-found", $"Cannot find git commits time file at '{gitCommitsTimePath}'");
+        public static Error GitHubUserNotFound(string login)
+            => new Error(ErrorLevel.Warning, "github-user-not-found", $"Cannot find user '{login}' on GitHub");
 
-        public static Error UrlRestorePathNotFound(string url)
-            => new Error(ErrorLevel.Error, "url-restore-path-not-found", $"The restore path of url `{url}` can't be found, make sure the `restore` command was executed");
-
-        public static Error InvalidUserProfileCache(string userProfileCache, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-user-profile-cache", ex.Message, userProfileCache);
-
-        public static Error InvalidGitCommitsTime(string gitCommitsTimePath, Exception ex)
-            => new Error(ErrorLevel.Error, "invalid-git-commits-time", ex.Message, gitCommitsTimePath);
-
-        public static Error DependenyRepoNotFound(string dependenyRepoHref)
-            => new Error(ErrorLevel.Error, "dependency-repo-not-found", $"The dependency repository with href '{dependenyRepoHref}' is not found, make sure the `restore` command was executed");
-
-        public static Error AuthorNotFound(string author)
-            => new Error(ErrorLevel.Warning, "author-not-found", $"Author '{author}' cannot be recognized");
+        public static Error GitHubApiFailed(string api, Exception ex)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Failed calling GitHub API '{api}': {ex.Message}");
 
         public static Error InvalidTopicHref(Document relativeTo, string topicHref)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{topicHref}' can only reference to a local file or absolute path", relativeTo.ToString());
@@ -55,38 +39,65 @@ namespace Microsoft.Docs.Build
         public static Error InvalidTocHref(Document relativeTo, string tocHref)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{tocHref}' can only reference to a local TOC file, folder or absolute path", relativeTo.ToString());
 
+        public static Error MissingTocHead(in Range range, string filePath)
+            => new Error(ErrorLevel.Error, "missing-toc-head", $"The toc head name is missing", filePath, range);
+
+        public static Error InvalidTocSyntax(in Range range, string filePath, string syntax)
+            => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax '{syntax}' is invalided", filePath, range);
+
+        public static Error InvalidTocLevel(string filePath, int from, int to)
+            => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", filePath);
+
+        public static Error InvalidLocale(string locale)
+            => new Error(ErrorLevel.Error, "invalid-locale", $"Locale '{locale}' is not supported.");
+
+        public static Error DownloadFailed(string url, string message)
+            => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
+
+        public static Error GitCloneFailed(string url)
+            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' failed.");
+
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
 
-        public static Error YamlSyntaxError(YamlException ex)
-            => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{ex.Message}. {ex.InnerException?.Message}");
+        public static Error YamlSyntaxError(in Range range, string message)
+            => new Error(ErrorLevel.Error, "yaml-syntax-error", message, range: range);
 
-        public static Error YamlDuplicateKey(YamlException ex)
-            => new Error(ErrorLevel.Error, "yaml-duplicate-key", RedefineDuplicateKeyErrorMessage(ex));
+        public static Error YamlDuplicateKey(in Range range, string key)
+            => new Error(ErrorLevel.Error, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", range: range);
 
         public static Error InvalidYamlHeader(Document file, Exception ex)
             => new Error(ErrorLevel.Warning, "invalid-yaml-header", ex.Message, file.ToString());
 
-        public static Error JsonSyntaxError(Exception ex)
-            => new Error(ErrorLevel.Error, "json-syntax-error", ex.Message);
+        public static Error JsonSyntaxError(in Range range, string message, string path)
+            => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", range: range, jsonPath: path);
 
         public static Error LinkIsEmpty(Document relativeTo)
             => new Error(ErrorLevel.Info, "link-is-empty", "Link is empty", relativeTo.ToString());
 
-        public static Error LinkOutOfScope(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be build because it is not included in docfx.yml", relativeTo.ToString());
+        public static Error LinkOutOfScope(Document relativeTo, Document file, string href, string configFile)
+            => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{href}' will not be built because it is not included in {configFile}", relativeTo.ToString());
+
+        public static Error RedirectionOutOfScope(Document redirection, string configFile)
+            => new Error(ErrorLevel.Warning, "redirection-out-of-scope", $"Redirection file '{redirection}' will not be built because it is not included in {configFile}");
 
         public static Error LinkIsDependency(Document relativeTo, Document file, string href)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be build because it is from a dependency docset", relativeTo.ToString());
+            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", relativeTo.ToString());
 
         public static Error AbsoluteFilePath(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "absolute-file-path", $"File path cannot be absolute: '{path}'", relativeTo.ToString());
 
-        public static Error FileNotFound(Document relativeTo, string path)
-            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo.ToString());
+        public static Error HeadingNotFound(Document file)
+            => new Error(ErrorLevel.Warning, "heading-not-found", $"The first visible block is not a heading block with `#`", file.ToString());
+
+        public static Error FileNotFound(string relativeTo, string path)
+            => new Error(ErrorLevel.Warning, "file-not-found", $"Cannot find file '{path}' relative to '{relativeTo}'", relativeTo);
 
         public static Error UidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Warning, "uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
+
+        public static Error MergeConflict(string file)
+            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", file);
 
         public static Error AtUidNotFound(Document file, string uid, string rawXref)
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
@@ -109,24 +120,61 @@ namespace Microsoft.Docs.Build
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
 
-        public static Error NullValue(Range range, string name)
-            => new Error(ErrorLevel.Info, "null-value", $"{range} {name} contains null value");
+        public static Error GitBranchNotFound(string repo, string branch)
+            => new Error(ErrorLevel.Error, "git-branch-not-found", $"Cannot find branch '{branch}'for repo '{repo}'.");
+
+        public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
+
+        public static Error NullValue(in Range range, string name, string path)
+            => new Error(ErrorLevel.Info, "null-value", $"'{name}' contains null value", range: range, jsonPath: path);
+
+        public static Error UnknownField(in Range range, string propName, string typeName, string path)
+            => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", range: range, jsonPath: path);
+
+        public static Error ViolateSchema(in Range range, string message, string path)
+            => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         public static Error SchemaNotFound(string schema)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
 
-        private static Range ParseRangeFromYamlSyntaxException(YamlException ex)
+        public static Error ExceedMaxErrors(int maxErrors)
+            => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
+
+        public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
         {
-            return new Range(ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+            var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
+            return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
 
-        private static string RedefineDuplicateKeyErrorMessage(YamlException ex)
+        public static Error MonikerNameConflict(string monikerName)
+            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
+
+        public static Error InvalidMonikerRange(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+
+        /// <summary>
+        /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
+        /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>
+        /// Returns: false if no match is found, otherwise return true.
+        /// </summary>
+        /// <param name="target">The string to be looked for</param>
+        /// <param name="candidates">Possible strings to look for from</param>
+        /// <param name="bestMatch">If a match is found, this will be assigned</param>
+        /// <param name="threshold">Max levenshtein distance between the candidate and the target, greater values will be filtered</param>
+        /// <returns>
+        ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
+        /// </returns>
+        private static bool FindBestMatch(string target, IEnumerable<string> candidates, out string bestMatch, int threshold = 5)
         {
-            var range = ParseRangeFromYamlSyntaxException(ex);
-            var innerMessage = ex.InnerException.Message;
-            var keyIndex = innerMessage.LastIndexOf(':');
-            var key = innerMessage.Substring(keyIndex + 2, innerMessage.Length - keyIndex - 2);
-            return $"{range}: Key '{key}' is already defined, remove the duplicate key.";
+            bestMatch = candidates != null ?
+                    (from candidate in candidates
+                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     where levanshteinDistance <= threshold
+                     orderby levanshteinDistance, candidate
+                     select candidate).FirstOrDefault()
+                    : null;
+            return !string.IsNullOrEmpty(bestMatch);
         }
     }
 }

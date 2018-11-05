@@ -4,18 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Config
+    internal sealed class Config
     {
-        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*" };
-
         /// <summary>
         /// Gets the default product name
         /// </summary>
@@ -27,14 +23,9 @@ namespace Microsoft.Docs.Build
         public readonly string Name = string.Empty;
 
         /// <summary>
-        /// Gets the default locale of this docset.
-        /// </summary>
-        public readonly string Locale = "en-us";
-
-        /// <summary>
         /// Gets the contents that are managed by this docset.
         /// </summary>
-        public readonly FileConfig Content = new FileConfig(s_defaultContentInclude, s_defaultContentExclude);
+        public readonly FileConfig Content = new FileConfig();
 
         /// <summary>
         /// Gets the output config.
@@ -45,21 +36,6 @@ namespace Microsoft.Docs.Build
         /// Gets the global metadata added to each document.
         /// </summary>
         public readonly JObject GlobalMetadata = new JObject();
-
-        /// <summary>
-        /// Just for backward compatibility, the output site path prefix
-        /// </summary>
-        public readonly string SiteBasePath = string.Empty;
-
-        /// <summary>
-        /// Just for backward compatibility, the source path prefix
-        /// </summary>
-        public readonly string SourceBasePath = string.Empty;
-
-        /// <summary>
-        /// Just for backward compatibility, Indicate that whether generate pdf url template in medadata.
-        /// </summary>
-        public readonly bool NeedGeneratePdfUrlTemplate = false;
 
         /// <summary>
         /// The hostname
@@ -74,13 +50,15 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the file metadata added to each document.
+        /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
+        public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
 
         /// <summary>
-        /// Gets the input and output path mapping configuration of documents.
+        /// Gets a map from source folder path and output URL path.
+        /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
+        public readonly Dictionary<string, string> Routes = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.
@@ -119,141 +97,228 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
 
         /// <summary>
+        /// Gets the authorization keys for required resources access
+        /// </summary>
+        public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
+
+        /// <summary>
+        /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
+        /// </summary>
+        public readonly GitHubConfig GitHub = new GitHubConfig();
+
+        /// <summary>
+        /// Gets whether warnings should be treated as errors.
+        /// </summary>
+        public readonly bool WarningsAsErrors;
+
+        /// <summary>
+        /// The addresses of xref map files, used for resolving xref.
+        /// They should be absolute url or relative path
+        /// </summary>
+        public readonly string[] Xref = Array.Empty<string>();
+
+        /// <summary>
+        /// The configurations for localization build
+        /// </summary>
+        public readonly LocalizationConfig Localization = new LocalizationConfig();
+
+        /// <summary>
+        /// Gets the config file name.
+        /// </summary>
+        [JsonIgnore]
+        public string ConfigFileName { get; private set; }
+
+        public IEnumerable<string> GetExternalReferences()
+        {
+            foreach (var url in Xref)
+            {
+                yield return url;
+            }
+
+            yield return Contribution.GitCommitsTime;
+            yield return GitHub.UserCache;
+        }
+
+        /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static Config Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = PathUtility.NormalizeFile(Path.Combine(docsetPath, "docfx.yml"));
-            if (!File.Exists(configPath))
+            if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
-            return LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            config.ConfigFileName = configFileName;
+            return (errors, config);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out Config config, bool extend = true, RestoreMap restoreMap = null)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
         {
-            var configPath = Path.Combine(docsetPath, "docfx.yml");
-            var exists = File.Exists(configPath);
-            config = exists ? LoadCore(docsetPath, configPath, options, extend, restoreMap) : new Config();
+            var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
+            if (exists)
+            {
+                (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            }
+            else
+            {
+                errors = new List<Error>();
+                config = new Config();
+            }
             return exists;
         }
 
-        private static Config LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
+        public static bool TryGetConfigPath(string parentPath, out string configPath, out string configFile)
         {
-            // Options should be converted to config and overwrite the config parsed from docfx.yml
+            configFile = "docfx.yml";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+
+            configFile = "docfx.json";
+            configPath = PathUtility.NormalizeFile(Path.Combine(parentPath, configFile));
+            if (File.Exists(configPath))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
+        {
+            // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
+            var errors = new List<Error>();
             Config config = null;
-            try
+
+            var (loadErrors, configObject) = LoadConfigObject(configPath, configPath);
+            var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+            var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
+
+            if (extend)
             {
-                var optionConfigObject = options?.ToJObject();
-                var configObject = ExpandAndNormalize(JsonUtility.Merge(LoadConfigObject(docsetPath, configPath, extend, restoreMap), optionConfigObject));
-                config = configObject.ToObject<Config>(JsonUtility.DefaultDeserializer);
+                var extendErrors = new List<Error>();
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, restoreMap ?? new RestoreMap(docsetPath));
+                errors.AddRange(extendErrors);
             }
-            catch (Exception e)
+
+            finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
+
+            var deserializeErrors = new List<Error>();
+            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
+            errors.AddRange(deserializeErrors);
+
+            return (errors, config);
+
+            string GetBranch()
             {
-                throw Errors.InvalidConfig(configPath, e.Message).ToException(e);
-            }
+                var repoPath = GitUtility.FindRepo(docsetPath);
 
-            Validate(config, docsetPath);
-
-            return config;
-        }
-
-        private static void Validate(Config config, string docsetPath)
-        {
-            ValidateLocale(config);
-            ValidateContributorConfig(config.Contribution, docsetPath);
-        }
-
-        private static void ValidateLocale(Config config)
-        {
-            try
-            {
-                var culture = new CultureInfo(config.Locale);
-            }
-            catch (CultureNotFoundException e)
-            {
-                throw Errors.InvalidLocale(config.Locale).ToException(e);
+                return repoPath == null ? null : GitUtility.GetRepoInfo(repoPath).branch;
             }
         }
 
-        private static void ValidateContributorConfig(ContributionConfig config, string docsetPath)
+        private static (List<Error>, JObject) LoadConfigObject(string fileName, string filePath)
         {
-            if (!string.IsNullOrEmpty(config.UserProfileCache)
-                && !HrefUtility.IsAbsoluteHref(config.UserProfileCache)
-                && !File.Exists(Path.Combine(docsetPath, config.UserProfileCache)))
+            var errors = new List<Error>();
+            JObject config = null;
+            if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                throw Errors.UserProfileCacheNotFound(config.UserProfileCache).ToException();
+                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             }
-            if (!string.IsNullOrEmpty(config.GitCommitsTime)
-                && !HrefUtility.IsAbsoluteHref(config.GitCommitsTime)
-                && !File.Exists(Path.Combine(docsetPath, config.GitCommitsTime)))
+            else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                throw Errors.GitCommitsTimeNotFound(config.GitCommitsTime).ToException();
+                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             }
+            return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
-        private static JObject LoadConfigObject(string docsetPath, string filePath, bool extend, RestoreMap restoreMap)
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
         {
-            var (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
-            if (errors.Any())
+            var result = new JObject();
+            var errors = new List<Error>();
+
+            var globalConfigPath = AppData.GlobalConfigPath;
+            if (File.Exists(globalConfigPath))
             {
-                throw errors[0].ToException();
+                var filePath = restoreMap.GetUrlRestorePath(globalConfigPath);
+                (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
-            if (config == null)
-                config = new JObject();
-
-            if (!extend)
-                return config;
-
-            restoreMap = restoreMap ?? new RestoreMap(docsetPath);
-            return ExtendConfigObject(docsetPath, config, restoreMap);
-        }
-
-        private static JObject ExtendConfigObject(string docsetPath, JObject config, RestoreMap restoreMap)
-        {
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
-            if (!config.TryGetValue(ConfigConstants.Extend, out var objExtend) || objExtend == null)
+            if (config[ConfigConstants.Extend] is JArray extends)
             {
-                return config;
-            }
-
-            if (!(objExtend is JArray arrayExtend))
-            {
-                return config;
-            }
-
-            var extendedConfig = new JObject();
-            foreach (var extendPath in arrayExtend)
-            {
-                if (extendPath is JValue strExtendPath)
+                foreach (var extend in extends)
                 {
-                    var filePath = restoreMap.GetUrlRestorePath(docsetPath, strExtendPath.Value<string>());
-                    var configObject = LoadConfigObject(docsetPath, filePath, false, restoreMap); // only support first level extends
-                    extendedConfig = JsonUtility.Merge(extendedConfig, configObject);
+                    if (extend is JValue value && value.Value is string str)
+                    {
+                        var filePath = restoreMap.GetUrlRestorePath(str);
+                        var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
+                        errors.AddRange(extendErros);
+                        result.Merge(extendConfigObject, JsonUtility.MergeSettings);
+                    }
                 }
             }
 
-            return JsonUtility.Merge(extendedConfig, config);
+            result.Merge(config, JsonUtility.MergeSettings);
+            return (errors, result);
+        }
+
+        private static JObject OverwriteConfig(JObject config, string locale, string branch)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                if (config.TryGetValue<JObject>(ConfigConstants.Localization, out var localizationConfig) &&
+                    localizationConfig.TryGetValue<JValue>(ConfigConstants.DefaultLocale, out var defaultLocale))
+                {
+                    locale = defaultLocale.Value<string>();
+                }
+                else
+                {
+                    locale = LocalizationConfig.DefaultLocaleStr;
+                }
+            }
+
+            var result = new JObject();
+            var overwriteConfigIdentifiers = new List<string>();
+            result.Merge(config, JsonUtility.MergeSettings);
+            foreach (var (key, value) in config)
+            {
+                if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
+                {
+                    if ((identifier.Branches.Count == 0 || (!string.IsNullOrEmpty(branch) && identifier.Branches.Contains(branch))) &&
+                        (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
+                        value is JObject overwriteConfig)
+                    {
+                        result.Merge(ExpandAndNormalize(overwriteConfig), JsonUtility.MergeSettings);
+                    }
+
+                    overwriteConfigIdentifiers.Add(key);
+                }
+            }
+
+            // clean up overwrite configuration
+            foreach (var overwriteConfigIdentifier in overwriteConfigIdentifiers)
+            {
+                result.Remove(overwriteConfigIdentifier);
+            }
+
+            return result;
         }
 
         private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
-            config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
-            config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
-            config[ConfigConstants.Extend] = ExpandExtend(config[ConfigConstants.Extend]);
+            config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
-            config[ConfigConstants.RedirectionsWithoutDocumentId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutDocumentId]);
+            config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
             return config;
         }
-
-        private static JToken ExpandExtend(JToken extend) => ExpandStringArray(extend);
 
         private static JToken NormalizeRedirections(JToken redirection)
         {
@@ -275,70 +340,20 @@ namespace Microsoft.Docs.Build
             return redirection;
         }
 
-        private static JToken ExpandRouteConfigs(JToken jToken)
+        private static JToken NormalizeRouteConfig(JToken token)
         {
-            if (jToken == null)
-                return null;
-            if (!(jToken is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(jToken)}");
-
-            var result = new JArray();
-            foreach (var (key, value) in obj)
-            {
-                if (!(value is JValue strValue))
-                    throw new Exception($"Expect to be a string: {JsonUtility.Serialize(jToken)}");
-
-                result.Add(new JObject
-                {
-                    [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\') ?
-                        PathUtility.NormalizeFolder(key) :
-                        PathUtility.NormalizeFile(key),
-                    [ConfigConstants.Destination] = PathUtility.NormalizeFile(strValue.Value.ToString()),
-                });
-            }
-            return result;
-        }
-
-        private static JToken ExpandGlobConfigs(JToken token)
-        {
-            if (token == null)
-                return null;
             if (token is JObject obj)
-                token = ToGlobConfigs(obj);
-            if (token is JArray arr)
             {
-                foreach (var item in arr)
+                var result = new JObject();
+                foreach (var (key, value) in obj)
                 {
-                    ExpandGlobConfig(item);
+                    result.Add(
+                        key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
+                        value is JValue v && v.Value is string str ? PathUtility.NormalizeFile(str) : value);
                 }
+                return result;
             }
             return token;
-        }
-
-        private static void ExpandGlobConfig(JToken item)
-        {
-            if (!(item is JObject obj))
-                throw new Exception($"Expect to be an object: {JsonUtility.Serialize(item)}");
-            ExpandIncludeExclude(obj);
-        }
-
-        private static JArray ToGlobConfigs(JObject obj)
-        {
-            var result = new JArray();
-
-            foreach (var (key, value) in obj)
-            {
-                if (key.Contains("*"))
-                    throw new Exception($"Glob is not supported in config key: '{key}'");
-                result.Add(new JObject
-                {
-                    [ConfigConstants.Include] = key,
-                    [ConfigConstants.Value] = value,
-                    [ConfigConstants.IsGlob] = false,
-                });
-            }
-
-            return result;
         }
 
         private static JObject ExpandFiles(JToken file)
@@ -368,8 +383,6 @@ namespace Microsoft.Docs.Build
                 return new JArray(e);
             if (e is JArray arr)
                 return arr;
-
-            // TODO: error handle
             return null;
         }
     }

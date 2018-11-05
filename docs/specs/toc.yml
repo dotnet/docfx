@@ -17,7 +17,7 @@ outputs:
   docs/index.json:
   docs/n1.json:
   docs/f1/n1.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -50,8 +50,7 @@ outputs:
       ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be build because it is not included in docfx.yml","docs/TOC.md"]
-  build.manifest:
+    ["warning","link-out-of-scope","File 'index.md' referenced by link '../index.md' will not be built because it is not included in docfx.yml","docs/TOC.md"]
 ---
 # TOC can be a json file
 inputs:
@@ -59,7 +58,7 @@ inputs:
   docs/TOC.json: |
     [{ "name": "title" }]
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[
           {
@@ -67,7 +66,6 @@ outputs:
           }
       ]
     }
-  build.manifest:
 ---
 # TOC json file is invalid
 inputs:
@@ -75,9 +73,8 @@ inputs:
   docs/TOC.json: |
     [{ "name": "title" ]
 outputs:
-  build.manifest:
   build.log: |
-    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object. Path '[0]', line 1, position 20.","docs/TOC.json"]
+    ["error","json-syntax-error","JsonToken EndArray is not valid for closing JsonType Object.","docs/TOC.json","[0]",1,20]
 ---
 # Probe TOC in JSON format
 inputs:
@@ -88,7 +85,7 @@ inputs:
     [{ "name": "b", "href": "b.md" }]
   docs/a/b.md:
 outputs:
-  docs/TOC.json: |
+  docs/toc.json: |
     {
       "items": [
         {
@@ -97,7 +94,7 @@ outputs:
         }
       ]
     }
-  docs/a/TOC.json: |
+  docs/a/toc.json: |
     {
       "items": [
         {
@@ -107,7 +104,6 @@ outputs:
       ]
     }
   docs/a/b.json:
-  build.manifest:
 ---
 # No-existing file reference
 inputs:
@@ -122,7 +118,7 @@ inputs:
     ### [Reference No-Existing File 4](~/docs/no-existing.md)
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -154,7 +150,6 @@ outputs:
           }
       ]
     }
-  build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'no-existing.md' relative to 'docs/TOC.md'","docs/TOC.md"]
     ["warning","file-not-found","Cannot find file 'no-existing.system.md' relative to 'docs/TOC.md'","docs/TOC.md"]
@@ -169,10 +164,10 @@ inputs:
     # [Index Reference](index.md)
     ## Absolute File Reference
     ### [Reference Absolute path 1](https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906)
-    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=/help/breadcrumb/TOC.json)
+    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -181,11 +176,11 @@ outputs:
                   "children":[  
                       {  
                         "toc_title":"Reference Absolute path 1",
-                        "href":"https://worldready.cloudapp.net/styleguide/read?id=2700&topicid=26906"
+                        "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906"
                       },
                       {  
                         "toc_title":"Reference Absolute Path 2",
-                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/toc.json&bc=/help/breadcrumb/toc.json"
+                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json"
                       }
                   ],
                   "toc_title":"Absolute File Reference"
@@ -196,7 +191,6 @@ outputs:
           }
       ]
     }
-  build.manifest:
 ---
 # Nested TOC reference 1
 # reference toc
@@ -211,7 +205,7 @@ inputs:
   docs/f1/index.md:
 outputs:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -243,7 +237,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Nested TOC reference 2
 # multiple level
@@ -264,7 +257,7 @@ inputs:
   docs/f1/f11/index.md:
 outputs:
   docs/f1/f11/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -292,7 +285,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Title with # or End with #
 inputs:
@@ -307,7 +299,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
       "items":[  
           {  
@@ -329,7 +321,6 @@ outputs:
                       }
                   ],
                   "toc_title":"Topic1.2 Language Java",
-                  "href": ""
                 }
             ],
             "toc_title":"Topic1",
@@ -341,7 +332,6 @@ outputs:
           }
       ]
     }
-  build.manifest:
 ---
 # Circle toc referenceing 1
 inputs:
@@ -363,7 +353,6 @@ inputs:
     ## [Reference TOC back](../TOC.md)
   docs/index.md:
 outputs:
-  build.manifest:
   build.log: |
     ["error","circular-reference","Found circular reference: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
 ---
@@ -378,7 +367,6 @@ inputs:
     ## [Reference itself](TOC.md)
   docs/index.md:
 outputs:
-  build.manifest:
   build.log: |
     ["error","circular-reference","Found circular reference: 'docs/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
 ---
@@ -401,7 +389,7 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -423,7 +411,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Reference to a folder, nested toc
 # Folder referenced toc doesn't belong to nested toc
@@ -436,7 +423,7 @@ inputs:
   docs/f1/index.md:
 outputs:
   docs/f1/index.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -445,8 +432,7 @@ outputs:
           }
        ]
     }
-  docs/f1/TOC.json:
-  build.manifest:
+  docs/f1/toc.json:
 ---
 # Reference to a folder, first child
 # The href should be the first child with href in referenced toc
@@ -469,7 +455,7 @@ inputs:
 outputs:
   docs/f2/a.json:
   docs/f1/b.json:
-  docs/TOC.json: |
+  docs/toc.json: |
    {  
        "items":[  
           {  
@@ -482,11 +468,9 @@ outputs:
           }
        ]
     }
-  docs/f1/TOC.json:
-  docs/f2/TOC.json:
-  build.manifest:
+  docs/f1/toc.json:
+  docs/f2/toc.json:
   build.log: |
-    ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
     ["warning","file-not-found","Cannot find file 'b.md' relative to 'docs/f2/TOC.md'","docs/f2/TOC.md"]
 ---
 # Topic href can replace href
@@ -498,7 +482,7 @@ inputs:
   docs/f1/a.md:
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -507,7 +491,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine toc href, topic href => href + children
 inputs:
@@ -521,7 +504,7 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -536,7 +519,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine toc href, href => href + children
 inputs:
@@ -550,7 +532,7 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
-  docs/TOC.json: |
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -565,7 +547,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine toc href, href(toc) => toc href > href + children
 inputs:
@@ -580,8 +561,8 @@ inputs:
     # [Reference a](a.md)
 outputs:
   docs/f2/a.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -595,7 +576,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine topic href and href => topic href has higher priority
 inputs:
@@ -608,7 +588,7 @@ inputs:
       href: ~/docs/f1/n1.md
       topicHref: ~/docs/f1/n2.md
 outputs:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {  
        "items":[  
           {  
@@ -618,8 +598,7 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be build because it is not included in docfx.yml","docs/f1/TOC.yml"]
-  build.manifest:
+    ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml"]
 ---
 # Combine topic href and href(toc) => href + children
 # replace href finally
@@ -636,7 +615,7 @@ inputs:
     # [Index Reference](n1.md)
   docs/f1/f11/n1.md:
 outputs:
-  docs/f1/TOC.json: |
+  docs/f1/toc.json: |
     {  
        "items":[  
           {  
@@ -656,10 +635,8 @@ outputs:
        ]
     }
   build.log: |
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be build because it is not included in docfx.yml","docs/f1/TOC.yml"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
-    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be build because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
-  build.manifest:
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in docfx.yml","docs/f1/TOC.yml"]
+    ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in docfx.yml","docs/f1/f11/TOC.md"]
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
 inputs:
@@ -672,8 +649,8 @@ inputs:
   docs/f1/TOC.md:
 outputs:
   docs/f1/a.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -682,7 +659,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine toc href(folder), href => href > toc href(folder)
 inputs:
@@ -698,8 +674,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -708,7 +684,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Combine toc href(folder), topic href and href => href
 # topic href has higher priority than href
@@ -727,8 +702,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  docs/f1/TOC.json:
-  docs/TOC.json: |
+  docs/f1/toc.json:
+  docs/toc.json: |
     {  
        "items":[  
           {  
@@ -737,7 +712,6 @@ outputs:
           }
        ]
     }
-  build.manifest:
 ---
 # Topic href cannot reference a local TOC file or folder
 inputs:
@@ -752,11 +726,9 @@ inputs:
       href: /abc/def
   docs/f1/TOC.md:
 outputs:
-  docs/f1/TOC.json:
-  build.manifest:
+  docs/f1/toc.json:
   build.log: |
     ["error","invalid-topic-href","The topic href 'f1/' can only reference to a local file or absolute path","docs/TOC.yml"]
-    ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
     ["error","invalid-topic-href","The topic href 'f1/TOC.md' can only reference to a local file or absolute path","docs/TOC.yml"]
 ---
 # Toc href cannot reference a local file
@@ -771,11 +743,9 @@ inputs:
   docs/f1/TOC.md:
   docs/f1/a.md:
 outputs:
-  docs/f1/TOC.json:
+  docs/f1/toc.json:
   docs/f1/a.json:
-  build.manifest:
   build.log: |
-    ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
     ["error","invalid-toc-href","The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","docs/TOC.yml"]
 ---
 # Toc syntax error with duplicated keys
@@ -792,9 +762,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
-  build.manifest:
   build.log: |
-    ["error","yaml-duplicate-key","(Line: 3, Character: 3) - (Line: 3, Character: 12): Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml"]
+    ["error","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml","",3,3]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -810,7 +779,254 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
-  build.manifest:
   build.log: |
     ["warning","file-not-found","Cannot find file 'index.md' relative to 'docs/f1/TOC.yml'","docs/f1/TOC.yml"]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml"]
+---
+# Individual experimental TOC should be built
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f2/TOC.experimental.yml: |
+    - name: Index Reference
+      href: ../index.md
+  docs/f3/TOC.experimental.json: |
+    [{"name": "Index Reference", "href": "../index.md"}]
+  docs/index.md:
+outputs:
+  docs/index.json:
+  docs/f1/toc.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+  docs/f2/toc.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+  docs/f3/toc.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+---
+# Paired experimental TOC should be built 
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md:
+  docs/index.md:
+outputs:
+  docs/index.json:
+  docs/f1/toc.json:
+  docs/f1/toc.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}]}
+---
+# Paired experimental markdown TOCs' metadata
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    ---
+    experimental: false
+    experiment_id: "d1c17cc0-2ae0-4b"
+    ---
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    ---
+    experimental: true
+    experiment_id: "d1c17cc0-2ae0-4b"
+    ---
+  docs/index.md:
+outputs:
+  docs/index.json:
+  docs/f1/toc.json: |
+    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+  docs/f1/toc.experimental.json: |
+    {"items":[{"toc_title":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+---
+# Paired experimental yml TOCs' metadata
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.yml: |
+    metadata:
+      experimental: false
+      experiment_id: "d1c17cc0-2ae0-4b"
+    items:
+      - name: title
+  docs/f1/TOC.yml: |
+    metadata:
+      experimental: true
+      experiment_id: "d1c17cc0-2ae0-4b"
+outputs:
+  docs/f1/toc.json: |
+    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+  docs/f1/toc.experimental.json: |
+    {"items":[{"toc_title":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+---
+# Experimental TOC should be removed from toc map
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+    # [File Reference](../a.md)
+  docs/f1/TOC.md: |
+    # [Index Reference](../index.md)
+  docs/index.md:
+  docs/a.md:
+outputs:
+  docs/index.json: |
+    {"toc_rel": "f1/toc.json"}
+  docs/a.json: |
+    {"!toc_rel": null}
+  docs/f1/toc.json:
+  docs/f1/toc.experimental.json:
+---
+# Experimental TOC should be included using toc ref
+inputs:
+  docfx.yml:
+  docs/f1/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    # [TOC Reference](TOC.experimental.md)
+  docs/index.md:
+outputs:
+  docs/index.json:
+  docs/f1/toc.json: |
+    {"items":[{"toc_title":"TOC Reference","children":[{"toc_title": "Index Reference", "href": "../"}]}]}
+---
+# Experimental TOC should be excluded using folder ref
+inputs:
+  docfx.yml:
+  docs/f2/TOC.experimental.md: |
+    # [Index Reference](../index.md)
+  docs/f1/TOC.md: |
+    # [TOC Reference](../f2/)
+  docs/index.md:
+outputs:
+  docs/index.json:
+  docs/f2/toc.experimental.json:
+  docs/f1/toc.json: |
+    {"items":[{"toc_title":"TOC Reference"}]}
+---
+# Toc with null value
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: Null value
+      topicHref: f1/a.md
+      tocHref: 
+      href: f1/b.md
+  docs/f1/a.md:
+  docs/f1/b.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  docs/toc.json:
+  build.log: |
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",3,3]
+---
+# Toc with schema violation
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - topicHref: f1/a.md
+      tocHref: 
+      href: f1/b.md
+      additionalProperty: a
+      items: []
+  docs/f1/a.md:
+  docs/f1/b.md:
+outputs:
+  docs/f1/a.json:
+  docs/f1/b.json:
+  build.log: |
+    ["info","null-value","'tocHref' contains null value","docs/TOC.yml","[0].tocHref",2,3]
+    ["error","violate-schema","Required property 'Name' not found in JSON.","docs/TOC.yml","[0]",1,3]
+    ["error","violate-schema","The field Items must be a string or array type with a minimum length of '1'.","docs/TOC.yml","[0].items",5,10]
+---
+# Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
+inputs:
+  docfx.yml: 
+  docs/dir1/TOC.md:
+  docs/file-with-no-toc.md:
+  docs/dir1/dir2/file-with-toc.md:
+outputs:
+  docs/dir1/toc.json:
+  docs/file-with-no-toc.json: |
+    {"!toc_rel": null}
+  docs/dir1/dir2/file-with-toc.json: |
+    {"toc_rel": "../toc.json"}
+---
+# File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
+inputs:
+  docfx.yml: 
+  docs/dir1/a/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/b/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/aa/TOC.yml: |
+    - name: TOC Ref
+      href: ../c/file1.md
+  docs/dir1/c/file1.md:
+outputs:
+  docs/dir1/a/toc.json:
+  docs/dir1/b/toc.json:
+  docs/dir1/aa/toc.json:
+  docs/dir1/c/file1.json: |
+    {"toc_rel": "../a/toc.json"}
+---
+# Bad Toc markdown
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # [good](test.md)
+    [bad1]()
+    #[bad2](test.md)
+    >_<
+    #bad4
+  docs/test.md:
+outputs:
+  docs/test.json:
+  build.log: |
+    ["error","invalid-toc-syntax","The toc syntax '[bad1]()\n#[bad2](test.md)' is invalided","docs/TOC.md","",1]
+    ["error","invalid-toc-syntax","The toc syntax '>_<\n#bad4' is invalided","docs/TOC.md","",3]
+---
+# Skip-level Toc markdown
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # level 1
+    ### level 3
+outputs:
+  build.log: |
+    ["error","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md"]
+---
+# Missing TOC head name
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # Title
+    ##
+outputs:
+  build.log: |
+    ["error","missing-toc-head","The toc head name is missing","docs/TOC.md","",1]
+---
+# Multiple Toc head names, following the below picking up order
+# 1. link inlie display name
+# 1. link inline name
+# 2. literal inline name
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # Title **Title2** [Title3](https://github.com/docfx)
+outputs:
+  docs/toc.json: |
+    {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
+---
+# Expanded and MaintainContext
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - href: https://github.com/docfx
+      maintainContext: true
+      expanded: true
+      name: "test"
+outputs:
+  docs/toc.json: |
+    {"items": [{"maintainContext": true, "expanded": true}]}

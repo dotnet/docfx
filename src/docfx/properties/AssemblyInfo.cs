@@ -4,3 +4,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("docfx.Test")]
+[assembly: InternalsVisibleTo("CreateJsonSchema")]

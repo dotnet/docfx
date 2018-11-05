@@ -13,7 +13,6 @@ outputs:
       "content": { "title": "my title" },
       "metadata": { "key": "value" }
     }
-  build.manifest:
 ---
 # Support schema documents in JSON format
 inputs:
@@ -30,7 +29,6 @@ outputs:
       "content": { "title": "my title" },
       "metadata": { "key": "value" }
     }
-  build.manifest:
 ---
 # Throw error when schema is not specified
 inputs:
@@ -38,7 +36,6 @@ inputs:
   docs/a.yml: |
     title: my title
 outputs:
-  build.manifest:
   build.log: |
    ["error","schema-not-found","Unknown schema ''","docs/a.yml"]
 ---
@@ -54,4 +51,175 @@ outputs:
     {
       "content": { "title": "my title" }
     }
-  build.manifest:
+---
+# Support schema documents with Href content
+inputs:
+  docfx.yml:
+  # TODO: why is there no output for this toc file?
+  TOC.yml:
+  docs/TOC.yml:
+  docs/a.yml: |
+    #YamlMime:ContextObject
+    brand: azure
+    breadcrumb_path: TOC.yml
+    toc_rel: ../TOC.yml
+outputs:
+  docs/toc.json:
+  docs/a.json: |
+    {
+      "content": { "brand": "azure", "breadcrumb_path": "toc.json", "toc_rel": "../toc.json" },
+    }
+build.manifest: |
+    {  
+       "dependencies":{  
+          "docs/a.yml":[  
+             {
+               "source": "docs/TOC.yml",
+               "type": "link"
+             },
+             {  
+                "source":"TOC.yml",
+                "type":"link"
+             }
+          ]
+       }
+    }
+---
+# schema documents with Href content but wrong type
+inputs:
+  docfx.yml:
+  # TODO: why is there no output for this toc file?
+  TOC.yml:
+  docs/TOC.yml:
+  docs/a.yml: |
+    #YamlMime:ContextObject
+    brand: azure
+    breadcrumb_path: {}
+    toc_rel: ../TOC.yml
+outputs:
+  docs/toc.json:
+  build.log: |
+    ["error","violate-schema","Cannot deserialize the current JSON object * into type 'System.String' because the type requires a JSON primitive value *","docs/a.yml","breadcrumb_path",3,18]
+---
+# Schema documents with Href content referencing resource file, the resouce file should be outputed
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    Href: image.png
+  docs/image.png:
+outputs:
+  docs/a.json: |
+    {"content": {"href": "image.png"}}
+  docs/image.png:
+---
+# Support schema documents with Markdown content
+inputs:
+  docfx.yml:
+  docs/index.yml: |
+    #YamlMime:TestPage
+    description: Hello `docfx`! <a href="a.md">a</a>
+  docs/a.md:
+outputs:
+  docs/index.json: |
+    { "content": { "description": "<p>Hello <code>docfx</code>! <a href=\"a\">a</a></p>" } }
+  docs/a.json:
+---
+# Markdown content with null value
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    description:
+outputs:
+  docs/a.json: |
+    { "content": {} }
+  build.log: |
+    ["info","null-value","'description' contains null value","docs/a.yml","description",2,1]
+---
+# Support schema documents with inline markdown content
+inputs:
+  docfx.yml: |
+    rules:
+      heading-not-found: error
+  docs/a.yml: |
+    #YamlMime:TestPage
+    inlineDescription: >
+      This is a list:
+        - Item 1
+        - Item 2
+        - `Item 3`
+
+      ## Not heading
+outputs:
+  docs/a.json: |
+    { "content": { "inlineDescription": "This is a list:\n- Item 1\n- Item 2\n- <code>Item 3</code>## Not heading" } }
+---
+# Support schema documents with html content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    html: link <a href="b.md"></a> <script></script>
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "html": "link <a href=\"b\"></a> " } }
+  docs/b.json:
+---
+# Support schema documents with href content
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    href: b.md
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "content": { "href": "b" } }
+  docs/b.json:
+---
+# Output data schema to json, output page schema to html
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    link to [data](data.yml) or [page](page.yml)
+  docs/data.yml: |
+    #YamlMime:TestData
+  docs/page.yml: |
+    #YamlMime:TestPage
+outputs:
+  docs/a.json: |
+    { "content": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
+  docs/data.json:
+  docs/page.json:
+---
+# Markdown field with heading should not be removed
+inputs:
+  docfx.yml:
+  docs/data.yml: |
+    #YamlMime:TestData
+  docs/page.yml: |
+    #YamlMime:TestPage
+    description: >
+      # Heading
+outputs:
+  docs/data.json:
+  docs/page.json: |
+    {
+      "content": { "description": "<h1 id=\"heading\">Heading</h1>" }
+    }
+---
+# Show yaml, json syntax error
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    a: b:
+  docs/b.json: |
+    {
+outputs:
+  build.log: |
+    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml","",2,5]
+    ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json","",2]
+---

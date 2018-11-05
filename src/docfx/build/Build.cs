@@ -15,49 +15,83 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
-            var config = Config.Load(docsetPath, options);
+            var errors = new List<Error>();
 
+            var (configErrors, config) = Config.Load(docsetPath, options);
             report.Configure(docsetPath, config);
 
             var outputPath = Path.Combine(docsetPath, config.Output.Path);
             var context = new Context(report, outputPath);
-            var docset = new Docset(context, docsetPath, config, options);
+            context.Report(config.ConfigFileName, configErrors);
 
-            var tocMap = await BuildTableOfContents.BuildTocMap(context, docset.BuildScope);
-            var contribution = ContributionInfo.Load(docset);
+            var docset = GetBuildDocset();
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset.BuildScope, tocMap, contribution);
+            var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
 
+            var contribution = await ContributionProvider.Create(docset, githubUserCache);
+
+            // TODO: toc map and xref map should always use source docset?
+            var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
+            var xrefMap = XrefMap.Create(context, docset);
+
+            var (files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+
+            // TODO: write back to global cache
+            var saveGitHubUserCache = githubUserCache.SaveChanges();
             BuildManifest.Build(context, files, sourceDependencies);
+
+            xrefMap.OutputXrefMap(context);
 
             if (options.Legacy)
             {
-                Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap);
+                if (config.Output.Json)
+                {
+                    Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
+                }
+                else
+                {
+                    docset.LegacyTemplate.CopyTo(outputPath);
+                }
+            }
+
+            await saveGitHubUserCache;
+            errors.ForEach(e => context.Report(e));
+
+            Docset GetBuildDocset()
+            {
+                var sourceDocset = new Docset(context, docsetPath, config, options);
+                return sourceDocset.LocalizationDocset ?? sourceDocset;
             }
         }
 
         private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
             Context context,
-            HashSet<Document> buildScope,
+            Docset docset,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution)
+            XrefMap xrefMap,
+            ContributionProvider contribution)
         {
             using (Progress.Start("Building files"))
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
+                var bookmarkValidator = new BookmarkValidator();
                 var filesBuilder = new DocumentListBuilder();
                 var filesWithErrors = new ConcurrentBag<Document>();
 
-                await ParallelUtility.ForEach(buildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
+                await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
-                var files = filesBuilder.Build(context).OrderBy(file => file.FilePath).Except(filesWithErrors).ToList();
+                ValidateBookmarks();
+
+                var files = filesBuilder.Build(context, filesWithErrors).OrderBy(file => file.FilePath).ToList();
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
 
                 return (files, new DependencyMap(allDependencies));
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
-                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, buildChild);
+                    var dependencyMapBuilder = new DependencyMapBuilder();
+                    var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
+                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, callback);
                     if (hasError)
                     {
                         filesWithErrors.Add(file);
@@ -70,7 +104,24 @@ namespace Microsoft.Docs.Build
 
                 bool ShouldBuildFile(Document file)
                 {
+                    // source content in a localization docset
+                    if (docset.FallbackDocset != null && file.Docset.LocalizationDocset != null)
+                    {
+                        return false;
+                    }
+
                     return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
+                }
+
+                void ValidateBookmarks()
+                {
+                    foreach (var (error, file) in bookmarkValidator.Validate())
+                    {
+                        if (context.Report(error))
+                        {
+                            filesWithErrors.Add(file);
+                        }
+                    }
                 }
             }
         }
@@ -79,8 +130,8 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             TableOfContentsMap tocMap,
-            ContributionInfo contribution,
-            Action<Document> buildChild)
+            ContributionProvider contribution,
+            PageCallback callback)
         {
             try
             {
@@ -93,14 +144,11 @@ namespace Microsoft.Docs.Build
                     case ContentType.Resource:
                         BuildResource(context, file);
                         return (false, DependencyMap.Empty);
-                    case ContentType.Markdown:
-                        (errors, model, dependencies) = await BuildMarkdown.Build(file, tocMap, contribution, buildChild);
-                        break;
-                    case ContentType.SchemaDocument:
-                        (errors, model, dependencies) = BuildSchemaDocument.Build(file, tocMap, contribution);
+                    case ContentType.Page:
+                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
-                        (errors, model, dependencies) = BuildTableOfContents.Build(file, tocMap, buildChild);
+                        (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
                         break;
                     case ContentType.Redirection:
                         model = BuildRedirection(file);
@@ -110,15 +158,19 @@ namespace Microsoft.Docs.Build
                 var hasErrors = context.Report(file.ToString(), errors);
                 if (model != null && !hasErrors)
                 {
-                    context.WriteJson(model, file.OutputPath);
+                    if (model is string str)
+                        context.WriteText(str, file.OutputPath);
+                    else
+                        context.WriteJson(model, file.OutputPath);
+
                     return (false, dependencies);
                 }
 
                 return (true, dependencies);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(file.ToString(), ex.Error);
+                context.Report(file.ToString(), dex.Error);
                 return (true, DependencyMap.Empty);
             }
         }
@@ -133,17 +185,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static PageModel BuildRedirection(Document file)
+        private static RedirectionModel BuildRedirection(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            return new PageModel
+            return new RedirectionModel
             {
-                RedirectionUrl = file.RedirectionUrl,
-                Locale = file.Docset.Config.Locale,
-                Id = file.Id.id,
-                VersionIndependentId = file.Id.versionIndependentId,
-                Metadata = Metadata.GetFromConfig(file),
+                RedirectUrl = file.RedirectionUrl,
+                Locale = file.Docset.Locale,
             };
         }
     }

@@ -6,14 +6,13 @@ inputs:
       docfx-test-dependencies1: https://github.com/docascode/docfx-test-dependencies
       docfx-test-dependencies2: https://github.com/docascode/docfx-test-dependencies
 restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/01. Restore dependencies with their children-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
+  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a-master/dep.md: DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
+  restore-lock/*Restore dependencies with their children-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a-master"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d-child"}}
 outputs:
-  build.manifest:
 ---
 # Restore urls
 inputs:
@@ -30,21 +29,9 @@ restores:
         }
       ]
     }
-  restore-lock/02. Restore urls-*-lock.json: |
+  restore-lock/*Restore urls-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
----
-# Restored dependency repo can't be found
-commands:
-  - build
-inputs:
-  docfx.yml: |
-    dependencies:
-      dep: https://github.com/docascode/docfx-test-dependencies#not-exist-branch
-outputs:
-  build.log: |
-    ["error","dependency-repo-not-found","The dependency repository with href 'https://github.com/docascode/docfx-test-dependencies#not-exist-branch' is not found, make sure the `restore` command was executed"]
 ---
 # Restore urls with extends
 inputs:
@@ -60,21 +47,101 @@ restores:
         }
       ]
     }
-  restore-lock/04. Restore urls with extends-*-lock.json: |
+  restore-lock/*Restore urls with extends-*-lock.json: |
     {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
 ---
 # Restore dependencies with extends
 inputs:
   docfx.yml: |
     extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend3.yml
 restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/05. Restore dependencies with extends-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
+  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a-master/dep.md: DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
+  restore-lock/*Restore dependencies with extends-*-lock.json: |
+    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a-master"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d-child"}}
 outputs:
-  build.manifest:
+---
+# Show error when download failed
+inputs:
+  docfx.yml: |
+    extend: https://this-url-does-not-exit.com/this-is-a-bad-url
+outputs:
+  build.log: |
+    ["error","download-failed","Download 'https://this-url-does-not-exit.com/this-is-a-bad-url' failed: *"]
+---
+# Show error when git clone failed
+inputs:
+  docfx.yml: |
+    dependencies:
+      error: https://github.com/docascode/docfx-test-dependencies#bad-branch
+outputs:
+  build.log: |
+    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies#bad-branch' failed."]
+---
+# Show error when dependent repo can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies#bad-branch
+outputs:
+  build.log: |
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
+---
+# Show error when dependent URL can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    contribution:
+      gitCommitsTime: https://docs.microsoft.com/bad-url
+outputs:
+  build.log: |
+    ["error","need-restore","Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"]
+---
+# Show error when dependent file can't be found
+commands:
+  - build
+inputs:
+  docfx.yml: |
+    contribution:
+      gitCommitsTime: a.json
+outputs:
+  build.log: |
+    ["error","file-not-found","*"]
+---
+# Restore longpath repo
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
+  docs/test.md: 
+    "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
+    file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
+    t-for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
+    for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long\
+    -path-file-test-for-long-path-file-test-fo/for-long-path-test.md)]"
+outputs:
+  docs/test.json: |
+    {
+      "content": "<p>for long file path test.</p>"
+    }
+---
+# Restore private repos with dependencies
+inputs:
+  docfx.yml: |
+    dependencies:
+      dep: https://ceapex.visualstudio.com/Engineering/_git/docs-host-vnext#c9c018c
+    http:
+      https://ceapex.visualstudio.com:
+        headers:
+          Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
+environments:
+  - SYSTEM_ACCESS_TOKEN
+restores:
+  git/ceapex.visualstudio.com/Engineering/_git/docs-host-vnext/c9c018ce36b67713af186be2aaddeb734d8b1dbd/README.md:
+outputs:

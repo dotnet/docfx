@@ -6,24 +6,19 @@ namespace Microsoft.Docs.Build
     internal enum ContentType
     {
         /// <summary>
-        /// Unknown content, will not be build
+        /// Unknown content, will not be built
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// Markdown documents
+        /// Html pages generated from markdown documents or schema documents
         /// </summary>
-        Markdown,
+        Page,
 
         /// <summary>
         /// Table of contents
         /// </summary>
         TableOfContents,
-
-        /// <summary>
-        /// Schema driven document in yaml or json format
-        /// </summary>
-        SchemaDocument,
 
         /// <summary>
         /// Static resources copied to output

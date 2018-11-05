@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap) Build(
-            Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+            Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -21,79 +21,69 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, DependencyMap.Empty);
             }
 
+            // todo: build resource files linked by toc
             var dependencyMapBuilder = new DependencyMapBuilder();
-            var (errors, tocModel, refArticles, refTocs) = Load(file, dependencyMapBuilder);
+            var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder);
 
-            foreach (var article in refArticles)
-            {
-                buildChild(article);
-            }
-
-            var model = new TableOfContentsModel { Items = tocModel };
+            var model = new TableOfContentsModel { Items = tocModel, Metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata) };
 
             return (errors, model, dependencyMapBuilder.Build());
         }
 
-        public static async Task<TableOfContentsMap> BuildTocMap(Context context, IEnumerable<Document> files)
+        public static TableOfContentsMap BuildTocMap(Context context, Docset docset)
         {
             using (Progress.Start("Loading TOC"))
             {
-                Debug.Assert(files != null);
-
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = files.Where(f => f.ContentType == ContentType.TableOfContents);
+                var tocFiles = docset.ScanScope.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
                     return builder.Build();
                 }
 
-                await ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
+                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(context, file, builder), Progress.Update);
 
                 return builder.Build();
             }
         }
 
-        private static Task BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static void BuildTocMap(Context context, Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
         {
             try
             {
                 Debug.Assert(tocMapBuilder != null);
                 Debug.Assert(fileToBuild != null);
 
-                var (errors, tocModel, referencedDocuments, referencedTocs) = Load(fileToBuild);
+                var (errors, tocModel, _, referencedDocuments, referencedTocs) = Load(context, fileToBuild);
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
-
-                return Task.CompletedTask;
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(fileToBuild.ToString(), ex.Error);
-                return Task.CompletedTask;
+                context.Report(fileToBuild.ToString(), dex.Error);
             }
         }
 
         private static (
             List<Error> errors,
-            List<TableOfContentsItem> tocModel,
+            List<TableOfContentsItem> tocItems,
+            JObject metadata,
             List<Document> referencedDocuments,
             List<Document> referencedTocs)
 
-            Load(Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
+            Load(Context context, Document fileToBuild, DependencyMapBuilder dependencyMapBuilder = null)
         {
             var errors = new List<Error>();
             var referencedDocuments = new List<Document>();
             var referencedTocs = new List<Document>();
-            var (loadErrors, tocViewModel) = TableOfContentsParser.Load(
-                fileToBuild.ReadText(),
+
+            var (loadErrors, tocItems, tocMetadata) = TableOfContentsParser.Load(
+                context,
                 fileToBuild,
                 (file, href, isInclude) =>
                 {
                     var (error, referencedTocContent, referencedToc) = file.TryResolveContent(href);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
+                    errors.AddIfNotNull(error);
                     if (referencedToc != null && isInclude)
                     {
                         // add to referenced toc list
@@ -107,10 +97,7 @@ namespace Microsoft.Docs.Build
                     // add to referenced document list
                     // only resolve href, no need to build
                     var (error, link, fragment, buildItem) = file.TryResolveHref(href, resultRelativeTo);
-                    if (error != null)
-                    {
-                        errors.Add(error);
-                    }
+                    errors.AddIfNotNull(error);
                     if (buildItem != null)
                     {
                         referencedDocuments.Add(buildItem);
@@ -120,7 +107,7 @@ namespace Microsoft.Docs.Build
                 });
 
             errors.AddRange(loadErrors);
-            return (errors, tocViewModel, referencedDocuments, referencedTocs);
+            return (errors, tocItems, tocMetadata, referencedDocuments, referencedTocs);
         }
     }
 }

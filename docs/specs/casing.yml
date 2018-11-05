@@ -6,18 +6,15 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "content": "<p>Link to <a href=\"B\">b</a></p>" }
+    { "content": "<p>Link to <a href=\"b\">b</a></p>" }
   docs/b.json:
-  build.manifest:
 ---
 # URL is case insensitive on windows and mac
-os: windows, osx
 inputs:
   docfx.yml:
   docs/A.png.md: '![](a.png)'
   docs/a.png:
 outputs:
-  build.manifest:
   build.log: |
     ["warning","publish-url-conflict","Two or more documents publish to the same url '/docs/a.png': 'docs/a.png', 'docs/A.png.md'"]
 ---
@@ -31,7 +28,6 @@ inputs:
   docs/a.md: |
     [redirect](REDIRECT.md)
 outputs:
-  build.manifest:
   docs/a.json: |
     {"content":"<p><a href=\"relative/path\">redirect</a></p>"}
   docs/redirect.json:
@@ -47,7 +43,6 @@ inputs:
 outputs:
   docs/a.json: |
     {"content":"<p>DEP</p>"}
-  build.manifest:
 ---
 # Route config is case insensitive on windows and mac
 os: windows, osx
@@ -59,7 +54,32 @@ inputs:
   docs/A.md:
   docs/b/b.md:
 outputs:
-  output/A.json:
+  output/a.json:
   output/b.json:
-  build.manifest:
+---
+# Resolve to the same lowercase image on windows and mac
+os: windows, osx
+inputs:
+  docfx.yml:
+  docs/a.md: '![](IMAGE.png)'
+  docs/b.md: '![](image.PNG)'
+  docs/IMAGE.PNG:
+outputs:
+  docs/a.json: |
+    {"content":"<p><img src=\"image.png\" alt=\"\" /></p>"}
+  docs/b.json: |
+    {"content":"<p><img src=\"image.png\" alt=\"\" /></p>"}
+  docs/image.png:
+---
+# Preserve URL casing when lowercaseUrl is false
+inputs:
+  docfx.yml: |
+    output:
+      lowercaseUrl: false
+  docs/A.md: '[](B.md)'
+  docs/B.md:
+outputs:
+  docs/A.json: |
+    {"content":"<p><a href=\"B\"></a></p>"}
+  docs/B.json:
 ---

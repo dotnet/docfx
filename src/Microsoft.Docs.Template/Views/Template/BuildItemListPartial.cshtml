@@ -1,0 +1,202 @@
+@* Copyright (c) Microsoft. All rights reserved.
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.*@
+
+@using Microsoft.Docs.Build;
+@using Newtonsoft.Json.Linq;
+@model LandingDataItem
+
+@if (@Model.Style == "unordered")
+{
+    <ul class="@Model.ClassName">
+        @foreach (var listItem in @Model.Items)
+        {
+            <li>
+                @if (!string.IsNullOrEmpty(listItem.Content))
+                {
+                    @listItem.Content
+                }
+                else if (!string.IsNullOrEmpty(listItem.Html))
+                {
+                    @Html.Raw(listItem.Html)
+                }
+                else
+                {
+                    @listItem.Text
+                }
+            </li>
+        }
+    </ul>
+}
+else if (@Model.Style == "ordered")
+{
+    <ol>
+        @foreach (var listItem in @Model.Items)
+        {
+            <li>
+                @if (!string.IsNullOrEmpty(listItem?.Content))
+                {
+                    @listItem.Content
+                }
+                else if (!string.IsNullOrEmpty(listItem?.Html))
+                {
+                    @Html.Raw(listItem?.Html)
+                }
+                else
+                {
+                    @listItem?.Text
+                }
+            </li>
+        }
+    </ol>
+}
+else if (Model.Style == "cards")
+{
+    string className = "";
+    if (!string.IsNullOrEmpty(Model.ClassName))
+    {
+        if (Model.ClassName == "cardsF" || Model.ClassName == "cardsM")
+        {
+            if (Model.ClassName == "cardsF")
+            {
+                className = "panelContent " + Model.ClassName;
+            }
+            if (Model.Columns is JValue value)
+            {
+                if (int.TryParse(value.ToString(), out var i))
+                {
+                    className = Model.ClassName + " cols cols" + i.ToString();
+                }
+                else
+                {
+                    className += Model.ClassName + " cols cols4";
+                }
+            }
+        }
+        else
+        {
+            className = "panelContent " + Model.ClassName;
+        }
+    }
+    else
+    {
+        className = "panelContent";
+    }
+    <ul class="@className">
+        @if (Model.Items != null)
+        {
+            @foreach (var listItem in @Model.Items)
+            {
+                @if (@Model.ClassName == "cardsM")
+                {
+                    <li>
+                        <a class="card" href="@listItem.Href">
+                            @if (listItem.Image?.Src != null)
+                            {
+                                <img class="cardImage" role="presentation" src="@listItem.Image.Src">
+                                <div class="cardText">
+                                    <h3>@listItem.Title</h3>
+                                    @if (!string.IsNullOrEmpty(listItem.Text))
+                                    {
+                                        <p>@listItem.Text</p>
+                                    }
+                                    else if (!string.IsNullOrEmpty(listItem.Html))
+                                    {
+                                        // TODO: remove html tags
+                                        <p>@Html.Raw(listItem.Html)</p>
+                                    }
+                                </div>
+                            }
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <div class="cardSize">
+                            <div class="cardPadding">
+                                <div class="card">
+                                    @if (listItem?.Image != null)
+                                    {
+                                        <div class="cardImageOuter">
+                                            <div class="cardImage">
+                                                @if (!string.IsNullOrEmpty(listItem?.Image?.Href))
+                                                {
+                                                    <a href="@listItem?.Image?.Href">
+                                                        <img alt="@listItem?.Image?.Alt" src="@listItem?.Image?.Src">
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="cardText">
+                                        @if (!string.IsNullOrEmpty(listItem?.Title))
+                                        {
+                                            if (!string.IsNullOrEmpty(listItem?.Href))
+                                            {
+                                                <h3>
+                                                    <a href="@listItem?.Href">@listItem?.Title</a>
+                                                </h3>
+                                            }
+                                            else
+                                            {
+                                                <h3>@listItem?.Title</h3>
+                                            }
+                                        }
+                                        @if (!string.IsNullOrEmpty(listItem?.Content))
+                                        {
+                                            @listItem?.Content
+                                        }
+                                        else if (!string.IsNullOrEmpty(listItem?.Html))
+                                        {
+                                            @Html.Raw(listItem?.Html)
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            }
+        }
+
+    </ul>
+}
+else if (Model.Style.StartsWith("icon"))
+{
+    string outerClass = "";
+    string innerClass = "";
+    string heightWidth = "";
+    if (Model.Style == "icon48")
+    {
+        outerClass = "ico48Case halfStack";
+        innerClass = "ico48Link";
+        heightWidth = "48px";
+    }
+    else if (Model.Style == "icon64")
+    {
+        outerClass = "ico64Case halfStack";
+        innerClass = "ico64Link";
+        heightWidth = "64px";
+    }
+    <div class="@outerClass">
+        @if (@Model.Items != null)
+        {
+            @foreach (var listItem in @Model.Items)
+            {
+                @if (listItem?.Image != null)
+                {
+                    <div class="@innerClass">
+                        @if (!string.IsNullOrEmpty(listItem?.Title))
+                        {
+                            <h3>@listItem?.Title</h3>
+                        }
+                        <a href="@listItem?.Href">
+                            <img src="@listItem?.Image?.Src" height=@heightWidth width=@heightWidth role="presentation" alt="@listItem?.Text" />
+                            <span>@listItem?.Text</span>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    </div>
+}

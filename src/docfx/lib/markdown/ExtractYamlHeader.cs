@@ -1,40 +1,46 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Markdig;
-using Markdig.Extensions.Yaml;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static MarkdownPipelineBuilder UseExtractYamlHeader(this MarkdownPipelineBuilder builder)
+        public static (List<Error> errors, JObject metadata) Extract(TextReader reader)
         {
-            return builder.Use(document =>
+            var builder = new StringBuilder();
+            var errors = new List<Error>();
+            if (reader.ReadLine()?.TrimEnd() != "---")
             {
-                document.Visit(node =>
+                return (errors, new JObject());
+            }
+
+            while (reader.Peek() != -1)
+            {
+                var line = reader.ReadLine();
+                var trimEnd = line.TrimEnd();
+                if (trimEnd == "---" || trimEnd == "...")
                 {
-                    if (node is YamlFrontMatterBlock yamlHeader)
+                    var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(builder.ToString());
+                    errors.AddRange(yamlErrors);
+                    if (yamlHeaderObj is JObject obj)
                     {
-                        // TODO: fix line info in yamlErrors is not accurate due to offset in markdown
-                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Deserialize(yamlHeader.Lines.ToString());
-
-                        if (yamlHeaderObj is JObject obj)
-                        {
-                            Markup.Result.Metadata = obj;
-                        }
-                        else
-                        {
-                            Markup.Result.Errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
-                        }
-
-                        Markup.Result.Errors.AddRange(yamlErrors);
-                        return true;
+                        return (errors, obj);
                     }
-                    return false;
-                });
-            });
+
+                    errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray));
+                    break;
+                }
+                builder.Append(line).Append("\n");
+            }
+            return (errors, new JObject());
         }
+
+        public static (List<Error> errors, JObject metadata) Extract(Document file, Context context)
+            => context.ExtractMetadata(file);
     }
 }

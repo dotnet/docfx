@@ -1,23 +1,24 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DocumentIdConfig
+    internal sealed class DocumentIdConfig
     {
         /// <summary>
-        /// The source base folder path, used by docs.com, for backward compatibility
+        /// For backward compatibility, the source path prefix
+        /// Used for resolving docId in <see cref="Document.LoadDocumentId()"/>
         /// </summary>
-        public string SourceBasePath = string.Empty;
+        public readonly string SourceBasePath = ".";
 
         /// <summary>
-        /// The site base path, used by docs.com, for backward compatibility
+        /// For backward compatibility, the output site path prefix
+        /// Used for resolving versionIndependentId in <see cref="Document.LoadDocumentId()"/>
         /// </summary>
-        public string SiteBasePath = string.Empty;
+        public readonly string SiteBasePath = ".";
 
         /// <summary>
         /// The mappings between depot and files/directory

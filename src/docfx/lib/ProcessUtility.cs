@@ -92,49 +92,149 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static Task<string> ReadFile(string path)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                using (var reader = new StreamReader(fs))
+                {
+                    return reader.ReadToEnd();
+                }
+            });
+        }
+
+        public static Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                {
+                    return read(fs);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static Task WriteFile(string path, string content)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                using (var writer = new StreamWriter(fs))
+                {
+                    writer.Write(content);
+                }
+                return 0;
+            });
+        }
+
+        public static Task WriteFile(string path, Action<Stream> write)
+        {
+            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                {
+                    write(fs);
+                }
+                return 0;
+            });
+        }
+
+        /// <summary>
         /// Create a file mutex to lock a resource/action
         /// </summary>
-        /// <param name="mutexFileRelativePath">The mutex file relative path</param>
+        /// <param name="mutexName">A globbaly unique mutext name</param>
         /// <param name="action">The action/resource you want to lock</param>
-        /// <param name="retry">The retry count, default is 600 times</param>
-        /// <param name="retryTimeSpanInterval">The retry interval, default is 1 seconds</param>
-        /// <returns>The task status</returns>
-        public static async Task CreateFileMutex(string mutexFileRelativePath, Func<Task> action, int retry = 600, TimeSpan? retryTimeSpanInterval = null)
+        public static async Task RunInsideMutex(string mutexName, Func<Task> action)
         {
-            Debug.Assert(!string.IsNullOrEmpty(mutexFileRelativePath));
-            Debug.Assert(!Path.IsPathRooted(mutexFileRelativePath));
+            Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
-            var lockPath = Path.Combine(AppData.FileMutexDir, mutexFileRelativePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(lockPath));
-            using (var lockFile = await AcquireFileMutex(lockPath, retry < 0 ? 0 : retry, retryTimeSpanInterval ?? TimeSpan.FromSeconds(1)))
+            Directory.CreateDirectory(AppData.MutexDir);
+
+            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
             {
                 await action();
             }
+
+            FileStream CreateFile() => new FileStream(
+                lockPath,
+                FileMode.CreateNew,
+                FileAccess.ReadWrite,
+                FileShare.None,
+                1,
+                FileOptions.DeleteOnClose);
         }
 
         /// <summary>
         /// Checks if the exception thrown by Process.Start is caused by file not found.
         /// </summary>
-        public static bool IsNotFound(Win32Exception ex)
+        public static bool IsExeNotFoundException(Win32Exception ex)
         {
-            return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
-                   ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
+            return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
+                || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
-        private static async Task<FileStream> AcquireFileMutex(string lockPath, int retry, TimeSpan retryTimeSpanInterval)
+        /// <summary>
+        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
+        /// </summary>
+        public static bool IsFileUsedByAnotherProcessException(Exception ex)
         {
-            var retryCount = 0;
+            return ex is IOException ioe && (
+                   ioe.HResult == 35 // Mac
+                || ioe.HResult == 11 // Linux
+                || ioe.HResult == -2147024864); // Windows
+        }
+
+        /// <summary>
+        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
+        /// </summary>
+        public static bool IsFileAlreadyExistsException(Exception ex)
+        {
+            if (ex is IOException ioe)
+            {
+                return ex.HResult == 17 // Mac
+                    || ex.HResult == -2147024816; // Windows
+            }
+            return ex is UnauthorizedAccessException;
+        }
+
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
+        {
+            var retryDelay = 100;
+            var lastWait = DateTime.UtcNow;
+
             while (true)
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
+                    return action();
                 }
-                catch when (retryCount++ < retry)
+                catch (Exception ex) when (expectException(ex))
                 {
-                    // TODO: error handling
-                    // TODO: notify user current waiting process
-                    await Task.Delay(retryTimeSpanInterval);
+                    if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
+                    {
+                        lastWait = DateTime.UtcNow;
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+                        lock (Console.Out)
+#pragma warning restore CA2002
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"Waiting for another process to access '{name}'");
+                            Console.ResetColor();
+                        }
+                    }
+
+                    await Task.Delay(retryDelay);
+                    retryDelay = Math.Min(retryDelay + 100, 1000);
                 }
             }
         }

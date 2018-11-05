@@ -8,7 +8,7 @@ inputs:
   docs/index.md:
 outputs:
   docs/a.json:
-  docs/TOC.json:
+  docs/toc.json:
   docs/folder/b~$.json:
   docs/index.json:
   build.manifest: |
@@ -17,7 +17,7 @@ outputs:
         { "siteUrl": "/docs/a", "outputPath": "docs/a.json" },
         { "siteUrl": "/docs/folder/b~$", "outputPath": "docs/folder/b~$.json" },
         { "siteUrl": "/docs/", "outputPath": "docs/index.json" },
-        { "siteUrl": "/docs/TOC.json", "outputPath": "docs/TOC.json" }
+        { "siteUrl": "/docs/toc.json", "outputPath": "docs/toc.json" }
       ]
     }
 ---
@@ -44,7 +44,7 @@ inputs:
     # [file reference](a.md)
 outputs:
   docs/a.json:
-  docs/TOC.json:
+  docs/toc.json:
   build.manifest: |
     {  
        "dependencies":{  
@@ -140,21 +140,21 @@ inputs:
     # [b](b.md)
   docs/a/b.md:
 outputs:
-  docs/TOC.json:
+  docs/toc.json:
   docs/a/b.json:
   build.manifest: |
     {  
-       "dependencies":{  
+       "dependencies":{
+          "docs/TOC.md":[
+             {  
+                "source":"docs/a/TOC.md",
+                "type":"tocInclusion"
+             }
+          ],
           "docs/a/TOC.md":[  
              {  
                 "source":"docs/a/b.md",
                 "type":"link"
-             }
-          ],
-          "docs/TOC.md":[  
-             {  
-                "source":"docs/a/TOC.md",
-                "type":"tocInclusion"
              }
           ]
        }
@@ -196,6 +196,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     Link to [b](b.md)
+    # bookmark
   docs/b.md: |
     Link to [a](a.md#bookmark)
 outputs:
@@ -223,6 +224,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
+    # bookmark
     Link to [a](#bookmark) and [b](b.md#)
   docs/b.md:
 outputs:

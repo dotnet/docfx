@@ -16,24 +16,34 @@ namespace Microsoft.Docs.Build
 
         public static string RestoreLockDir => Path.Combine(AppDataDir, "restore-lock");
 
-        public static string FileMutexDir => Path.Combine(AppDataDir, "file-mutex");
+        public static string MutexDir => Path.Combine(AppDataDir, "mutex");
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
+        public static string GlobalConfigPath => GetGlobalConfigPath();
+
         /// <summary>
-        /// Get the restore root dir, default is the user proflie dir.
+        /// Get the global configuration path, default is under <see cref="AppDataDir"/>
+        /// </summary>
+        private static string GetGlobalConfigPath()
+        {
+            var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
+            Config.TryGetConfigPath(AppDataDir, out string configPath, out string configFile);
+            return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
+        }
+
+        /// <summary>
+        /// Get the application cache root dir, default is under user proflie dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
         /// </summary>
         private static string GetAppDataDir()
         {
             // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
-            if (!string.IsNullOrEmpty(docfxAppData))
-            {
-                docfxAppData = Path.GetFullPath(docfxAppData);
-            }
 
-            return !string.IsNullOrEmpty(docfxAppData) ? docfxAppData : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx");
+            return string.IsNullOrEmpty(docfxAppData)
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".docfx")
+                : Path.GetFullPath(docfxAppData);
         }
     }
 }

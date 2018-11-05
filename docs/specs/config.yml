@@ -1,15 +1,21 @@
 ---
-# Specify include files
+# Specify include files, prefer docfx.yml to docfx.json
 inputs:
   docfx.yml: |
     content:
       include:
         - docs/**/*.md
+  docfx.json: |
+    {
+      "content":
+        {
+          "include": "ignore.md"
+        }
+    }  
   ignore.md:
   docs/index.md:
 outputs:
   docs/index.json:
-  build.manifest:
 ---
 # Specify include files by array
 inputs:
@@ -20,7 +26,6 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
-  build.manifest:
 ---
 # Content supports string form
 inputs:
@@ -30,7 +35,6 @@ inputs:
   docs1/index.md:
 outputs:
   docs1/index.json:
-  build.manifest:
 ---
 # Content supports array form
 inputs:
@@ -44,7 +48,6 @@ inputs:
 outputs:
   docs1/index.json:
   docs2/index.json:
-  build.manifest:
 ---
 # Content supports exclude file
 inputs:
@@ -55,7 +58,6 @@ inputs:
   docs/index.md:
 outputs:
   docs/index.json:
-  build.manifest:
 ---
 # Content supports exclude folder
 inputs:
@@ -70,7 +72,6 @@ inputs:
   docs/codesnippet/index.md:
 outputs:
   docs/index.json:
-  build.manifest:
 ---
 # Global metadata
 inputs:
@@ -84,16 +85,28 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/b.json: |
     { "metadata": { "key": "value" } }
-  build.manifest:
+---
+# Global metadata multiple keys
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key1: value
+      key2: 2
+  docs/a.md:
+  docs/b.md:
+outputs:
+  docs/a.json: |
+    { "metadata": { "key1": "value", "key2": 2 } }
+  docs/b.json: |
+    { "metadata": { "key1": "value", "key2": 2 } }
 ---
 # File metadata of object form
 inputs:
   docfx.yml: |
     fileMetadata:
-      docs/:
-        key: value
-      docs/index.md:
-        key: another value
+      key:
+        docs/**: value
+        docs/index.md: another value
   docs/a.md:
   docs/b.md:
   docs/index.md:
@@ -104,35 +117,6 @@ outputs:
     { "metadata": { "key": "value" } }
   docs/index.json: |
     { "metadata": { "key": "another value" } }
-  build.manifest:
----
-# File metadata of array form
-inputs:
-  docfx.yml: |
-    globalMetadata:
-      key: general
-    fileMetadata:
-    - include: docs/**
-      exclude:
-      - docs/index.md
-      - docs/b.md
-      value:
-        key: exclude b
-    - include:
-      - docs/index.md
-      value:
-        key: index
-  docs/a.md:
-  docs/b.md:
-  docs/index.md:
-outputs:
-  docs/a.json: |
-    { "metadata": { "key": "exclude b" } }
-  docs/b.json: |
-    { "metadata": { "key": "general" } }
-  docs/index.json: |
-    { "metadata": { "key": "index" } }
-  build.manifest:
 ---
 # File metadata overwrite global metadata
 inputs:
@@ -140,13 +124,12 @@ inputs:
     globalMetadata:
       key: value
     fileMetadata:
-      docs/:
-        key: another value
+      key:
+        docs/**: another value
   docs/a.md:
 outputs:
   docs/a.json: |
     { "metadata": { "key": "another value" } }
-  build.manifest:
 ---
 # routes
 inputs:
@@ -154,7 +137,7 @@ inputs:
     routes:
       /: outputB
       docs/a.md: output
-      docs/b/: output
+      docs/b: output
   docs/a.md: |
     [link](c.png)
   docs/c.png:
@@ -168,10 +151,9 @@ outputs:
   output/a.json:
   output/b.json:
   output/d.svg:
-  outputB/docs/c.png:
-  outputB/docs/g/a.json:
-  outputB/docs/g/e.jpg:
-  build.manifest:
+  outputb/docs/c.png:
+  outputb/docs/g/a.json:
+  outputb/docs/g/e.jpg:
 ---
 # latter routes rule takes precedence - 1
 inputs:
@@ -184,9 +166,8 @@ inputs:
     [link](c.gif)
   docs/a/c.gif:
 outputs:
-  outputB/b.json:
-  outputC/c.gif:
-  build.manifest:
+  outputb/b.json:
+  outputc/c.gif:
 ---
 # latter routes rule takes precedence - 2
 inputs:
@@ -201,18 +182,16 @@ inputs:
 outputs:
   output/b.json:
   output/c.gif:
-  build.manifest:
 ---
-# relative path extend
+# relative path extend with json file
 inputs:
   docfx.yml: |
-    extend: _shared/extend.yml
-  _shared/extend.yml: |
-    content: a.md
+    extend: _shared/extend.json
+  _shared/extend.json: |
+    {"content": "a.md"}
   a.md:
 outputs:
   a.json:
-  build.manifest:
 ---
 # relative path extend to itself
 inputs:
@@ -222,7 +201,6 @@ inputs:
   a.md:
 outputs:
   a.json:
-  build.manifest:
 ---
 # absolute url extend
 inputs:
@@ -231,7 +209,6 @@ inputs:
   a.md:
 outputs:
   a.json:
-  build.manifest:
 ---
 # current config takes precedence over extend config
 inputs:
@@ -243,7 +220,6 @@ inputs:
   a.md:
 outputs:
   a.json:
-  build.manifest:
 ---
 # latter extend config takes precedence over former extend config
 inputs:
@@ -256,7 +232,41 @@ inputs:
   a.md:
 outputs:
   a.json:
-  build.manifest:
+---
+# exclude config extend and external references from build
+inputs:
+  docfx.yml: |
+    extend:
+      - docs/a.yml
+      - docs/b.yml
+    github:
+      userCache: docs/d.json
+    contribution:
+      gitCommitsTime: docs/c.json
+  docs/a.yml:
+  docs/b.yml:
+  docs/c.json: '{}'
+  docs/d.json: '{}'
+outputs:
+---
+# expand config before merge
+inputs:
+  docfx.yml: |
+    content: '**/*.md'
+    extend:
+      extend.json
+  extend.json: |
+    {
+      "content":
+        {
+          "include": "a.md",
+          "exclude": "b.md"
+        }
+    }
+  a.md:
+  b.md:
+outputs:
+  a.json:
 ---
 # `/` and `\` in path will be normalized
 inputs:
@@ -269,7 +279,6 @@ inputs:
 outputs:
   output/a.json:
   output/b.json:
-  build.manifest:
 ---
 # Adjust error level using rules
 inputs:
@@ -281,7 +290,27 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p><a href=\"b.md\">b</a></p>" }
-  build.manifest:
+---
+# log with default log level when docfx crashes, even the corresponding rule is turned off
+inputs:
+  docfx.yml: |
+    rules:
+      file-not-found: off
+    gitHub:
+      userCache: user_profile.json
+outputs:
+  build.log: |
+    ["error","file-not-found","Cannot find file 'user_profile.json' relative to '*'","*"]
+---
+# Treat warnings as errors
+inputs:
+  docfx.yml: |
+    warningsAsErrors: true
+  docs/a.md: |
+    [b](b.md)
+outputs:
+  build.log: |
+    ["error","file-not-found","Cannot find file 'b.md' relative to 'docs/a.md'","docs/a.md"]
 ---
 # Invalid redirection file
 inputs:
@@ -291,7 +320,6 @@ inputs:
 outputs:
   build.log: |
     ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
-  build.manifest:
 ---
 # Conflicted redirection file
 inputs:
@@ -304,4 +332,116 @@ outputs:
   docs/a.json:
   build.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
-  build.manifest:
+---
+# Out scope redirection file
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/a.md: /absolute/path1
+      articles/b.md: /absolute/path2
+outputs:
+  docs/a.json:
+  build.log: |
+    ["warning","redirection-out-of-scope","Redirection file 'articles/b.md' will not be built because it is not included in docfx.yml"]
+---
+# Multiple errors
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/TOC.md: /absolute/path
+      docs/a.md: /absolute/path1
+    redirectionsWithoutId:
+      docs/a.md: /absolute/path2
+outputs:
+  docs/a.json:
+  build.log: |
+    ["error","invalid-redirection","The 'docs/TOC.md' shouldn't belong to redirections since it's a TableOfContents","docfx.yml"]
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml"]
+---
+# Wrong locale
+os: windows
+inputs:
+  docfx.yml: |
+    localization:
+      defaultLocale: wrong/wrong
+outputs:
+  build.log: |
+    ["error","invalid-locale","Locale 'wrong/wrong' is not supported."]
+---
+# branch overwrite config
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    content: a.md
+    "branches: [master]":
+      content: b.md
+  a.md:
+outputs:
+---
+# locale overwrite config
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    content: a.md
+    "locales: [zh-cn,de-de]":
+      content: b.md
+    localization:
+      defaultLocale: "zh-cn"
+  a.md:
+outputs:
+---
+# branch | locale overwrite config
+commands:
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    localization:
+      defaultLocale: "zh-cn"
+    content: a.md
+    "locales: [zh-cn]":
+      content:
+        include: 
+          - b.md
+          - c.md
+    "branches: [master,live]":
+      content:
+        exclude:
+          - b.md
+  a.md:
+  b.md:
+  c.md:
+outputs:
+  c.json:
+---
+# branch & locale overwrite config
+commands:
+  - build --locale zh-cn
+repo: https://github.com/docascode/docfx-test-dependencies#master
+inputs:
+  docfx.yml: |
+    localization:
+      defaultLocale: "zh-cn"
+    content: a.md
+    "locales: [zh-cn, de-de] branches: [live]":
+      content: b.md
+  a.md:
+outputs:
+  a.json:
+---
+# invalid overwrite config
+commands:
+  - build --locale zh-cn
+inputs:
+  docfx.yml: |
+    localization:
+      defaultLocale: "zh-cn"
+    content: a.md
+    "locales: zh-cn":
+      content: b.md
+  a.md:
+outputs:
+  a.json:
+  build.log: |
+    ["warning","unknown-field","Could not find member 'locales: zh-cn' on object of type 'Config'.","docfx.yml","['locales: zh-cn']"]

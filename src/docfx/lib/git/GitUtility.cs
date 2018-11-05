@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
+using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,42 +36,6 @@ namespace Microsoft.Docs.Build
             var url = uri.GetLeftPart(UriPartial.Path);
 
             return (url, refSpec);
-        }
-
-        /// <summary>
-        /// Execute git action with remote url with token and then reset the remote url back without token
-        /// </summary>
-        public static async Task WithToken(string cwd, string remoteUrl, string token, Func<string, Task> action)
-        {
-            if (string.IsNullOrEmpty(token))
-            {
-                await action(remoteUrl);
-                return;
-            }
-
-            // add token to remote href
-            var remoteUrlWithToken = EmbedToken(remoteUrl, token);
-
-            await action(remoteUrlWithToken);
-
-            // reset url back without token
-            await SetRemoteGitUrl(cwd, remoteUrl);
-        }
-
-        /// <summary>
-        /// Append token to git remote href
-        /// </summary>
-        public static string EmbedToken(string remoteHref, string token)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(remoteHref));
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return remoteHref;
-            }
-
-            var uri = new Uri(remoteHref);
-            return $"{uri.Scheme}://{token}@{uri.Host}{uri.PathAndQuery}";
         }
 
         /// <summary>
@@ -107,6 +74,39 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Retrieve git repo information.
+        /// </summary>
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        {
+            var (remote, branch, commit) = default((string, string, string));
+
+            if (git_repository_open(out var pRepo, repoPath) != 0)
+            {
+                throw new ArgumentException($"Invalid git repo {repoPath}");
+            }
+
+            if (git_remote_lookup(out var pRemote, pRepo, "origin") == 0)
+            {
+                remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                git_remote_free(pRemote);
+            }
+
+            if (git_repository_head(out var pHead, pRepo) == 0)
+            {
+                commit = git_reference_target(pHead)->ToString();
+                if (git_branch_name(out var pName, pHead) == 0)
+                {
+                    branch = Marshal.PtrToStringUTF8(pName);
+                }
+                git_reference_free(pHead);
+            }
+
+            git_repository_free(pRepo);
+
+            return (remote, branch, commit);
+        }
+
+        /// <summary>
         /// Clone git repository from remote to local
         /// </summary>
         /// <param name="cwd">The current working directory</param>
@@ -115,17 +115,20 @@ namespace Microsoft.Docs.Build
         /// <param name="branch">The branch you want to clone</param>
         /// <param name="bare">Make the git repo bare</param>
         /// <returns>Task status</returns>
-        public static Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false)
+        public static async Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false, string gitConfig = null)
         {
             Directory.CreateDirectory(cwd);
+
+            // clone with configuration core.longpaths turned-on
+            // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
             var cmd = string.IsNullOrEmpty(branch)
-                ? $"clone {remote} \"{path.Replace("\\", "/")}\""
-                : $"clone -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
+                ? $" {gitConfig} clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
+                : $" {gitConfig} clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
 
             if (bare)
                 cmd += " --bare";
 
-            return ExecuteNonQuery(cwd, cmd);
+            await ExecuteNonQuery(cwd, cmd);
         }
 
         /// <summary>
@@ -133,8 +136,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         /// <returns>Task status</returns>
-        public static Task Fetch(string cwd, string remoteWitToken)
-            => ExecuteNonQuery(cwd, $"fetch {remoteWitToken} '*:*'");
+        public static async Task Fetch(string cwd, string remote, string refSpec, string gitConfig = null)
+        {
+            // -c must come before `fetch`
+            await ExecuteNonQuery(cwd, $"{gitConfig} fetch {remote} {refSpec}");
+        }
 
         /// <summary>
         /// List work trees for a given repo
@@ -167,10 +173,12 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitHash">The commit hash you want to use to create a work tree</param>
+        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitHash, string path)
-            => ExecuteNonQuery(cwd, $"worktree add {path} {commitHash}");
+        /// By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
+        /// -f/ --force overrides these safeguards.
+        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+            => ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh} -f");
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
@@ -186,8 +194,15 @@ namespace Microsoft.Docs.Build
         public static Task<string> Revision(string cwd, string branch = "HEAD")
            => ExecuteQuery(cwd, $"rev-parse {branch}");
 
-        private static Task SetRemoteGitUrl(string cwd, string url, string remoteName = null)
-            => ExecuteNonQuery(cwd, $"remote set-url {remoteName ?? "origin"} {url}");
+        public static void CheckMergeConflictMarker(string content, string file)
+        {
+            if ((content.StartsWith("<<<<<<<") || content.Contains("\n<<<<<<<")) &&
+                content.Contains("\n>>>>>>>") &&
+                content.Contains("\n======="))
+            {
+                throw Errors.MergeConflict(file).ToException();
+            }
+        }
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
             => Execute(cwd, commandLineArgs, x => x, redirectOutput: false);
@@ -209,7 +224,7 @@ namespace Microsoft.Docs.Build
             {
                 return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
             }
-            catch (Win32Exception ex) when (ProcessUtility.IsNotFound(ex))
+            catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
             }

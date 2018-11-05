@@ -8,17 +8,25 @@ namespace Microsoft.Docs.Build
     internal class CommandLineOptions
     {
         public string Output;
-        public string Log;
         public bool Legacy;
-        public string GitToken;
+        public string GitHubToken;
+        public string Locale;
 
-        public JObject ToJObject() => new JObject
+        public JObject ToJObject()
         {
-            ["output"] = new JObject
+            return new JObject
             {
-                ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
-                ["logPath"] = Log != null ? (JValue)Log : JValue.CreateNull(),
-            },
-        };
+                ["output"] = new JObject
+                {
+                    ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
+                    ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
+                    ["copyResources"] = Legacy ? (JValue)false : JValue.CreateNull(),
+                },
+                ["gitHub"] = new JObject
+                {
+                    ["authToken"] = GitHubToken != null ? (JValue)GitHubToken : JValue.CreateNull(),
+                },
+            };
+        }
     }
 }

@@ -9,63 +9,61 @@ namespace Microsoft.Docs.Build
     internal class RestoreMap
     {
         private readonly RestoreLock _restoreLock;
+        private readonly string _docsetPath;
 
         public RestoreMap(string docsetPath)
-            : this(RestoreLocker.Load(docsetPath).Result)
+            : this(docsetPath, RestoreLocker.Load(docsetPath).GetAwaiter().GetResult())
         {
         }
 
-        public RestoreMap(RestoreLock restoreLock)
+        public RestoreMap(string docsetPath, RestoreLock restoreLock)
         {
+            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
             Debug.Assert(restoreLock != null);
 
+            _docsetPath = docsetPath;
             _restoreLock = restoreLock;
         }
 
-        public bool TryGetGitRestorePath(string remote, out string restorePath)
+        public string GetGitRestorePath(string remote)
         {
             var (url, _) = GitUtility.GetGitRemoteInfo(remote);
             var restoreDir = RestoreGit.GetRestoreRootDir(url);
             if (_restoreLock.Git.TryGetValue(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
             {
-                restorePath = RestoreGit.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                return true;
+                var result = RestoreWorkTree.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
+                if (Directory.Exists(result))
+                {
+                    return result;
+                }
             }
 
-            restorePath = default;
-            return false;
+            throw Errors.NeedRestore(remote).ToException();
         }
 
-        public bool TryGetUrlRestorePath(string remote, out string restorePath)
-        {
-            var restoreDir = RestoreUrl.GetRestoreRootDir(remote);
-            if (_restoreLock.Url.TryGetValue(remote, out var version) && !string.IsNullOrEmpty(version))
-            {
-                restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
-                return true;
-            }
-
-            restorePath = default;
-            return false;
-        }
-
-        public string GetUrlRestorePath(string docsetPath, string path)
+        public string GetUrlRestorePath(string path)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
-            if (!HrefUtility.IsAbsoluteHref(path))
+            if (!HrefUtility.IsHttpHref(path))
             {
                 // directly return the relative path
-                return Path.Combine(docsetPath, path);
+                var fullPath = Path.Combine(_docsetPath, path);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
             }
 
             // get the file path from restore map
-            if (TryGetUrlRestorePath(path, out var restorePath) && File.Exists(restorePath))
+            var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+            if (_restoreLock.Url.TryGetValue(path, out var version) && !string.IsNullOrEmpty(version))
             {
-                return restorePath;
+                var result = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
+                if (File.Exists(result))
+                {
+                    return result;
+                }
             }
 
-            throw Errors.UrlRestorePathNotFound(path).ToException();
+            throw Errors.NeedRestore(path).ToException();
         }
     }
 }

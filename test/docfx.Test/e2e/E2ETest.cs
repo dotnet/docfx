@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -16,13 +17,18 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
-        public static readonly TheoryData<string, int> Specs = FindTestSpecs();
+        public static readonly TheoryData<string> Specs = FindTestSpecs();
 
         [Theory]
         [MemberData(nameof(Specs))]
-        public static async Task Run(string name, int ordinal)
+        public static async Task Run(string name)
         {
-            var (docsetPath, spec) = await CreateDocset(name, ordinal);
+            var (docsetPath, spec) = await CreateDocset(name);
+            if (spec == null)
+            {
+                return;
+            }
+
             var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                 os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
@@ -32,7 +38,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                await Assert.ThrowsAnyAsync<AssertActualExpectedException>(() => RunCore(docsetPath, spec));
+                await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
             }
         }
 
@@ -40,7 +46,23 @@ namespace Microsoft.Docs.Build
         {
             foreach (var command in spec.Commands)
             {
-                await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray());
+                if (await Program.Run(command.Split(" ").Concat(new[] { docsetPath }).ToArray()) != 0)
+                {
+                    break;
+                }
+            }
+
+            // Verify output
+            var docsetOutputPath = Path.Combine(docsetPath, "_site");
+            Assert.True(Directory.Exists(docsetOutputPath));
+
+            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
+            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
+
+            // Show build.log content if actual output has errors or warnings.
+            if (!spec.Outputs.Keys.Contains("build.log") && outputFileNames.Contains("build.log"))
+            {
+                Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
             // Verify restored files
@@ -52,13 +74,17 @@ namespace Microsoft.Docs.Build
                 VerifyFile(restoredFile, content);
             }
 
+            // These files output mostly contains empty content which e2e tests are not intrested in
+            // we can just skip the verification for them
+            foreach (var skippableItem in spec.SkippableOutputs)
+            {
+                if (!spec.Outputs.ContainsKey(skippableItem))
+                {
+                    outputFileNames.Remove(skippableItem);
+                }
+            }
+
             // Verify output
-            var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetOutputPath));
-
-            var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
-            var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
-
             Assert.Equal(spec.Outputs.Keys.OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
 
             foreach (var (filename, content) in spec.Outputs)
@@ -67,39 +93,57 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TheoryData<string, int> FindTestSpecs()
+        private static TheoryData<string> FindTestSpecs()
         {
-            var result = new TheoryData<string, int>();
+            var specNames = new List<(string, bool only)>();
             foreach (var file in Directory.EnumerateFiles("specs", "*.yml", SearchOption.AllDirectories))
             {
                 var i = 0;
-                foreach (var header in FindTestSpecHeadersInFile(file))
+                var content = File.ReadAllText(file);
+                var sections = content.Split("\n---", StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var section in sections)
                 {
+                    var yaml = section.Trim('\r', '\n', '-');
+                    var header = YamlUtility.ReadHeader(yaml) ?? "";
                     if (string.IsNullOrEmpty(header))
                     {
                         i++;
                         continue;
                     }
+#if DEBUG
+                    var only = header.Contains("[ONLY]", StringComparison.OrdinalIgnoreCase);
+#else
+                    var only = false;
+#endif
+                    specNames.Add(($"{Path.GetFileNameWithoutExtension(file)}/{i++:D2}. {header}", only));
+                }
+            }
 
-                    var name = $"{i + 1:D2}. {header}";
-                    var folder = Path.Combine(
-                        file.Replace("\\", "/").Replace($"specs/", "").Replace(".yml", ""),
-                        name).Replace("\\", "/");
-
-                    result.Add(folder, i++);
+            var hasOnly = specNames.Any(spec => spec.only);
+            var result = new TheoryData<string>();
+            foreach (var (name, only) in specNames)
+            {
+                if (!hasOnly || only)
+                {
+                    result.Add(name);
                 }
             }
             return result;
         }
 
-        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName, int ordinal)
+        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName)
         {
-            var i = specName.LastIndexOf('/');
-            var specPath = specName.Substring(0, i) + ".yml";
+            var match = Regex.Match(specName, "^(.+?)/(\\d+). (.*)");
+            var specPath = match.Groups[1].Value + ".yml";
+            var ordinal = int.Parse(match.Groups[2].Value);
             var sections = File.ReadAllText(Path.Combine("specs", specPath)).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
             var yaml = sections[ordinal].Trim('\r', '\n', '-');
+
+            Assert.StartsWith($"# {match.Groups[3].Value}", yaml);
+
             var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
-            var docsetPath = Path.Combine("specs-drop", specName.Replace("<", "").Replace(">", ""));
+            var docsetPath = Path.Combine("specs-drop", ToSafePathString(specName));
 
             if (Directory.Exists(docsetPath))
             {
@@ -112,17 +156,44 @@ namespace Microsoft.Docs.Build
                 var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
                 await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
                 Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-                return (docsetPath, spec);
             }
+
+            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));;
+            if (skip)
+            {
+                return default;
+            }
+
+            var replaceEnvironments =
+                spec.Environments.Length > 0 &&
+                !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
             foreach (var (file, content) in spec.Inputs)
             {
+                var mutableContent = content;
                 var filePath = Path.Combine(docsetPath, file);
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                File.WriteAllText(filePath, content);
+                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                {
+                    foreach (var env in spec.Environments)
+                    {
+                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                    }
+                }
+                File.WriteAllText(filePath, mutableContent);
             }
 
             return (docsetPath, spec);
+        }
+
+        private static string ToSafePathString(string value)
+        {
+            foreach (var ch in Path.GetInvalidPathChars())
+            {
+                value = value.Replace(ch, ' ');
+            }
+
+            return value.Replace('/', ' ').Replace('\\', ' ').Replace("<", "").Replace(">", "");
         }
 
         private static void DeleteDirectory(string targetDir)
@@ -144,46 +215,48 @@ namespace Microsoft.Docs.Build
             Directory.Delete(targetDir, false);
         }
 
-        private static IEnumerable<string> FindTestSpecHeadersInFile(string path)
-        {
-            var sections = File.ReadAllText(path).Split("\n---", StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var section in sections)
-            {
-                var yaml = section.Trim('\r', '\n', '-');
-                var header = YamlUtility.ReadHeader(yaml) ?? "";
-
-                foreach (var ch in Path.GetInvalidPathChars())
-                {
-                    header = header.Replace(ch, ' ');
-                }
-
-                yield return header.Replace('/', ' ').Replace('\\', ' ');
-            }
-        }
-
         private static void VerifyFile(string file, string content)
         {
-            switch (Path.GetExtension(file.ToLower()))
+            switch (Path.GetExtension(file.ToLowerInvariant()))
             {
                 case ".json":
                 case ".manifest":
-                    TestHelper.VerifyJsonContainEquals(
+                    TestUtility.VerifyJsonContainEquals(
                         JToken.Parse(content ?? "{}"),
                         JToken.Parse(File.ReadAllText(file)));
                     break;
                 case ".log":
-                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _);
-                    var actual = File.ReadAllLines(file).OrderBy(_ => _);
-                    Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    var expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
+                    var actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
+                    // TODO: Configure github token in CI to get rid of github rate limit,
+                    // then we could remove the wildcard match
+                    if (expected.Any(str => str.Contains("*")))
+                    {
+                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
+                    }
+                    else
+                    {
+                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
+                    }
+                    break;
+                case ".html":
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        Assert.Equal(
+                            TestUtility.NormalizeHtml(content),
+                            TestUtility.NormalizeHtml(File.ReadAllText(file)));
+                    }
                     break;
                 default:
-                    Assert.Equal(
-                        content?.Trim() ?? "",
-                        File.ReadAllText(file).Trim(),
-                        ignoreCase: false,
-                        ignoreLineEndingDifferences: true,
-                        ignoreWhiteSpaceDifferences: true);
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        Assert.Equal(
+                            content?.Trim() ?? "",
+                            File.ReadAllText(file).Trim(),
+                            ignoreCase: false,
+                            ignoreLineEndingDifferences: true,
+                            ignoreWhiteSpaceDifferences: true);
+                    }
                     break;
             }
         }
