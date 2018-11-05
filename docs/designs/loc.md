@@ -51,7 +51,6 @@ Below kinds of mappings are considered to be supported:
     /readme.md          -->           /zh-cn/readme.md
     /files/a.md         -->           /zh-cn/files/a.md
   ```
-
 ### Loc Overwrite Configuration
 
   - Overwrite the configurations you want or use source configuration by default  
@@ -83,6 +82,8 @@ Below kinds of mappings are considered to be supported:
     live                                                                           live-sxs
     master                                                                         master-sxs
     ```
+  - Localization overwrite configuration can be different in different branch(TODO)
+  - Which configurations are allowed to be ovewrote, assuming is ALL.
 
 ## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
@@ -205,4 +206,4 @@ From the localization delayed translation point, the above requirement makes sen
   - resolve from fallback docset
   - resolve from fallback docset git history
   
-  For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
+For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
