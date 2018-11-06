@@ -74,24 +74,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 if (modelsDict.TryGetValue(dupeModel.File, out var dupe))
                 {
-                    if (dupe == null)
+                    if (dupe != null)
                     {
                         modelsDict.Remove(dupeModel.File);
+                        RenewDupeFileModels(dupe, newFilePaths, modelsDict);
                     }
                 }
-                
-                var page = dupeModel.Content as PageViewModel;
-                var memberType = page.Items[0]?.Type;
-                var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
-
-                if (memberType != null)
-                {
-                    newFileName = newFileName + $"({memberType})";
-                }
-
-                var newFilePath = GetUniqueFilePath(dupeModel.File, newFileName, newFilePaths, modelsDict);
-                var newModel = GenerateNewFileModel(dupeModel, page, Path.GetFileNameWithoutExtension(newFilePath), new Dictionary<string, int> { });
-                modelsDict[newFilePath] = newModel;
+                RenewDupeFileModels(dupeModel, newFilePaths, modelsDict);
             }
 
             host.TableOfContentRestructions =
@@ -106,6 +95,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                  }).ToImmutableList();
 
             return modelsDict.Values;
+        }
+
+        private void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+        {
+            var page = dupeModel.Content as PageViewModel;
+            var memberType = page.Items[0]?.Type;
+            var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
+
+            if (memberType != null)
+            {
+                newFileName = newFileName + $"({memberType})";
+            }
+
+            var newFilePath = GetUniqueFilePath(dupeModel.File, newFileName, newFilePaths, modelsDict);
+            var newModel = GenerateNewFileModel(dupeModel, page, Path.GetFileNameWithoutExtension(newFilePath), new Dictionary<string, int> { });
+            modelsDict[newFilePath] = newModel;
         }
 
         private string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
@@ -678,12 +683,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             else
             {
                 dupeModels.Add(model);
-
-                if (models[model.File] != null)
-                {
-                    dupeModels.Add(models[model.File]);
-                    models[model.File] = null;
-                }
             }
         }
     }
