@@ -48,6 +48,7 @@ dependencies:
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
 
+
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
@@ -55,7 +56,7 @@ dependencies:
 
             foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
             {
-                Directory.SetLastAccessTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
+                Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
             }
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -66,6 +67,8 @@ dependencies:
             // run restore again to clean up
             // check the work trees
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
+
             workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(2, workTreeList.Count);
         }
@@ -83,7 +86,7 @@ dependencies:
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
                 Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
                 File.WriteAllText(restorePath, $"{version}");
-                File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
+                File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;
             });
 
@@ -93,6 +96,7 @@ github:
 
             // run restore again to clean up
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
 
             Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
         }

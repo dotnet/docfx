@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreUrl
     {
-        private const int MaxKeepingDays = 10;
-
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
 
@@ -49,40 +45,13 @@ namespace Microsoft.Docs.Build
                         File.Delete(tempFile);
                     }
 
-                    // update the last access date
-                    File.SetLastAccessTimeUtc(restorePath, DateTime.UtcNow);
+                    // update the last write date
+                    File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow);
 
                     return Task.CompletedTask;
                 });
 
             return fileVersion;
-        }
-
-        public static async Task GC(string address)
-        {
-            var restoreDir = GetRestoreRootDir(address);
-            if (!Directory.Exists(restoreDir))
-            {
-                return;
-            }
-
-            await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
-                () =>
-                {
-                    var existingVersionPaths = Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                                               .Select(f => PathUtility.NormalizeFile(f)).ToList();
-
-                    foreach (var existingVersionPath in existingVersionPaths)
-                    {
-                        if (new FileInfo(existingVersionPath).LastAccessTimeUtc + TimeSpan.FromDays(MaxKeepingDays) < DateTime.UtcNow)
-                        {
-                            File.Delete(existingVersionPath);
-                        }
-                    }
-
-                    return Task.CompletedTask;
-                });
         }
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
