@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -15,6 +16,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
+
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
@@ -156,22 +159,39 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
-            Directory.CreateDirectory(AppData.MutexDir);
-
-            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
-
-            using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+            // avoid the RunInsideMutex to be nested used
+            // doesn't support to require a lock before releasing a lock
+            // which may cause deadlock
+            if (t_innerCall.Value != null)
             {
-                await action();
+                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
             }
 
-            FileStream CreateFile() => new FileStream(
-                lockPath,
-                FileMode.CreateNew,
-                FileAccess.ReadWrite,
-                FileShare.None,
-                1,
-                FileOptions.DeleteOnClose);
+            t_innerCall.Value = new object();
+
+            try
+            {
+                Directory.CreateDirectory(AppData.MutexDir);
+
+                var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+                using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                {
+                    await action();
+                }
+
+                FileStream CreateFile() => new FileStream(
+                    lockPath,
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    1,
+                    FileOptions.DeleteOnClose);
+            }
+            finally
+            {
+                t_innerCall.Value = null;
+            }
         }
 
         /// <summary>
