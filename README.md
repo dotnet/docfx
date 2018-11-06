@@ -46,8 +46,9 @@ docfx build <docset_path> [<options>]
 ```powershell
 docfx gc [<options>]
 ```
+
 -options:
-  - --retention-days: Only keep files/folder which are accessed/wrote within <retention-days> days.
+  - --retention-days: Only keep files/folder which are accessed/written within <retention-days> days.
 
 ## Contributing
 

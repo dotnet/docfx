@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
 
             var downloadedFiles = Directory.EnumerateFiles(AppData.UrlRestoreDir, "*", SearchOption.AllDirectories);
 
-            using (Progress.Start("Cleaning download files"))
+            using (Progress.Start("Cleaning downloaded files"))
             {
                 ParallelUtility.ForEach(
                     downloadedFiles,

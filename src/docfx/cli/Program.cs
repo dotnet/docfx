@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 // GC command
                 // usage: docfx gc [--retention-days days]
                 syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
-                syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed within <d> days");
+                syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 
             return (command, docset, options);
