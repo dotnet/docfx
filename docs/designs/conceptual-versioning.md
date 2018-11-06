@@ -10,7 +10,9 @@ This document specifies Docfx vnext versioning dev design.
 
 ##### For content writer
 
-1. Support expressing version constrains as [moniker range](#21-moniker-range).
+1. Support expressing version constrains as moniker range.
+
+    In order to ease version configuration and content maintenance, [moniker range](./versioning.md#moniker-ranges) enable the writer to associate more than one moniker with content, but without needing to list monikers.
 
 2. Support moniker zone markdown syntax.
 
@@ -36,67 +38,67 @@ This document specifies Docfx vnext versioning dev design.
 
     1. If user reference another file by link/Uid without query string `?view={moniker}`, we will not check whether the referenced file have the same monikerRange with current file. So if the referenced file have different monikerRange, the final view page is not guaranteed.
 
-    Sample:
+        Sample:
+    
+        ```txt
+        |- articles/
+        |    |- folder1/
+        |    |   |- a.md
+        |    |- folder2/
+        |    |   |- b.md
+        |    |- folder3/
+        |        |- b.md
+        |- config.yml
+        ```
+    
+        the content of `config.yml` is
+        ```yml
+        name: dotnet
+        content: "articles/**/*.md"
+        monikerRange:
+            "articles/folder1/**/*.md": "netcore-1.0"
+            "articles/folder2/**/*.md": "netcore-1.0"
+            "articles/folder3/**/*.md": "netcore-2.0"
+        routing:
+            "articles/folder1/": "articles/"
+            "articles/folder2/": "articles/"
+            "articles/folder3/": "articles/"
+        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        ```
 
-    ```txt
-    |- articles/
-    |    |- folder1/
-    |    |   |- a.md
-    |    |- folder2/
-    |    |   |- b.md
-    |    |- folder3/
-    |        |- b.md
-    |- config.yml
-    ```
+        If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder3/b.md)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-1.0`, which is the output of file `folder2/b.md`.
 
-    the content of `config.yml` is
-    ```yml
-    name: dotnet
-    content: "articles/**/*.md"
-    monikerRange:
-        "articles/folder1/**/*.md": "netcore-1.0"
-        "articles/folder2/**/*.md": "netcore-1.0"
-        "articles/folder3/**/*.md": "netcore-2.0"
-    routing:
-        "articles/folder1/": "articles/"
-        "articles/folder2/": "articles/"
-        "articles/folder3/": "articles/"
-    monikerDefinitionUrl: "https://api.docs.com/monikers/"
-    ```
+    2. If user reference another file by link/Uid with query string `?view={moniker}`, we will not check whether the referenced file contains this `moniker`, the query string will be preserved to the resolve result, but the final view page is not guaranteed.
 
-    If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder3/b.md)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-1.0`, which is the output of file `folder2/b.md`.
+        Sample:
 
-    2. If user reference another file by link/Uid with query string `?view={moniker}`, we will not check whether the referenced file contains this `moniker`, the query string will be appended to the resolve result, but the final view page is not guaranteed.
+        ```txt
+        |- articles/
+        |    |- folder1/
+        |    |   |- a.md
+        |    |- folder2/
+        |    |   |- b.md
+        |    |- folder3/
+        |        |- b.md
+        |- config.yml
+        ```
 
-    Sample:
+        the content of `config.yml` is
+        ```yml
+        name: dotnet
+        content: "articles/**/*.md"
+        monikerRange:
+            "articles/folder1/**/*.md": "netcore-1.0"
+            "articles/folder2/**/*.md": "netcore-1.0"
+            "articles/folder3/**/*.md": "netcore-2.0"
+        routing:
+            "articles/folder1/": "articles/"
+            "articles/folder2/": "articles/"
+            "articles/folder3/": "articles/"
+        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        ```
 
-    ```txt
-    |- articles/
-    |    |- folder1/
-    |    |   |- a.md
-    |    |- folder2/
-    |    |   |- b.md
-    |    |- folder3/
-    |        |- b.md
-    |- config.yml
-    ```
-
-    the content of `config.yml` is
-    ```yml
-    name: dotnet
-    content: "articles/**/*.md"
-    monikerRange:
-        "articles/folder1/**/*.md": "netcore-1.0"
-        "articles/folder2/**/*.md": "netcore-1.0"
-        "articles/folder3/**/*.md": "netcore-2.0"
-    routing:
-        "articles/folder1/": "articles/"
-        "articles/folder2/": "articles/"
-        "articles/folder3/": "articles/"
-    monikerDefinitionUrl: "https://api.docs.com/monikers/"
-    ```
-
-    If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder2/b.md?view=netcore-2.0)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-2.0`, which is the output of file `folder3/b.md`.
+        If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder2/b.md?view=netcore-2.0)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-2.0`, which is the output of file `folder3/b.md`.
 
 2. Not support doing bookmark validation inside different versioned zones.
 
@@ -175,7 +177,7 @@ monikerDefinitionUrl: "https://api.docs.com/monikers/"
 
     To better illustrate scenarios, in below sections, we call URL without `{host}` and `{docset-base-path}` as the **SitePath** of the file. In our example, **SitePath** for `articles/v1.0/a.md` and `articles/v2.0/a.md` are the same: `articles/a`.
 
-    If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files's *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
+    If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files' *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
 
 4. `monikerDefinitionUrl` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
 
@@ -199,7 +201,7 @@ monikerRange: >=netcore-1.0
 ---
 ```
 
-> [!IMPORTANT]
+> [!NOTE]
 > The final file level moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, an error throws.
 
 ##### 2.2.2 Moniker zone
@@ -224,15 +226,23 @@ content just in `>netcore-1.0`
 ::: moniker-end
 ```
 
-> [!IMPORTANT]
+> [!NOTE]
 > The final zone moniker range is the intersection of moniker range of this file and moniker range of this zone. If the intersection is empty, an error throws.
 
 ##### 2.2.3 Link/Xref
 
-In phase 1, content writer is allowed to reference another file with specific version by query string `?view={moniker}`, and the query string will be append to the resolve result, but we will not do the version existed check, and DHS will handle the fallback logic.
+In phase 1, content writer is allowed to reference another file with specific version by query string `?view={moniker}`, and the query string will be preserved to the resolve result, but we will not do the version existed check, and DHS will handle the fallback logic.
 
 There are several scenarios:
 
+|Reference type                                                                 |Resolve result             |Validation                 |
+|-------------------------------------------------------------------------------|---------------------------|---------------------------|
+|relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check |
+|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check|
+|absolute link/external link without verison query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
+|absolute link/external link with verison query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
+|internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check |
+|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check |
 
 #### 2.3 Moniker Definition File
 
@@ -428,8 +438,6 @@ redirections:
 
 For now, the redirection URL returned by hosting doesn't contains original moniker query `?view={moniker}`. So if user access the URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` or `{host}/{docset-base-path}/articles/old/a?view=netcore-2.0`, they will both be redirected to `{host}/{docset-base-path}/articles/a`, and DHS will fallback to the latest version since it has no moniker query.
 
-
-
 So if the content writer want redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` and `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, there is a workaround:
 
 ```yml
@@ -447,7 +455,12 @@ redirections:
     articles/v2.0/old/a: /articles/a?view=netcore-2.0
 ```
 
+But there is a limitation, if the content writer want:
 
+1. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`
+2. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.1`
+
+it cannot be achieved.
 
 #### 4.2 Blank page
 
@@ -479,54 +492,26 @@ After doing this,
 1. This file will be hidden from the Toc when they select the moniker of Toc as `netcore-2.0`.
 1. If user access URL `{page_url}?view=netcore-2.0`, the DHS will fallback to `{page_url}?netcore-1.0`
 
+### 5 Implementation
 
-
-
-
-
-
-#### 2.1 Moniker Range
-
-In order to ease version configuration and content maintenance, [moniker range](./versioning.md#moniker-ranges) enable the writer to associate more than one moniker with content, but without needing to list monikers.
-
-We support three level moniker range setting:
-
-##### 2.1.1 Config file
-
-
-##### 2.1.2 YAML Header
-
-
-##### 2.1.3 Moniker zone
-
-
-#### 2.2 Link/Xref
-
-In phase 1, content writer is allowed to reference another file with specific version by query string `?view={moniker}`, and the query string will be append to the resolve result, but we will not do the version existed check, and DHS will handle the fallback logic.
-
-#### 2.3 Redirection
-
-
-
-
-
-### 4 Implementation
-
-#### 4.1 MonikerRange evaluation
+#### 5.1 MonikerRange evaluation
 
 Moniker range itself cannot be interpreted, but within an ordered moniker list, moniker range can be simply evaluated to a list of monikers.
 
-#### 4.2 Reference resolve
+#### 5.2 Reference resolve
 
-##### 4.2.1 Link resolve
+##### 5.2.1 Link resolve
 
 In phase 1, link will be resolved to relative sitePath without version info, DHS will handle the fallback behavior if the referenced page doesn't the version of current page.
 
-##### 4.2.2 Xref resolve
+##### 5.2.2 Xref resolve
 
 In v2, each group will build one round, and in each group, there should be not be two files with the same uid, so the xref can be resolved correctly.
 But in v3, there is no group, all files will be built in one round, so there will be two file with same uid but different version, which is not acceptable, and we have to handle this case.
 To handle this, when we are generating the xref map for internal using, we have to contains the monikers of each uid.
+
+> [!NOTE]
+> In phase 1, we don't export moniker information in output xrefMap.
 
 If in one round of build, different files with the same **Uid** are included:
 
@@ -534,20 +519,27 @@ If in one round of build, different files with the same **Uid** are included:
 2. When the files have `monikerRange` option set, but have different **SitePath**, an error throws.
 3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed.
 
-#### 4.4 Toc build
+#### 5.3 Toc
 
 In current docfx v3, Toc file is build at the same time with `page` files, because they don't depend on the build result of those files, but consider of files with version information, the nodes in Toc files build result will contains `monikers` attribute, which depends on the build result of those nodes, so we have to move Toc building to the post-build step.
 
-#### 4.5 Redirection
+When build the toc file(including the toc file included in another), we have to cover:
+
+1. *MonikerRange* of toc file. In phase 1, we don't support setting moniker range inside the toc file, so the *MonikerRange* of toc file is evaluated from config file.
+2. *MonikerRange* of every node in toc. In phase 1, we don't support setting moniker range of node in toc file, so the *MonikerRange* of every node is evaluated from the corresponding file.
+
+In phase 1, when resolving the `toc_rel` of each file, we still take the nearest toc file, and we don't check whether the monikerRange of the toc is same as current file.
+
+#### 5.4 Redirection
 
 For redirection file, the output file also contains `monikers` information, which will be used by DHS to do fallback.
 
-#### 5. Dependencies
+#### 6. Dependencies
 
 1. Support publishing with overlapping monikerRange in DHS.
 2. API to generate moniker definition file.
 
-#### 6. Open questions
+#### 7. Open questions
 
 1. To support publishing multiple files with different version to same sitePath, we have to set two configuration `monikerRange` and `routing`, there are some duplicate information, can we simply the config?
 
@@ -555,7 +547,7 @@ For redirection file, the output file also contains `monikers` information, whic
 
 3. In Docfx v2, the file level monikerRange is the intersection of the monikerRange from `config` and `yaml header`, should we make the monikerRange from `yaml header` higher priority, so it can overwrite the monikerRange from `config`.
 
-## Conceptual versioning - Phase 2
+## Conceptual versioning - Phase 2 (Draft - not reviewed)
 
 In phase2, we are going to support:
 
@@ -572,7 +564,7 @@ In phase2, we are going to support:
 - Be able to reference a internal Uid with query `?view={moniker}`, a warning should be reported if the Uid does not contains this moniker.
 - Be able to reference a external Uid with query `?view={moniker}`, a warning should be reported if the Uid does not contains this moniker.
 
-## Conceptual versioning - Phase 3
+## Conceptual versioning - Phase 3 (Draft - not reviewed)
 
 In phase 3, we are going to support:
 
