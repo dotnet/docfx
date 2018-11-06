@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(hrefs != null && hrefs.Any());
 
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(restoreDir, ".git"));
-            var (url, _) = GitUtility.GetGitRemoteInfo(hrefs.First());
+            var (url, refspec) = GitUtility.GetGitRemoteInfo(hrefs.First());
             var workTreeHeads = new ConcurrentBag<(string href, string head)>();
 
             await ProcessUtility.RunInsideMutex(
@@ -31,37 +31,16 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        await FetchOrCloneRepo();
+                        // TODO: group worktrees to avoid calling `GitUtility.GetGitRemoteInfo` repeatedly.
+                        var refspecs = hrefs.Select(h => GitUtility.GetGitRemoteInfo(h).refspec);
+                        await GitUtility.CloneOrUpdateBare(restorePath, url, refspecs, config);
                         await AddWorkTrees();
                     }
-                    catch (InvalidOperationException ex)
+                    catch (Exception ex)
                     {
                         throw Errors.GitCloneFailed(hrefs.First()).ToException(ex);
                     }
                 });
-
-            Task FetchOrCloneRepo()
-            {
-                var gitConfigs =
-                       from http in config.Http
-                       where url.StartsWith(http.Key)
-                       from header in http.Value.Headers
-                       select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"";
-
-                var gitConfig = string.Join(' ', gitConfigs);
-
-                if (GitUtility.IsRepo(restoreDir))
-                {
-                    // already exists, just pull the new updates from remote
-                    // fetch bare repo: https://stackoverflow.com/questions/3382679/how-do-i-update-my-bare-repo
-                    return GitUtility.Fetch(restorePath, url, "+refs/heads/*:refs/heads/*", gitConfig);
-                }
-                else
-                {
-                    // doesn't exist yet, clone this repo to a specified branch
-                    return GitUtility.Clone(restoreDir, url, restorePath, gitConfig: gitConfig, bare: true);
-                }
-            }
 
             async Task AddWorkTrees()
             {
