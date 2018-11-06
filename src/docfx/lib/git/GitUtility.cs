@@ -111,18 +111,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static async Task CloneOrUpdate(string path, string url, string refspec, Config config = null)
+        public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
         {
-            await CloneOrUpdate(path, url, new[] { refspec }, bare: false, config);
-            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {refspec}");
+            await CloneOrUpdate(path, url, new[] { committish }, bare: false, config);
+            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> refspecs, Config config = null)
+        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, Config config = null)
         {
-            return CloneOrUpdate(path, url, refspecs, bare: true, config);
+            return CloneOrUpdate(path, url, committishes, bare: true, config);
         }
 
         /// <summary>
@@ -156,13 +156,13 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitHash">The commit hash or branch name you want to use to create a work tree</param>
+        /// <param name="committish">The commit hash, branch or tag used to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+        public static Task AddWorkTree(string cwd, string committish, string path)
         {
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
-            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitIsh} --force");
+            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
+        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -220,10 +220,18 @@ namespace Microsoft.Docs.Build
             }
 
             var httpConfig = GetGitCommandLineConfig(url, config);
-            var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
+            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}"));
 
-            // TODO: handle branch not found error
-            return ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspec}");
+            try
+            {
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}");
+            }
+            catch (InvalidOperationException)
+            {
+                // Fallback to fetch all branches and tags if the input committish is not supported by fetch
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}");
+            }
         }
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
