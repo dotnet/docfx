@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Linq;
 
 using Xunit;
@@ -52,7 +51,6 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParserTest()
         {
-            Directory.CreateDirectory("moniker-definition-test");
             _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
         }
 
@@ -130,38 +128,10 @@ namespace Microsoft.Docs.Build
             Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
         }
 
-        [Theory]
-        [InlineData(@"{
-    ""monikers"": [
-        {
-            ""name"": """",
-            ""product"": ""product-test""
-        }
-    ]
-}", "Invalid moniker definition file: Moniker name cannot be null or empty")]
-        [InlineData(@"{
-    ""monikers"": [
-        {
-            ""name"": ""netcore-1.0"",
-            ""product"": """"
-        }
-    ]
-}", "Invalid moniker definition file: Product name cannot be null or empty")]
-        public void TestInvalidMonikerDefinitionShouldFail(string content, string errorMessage)
-        {
-            var path = $"moniker-definition-test/{Guid.NewGuid()}";
-
-            File.WriteAllText(path, content);
-
-            var exception = Assert.Throws<DocfxException>(() => MonikerRangeParser.Create(path));
-            Assert.Equal("invalid-moniker-definition", exception.Error.Code);
-            Assert.Equal(errorMessage, exception.Error.Message);
-        }
-
         [Fact]
         public void TestNullDefinitionShouldFail()
         {
-            var (_, monikerRangeParser) = MonikerRangeParser.Create(null);
+            var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
             var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
             Assert.Equal("invalid-moniker-range", exception.Error.Code);
             Assert.Equal("MonikerRange `netcore-1.0` is invalid: Moniker `netcore-1.0` is not defined", exception.Error.Message);

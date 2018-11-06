@@ -15,17 +15,6 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public static (List<Error>, MonikerRangeParser) Create(string monikerDefinitionFile)
-        {
-            var errors = new List<Error>();
-            var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(monikerDefinitionFile))
-            {
-                (errors, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(monikerDefinitionFile));
-            }
-            return (errors, new MonikerRangeParser(monikerDefinition));
-        }
-
         public IEnumerable<string> Parse(string rangeString)
         {
             IEnumerable<string> monikerNames = null;

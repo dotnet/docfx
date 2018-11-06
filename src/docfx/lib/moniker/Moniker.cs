@@ -8,9 +8,9 @@ namespace Microsoft.Docs.Build
 {
     internal class Moniker
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public string Product { get; set; }
+        public string Product { get; set; } = string.Empty;
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();

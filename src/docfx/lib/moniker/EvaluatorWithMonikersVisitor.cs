@@ -70,14 +70,6 @@ namespace Microsoft.Docs.Build
 
             foreach (var moniker in monikers)
             {
-                if (string.IsNullOrEmpty(moniker.Name))
-                {
-                    throw Errors.InvalidMonikerDefinition("Moniker name cannot be null or empty").ToException();
-                }
-                if (string.IsNullOrEmpty(moniker.Product))
-                {
-                    throw Errors.InvalidMonikerDefinition("Product name cannot be null or empty").ToException();
-                }
                 if (!monikerNameList.Add(moniker.Name))
                 {
                     throw Errors.MonikerNameConflict(moniker.Name).ToException();
