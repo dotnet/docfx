@@ -59,7 +59,7 @@ xref:
 During `docfx restore`, all the JSON files will be restored and merged.
 
 ## Resolve xref
-- For markdown files, there are two formats to reference a uid. 
+### Using `@` to reference a uid in markdown
   Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly.
 ```
 Link to @a
@@ -68,7 +68,9 @@ Link to @a
 ```json
 {"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Documentation</a></p>\n"}
 ```
-- User can also define which property to display for the referenced uid
+  - User can also define which property to display for the referenced uid
+
+### Using `xref` to reference a uid in markdown
 ```
 Link to <xref:a?displayProperty=fullName>
 ```
@@ -76,7 +78,7 @@ Link to <xref:a?displayProperty=fullName>
 ```json
 {"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Full Documentation</a></p>\n"}
 ```
-- For SDP(JSON/YAML) files
+### For SDP(JSON/YAML) files
 ```json
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
