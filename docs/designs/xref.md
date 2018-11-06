@@ -1,9 +1,12 @@
 # Xref
-- User can define uid with some properties in markdown, JSON and YAML files. Then output xrefmap.json for others to reference to. 
-- User can reference to uids in markdown, JSON and YAML files, they will be resolved during `docfx build`.
+Besides using file path to link to another file, DocFX also allows you to give a file a unique identifier so that you can reference this file using that identifier instead of its file path. This is useful in the following cases:
+- Path to file is long and difficult to memorize or changes frequently.
+- API reference documentation is usually auto generated so it's difficult to find its file path.
+- You want to reference to files in another project without need to know its file structure.
 
-## Define uid
-- User can define uid in YAML header of markdown file
+## Define UID
+The unique identifier of a file is called UID (stands for unique identifier) in DocFX.
+- User can define UID in YAML header of markdown file
 ```
 ---
 uid: a
@@ -11,7 +14,7 @@ title: ASP.NET Documentation
 description: Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more.
 ---
 ```
-- User can also define uid in JSON
+- User can also define UID in JSON
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -20,13 +23,30 @@ description: Learn how to develop ASP.NET and ASP.NET web applications. Get docu
   "description": "Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more."
 }
 ```
-- And define uid in YAML
+- And define UID in YAML
 ```yml
 #YamlMime:TestData
 uid: a
 title: ASP.NET Documentation
 description: Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more.
 ```
+
+- Xref property can also contain `markdown` content, whose output would be transformed in the xref map output. The example below shows that `summary` contains `markdown` content.
+```yml
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "summary": "    Hello `docfx`!"
+    }
+outputs:
+  docs/a.json:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+```
+Since the xref map would be outputted for external reference, if markdown conatains a linking url, should it be resolved to an absolute url? It is resolve as related url for now.
 
 ## Output xref map
 Docfx will output a JSON file named `xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
@@ -50,7 +70,7 @@ There are two parts of xref map, internal and external.
 User can define uids in the same repository and reference to them, and these defined uids will be outputted as `xrefmap.json`.
 
 ### External xref map
-User can use uids defined by other repositories as well, just define the urls of `xrefmap.json` in `docfx.yml`.
+User can reference uids defined by other repositories as well, just define the urls of `xrefmap.json` in `docfx.yml`.
 ```yml
 xref:
   - http://url1/xrefmap.json
@@ -60,7 +80,7 @@ During `docfx restore`, all the JSON files will be restored and merged.
 
 ## Resolve xref
 ### Using `@` to reference a uid in markdown
-  Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly.
+  Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly, could reference to [V2](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#shorthand-form).
 ```
 Link to @a
 ```
@@ -86,6 +106,11 @@ Link to <xref:a?displayProperty=fullName>
     }
 ```
 The expected resolved result would be a `XrefSpec` instance for the referenced uid. The remaining problem here is that we want to output an object with a string input at the same `xref` property [Related issue](https://github.com/dotnet/docfx/issues/3497).
+
+### Others
+There are some other UID reference formats supported in docfx V2, which are not supported in V3 yet:
+- [Markdown link style](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#markdown-link)
+- [Advanced options](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#advanced-more-options-for-cross-reference)
 
 ## Performance tuning
 During creating internal xref map, docfx needs to go through all the files containing uid, and during building pages docfx needs to go through all the files again. We can add some cache to avoid doing the same thing twice.
