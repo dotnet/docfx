@@ -3,7 +3,18 @@
 commands:
   - restore --locale zh-cn
   - build
-repo: https://github.com/docascode/docfx-test-dependencies#master
+repos:
+  https://github.com/docascode/docfx-test-dependencies#master:
+    - files:
+        docfx.yml: |
+          dependencies:
+            restore-child: https://github.com/docascode/docfx-test-dependencies#child
+  https://github.com/docascode/docfx-test-dependencies#child:
+    - files:
+        dep.md: child-DEP
+  https://github.com/docascode/docfx-test-dependencies.zh-cn#master:
+    - files:
+        dep.md: loc-DEP
 restores:
   git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-master/dep.md: loc-DEP
   git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
@@ -18,11 +29,15 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build
-repo: https://github.com/docascode/docfx-test-dependencies#master
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: RepositoryAndFolder
+repos:
+  https://github.com/docascode/docfx-test-dependencies#master:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: RepositoryAndFolder
+  https://github.com/docascode/docfx-test-dependencies.localization#master:
+    - files:
+        dep.md: loc-DEP
 restores:
   git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb-master/dep.md: loc-DEP
   restore-lock/*restore loc repo, all loc files are in one repo-*-lock.json: |
@@ -33,47 +48,57 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-restore-map
-inputs:
-  docfx.yml: |
-    github:
-      userCache: github-user.json
-    dependencies:
-      child1: https://github.com/docascode/docfx-test-dependencies.localization#master
-  github-user.json: |
-    {
-      "users": [
-        {
-          "name": "Osmond Jiang",
-          "login": "OsmondJiang",
-          "id": 19990166,
-          "expiry":"2099-01-01T00:00:00.00000Z",
-          "emails": [
-            "xinjiang@microsoft.com"
-          ]
-        },
-        {
-          "name": "Renze Yu",
-          "login": "superyyrrzz",
-          "id": 3831744,
-          "expiry":"2099-01-01T00:00:00.00000Z",
-          "emails": [
-            "renzeyu@microsoft.com",
-            "superyyrrzz@gmail.com"
-          ]
-        },
-        {
-          "name": "Yufei Huang",
-          "login": "yufeih",
-          "id": 511355,
-          "expiry":"2099-01-01T00:00:00.00000Z",
-          "emails": [
-            "yufeih@users.noreply.github.com",
-            "yufeih@live.com"
-          ]
-        }
-      ]
-    }
+repos:
+  https://github.com/docascode/docfx-test-dependencies#loc-restore-map:
+    - files:
+        docfx.yml: |
+          github:
+            userCache: github-user.json
+          dependencies:
+            child1: https://github.com/docascode/docfx-test-dependencies.localization#master
+        github-user.json: |
+          {
+            "users": [
+              {
+                "name": "Osmond Jiang",
+                "login": "OsmondJiang",
+                "id": 19990166,
+                "expiry":"2099-01-01T00:00:00.00000Z",
+                "emails": [
+                  "xinjiang@microsoft.com"
+                ]
+              },
+              {
+                "name": "Renze Yu",
+                "login": "superyyrrzz",
+                "id": 3831744,
+                "expiry":"2099-01-01T00:00:00.00000Z",
+                "emails": [
+                  "renzeyu@microsoft.com",
+                  "superyyrrzz@gmail.com"
+                ]
+              },
+              {
+                "name": "Yufei Huang",
+                "login": "yufeih",
+                "id": 511355,
+                "expiry":"2099-01-01T00:00:00.00000Z",
+                "emails": [
+                  "yufeih@users.noreply.github.com",
+                  "yufeih@live.com"
+                ]
+              }
+            ]
+          }
+  https://github.com/docascode/docfx-test-dependencies.zh-cn#loc-restore-map:
+    - files:
+        a.md:
+      author: OsmondJiang
+      email: xinjiang@microsoft.com
+    - files:
+        a.md:
+      author: yufeih
+      email: yufeih@microsoft.com
 outputs:
   docs/a.json: |
     {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Yufei Huang","id":"yufeih@users.noreply.github.com"}]}
@@ -201,55 +226,47 @@ outputs:
     { "content":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # loc page fallback, all loc files are in one repo
-# loc repo:
-#   a.md: |
-#     [link to b](b.md)
-#     [!include[include b](b.md)
-# source repo:
-#   b.md: |
-#     [link to a](a.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: RepositoryAndFolder
-  a.md: a
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/b.md: |
+          [link to a](a.md)
+        docfx.yml: |
+          localization:
+            mapping: RepositoryAndFolder
+  https://docs.com/test.localization#live:
+    - files:
+        zh-cn/docs/a.md: |
+          [link to b](b.md)
+          [!include[include b](b.md)
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
 ---
 # loc resource fallback
-# loc repo:
-#   a.md: |
-#     [link to b](b.png)
-# source repo:
-#   docs/b.png:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback-resource
-inputs:
-  docfx.yml:
-  docs/b.png:
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/b.png:
+        docfx.yml:
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docs/a.md: |
+          [link to b](b.png)
 outputs:
   docs/a.json: |
     { "content":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
 # loc token fallback, all loc files are in source repo under different locale folder
-# source repo:
-#   b.md: |
-#     [link to a](a.md)
-#   a.md: a
-#   localization/zh-cn/a.md: |
-#     [link to b](b.md)
-#     [!include[include b](b.md)
 commands:
   - restore
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-fallback
 inputs:
   docfx.yml: |
     localization:
@@ -265,29 +282,24 @@ outputs:
     { "content":"<p><a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
 ---
 # loc build with TOC map, loc TOC has higher priority
-# loc repo:
-#   docs/a.md:
-#   docs/b.md:
-#   docs/TOC.md: |
-#     # [reference a](a.md)
-#     # [reference b](b.md)
-# source repo:
-#   docs/TOC.md: |
-#     # [reference a](a.md)
-#   docs/b/TOC.md: |
-#     # [reference b](../b.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-tocmap
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: RepositoryAndFolder
-  docs/TOC.md: |
-    # [reference a](a.md)
-  docs/b/TOC.md: |
-    # [reference b](../b.md)
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/TOC.md: |
+          # [reference a](a.md)
+        docs/b/TOC.md: |
+          # [reference b](../b.md)
+        docfx.yml:
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docs/a.md:
+        docs/b.md:
+        docs/TOC.md: |
+          # [reference a](a.md)
+          # [reference b](b.md)
 outputs:
   docs/a.json: |
     {"toc_rel": "toc.json"}
@@ -297,25 +309,21 @@ outputs:
     {"items": [{"toc_title": "reference a", "href": "a"},{"toc_title": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
-# loc repo:
-#   docs/b/b.md
-#   docs/a/TOC.md: |
-#     # [reference a](a.md)
-# source repo:
-#   docs/a/a.md:
-#   docs/b/TOC.md: |
-#     # [reference b](b.md)
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-tocmap
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: RepositoryAndFolder
-  docs/b/TOC.md: |
-    # [reference b](b.md)
-  docs/a/a.md:
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/a/a.md:
+        docs/b/TOC.md: |
+          # [reference b](b.md)
+        docfx.yml:
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docs/a/TOC.md: |
+          # [reference a](a.md)
+        docs/b/b.md:
 outputs:
   docs/b/b.json: |
     {"toc_rel": "toc.json"}
@@ -323,13 +331,6 @@ outputs:
     {"items": [{"toc_title": "reference a", "href": "a"}]}
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
-# source repo:
-#   docs/a/a.md:
-#   docs/b/TOC.md: |
-#     # [reference b](b.md)
-#   localization/zh-cn/docs/b/b.md:
-#   localization/zh-cn/docs/a/TOC.md: |
-#     # [reference a](a.md)
 commands:
   - restore
   - build --locale zh-cn
@@ -358,13 +359,22 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-xrefmap
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    uid: c
-    ---
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/a.md: |
+          ---
+          uid: c
+          ---
+        docfx.yml:
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docs/a.md: |
+          ---
+          uid: a
+          ---
+        docs/b.md: |
+          link to @c
 outputs:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
@@ -373,10 +383,6 @@ outputs:
   xrefmap.json:
 ---
 # loc build with xref map, all locale files are in source repo under different locale folder, loc file has higher priority
-# source repo:
-#   docs/a.md: uid = c
-#   localization/zh-cn/docs/a.md: uid = a
-#   localization/zh-cn/docs/b.md: link to @c
 commands:
   - restore
   - build --locale zh-cn
@@ -409,13 +415,23 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-mixed-xrefmap
-inputs:
-  docfx.yml:
-  docs/c.md: |
-    ---
-    uid: c
-    ---
+repos:
+  https://docs.com/test#live:
+    - files:
+        docs/c.md: |
+          ---
+          uid: c
+          ---
+        docfx.yml:
+  https://docs.com/test.zh-cn#live:
+    - files:
+        docs/a.md: |
+          ---
+          uid: a
+          ---
+        docs/b.md: |
+          link to @a
+          link to @c
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -424,9 +440,6 @@ outputs:
     {"references":[{"uid":"a","href":"docs/a.json","name":"a"},{"uid":"c","href":"docs/c.json","name":"c"}]}
 ---
 # loc folder should be excluded from source docset during loc docset build
-# source repo:
-# localization/zh-cn/docs/a.md: |
-#   [link to a](~/docs/localization/zh-cn/docs/a.md)
 commands:
   - restore
   - build --locale zh-cn
@@ -444,9 +457,6 @@ outputs:
     ["warning","link-out-of-scope","File 'localization/zh-cn/docs/a.md' referenced by link '~/localization/zh-cn/docs/a.md' will not be built because it is not included in docfx.yml","docs/a.md"]
 ---
 # loc folder should be excluded from source docset during source docset build
-# source repo:
-# localization/zh-cn/docs/a.md:
-# docs/b.md
 inputs:
   docfx.yml: |
     content: '**/*.md'
