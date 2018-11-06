@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
         public static async Task Collect(int retentionDays)
         {
             Debug.Assert(retentionDays > 0);
-            var cleanedWorktree = await CollectGit(retentionDays);
+            var cleanedWorkTrees = await CollectGit(retentionDays);
             var cleanedDownloadedFiles = CollectUrls(retentionDays);
-            Console.WriteLine($"Cleaned {cleanedWorktree} git work trees and {cleanedDownloadedFiles} downloaded files");
+            Console.WriteLine($"Cleaned {cleanedWorkTrees} git work trees and {cleanedDownloadedFiles} downloaded files");
         }
 
         private static async Task<int> CollectGit(int retentionDays)

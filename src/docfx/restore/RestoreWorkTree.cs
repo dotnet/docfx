@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                         await GitUtility.AddWorkTree(restorePath, rev, workTreePath);
                     }
 
-                    // update the last access time
+                    // update the last write time
                     Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
 
                     workTreeHeads.Add((href, workTreeHead));

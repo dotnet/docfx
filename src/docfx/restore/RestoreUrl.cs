@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                         File.Delete(tempFile);
                     }
 
-                    // update the last access date
+                    // update the last write date
                     File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow);
 
                     return Task.CompletedTask;
