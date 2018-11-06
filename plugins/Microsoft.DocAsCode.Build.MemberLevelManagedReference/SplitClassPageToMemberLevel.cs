@@ -42,13 +42,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var collection = new List<FileModel>(models);
+            var modelsDict = new Dictionary<string, FileModel>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var dupeModels = new List<FileModel>();
 
             // Separate items into different models if the PageViewModel contains more than one item
             var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
             foreach (var model in models)
             {
-                var result = SplitModelToOverloadLevel(model);
+                var result = SplitModelToOverloadLevel(model, modelsDict, dupeModels);
                 if (result != null)
                 {
                     if (treeMapping.ContainsKey(result.Uid))
@@ -58,9 +59,25 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     else
                     {
                         treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
-                        collection.AddRange(result.Models);
                     }
                 }
+                else
+                {
+                    AddModelToDict(model, modelsDict, dupeModels);
+                }
+            }
+
+            // New dupe models
+            var newFilePaths = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            foreach (var dupeModel in dupeModels)
+            {
+                if (modelsDict.TryGetValue(dupeModel.File, out var dupe))
+                {
+                    modelsDict.Remove(dupeModel.File);
+                    RenewDupeFileModels(dupe, newFilePaths, modelsDict);
+                }
+                RenewDupeFileModels(dupeModel, newFilePaths, modelsDict);
             }
 
             host.TableOfContentRestructions =
@@ -74,7 +91,62 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                      SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
                  }).ToImmutableList();
 
-            return collection;
+            return modelsDict.Values;
+        }
+
+        private void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+        {
+            var page = dupeModel.Content as PageViewModel;
+            var memberType = page.Items[0]?.Type;
+            var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
+
+            if (memberType != null)
+            {
+                newFileName = newFileName + $"({memberType})";
+            }
+
+            var newFilePath = GetUniqueFilePath(dupeModel.File, newFileName, newFilePaths, modelsDict);
+            var newModel = GenerateNewFileModel(dupeModel, page, Path.GetFileNameWithoutExtension(newFilePath), new Dictionary<string, int> { });
+            modelsDict[newFilePath] = newModel;
+        }
+
+        private string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+        {
+            var dir = Path.GetDirectoryName(dupePath);
+            var extension = Path.GetExtension(dupePath);
+            var newFilePath = Path.Combine(dir, newFileName + extension).ToNormalizedPath();
+
+            if (modelsDict.ContainsKey(newFilePath))
+            {
+                if (newFilePaths.TryGetValue(newFilePath, out int suffix))
+                {
+                    // new file path already exist and have suffix
+                    newFileName = newFileName + $"_{suffix}";
+                    suffix++;
+                }
+                else
+                {
+                    // new file path already exist but doesnt have suffix (special case) 
+                    newFileName = newFileName + "_1";
+                    newFilePaths[newFilePath] = 2;
+                }
+
+                // check if new file path unique for new file name (cover special case)
+                return GetUniqueFilePath(dupePath, newFileName, newFilePaths, modelsDict);
+            }
+            else
+            {
+                if (newFilePaths.TryGetValue(newFilePath, out int suffix))
+                {
+                    throw new Exception($"Failed to process new path {newFilePath}");
+                }
+                else
+                {
+                    newFilePaths[newFilePath] = 1;
+                }
+
+                return newFilePath;
+            }
         }
 
         #region ISupportIncrementalBuildStep Members
@@ -87,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #endregion
 
-        private SplittedResult SplitModelToOverloadLevel(FileModel model)
+        private SplittedResult SplitModelToOverloadLevel(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -123,8 +195,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
                 newPage.Metadata[SplitReferencePropertyName] = true;
 
-                splittedModels.Add(newModel);
                 AddToTree(newPrimaryItem, children);
+                AddModelToDict(newModel, models, dupeModels);
             }
 
             // Convert children to references
@@ -137,6 +209,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
             model.Content = page;
+
+            AddModelToDict(model, models, dupeModels);
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
@@ -594,6 +668,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 PrimaryItem = item;
                 FileModel = fileModel;
+            }
+        }
+
+        private void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
+        {
+            if (!models.ContainsKey(model.File))
+            {
+                models[model.File] = model;
+            }
+            else
+            {
+                dupeModels.Add(model);
             }
         }
     }
