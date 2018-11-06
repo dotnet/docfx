@@ -1,44 +1,54 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class RestoreMap
     {
-        private readonly RestoreLock _restoreLock;
+        private static readonly ConcurrentDictionary<string, Lazy<string>> s_mappings = new ConcurrentDictionary<string, Lazy<string>>();
         private readonly string _docsetPath;
 
         public RestoreMap(string docsetPath)
-            : this(docsetPath, RestoreLocker.Load(docsetPath).GetAwaiter().GetResult())
-        {
-        }
-
-        public RestoreMap(string docsetPath, RestoreLock restoreLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-            Debug.Assert(restoreLock != null);
-
             _docsetPath = docsetPath;
-            _restoreLock = restoreLock;
         }
 
         public string GetGitRestorePath(string remote)
         {
-            var (url, _) = GitUtility.GetGitRemoteInfo(remote);
-            var restoreDir = RestoreGit.GetRestoreRootDir(url);
-            if (_restoreLock.Git.TryGetValue(remote, out var workTreeHead) && !string.IsNullOrEmpty(workTreeHead))
-            {
-                var result = RestoreWorkTree.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                if (Directory.Exists(result))
+            Debug.Assert(!string.IsNullOrEmpty(remote));
+
+            var gitRestorePath = s_mappings.GetOrAdd(
+                $"{remote}",
+                new Lazy<string>(() =>
                 {
-                    return result;
-                }
+                    var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
+                    var restoreDir = RestoreGit.GetRestoreRootDir(url);
+
+                    if (!Directory.Exists(restoreDir))
+                    {
+                        throw Errors.NeedRestore(remote).ToException();
+                    }
+
+                    return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                        .Select(f => PathUtility.NormalizeFolder(f))
+                        .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
+                        .OrderByDescending(f => new DirectoryInfo(f).LastAccessTimeUtc)
+                        .FirstOrDefault();
+                })).Value;
+
+            if (!Directory.Exists(gitRestorePath))
+            {
+                throw Errors.NeedRestore(remote).ToException();
             }
 
-            throw Errors.NeedRestore(remote).ToException();
+            return gitRestorePath;
         }
 
         public string GetUrlRestorePath(string path)
@@ -52,18 +62,29 @@ namespace Microsoft.Docs.Build
                 return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
             }
 
-            // get the file path from restore map
-            var restoreDir = RestoreUrl.GetRestoreRootDir(path);
-            if (_restoreLock.Url.TryGetValue(path, out var version) && !string.IsNullOrEmpty(version))
-            {
-                var result = RestoreUrl.GetRestoreVersionPath(restoreDir, version);
-                if (File.Exists(result))
+            var urlRestorePath = s_mappings.GetOrAdd(
+                $"{_docsetPath}:{path}",
+                new Lazy<string>(() =>
                 {
-                    return result;
-                }
+                    // get the file path from restore map
+                    var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+
+                    if (!Directory.Exists(restoreDir))
+                    {
+                        throw Errors.NeedRestore(path).ToException();
+                    }
+
+                    return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                           .OrderByDescending(f => new FileInfo(f)
+                           .LastAccessTimeUtc).FirstOrDefault();
+                })).Value;
+
+            if (!File.Exists(urlRestorePath))
+            {
+                throw Errors.NeedRestore(path).ToException();
             }
 
-            throw Errors.NeedRestore(path).ToException();
+            return urlRestorePath;
         }
     }
 }

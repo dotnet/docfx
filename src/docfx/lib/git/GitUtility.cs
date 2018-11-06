@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
@@ -21,21 +23,21 @@ namespace Microsoft.Docs.Build
         private static readonly char[] s_newline = new[] { '\r', '\n' };
         private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
 
+        internal static Func<string, string> GitRemoteProxy;
+
         /// <summary>
         /// Get the git remote information from remote href
         /// </summary>
         /// <param name="remoteHref">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string url, string branch) GetGitRemoteInfo(string remoteHref)
+        public static (string remote, string refspec) GetGitRemoteInfo(string remoteHref)
         {
             Debug.Assert(!string.IsNullOrEmpty(remoteHref));
 
             var (path, _, fragment) = HrefUtility.SplitHref(remoteHref);
 
-            var refSpec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
-            var uri = new Uri(path);
-            var url = uri.GetLeftPart(UriPartial.Path);
+            var refspec = (string.IsNullOrEmpty(fragment) || fragment.Length <= 1) ? "master" : fragment.Substring(1);
 
-            return (url, refSpec);
+            return (path, refspec);
         }
 
         /// <summary>
@@ -107,39 +109,20 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Clone git repository from remote to local
+        /// Clones or update a git repository to the latest version.
         /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="remote">The remote url</param>
-        /// <param name="path">The path to clone</param>
-        /// <param name="branch">The branch you want to clone</param>
-        /// <param name="bare">Make the git repo bare</param>
-        /// <returns>Task status</returns>
-        public static async Task Clone(string cwd, string remote, string path, string branch = null, bool bare = false, string gitConfig = null)
+        public static async Task CloneOrUpdate(string path, string url, string refspec, Config config = null)
         {
-            Directory.CreateDirectory(cwd);
-
-            // clone with configuration core.longpaths turned-on
-            // https://stackoverflow.com/questions/22575662/filename-too-long-in-git-for-windows#answer-40909460
-            var cmd = string.IsNullOrEmpty(branch)
-                ? $" {gitConfig} clone -c core.longpaths=true {remote} \"{path.Replace("\\", "/")}\""
-                : $" {gitConfig} clone -c core.longpaths=true -b {branch} --single-branch {remote} \"{path.Replace("\\", "/")}\"";
-
-            if (bare)
-                cmd += " --bare";
-
-            await ExecuteNonQuery(cwd, cmd);
+            await CloneOrUpdate(path, url, new[] { refspec }, bare: false, config);
+            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {refspec}");
         }
 
         /// <summary>
-        /// Fetch update from remote
+        /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <returns>Task status</returns>
-        public static async Task Fetch(string cwd, string remote, string refSpec, string gitConfig = null)
+        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> refspecs, Config config = null)
         {
-            // -c must come before `fetch`
-            await ExecuteNonQuery(cwd, $"{gitConfig} fetch {remote} {refSpec}");
+            return CloneOrUpdate(path, url, refspecs, bare: true, config);
         }
 
         /// <summary>
@@ -173,10 +156,14 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
+        /// <param name="commitHash">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
         public static Task AddWorkTree(string cwd, string commitIsh, string path)
-            => ExecuteNonQuery(cwd, $"worktree add {path} {commitIsh}");
+        {
+            // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
+            // -f/ --force overrides these safeguards.
+            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitIsh} --force");
+        }
 
         /// <summary>
         /// Prune work trees which are not connected with an given repo
@@ -200,6 +187,43 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.MergeConflict(file).ToException();
             }
+        }
+
+        /// <summary>
+        /// Clones or update a git repository to the latest version.
+        /// </summary>
+        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
+        {
+            // Unifies clone and fetch using a single flow:
+            // - git init
+            // - git remote set url
+            // - git fetch
+            // - git checkout (if not a bar repo)
+            Directory.CreateDirectory(path);
+
+            if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
+            {
+                throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
+            }
+
+            if (git_remote_create(out var remote, repo, "origin", url) == 0)
+            {
+                git_remote_free(remote);
+            }
+
+            git_repository_free(repo);
+
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+            }
+
+            var httpConfig = GetGitCommandLineConfig(url, config);
+            var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
+
+            // TODO: handle branch not found error
+            return ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspec}");
         }
 
         private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
@@ -226,6 +250,22 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.GitNotFound().ToException(ex);
             }
+        }
+
+        private static string GetGitCommandLineConfig(string url, Config config)
+        {
+            if (config == null)
+            {
+                return "";
+            }
+
+            var gitConfigs =
+                from http in config.Http
+                where url.StartsWith(http.Key)
+                from header in http.Value.Headers
+                select $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"";
+
+            return string.Join(' ', gitConfigs);
         }
     }
 }

@@ -50,13 +50,15 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the file metadata added to each document.
+        /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly GlobConfig<JObject>[] FileMetadata = Array.Empty<GlobConfig<JObject>>();
+        public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
 
         /// <summary>
-        /// Gets the input and output path mapping configuration of documents.
+        /// Gets a map from source folder path and output URL path.
+        /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public readonly RouteConfig[] Routes = Array.Empty<RouteConfig>();
+        public readonly Dictionary<string, string> Routes = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.
@@ -140,13 +142,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true, RestoreMap restoreMap = null)
+        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool extend = true)
         {
             if (!TryGetConfigPath(docsetPath, out var configPath, out var configFileName))
             {
                 throw Errors.ConfigNotFound(docsetPath, configFileName).ToException();
             }
-            var (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+            var (errors, config) = LoadCore(docsetPath, configPath, options, extend);
             config.ConfigFileName = configFileName;
             return (errors, config);
         }
@@ -155,12 +157,12 @@ namespace Microsoft.Docs.Build
         /// Load the config if it exists under <paramref name="docsetPath"/>
         /// </summary>
         /// <returns>Whether config exists under <paramref name="docsetPath"/></returns>
-        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true, RestoreMap restoreMap = null)
+        public static bool LoadIfExists(string docsetPath, CommandLineOptions options, out List<Error> errors, out Config config, bool extend = true)
         {
             var exists = TryGetConfigPath(docsetPath, out var configPath, out var configFile);
             if (exists)
             {
-                (errors, config) = LoadCore(docsetPath, configPath, options, extend, restoreMap);
+                (errors, config) = LoadCore(docsetPath, configPath, options, extend);
             }
             else
             {
@@ -188,7 +190,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend, RestoreMap restoreMap)
+        private static (List<Error>, Config) LoadCore(string docsetPath, string configPath, CommandLineOptions options, bool extend)
         {
             // Options should be converted to config and overwrite the config parsed from docfx.yml/docfx.json
             var errors = new List<Error>();
@@ -201,7 +203,7 @@ namespace Microsoft.Docs.Build
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, restoreMap ?? new RestoreMap(docsetPath));
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, new RestoreMap(docsetPath));
                 errors.AddRange(extendErrors);
             }
 
@@ -311,8 +313,7 @@ namespace Microsoft.Docs.Build
         private static JObject ExpandAndNormalize(JObject config)
         {
             config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
-            config[ConfigConstants.FileMetadata] = ExpandGlobConfigs(config[ConfigConstants.FileMetadata]);
-            config[ConfigConstants.Routes] = ExpandRouteConfigs(config[ConfigConstants.Routes]);
+            config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
             config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
@@ -339,67 +340,20 @@ namespace Microsoft.Docs.Build
             return redirection;
         }
 
-        private static JToken ExpandRouteConfigs(JToken token)
+        private static JToken NormalizeRouteConfig(JToken token)
         {
             if (token is JObject obj)
             {
-                var result = new JArray();
+                var result = new JObject();
                 foreach (var (key, value) in obj)
                 {
-                    result.Add(new JObject
-                    {
-                        [ConfigConstants.Source] = key.EndsWith('/') || key.EndsWith('\\')
-                            ? PathUtility.NormalizeFolder(key)
-                            : PathUtility.NormalizeFile(key),
-                        [ConfigConstants.Destination] = value is JValue v && v.Value is string str
-                            ? PathUtility.NormalizeFile(str)
-                            : value,
-                    });
+                    result.Add(
+                        key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
+                        value is JValue v && v.Value is string str ? PathUtility.NormalizeFile(str) : value);
                 }
                 return result;
             }
             return token;
-        }
-
-        private static JToken ExpandGlobConfigs(JToken token)
-        {
-            if (token == null)
-                return null;
-            if (token is JObject obj)
-                token = ToGlobConfigs(obj);
-            if (token is JArray arr)
-            {
-                foreach (var item in arr)
-                {
-                    ExpandGlobConfig(item);
-                }
-            }
-            return token;
-        }
-
-        private static void ExpandGlobConfig(JToken item)
-        {
-            if (item is JObject obj)
-            {
-                ExpandIncludeExclude(obj);
-            }
-        }
-
-        private static JArray ToGlobConfigs(JObject obj)
-        {
-            var result = new JArray();
-
-            foreach (var (key, value) in obj)
-            {
-                result.Add(new JObject
-                {
-                    [ConfigConstants.Include] = key,
-                    [ConfigConstants.Value] = value,
-                    [ConfigConstants.IsGlob] = false,
-                });
-            }
-
-            return result;
         }
 
         private static JObject ExpandFiles(JToken file)

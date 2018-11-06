@@ -37,6 +37,9 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_oid_fmt(sbyte* str, git_oid* oid);
 
         [DllImport(LibName)]
+        public static unsafe extern int git_repository_init(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path, int is_bare);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_repository_open(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path);
 
         [DllImport(LibName)]
@@ -44,6 +47,9 @@ namespace Microsoft.Docs.Build
 
         [DllImport(LibName)]
         public static unsafe extern void git_repository_free(IntPtr repo);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, [MarshalAs(UnmanagedType.LPUTF8Str)]string url);
 
         [DllImport(LibName)]
         public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
@@ -171,8 +177,6 @@ namespace Microsoft.Docs.Build
         [StructLayout(LayoutKind.Sequential)]
         public struct git_oid
         {
-            public const int Size = 20;
-
             public long a;
             public long b;
             public int c;
