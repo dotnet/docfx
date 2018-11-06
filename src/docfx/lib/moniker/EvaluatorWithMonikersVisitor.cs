@@ -12,11 +12,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly Dictionary<string, MonikerProductInfo> _monikerProductInfoDictionary;
 
-        public EvaluatorWithMonikersVisitor(IEnumerable<Moniker> monikers)
+        public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
-            Debug.Assert(monikers != null);
+            Debug.Assert(monikerDefinition != null);
 
-            _monikerProductInfoDictionary = InitializeMonikers(monikers);
+            _monikerProductInfoDictionary = InitializeMonikers(monikerDefinition.Monikers);
         }
 
         public IEnumerable<string> Visit(ComparatorExpression expression)
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(expression.Operand != null);
             if (!_monikerProductInfoDictionary.TryGetValue(expression.Operand, out var monikerProductInfo))
             {
-                throw new MonikerRangeException($"Moniker `{expression.Operand}` is not found in available monikers list");
+                throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
             }
 
             switch (expression.Operator)
@@ -65,44 +65,35 @@ namespace Microsoft.Docs.Build
 
         private static Dictionary<string, MonikerProductInfo> InitializeMonikers(IEnumerable<Moniker> monikers)
         {
-            var monikerName = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var productNameDictionary = new Dictionary<string, List<Moniker>>(StringComparer.OrdinalIgnoreCase);
+            var monikerNameList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var productNameDictionary = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var moniker in monikers)
             {
-                if (monikerName.Contains(moniker.MonikerName))
+                if (!monikerNameList.Add(moniker.Name))
                 {
-                    throw Errors.MonikerNameConflict(moniker.MonikerName).ToException();
+                    throw Errors.MonikerNameConflict(moniker.Name).ToException();
+                }
+
+                if (productNameDictionary.TryGetValue(moniker.Product, out List<string> list))
+                {
+                    list.Add(moniker.Name);
                 }
                 else
                 {
-                    monikerName.Add(moniker.MonikerName);
-
-                    List<Moniker> list;
-                    if (productNameDictionary.TryGetValue(moniker.ProductName, out list))
-                    {
-                        list.Add(moniker);
-                    }
-                    else
-                    {
-                        productNameDictionary[moniker.ProductName] = new List<Moniker> { moniker };
-                    }
+                    productNameDictionary[moniker.Product] = new List<string> { moniker.Name };
                 }
             }
 
             var result = new Dictionary<string, MonikerProductInfo>();
             foreach (var productMonikerList in productNameDictionary.Values)
             {
-                var orderedMonikerNameList = productMonikerList
-                    .OrderBy(m => m.Order)
-                    .Select(m => m.MonikerName)
-                    .ToList();
-                for (var i = 0; i < orderedMonikerNameList.Count(); i++)
+                for (var i = 0; i < productMonikerList.Count(); i++)
                 {
-                    result[orderedMonikerNameList[i]] = new MonikerProductInfo
+                    result[productMonikerList[i]] = new MonikerProductInfo
                     {
                         Index = i,
-                        OrderedProductMonikerNames = orderedMonikerNameList,
+                        OrderedProductMonikerNames = productMonikerList,
                     };
                 }
             }
