@@ -126,6 +126,21 @@ namespace Microsoft.Docs.Build
             return Normalize(path);
         }
 
+        /// <summary>
+        /// Create a new directory. Return true if creation succeeds or directory already exists.
+        /// </summary>
+        /// <param name="path">The path to create</param>
+        /// <returns>True if creation succeeds or directory already exists</returns>
+        public static bool CreateDirectoryIfNotEmpty(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return true;
+            if (File.Exists(path))
+                return false;
+            Directory.CreateDirectory(path);
+            return true;
+        }
+
         private static string Normalize(string path)
         {
             path = path.Replace('\\', '/');

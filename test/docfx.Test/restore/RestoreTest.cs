@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +34,7 @@ namespace Microsoft.Docs.Build
         {
             var docsetPath = "restore-worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
-            Directory.CreateDirectory(docsetPath);
+            PathUtility.CreateDirectoryIfNotEmpty(docsetPath);
             var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
@@ -78,13 +76,13 @@ dependencies:
         {
             // prepare versions
             var docsetPath = "restore-urls";
-            Directory.CreateDirectory(docsetPath);
+            PathUtility.CreateDirectoryIfNotEmpty(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = RestoreUrl.GetRestoreRootDir(url);
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
-                Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(restorePath));
                 File.WriteAllText(restorePath, $"{version}");
                 File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;

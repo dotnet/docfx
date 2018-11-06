@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -65,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
 
             return File.Create(destinationPath);
         }
@@ -92,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
 
             File.WriteAllText(destinationPath, contents);
         }
@@ -108,7 +107,7 @@ namespace Microsoft.Docs.Build
             var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
 
             File.Copy(sourcePath, destinationPath, overwrite: true);
         }

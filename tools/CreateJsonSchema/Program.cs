@@ -23,7 +23,7 @@ class Program
             {
                 Directory.Delete("schemas", recursive: true);
             }
-            Directory.CreateDirectory("schemas");
+            PathUtility.CreateDirectoryIfNotEmpty("schemas");
         }
 
         var generator = CreateGenerator();

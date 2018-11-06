@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!File.Exists(restorePath))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                        PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(restorePath));
                         File.Move(tempFile, restorePath);
                     }
                     else
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
         {
-            Directory.CreateDirectory(AppData.UrlRestoreDir);
+            PathUtility.CreateDirectoryIfNotEmpty(AppData.UrlRestoreDir);
             var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
 
             try

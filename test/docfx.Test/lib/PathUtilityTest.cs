@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -68,6 +67,28 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedIsFileMatch, isFileMatch);
             Assert.Equal(expectedRemainingPath, remaniningPath);
         }
+
+        [Theory]
+        [InlineData("", false, true)]
+        [InlineData(null, false, true)]
+        [InlineData("path-test/1/dir", false, true)]
+        [InlineData("path-test/2/dir", true, false)]
+        public static void CreateDirectoryIfNotEmpty(string path, bool createFileWithSameName, bool expected)
+        {
+            if (Directory.Exists(path))
+                Directory.Delete(path);
+            if (File.Exists(path))
+                File.Delete(path);
+            if (createFileWithSameName)
+            {
+                PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(path));
+                File.Create(path);
+            }
+            Assert.Equal(PathUtility.CreateDirectoryIfNotEmpty(path), expected);
+            if (!string.IsNullOrEmpty(path))
+                Assert.Equal(Directory.Exists(path), expected);
+        }
+
 
         [Fact]
         public static void PathDoesNotThrowForInvalidChar()
