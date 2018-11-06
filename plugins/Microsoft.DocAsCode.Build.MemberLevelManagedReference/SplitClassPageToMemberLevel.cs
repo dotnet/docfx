@@ -74,11 +74,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 if (modelsDict.TryGetValue(dupeModel.File, out var dupe))
                 {
-                    if (dupe != null)
-                    {
-                        modelsDict.Remove(dupeModel.File);
-                        RenewDupeFileModels(dupe, newFilePaths, modelsDict);
-                    }
+                    modelsDict.Remove(dupeModel.File);
+                    RenewDupeFileModels(dupe, newFilePaths, modelsDict);
                 }
                 RenewDupeFileModels(dupeModel, newFilePaths, modelsDict);
             }
