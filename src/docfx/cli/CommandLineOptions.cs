@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public string GitHubToken;
         public string Locale;
+        public int RetentionDays = 15;
 
         public JObject ToJObject()
         {
