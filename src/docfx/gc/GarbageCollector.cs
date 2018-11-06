@@ -12,14 +12,15 @@ namespace Microsoft.Docs.Build
 {
     internal static class GarbageCollector
     {
-        public static async Task Collect(int retentionDays, Report report)
+        public static async Task Collect(int retentionDays)
         {
             Debug.Assert(retentionDays > 0);
-            await CollectGit(retentionDays, report);
-            CollectUrls(retentionDays, report);
+            var cleanedWorktree = await CollectGit(retentionDays);
+            var cleanedDownloadedFiles = CollectUrls(retentionDays);
+            Console.WriteLine($"Cleaned {cleanedWorktree} git work trees and {cleanedDownloadedFiles} downloaded files");
         }
 
-        private static async Task<int> CollectGit(int retentionDays, Report report)
+        private static async Task<int> CollectGit(int retentionDays)
         {
             var cleaned = 0;
             if (!Directory.Exists(AppData.GitRestoreDir))
@@ -63,7 +64,7 @@ namespace Microsoft.Docs.Build
             return cleaned;
         }
 
-        private static int CollectUrls(int retentionDays, Report report)
+        private static int CollectUrls(int retentionDays)
         {
             var cleaned = 0;
             if (!Directory.Exists(AppData.UrlRestoreDir))

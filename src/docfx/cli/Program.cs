@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "gc":
-                            await GarbageCollector.Collect(options.RetentionDays, report);
+                            await GarbageCollector.Collect(options.RetentionDays);
                             Done(stopwatch.Elapsed, report);
                             break;
                     }
