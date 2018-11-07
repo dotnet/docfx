@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
             {
                 await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}", stderr: true);
             }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("fatal: Couldn't find remote ref"))
+            catch (InvalidOperationException ex) when (committishes.Any(rev => ex.Message.Contains(rev)))
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
