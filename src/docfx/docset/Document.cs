@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -212,7 +213,7 @@ namespace Microsoft.Docs.Build
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
             var (mime, schema) = type == ContentType.Page ? Schema.ReadFromFile(Path.Combine(docset.DocsetPath, filePath)) : default;
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath, docset.Config.Routes);
+            var routedFilePath = ApplyRoutes(filePath, docset.ReversedRoutes);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, schema, docset.Config.Output.Json, docset.Config.Output.UglifyUrl);
             if (docset.Config.Output.LowerCaseUrl)
@@ -387,18 +388,37 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static string ApplyRoutes(string path, RouteConfig[] routes)
+        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> reversedRoutes)
         {
             // the latter rule takes precedence of the former rule
-            for (var i = routes.Length - 1; i >= 0; i--)
+            foreach (var (source, dest) in reversedRoutes)
             {
-                var result = routes[i].GetOutputPath(path);
+                var result = ApplyRoutes(path, source, dest);
                 if (result != null)
                 {
                     return result.Replace('\\', '/');
                 }
             }
             return path;
+        }
+
+        private static string ApplyRoutes(string path, string source, string dest)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            var (match, isFileMatch, remainingPath) = PathUtility.Match(path, source);
+
+            if (match)
+            {
+                if (isFileMatch)
+                {
+                    return Path.Combine(dest, Path.GetFileName(path));
+                }
+
+                return Path.Combine(dest, remainingPath);
+            }
+
+            return null;
         }
 
         private static bool IsValidRelativePath(string path)

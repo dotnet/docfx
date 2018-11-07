@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -9,9 +10,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
-        public MonikerRangeParser(IEnumerable<Moniker> monikers)
+        public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
-            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikers);
+            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
         public IEnumerable<string> Parse(string rangeString)

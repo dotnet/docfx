@@ -42,15 +42,17 @@ namespace Microsoft.Docs.Build
             {
                 var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
 
-                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
                 return File.CreateText(outputFilePath);
             });
         }
 
-        public bool Write(Error error)
+        public bool Write(Error error, bool force = false)
         {
-            var level = _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel) ? overrideLevel : error.Level;
+            var level = !force && _config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel)
+                ? overrideLevel
+                : error.Level;
             if (level == ErrorLevel.Off)
             {
                 return false;

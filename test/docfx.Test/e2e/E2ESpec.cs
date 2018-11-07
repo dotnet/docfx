@@ -16,10 +16,22 @@ namespace Microsoft.Docs.Build
 
         public readonly string[] Commands = new[] { "restore", "build" };
 
-        public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly string[] SkippableOutputs = new[] { "xrefmap.json", "build.manifest" };
 
-        public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, E2ECommit[]> Repos = new Dictionary<string, E2ECommit[]>();
 
-        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();
+
+        public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>();
+
+        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>();
+
+        public class E2ECommit
+        {
+            public readonly string Author = "docfx";
+            public readonly string Email = "docfx@microsoft.com";
+            public readonly DateTime Time = new DateTime(2018, 10, 30);
+            public readonly Dictionary<string, string> Files;
+        }
     }
 }

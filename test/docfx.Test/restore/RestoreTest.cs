@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,17 +39,23 @@ namespace Microsoft.Docs.Build
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
-  dep1: {gitUrl}#test-clean-1
-  dep2: {gitUrl}#test-clean-2
-  dep3: {gitUrl}#test-clean-3
-  dep4: {gitUrl}#test-clean-4
+  dep1: {gitUrl}#test-1-clean
+  dep2: {gitUrl}#test-2-clean
+  dep3: {gitUrl}#test-3-clean
+  dep4: {gitUrl}#test-4-clean
   dep5: {gitUrl}#master
   dep6: {gitUrl}#chi");
+
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
             var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(6, workTreeList.Count);
+
+            foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
+            {
+                Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
+            }
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -60,12 +65,10 @@ dependencies:
             // run restore again to clean up
             // check the work trees
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
+
             workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
             Assert.Equal(2, workTreeList.Count);
-
-            // check restore lock file
-            var restoreLock = await RestoreLocker.Load(docsetPath);
-            Assert.Equal(2, restoreLock.Git.Count);
         }
 
         [Fact]
@@ -79,8 +82,9 @@ dependencies:
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
-                Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                PathUtility.CreateDirectoryFromFilePath(restorePath);
                 File.WriteAllText(restorePath, $"{version}");
+                File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;
             });
 
@@ -90,12 +94,9 @@ github:
 
             // run restore again to clean up
             await Program.Run(new[] { "restore", docsetPath });
+            await Program.Run(new[] { "gc" });
 
             Assert.Single(Directory.EnumerateFiles(restoreDir, "*"));
-
-            // check restore lock file
-            var restoreLock = await RestoreLocker.Load(docsetPath);
-            Assert.Single(restoreLock.Url);
         }
     }
 }

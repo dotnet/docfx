@@ -20,7 +20,7 @@ $githubAuth = "-c http.https://github.com.extraheader=""AUTHORIZATION: basic $en
 
 exec "git init"
 git remote add origin https://ceapex.visualstudio.com/Engineering/_git/Docs.DocFX.Impact
-exec "git $devopsAuth $githubAuth fetch --progress"
+exec "git $devopsAuth $githubAuth fetch --prune --progress"
 exec "git checkout origin/master --force --progress"
 exec "git $devopsAuth $githubAuth submodule update --init --progress"
 exec "git clean -xdf"

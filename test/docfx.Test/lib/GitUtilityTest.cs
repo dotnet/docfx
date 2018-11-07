@@ -39,8 +39,17 @@ namespace Microsoft.Docs.Build
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
+                // current branch
                 var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo);
                 var lib = commitsProvider.GetCommitHistory(pathToRepo);
+
+                Assert.Equal(
+                    exe.Replace("\r", ""),
+                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+
+                // another branch
+                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo);
+                lib = commitsProvider.GetCommitHistory(pathToRepo, "a050eaf");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
@@ -50,20 +59,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [Fact]
-        public static async Task GitCommandConcurreny()
-        {
-            var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
-
-            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.Revision(cwd)));
-
-            Assert.True(results.All(r => r.Any()));
-        }
-
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
-            p.WaitForExit();
             return p.StandardOutput.ReadToEnd().Trim();
         }
     }

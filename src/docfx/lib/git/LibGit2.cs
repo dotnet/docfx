@@ -5,212 +5,194 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
+#pragma warning disable SA1300 // Element should begin with upper-case letter
+#pragma warning disable SA1307 // AccessibleFieldsMustBeginWithUpperCaseLetter
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Microsoft.Docs.Build
 {
     internal static class LibGit2
     {
         private const string LibName = "git2-8e0b172";
-        private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         static LibGit2()
         {
-            if (GitLibGit2Init() == 1)
-                GitOpensslSetLocking();
+            if (git_libgit2_init() == 1)
+                git_openssl_set_locking();
 
             // Disable hash verification to drastically speed up object lookup.
-            GitLibgit2Opts(22 /*GIT_OPT_ENABLE_STRICT_HASH_VERIFICATION*/, 0);
+            git_libgit2_opts(22 /*GIT_OPT_ENABLE_STRICT_HASH_VERIFICATION*/, 0);
         }
 
-        public enum GitObjectType
-        {
-            Any = -2,
-            Bad,
-            Ext1,
-            Commit,
-            Tree,
-            Blob,
-            Tag,
-            Ext2,
-            OfsDelta,
-            RefDelta,
-        }
+        [DllImport(LibName)]
+        public static unsafe extern int git_libgit2_init();
 
-        public static byte[] ToUtf8Native(string str)
-        {
-            var buf = new byte[Encoding.UTF8.GetByteCount(str) + 1];
-            Encoding.UTF8.GetBytes(str, 0, str.Length, buf, 0);
-            return buf;
-        }
+        [DllImport(LibName)]
+        public static unsafe extern int git_openssl_set_locking();
 
-        public static unsafe string FromUtf8Native(byte* str)
+        [DllImport(LibName)]
+        public static unsafe extern int git_libgit2_opts(int opt, int enabled);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_oid_fmt(sbyte* str, git_oid* oid);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_repository_init(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path, int is_bare);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_repository_open(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_repository_head(out IntPtr reference, IntPtr repo);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_repository_free(IntPtr repo);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, [MarshalAs(UnmanagedType.LPUTF8Str)]string url);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_remote_url(IntPtr remote);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_remote_free(IntPtr remote);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_branch_lookup(out IntPtr reference, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, int type);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_branch_name(out IntPtr name, IntPtr reference);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_reference_target(IntPtr reference);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_reference_free(IntPtr reference);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revparse_single(out IntPtr @out, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string spec);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_object_lookup(out IntPtr obj, IntPtr repo, git_oid* id, int type);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_object_id(IntPtr obj);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_object_free(IntPtr obj);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_commit_message(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern long git_commit_time(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_commit_time_offset(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_signature* git_commit_author(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_signature* git_commit_committer(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_signature_free(git_signature* sig);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_commit_parent_id(IntPtr commit, int n);
+
+        [DllImport(LibName)]
+        public static unsafe extern uint git_commit_parentcount(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_commit_tree_id(IntPtr commit);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_tree_walk(IntPtr tree, int mode, IntPtr callback, void* payload);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_tree_entrycount(IntPtr tree);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_tree_entry_byindex(IntPtr tree, IntPtr i);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_tree_entry_bypath(out IntPtr tree, IntPtr root, [MarshalAs(UnmanagedType.LPUTF8Str)]string treeentry_path);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_tree_entry_free(IntPtr treeEntry);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_tree_entry_id(IntPtr entry);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_tree_entry_name(IntPtr entry);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_tree_entry_type(IntPtr entry);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revwalk_new(out IntPtr walk, IntPtr repo);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revwalk_push(IntPtr walk, git_oid* id);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revwalk_push_head(IntPtr walk);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revwalk_push_glob(IntPtr walk, [MarshalAs(UnmanagedType.LPUTF8Str)]string glob);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_revwalk_next(out git_oid oid, IntPtr walk);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_revwalk_sorting(IntPtr walk, int sort);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_revwalk_free(IntPtr walk);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct git_time
         {
-            var n = 0;
-            var p = str;
-            while (*p++ != 0)
+            private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+            public long time;
+            public int offset;
+
+            public DateTimeOffset ToDateTimeOffset()
             {
-                n++;
+                DateTimeOffset utcDateTime = s_epoch.AddSeconds(time);
+                TimeSpan timezone = TimeSpan.FromMinutes(offset);
+                return new DateTimeOffset(utcDateTime.DateTime.Add(timezone), timezone);
             }
-
-            return Encoding.UTF8.GetString(str, n);
         }
 
-        public static DateTimeOffset ToDateTimeOffset(long time, int offset)
+        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        public unsafe struct git_signature
         {
-            DateTimeOffset utcDateTime = s_epoch.AddSeconds(time);
-            TimeSpan timezone = TimeSpan.FromMinutes(offset);
-            return new DateTimeOffset(utcDateTime.DateTime.Add(timezone), timezone);
-        }
-
-        [DllImport(LibName, EntryPoint = "git_libgit2_init")]
-        public static unsafe extern int GitLibGit2Init();
-
-        [DllImport(LibName, EntryPoint = "git_openssl_set_locking")]
-        public static unsafe extern int GitOpensslSetLocking();
-
-        [DllImport(LibName, EntryPoint = "git_libgit2_opts")]
-        public static unsafe extern int GitLibgit2Opts(int opt, int enabled);
-
-        [DllImport(LibName, EntryPoint = "git_oid_fmt")]
-        public static unsafe extern int GitOidFmt(sbyte* str, GitOid* oid);
-
-        [DllImport(LibName, EntryPoint = "git_repository_open")]
-        public static unsafe extern int GitRepositoryOpen(out IntPtr repo, byte* path);
-
-        [DllImport(LibName, EntryPoint = "git_repository_head")]
-        public static unsafe extern int GitRepositoryHead(out IntPtr reference, IntPtr repo);
-
-        [DllImport(LibName, EntryPoint = "git_repository_free")]
-        public static unsafe extern void GitRepositoryFree(IntPtr repo);
-
-        [DllImport(LibName, EntryPoint = "git_remote_lookup")]
-        public static unsafe extern int GitRemoteLookup(out IntPtr remote, IntPtr repo, byte* name);
-
-        [DllImport(LibName, EntryPoint = "git_remote_url")]
-        public static unsafe extern byte* GitRemoteUrl(IntPtr remote);
-
-        [DllImport(LibName, EntryPoint = "git_remote_free")]
-        public static unsafe extern void GitRemoteFree(IntPtr remote);
-
-        [DllImport(LibName, EntryPoint = "git_branch_lookup")]
-        public static unsafe extern int GitBranchLookup(out IntPtr reference, IntPtr repo, byte* name, int type);
-
-        [DllImport(LibName, EntryPoint = "git_branch_name")]
-        public static unsafe extern int GitBranchName(out byte* name, IntPtr reference);
-
-        [DllImport(LibName, EntryPoint = "git_reference_target")]
-        public static unsafe extern GitOid* GitReferenceTarget(IntPtr reference);
-
-        [DllImport(LibName, EntryPoint = "git_reference_free")]
-        public static unsafe extern void GitReferenceFree(IntPtr reference);
-
-        [DllImport(LibName, EntryPoint = "git_object_lookup")]
-        public static unsafe extern int GitObjectLookup(out IntPtr obj, IntPtr repo, GitOid* id, GitObjectType type);
-
-        [DllImport(LibName, EntryPoint = "git_object_free")]
-        public static unsafe extern void GitObjectFree(IntPtr obj);
-
-        [DllImport(LibName, EntryPoint = "git_commit_message")]
-        public static unsafe extern byte* GitCommitMessage(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_commit_time")]
-        public static unsafe extern long GitCommitTime(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_commit_time_offset")]
-        public static unsafe extern int GitCommitTimeOffset(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_commit_author")]
-        public static unsafe extern GitSignature* GitCommitAuthor(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_commit_committer")]
-        public static unsafe extern GitSignature* GitCommitCommitter(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_signature_free")]
-        public static unsafe extern void GitSignatureFree(GitSignature* sig);
-
-        [DllImport(LibName, EntryPoint = "git_commit_parent_id")]
-        public static unsafe extern GitOid* GitCommitParentId(IntPtr commit, int n);
-
-        [DllImport(LibName, EntryPoint = "git_commit_parentcount")]
-        public static unsafe extern uint GitCommitParentcount(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_commit_tree_id")]
-        public static unsafe extern GitOid* GitCommitTreeId(IntPtr commit);
-
-        [DllImport(LibName, EntryPoint = "git_tree_walk")]
-        public static unsafe extern int GitTreeWalk(IntPtr tree, int mode, IntPtr callback, void* payload);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entrycount")]
-        public static unsafe extern IntPtr GitTreeEntrycount(IntPtr tree);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_byindex")]
-        public static unsafe extern IntPtr GitTreeEntryByindex(IntPtr tree, IntPtr i);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_bypath")]
-        public static unsafe extern int GitTreeEntryBypath(out IntPtr tree, IntPtr root, byte* treeentry_path);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_free")]
-        public static unsafe extern void GitTreeEntryFree(IntPtr treeEntry);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_id")]
-        public static unsafe extern GitOid* GitTreeEntryId(IntPtr entry);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_name")]
-        public static unsafe extern byte* GitTreeEntryName(IntPtr entry);
-
-        [DllImport(LibName, EntryPoint = "git_tree_entry_type")]
-        public static unsafe extern int GitTreeEntryType(IntPtr entry);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_new")]
-        public static unsafe extern int GitRevwalkNew(out IntPtr walk, IntPtr repo);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_push")]
-        public static unsafe extern int GitRevwalkPush(IntPtr walk, GitOid* id);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_push_head")]
-        public static unsafe extern int GitRevwalkPushHead(IntPtr walk);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_push_glob")]
-        public static unsafe extern int GitRevwalkPushGlob(IntPtr walk, byte* glob);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_next")]
-        public static unsafe extern int GitRevwalkNext(out GitOid oid, IntPtr walk);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_sorting")]
-        public static unsafe extern void GitRevwalkSorting(IntPtr walk, int sort);
-
-        [DllImport(LibName, EntryPoint = "git_revwalk_free")]
-        public static unsafe extern void GitRevwalkFree(IntPtr walk);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct GitTime
-        {
-            public long Time;
-            public int Offset;
+            public IntPtr name;
+            public IntPtr email;
+            public git_time when;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public unsafe struct GitSignature
+        public struct git_oid
         {
-            public byte* Name;
-            public byte* Email;
-            public GitTime When;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct GitOid
-        {
-            public const int Size = 20;
-
-            public long A;
-            public long B;
-            public int C;
+            public long a;
+            public long b;
+            public int c;
 
             public unsafe override string ToString()
             {
-                fixed (GitOid* p = &this)
+                fixed (git_oid* p = &this)
                 {
                     sbyte* str = stackalloc sbyte[40];
-                    GitOidFmt(str, p);
+                    git_oid_fmt(str, p);
                     return new string(str, 0, 40);
                 }
             }

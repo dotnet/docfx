@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(File.Exists(sourceFileName));
             if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                PathUtility.CreateDirectoryFromFilePath(destFileName);
 
                 File.Delete(destFileName);
                 File.Move(sourceFileName, destFileName);

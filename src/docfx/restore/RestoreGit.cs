@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
             // process git restore items
             await ParallelUtility.ForEach(
-               GetRestoreItems(),
+               GetRestoreItems(docsetPath, config, locale),
                async restoreItem =>
                {
                    var (restoreDir, hrefs) = restoreItem;
@@ -47,74 +47,62 @@ namespace Microsoft.Docs.Build
 
                 return workTreeHeads;
             }
+        }
 
-            List<(string restoreDir, List<string> hrefs)> GetRestoreItems()
+        private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
+        {
+            var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
+
+            return gitDependencies.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+        }
+
+        private static IEnumerable<string> GetLocRestoreItem(string docsetPath, Config config, string locale)
+        {
+            if (string.IsNullOrEmpty(locale))
             {
-                // restore dependency repositories
-                var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
-
-                // restore loc repository
-                var (locRestoreDir, locRepoHref) = GetLocRestoreItem();
-                if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
-                {
-                    restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
-                }
-
-                return restoreItems;
+                yield break;
             }
 
-            (string locRestoreDir, string href) GetLocRestoreItem()
+            if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                // restore loc repository
-                if (string.IsNullOrEmpty(locale))
-                {
-                    return default;
-                }
+                yield break;
+            }
 
-                if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
-                {
-                    return default;
-                }
+            if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
+            {
+                yield break;
+            }
 
-                if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
-                {
-                    return default;
-                }
+            var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
+            if (repo == null)
+            {
+                yield break;
+            }
 
-                var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
-                if (repo == null)
-                {
-                    return default;
-                }
-
-                var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(
+            if (config.Localization.Bilingual)
+            {
+                // Bilingual repos also depend on non bilingual branch
+                yield return ToHref(LocalizationConvention.GetLocalizationRepo(
                     config.Localization.Mapping,
-                    config.Localization.Bilingual,
+                    bilingual: false,
                     repo.Remote,
                     repo.Branch,
                     locale,
-                    config.Localization.DefaultLocale);
-                var locRepoUrl = $"{locRemote}#{locBranch}";
-
-                return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
+                    config.Localization.DefaultLocale));
             }
-        }
 
-        public static async Task GC(Config config, Func<string, Task> gcChild)
-        {
-            var restoreDirs = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => g.Key);
+            yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+                config.Localization.Mapping,
+                config.Localization.Bilingual,
+                repo.Remote,
+                repo.Branch,
+                locale,
+                config.Localization.DefaultLocale));
 
-            await ParallelUtility.ForEach(
-               restoreDirs,
-               async restoreDir =>
-               {
-                   var leftWorkTrees = await RestoreWorkTree.CleanupWorkTrees(restoreDir);
-                   foreach (var leftWorkTree in leftWorkTrees)
-                   {
-                       await gcChild(leftWorkTree);
-                   }
-               },
-               progress: Progress.Update);
+            string ToHref((string url, string branch) value)
+            {
+                return string.Concat(value.url, "#", value.branch);
+            }
         }
     }
 }

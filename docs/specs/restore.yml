@@ -3,17 +3,12 @@
 inputs:
   docfx.yml: |
     dependencies:
-      docfx-test-dependencies1: https://github.com/docascode/docfx-test-dependencies
+      docfx-test-dependencies1: https://github.com/docascode/docfx-test-dependencies#9ab3912
       docfx-test-dependencies2: https://github.com/docascode/docfx-test-dependencies
 restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/*Restore dependencies with their children-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
-  restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a-master/dep.md: DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
 outputs:
-  build.manifest:
 ---
 # Restore urls
 inputs:
@@ -30,10 +25,7 @@ restores:
         }
       ]
     }
-  restore-lock/*Restore urls-*-lock.json: |
-    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
 ---
 # Restore urls with extends
 inputs:
@@ -49,24 +41,20 @@ restores:
         }
       ]
     }
-  restore-lock/*Restore urls with extends-*-lock.json: |
-    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
 outputs:
-  build.manifest:
 ---
 # Restore dependencies with extends
 inputs:
   docfx.yml: |
     extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend3.yml
 restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
+  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a-master/dep.md: DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
   restore-lock/*Restore dependencies with extends-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a-master"}}
   restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d-child"}}
 outputs:
-  build.manifest:
 ---
 # Show error when download failed
 inputs:
@@ -134,7 +122,6 @@ outputs:
     {
       "content": "<p>for long file path test.</p>"
     }
-  build.manifest:
 ---
 # Restore private repos with dependencies
 inputs:
@@ -150,4 +137,3 @@ environments:
 restores:
   git/ceapex.visualstudio.com/Engineering/_git/docs-host-vnext/c9c018ce36b67713af186be2aaddeb734d8b1dbd/README.md:
 outputs:
-  build.manifest:
