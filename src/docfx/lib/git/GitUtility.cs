@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
-            PathUtility.CreateDirectoryIfNotEmpty(path);
+            Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
             {

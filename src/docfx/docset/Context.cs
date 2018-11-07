@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             return File.Create(destinationPath);
         }
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             File.WriteAllText(destinationPath, contents);
         }
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(Path.GetDirectoryName(destinationPath));
 
             File.Copy(sourcePath, destinationPath, overwrite: true);
         }

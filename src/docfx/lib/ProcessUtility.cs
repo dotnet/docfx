@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                PathUtility.CreateDirectoryIfNotEmpty(AppData.MutexDir);
+                Directory.CreateDirectory(AppData.MutexDir);
 
                 var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
 

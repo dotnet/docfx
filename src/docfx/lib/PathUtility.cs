@@ -127,18 +127,17 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Create a new directory. Return true if creation succeeds or directory already exists.
+        /// Create a new directory from specified file path.
         /// </summary>
-        /// <param name="path">The path to create</param>
-        /// <returns>True if creation succeeds or directory already exists</returns>
-        public static bool CreateDirectoryIfNotEmpty(string path)
+        /// <param name="filePath">The file path containing the directory to create</param>
+        public static void CreateDirectoryFromFilePath(string filePath)
         {
-            if (string.IsNullOrEmpty(path))
-                return true;
-            if (File.Exists(path))
-                return false;
-            Directory.CreateDirectory(path);
-            return true;
+            Debug.Assert(!string.IsNullOrEmpty(filePath));
+
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (string.IsNullOrEmpty(directoryPath))
+                return;
+            Directory.CreateDirectory(directoryPath);
         }
 
         private static string Normalize(string path)

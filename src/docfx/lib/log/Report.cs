@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             {
                 var outputFilePath = Path.GetFullPath(Path.Combine(docsetPath, config.Output.Path, "build.log"));
 
-                PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(outputFilePath));
+                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
 
                 return File.CreateText(outputFilePath);
             });

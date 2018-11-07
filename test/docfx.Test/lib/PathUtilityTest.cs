@@ -69,24 +69,17 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("", false, true)]
-        [InlineData(null, false, true)]
-        [InlineData("path-test/1/dir", false, true)]
-        [InlineData("path-test/2/dir", true, false)]
-        public static void CreateDirectoryIfNotEmpty(string path, bool createFileWithSameName, bool expected)
+        [InlineData("file1.md", false)]
+        [InlineData("path-test/2/file1.md", true)]
+        public static void CreateDirectoryFromFilePath(string filePath, bool isDirectoryCreated)
         {
-            if (Directory.Exists(path))
-                Directory.Delete(path);
-            if (File.Exists(path))
-                File.Delete(path);
-            if (createFileWithSameName)
-            {
-                PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(path));
-                File.Create(path);
-            }
-            Assert.Equal(PathUtility.CreateDirectoryIfNotEmpty(path), expected);
-            if (!string.IsNullOrEmpty(path))
-                Assert.Equal(Directory.Exists(path), expected);
+            if (Directory.Exists(filePath))
+                Directory.Delete(filePath);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            PathUtility.CreateDirectoryFromFilePath(filePath);
+            Assert.Equal(Directory.Exists(Path.GetDirectoryName(filePath)), isDirectoryCreated);
         }
 
 

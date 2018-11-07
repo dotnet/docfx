@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
                 return Task.CompletedTask;
             }
 
-            PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(_cacheFilePath));
+            PathUtility.CreateDirectoryFromFilePath(_cacheFilePath);
 
             return ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {

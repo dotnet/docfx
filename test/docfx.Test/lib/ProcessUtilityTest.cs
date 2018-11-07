@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     {
         static ProcessUtilityTest()
         {
-            PathUtility.CreateDirectoryIfNotEmpty("process-test");
+            Directory.CreateDirectory("process-test");
         }
 
         [Fact]

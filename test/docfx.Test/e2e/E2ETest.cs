@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
                 {
                     var mutableContent = content;
                     var filePath = Path.Combine(docsetPath, file);
-                    PathUtility.CreateDirectoryIfNotEmpty(Path.GetDirectoryName(filePath));
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
                     if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                     {
                         foreach (var env in spec.Environments)
