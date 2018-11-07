@@ -51,7 +51,7 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     dotnet/docfx.zh-cn  en-us         dotent/docfx.en-us
     ```
     
-    > The loc org name can be different, it's should be configurable
+    > NOTE: The loc org name can be different, it's should be configurable
     
   - **RepositoryAndFolder**, localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
   
@@ -71,7 +71,7 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     /files/a.md         -->           /zh-cn/files/a.md
     ```
     
-    > The loc org name can be different, it's should be configurable
+    > NOTE: The loc org name can be different, it's should be configurable
     
 ### Loc Overwrite Configuration
 
@@ -228,7 +228,25 @@ From the localization delayed translation point, the above requirement makes sen
   - resolve from fallback docset
   - resolve from fallback docset git history
   
-> resolve from docset includes: 1. resolve from file system 2. resolve from redirection.
-> linked resources fallback logic dependency: the hosting system never deletes resources.
+> NOTE: resolve from docset includes: 1. resolve from file system 2. resolve from redirection.
+> NOTE: linked resources fallback logic dependency: the hosting system never deletes resources.
   
 For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
+
+## Not supported
+
+### Bookmark validation
+
+All links with bookmark which are resolved from fallback(source content) can't be validated for the bookmark because the source content will not be built.
+
+```txt
+#en-us(repo):
+    |- articles/
+    |   |- a.md(v2)(link's book mark has been changed to test2, [b](b.md#test2))
+    |   |- b.md(v2)(head changed from test1 to test2)
+#zh-cn(repo/folder/branch):
+    |- articles/
+    |   |- a.md(v1)(link's book mark is still test1, [b](b.md#test1))
+```
+
+For above case, the zh-cn's a.md's link to b.md can be resolved successfully, but the bookmark of this link can't be verified because the en-us b.md will not be built.
