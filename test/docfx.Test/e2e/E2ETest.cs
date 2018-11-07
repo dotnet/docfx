@@ -20,6 +20,8 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
+        private static readonly ConcurrentDictionary<string, int> s_mockRepos = new ConcurrentDictionary<string, int>();
+
         public static readonly TheoryData<string> Specs = FindTestSpecs();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_mockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
@@ -261,6 +263,8 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var (branch, commits) in repoInfo)
                     {
+                        Debug.Assert(s_mockRepos.TryAdd($"{remote}#{branch}", 0), $"mock repo's remote: {remote}#{branch} is duplicated");
+
                         var lastCommit = default(LibGit2Sharp.Commit);
                         foreach (var commit in commits.Reverse())
                         {
@@ -282,8 +286,9 @@ namespace Microsoft.Docs.Build
                                 prettifyMessage: false);
 
                             lastCommit = currentCommit;
-                            repo.Branches.Add(branch, currentCommit);
                         }
+
+                        repo.Branches.Add(branch, lastCommit);
                     }
                 }
             });

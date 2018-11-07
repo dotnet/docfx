@@ -4,24 +4,24 @@ commands:
   - restore --locale zh-cn
   - build
 repos:
-  https://github.com/docascode/docfx-test-dependencies#master:
+  https://github.com/docascode/docfx-test-dependencies#master1:
     - files:
         docfx.yml: |
           dependencies:
-            restore-child: https://github.com/docascode/docfx-test-dependencies#child
-  https://github.com/docascode/docfx-test-dependencies#child:
+            restore-child: https://github.com/docascode/docfx-test-dependencies#child1
+  https://github.com/docascode/docfx-test-dependencies#child1:
     - files:
         dep.md: child-DEP
-  https://github.com/docascode/docfx-test-dependencies.zh-cn#master:
+  https://github.com/docascode/docfx-test-dependencies.zh-cn#master1:
     - files:
         dep.md: loc-DEP
 restores:
-  git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-master/dep.md: loc-DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child/dep.md: child-DEP
+  git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-maste1r/dep.md: loc-DEP
+  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child1/dep.md: child-DEP
   restore-lock/* restore loc repo with dependencies-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a-master", "https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d-child"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master1":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a-master1", "https://github.com/docascode/docfx-test-dependencies#child1":"5736374c0a142252063bbedafe5d98db495e263d-child1"}}
   restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d-child"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies#child1":"5736374c0a142252063bbedafe5d98db495e263d-child1"}}
 outputs:
 ---
 # restore loc repo, all loc files are in one repo
@@ -30,18 +30,18 @@ commands:
   - restore --locale zh-cn
   - build
 repos:
-  https://github.com/docascode/docfx-test-dependencies#master:
+  https://github.com/docascode/docfx-test-dependencies#master2:
     - files:
         docfx.yml: |
           localization:
             mapping: RepositoryAndFolder
-  https://github.com/docascode/docfx-test-dependencies.localization#master:
+  https://github.com/docascode/docfx-test-dependencies.localization#master2:
     - files:
         dep.md: loc-DEP
 restores:
-  git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb-master/dep.md: loc-DEP
+  git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb-master2/dep.md: loc-DEP
   restore-lock/*restore loc repo, all loc files are in one repo-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master":"18d3d65979413ce8342fd709dbce1c78ab45ffeb-master"}}
+    {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master2":"18d3d65979413ce8342fd709dbce1c78ab45ffeb-master2"}}
 outputs:
 ---
 # loc docset share the source docset's restore map
@@ -49,11 +49,12 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/docfx-test-dependencies#loc-restore-map:
+  https://github.com/docascode/docfx-test-dependencies#share-restore-map:
     - files:
         docfx.yml: |
           github:
             userCache: github-user.json
+            resolveUsers: true
           dependencies:
             child1: https://github.com/docascode/docfx-test-dependencies.localization#master
         github-user.json: |
@@ -90,18 +91,18 @@ repos:
               }
             ]
           }
-  https://github.com/docascode/docfx-test-dependencies.zh-cn#loc-restore-map:
+  https://github.com/docascode/docfx-test-dependencies.zh-cn#share-restore-map:
     - files:
-        a.md:
+        docs/a.md: a
+      author: yufeih
+      email: yufeih@live.com
+    - files:
+        docs/a.md: b
       author: OsmondJiang
       email: xinjiang@microsoft.com
-    - files:
-        a.md:
-      author: yufeih
-      email: yufeih@microsoft.com
 outputs:
   docs/a.json: |
-    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Yufei Huang","id":"yufeih@users.noreply.github.com"}]}
+    {"author":{"display_name":"Osmond Jiang","id":"19990166"},"contributors":[{"display_name":"Yufei Huang","id":"511355"}]}
 ---
 # loc config convention without source locale
 # [repository mapping] 
@@ -109,12 +110,12 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc#loc-contribution:
+  https://docfx.com/abc#loc-contribution1:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx
-  https://docfx.com/abc.zh-cn#loc-contribution:
+  https://docfx.com/abc.zh-cn#loc-contribution1:
     - files:
         docs/a.md:
 outputs:
@@ -127,12 +128,12 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc.en-us#loc-contribution:
+  https://docfx.com/abc.en-us#loc-contribution2:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx.en-us
-  https://docfx.com/abc.zh-cn#loc-contribution:
+  https://docfx.com/abc.zh-cn#loc-contribution2:
     - files:
         docs/a.md:
 outputs:
@@ -145,16 +146,16 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
-  https://docfx.com/abc.en-us#loc-contribution:
+  https://docfx.com/abc.en-us#loc-contribution3:
     - files:
         docfx.yml: |
           contribution:
             repository: https://github.com/dotnet/docfx.en-us
           localization:
             mapping: RepositoryAndFolder
-  https://docfx.com/abc.localization#loc-contribution:
+  https://docfx.com/abc.localization#loc-contribution3:
     - files:
-        docs/a.md:
+        zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.localization/blob/master/zh-cn*"}
@@ -175,61 +176,70 @@ outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.en-us/blob/master/*"}
 ---
-# loc file contributor info
+# loc file contributor info 1
 # [repository mapping] 
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
+repos: 
+  https://github.com/docascode/abc#loc-contribution5:
+    - files:
+        docfx.yml:
+  https://github.com/docascode/abc.zh-cn#loc-contribution5:
+    - files:
+        docs/a.md:
 inputs:
   docfx.yml:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/loc-contribution/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/loc-contribution/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.zh-cn/blob/bc5ae3ec85617bcd5a66124b3e916be0714d32e8/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","gitcommit":"https://github.com/docascode/abc.zh-cn/blob/7dd996873b6d9311ad24e7de09d6f9c69c603af2/docs/a.md"}
 ---
-# loc file contributor info, all loc files are in one repo
-# [repository + folder mapping] 
+# loc file contributor info 2
+# all loc files are in one repo
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: RepositoryAndFolder
+repos: 
+  https://github.com/docascode/abc#loc-contribution6:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: RepositoryAndFolder
+  https://github.com/docascode/abc.localization#loc-contribution6:
+    - files:
+        zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/loc-contribution/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies.localization/blob/loc-contribution/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/docfx-test-dependencies.localization/blob/ce50ecc941f96b2955659211a9685db2cd3d9565/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/abc.localization/blob/1d12243848537f0c44360e9d661552ae6b7a426e/zh-cn/docs/a.md"}
 ---
-# loc file contributor info, all loc file are in source repo under different locale folder
-# [folder mapping]
-# source repo:
-#   localization/zh-cn/docs/a.md:
+# loc file contributor info 3
+# all loc file are in source repo under different locale folder
 commands:
   - restore
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution-folder
-inputs:
-  docfx.yml: |
-    localization:
-      mapping: Folder
+repos:
+  https://github.com/docascode/a#loc-contribution-folder:
+    - files:
+        docfx.yml: |
+          localization:
+            mapping: Folder
+        localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/docfx-test-dependencies/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/docfx-test-dependencies/blob/3fbb3c7939d52cd16ce96d90185cf27f85c94437/localization/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/a/blob/892bfb8912c2fa72e0397f1cc2fa42b0900f1abb/localization/zh-cn/docs/a.md"}
 ---
 # loc page link and content fallback
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#fallback1:
     - files:
         docfx.yml:
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#fallback1:
     - files:
-        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -242,14 +252,14 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#fallback2:
     - files:
         docs/b.md: |
           [link to a](a.md)
         docfx.yml: |
           localization:
             mapping: RepositoryAndFolder
-  https://docs.com/test.localization#live:
+  https://docs.com/test.localization#fallback2:
     - files:
         zh-cn/docs/a.md: |
           [link to b](b.md)
@@ -263,11 +273,11 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#fallback3:
     - files:
         docs/b.png:
         docfx.yml:
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#fallback3:
     - files:
         docs/a.md: |
           [link to b](b.png)
@@ -298,14 +308,14 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#toc1:
     - files:
         docs/TOC.md: |
           # [reference a](a.md)
         docs/b/TOC.md: |
           # [reference b](../b.md)
         docfx.yml:
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#toc1:
     - files:
         docs/a.md:
         docs/b.md:
@@ -325,13 +335,13 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#toc2:
     - files:
         docs/a/a.md:
         docs/b/TOC.md: |
           # [reference b](b.md)
         docfx.yml:
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#toc2:
     - files:
         docs/a/TOC.md: |
           # [reference a](a.md)
@@ -367,14 +377,14 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#xref1:
     - files:
         docs/a.md: |
           ---
           uid: c
           ---
         docfx.yml:
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#xref1:
     - files:
         docs/a.md: |
           ---
@@ -418,14 +428,14 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://docs.com/test#live:
+  https://docs.com/test#xref2:
     - files:
         docs/c.md: |
           ---
           uid: c
           ---
         docfx.yml:
-  https://docs.com/test.zh-cn#live:
+  https://docs.com/test.zh-cn#xref2:
     - files:
         docs/a.md: |
           ---
@@ -473,10 +483,14 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
-inputs:
-  docfx.yml: |
-    baseUrl: https://docs.microsoft.com
+repos:
+  https://docs.com/test#metadata1:
+    - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
+  https://docs.com/test.zh-cn#metadata1:
+    - files:
+        docs/a.md:
 outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
@@ -485,12 +499,16 @@ outputs:
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#loc-contribution
-inputs:
-  docfx.yml: |
-    baseUrl: https://docs.microsoft.com
-    localization:
-      mapping: RepositoryAndFolder
+repos:
+  https://docs.com/test#metadata2:
+    - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
+          localization:
+            mapping: RepositoryAndFolder
+  https://docs.com/test.localization#metadata2:
+    - files:
+        zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
