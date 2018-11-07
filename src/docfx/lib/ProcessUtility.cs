@@ -21,11 +21,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, bool redirectOutput = true)
+        public static Task<(string stdout, string stderr)> Execute(
+            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, bool stderr = true)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<(string, string)>();
 
             var error = new StringBuilder();
             var output = new StringBuilder();
@@ -35,14 +36,10 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = stdout,
+                RedirectStandardError = stderr,
             };
-
-            if (redirectOutput)
-            {
-                psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardError = true;
-            }
 
             var process = new Process
             {
@@ -50,9 +47,12 @@ namespace Microsoft.Docs.Build
                 StartInfo = psi,
             };
 
-            if (redirectOutput)
+            if (stdout)
             {
                 process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
+            }
+            if (stderr)
+            {
                 process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
             }
 
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
                 if (process.ExitCode == 0)
                 {
-                    tcs.TrySetResult(output.ToString().Trim());
+                    tcs.TrySetResult((output.ToString().Trim(), error.ToString().Trim()));
                 }
                 else
                 {
@@ -81,12 +81,15 @@ namespace Microsoft.Docs.Build
             {
                 process.Start();
 
-                if (redirectOutput)
+                if (stdout)
                 {
                     // Thread.Sleep(10000);
                     // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
                     // Add lock to ensure the locked area code can be always exected before exited event
                     process.BeginOutputReadLine();
+                }
+                if (stderr)
+                {
                     process.BeginErrorReadLine();
                 }
             }
@@ -98,27 +101,29 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static Task<string> ReadFile(string path)
+        public static async Task<string> ReadFile(string path)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            string result = null;
+            await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
-                using (var reader = new StreamReader(fs))
-                {
-                    return reader.ReadToEnd();
-                }
+                result = File.ReadAllText(path);
+                return Task.CompletedTask;
             });
+            return result;
         }
 
-        public static Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            T result = default;
+            await RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
-                    return read(fs);
+                    result = read(fs);
+                    return Task.CompletedTask;
                 }
             });
+            return result;
         }
 
         /// <summary>
@@ -127,26 +132,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task WriteFile(string path, string content)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 using (var writer = new StreamWriter(fs))
                 {
                     writer.Write(content);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
         public static Task WriteFile(string path, Action<Stream> write)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 {
                     write(fs);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
@@ -201,17 +206,6 @@ namespace Microsoft.Docs.Build
         {
             return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
                 || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
-        /// </summary>
-        public static bool IsFileUsedByAnotherProcessException(Exception ex)
-        {
-            return ex is IOException ioe && (
-                   ioe.HResult == 35 // Mac
-                || ioe.HResult == 11 // Linux
-                || ioe.HResult == -2147024864); // Windows
         }
 
         /// <summary>

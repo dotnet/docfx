@@ -65,14 +65,14 @@ namespace Microsoft.Docs.Build
             return new GitCommitProvider(repoPath, cacheFilePath, await LoadCommitCache(cacheFilePath));
         }
 
-        public List<GitCommit> GetCommitHistory(string file, string branch = null)
+        public List<GitCommit> GetCommitHistory(string file, string committish = null)
         {
             Debug.Assert(!file.Contains('\\'));
 
             const int MaxParentBlob = 32;
 
             var (commits, commitsBySha) = _commits.GetOrAdd(
-                branch ?? "",
+                committish ?? "",
                 key => new Lazy<(List<Commit>, Dictionary<long, Commit>)>(() => LoadCommits(key))).Value;
 
             if (commits.Count <= 0)
@@ -192,8 +192,11 @@ namespace Microsoft.Docs.Build
             {
                 using (var writer = new BinaryWriter(stream))
                 {
-                    writer.Write(_commitCache.Count);
-                    foreach (var (file, value) in _commitCache)
+                    // Create a snapshot of commit cache to ensure count and items matches.
+                    var commitCache = _commitCache.ToList();
+
+                    writer.Write(commitCache.Count);
+                    foreach (var (file, value) in commitCache)
                     {
                         lock (value)
                         {
@@ -228,8 +231,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string branchName = null)
+        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
         {
+            if (string.IsNullOrEmpty(committish))
+            {
+                committish = "HEAD";
+            }
+
             var commits = new List<Commit>();
             var commitsBySha = new Dictionary<long, Commit>();
 
@@ -237,36 +245,29 @@ namespace Microsoft.Docs.Build
             git_revwalk_new(out var walk, _repo);
             git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
 
-            if (string.IsNullOrEmpty(branchName))
+            if (git_revparse_single(out var headCommit, _repo, committish) != 0)
             {
-                git_revwalk_push_head(walk);
+                git_object_free(walk);
+                throw Errors.CommittishNotFound(_repoPath, committish).ToException();
             }
-            else
-            {
-                if (git_branch_lookup(out var refBranch, _repo, $"{branchName}", 1 /*locale branch*/) != 0 &&
-                    git_branch_lookup(out refBranch, _repo, $"origin/{branchName}", 2 /*remote branch*/) != 0)
-                {
-                    git_object_free(walk);
-                    throw Errors.GitBranchNotFound(_repoPath, branchName).ToException();
-                }
 
-                var commit = git_reference_target(refBranch);
-                git_revwalk_push(walk, commit);
-                git_object_free(refBranch);
-            }
+            git_revwalk_push(walk, git_object_id(headCommit));
+            git_object_free(headCommit);
 
             while (true)
             {
                 var error = git_revwalk_next(out var commitId, walk);
                 if (error == -31 /* GIT_ITEROVER */)
+                {
                     break;
+                }
 
                 // https://github.com/libgit2/libgit2sharp/issues/1351
-                if (error == -3 /* GIT_ENOTFOUND */)
-                    throw Errors.GitShadowClone(_repoPath).ToException();
-
-                if (error != 0)
-                    throw new InvalidOperationException($"Unknown error calling git_revwalk_next: {error}");
+                if (error != 0 /* GIT_ENOTFOUND */)
+                {
+                    git_revwalk_free(walk);
+                    throw Errors.GitLogError(_repoPath, error).ToException();
+                }
 
                 git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
                 var author = git_commit_author(commit);

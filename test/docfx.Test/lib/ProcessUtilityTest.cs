@@ -20,36 +20,20 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static async Task RunCommandsInParallel()
+        {
+            var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
+
+            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => ProcessUtility.Execute("git", "rev-parse HEAD", cwd)));
+
+            Assert.True(results.All(r => !string.IsNullOrEmpty(r.stdout)));
+        }
+
+        [Fact]
         public static void ExeNotFoundMessage()
         {
             var ex = Assert.Throws<Win32Exception>(() => Process.Start("a-fake-exe"));
             Assert.True(ProcessUtility.IsExeNotFoundException(ex), ex.ErrorCode + " " + ex.NativeErrorCode + " " + ex.Message);
-        }
-
-        [Fact]
-        public static void FileUsedByAnotherProcessMessage()
-        {
-            var path = $"process-test/{Guid.NewGuid()}";
-            var content = Guid.NewGuid().ToString();
-            File.WriteAllText(path, content);
-
-            using (Read())
-            {
-                using (Read()) { }
-                var ex = Assert.Throws<IOException>(Write);
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(ex), ex.HResult + " " + ex.Message);
-            }
-
-            using (Write())
-            {
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(Assert.Throws<IOException>(Read)));
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(Assert.Throws<IOException>(Write)));
-            }
-
-            using (Read()) { }
-
-            Stream Read() => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            Stream Write() => new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
         }
 
         [Fact]
