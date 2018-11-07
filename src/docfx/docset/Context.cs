@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryFromFilePath(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             File.Copy(sourcePath, destinationPath, overwrite: true);
         }
