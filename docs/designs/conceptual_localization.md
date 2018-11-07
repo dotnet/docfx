@@ -1,4 +1,4 @@
-# Localization(Loc) Support
+# Conceptual Localization(Loc) Support
 
 ## Description
 
@@ -6,6 +6,7 @@ DocFX build supports localization contents, there are a few features need to be 
   - Partial contents:
     - The localization contents are often a part of source content.
     - There maybe extra localization content which doesn't exist in source repo.
+  - Delay localization, which means the version of loc content are usually behind of source content version.
   - Localization contents are not required to be stored in the same repo of source content, they can be anywhere.
   - Localization publishing may have a few specific requirements which are different with source publishing:
     - Most of the localization configuration would be same with source configuration, a few are different, set based on scenarios, so we don't know the exact set of different configurations.
@@ -27,7 +28,8 @@ DocFX build supports localization contents, there are a few features need to be 
   - Less Loc configurations to maintain and configuration changes in source repo will immediately be applied to Loc  
   - Loc content can be stored in any places(one repo or multiple repo), what we need is the **mappings between Source content and Loc content**  
   
-Below kinds of mappings are considered to be supported:
+Below kinds of mappings are considered to be supported and there is a **strong convention** between source repo and loc repo:
+
   - **Folder**, localization files are stored in the **same repository** with source files but under different **locale folder**
     ```txt
     source file         -->         localization files
@@ -35,13 +37,30 @@ Below kinds of mappings are considered to be supported:
     /files/a.md         -->         /localization/de-de/files/a.md
     ```
   - **Repository**, localization files are stored in an **independent repository** per locale but keep the **same folder structure**
-  ```txt
+      
+    Here is an string convention for loc repo name:
+    
+      - `{source-repo-name}` -> `{source-repo-name}.{locale}`
+      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.{loc-locale}`
+    
+    ```txt
     source repo       ->locale->      localization repo
     dotnet/docfx        zh-cn         dotnet/docfx.zh-cn
     dotnet/docfx        de-de         dotnet/docfx.de-de
-  ```
+    dotnet/docfx.en-us  zh-cn         dotnet/docfx.zh-cn
+    dotnet/docfx.zh-cn  en-us         dotent/docfx.en-us
+    ```
+    
+    > The loc org name can be different, it's should be configurable
+    
   - **RepositoryAndFolder**, localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
-  ```txt
+  
+    Here is an string convention for loc repo name:
+    
+      - `{source-repo-name}` -> `{source-repo-name}.localization`
+      - `{source-repo-name}.{source-locale}` -> `{source-repo-name}.localization`
+  
+    ```txt
     repo mapping example:
     source repo       ->locale->      localization repo
     dotnet/docfx        zh-cn         dotnet/docfx.localization
@@ -50,7 +69,10 @@ Below kinds of mappings are considered to be supported:
     source repo         -->           localization repo
     /readme.md          -->           /zh-cn/readme.md
     /files/a.md         -->           /zh-cn/files/a.md
-  ```
+    ```
+    
+    > The loc org name can be different, it's should be configurable
+    
 ### Loc Overwrite Configuration
 
   - Overwrite the configurations you want or use source configuration by default  
@@ -205,5 +227,8 @@ From the localization delayed translation point, the above requirement makes sen
   - resolve from current docset
   - resolve from fallback docset
   - resolve from fallback docset git history
+  
+> resolve from docset includes: 1. resolve from file system 2. resolve from redirection.
+> linked resources fallback logic dependency: the hosting system never deletes resources.
   
 For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
