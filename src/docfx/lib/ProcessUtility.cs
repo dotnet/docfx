@@ -208,17 +208,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
         /// </summary>
-        public static bool IsFileUsedByAnotherProcessException(Exception ex)
-        {
-            return ex is IOException ioe && (
-                   ioe.HResult == 35 // Mac
-                || ioe.HResult == 11 // Linux
-                || ioe.HResult == -2147024864); // Windows
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
-        /// </summary>
         public static bool IsFileAlreadyExistsException(Exception ex)
         {
             if (ex is IOException ioe)
