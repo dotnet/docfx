@@ -98,27 +98,29 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static Task<string> ReadFile(string path)
+        public static async Task<string> ReadFile(string path)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            string result = null;
+            await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
-                using (var reader = new StreamReader(fs))
-                {
-                    return reader.ReadToEnd();
-                }
+                result = File.ReadAllText(path);
+                return Task.CompletedTask;
             });
+            return result;
         }
 
-        public static Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            T result = default;
+            await RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
-                    return read(fs);
+                    result = read(fs);
+                    return Task.CompletedTask;
                 }
             });
+            return result;
         }
 
         /// <summary>
@@ -127,26 +129,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task WriteFile(string path, string content)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 using (var writer = new StreamWriter(fs))
                 {
                     writer.Write(content);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
         public static Task WriteFile(string path, Action<Stream> write)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 {
                     write(fs);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
