@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             }
 
             var httpConfig = GetGitCommandLineConfig(url, config);
-            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}"));
+            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
 
             try
             {

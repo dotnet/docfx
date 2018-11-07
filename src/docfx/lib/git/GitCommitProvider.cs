@@ -255,14 +255,16 @@ namespace Microsoft.Docs.Build
             {
                 var error = git_revwalk_next(out var commitId, walk);
                 if (error == -31 /* GIT_ITEROVER */)
+                {
                     break;
+                }
 
                 // https://github.com/libgit2/libgit2sharp/issues/1351
-                if (error == -3 /* GIT_ENOTFOUND */)
-                    throw Errors.GitShadowClone(_repoPath).ToException();
-
-                if (error != 0)
-                    throw new InvalidOperationException($"Unknown error calling git_revwalk_next: {error}");
+                if (error != 0 /* GIT_ENOTFOUND */)
+                {
+                    git_revwalk_free(walk);
+                    throw Errors.GitLogError(_repoPath, error).ToException();
+                }
 
                 git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
                 var author = git_commit_author(commit);

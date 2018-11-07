@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
         [DllImport(LibName)]
         public static unsafe extern git_oid* git_reference_target(IntPtr reference);
-        
+
         [DllImport(LibName)]
         public static unsafe extern void git_reference_free(IntPtr reference);
 
