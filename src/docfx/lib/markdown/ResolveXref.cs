@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Web;
 using Markdig;
 using Markdig.Renderers.Html;
 using Markdig.Syntax.Inlines;
@@ -15,31 +16,38 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseResolveXref(this MarkdownPipelineBuilder builder, Func<string, XrefSpec> resolveXref)
         {
             return builder.Use(document =>
-            {
-                document.Replace(node =>
-                {
-                    if (node is XrefInline xref)
-                    {
-                        var xrefSpec = resolveXref(xref.Href);
-                        if (xrefSpec is null)
-                        {
-                            var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
-                            var error = raw.StartsWith("@")
-                                ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
-                                : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
+             {
+                 document.Replace(node =>
+                 {
+                     if (node is XrefInline xref)
+                     {
+                         var (uid, query, _) = HrefUtility.SplitHref(xref.Href);
+                         var xrefSpec = resolveXref(uid);
+                         if (xrefSpec is null)
+                         {
+                             var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
+                             var error = raw.StartsWith("@")
+                                 ? Errors.AtUidNotFound((Document)InclusionContext.File, xref.Href, raw)
+                                 : Errors.UidNotFound((Document)InclusionContext.File, xref.Href, raw);
 
-                            Markup.Result.Errors.Add(error);
-                            return new LiteralInline(raw);
-                        }
+                             Markup.Result.Errors.Add(error);
+                             return new LiteralInline(raw);
+                         }
 
-                        // TODO: Support advanced cross reference
-                        // e.g.: <a href="xref:System.String?displayProperty=fullName"/>
-                        var content = new LiteralInline(string.IsNullOrEmpty(xrefSpec.GetName()) ? xrefSpec.Uid : xrefSpec.GetName());
-                        return new LinkInline(xrefSpec.Href, null).AppendChild(content);
-                    }
-                    return node;
-                });
-            });
+                         // fallback order:
+                         // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+                         string displayPropertyValue = null;
+                         var name = xrefSpec.GetXrefPropertyValue("name");
+                         if (!string.IsNullOrEmpty(query))
+                         {
+                             displayPropertyValue = xrefSpec.GetXrefPropertyValue(HttpUtility.ParseQueryString(query.Substring(1))?["displayProperty"]);
+                         }
+                         string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+                         return new LinkInline(xrefSpec.Href, null).AppendChild(new LiteralInline(display));
+                     }
+                     return node;
+                 });
+             });
         }
     }
 }
