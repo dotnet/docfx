@@ -14,7 +14,7 @@ title: ASP.NET Documentation
 description: Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more.
 ---
 ```
-- User can also define UID in JSON
+- For SDP, user can define UID in YAML/JSON files
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -23,7 +23,6 @@ description: Learn how to develop ASP.NET and ASP.NET web applications. Get docu
   "description": "Learn how to develop ASP.NET and ASP.NET web applications. Get documentation, example code, tutorials, and more."
 }
 ```
-- And define UID in YAML
 ```yml
 #YamlMime:TestData
 uid: a
@@ -46,7 +45,7 @@ outputs:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ```
-Since the xref map would be outputted for external reference, if markdown conatains a linking url, should it be resolved to an absolute url? It is resolve as related url for now.
+Since the xref map would be outputted for external reference, if markdown contains a linking url, should it be resolved to an absolute url? It is resolved as relative url for now.
 
 ## Output xref map
 Docfx will output a JSON file named `xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.
@@ -80,13 +79,24 @@ During `docfx restore`, all the JSON files will be restored and merged.
 
 ## Resolve xref
 ### Using `@` to reference a uid in markdown
-  Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly, could reference to [V2](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#shorthand-form).
+Not supporting `displayProperty` for this case for now, we need to refine the validation pattern of uid firstly, could reference to [V2](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#shorthand-form).
 ```
 Link to @a
 ```
-  The file above would be resolved using the restored xref map
+The file above would be resolved using the restored xref map
 ```json
 {"content":"<p>Link to <a href=\"aspnet/a.md\">ASP.NET Documentation</a></p>\n"}
+```
+And if the UID could not be resolved, a warning will be logged
+```yml
+inputs:
+  docfx.yml:
+  docs/a.md: Link to <xref:a>
+outputs:
+  docs/a.json: |
+    { "content": "<p>Link to &lt;xref:a&gt;</p>" }
+  build.log: |
+    ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
 ```
   - User can also define which property to display for the referenced uid
 
