@@ -1,14 +1,14 @@
 ---
 # Restore dependencies with their children
 repos:
-  https://github.com/restore/a:
+  https://docs.com/restore/a:
     - files:
         docs/a.md: a
 inputs:
   docfx.yml: |
     dependencies:
-      docfx-test-dependencies1: https://github.com/restore/a
-      docfx-test-dependencies2: https://github.com/restore/a
+      docfx-test-dependencies1: https://docs.com/restore/a
+      docfx-test-dependencies2: https://docs.com/restore/a
   docs/a.md: |
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
@@ -20,7 +20,7 @@ outputs:
 ---
 # Restore urls
 repos:
-  https://github.com/restore/b:
+  https://docs.com/restore/b:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -35,7 +35,7 @@ outputs:
 ---
 # Restore urls with extends
 repos:
-  https://github.com/restore/c:
+  https://docs.com/restore/c:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -48,7 +48,7 @@ outputs:
 ---
 # Restore dependencies with extends
 repos:
-  https://github.com/restore/d:
+  https://docs.com/restore/d:
     - files:
         docs/a.md: d
 inputs:

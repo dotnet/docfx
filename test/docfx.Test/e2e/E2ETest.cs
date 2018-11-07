@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
 
                             foreach (var (path, content) in commit.Files)
                             {
-                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content?.Replace("\r", "") ?? "")));
+                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content ?? "")));
                                 tree.Add(path, blob, LibGit2Sharp.Mode.NonExecutableFile);
                             }
 

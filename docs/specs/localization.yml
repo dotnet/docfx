@@ -4,15 +4,15 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/docfx-test-dependencies#master1:
+  https://docs.com/a#master1:
     - files:
         docfx.yml: |
           dependencies:
-            restore-child: https://github.com/docascode/docfx-test-dependencies#child1
-  https://github.com/docascode/docfx-test-dependencies#child1:
+            restore-child: https://docs.com/a#child1
+  https://docs.com/a#child1:
     - files:
         docs/child.md:
-  https://github.com/docascode/docfx-test-dependencies.zh-cn#master1:
+  https://docs.com/a.zh-cn#master1:
     - files:
         docs/loc.md: |
           [link to restore-child](~/restore-child/docs/child.md)
@@ -27,12 +27,12 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/docfx-test-dependencies#master2:
+  https://docs.com/b#master2:
     - files:
         docfx.yml: |
           localization:
             mapping: RepositoryAndFolder
-  https://github.com/docascode/docfx-test-dependencies.localization#master2:
+  https://docs.com/b.localization#master2:
     - files:
         zh-cn/docs/dep.md: loc-DEP
 outputs:
@@ -43,14 +43,14 @@ commands:
   - restore --locale zh-cn
   - build --locale zh-cn
 repos:
-  https://github.com/docascode/docfx-test-dependencies#share-restore-map:
+  https://github.com/docascode/c#share-restore-map:
     - files:
         docfx.yml: |
           github:
             userCache: github-user.json
             resolveUsers: true
           dependencies:
-            child1: https://github.com/docascode/docfx-test-dependencies.localization#master
+            child1: https://docs.com/docascode/d
         github-user.json: |
           {
             "users": [
@@ -85,15 +85,19 @@ repos:
               }
             ]
           }
-  https://github.com/docascode/docfx-test-dependencies.zh-cn#share-restore-map:
+  https://github.com/docascode/c.zh-cn#share-restore-map:
     - files:
         docs/a.md: a
       author: yufeih
       email: yufeih@live.com
     - files:
-        docs/a.md: b
+        docs/a.md: |
+          [link to dependency](~/child1/docs/d.md)
       author: OsmondJiang
       email: xinjiang@microsoft.com
+  https://docs.com/docascode/d:
+    - files:
+        docs/d.md:
 outputs:
   docs/a.json: |
     {"author":{"display_name":"Osmond Jiang","id":"19990166"},"contributors":[{"display_name":"Yufei Huang","id":"511355"}]}
@@ -391,7 +395,6 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
   docs/a.json:
   docs/b.json:
-  xrefmap.json:
 ---
 # loc build with xref map, all locale files are in source repo under different locale folder, loc file has higher priority
 commands:
@@ -415,7 +418,6 @@ outputs:
     ["info","at-uid-not-found","Cannot find uid 'c' using xref '@c'","docs/b.md"]
   docs/a.json:
   docs/b.json:
-  xrefmap.json:
 ---
 # loc build with mixed xref map
 commands:
