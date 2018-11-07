@@ -63,9 +63,9 @@ namespace Microsoft.Docs.Build
         public RestoreMap RestoreMap { get; }
 
         /// <summary>
-        /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
+        /// Gets the reversed and normalized <see cref="Config.Routes"/> for faster lookup.
         /// </summary>
-        public IReadOnlyDictionary<string, string> ReversedRoutes { get; }
+        public IReadOnlyDictionary<string, string> Routes { get; }
 
         /// <summary>
         /// Gets the redirection map.
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
-            ReversedRoutes = new Dictionary<string, string>(config.Routes.Reverse());
+            Routes = NormalizeRoutes(config.Routes);
             RestoreMap = restoreMap ?? new RestoreMap(DocsetPath);
             FallbackDocset = fallbackDocset;
 
@@ -134,6 +134,18 @@ namespace Microsoft.Docs.Build
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
+        }
+
+        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (var (key, value) in routes.Reverse())
+            {
+                result.Add(
+                    key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
+                    PathUtility.NormalizeFile(value));
+            }
+            return result;
         }
 
         private CultureInfo CreateCultureInfo(string locale)

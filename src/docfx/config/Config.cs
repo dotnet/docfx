@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -205,7 +204,7 @@ namespace Microsoft.Docs.Build
             Config config = null;
 
             var (loadErrors, configObject) = LoadConfigObject(configPath, configPath);
-            var optionConfigObject = ExpandAndNormalize(options?.ToJObject());
+            var optionConfigObject = Expand(options?.ToJObject());
             var finalConfigObject = JsonUtility.Merge(configObject, optionConfigObject);
 
             if (extend)
@@ -243,7 +242,7 @@ namespace Microsoft.Docs.Build
             {
                 (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
             }
-            return (errors, ExpandAndNormalize(config ?? new JObject()));
+            return (errors, Expand(config ?? new JObject()));
         }
 
         private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
@@ -302,7 +301,7 @@ namespace Microsoft.Docs.Build
                         (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
                         value is JObject overwriteConfig)
                     {
-                        result.Merge(ExpandAndNormalize(overwriteConfig), JsonUtility.MergeSettings);
+                        result.Merge(Expand(overwriteConfig), JsonUtility.MergeSettings);
                     }
 
                     overwriteConfigIdentifiers.Add(key);
@@ -318,51 +317,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static JObject ExpandAndNormalize(JObject config)
+        private static JObject Expand(JObject config)
         {
             config[ConfigConstants.Files] = ExpandStringArray(config[ConfigConstants.Files]);
             config[ConfigConstants.Exclude] = ExpandStringArray(config[ConfigConstants.Exclude]);
-            config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
-            config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
-            config[ConfigConstants.RedirectionsWithoutId] = NormalizeRedirections(config[ConfigConstants.RedirectionsWithoutId]);
             return config;
-        }
-
-        private static JToken NormalizeRedirections(JToken redirection)
-        {
-            if (redirection == null)
-                return null;
-
-            if (redirection is JObject redirectionJObject)
-            {
-                var normalizedRedirection = new JObject();
-                foreach (var (path, redirectTo) in redirectionJObject)
-                {
-                    var normalizedPath = PathUtility.NormalizeFile(path);
-                    normalizedRedirection[normalizedPath] = redirectTo;
-                }
-
-                return normalizedRedirection;
-            }
-
-            return redirection;
-        }
-
-        private static JToken NormalizeRouteConfig(JToken token)
-        {
-            if (token is JObject obj)
-            {
-                var result = new JObject();
-                foreach (var (key, value) in obj)
-                {
-                    result.Add(
-                        key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
-                        value is JValue v && v.Value is string str ? PathUtility.NormalizeFile(str) : value);
-                }
-                return result;
-            }
-            return token;
         }
 
         private static JArray ExpandStringArray(JToken e)
