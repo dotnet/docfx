@@ -138,13 +138,13 @@
     "name": {
       "type": "string"
     },
-    "content": {
+    "files": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "contentExclude": {
+    "exclude": {
       "type": "array",
       "items": {
         "type": "string"
