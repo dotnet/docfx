@@ -68,12 +68,18 @@ namespace Microsoft.Docs.Build
 
         [DllImport(LibName)]
         public static unsafe extern git_oid* git_reference_target(IntPtr reference);
-
+        
         [DllImport(LibName)]
         public static unsafe extern void git_reference_free(IntPtr reference);
 
         [DllImport(LibName)]
+        public static unsafe extern int git_revparse_single(out IntPtr @out, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string spec);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_object_lookup(out IntPtr obj, IntPtr repo, git_oid* id, int type);
+
+        [DllImport(LibName)]
+        public static unsafe extern git_oid* git_object_id(IntPtr obj);
 
         [DllImport(LibName)]
         public static unsafe extern void git_object_free(IntPtr obj);
