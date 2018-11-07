@@ -192,8 +192,11 @@ namespace Microsoft.Docs.Build
             {
                 using (var writer = new BinaryWriter(stream))
                 {
-                    writer.Write(_commitCache.Count);
-                    foreach (var (file, value) in _commitCache)
+                    // Create a snapshot of commit cache to ensure count and items matches.
+                    var commitCache = _commitCache.ToList();
+
+                    writer.Write(commitCache.Count);
+                    foreach (var (file, value) in commitCache)
                     {
                         lock (value)
                         {

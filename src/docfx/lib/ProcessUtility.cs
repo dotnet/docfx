@@ -101,27 +101,29 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static Task<string> ReadFile(string path)
+        public static async Task<string> ReadFile(string path)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            string result = null;
+            await RunInsideMutex(path, () =>
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
-                using (var reader = new StreamReader(fs))
-                {
-                    return reader.ReadToEnd();
-                }
+                result = File.ReadAllText(path);
+                return Task.CompletedTask;
             });
+            return result;
         }
 
-        public static Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            T result = default;
+            await RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
                 {
-                    return read(fs);
+                    result = read(fs);
+                    return Task.CompletedTask;
                 }
             });
+            return result;
         }
 
         /// <summary>
@@ -130,26 +132,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Task WriteFile(string path, string content)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 using (var writer = new StreamWriter(fs))
                 {
                     writer.Write(content);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
         public static Task WriteFile(string path, Action<Stream> write)
         {
-            return RetryUntilSucceed(path, IsFileUsedByAnotherProcessException, () =>
+            return RunInsideMutex(path, () =>
             {
                 using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
                 {
                     write(fs);
                 }
-                return 0;
+                return Task.CompletedTask;
             });
         }
 
@@ -204,17 +206,6 @@ namespace Microsoft.Docs.Build
         {
             return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
                 || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
-        /// </summary>
-        public static bool IsFileUsedByAnotherProcessException(Exception ex)
-        {
-            return ex is IOException ioe && (
-                   ioe.HResult == 35 // Mac
-                || ioe.HResult == 11 // Linux
-                || ioe.HResult == -2147024864); // Windows
         }
 
         /// <summary>

@@ -37,32 +37,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static void FileUsedByAnotherProcessMessage()
-        {
-            var path = $"process-test/{Guid.NewGuid()}";
-            var content = Guid.NewGuid().ToString();
-            File.WriteAllText(path, content);
-
-            using (Read())
-            {
-                using (Read()) { }
-                var ex = Assert.Throws<IOException>(Write);
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(ex), ex.HResult + " " + ex.Message);
-            }
-
-            using (Write())
-            {
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(Assert.Throws<IOException>(Read)));
-                Assert.True(ProcessUtility.IsFileUsedByAnotherProcessException(Assert.Throws<IOException>(Write)));
-            }
-
-            using (Read()) { }
-
-            Stream Read() => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            Stream Write() => new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-        }
-
-        [Fact]
         public static async Task FileMutexTest()
         {
             var concurrencyLevel = 0;
