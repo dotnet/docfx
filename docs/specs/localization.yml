@@ -2,7 +2,7 @@
 # [repository mapping] 
 commands:
   - restore --locale zh-cn
-  - build
+  - build --locale zh-cn
 repos:
   https://github.com/docascode/docfx-test-dependencies#master1:
     - files:
@@ -11,24 +11,21 @@ repos:
             restore-child: https://github.com/docascode/docfx-test-dependencies#child1
   https://github.com/docascode/docfx-test-dependencies#child1:
     - files:
-        dep.md: child-DEP
+        docs/child.md:
   https://github.com/docascode/docfx-test-dependencies.zh-cn#master1:
     - files:
-        dep.md: loc-DEP
-restores:
-  git/github.com/docascode/docfx-test-dependencies.zh-cn/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-maste1r/dep.md: loc-DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d-child1/dep.md: child-DEP
-  restore-lock/* restore loc repo with dependencies-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies.zh-cn#master1":"1dc2455be4a78b4fd29b5641e6fb8d687f37464a-master1", "https://github.com/docascode/docfx-test-dependencies#child1":"5736374c0a142252063bbedafe5d98db495e263d-child1"}}
-  restore-lock/1dc2455be4a78b4fd29b5641e6fb8d687f37464a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child1":"5736374c0a142252063bbedafe5d98db495e263d-child1"}}
+        docs/loc.md: |
+          [link to restore-child](~/restore-child/docs/child.md)
 outputs:
+  docs/loc.json:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/child.md' referenced by link '~/restore-child/docs/child.md' will not be built because it is from a dependency docset","docs/loc.md"]
 ---
 # restore loc repo, all loc files are in one repo
 # [repository + folder mapping]
 commands:
   - restore --locale zh-cn
-  - build
+  - build --locale zh-cn
 repos:
   https://github.com/docascode/docfx-test-dependencies#master2:
     - files:
@@ -37,12 +34,9 @@ repos:
             mapping: RepositoryAndFolder
   https://github.com/docascode/docfx-test-dependencies.localization#master2:
     - files:
-        dep.md: loc-DEP
-restores:
-  git/github.com/docascode/docfx-test-dependencies.localization/18d3d65979413ce8342fd709dbce1c78ab45ffeb-master2/dep.md: loc-DEP
-  restore-lock/*restore loc repo, all loc files are in one repo-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies.localization#master2":"18d3d65979413ce8342fd709dbce1c78ab45ffeb-master2"}}
+        zh-cn/docs/dep.md: loc-DEP
 outputs:
+  docs/dep.json:
 ---
 # loc docset share the source docset's restore map
 commands:
@@ -192,7 +186,7 @@ inputs:
   docfx.yml:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","gitcommit":"https://github.com/docascode/abc.zh-cn/blob/7dd996873b6d9311ad24e7de09d6f9c69c603af2/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.zh-cn/blob/loc-contribution5/docs/a.md", "gitcommit":"https://github.com/docascode/abc.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
 ---
 # loc file contributor info 2
 # all loc files are in one repo
@@ -210,7 +204,7 @@ repos:
         zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","gitcommit":"https://github.com/docascode/abc.localization/blob/1d12243848537f0c44360e9d661552ae6b7a426e/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/abc.localization/blob/loc-contribution6/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/abc.localization/blob/c4e050bdaa03a863e0c9b274af6c0ddafa1b8189/zh-cn/docs/a.md"}
 ---
 # loc file contributor info 3
 # all loc file are in source repo under different locale folder
@@ -226,7 +220,7 @@ repos:
         localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/a/blob/892bfb8912c2fa72e0397f1cc2fa42b0900f1abb/localization/zh-cn/docs/a.md"}
+    { "content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/docascode/a/blob/loc-contribution-folder/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/docascode/a/blob/ffb8cfa5f33566a83770b90d647577a58e1d662d/localization/zh-cn/docs/a.md"}
 ---
 # loc page link and content fallback
 commands:
