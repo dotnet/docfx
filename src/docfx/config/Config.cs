@@ -12,6 +12,9 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*", "localization/**/*" };
+
         /// <summary>
         /// Gets the default product name
         /// </summary>
@@ -23,9 +26,14 @@ namespace Microsoft.Docs.Build
         public readonly string Name = string.Empty;
 
         /// <summary>
-        /// Gets the contents that are managed by this docset.
+        /// Gets the file glob patterns included by the docset.
         /// </summary>
-        public readonly FileConfig Content = new FileConfig();
+        public readonly string[] Content = s_defaultContentInclude;
+
+        /// <summary>
+        /// Gets the file glob patterns excluded from this docset.
+        /// </summary>
+        public readonly string[] ContentExclude = s_defaultContentExclude;
 
         /// <summary>
         /// Gets the output config.
@@ -312,7 +320,8 @@ namespace Microsoft.Docs.Build
 
         private static JObject ExpandAndNormalize(JObject config)
         {
-            config[ConfigConstants.Content] = ExpandFiles(config[ConfigConstants.Content]);
+            config[ConfigConstants.Content] = ExpandStringArray(config[ConfigConstants.Content]);
+            config[ConfigConstants.ContentExclude] = ExpandStringArray(config[ConfigConstants.ContentExclude]);
             config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);
@@ -354,25 +363,6 @@ namespace Microsoft.Docs.Build
                 return result;
             }
             return token;
-        }
-
-        private static JObject ExpandFiles(JToken file)
-        {
-            if (file == null)
-                return null;
-            if (file is JValue str)
-                file = new JArray(str);
-            if (file is JArray arr)
-                file = new JObject { [ConfigConstants.Include] = arr };
-            return ExpandIncludeExclude((JObject)file);
-        }
-
-        private static JObject ExpandIncludeExclude(JObject item)
-        {
-            Debug.Assert(item != null);
-            item[ConfigConstants.Include] = ExpandStringArray(item[ConfigConstants.Include]);
-            item[ConfigConstants.Exclude] = ExpandStringArray(item[ConfigConstants.Exclude]);
-            return item;
         }
 
         private static JArray ExpandStringArray(JToken e)

@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Globbing files"))
             {
-                var glob = GlobUtility.CreateGlobMatcher(Config.Content.Include, Config.Content.Exclude);
+                var glob = GlobUtility.CreateGlobMatcher(Config.Content, Config.ContentExclude);
                 var files = new ConcurrentBag<Document>();
 
                 ParallelUtility.ForEach(

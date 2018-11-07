@@ -336,9 +336,7 @@ outputs:
 # Circle toc referenceing 1
 inputs:
   docfx.yml: |
-    content:
-      include:
-        - docs/TOC.md
+    content: docs/TOC.md
   docs/TOC.md: |
     # [Topic1](index.md) #
     ## Refernce toc
@@ -359,9 +357,7 @@ outputs:
 # Circle toc referenceing 2
 inputs:
   docfx.yml: |
-    content:
-      include:
-        - docs/TOC.md
+    content: docs/TOC.md
   docs/TOC.md: |
     # [Topic1](index.md) #
     ## [Reference itself](TOC.md)
@@ -768,9 +764,7 @@ outputs:
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
   docfx.yml: |
-    content:
-      include:
-        - docs/TOC.md
+    content: docs/TOC.md
   docs/TOC.md: |
     # [Reference TOC File](f1/TOC.yml)
   docs/f1/TOC.yml: |
