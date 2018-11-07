@@ -36,7 +36,6 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
-                CreateNoWindow = true,
                 RedirectStandardOutput = stdout,
                 RedirectStandardError = stderr,
             };
