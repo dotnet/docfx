@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!File.Exists(restorePath))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                        PathUtility.CreateDirectoryFromFilePath(restorePath);
                         File.Move(tempFile, restorePath);
                     }
                     else
