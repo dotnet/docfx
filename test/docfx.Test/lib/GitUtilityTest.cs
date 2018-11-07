@@ -59,16 +59,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [Fact]
-        public static async Task GitCommandConcurreny()
-        {
-            var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
-
-            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => GitUtility.Revision(cwd)));
-
-            Assert.True(results.All(r => r.Any()));
-        }
-
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });

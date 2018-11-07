@@ -21,11 +21,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, bool redirectOutput = true)
+        public static Task<(string stdout, string stderr)> Execute(
+            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, bool stderr = true)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<(string, string)>();
 
             var error = new StringBuilder();
             var output = new StringBuilder();
@@ -35,14 +36,10 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = stdout,
+                RedirectStandardError = stderr,
             };
-
-            if (redirectOutput)
-            {
-                psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardError = true;
-            }
 
             var process = new Process
             {
@@ -50,9 +47,12 @@ namespace Microsoft.Docs.Build
                 StartInfo = psi,
             };
 
-            if (redirectOutput)
+            if (stdout)
             {
                 process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
+            }
+            if (stderr)
+            {
                 process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
             }
 
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
                 if (process.ExitCode == 0)
                 {
-                    tcs.TrySetResult(output.ToString().Trim());
+                    tcs.TrySetResult((output.ToString().Trim(), error.ToString().Trim()));
                 }
                 else
                 {
@@ -81,12 +81,15 @@ namespace Microsoft.Docs.Build
             {
                 process.Start();
 
-                if (redirectOutput)
+                if (stdout)
                 {
                     // Thread.Sleep(10000);
                     // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
                     // Add lock to ensure the locked area code can be always exected before exited event
                     process.BeginOutputReadLine();
+                }
+                if (stderr)
+                {
                     process.BeginErrorReadLine();
                 }
             }
