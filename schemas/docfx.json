@@ -48,24 +48,6 @@
         }
       }
     },
-    "FileConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "include": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "exclude": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "GitHubConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -157,7 +139,16 @@
       "type": "string"
     },
     "content": {
-      "$ref": "#/definitions/FileConfig"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contentExclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "output": {
       "$ref": "#/definitions/OutputConfig"
