@@ -20,6 +20,16 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static async Task RunCommandsInParallel()
+        {
+            var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
+
+            var results = await Task.WhenAll(Enumerable.Range(0, 10).AsParallel().Select(i => ProcessUtility.Execute("git", "rev-parse HEAD", cwd)));
+
+            Assert.True(results.All(r => !string.IsNullOrEmpty(r.stdout)));
+        }
+
+        [Fact]
         public static void ExeNotFoundMessage()
         {
             var ex = Assert.Throws<Win32Exception>(() => Process.Start("a-fake-exe"));

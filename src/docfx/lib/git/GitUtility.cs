@@ -110,18 +110,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static async Task CloneOrUpdate(string path, string url, string refspec, Config config = null)
+        public static async Task CloneOrUpdate(string path, string url, string committish, Config config = null)
         {
-            await CloneOrUpdate(path, url, new[] { refspec }, bare: false, config);
-            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {refspec}");
+            await CloneOrUpdate(path, url, new[] { committish }, bare: false, config);
+            await ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> refspecs, Config config = null)
+        public static Task CloneOrUpdateBare(string path, string url, IEnumerable<string> committishes, Config config = null)
         {
-            return CloneOrUpdate(path, url, refspecs, bare: true, config);
+            return CloneOrUpdate(path, url, committishes, bare: true, config);
         }
 
         /// <summary>
@@ -129,39 +129,40 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="cwd">The current working directory</param>
         public static Task<List<string>> ListWorkTrees(string cwd, bool includeMain)
-            => ExecuteQuery(
-                cwd,
-                $"worktree list",
-                lines =>
+        {
+            return Execute(cwd, $"worktree list", ParseWorkTreeList);
+
+            List<string> ParseWorkTreeList(string stdout, string stderr)
+            {
+                Debug.Assert(stdout != null);
+                var worktreeLines = stdout.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
+                var workTreePaths = new List<string>();
+
+                var i = 0;
+                foreach (var workTreeLine in worktreeLines)
                 {
-                    Debug.Assert(lines != null);
-                    var worktreeLines = lines.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
-                    var workTreePaths = new List<string>();
-
-                    var i = 0;
-                    foreach (var workTreeLine in worktreeLines)
+                    if (i++ > 0 || includeMain)
                     {
-                        if (i++ > 0 || includeMain)
-                        {
-                            // The main worktree is listed first, followed by each of the linked worktrees.
-                            workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
-                        }
+                        // The main worktree is listed first, followed by each of the linked worktrees.
+                        workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
                     }
+                }
 
-                    return workTreePaths;
-                });
+                return workTreePaths;
+            }
+        }
 
         /// <summary>
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
+        /// <param name="committish">The commit hash, branch or tag used to create a work tree</param>
         /// <param name="path">The work tree path</param>
-        public static Task AddWorkTree(string cwd, string commitIsh, string path)
+        public static Task AddWorkTree(string cwd, string committish, string path)
         {
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
-            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {commitIsh} --force");
+            return ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
         }
 
         /// <summary>
@@ -173,10 +174,30 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Retrieve git head version
-        /// TODO: For testing purpose only, move it to test
         /// </summary>
-        public static Task<string> Revision(string cwd, string branch = "HEAD")
-           => ExecuteQuery(cwd, $"rev-parse {branch}");
+        public static unsafe string RevParse(string repoPath, string committish = null)
+        {
+            string result = null;
+
+            if (string.IsNullOrEmpty(committish))
+            {
+                committish = "HEAD";
+            }
+
+            if (git_repository_open(out var repo, repoPath) != 0)
+            {
+                throw new InvalidOperationException($"Not a git repo {repoPath}");
+            }
+
+            if (git_revparse_single(out var reference, repo, committish) == 0)
+            {
+                result = git_object_id(reference)->ToString();
+                git_object_free(reference);
+            }
+
+            git_repository_free(repo);
+            return result;
+        }
 
         public static void CheckMergeConflictMarker(string content, string file)
         {
@@ -191,7 +212,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static Task CloneOrUpdate(string path, string url, IEnumerable<string> refspecs, bool bare, Config config)
+        private static async Task CloneOrUpdate(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -219,22 +240,26 @@ namespace Microsoft.Docs.Build
             }
 
             var httpConfig = GetGitCommandLineConfig(url, config);
-            var refspec = string.Join(' ', refspecs.Select(rev => $"+refs/heads/{rev}:refs/heads/{rev}"));
+            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
 
-            // TODO: handle branch not found error
-            return ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspec}");
+            try
+            {
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}", stderr: true);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("fatal: Couldn't find remote ref"))
+            {
+                // Fallback to fetch all branches and tags if the input committish is not supported by fetch
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                await ExecuteNonQuery(path, $"{httpConfig} fetch --tags --prune --progress --update-head-ok \"{url}\" {refspecs}");
+            }
         }
 
-        private static Task ExecuteNonQuery(string cwd, string commandLineArgs)
-            => Execute(cwd, commandLineArgs, x => x, redirectOutput: false);
+        private static Task ExecuteNonQuery(string cwd, string commandLineArgs, bool stderr = false)
+        {
+            return Execute(cwd, commandLineArgs, (a, b) => 0, stdout: false, stderr: stderr);
+        }
 
-        private static Task<T> ExecuteQuery<T>(string cwd, string commandLineArgs, Func<string, T> parser)
-            => Execute(cwd, commandLineArgs, parser, redirectOutput: true);
-
-        private static Task<string> ExecuteQuery(string cwd, string commandLineArgs)
-            => Execute(cwd, commandLineArgs, x => x, redirectOutput: true);
-
-        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, T> parser, bool redirectOutput)
+        private static async Task<T> Execute<T>(string cwd, string commandLineArgs, Func<string, string, T> parser, bool stdout = true, bool stderr = true)
         {
             if (!Directory.Exists(cwd))
             {
@@ -243,7 +268,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                return parser(await ProcessUtility.Execute("git", commandLineArgs, cwd, redirectOutput));
+                var (output, error) = await ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, stderr);
+                return parser(output, error);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
