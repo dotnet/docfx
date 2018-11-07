@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
@@ -156,7 +155,7 @@ namespace Microsoft.Docs.Build
         /// Create a work tree for a given repo
         /// </summary>
         /// <param name="cwd">The current working directory</param>
-        /// <param name="commitHash">The commit hash or branch name you want to use to create a work tree</param>
+        /// <param name="commitIsh">The commit hash or branch name you want to use to create a work tree</param>
         /// <param name="path">The work tree path</param>
         public static Task AddWorkTree(string cwd, string commitIsh, string path)
         {
