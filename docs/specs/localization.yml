@@ -432,7 +432,7 @@ commands:
   - build --locale zh-cn
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md: |
@@ -449,7 +449,7 @@ outputs:
 # docs/b.md
 inputs:
   docfx.yml: |
-    content: '**/*.md'
+    files: '**/*.md'
     localization:
       mapping: Folder
   localization/zh-cn/docs/a.md:

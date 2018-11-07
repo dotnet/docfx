@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
-        private static readonly string[] s_defaultContentInclude = new[] { "docs/**/*.{md,yml,json}" };
-        private static readonly string[] s_defaultContentExclude = new[] { "_site/**/*", "localization/**/*" };
+        private static readonly string[] s_defaultInclude = new[] { "docs/**/*.{md,yml,json}" };
+        private static readonly string[] s_defaultExclude = new[] { "_site/**/*", "localization/**/*" };
 
         /// <summary>
         /// Gets the default product name
@@ -28,12 +28,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
-        public readonly string[] Content = s_defaultContentInclude;
+        public readonly string[] Files = s_defaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
-        public readonly string[] ContentExclude = s_defaultContentExclude;
+        public readonly string[] Exclude = s_defaultExclude;
 
         /// <summary>
         /// Gets the output config.
@@ -320,8 +320,8 @@ namespace Microsoft.Docs.Build
 
         private static JObject ExpandAndNormalize(JObject config)
         {
-            config[ConfigConstants.Content] = ExpandStringArray(config[ConfigConstants.Content]);
-            config[ConfigConstants.ContentExclude] = ExpandStringArray(config[ConfigConstants.ContentExclude]);
+            config[ConfigConstants.Files] = ExpandStringArray(config[ConfigConstants.Files]);
+            config[ConfigConstants.Exclude] = ExpandStringArray(config[ConfigConstants.Exclude]);
             config[ConfigConstants.Routes] = NormalizeRouteConfig(config[ConfigConstants.Routes]);
             config[ConfigConstants.Extend] = ExpandStringArray(config[ConfigConstants.Extend]);
             config[ConfigConstants.Redirections] = NormalizeRedirections(config[ConfigConstants.Redirections]);

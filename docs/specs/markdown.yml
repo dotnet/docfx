@@ -163,7 +163,7 @@ outputs:
 # heading in included file
 inputs:
   docfx.yml: |
-    content: docs/a.md
+    files: docs/a.md
     rules:
       heading-not-found: warning
   docs/a.md: |
@@ -185,7 +185,7 @@ outputs:
 # No heading in include file
 inputs:
   docfx.yml: |
-    content: docs/a.md
+    files: docs/a.md
     rules:
       heading-not-found: warning
   docs/a.md: |

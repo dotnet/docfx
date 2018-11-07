@@ -5,8 +5,8 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigConstants
     {
-        internal const string Content = "content";
-        internal const string ContentExclude = "contentExclude";
+        internal const string Files = "files";
+        internal const string Exclude = "exclude";
         internal const string Value = "value";
         internal const string Routes = "routes";
         internal const string Source = "source";
