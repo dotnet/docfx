@@ -20,7 +20,7 @@ outputs:
 ---
 # Restore urls
 repos:
-  https://docs.com/restore/b:
+  https://github.com/restore/b:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -35,7 +35,7 @@ outputs:
 ---
 # Restore urls with extends
 repos:
-  https://docs.com/restore/c:
+  https://github.com/restore/c:
     - files:
         docs/a.md:
         docfx.yml: |
@@ -48,7 +48,7 @@ outputs:
 ---
 # Restore dependencies with extends
 repos:
-  https://docs.com/restore/d:
+  https://github.com/restore/d:
     - files:
         docs/a.md: d
 inputs:
