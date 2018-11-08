@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -84,7 +82,7 @@ dependencies:
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
                 var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
-                Directory.CreateDirectory(Path.GetDirectoryName(restorePath));
+                PathUtility.CreateDirectoryFromFilePath(restorePath);
                 File.WriteAllText(restorePath, $"{version}");
                 File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));
                 return Task.CompletedTask;

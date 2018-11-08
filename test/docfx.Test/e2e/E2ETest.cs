@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
                 {
                     var mutableContent = content;
                     var filePath = Path.Combine(docsetPath, file);
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
                     if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                     {
                         foreach (var env in spec.Environments)
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
 
                             foreach (var (path, content) in commit.Files)
                             {
-                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content ?? "")));
+                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content?.Replace("\r", "") ?? "")));
                                 tree.Add(path, blob, LibGit2Sharp.Mode.NonExecutableFile);
                             }
 
