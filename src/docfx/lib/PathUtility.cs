@@ -126,6 +126,20 @@ namespace Microsoft.Docs.Build
             return Normalize(path);
         }
 
+        /// <summary>
+        /// Create a new directory from specified file path.
+        /// </summary>
+        /// <param name="filePath">The file path containing the directory to create</param>
+        public static void CreateDirectoryFromFilePath(string filePath)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(filePath));
+
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (string.IsNullOrEmpty(directoryPath))
+                return;
+            Directory.CreateDirectory(directoryPath);
+        }
+
         private static string Normalize(string path)
         {
             path = path.Replace('\\', '/');
