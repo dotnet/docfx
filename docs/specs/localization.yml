@@ -631,3 +631,24 @@ outputs:
   build.manifest:
   docs/a.json: |
     {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Wei Hu","id":"huwe@microsoft.com"}]}
+---
+# redirections are not in loc build outputs
+# redirection document id works
+# redirection link works
+commands:
+  - restore --locale zh-cn
+  - build --locale zh-cn
+repos: 
+  https://docs.com/redirection#master:
+    - files:
+        docfx.yml: |
+          redirections:
+            docs/a.md: /docs/b
+  https://docs.com/redirection.zh-cn#master:
+    - files:
+        docs/b.md: |
+          [link to a](a.md)
+outputs:
+  docs/b.json: |
+    { "content":"<p><a href=\"/docs/b\">link to a</a></p>\n", "document_id":"fa697b4e-3e52-77f6-2219-39040f6070da","document_version_independent_id":"7c88e748-ed5e-a29a-c057-6f89857c3591"}
+---
