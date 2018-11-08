@@ -51,7 +51,7 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     dotnet/docfx.zh-cn  en-us         dotent/docfx.en-us
     ```
     
-    > NOTE: The loc org name can be different, it's should be configurable
+    > NOTE: The loc org name can be different, it should be configurable
     
   - **RepositoryAndFolder**, localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
   
@@ -71,7 +71,7 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     /files/a.md         -->           /zh-cn/files/a.md
     ```
     
-    > NOTE: The loc org name can be different, it's should be configurable
+    > NOTE: The loc org name can be different, it should be configurable
     
 ### Loc Overwrite Configuration
 
@@ -229,6 +229,7 @@ From the localization delayed translation point, the above requirement makes sen
   - resolve from fallback docset git history
   
 > NOTE: resolve from docset includes: 1. resolve from file system 2. resolve from redirection.
+
 > NOTE: linked resources fallback logic dependency: the hosting system never deletes resources.
   
 For above case, zh-cn's a.md will be built successfully by looking at token.md from git history.
