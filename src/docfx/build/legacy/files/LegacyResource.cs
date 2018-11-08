@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             if (docset.Config.Output.CopyResources)
             {
                 LegacyUtility.MoveFileSafe(
-                    docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
+                    docset.GetAbsoluteOutputPathFromRelativePath(doc.GetOutputPath()),
                     docset.GetAbsoluteOutputPathFromRelativePath(legacyManifestOutput.ResourceOutput.ToLegacyOutputPath(docset)));
             }
 

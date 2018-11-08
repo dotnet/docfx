@@ -11,39 +11,59 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, Document> _filesByUrl = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>> _filesByUrl = new ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
 
         public ICollection<Document> Build(Context context, IEnumerable<Document> filesWithErrors)
         {
             HandleConflicts(context, filesWithErrors);
 
-            return _filesByUrl.Values;
+            return _filesByUrl.Values.SelectMany(d => d.Select(item => item.doc)).ToList();
         }
 
         public bool TryAdd(Document file)
         {
+            var monikersOfCurrentFile = file.Docset.MonikersProvider.GetMonikers(file);
+
             // Find publish url conflicts
-            if (!_filesByUrl.TryAdd(file.SiteUrl, file))
+            if (!_filesByUrl.TryAdd(file.SiteUrl, new List<(Document doc, List<string> monikers)> { (file, monikersOfCurrentFile) }))
             {
-                if (_filesByUrl.TryGetValue(file.SiteUrl, out var existingFile) && existingFile != file)
+                _filesByUrl.TryGetValue(file.SiteUrl, out var existingFiles);
+                foreach (var item in existingFiles)
                 {
-                    _publishConflicts.GetOrAdd(file.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
+                    if (CheckMonikerConflict(item.monikers, monikersOfCurrentFile))
+                    {
+                        if (item.doc != file)
+                        {
+                            _publishConflicts.GetOrAdd(file.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
+                        }
+                        return false;
+                    }
                 }
-                return false;
+                existingFiles.Add((file, monikersOfCurrentFile));
             }
 
             // Find output path conflicts
-            if (!_filesByOutputPath.TryAdd(file.OutputPath, file))
+            var outputPath = file.GetOutputPath();
+            if (!_filesByOutputPath.TryAdd(outputPath, file))
             {
-                if (_filesByOutputPath.TryGetValue(file.OutputPath, out var existingFile) && existingFile != file)
+                if (_filesByOutputPath.TryGetValue(outputPath, out var existingFile) && existingFile != file)
                 {
-                    _outputPathConflicts.GetOrAdd(file.OutputPath, _ => new ConcurrentBag<Document>()).Add(file);
+                    _outputPathConflicts.GetOrAdd(outputPath, _ => new ConcurrentBag<Document>()).Add(file);
                 }
                 return false;
             }
 
             return true;
+        }
+
+        private bool CheckMonikerConflict(List<string> existingMonikers, List<string> currentMonikers)
+        {
+            if (existingMonikers.Intersect(currentMonikers).Count() > 0 || existingMonikers.Concat(currentMonikers).Count() == 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         private void HandleConflicts(Context context, IEnumerable<Document> filesWithErrors)
@@ -60,14 +80,14 @@ namespace Microsoft.Docs.Build
 
                 if (_filesByUrl.TryRemove(siteUrl, out var removed))
                 {
-                    conflictingFiles.Add(removed);
+                    conflictingFiles.UnionWith(removed.Select(item => item.doc).ToHashSet());
                 }
 
                 context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    context.Delete(conflictingFile.OutputPath);
+                    context.Delete(conflictingFile.GetOutputPath());
                 }
             }
 
@@ -90,7 +110,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    context.Delete(conflictingFile.OutputPath);
+                    context.Delete(conflictingFile.GetOutputPath());
                 }
             }
 
@@ -99,7 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesByUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    context.Delete(file.OutputPath);
+                    context.Delete(file.GetOutputPath());
                 }
             }
         }

@@ -1,0 +1,96 @@
+---
+# Apply moniker range config to markdown file's output path and output content
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '< netcore-2.0'
+      'docs/v2/**/*.md': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinitionUrl: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+  docs/v2/a.md: |
+    Moniker: netcore-2.0, netcore-2.1
+  docs/a.md: |
+    No version
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        {
+            "name": "netcore-1.0",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-1.1",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-2.0",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-2.1",
+            "product": ".NET Core"
+        }
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
+      "monikers": ["netcore-1.0", "netcore-1.1"]
+    }
+  23d205a5/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
+      "monikers": ["netcore-2.0", "netcore-2.1"]
+    }
+  docs/a.json: |
+    {
+      "content": "<p>No version</p>",
+      "monikers": []
+    }
+---
+# Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '<= netcore-2.0'
+      'docs/v2/**/*.md': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinitionUrl: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1, netcore-2.0
+  docs/v2/a.md: |
+    Moniker: netcore-2.0, netcore-2.1
+  docs/a.md: |
+    No version
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        {
+            "name": "netcore-1.0",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-1.1",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-2.0",
+            "product": ".NET Core"
+        },
+        {
+            "name": "netcore-2.1",
+            "product": ".NET Core"
+        }
+      ]
+    }
+outputs:
+  build.log: |
+    ["warning","publish-url-conflict","Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
+---

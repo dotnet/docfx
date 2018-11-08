@@ -159,9 +159,9 @@ namespace Microsoft.Docs.Build
                 if (model != null && !hasErrors)
                 {
                     if (model is string str)
-                        context.WriteText(str, file.OutputPath);
+                        context.WriteText(str, file.GetOutputPath());
                     else
-                        context.WriteJson(model, file.OutputPath);
+                        context.WriteJson(model, file.GetOutputPath());
 
                     return (false, dependencies);
                 }
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.CopyResources)
             {
-                context.Copy(file, file.OutputPath);
+                context.Copy(file, file.GetOutputPath());
             }
         }
 

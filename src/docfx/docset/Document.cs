@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets file path relative to site root that is:
-        ///       locale    moniker                 site-path
-        ///       |-^-| |------^------| |----------------^----------------|
-        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.json
+        ///       locale  moniker-list-hash    site-path
+        ///       |-^-| |--^---| |----------------^----------------|
+        /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Docs not start with '/'
@@ -54,9 +54,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the Url relative to site root that is:
-        ///       locale    moniker                 site-url
-        ///       |-^-| |------^------| |----------------^----------------|
-        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/
+        ///       locale  moniker-list-hash    site-path
+        ///       |-^-| |--^---| |----------------^----------------|
+        /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
@@ -67,10 +67,9 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the output file path relative to output directory that is:
-        ///       |                output-path                            |
-        ///       locale    moniker                 site-path
-        ///       |-^-| |------^------| |----------------^----------------|
-        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.json
+        ///       locale  moniker-list-hash    site-path
+        ///       |-^-| |--^---| |----------------^----------------|
+        /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Does not start with '/'
@@ -108,7 +107,6 @@ namespace Microsoft.Docs.Build
             string filePath,
             string sitePath,
             string siteUrl,
-            string outputPath,
             ContentType contentType,
             string mime,
             Schema schema,
@@ -122,7 +120,6 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            OutputPath = outputPath;
             ContentType = contentType;
             Mime = mime;
             Schema = schema;
@@ -132,7 +129,6 @@ namespace Microsoft.Docs.Build
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
             Debug.Assert(IsValidRelativePath(FilePath));
-            Debug.Assert(IsValidRelativePath(OutputPath));
             Debug.Assert(IsValidRelativePath(SitePath));
 
             Debug.Assert(SiteUrl.StartsWith('/'));
@@ -158,6 +154,11 @@ namespace Microsoft.Docs.Build
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        public string GetOutputPath()
+        {
+            return Docset.OutputProvider.GetOutputPath(this);
         }
 
         public override int GetHashCode()
@@ -222,7 +223,6 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
-            var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, mime, schema, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl));
         }
 
         /// <summary>

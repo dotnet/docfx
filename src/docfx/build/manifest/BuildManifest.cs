@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 {
                     SourcePath = doc.FilePath,
                     SiteUrl = doc.SiteUrl,
-                    OutputPath = noOutput ? null : doc.OutputPath,
+                    OutputPath = noOutput ? null : doc.GetOutputPath(),
                 };
             }
         }

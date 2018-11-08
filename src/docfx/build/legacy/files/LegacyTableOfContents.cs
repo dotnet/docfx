@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Document doc,
             LegacyManifestOutput legacyManifestOutput)
         {
-            var (_, toc) = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
+            var (_, toc) = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.GetOutputPath())));
             ConvertLegacyItems(toc.Items);
 
             toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 $"/{docset.Config.DocumentId.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
             toc.Metadata.PdfAbsolutePath = pdfAbsolutePath;
 
-            File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
+            File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.GetOutputPath()));
             context.WriteJson(toc, legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset));
             context.WriteJson(
                 new LegacyTableOfContentsExperimentMetadata
