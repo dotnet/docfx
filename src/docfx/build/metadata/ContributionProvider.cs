@@ -267,8 +267,15 @@ namespace Microsoft.Docs.Build
                             group,
                             pair =>
                             {
-                                _contributionCommitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo, contributionBranch);
                                 _commitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo);
+                                if (contributionBranch != repo.Branch)
+                                {
+                                    _contributionCommitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo, contributionBranch);
+                                }
+                                else
+                                {
+                                    _contributionCommitsByFile[pair.file.FilePath] = _commitsByFile[pair.file.FilePath];
+                                }
                             },
                             Progress.Update);
 
