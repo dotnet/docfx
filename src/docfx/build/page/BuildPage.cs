@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = GetCanonicalUrl(file);
+            model.Bilingual = file.Docset.Config.Localization.Bilingual;
             model.Monikers = file.Docset.MonikersProvider.GetMonikers(file);
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;

@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
-                    var workTreeHead = $"{await GitUtility.Revision(restorePath, rev)}-{PathUtility.Encode(rev)}";
+                    var workTreeHead = $"{GitUtility.RevParse(restorePath, rev)}-{PathUtility.Encode(rev)}";
                     var workTreePath = GetRestoreWorkTreeDir(restoreDir, workTreeHead);
                     if (existingWorkTrees.TryAdd(workTreePath, 0))
                     {
