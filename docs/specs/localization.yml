@@ -547,7 +547,7 @@ inputs:
   docs/a.md: a
 outputs:
   docs/a.json: |
-    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "bilingual": true}
 ---
 # bilingual build, all loc files are in one loc repo under different locale folder
 # [repository + folder mapping]
@@ -574,7 +574,7 @@ inputs:
   docs/a.md: a
 outputs:
   docs/a.json: |
-    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n"}
+    {"content":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "bilingual": true}
 ---
 # bilingual page's contributor info is extracted from non-sxs branch 
 # loc repo:
@@ -630,4 +630,4 @@ inputs:
 outputs:
   build.manifest:
   docs/a.json: |
-    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Wei Hu","id":"huwe@microsoft.com"}]}
+    {"author":{"display_name":"Osmond Jiang","id":"xinjiang@microsoft.com"},"contributors":[{"display_name":"Wei Hu","id":"huwe@microsoft.com"}, "bilingual": true]}
