@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                             pair =>
                             {
                                 _commitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo);
-                                if (contributionBranch != repo.Branch)
+                                if (!string.IsNullOrEmpty(contributionBranch))
                                 {
                                     _contributionCommitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo, contributionBranch);
                                 }
