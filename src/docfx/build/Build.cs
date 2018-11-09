@@ -74,6 +74,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Building files"))
             {
+                var recurseDetector = new ConcurrentHashSet<Document>();
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
                 var manifestBuilder = new ManifestBuilder();
@@ -114,7 +115,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    return file.ContentType != ContentType.Unknown;
+                    return file.ContentType != ContentType.Unknown && recurseDetector.TryAdd(file);
                 }
 
                 void ValidateBookmarks()
@@ -160,19 +161,19 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var manifest = new FileManifest
-                {
-                    SourcePath = file.FilePath,
-                    SiteUrl = file.SiteUrl,
-                    OutputPath = GetOutputPath(file),
-                };
-
                 var hasErrors = context.Report(file.ToString(), errors);
                 if (hasErrors || model == null)
                 {
                     manifestBuilder.MarkError(file);
                     return DependencyMap.Empty;
                 }
+
+                var manifest = new FileManifest
+                {
+                    SourcePath = file.FilePath,
+                    SiteUrl = file.SiteUrl,
+                    OutputPath = GetOutputPath(file),
+                };
 
                 if (manifestBuilder.TryAdd(file, manifest))
                 {
@@ -206,7 +207,11 @@ namespace Microsoft.Docs.Build
         {
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
-                return file.FilePath;
+                var docset = file.Docset;
+                return PathUtility.NormalizeFile(
+                    Path.GetRelativePath(
+                        Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
+                        Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
             return file.SitePath;
         }
