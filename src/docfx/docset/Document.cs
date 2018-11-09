@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets file path relative to site root that is:
+        /// For dynamic rendering:
         ///       locale  moniker-list-hash    site-path
         ///       |-^-| |--^---| |----------------^----------------|
         /// _site/en-us/603b739b/dotnet/api/system.string/index.json
@@ -54,9 +55,10 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the Url relative to site root that is:
-        ///       locale  moniker-list-hash    site-path
-        ///       |-^-| |--^---| |----------------^----------------|
-        /// _site/en-us/603b739b/dotnet/api/system.string/index.json
+        /// For dynamic rendering:
+        ///       locale moniker-list-hash    site-url
+        ///       |-^-| |---^--| |----------------^-----|
+        /// _site/en-us/603b739b/dotnet/api/system.string
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
         ///  - Always start with '/'
@@ -67,6 +69,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the output file path relative to output directory that is:
+        /// For dynamic rendering:
+        ///       |                output-path                     |
         ///       locale  moniker-list-hash    site-path
         ///       |-^-| |--^---| |----------------^----------------|
         /// _site/en-us/603b739b/dotnet/api/system.string/index.json

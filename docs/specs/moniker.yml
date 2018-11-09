@@ -1,5 +1,5 @@
 ---
-# Apply moniker range config to markdown file's output path and output content
+# Apply moniker range setting in the config to markdown file's output path and output content
 inputs:
   docfx.yml: |
     monikerRange:

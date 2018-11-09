@@ -4,25 +4,25 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class MonikersProvider
     {
-        private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
-        private readonly List<(Func<string, bool> glob, List<string> monikers)> _rules = new List<(Func<string, bool>, List<string>)>();
+        private readonly ConcurrentDictionary<string, Lazy<IEnumerable<string>>> _cache = new ConcurrentDictionary<string, Lazy<IEnumerable<string>>>();
+        private readonly List<(Func<string, bool> glob, IEnumerable<string> monikers)> _rules = new List<(Func<string, bool>, IEnumerable<string>)>();
 
         public MonikersProvider(Config config, MonikerRangeParser monikerRangeParser)
         {
             foreach (var (key, monikerRange) in config.MonikerRange)
             {
-                _rules.Insert(0, (GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange).ToList()));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange)));
             }
+            _rules.Reverse();
         }
 
-        public List<string> GetMonikers(Document file)
-            => _cache.GetOrAdd(file.FilePath, new Lazy<List<string>>(() =>
+        public IEnumerable<string> GetMonikers(Document file)
+            => _cache.GetOrAdd(file.FilePath, new Lazy<IEnumerable<string>>(() =>
             {
                 // TODO: merge with the monikers from yaml header
                 foreach (var (glob, monikers) in _rules)
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                         return monikers;
                     }
                 }
-                return new List<string>();
+                return Array.Empty<string>();
             })).Value;
     }
 }

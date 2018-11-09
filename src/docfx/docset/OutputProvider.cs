@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,11 +17,11 @@ namespace Microsoft.Docs.Build
             => _outputMapping.GetOrAdd(file.FilePath, new Lazy<string>(() =>
             {
                 var monikers = file.Docset.MonikersProvider.GetMonikers(file);
-                if (monikers.Count == 0)
+                if (Enumerable.Count(monikers) == 0)
                 {
                     return file.SitePath;
                 }
-                return Path.Combine(GetMonikersHash(monikers), file.SitePath);
+                return Path.Combine(GetMonikersHash(monikers.ToList()), file.SitePath);
             })).Value;
 
         private static string GetMonikersHash(List<string> monikers)
@@ -29,6 +30,7 @@ namespace Microsoft.Docs.Build
             {
                 return string.Empty;
             }
+            monikers.Sort(StringComparer.Ordinal);
             return HashUtility.GetMd5Hash(string.Join(',', monikers)).Substring(0, 8);
         }
     }

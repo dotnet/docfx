@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _publishConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>> _filesByUrl = new ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, List<(Document doc, IEnumerable<string> monikers)>> _filesByUrl = new ConcurrentDictionary<string, List<(Document doc, IEnumerable<string> monikers)>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
 
         public ICollection<Document> Build(Context context, IEnumerable<Document> filesWithErrors)
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var monikersOfCurrentFile = file.Docset.MonikersProvider.GetMonikers(file);
 
             // Find publish url conflicts
-            if (!_filesByUrl.TryAdd(file.SiteUrl, new List<(Document doc, List<string> monikers)> { (file, monikersOfCurrentFile) }))
+            if (!_filesByUrl.TryAdd(file.SiteUrl, new List<(Document doc, IEnumerable<string> monikers)> { (file, monikersOfCurrentFile) }))
             {
                 _filesByUrl.TryGetValue(file.SiteUrl, out var existingFiles);
                 foreach (var item in existingFiles)
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private bool CheckMonikerConflict(List<string> existingMonikers, List<string> currentMonikers)
+        private bool CheckMonikerConflict(IEnumerable<string> existingMonikers, IEnumerable<string> currentMonikers)
         {
             if (existingMonikers.Intersect(currentMonikers).Count() > 0 || existingMonikers.Concat(currentMonikers).Count() == 0)
             {
