@@ -27,18 +27,18 @@ namespace Microsoft.Docs.Build
             var docset = GetBuildDocset();
 
             var githubUserCache = await GitHubUserCache.Create(docset, config.GitHub.AuthToken);
-
             var contribution = await ContributionProvider.Create(docset, githubUserCache);
 
             // TODO: toc map and xref map should always use source docset?
             var tocMap = BuildTableOfContents.BuildTocMap(context, docset);
             var xrefMap = XrefMap.Create(context, docset);
 
-            var (files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+            var (manifest, files, sourceDependencies) = await BuildFiles(context, docset, tocMap, xrefMap, contribution);
+
+            context.WriteJson(manifest, "build.manifest");
 
             // TODO: write back to global cache
             var saveGitHubUserCache = githubUserCache.SaveChanges();
-            BuildManifest.Build(context, files, sourceDependencies);
 
             xrefMap.OutputXrefMap(context);
 
@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 if (config.Output.Json)
                 {
+                    // TODO: decouple files and dependencies from legacy.
                     Legacy.ConvertToLegacyModel(docset, context, files, sourceDependencies, tocMap, xrefMap);
                 }
                 else
@@ -64,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Document> files, DependencyMap sourceDependencies)> BuildFiles(
+        private static async Task<(Manifest, List<Document>, DependencyMap)> BuildFiles(
             Context context,
             Docset docset,
             TableOfContentsMap tocMap,
@@ -75,27 +76,24 @@ namespace Microsoft.Docs.Build
             {
                 var sourceDependencies = new ConcurrentDictionary<Document, List<DependencyItem>>();
                 var bookmarkValidator = new BookmarkValidator();
-                var filesBuilder = new DocumentListBuilder();
-                var filesWithErrors = new ConcurrentBag<Document>();
+                var manifestBuilder = new ManifestBuilder();
 
                 await ParallelUtility.ForEach(docset.BuildScope, BuildOneFile, ShouldBuildFile, Progress.Update);
 
                 ValidateBookmarks();
 
-                var files = filesBuilder.Build(context, filesWithErrors).OrderBy(file => file.FilePath).ToList();
+                var (manifest, files) = manifestBuilder.Build(context);
                 var allDependencies = sourceDependencies.OrderBy(d => d.Key.FilePath).ToDictionary(k => k.Key, v => v.Value);
+                var allDependencyMap = new DependencyMap(allDependencies);
 
-                return (files, new DependencyMap(allDependencies));
+                return (CreateManifest(manifest, allDependencyMap), files, allDependencyMap);
 
                 async Task BuildOneFile(Document file, Action<Document> buildChild)
                 {
                     var dependencyMapBuilder = new DependencyMapBuilder();
                     var callback = new PageCallback(xrefMap, dependencyMapBuilder, bookmarkValidator, buildChild);
-                    var (hasError, dependencyMap) = await BuildFile(context, file, tocMap, contribution, callback);
-                    if (hasError)
-                    {
-                        filesWithErrors.Add(file);
-                    }
+                    var dependencyMap = await BuildFile(context, file, tocMap, contribution, callback, manifestBuilder);
+
                     foreach (var (source, dependencies) in dependencyMap)
                     {
                         sourceDependencies.TryAdd(source, dependencies);
@@ -116,7 +114,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    return file.ContentType != ContentType.Unknown && filesBuilder.TryAdd(file);
+                    return file.ContentType != ContentType.Unknown;
                 }
 
                 void ValidateBookmarks()
@@ -125,19 +123,20 @@ namespace Microsoft.Docs.Build
                     {
                         if (context.Report(error))
                         {
-                            filesWithErrors.Add(file);
+                            manifestBuilder.MarkError(file);
                         }
                     }
                 }
             }
         }
 
-        private static async Task<(bool hasError, DependencyMap)> BuildFile(
+        private static async Task<DependencyMap> BuildFile(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
             ContributionProvider contribution,
-            PageCallback callback)
+            PageCallback callback,
+            ManifestBuilder manifestBuilder)
         {
             try
             {
@@ -148,8 +147,8 @@ namespace Microsoft.Docs.Build
                 switch (file.ContentType)
                 {
                     case ContentType.Resource:
-                        BuildResource(context, file);
-                        return (false, DependencyMap.Empty);
+                        model = BuildResource(file);
+                        break;
                     case ContentType.Page:
                         (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
@@ -161,34 +160,62 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.Report(file.ToString(), errors);
-                if (model != null && !hasErrors)
+                var manifest = new FileManifest
                 {
-                    if (model is string str)
-                        context.WriteText(str, file.OutputPath);
-                    else
-                        context.WriteJson(model, file.OutputPath);
+                    SourcePath = file.FilePath,
+                    SiteUrl = file.SiteUrl,
+                    OutputPath = GetOutputPath(file),
+                };
 
-                    return (false, dependencies);
+                var hasErrors = context.Report(file.ToString(), errors);
+                if (hasErrors || model == null)
+                {
+                    manifestBuilder.MarkError(file);
+                    return DependencyMap.Empty;
                 }
 
-                return (true, dependencies);
+                if (manifestBuilder.TryAdd(file, manifest))
+                {
+                    if (model is ResourceModel copy)
+                    {
+                        if (file.Docset.Config.Output.CopyResources)
+                        {
+                            context.Copy(file, manifest.OutputPath);
+                        }
+                    }
+                    else if (model is string str)
+                    {
+                        context.WriteText(str, manifest.OutputPath);
+                    }
+                    else
+                    {
+                        context.WriteJson(model, manifest.OutputPath);
+                    }
+                }
+                return dependencies;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.Report(file.ToString(), dex.Error);
-                return (true, DependencyMap.Empty);
+                manifestBuilder.MarkError(file);
+                return DependencyMap.Empty;
             }
         }
 
-        private static void BuildResource(Context context, Document file)
+        private static string GetOutputPath(Document file)
+        {
+            if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
+            {
+                return file.FilePath;
+            }
+            return file.SitePath;
+        }
+
+        private static ResourceModel BuildResource(Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
-            if (file.Docset.Config.Output.CopyResources)
-            {
-                context.Copy(file, file.OutputPath);
-            }
+            return new ResourceModel { Locale = file.Docset.Locale };
         }
 
         private static RedirectionModel BuildRedirection(Document file)
@@ -199,6 +226,23 @@ namespace Microsoft.Docs.Build
             {
                 RedirectUrl = file.RedirectionUrl,
                 Locale = file.Docset.Locale,
+            };
+        }
+
+        private static Manifest CreateManifest(FileManifest[] files, DependencyMap dependencies)
+        {
+            return new Manifest
+            {
+                Files = files,
+
+                Dependencies = dependencies.ToDictionary(
+                           d => d.Key.FilePath,
+                           d => d.Value.Select(v =>
+                           new DependencyManifestItem
+                           {
+                               Source = v.Dest.FilePath,
+                               Type = v.Type,
+                           }).ToArray()),
             };
         }
     }
