@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             var docsetPath = "restore-worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
             Directory.CreateDirectory(docsetPath);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
+            var restorePath = Path.Combine(AppData.GetGitDir(gitUrl), ".git");
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -78,10 +78,10 @@ dependencies:
             var docsetPath = "restore-urls";
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
-            var restoreDir = RestoreUrl.GetRestoreRootDir(url);
+            var restoreDir = AppData.GetFileDownloadDir(url);
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
-                var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
+                var restorePath = Path.Combine(restoreDir, version.ToString());
                 PathUtility.CreateDirectoryFromFilePath(restorePath);
                 File.WriteAllText(restorePath, $"{version}");
                 File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));

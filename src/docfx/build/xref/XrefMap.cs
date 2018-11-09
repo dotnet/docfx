@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.RestoreMap.GetUrlRestorePath(url));
+                var json = File.ReadAllText(docset.RestoreMap.GetFileDownloadPath(url));
                 var (_, xRefMap) = JsonUtility.Deserialize<XrefMapModel>(json);
                 foreach (var sepc in xRefMap.References)
                 {

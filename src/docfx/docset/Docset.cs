@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRepositoryPath(Config.Dependencies["_themes"]), Locale));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var dir = restoreMap.GetGitRestorePath(url);
+                var dir = restoreMap.GetGitRepositoryPath(url);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

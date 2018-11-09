@@ -23,12 +23,12 @@ namespace Microsoft.Docs.Build
         private static async Task<int> CollectGit(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.GitRestoreDir))
+            if (!Directory.Exists(AppData.GitDir))
             {
                 return cleaned;
             }
 
-            var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRestoreDir, ".git", SearchOption.AllDirectories);
+            var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitDir, ".git", SearchOption.AllDirectories);
 
             using (Progress.Start("Cleaning git repositories"))
             {
@@ -40,25 +40,20 @@ namespace Microsoft.Docs.Build
 
             Task CleanWorkTrees(string gitWorkTreeRoot)
             {
-                return ProcessUtility.RunInsideMutex(
-                       PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, gitWorkTreeRoot)),
-                       async () =>
-                       {
-                           var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
-                           var existingWorkTreeFolders = Directory.EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
-                                                      .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
+                var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
+                var existingWorkTreeFolders = Directory.EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
+                                           .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
 
-                           foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
-                           {
-                               if (new DirectoryInfo(existingWorkTreeFolder).LastWriteTimeUtc + TimeSpan.FromDays(retentionDays) < DateTime.UtcNow)
-                               {
-                                   Interlocked.Increment(ref cleaned);
-                                   Directory.Delete(existingWorkTreeFolder, true);
-                               }
-                           }
+                foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
+                {
+                    if (new DirectoryInfo(existingWorkTreeFolder).LastWriteTimeUtc + TimeSpan.FromDays(retentionDays) < DateTime.UtcNow)
+                    {
+                        Interlocked.Increment(ref cleaned);
+                        Directory.Delete(existingWorkTreeFolder, true);
+                    }
+                }
 
-                           await GitUtility.PruneWorkTrees(workTreeFolder);
-                       });
+                return GitUtility.PruneWorkTrees(workTreeFolder);
             }
 
             return cleaned;
@@ -67,12 +62,12 @@ namespace Microsoft.Docs.Build
         private static int CollectUrls(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.UrlRestoreDir))
+            if (!Directory.Exists(AppData.DownloadsDir))
             {
                 return cleaned;
             }
 
-            var downloadedFiles = Directory.EnumerateFiles(AppData.UrlRestoreDir, "*", SearchOption.AllDirectories);
+            var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsDir, "*", SearchOption.AllDirectories);
 
             using (Progress.Start("Cleaning downloaded files"))
             {

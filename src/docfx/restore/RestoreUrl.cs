@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,53 +10,38 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreUrl
     {
-        public static string GetRestoreVersionPath(string restoreDir, string version)
-            => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
-
-        public static string GetRestoreRootDir(string address)
-            => Docs.Build.Restore.GetRestoreRootDir(address, AppData.UrlRestoreDir);
-
-        public static async Task<string> Restore(string address, Config config)
+        public static async Task Restore(string address, Config config)
         {
             var tempFile = await DownloadToTempFile(address, config);
 
-            var fileVersion = "";
-            using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
+            var fileHash = HashUtility.GetFileSha1Hash(tempFile);
+            var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(address), fileHash));
+
+            await ProcessUtility.RunInsideMutex(filePath, MoveFile);
+
+            Task MoveFile()
             {
-                fileVersion = HashUtility.GetSha1Hash(fileStream);
-            }
-
-            Debug.Assert(!string.IsNullOrEmpty(fileVersion));
-
-            var restoreDir = GetRestoreRootDir(address);
-            var restorePath = GetRestoreVersionPath(restoreDir, fileVersion);
-            await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
-                () =>
+                if (!File.Exists(filePath))
                 {
-                    if (!File.Exists(restorePath))
-                    {
-                        PathUtility.CreateDirectoryFromFilePath(restorePath);
-                        File.Move(tempFile, restorePath);
-                    }
-                    else
-                    {
-                        File.Delete(tempFile);
-                    }
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
+                    File.Move(tempFile, filePath);
+                }
+                else
+                {
+                    File.Delete(tempFile);
+                }
 
-                    // update the last write date
-                    File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow);
+                // update the last write date
+                File.SetLastWriteTimeUtc(filePath, DateTime.UtcNow);
 
-                    return Task.CompletedTask;
-                });
-
-            return fileVersion;
+                return Task.CompletedTask;
+            }
         }
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
         {
-            Directory.CreateDirectory(AppData.UrlRestoreDir);
-            var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(AppData.DownloadsDir);
+            var tempFile = Path.Combine(AppData.DownloadsDir, "." + Guid.NewGuid().ToString("N"));
 
             try
             {

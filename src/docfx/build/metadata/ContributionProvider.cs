@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var path = docset.RestoreMap.GetFileDownloadPath(docset.Config.Contribution.GitCommitsTime);
                 var content = await ProcessUtility.ReadFile(path);
 
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,51 +11,61 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        public static string GetRestoreRootDir(string url)
-            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
-
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
+        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
         {
-            var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
+            var gitDependencies =
+                from git in GetGitDependencies(docsetPath, config, locale)
+                group git.branch
+                by git.remote;
 
-            // process git restore items
-            await ParallelUtility.ForEach(
-               GetRestoreItems(docsetPath, config, locale),
-               async restoreItem =>
-               {
-                   var (restoreDir, hrefs) = restoreItem;
-                   var workTreeHeads = await RestoreGitRepo(restoreDir, hrefs);
-                   foreach (var workTreeHead in workTreeHeads)
-                   {
-                       workTreeMappings.Add(workTreeHead);
-                   }
-               },
-               progress: Progress.Update);
+            return ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
 
-            return workTreeMappings;
-
-            async Task<List<(string href, string head)>> RestoreGitRepo(string restoreDir, List<string> hrefs)
+            async Task RestoreGitRepo(IGrouping<string, string> group)
             {
-                var workTreeHeads = await RestoreWorkTree.AddWorkTrees(restoreDir, hrefs, config);
+                var remote = group.Key;
+                var branches = group.Distinct();
+                var repoPath = Path.Combine(AppData.GetGitDir(remote), ".git");
 
-                foreach (var (_, workTreeHead) in workTreeHeads)
+                await ProcessUtility.RunInsideMutex(
+                    remote,
+                    async () =>
+                    {
+                        try
+                        {
+                            await GitUtility.CloneOrUpdateBare(repoPath, remote, branches, config);
+                            await AddWorkTrees();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw Errors.GitCloneFailed(remote).ToException(ex);
+                        }
+                    });
+
+                async Task AddWorkTrees()
                 {
-                    var childDir = RestoreWorkTree.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                    await restoreChild(childDir);
-                }
+                    await ParallelUtility.ForEach(branches, async branch =>
+                    {
+                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{PathUtility.Encode(branch)}";
+                        var workTreePath = Path.Combine(repoPath, "../", workTreeHead);
 
-                return workTreeHeads;
+                        // use branch name instead of commit hash
+                        // https://git-scm.com/docs/git-worktree#_commands
+                        await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+
+                        // update the last write time
+                        Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
+                    });
+                }
             }
         }
 
-        private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch)> GetGitDependencies(string docsetPath, Config config, string locale)
         {
-            var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
-
-            return gitDependencies.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+            return config.Dependencies.Values.Select(GitUtility.GetGitRemoteInfo)
+                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
         }
 
-        private static IEnumerable<string> GetLocRestoreItem(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -82,27 +91,22 @@ namespace Microsoft.Docs.Build
             if (config.Localization.Bilingual)
             {
                 // Bilingual repos also depend on non bilingual branch
-                yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+                yield return LocalizationConvention.GetLocalizationRepo(
                     config.Localization.Mapping,
                     bilingual: false,
                     repo.Remote,
                     repo.Branch,
                     locale,
-                    config.Localization.DefaultLocale));
+                    config.Localization.DefaultLocale);
             }
 
-            yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+            yield return LocalizationConvention.GetLocalizationRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,
                 repo.Branch,
                 locale,
-                config.Localization.DefaultLocale));
-
-            string ToHref((string url, string branch) value)
-            {
-                return string.Concat(value.url, "#", value.branch);
-            }
+                config.Localization.DefaultLocale);
         }
     }
 }

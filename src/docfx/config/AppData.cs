@@ -10,15 +10,40 @@ namespace Microsoft.Docs.Build
     {
         public static readonly string AppDataDir = GetAppDataDir();
 
-        public static string GitRestoreDir => Path.Combine(AppDataDir, "git");
+        public static string GitDir => Path.Combine(AppDataDir, "git");
 
-        public static string UrlRestoreDir => Path.Combine(AppDataDir, "url");
+        public static string DownloadsDir => Path.Combine(AppDataDir, "downloads");
 
         public static string MutexDir => Path.Combine(AppDataDir, "mutex");
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
+
+        public static string GetGitDir(string url)
+        {
+            return PathUtility.NormalizeFolder(Path.Combine(GitDir, UrlToPath(url)));
+        }
+
+        public static string GetFileDownloadDir(string url)
+        {
+            // URL to a resource is case sensitive, query string matters, so the download path needs hash
+            return PathUtility.NormalizeFolder(Path.Combine(DownloadsDir, UrlToPath(url) + "-" + url.Trim().GetMd5HashShort()));
+        }
+
+        private static string UrlToPath(string url)
+        {
+            (url, _, _) = HrefUtility.SplitHref(url);
+
+            // Trim https://
+            var i = url.IndexOf(':');
+            if (i > 0)
+            {
+                url = url.Substring(i);
+            }
+            url = url.TrimStart('/', '\\', '.').Trim();
+            return url;
+        }
 
         /// <summary>
         /// Get the global configuration path, default is under <see cref="AppDataDir"/>
@@ -36,7 +61,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataDir()
         {
-            // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
 
             return string.IsNullOrEmpty(docfxAppData)

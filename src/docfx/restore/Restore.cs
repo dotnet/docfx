@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -37,18 +36,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-        }
-
-        public static string GetRestoreRootDir(string url, string root)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-
-            var uri = new Uri(url);
-            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(root, repo);
-
-            // todo: encode the dir converted from url
-            return PathUtility.NormalizeFolder(dir);
         }
 
         private static void ReportErrors(Report report, List<Error> errors)
