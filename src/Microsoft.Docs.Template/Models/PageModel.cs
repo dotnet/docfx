@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public bool Bilingual { get; set; }
 
-        public IEnumerable<string> Monikers { get; set; }
+        public List<string> Monikers { get; set; }
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikersProvider
     {
-        private readonly ConcurrentDictionary<string, Lazy<IEnumerable<string>>> _cache = new ConcurrentDictionary<string, Lazy<IEnumerable<string>>>();
-        private readonly List<(Func<string, bool> glob, IEnumerable<string> monikers)> _rules = new List<(Func<string, bool>, IEnumerable<string>)>();
+        private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
+        private readonly List<(Func<string, bool> glob, List<string> monikers)> _rules = new List<(Func<string, bool>, List<string>)>();
 
         public MonikersProvider(Config config, MonikerRangeParser monikerRangeParser)
         {
@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
             _rules.Reverse();
         }
 
-        public IEnumerable<string> GetMonikers(Document file)
-            => _cache.GetOrAdd(file.FilePath, new Lazy<IEnumerable<string>>(() =>
+        public List<string> GetMonikers(Document file)
+            => _cache.GetOrAdd(file.FilePath, new Lazy<List<string>>(() =>
             {
                 // TODO: merge with the monikers from yaml header
                 foreach (var (glob, monikers) in _rules)
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                         return monikers;
                     }
                 }
-                return Array.Empty<string>();
+                return new List<string>();
             })).Value;
     }
 }
