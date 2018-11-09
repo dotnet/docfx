@@ -68,20 +68,6 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; }
 
         /// <summary>
-        /// Gets the output file path relative to output directory that is:
-        /// For dynamic rendering:
-        ///       |                output-path                     |
-        ///       locale  moniker-list-hash    site-path
-        ///       |-^-| |--^---| |----------------^----------------|
-        /// _site/en-us/603b739b/dotnet/api/system.string/index.json
-        ///
-        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Does not start with '/'
-        ///  - Does not end with '/'
-        /// </summary>
-        public string OutputPath => Docset.OutputProvider.GetOutputPath(this);
-
-        /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
         public (string id, string versionIndependentId) Id => _id.Value;
@@ -102,6 +88,12 @@ namespace Microsoft.Docs.Build
         public bool IsSchemaData => Schema != null && Schema.Attribute as PageSchemaAttribute == null;
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
+
+        // TODO:
+        // This is a temporary property just so that legacy can access OutputPath,
+        // I'll slowly converge legacy into main build and remove this property eventually.
+        // Do not use this property in main build.
+        internal string OutputPath;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
