@@ -103,16 +103,16 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static Error PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.Select(file => file.ContentType == ContentType.Redirection ? $"'{file} <redirection>'" : $"'{file}'").OrderBy(_ => _).Take(5))}");
+            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         public static Error IncludeRedirection(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
 
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}");
+            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {Join(files)}");
 
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
-            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {string.Join(", ", redirectFromDocs.OrderBy(f => f.FilePath).Select(f => $"'{f}'"))}");
+            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
         public static Error GitLogError(string repoPath, int errorCode)
             => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
@@ -152,6 +152,9 @@ namespace Microsoft.Docs.Build
 
         public static Error InvalidMonikerRange(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+
+        private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
+            => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
