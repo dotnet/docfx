@@ -24,7 +24,14 @@ namespace Microsoft.Docs.Build
     {
         private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly ConcurrentDictionary<MarkdownPipelineType, Lazy<MarkdownPipeline>> s_pipelineMapping = new ConcurrentDictionary<MarkdownPipelineType, Lazy<MarkdownPipeline>>();
+        private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
+            new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
+                {
+                    { MarkdownPipelineType.ConceptualMarkdown, CreateConceptualMarkdownPipeline() },
+                    { MarkdownPipelineType.InlineMarkdown, CreateInlineMarkdownPipeline() },
+                    { MarkdownPipelineType.TocMarkdown, CreateTocPipeline() },
+                    { MarkdownPipelineType.Markdown, CreateMarkdownPipeline() },
+                };
 
         [ThreadStatic]
         private static ImmutableStack<Status> t_status;
@@ -38,9 +45,10 @@ namespace Microsoft.Docs.Build
                 var status = new Status
                 {
                     Result = new MarkupResult(),
+                    Locale = locale,
                 };
                 t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
-                var ast = Markdown.Parse(content, GetPipeline(MarkdownPipelineType.TocMarkdown, locale));
+                var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
                 return (ast, Result);
             }
@@ -65,13 +73,14 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Result = new MarkupResult(),
+                        Locale = file.Docset.Locale,
                         ReadFileDelegate = readFile,
                         GetLinkDelegate = getLink,
                         ResolveXrefDelegate = resolveXref,
                     };
                     t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
-                    var html = Markdown.ToHtml(markdown, GetPipeline(pipelineType, file.Docset.Locale));
+                    var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
                     if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
                         Result.Errors.Add(Errors.HeadingNotFound(file));
@@ -85,29 +94,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static MarkdownPipeline GetPipeline(MarkdownPipelineType pipelineType, string locale)
+        private static MarkdownPipeline CreateConceptualMarkdownPipeline()
         {
-            return s_pipelineMapping.GetOrAdd(pipelineType, key => new Lazy<MarkdownPipeline>(() =>
-            {
-                switch (key)
-                {
-                    case MarkdownPipelineType.ConceptualMarkdown:
-                        return CreateConceptualMarkdownPipeline(locale);
-                    case MarkdownPipelineType.InlineMarkdown:
-                        return CreateInlineMarkdownPipeline(locale);
-                    case MarkdownPipelineType.Markdown:
-                        return CreateMarkdownPipeline(locale);
-                    case MarkdownPipelineType.TocMarkdown:
-                        return CreateTocPipeline();
-                    default:
-                        throw new NotSupportedException($"{pipelineType} is not supported yet");
-                }
-            })).Value;
-        }
-
-        private static MarkdownPipeline CreateConceptualMarkdownPipeline(string locale)
-        {
-            var markdownContext = new MarkdownContext(key => GetToken(key, locale), LogWarning, LogError, ReadFile, GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -118,9 +107,9 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline(string locale)
+        private static MarkdownPipeline CreateMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(key => GetToken(key, locale), LogWarning, LogError, ReadFile, GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -130,9 +119,9 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static MarkdownPipeline CreateInlineMarkdownPipeline(string locale)
+        private static MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(key => GetToken(key, locale), LogWarning, LogError, ReadFile, GetLink);
+            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile, GetLink);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -153,8 +142,9 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static string GetToken(string key, string locale)
+        private static string GetToken(string key)
         {
+            var locale = t_status.Peek().Locale;
             var markdownTokens = s_markdownTokens.GetOrAdd(locale, _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
             {
                 var tokenFile = $"resources/tokens.{locale}.json";
@@ -197,6 +187,8 @@ namespace Microsoft.Docs.Build
         private sealed class Status
         {
             public MarkupResult Result { get; set; }
+
+            public string Locale { get; set; }
 
             public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
 
