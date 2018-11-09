@@ -31,7 +31,7 @@ namespace ImportTemplateResource
                 }
 
                 var uri = new Uri(templateRepoUrl);
-                var cloneDir = PathUtility.NormalizeFolder(Path.Combine("_theme", Path.Combine(uri.Host, uri.AbsolutePath.Substring(1))));
+                var cloneDir = PathUtility.NormalizeFolder(Path.Combine(AppData.AppDataDir, "tool", "_theme", Path.Combine(uri.Host, uri.AbsolutePath.Substring(1))));
                 Directory.CreateDirectory(cloneDir);
 
                 if (!GitUtility.IsRepo(cloneDir))
