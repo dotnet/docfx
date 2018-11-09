@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Find output path conflicts
-            var outputPath = file.GetOutputPath();
+            var outputPath = file.OutputPath;
             if (!_filesByOutputPath.TryAdd(outputPath, file))
             {
                 if (_filesByOutputPath.TryGetValue(outputPath, out var existingFile) && existingFile != file)
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    context.Delete(conflictingFile.GetOutputPath());
+                    context.Delete(conflictingFile.OutputPath);
                 }
             }
 
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    context.Delete(conflictingFile.GetOutputPath());
+                    context.Delete(conflictingFile.OutputPath);
                 }
             }
 
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesByUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    context.Delete(file.GetOutputPath());
+                    context.Delete(file.OutputPath);
                 }
             }
         }

@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         ///  - Does not start with '/'
         ///  - Does not end with '/'
         /// </summary>
-        public string OutputPath { get; }
+        public string OutputPath => Docset.OutputProvider.GetOutputPath(this);
 
         /// <summary>
         /// Gets the document id and version independent id
@@ -154,11 +154,6 @@ namespace Microsoft.Docs.Build
             {
                 return reader.ReadToEnd();
             }
-        }
-
-        public string GetOutputPath()
-        {
-            return Docset.OutputProvider.GetOutputPath(this);
         }
 
         public override int GetHashCode()

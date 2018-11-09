@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 var rawPageOutputPath = legacyManifestOutput.PageOutput.ToLegacyOutputPath(docset);
                 LegacyUtility.MoveFileSafe(
-                    docset.GetAbsoluteOutputPathFromRelativePath(doc.GetOutputPath()),
+                    docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
                     docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
                 var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));

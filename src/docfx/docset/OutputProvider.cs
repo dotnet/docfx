@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -19,7 +20,16 @@ namespace Microsoft.Docs.Build
                 {
                     return file.SitePath;
                 }
-                return Path.Combine(MonikerUtility.GetMonikersHash(monikers), file.SitePath);
+                return Path.Combine(GetMonikersHash(monikers), file.SitePath);
             })).Value;
+
+        private static string GetMonikersHash(List<string> monikers)
+        {
+            if (monikers.Count == 0)
+            {
+                return string.Empty;
+            }
+            return HashUtility.GetMd5Hash(string.Join(',', monikers)).Substring(0, 8);
+        }
     }
 }
