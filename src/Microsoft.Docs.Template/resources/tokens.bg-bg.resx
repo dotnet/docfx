@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>приети стойности</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Приемане на покана</value>
+  </data>
+  <data name="achievements">
+    <value>Постижения</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Вижте постижението, което спечелих за {0} в активното обучение на Microsoft!</value>
+  </data>
+  <data name="actions">
+    <value>Действия</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Да, да се активира нов ограничителен режим</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Активиране на ограничителен режим</value>
+  </data>
+  <data name="aDayAgo">
+    <value>преди един ден</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Допълнителни характеристики и изисквания</value>
+  </data>
+  <data name="addParameter">
+    <value>Добавяне на параметър</value>
+  </data>
+  <data name="administrator">
+    <value>Администратор</value>
+  </data>
+  <data name="advanced">
+    <value>Напреднали</value>
+  </data>
+  <data name="africa">
+    <value>Африка</value>
+  </data>
+  <data name="all">
+    <value>всички</value>
+  </data>
+  <data name="allapis">
+    <value>Всички API</value>
+  </data>
+  <data name="allPackages">
+    <value>Всички пакети</value>
+  </data>
+  <data name="americas">
+    <value>Северна и Южна Америка</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>преди една минута</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>преди един месец</value>
+  </data>
+  <data name="anHourAgo">
+    <value>преди един час</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>Препратка към API на {0}</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Функцията за търсене на API не е достъпна. Опитайте отново по-късно.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Предишни версии</value>
+  </data>
+  <data name="areYouSure">
+    <value>Сигурни ли сте?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Изтриването на вашите данни не може да бъде отменено.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>преди една секунда</value>
+  </data>
+  <data name="asia">
+    <value>Азия</value>
+  </data>
+  <data name="askQuestion">
+    <value>Задаване на въпрос</value>
+  </data>
+  <data name="assemblies">
+    <value>Блокове</value>
+  </data>
+  <data name="assembly">
+    <value>Блок</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Прикачени събития</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Прикачени свойства</value>
+  </data>
+  <data name="attributes">
+    <value>Атрибути</value>
+  </data>
+  <data name="avatar">
+    <value>Аватар</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>преди една седмица</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell използва вашите съществуващи абонаменти в Azure. Използването на Cloud Shell и изпълнението на команди ще доведе до начисляване на съответните такси.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Документация за Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Спечелихте значка за завършване</value>
+  </data>
+  <data name="begin">
+    <value>Начало</value>
+  </data>
+  <data name="beginner">
+    <value>Начинаещи</value>
+  </data>
+  <data name="beta">
+    <value>бета-версия</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Основен текст</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Трасиране</value>
+  </data>
+  <data name="browse">
+    <value>Преглед</value>
+  </data>
+  <data name="browseCode">
+    <value>Преглед на код</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Бизнес анализатор</value>
+  </data>
+  <data name="businessUser">
+    <value>Бизнес потребител</value>
+  </data>
+  <data name="calls">
+    <value>Обаждания</value>
+  </data>
+  <data name="capabilities">
+    <value>Възможности</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Внимание&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Проверете своите отговори</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Проверете работата си отново</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Проверете знанията си</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Проверете своята работа</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Изберете реакция</value>
+  </data>
+  <data name="claimReward">
+    <value>Отключване на постижение</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Класове</value>
+  </data>
+  <data name="clearfilter">
+    <value>Изчистване на филтър</value>
+  </data>
+  <data name="clearterm">
+    <value>Изчистване на термин</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Щракване за RSS информационен канал</value>
+  </data>
+  <data name="close">
+    <value>Затваряне</value>
+  </data>
+  <data name="closedIssue">
+    <value>Приключен въпрос</value>
+  </data>
+  <data name="closedIssues">
+    <value>Приключени въпроси</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Това API не е съвместимо със CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Алтернатива на съвместимост със CLS</value>
+  </data>
+  <data name="code">
+    <value>Код</value>
+  </data>
+  <data name="collaborator">
+    <value>Сътрудник</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Този потребител е поканен да сътрудничи по {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Команди</value>
+  </data>
+  <data name="comment">
+    <value>Коментар</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} коментара</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} коментира {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Коментари</value>
+  </data>
+  <data name="complete">
+    <value>Завършено</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Конфигуриране на Cloud Shell за достъп до ограничителен режим...</value>
+  </data>
+  <data name="confused">
+    <value>Объркване</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} реагираха с объркване</value>
+  </data>
+  <data name="congratulations">
+    <value>Поздравления!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Връзки за отделен акаунт</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Подробни данни за конструктора</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Конструктори</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Обратна връзка за съдържание</value>
+  </data>
+  <data name="contents">
+    <value>Съдържание</value>
+  </data>
+  <data name="continue">
+    <value>Продължаване</value>
+  </data>
+  <data name="continueHere">
+    <value>Продължете тук</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Напред към първа стъпка</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Продължаване към следващ модул</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Продължаване без записване на напредъка</value>
+  </data>
+  <data name="contributor">
+    <value>Сътрудник</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Този потребител по-рано e фиксирал за себе си хранилището {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Сътрудничество</value>
+  </data>
+  <data name="contributors">
+    <value>Сътрудници</value>
+  </data>
+  <data name="copy">
+    <value>Копиране</value>
+  </data>
+  <data name="correctChoice">
+    <value>Правилен избор</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Влезли сте с вашия организационен акаунт в Microsoft ({0}) и вашето изживяване ще се различава от това с личен акаунт:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Някои функции на геймификация не са налични за служители на Microsoft.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Вашият профил публично ще показва, че работите в Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Ако загубите достъп до имейла, няма да можете да влизате в този сайт.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Ако искате да използвате този сайт за лични дейности, влезте с друг акаунт.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>За да свържете своя акаунт, ще ви е необходима следната информация:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Чрез използването на Microsoft Learn &lt;strong&gt;вие разбирате и приемате&lt;/strong&gt;, че членството ви означава, че нашата мрежа от сайтове и приложения ще записва и проследява вашите постижения и дейности и че може да споделим вашите резултати и дейности с други екипи в Microsoft. Освен това вашето потребителско име, показвано име, постижения и дейности ще бъдат видими публично.&lt;ul&gt;&lt;li&gt;Вашият профил публично ще показва, че работите в Microsoft.&lt;/li&gt;&lt;li&gt;Ако загубите достъп до имейла, няма да може да влезете в сайта.&lt;/li&gt;&lt;li&gt;Някои функции на геймификация не са налични за служители на Microsoft.&lt;/li&gt;&lt;li&gt;Ако искате да използвате този сайт за лични дейности, влезте с друг акаунт.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Чрез членството си разбирате и приемате, че вашето членство в Microsoft Learn означава, че нашата мрежа от сайтове и приложения ще записва вашите постижения и дейности. Вашето потребителско име, показвано име, постижения и дейности ще бъдат видими публично.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Създаване на нов архив</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Създаване на връзка</value>
+  </data>
+  <data name="currentSelection">
+    <value>Текущ избор:</value>
+  </data>
+  <data name="dark">
+    <value>Тъмно</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>преди {0} дни</value>
+  </data>
+  <data name="defaultValue">
+    <value>стойности по подразбиране</value>
+  </data>
+  <data name="definition">
+    <value>Дефиниция</value>
+  </data>
+  <data name="definitions">
+    <value>Дефиниции</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Представители</value>
+  </data>
+  <data name="delete">
+    <value>Изтриване</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Изтриване на параметър</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Разполагане в Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Този API вече е остарял.</value>
+  </data>
+  <data name="derived">
+    <value>Производни</value>
+  </data>
+  <data name="description">
+    <value>Описание</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Разработчик</value>
+  </data>
+  <data name="developers">
+    <value>Разработчици</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Затваряне на този диалогов прозорец</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Друг ограничителен режим вече е активен</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Вече сте активирали ограничителен режим в модул &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Ако активирате този ограничителен режим, ще загубите работата си в другия модул.</value>
+  </data>
+  <data name="disable">
+    <value>Забраняване</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Резултатите от търсенето са от документация на предишни версии и не се актуализират редовно.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Профил в Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Подробни данни за документите</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Не редактирайте този раздел. Задължително е за docs.microsoft.com ➟ връзка към проблем в GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Документация за .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Редактор за .NET</value>
+  </data>
+  <data name="download">
+    <value>Изтегляне</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Изтегляне на PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Изтегляне на пощенски код</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Резултатите от тази операция са динамични.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Печелете още постижения</value>
+  </data>
+  <data name="edit">
+    <value>Редактиране</value>
+  </data>
+  <data name="editdesc">
+    <value>Редактиране на този документ</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Явни разполагания на интерфейс</value>
+  </data>
+  <data name="email">
+    <value>Имейл</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Необходим е имейл за активиране на ограничителен режим</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Акаунтът ви в Microsoft трябва да е свързан с валиден имейл, за да активирате ограничителния режим. Отидете на &lt;a href="https://account.live.com" target="_blank"&gt;настройките на акаунта в Microsoft&lt;/a&gt;, за да свържете своя имейл и опитайте отново.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Не е позволено да оставите името празно</value>
+  </data>
+  <data name="enable">
+    <value>Разрешаване</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Преминаване в режим на фокусиране</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Изброявания</value>
+  </data>
+  <data name="error">
+    <value>Грешка</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Грешка при създаването на коментара. Ако искате, можете да опитате повторно в&lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Грешка при създаването на проблема. Ако искате, можете да опитате повторно в&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Не успяхме да заредим вашите резултати от търсенето. Опитайте отново по-късно.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Грешка при зареждането на коментарите.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Грешка при зареждане на обратната връзка.</value>
+  </data>
+  <data name="europe">
+    <value>Европа</value>
+  </data>
+  <data name="eventDetails">
+    <value>Подробни данни за събитието</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Събития</value>
+  </data>
+  <data name="examples">
+    <value>Примери</value>
+  </data>
+  <data name="exceptions">
+    <value>Изключения</value>
+  </data>
+  <data name="exit">
+    <value>Изход</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Изход от режим на фокусиране</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Разгъване на менюто за обратна връзка за документацията</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Разгледайте други модули</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Разгледайте други пътеки</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Нямаше информация за експортиране.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Методи на разширение</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Обратна връзка</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Въведете обратна връзка тук]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Предоставяне на обратна връзка за продукта</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Полета</value>
+  </data>
+  <data name="fieldValue">
+    <value>Стойност на поле</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Филтър</value>
+  </data>
+  <data name="findALanguage">
+    <value>Намерете език</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Изброяването има атрибут {0}, който позволява побитова комбинация от стойностите на членовете.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Подробни данни за функцията</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Функции</value>
+  </data>
+  <data name="getHelp">
+    <value>Получаване на помощ</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Изпращане на обратна връзка</value>
+  </data>
+  <data name="globalParameters">
+    <value>Глобални параметри</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Връщане за приключване</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Връщане за приключване на модула</value>
+  </data>
+  <data name="goodWork">
+    <value>Добра работа!</value>
+  </data>
+  <data name="greatWork">
+    <value>Страхотна работа!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Лаборатория за практика</value>
+  </data>
+  <data name="headers">
+    <value>Заглавки</value>
+  </data>
+  <data name="heart">
+    <value>Сърце</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} реагираха със сърце</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Помогнете ми да избера</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Подсказване:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Ура</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} реагираха с „ура“</value>
+  </data>
+  <data name="hoursAgo">
+    <value>преди {0} часа</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Как можем да се подобрим?</value>
+  </data>
+  <data name="hr">
+    <value>ч</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} ч {1} мин</value>
+  </data>
+  <data name="implements">
+    <value>Въвеждания</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Важно&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>в</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Неправилен избор</value>
+  </data>
+  <data name="inheritance">
+    <value>Наследяване</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Наследени членове</value>
+  </data>
+  <data name="input">
+    <value>Въвеждане</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Интерфейси</value>
+  </data>
+  <data name="intermediate">
+    <value>Среднонапреднали</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Този API поддържа инфраструктурата на продукта и не е предназначен за използване директно от кода.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Обратна връзка от Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>отворено {time ago} от {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Съобщаване за проблем с продукт</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Тази страница полезна ли е?</value>
+  </data>
+  <data name="itPro">
+    <value>ИТ професионалисти</value>
+  </data>
+  <data name="justNow">
+    <value>току-що</value>
+  </data>
+  <data name="key">
+    <value>Ключ:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Проверка на знанията</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Проверката на знанията е завършена. Отговорихте правилно на всички въпроси.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Проверката на знанията е завършена</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Завършихте проверката на знанията с {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Завършихте раздела {tutorial} на този модул. Сега можете да продължите към следващия раздел {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Не успяхме да оценим проверката на вашите знания. Опитайте отново.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Завършихте този раздел. Продължете към следващата част {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Завършихте този раздел. Продължете с още въвеждащи курсове.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Със завършването на предизвикателството за проверка на знанията отключихте постижението {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Съдържание</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Филтриране на съдържанието</value>
+  </data>
+  <data name="language">
+    <value>Език</value>
+  </data>
+  <data name="laugh">
+    <value>Смях</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} реагираха със смях</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Открийте технологията на Microsoft с въвеждащи курсове на живо, включително практически упражнения. Това е функция в предварителен преглед, затова &lt;a href="https://aka.ms/learningfeedback"&gt;очакваме да ни изпратете вашата обратна връзка&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Пътека за обучение</value>
+  </data>
+  <data name="learnmore">
+    <value>Научете повече</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Оставете коментар</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Също така можете да предоставите обратна връзка &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;директно в GitHub&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Ниво {0}</value>
+  </data>
+  <data name="levels">
+    <value>Нива</value>
+  </data>
+  <data name="light">
+    <value>Светло</value>
+  </data>
+  <data name="limits">
+    <value>Ограничения</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Зареждане...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Зареждане на обратната връзка...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Зареждане на информация за ограничителния режим...</value>
+  </data>
+  <data name="loadMore">
+    <value>More&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Зареждане на още резултати</value>
+  </data>
+  <data name="login">
+    <value>Влизане</value>
+  </data>
+  <data name="loginAzure">
+    <value>Влезте с акаунта си в Azure.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Главна навигация</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Управление на моя профил</value>
+  </data>
+  <data name="maximize">
+    <value>Увеличаване</value>
+  </data>
+  <data name="member">
+    <value>Член</value>
+  </data>
+  <data name="memberDescription">
+    <value>Този потребител е член на организацията {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Подробни данни за члена</value>
+  </data>
+  <data name="members">
+    <value>Членове</value>
+  </data>
+  <data name="methodDetails">
+    <value>Подробни данни за метода</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Методи</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Бележка за поверителността за служители на Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Влезли сте с акаунта в Microsoft на вашата организация ({email}). Чрез използването на Microsoft Learn &lt;strong&gt;вие разбирате и приемате&lt;/strong&gt;, че членството ви означава, че нашата мрежа от сайтове и приложения ще записва и проследява вашите постижения и дейности и че може да споделим вашите резултати и дейности с други екипи в Microsoft. Освен това вашето потребителско име, показвано име, постижения и дейности ще бъдат видими публично.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Проблем с Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn е съвсем нова платформа и се стремим да подобрим съдържанието и изживяванията въз основа на отговорите на клиентите.
+
+Искаме да чуем вашето мнение!
+
+Попълнете следната информация за нас:
+1. Проблемът или обратната връзка, за която докладвате.
+2. Всичко друго, за което искате да споделите с нас.
+
+Забележка: Въпреки че не отговаряме директно на всички клиенти в този момент, имайте предвид, че преглеждаме всякаква обратна връзка, която получаваме.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Близкият Изток</value>
+  </data>
+  <data name="min">
+    <value>{0} мин</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Намаляване</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} минути</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>преди {0} минути</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 минута</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} минути за четене</value>
+  </data>
+  <data name="module">
+    <value>Модул</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Модулът е завършен</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Модулът не е завършен</value>
+  </data>
+  <data name="moduleReference">
+    <value>Препратка към модул {0}</value>
+  </data>
+  <data name="modules">
+    <value>Модули</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Модули в тази пътека за обучение</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Заявената страница не е налична за {0}. Бяхте пренасочени към най-новата версия на продукта, за която е налична тази страница.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>преди {0} месеца</value>
+  </data>
+  <data name="more">
+    <value>Още</value>
+  </data>
+  <data name="moreInfo">
+    <value>Още информация</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Още въвеждащи курсове</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} модула</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} секции</value>
+  </data>
+  <data name="name">
+    <value>Име</value>
+  </data>
+  <data name="namespace">
+    <value>Пространство на имената</value>
+  </data>
+  <data name="namespaces">
+    <value>Пространства на имената</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Новата ни система за обратна връзка е изградена въз основа на проблеми с GitHub. Прочетете за тази промяна в &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;публикацията в нашия блог&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Напред</value>
+  </data>
+  <data name="nextPage">
+    <value>Следваща страница</value>
+  </data>
+  <data name="no">
+    <value>Не</value>
+  </data>
+  <data name="noAchievements">
+    <value>В момента нямате постижения. &lt;a href="{0}"&gt;Завършете модули, за да ги спечелите.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} няма постижения.</value>
+  </data>
+  <data name="noClosed">
+    <value>Няма решени проблеми</value>
+  </data>
+  <data name="noOpen">
+    <value>Няма нерешени проблеми</value>
+  </data>
+  <data name="noOutput">
+    <value>Няма изходни данни</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Няма намерени резултати</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Още няма резултати, но продължете с опитите...</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Не са намерени резултати за {term}&lt;br /&gt;&lt;a href="{url}"&gt;Търсене за „{filter-text}“ в цялата документация за {scope}&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Бележка&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Бележки до повикващи</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Бележки до внедряващи лица</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Бележки до наследяващи лица</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} приключени</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} отворени</value>
+  </data>
+  <data name="officeDocs">
+    <value>Документация за Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Разбрах.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 модул</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 секция</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Навигация в страницата</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>на {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Отворен въпрос</value>
+  </data>
+  <data name="openIssues">
+    <value>Отворени въпроси</value>
+  </data>
+  <data name="operationId">
+    <value>ИД на операция:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Оператори</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Незадължителни параметри</value>
+  </data>
+  <data name="options">
+    <value>Опции</value>
+  </data>
+  <data name="output">
+    <value>Изходни данни</value>
+  </data>
+  <data name="overloads">
+    <value>Претоварвания</value>
+  </data>
+  <data name="overrides">
+    <value>Замествания</value>
+  </data>
+  <data name="overview">
+    <value>Общ преглед</value>
+  </data>
+  <data name="owner">
+    <value>Собственик</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Този потребител е собственикът на хранилището {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Тихоокеански регион</value>
+  </data>
+  <data name="package">
+    <value>Пакет</value>
+  </data>
+  <data name="packageReference">
+    <value>Препратка към пакет {0}</value>
+  </data>
+  <data name="packages">
+    <value>Пакети</value>
+  </data>
+  <data name="page">
+    <value>Страница {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Действия на страница</value>
+  </data>
+  <data name="parameters">
+    <value>Параметри</value>
+  </data>
+  <data name="path">
+    <value>Път:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Изберете своята реакция</value>
+  </data>
+  <data name="platform">
+    <value>Платформа</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Попълнете това поле.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Опитайте отново.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Стартиране на портала на Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Зареждане на портал на Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Отваряне на лабораторията в нов прозорец</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Този урок изисква портал на Microsoft Azure за завършване.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Лабораторията на портала на Azure осигурява безплатен достъп до ресурсите на Azure за завършване на стъпките в този урок. Лабораторията на портала на Azure не засяга вашия абонамент за Azure. Няма да бъдете таксувани.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Вашата лаборатория на портал на Azure е готова.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Да, активиране на нова лаборатория</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Лаборатория на портал на Azure за различен урок вече е активна</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Понастоящем имате отворена лаборатория на портал на Azure за друг урок ({lab-name}). Искате ли да отхвърлите настоящата лаборатория и да активирате нова лаборатория за този урок?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Опитайте да стартирате лабораторията отново</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Влезте, за да стартирате портала на Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Предварителни компоненти:</value>
+  </data>
+  <data name="preview">
+    <value>Предварителен преглед</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Този API е предоставен като визуализация за разработчици и може се промени въз основа на обратната връзка, която получаваме. Не използвайте този API в производствена среда.</value>
+  </data>
+  <data name="previous">
+    <value>Назад</value>
+  </data>
+  <data name="previousPage">
+    <value>Предишна страница</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Документи на предишни версии</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Декларация за поверителност</value>
+  </data>
+  <data name="product">
+    <value>Продукт</value>
+  </data>
+  <data name="productFeedback">
+    <value>Обратна връзка за продукт</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Продукти</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Бизнес приложения</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Профил</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Свойства</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Подробни данни за свойството</value>
+  </data>
+  <data name="propertyValue">
+    <value>Стойност на свойство</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Създаване на вашия ограничителен режим. Това ще отнеме само една минута...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Бързи филтри</value>
+  </data>
+  <data name="quizComplete">
+    <value>Поздравления!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Неуспешно зареждане на коментарите. Надвишено ограничение на пропусквателната способност на API на GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Неуспешно търсене на проблеми. Надвишено ограничение на пропусквателната способност на API на GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Коментари или предложения? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Кажете ни тук&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Споделете своите идеи. Приветстваме обратна връзка на който и да е език.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Прочетете на английски</value>
+  </data>
+  <data name="readonly">
+    <value>само за четене</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Получихте това постижение {0} за завършването на {1}.</value>
+  </data>
+  <data name="references">
+    <value>Препратки</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Прецизиране на образователно съдържание</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Този модул е част от тези пътеки за обучения</value>
+  </data>
+  <data name="remaining">
+    <value>оставащи</value>
+  </data>
+  <data name="remarks">
+    <value>Забележки</value>
+  </data>
+  <data name="removeItem">
+    <value>Премахване на {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Период на обновяване</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Благодарим ви, че докладвахте своя проблем с нас. Преглеждаме подаденото много внимателно и ще предприемем подходящи стъпки за решаване на този проблем. Поради юридически проблеми и проблеми с поверителността не можем да ви предоставим никакви допълнителни актуализации за това подаване. Благодарим ви отново, че се свързахте с нас.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Докладване на проблем</value>
+  </data>
+  <data name="requestBody">
+    <value>Основен текст на заявка</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Основният текст на заявката може да бъде един от следните:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Горен колонтитул на заявка</value>
+  </data>
+  <data name="requestPreview">
+    <value>Визуализация на заявка</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL адрес на заявката</value>
+  </data>
+  <data name="required">
+    <value>задължителни</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Задължителни параметри</value>
+  </data>
+  <data name="requirements">
+    <value>Изисквания</value>
+  </data>
+  <data name="resource_type">
+    <value>Типове</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Отговори</value>
+  </data>
+  <data name="restart">
+    <value>Рестартиране</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Не можем да ви поканим в клиент, който работи в ограничителен режим, поради ограничения в акаунта ви. Свържете се с администратора си.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} открити резултата</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Повторен опит за активиране на ограничителен режим</value>
+  </data>
+  <data name="returns">
+    <value>Връщания</value>
+  </data>
+  <data name="returnValue">
+    <value>Върната стойност</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Прегледайте своята хронология на пътеката за обучение</value>
+  </data>
+  <data name="roles">
+    <value>Роли</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Изпълнение</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Ограничителният режим е активиран!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Достъпът до ограничителен режим изтече</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Вашият ограничителен режим е изтекъл. Активиране на нов ограничителен режим.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Ограничителният режим ще ви даде безплатен достъп до необходимите ресурси на Azure за завършване на този урок. Вашият абонамент за Azure няма да се таксува.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Използването на ограничителен режим изисква да приемете покана на клиент на Azure</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Ограничителният режим за този модул е забранен временно за профилактика.</value>
+  </data>
+  <data name="search">
+    <value>Търсене</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Навигация за търсене</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Търсене на предишни версии</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Филтърът за търсене е „{0}“. Докоснете за премахване.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>преди {0} секунди</value>
+  </data>
+  <data name="security">
+    <value>Защита</value>
+  </data>
+  <data name="seeAlso">
+    <value>Вижте също</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Избрана версия</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Филтрирайте списъка с езици, като изберете регион или въведете името на езика или кода на езиково-географската променлива.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Изберете пакет</value>
+  </data>
+  <data name="selectVersion">
+    <value>Изберете версия</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Изберете своята роля</value>
+  </data>
+  <data name="service">
+    <value>Услуга</value>
+  </data>
+  <data name="services">
+    <value>Услуги</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Услугата временно е недостъпна. Работим по въпроса.</value>
+  </data>
+  <data name="share">
+    <value>Споделяне</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Споделете постижението в {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Вижте постижението, което спечелих за {moduleName} в активното обучение на Microsoft. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Споделена статия] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Споделяне на този документ</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Споделете постижението си:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Показване на всички производни класове</value>
+  </data>
+  <data name="signIn">
+    <value>Влизане</value>
+  </data>
+  <data name="signInAzure">
+    <value>Влезте с акаунта си в Azure.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Влезте, за да проверите работата си</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Влезли сте в обвивката в облака с акаунт, който е различен от акаунта за документите ви. Излезте от обвивката в облака, за да се опитате да влезете отново в ограничителен режим.</value>
+  </data>
+  <data name="signingIn">
+    <value>Влизане...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Влезте, за да активирате ограничителния режим</value>
+  </data>
+  <data name="signInToComment">
+    <value>Влезте, за да коментирате</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Влезте, за да предоставите обратна връзка за документацията</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Влезте, за да изпратите обратна връзка</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Влезте&lt;/a&gt;, за да увеличите прага на ограничението на пропусквателната способност на API на GitHub API.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Влезте, за да добавите своята реакция</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Влезте, за да запишете напредъка</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Влезте,&lt;/a&gt; за да прегледате своя потребителски профил.</value>
+  </data>
+  <data name="signOut">
+    <value>Излизане</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Обратна връзка за сайт</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Архитект на решения</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Хм, възникна проблем</value>
+  </data>
+  <data name="start">
+    <value>Начало</value>
+  </data>
+  <data name="startHere">
+    <value>Започнете тук</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Стъпка {step-index} от {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Структури</value>
+  </data>
+  <data name="submit">
+    <value>Изпращане</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Подаване на обратна връзка</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Подадено е успешно!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Предлагане на идея за продукта</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Задачата не е завършена правилно.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Актуализираме тази страница с ново интерактивно изживяване. Проверете пак по-късно!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Благодарим за обратната връзка!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Това не е съвсем наред.</value>
+  </data>
+  <data name="theme">
+    <value>Тема</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>В момента няма обратна връзка за този документ. Подадената обратна връзка ще се появи тук.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Всички членове от този клас са с безопасни условия за нишките.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Всички членове на екземпляра от този клас са с безопасни условия за нишките.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Всички статични членове от този клас са с безопасни условия за нишките.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Този тип не е с безопасни условия за нишките.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Защита на нишката</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} реагираха с палец надолу</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} реагираха с палец нагоре</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Съвет&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Заглавие</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Проблем с превключването</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Превключване на уроци</value>
+  </data>
+  <data name="trademarks">
+    <value>Търговски марки</value>
+  </data>
+  <data name="triggers">
+    <value>Активатори</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Спечелихте трофей за завършване</value>
+  </data>
+  <data name="tryAgain">
+    <value>Опитайте отново</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Изпробвайте кода във вашия браузър</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Изпробвайте REST API с входните данни по-долу.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>всички {0} сътрудници</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% завършено!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Поздравления!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Продължете тук</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Сътрудници</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Допълнително четене</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Въведение</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>Остават {0} минути</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} минути до завършване</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Следващи стъпки</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Следващ въвеждащ курс</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Ресурси</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Вижте {0} или станете сътрудник, като предложите подобрения за {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Научихте как да...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Вие завършихте въвеждащ курс „{0}“.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Ще научите как да...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Имате обратна връзка или срещате трудности при изпълнението на тази част от въвеждащ курс?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Докладване на проблем в GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Следващи стъпки</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Управлявани туитове от</value>
+  </data>
+  <data name="type">
+    <value>тип</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Тип дефиниция</value>
+  </data>
+  <data name="typeParameters">
+    <value>Параметри на типа</value>
+  </data>
+  <data name="unit">
+    <value>Единица</value>
+  </data>
+  <data name="unitComplete">
+    <value>Урокът е завършен</value>
+  </data>
+  <data name="unitMarker">
+    <value>Секция {index} от {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Този раздел изисква ограничителен режим, за да бъде завършен</value>
+  </data>
+  <data name="units">
+    <value>Единици</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Параметри на URI</value>
+  </data>
+  <data name="usage">
+    <value>Използване</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Използване на виртуална машина</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>За интегрирани инструкции посетете сайта на лабораторията за практика.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Използвайте вашия локален компютър</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Останете в този сайт и следвайте инструкциите със собствената си машина.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Използване на този конектор</value>
+  </data>
+  <data name="value">
+    <value>Стойност</value>
+  </data>
+  <data name="valueFrom">
+    <value>стойност от</value>
+  </data>
+  <data name="version">
+    <value>Версия</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Преглед на проблема в GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Показване на още обратна връзка в GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Преглед в GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Преглед на {username} в GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Препоръчваме използването на Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Изтегляне сега</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Документация за Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Стартиране на режим на виртуална машина</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Зареждане на виртуална машина...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Този раздел изисква виртуална машина, за да бъде завършен.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Режимът за виртуална машина предоставя безплатен достъп до виртуална машина на Azure за завършване на стъпките в този урок. Вашият абонамент за Azure няма да се таксува</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Да, да се активира нова виртуална машина</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Виртуална машина за различен урок вече е активна</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Вече сте отворили виртуална машина в модул {lab-name}. Ако активирате тази виртуална машина, ще загубите работата си в другия модул.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Опитайте да стартирате режим на виртуална машина отново</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Влезте, за да стартирате режим на виртуална машина</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Предупреждение&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>преди {0} седмици</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Ще се радваме да чуем какво мислите. Изберете типа, който бихте желали да предоставите:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Изисквания на Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Документация за Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>По света</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Искате ли да предоставите обратна връзка?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Да</value>
+  </data>
+  <data name="youDidIt">
+    <value>Успяхте!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Спечелихте точки опит за приключване на проверката на знанията.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Спечелихте точки опит за приключване на задачата.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Току-що спечелихте &lt;span class="experience-points"&gt;&lt;/span&gt; точки опит.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Трябва да отговорите на всички въпроси, преди да проверите работата си.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Трябва да използвате ресурсите, предоставени от ограничителния режим, за да проверите работата си.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Вие успяхте</value>
+  </data>
+  <data name="yourAccount">
+    <value>Вашият акаунт</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Акаунтът ви е изтрит.</value>
+  </data>
+  <data name="yourData">
+    <value>Вашите данни</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Изтеглете или изтрийте вашия записан напредък и постижения в Docs. Изтриването на вашата информация не влияе върху самоличността ви в Microsoft.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Вашата работа не беше завършена правилно.</value>
+  </data>
+</root>

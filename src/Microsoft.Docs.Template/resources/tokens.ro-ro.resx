@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>valori acceptate</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Acceptare invitație</value>
+  </data>
+  <data name="achievements">
+    <value>Realizări</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Descoperă realizarea pe care tocmai am obținut-o pentru {0} în secțiunea de învățare ghidată Microsoft!</value>
+  </data>
+  <data name="actions">
+    <value>Acțiuni</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Da, activați un sandbox nou</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Activare sandbox</value>
+  </data>
+  <data name="aDayAgo">
+    <value>cu o zi în urmă</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Alte caracteristici și cerințe</value>
+  </data>
+  <data name="addParameter">
+    <value>Adăugare parametru</value>
+  </data>
+  <data name="administrator">
+    <value>Administrator</value>
+  </data>
+  <data name="advanced">
+    <value>Avansat</value>
+  </data>
+  <data name="africa">
+    <value>Africa</value>
+  </data>
+  <data name="all">
+    <value>toate</value>
+  </data>
+  <data name="allapis">
+    <value>Toate API-urile</value>
+  </data>
+  <data name="allPackages">
+    <value>Toate pachetele</value>
+  </data>
+  <data name="americas">
+    <value>Americile</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>cu un minut în urmă</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>cu o lună în urmă</value>
+  </data>
+  <data name="anHourAgo">
+    <value>cu o oră în urmă</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} Referință API</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Căutarea în interfața API este indisponibilă. Încercați din nou mai târziu.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Versiuni anterioare</value>
+  </data>
+  <data name="areYouSure">
+    <value>Sunteți sigur?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Ștergerea datelor este o acțiune ireversibilă.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>cu o secundă în urmă</value>
+  </data>
+  <data name="asia">
+    <value>Asia</value>
+  </data>
+  <data name="askQuestion">
+    <value>Adresați o întrebare</value>
+  </data>
+  <data name="assemblies">
+    <value>Ansambluri</value>
+  </data>
+  <data name="assembly">
+    <value>Ansamblu</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Evenimente atașate</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Proprietăți atașate</value>
+  </data>
+  <data name="attributes">
+    <value>Atribute</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>cu o săptămână în urmă</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell utilizează abonamentele dvs. Azure existente. Utilizarea Cloud Shell și executarea comenzilor vor genera costuri asociate.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Documentație pentru Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Ați câștigat un ecuson pentru finalizare</value>
+  </data>
+  <data name="begin">
+    <value>Începeți</value>
+  </data>
+  <data name="beginner">
+    <value>Începător</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Corp</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Urme</value>
+  </data>
+  <data name="browse">
+    <value>Răsfoire</value>
+  </data>
+  <data name="browseCode">
+    <value>Răsfoire cod</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Analist de business</value>
+  </data>
+  <data name="businessUser">
+    <value>Utilizator de afaceri</value>
+  </data>
+  <data name="calls">
+    <value>Apeluri</value>
+  </data>
+  <data name="capabilities">
+    <value>Capabilități</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Atenție&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Verificați-vă răspunsurile</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Verificați-vă din nou activitatea</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Verificați-vă cunoștințele</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Verificați-vă activitatea</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Alegere reacție</value>
+  </data>
+  <data name="claimReward">
+    <value>Deblocare realizare</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Clase</value>
+  </data>
+  <data name="clearfilter">
+    <value>Golire filtru</value>
+  </data>
+  <data name="clearterm">
+    <value>Golire termen</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Faceți clic pentru fluxul RSS</value>
+  </data>
+  <data name="close">
+    <value>Închidere</value>
+  </data>
+  <data name="closedIssue">
+    <value>Problemă închisă</value>
+  </data>
+  <data name="closedIssues">
+    <value>Probleme închise</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Această interfață API nu este compatibilă cu CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Alternativă compatibilă cu CLS</value>
+  </data>
+  <data name="code">
+    <value>Cod</value>
+  </data>
+  <data name="collaborator">
+    <value>Colaborator</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Acest utilizator a fost invitat să colaboreze la {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Comenzi</value>
+  </data>
+  <data name="comment">
+    <value>Comentariu</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} comentarii</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} a comentat {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Comentarii</value>
+  </data>
+  <data name="complete">
+    <value>Finalizat</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Se configurează Cloud Shell pentru acces la sandbox...</value>
+  </data>
+  <data name="confused">
+    <value>Confuz</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} reacții „confuz”</value>
+  </data>
+  <data name="congratulations">
+    <value>Felicitări!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Conexiuni per cont</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Detalii constructor</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Constructori</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Feedback legat de conținut</value>
+  </data>
+  <data name="contents">
+    <value>Conținut</value>
+  </data>
+  <data name="continue">
+    <value>Continuare</value>
+  </data>
+  <data name="continueHere">
+    <value>Continuați aici</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Continuați la primul pas</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Continuați cu următorul modul</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Continuați fără a salva progresul</value>
+  </data>
+  <data name="contributor">
+    <value>Colaborator</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Acest utilizator s-a angajat anterior la depozitul {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Colaborare</value>
+  </data>
+  <data name="contributors">
+    <value>Colegi</value>
+  </data>
+  <data name="copy">
+    <value>Copiere</value>
+  </data>
+  <data name="correctChoice">
+    <value>Alegerea corectă</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>V-ați conectat cu contul de organizație Microsoft ({0}), iar experiența dvs. va fi diferită față de utilizarea unui cont personal:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Unele funcții pentru aplicarea teoriei jocurilor nu sunt disponibile pentru angajații Microsoft.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Profilul dvs. va indica în mod public faptul că lucrați la Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Dacă pierdeți accesul la contul de e-mail, nu vă veți mai putea conecta la acest site.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Dacă doriți să folosiți acest site pentru activități personale, conectați-vă cu alt cont.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Pentru a vă conecta contul, aveți nevoie de următoarele informații:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Prin utilizarea Microsoft Learn în calitate de membru, &lt;strong&gt;înțelegeți și luați la cunoștință&lt;/strong&gt; faptul că rețeaua noastră de site-uri și aplicații va înregistra și va monitoriza realizările și activitățile dvs. și că este posibil să partajăm rezultatele și activitățile dvs. cu alte echipe din cadrul Microsoft. De asemenea, numele de utilizator, numele afișat, realizările și activitățile vor fi vizibile public.&lt;ul&gt;&lt;li&gt;Profilul dvs. va indica în mod public faptul că lucrați la Microsoft.&lt;/li&gt;&lt;li&gt;Dacă pierdeți accesul la contul de e-mail, nu vă veți mai putea conecta la site.&lt;/li&gt;&lt;li&gt;Unele funcții pentru aplicarea teoriei jocurilor nu sunt disponibile pentru angajații Microsoft.&lt;/li&gt;&lt;li&gt;Dacă doriți să folosiți acest site pentru activități personale, conectați-vă cu alt cont.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>În calitate de membru, înțelegeți și confirmați faptul că statutul dvs. de membru în cadrul Microsoft Learn implică înregistrarea realizărilor și activităților dvs. de către rețeaua noastră de site-uri și aplicații. Numele de utilizator, numele afișat, realizările și activitățile vor fi vizibile public.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Creare arhivă nouă</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Crearea unei conexiuni</value>
+  </data>
+  <data name="currentSelection">
+    <value>Selecție actuală:</value>
+  </data>
+  <data name="dark">
+    <value>Întuneric</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>Acum {0} zile</value>
+  </data>
+  <data name="defaultValue">
+    <value>valoare implicită</value>
+  </data>
+  <data name="definition">
+    <value>Definiție</value>
+  </data>
+  <data name="definitions">
+    <value>Definiții</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegați</value>
+  </data>
+  <data name="delete">
+    <value>Ștergere</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Ștergere parametru</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Implementare în Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Această interfață API este din acest moment inactuală.</value>
+  </data>
+  <data name="derived">
+    <value>Derivat</value>
+  </data>
+  <data name="description">
+    <value>Descriere</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Dezvoltator</value>
+  </data>
+  <data name="developers">
+    <value>Dezvoltatori</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Închideți acest dialog</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Un alt sandbox este deja activ</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Ați activat deja un sandbox în modulul &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Dacă activați acest sandbox, veți pierde ceea ce ați lucrat în celălalt modul.</value>
+  </data>
+  <data name="disable">
+    <value>Dezactivare</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Rezultatele căutării provin din documentațiile versiunilor anterioare și nu sunt actualizate cu regularitate.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Detalii document</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Nu editați această secțiune. Este necesară pentru asocierea prin link a problemelor între docs.microsoft.com și GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Documentație pentru .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Editor .NET</value>
+  </data>
+  <data name="download">
+    <value>Descărcare</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Descărcare PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Descărcare ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Ieșirile acestei operațiuni sunt dinamice.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Obțineți mai multe realizări</value>
+  </data>
+  <data name="edit">
+    <value>Editare</value>
+  </data>
+  <data name="editdesc">
+    <value>Editați acest document</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Implementări de interfețe explicite</value>
+  </data>
+  <data name="email">
+    <value>E-mail</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Pentru activarea unui sandbox este necesară adresa de e-mail</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Pentru activareasandboxului, contul dvs. Microsoft trebuie să fie asociat cu o adresă de e-mail validă. Accesați &lt;a href="https://account.live.com" target="_blank"&gt;setările contului Microsoft&lt;/a&gt; pentru a asocia adresa de e-mail și încercați din nou.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Câmpul pentru nume trebuie completat</value>
+  </data>
+  <data name="enable">
+    <value>Activare</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Intrați în modul de focalizare</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enumerări</value>
+  </data>
+  <data name="error">
+    <value>Eroare</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Eroare la crearea comentariului. Dacă doriți, puteți să reîncercați pe &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Eroare la crearea problemei. Dacă doriți, puteți să reîncercați pe &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Nu am putut încărca rezultatele căutării dvs. Încercați din nou mai târziu.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Eroare la încărcarea comentariilor.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Eroare la încărcarea feedbackului.</value>
+  </data>
+  <data name="europe">
+    <value>Europa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Detalii eveniment</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Evenimente</value>
+  </data>
+  <data name="examples">
+    <value>Exemple</value>
+  </data>
+  <data name="exceptions">
+    <value>Excepții</value>
+  </data>
+  <data name="exit">
+    <value>Ieșire</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Ieșiți din modul de focalizare</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Extindere meniu pentru feedback legat de documentație</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Explorați alte module</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Explorați alte căi</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Nu ați avut nicio informație de exportat.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Metode de extindere</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Feedback</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Introduceți feedbackul dvs. aici]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Oferă feedback legat de produs</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Câmpuri</value>
+  </data>
+  <data name="fieldValue">
+    <value>Valoare câmp</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filtrare</value>
+  </data>
+  <data name="findALanguage">
+    <value>Găsiți o limbă</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Această enumerare are un atribut {0} care permite o combinație de biți pentru valorile membru.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Detalii funcție</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funcții</value>
+  </data>
+  <data name="getHelp">
+    <value>Obțineți ajutor</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Oferiți feedback</value>
+  </data>
+  <data name="globalParameters">
+    <value>Parametri globali</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Mergeți înapoi pentru a finaliza</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Reveniți pentru a finaliza modulul</value>
+  </data>
+  <data name="goodWork">
+    <value>Excelent!</value>
+  </data>
+  <data name="greatWork">
+    <value>Excelent!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Laborator practic</value>
+  </data>
+  <data name="headers">
+    <value>Anteturi</value>
+  </data>
+  <data name="heart">
+    <value>Inimă</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} reacții „inimă”</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Doresc ajutor pentru a alege</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Sfat:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Ura</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} reacții „ura”</value>
+  </data>
+  <data name="hoursAgo">
+    <value>Acum {0} ore</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Cum putem deveni mai eficienți?</value>
+  </data>
+  <data name="hr">
+    <value>ore</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} ore {1} minute</value>
+  </data>
+  <data name="implements">
+    <value>Implementări</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Important&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>în</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Alegerea incorectă</value>
+  </data>
+  <data name="inheritance">
+    <value>Moștenire</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Membri moșteniți</value>
+  </data>
+  <data name="input">
+    <value>Intrare</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Interfețe</value>
+  </data>
+  <data name="intermediate">
+    <value>Intermediar</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Această interfață API acceptă infrastructura produsului și nu este destinată a fi folosită direct din codul dvs.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Feedback despre Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>deschis {time ago} de {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Raportați o problemă a unui produs</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Această pagină este utilă?</value>
+  </data>
+  <data name="itPro">
+    <value>Profesionist IT</value>
+  </data>
+  <data name="justNow">
+    <value>chiar acum</value>
+  </data>
+  <data name="key">
+    <value>Cheie:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Verificarea cunoștințelor</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Verificare cunoștințe finalizată. Ați răspuns corect la toate întrebările.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Verificarea cunoștințelor s-a finalizat</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Ați finalizat verificarea cunoștințelor pentru secțiunea {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Ați finalizat secțiunea {tutorial} a modulului. Acum vă puteți deplasa la secțiunea următoare {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Ne pare rău, dar nu am putut evalua verificarea cunoștințelor dvs. Încercați din nou.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Ați finalizat această secțiune. Continuați cu partea următoare, {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Ați finalizat această secțiune. Continuați cu mai multe tutoriale.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Prin finalizarea verificării cunoștințelor, ați deblocat realizarea {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Cuprins</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Filtrare cuprins</value>
+  </data>
+  <data name="language">
+    <value>Limbă</value>
+  </data>
+  <data name="laugh">
+    <value>Râs</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} reacții „râs”</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Descoperiți tehnologia Microsoft cu tutoriale în timp real, inclusiv activități practice. Această experiență este în modul de previzualizare, astfel că vă rugăm &lt;a href="https://aka.ms/learningfeedback"&gt;să ne trimiteți feedbackul dvs.&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Cale de instruire</value>
+  </data>
+  <data name="learnmore">
+    <value>Aflați mai multe</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Lăsați un comentariu</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Puteți transmite feedback și &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;direct pe GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Nivel {0}</value>
+  </data>
+  <data name="levels">
+    <value>Niveluri</value>
+  </data>
+  <data name="light">
+    <value>Lumină</value>
+  </data>
+  <data name="limits">
+    <value>Limite</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Se încarcă...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Se încarcă feedbackul...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Se încarcă informațiile sandboxului...</value>
+  </data>
+  <data name="loadMore">
+    <value>Mai multe&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Încărcați mai multe rezultate</value>
+  </data>
+  <data name="login">
+    <value>Conectare</value>
+  </data>
+  <data name="loginAzure">
+    <value>Conectați-vă cu contul dvs. Azure.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Navigare principală</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Gestionare profil personal</value>
+  </data>
+  <data name="maximize">
+    <value>Maximizare</value>
+  </data>
+  <data name="member">
+    <value>Membru</value>
+  </data>
+  <data name="memberDescription">
+    <value>Acest utilizator este un membru al organizației {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Detalii membru</value>
+  </data>
+  <data name="members">
+    <value>Membri</value>
+  </data>
+  <data name="methodDetails">
+    <value>Detalii metodă</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Metode</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Notificare privind confidențialitatea pentru angajații Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>V-ați conectat folosind contul organizațional Microsoft ({email}). Prin utilizarea Microsoft Learn în calitate de membru, &lt;strong&gt;înțelegeți și luați la cunoștință&lt;/strong&gt; faptul că rețeaua noastră de site-uri și aplicații va înregistra și va monitoriza realizările și activitățile dvs. și că este posibil să partajăm rezultatele și activitățile dvs. cu alte echipe din cadrul Microsoft. De asemenea, numele de utilizator, numele afișat, realizările și activitățile vor fi vizibile public.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Problemă cu Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn este o platformă complet nouă, iar noi ne străduim să îmbunătățim conținutul și experiențele în funcție de răspunsurile clienților.
+
+Vrem să auzim părerea dvs.!
+
+Vă rugăm să ne furnizați următoarele informații:
+1. Problema sau feedbackul în legătură cu care trimiteți raportul.
+2. Mai aveți ceva să ne spuneți?
+
+Notă: deși momentan nu răspundem în mod direct tuturor clienților, vă asigurăm că analizăm fiecare opinie pe care o primim.
+
+Adresă URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Orientul Mijlociu</value>
+  </data>
+  <data name="min">
+    <value>{0} minute</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimizare</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} minute</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>Acum {0} minute</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minut</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} minute de citit</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modul finalizat</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modul nefinalizat</value>
+  </data>
+  <data name="moduleReference">
+    <value>Referință modul {0}</value>
+  </data>
+  <data name="modules">
+    <value>Module</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Module din această cale de învățare</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Pagina solicitată nu este disponibilă pentru {0}. Ați fost redirecționat către cea mai recentă versiune a produsului pentru care este disponibilă această pagină.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>Acum {0} luni</value>
+  </data>
+  <data name="more">
+    <value>Mai multe</value>
+  </data>
+  <data name="moreInfo">
+    <value>Informații suplimentare</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Mai multe tutoriale</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} module</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} unități</value>
+  </data>
+  <data name="name">
+    <value>Nume</value>
+  </data>
+  <data name="namespace">
+    <value>Spațiu nume</value>
+  </data>
+  <data name="namespaces">
+    <value>Spații nume</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Noul nostru sistem de feedback este construit în jurul problemelor raportate pe GitHub. Citiți despre această schimbare în &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;postarea de pe blogul nostru&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Următorul</value>
+  </data>
+  <data name="nextPage">
+    <value>Pagina următoare</value>
+  </data>
+  <data name="no">
+    <value>Nu</value>
+  </data>
+  <data name="noAchievements">
+    <value>Nu există realizări în momentul de față. &lt;a href="{0}"&gt;Finalizați module pentru a obține câteva.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} nu are nicio realizare.</value>
+  </data>
+  <data name="noClosed">
+    <value>Nu există nicio problemă închisă</value>
+  </data>
+  <data name="noOpen">
+    <value>Nu există nicio problemă deschisă</value>
+  </data>
+  <data name="noOutput">
+    <value>Nicio ieșire</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Nu s-au găsit rezultate</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Niciun rezultat încă, dar tastați în continuare…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Niciun rezultat pentru {term}&lt;br /&gt;&lt;a href="{url}"&gt;Căutați „{filter-text}” în întreaga documentație {scope}&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Notă&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Note pentru apelanți</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Note pentru persoanele responsabile de implementare</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Note pentru persoanele cu setări moștenite</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} închise</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} deschise</value>
+  </data>
+  <data name="officeDocs">
+    <value>Documentație pentru Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Am înțeles.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 unitate</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Navigare pe pagină</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>pe {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Problemă deschisă</value>
+  </data>
+  <data name="openIssues">
+    <value>Probleme deschise</value>
+  </data>
+  <data name="operationId">
+    <value>ID operațiune:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operatori</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Parametri opționali</value>
+  </data>
+  <data name="options">
+    <value>Opțiuni</value>
+  </data>
+  <data name="output">
+    <value>Ieșire</value>
+  </data>
+  <data name="overloads">
+    <value>Suprasarcini</value>
+  </data>
+  <data name="overrides">
+    <value>Suprascrieri</value>
+  </data>
+  <data name="overview">
+    <value>Prezentare generală</value>
+  </data>
+  <data name="owner">
+    <value>Proprietar</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Acest utilizator este proprietarul depozitului {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Pacific</value>
+  </data>
+  <data name="package">
+    <value>Pachet</value>
+  </data>
+  <data name="packageReference">
+    <value>Referință pachet {0}</value>
+  </data>
+  <data name="packages">
+    <value>Pachete</value>
+  </data>
+  <data name="page">
+    <value>Pagina {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Acțiuni pentru pagină</value>
+  </data>
+  <data name="parameters">
+    <value>Parametri</value>
+  </data>
+  <data name="path">
+    <value>Cale:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Alegeți reacția dvs.</value>
+  </data>
+  <data name="platform">
+    <value>Platformă</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Completați acest câmp.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Încercați din nou.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Lansați portalul Microsoft Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Se încarcă portalul Microsoft Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Deschideți laboratorul într-o fereastră nouă</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Pentru finalizarea acestei unități este necesar un portal Microsoft Azure.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Un Azure Portal Lab oferă acces liber la resursele Azure pentru finalizarea pașilor din această unitate. Laboratoarele Azure Portal nu au niciun efect asupra abonamentului dvs. Azure. Nu veți fi taxat.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Laboratorul dvs. Azure Portal este gata.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Da, activați un laborator nou</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Este activ deja un laborator Azure Portal pentru o altă unitate</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>În acest moment aveți deschis un laborator Azure Portal pentru o altă unitate ({lab-name}). Doriți să renunțați la laboratorul curent și să activați un laborator nou pentru această unitate?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Reîncercați lansarea laboratorului</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Conectați-vă pentru a lansa portalul Microsoft Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Cerințe preliminare:</value>
+  </data>
+  <data name="preview">
+    <value>Previzualizare</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Această interfață API este oferită ca previzualizare pentru dezvoltatori și poate suferi modificări în funcție de feedbackul pe care îl primim. Nu folosiți această interfață API într-un mediu de producție.</value>
+  </data>
+  <data name="previous">
+    <value>Anterior</value>
+  </data>
+  <data name="previousPage">
+    <value>Pagina anterioară</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Documente din versiunea precedentă</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Angajament de respectare a confidențialității</value>
+  </data>
+  <data name="product">
+    <value>Produs</value>
+  </data>
+  <data name="productFeedback">
+    <value>Feedback legat de produs</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Produse</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Aplicații de business</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Proprietăți</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Detalii proprietate</value>
+  </data>
+  <data name="propertyValue">
+    <value>Valoare proprietate</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Se creează sandboxul. Acest proces va dura doar un minut...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Filtre rapide</value>
+  </data>
+  <data name="quizComplete">
+    <value>Felicitări!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Imposibil de încărcat comentariile. A fost depășită limita privind rata interfețelor API din GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Imposibil de căutat problemele. A fost depășită limita privind rata interfețelor API din GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Aveți comentarii sau sugestii? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Spuneți-ne aici&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Vă rugăm să ne spuneți ideile dvs. Apreciem feedbackul dvs., indiferent de limbă.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Citiți în limba engleză</value>
+  </data>
+  <data name="readonly">
+    <value>doar citire</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Ați obținut această realizare {0} pentru finalizarea {1}.</value>
+  </data>
+  <data name="references">
+    <value>Referințe</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Rafinare conținut învățare</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Acest modul face parte din următoarele căi de instruire</value>
+  </data>
+  <data name="remaining">
+    <value>rămas</value>
+  </data>
+  <data name="remarks">
+    <value>Observații</value>
+  </data>
+  <data name="removeItem">
+    <value>Eliminare {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Perioadă de reînnoire</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Vă mulțumim pentru că ne-ați raportat preocuparea dvs. Analizăm cu foarte mare atenție informațiile pe care le trimiteți și vom lua măsurile necesare pentru rezolvarea acestei probleme. Ca urmare a preocupărilor de natură juridică și legate de confidențialitate, este posibil să nu vă putem furniza actualizări suplimentare legate de informațiile pe care le-ați trimis. Vă mulțumim din nou pentru că ne-ați contactat.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Raportați o problemă</value>
+  </data>
+  <data name="requestBody">
+    <value>Corp solicitare</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Corpul solicitării poate fi unul dintre următoarele:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Antet solicitare</value>
+  </data>
+  <data name="requestPreview">
+    <value>Solicitare previzualizare</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL solicitare</value>
+  </data>
+  <data name="required">
+    <value>obligatoriu</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Parametri obligatorii</value>
+  </data>
+  <data name="requirements">
+    <value>Cerințe</value>
+  </data>
+  <data name="resource_type">
+    <value>Tipuri</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Răspunsuri</value>
+  </data>
+  <data name="restart">
+    <value>Repornire</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Nu vă putem invita la o entitate găzduită a sandboxului din cauza restricțiilor aplicate asupra contului dvs. Contactați administratorul.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} rezultate găsite</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Reîncercați activarea sandboxului</value>
+  </data>
+  <data name="returns">
+    <value>Retururi</value>
+  </data>
+  <data name="returnValue">
+    <value>Valoare retur</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Revizuiți istoricul pentru calea de instruire</value>
+  </data>
+  <data name="roles">
+    <value>Roluri</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Executare</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Sandbox activat!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Accesul la Sandbox a expirat</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Sandboxul dvs. a expirat. Activați un sandbox nou.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Sandboxul vă va oferi acces liber la resursele Azure necesare pentru finalizarea acestei unități. Abonamentul dvs. Azure nu va fi debitat.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Folosirea unui sandbox necesită acceptarea unei invitații de la o entitate găzduită Azure</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Sandboxul pentru acest mod este dezactivat temporar pentru mentenanță.</value>
+  </data>
+  <data name="search">
+    <value>Căutare</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Navigare în căutare</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Căutare în versiunile anterioare</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Filtrul de căutare este „{0}”. Atingeți pentru a elimina.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>Acum {0} secunde</value>
+  </data>
+  <data name="security">
+    <value>Securitate</value>
+  </data>
+  <data name="seeAlso">
+    <value>Vedeți și</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Versiune selectată</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Filtrați lista de limbi selectând o regiune sau tastând numele limbii sau codul de localizare.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Selectați pachetul</value>
+  </data>
+  <data name="selectVersion">
+    <value>Selectați versiunea</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Selectați rolul dvs.</value>
+  </data>
+  <data name="service">
+    <value>Service</value>
+  </data>
+  <data name="services">
+    <value>Servicii</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Serviciul este temporar indisponibil. Lucrăm pentru a remedia problema.</value>
+  </data>
+  <data name="share">
+    <value>Partajare</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Partajați această realizare pe {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Descoperă realizarea pe care tocmai am obținut-o pentru {moduleName} în secțiunea de învățare ghidată Microsoft. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Articol partajat] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Partajați acest document</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Partajați-vă realizarea:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Afișați toate clasele derivate</value>
+  </data>
+  <data name="signIn">
+    <value>Conectare</value>
+  </data>
+  <data name="signInAzure">
+    <value>Autentificați-vă cu contul dvs. Azure.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Conectați-vă pentru a vă verifica activitatea</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Sunteți conectat la componenta shell a spațiului cloud cu alt cont decât contul dvs. pentru documente. Deconectați-vă de la componenta shell a spațiului cloud pentru a reîncerca accesarea sandboxului.</value>
+  </data>
+  <data name="signingIn">
+    <value>Se autentifică...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Conectați-vă pentru a activa sandboxul</value>
+  </data>
+  <data name="signInToComment">
+    <value>Autentificați-vă pentru a adăuga comentarii</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Autentificați-vă pentru a oferi feedback legat de documentație</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Autentificați-vă pentru a oferi feedback</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Autentificați-vă&lt;/a&gt; pentru a crește limita privind rata interfețelor API din GitHub.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Conectați-vă pentru a vă adăuga reacția</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Conectați-vă pentru a salva progresul</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Conectați-vă&lt;/a&gt; pentru a vizualiza profilul de utilizator.</value>
+  </data>
+  <data name="signOut">
+    <value>Deconectare</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Feedback referitor la site</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Arhitect de soluții</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hmm, ceva nu a funcționat corect</value>
+  </data>
+  <data name="start">
+    <value>Start</value>
+  </data>
+  <data name="startHere">
+    <value>Începeți aici</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Pasul {step-index} din {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Structuri</value>
+  </data>
+  <data name="submit">
+    <value>Remitere</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Trimiteți feedbackul</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Informațiile au fost trimise cu succes!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Sugerează o idee legată de produs</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Activitatea nu a fost finalizată corect.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Vom actualiza această pagină pentru a oferi o nouă experiență interactivă. Reveniți în curând!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Vă mulțumim pentru feedback!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Nu este tocmai în regulă.</value>
+  </data>
+  <data name="theme">
+    <value>Temă</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Momentan nu există feedback pentru acest document. Feedbackul trimis va apărea aici.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Toți membrii acestei clase sunt siguri din perspectiva firelor.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Toți membrii de instanță ai aceste clase sunt siguri din perspectiva firelor.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Toți membrii statici ai aceste clase sunt siguri din perspectiva firelor.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Acest tip nu este sigur din perspectiva firelor.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Siguranță fir</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} reacții „nu apreciez”</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} reacții „apreciez”</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Sfat&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Titlu</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Comutare problemă</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Comutare unități</value>
+  </data>
+  <data name="trademarks">
+    <value>Mărci comerciale</value>
+  </data>
+  <data name="triggers">
+    <value>Declanșatoare</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Ați câștigat un trofeu pentru finalizare</value>
+  </data>
+  <data name="tryAgain">
+    <value>Încercați din nou</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Încercați codul în browserul dvs.</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Încercați API-ul REST cu intrările de mai jos.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>toți cei {0} colaboratori</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% finalizat!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Felicitări!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Continuați aici</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Colegi</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Resurse suplimentare</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Introducere</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0} minute rămase</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} minute până la finalizare</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Pașii următori</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Următorul tutorial</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Resurse</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Vedeți {0} sau sugerați îmbunătățiri pentru {1} pentru a deveni colaborator.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Ați aflat cum să...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Ați finalizat tutorialul „{0}”.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Veți afla cum să...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Aveți feedback sau v-ați blocat la o anumită parte a acestui tutorial?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Raportați o problemă pe GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Pașii următori</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Tweeturi administrate de</value>
+  </data>
+  <data name="type">
+    <value>tip</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Definiție tip</value>
+  </data>
+  <data name="typeParameters">
+    <value>Tastați parametri</value>
+  </data>
+  <data name="unit">
+    <value>Unitate</value>
+  </data>
+  <data name="unitComplete">
+    <value>Unitate finalizată</value>
+  </data>
+  <data name="unitMarker">
+    <value>Uniatea {index} din {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Pentru finalizarea acestei unități este necesar un sandbox</value>
+  </data>
+  <data name="units">
+    <value>Unități</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Parametri URI</value>
+  </data>
+  <data name="usage">
+    <value>Utilizare</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Utilizarea unei mașini virtuale</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Vizitați site-ul Laborator practic, unde veți găsi resurse de instruire integrate.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Utilizați computerul local</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Rămâneți pe acest site și urmați instrucțiunile utilizând echipamentul dvs. local.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Utilizarea acestui conector</value>
+  </data>
+  <data name="value">
+    <value>Valoare</value>
+  </data>
+  <data name="valueFrom">
+    <value>valoare de la</value>
+  </data>
+  <data name="version">
+    <value>Versiune</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Vizualizați această problemă pe GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Vedeți mai mult feedback pe GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Vizualizare pe GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Vizualizați informații despre utilizatorul {username} pe GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Vă recomandăm să folosiți Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Descărcați acum</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Documentație pentru Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Lansare mod VM</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Se încarcă mașina virtuală...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Pentru finalizarea acestei unități este necesară o mașină virtuală.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Modul VM oferă acces liber la mașina virtuală Azure pentru finalizarea pașilor din această unitate. Abonamentul dvs. Azure nu va fi debitat</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Da, activați o mașină virtuală nouă</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Este activă deja o mașină virtuală pentru o altă unitate</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Ați deschis deja o mașină virtuală în modulul {lab-name}. Dacă activați această mașină virtuală, veți pierde ceea ce ați lucrat în celălalt modul.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Reîncercați lansarea modului VM</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Conectați-vă pentru a lansa modul VM</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Avertisment&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>Acum {0} săptămâni</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Am aprecia foarte mult să ne spuneți părerile dvs. Alegeți tipul de feedback pe care doriți să-l furnizați:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Cerințe Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Documentație pentru Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Global</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Doriți să oferiți feedback?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Da</value>
+  </data>
+  <data name="youDidIt">
+    <value>Ați reușit!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Ați câștigat puncte de experiență pentru finalizarea verificării cunoștințelor.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Ați câștigat puncte de experiență pentru finalizarea activității.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Tocmai ați câștigat &lt;span class="experience-points"&gt;&lt;/span&gt; puncte de experiență.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Trebuie să răspundeți la toate întrebările înainte de a verifica ceea ce ați lucrat.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Trebuie să folosiți resursele oferite de sandbox pentru a verifica ceea ce ați lucrat.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Ați reușit</value>
+  </data>
+  <data name="yourAccount">
+    <value>Contul dvs.</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Contul dvs. a fost șters.</value>
+  </data>
+  <data name="yourData">
+    <value>Datele dvs.</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Descărcați sau ștergeți progresul și realizările salvate pe Docs. Ștergerea informațiilor dvs. nu are impact asupra identității dvs. Microsoft.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Lucrarea dvs. nu a fost finalizată corect.</value>
+  </data>
+</root>

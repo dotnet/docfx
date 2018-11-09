@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>ค่าที่ยอมรับแล้ว</value>
+  </data>
+  <data name="acceptInvite">
+    <value>ตอบรับคำเชิญ</value>
+  </data>
+  <data name="achievements">
+    <value>ความสำเร็จ</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>เช็คเอาท์ความสำเร็จที่ฉันได้รับสำหรับ {0} การเรียนรู้ตามคำแนะนำ Microsoft!</value>
+  </data>
+  <data name="actions">
+    <value>การดำเนินการ</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>ใช่ เปิดใช้งาน Sandbox ใหม่</value>
+  </data>
+  <data name="activateSandbox">
+    <value>เปิดใช้งาน Sandbox</value>
+  </data>
+  <data name="aDayAgo">
+    <value>หนึ่งวันที่แล้ว</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>คุณลักษณะและข้อกำหนดเพิ่มเติม</value>
+  </data>
+  <data name="addParameter">
+    <value>เพิ่มพารามิเตอร์</value>
+  </data>
+  <data name="administrator">
+    <value>ผู้ดูแลระบบ</value>
+  </data>
+  <data name="advanced">
+    <value>ขั้นสูง</value>
+  </data>
+  <data name="africa">
+    <value>แอฟริกา</value>
+  </data>
+  <data name="all">
+    <value>ทั้งหมด</value>
+  </data>
+  <data name="allapis">
+    <value>API ทั้งหมด</value>
+  </data>
+  <data name="allPackages">
+    <value>แพคเกจทั้งหมด</value>
+  </data>
+  <data name="americas">
+    <value>อเมริกา</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>หนึ่งนาทีที่แล้ว</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>หนึ่งเดือนที่แล้ว</value>
+  </data>
+  <data name="anHourAgo">
+    <value>หนึ่งชั่วโมงที่แล้ว</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} การอ้างอิง API</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>การค้นหา API ไม่พร้อมใช้งาน โปรดลองอีกครั้งในภายหลัง</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>เวอร์ชันก่อนหน้า</value>
+  </data>
+  <data name="areYouSure">
+    <value>คุณแน่ใจหรือไม่</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>ไม่สามารถยกเลิกการลบข้อมูลของคุณได้</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>หนึ่งวินาทีที่แล้ว</value>
+  </data>
+  <data name="asia">
+    <value>เอเชีย</value>
+  </data>
+  <data name="askQuestion">
+    <value>ถามคำถาม</value>
+  </data>
+  <data name="assemblies">
+    <value>การประกอบต่างๆ</value>
+  </data>
+  <data name="assembly">
+    <value>การประกอบ</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>กิจกรรมที่แนบ</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>คุณสมบัติที่แนบ</value>
+  </data>
+  <data name="attributes">
+    <value>แอตทริบิวต์</value>
+  </data>
+  <data name="avatar">
+    <value>รูปประจำตัว</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>หนึ่งสัปดาห์ที่แล้ว</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell จะใช้การสมัครสมาชิก Azure ที่มีอยู่แล้วของคุณ การใช้ Cloud Shell และการเริ่มคำสั่งจะทำให้เกิดค่าใช้จ่ายขึ้น</value>
+  </data>
+  <data name="azureDocs">
+    <value>คู่มือ Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>คุณได้รับป้ายในการดำเนินการให้เสร็จสิ้น</value>
+  </data>
+  <data name="begin">
+    <value>เริ่มต้น</value>
+  </data>
+  <data name="beginner">
+    <value>ระดับเริ่มต้น</value>
+  </data>
+  <data name="beta">
+    <value>เบต้า</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>เนื้อความ</value>
+  </data>
+  <data name="breadcrumb">
+    <value>การแสดงเส้นทาง</value>
+  </data>
+  <data name="browse">
+    <value>เลือกดู</value>
+  </data>
+  <data name="browseCode">
+    <value>เรียกดูรหัส</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>นักวิเคราะห์ทางธุรกิจ</value>
+  </data>
+  <data name="businessUser">
+    <value>ผู้ใช้ทางธุรกิจ</value>
+  </data>
+  <data name="calls">
+    <value>การโทร</value>
+  </data>
+  <data name="capabilities">
+    <value>ความสามารถ</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;ข้อควรระวัง&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>ตรวจสอบคำตอบของคุณ</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>ตรวจสอบงานของคุณอีกครั้ง</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>ตรวจสอบความรู้ของคุณ</value>
+  </data>
+  <data name="checkYourWork">
+    <value>ตรวจสอบงานของคุณ</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>เลือกการตอบสนอง</value>
+  </data>
+  <data name="claimReward">
+    <value>ปลดล็อกความสำเร็จ</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>ชั้นเรียน</value>
+  </data>
+  <data name="clearfilter">
+    <value>ล้างตัวกรอง</value>
+  </data>
+  <data name="clearterm">
+    <value>ล้างคำ</value>
+  </data>
+  <data name="clickForRSS">
+    <value>คลิกที่ฟีดของ RSS</value>
+  </data>
+  <data name="close">
+    <value>ปิด</value>
+  </data>
+  <data name="closedIssue">
+    <value>ปัญหาที่ปิดแล้ว</value>
+  </data>
+  <data name="closedIssues">
+    <value>ปัญหาที่ปิดแล้ว</value>
+  </data>
+  <data name="clsCompliant">
+    <value>API นี้ไม่ตรงตามมาตรฐาน CLS</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>ทางเลือกอื่นที่ตรงตามมาตรฐาน CLS</value>
+  </data>
+  <data name="code">
+    <value>รหัส</value>
+  </data>
+  <data name="collaborator">
+    <value>ผู้ทำงานร่วมกัน</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>ผู้ใช้รายนี้ได้รับเชิญให้ทำงานร่วมกันใน {repo}</value>
+  </data>
+  <data name="commands">
+    <value>คำสั่ง</value>
+  </data>
+  <data name="comment">
+    <value>ข้อคิดเห็น</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} ข้อคิดเห็น</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} แสดงข้อคิดเห็นเมื่อ {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>ข้อคิดเห็น</value>
+  </data>
+  <data name="complete">
+    <value>เสร็จสมบูรณ์</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>กำลังกำหนดค่า Cloud Shell สำหรับการเข้าถึง Sandbox...</value>
+  </data>
+  <data name="confused">
+    <value>สับสน</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} การตอบสนองว่าสับสน</value>
+  </data>
+  <data name="congratulations">
+    <value>ยินดีด้วย!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>การเชื่อมต่อต่อบัญชี</value>
+  </data>
+  <data name="constructorDetails">
+    <value>รายละเอียดคอนสตรักเตอร์</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>ผู้ผลิต</value>
+  </data>
+  <data name="contentFeedback">
+    <value>คำติชมเนื้อหา</value>
+  </data>
+  <data name="contents">
+    <value>เนื้อหาต่างๆ</value>
+  </data>
+  <data name="continue">
+    <value>ดำเนินการต่อ</value>
+  </data>
+  <data name="continueHere">
+    <value>ดำเนินการต่อที่นี่</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>ดำเนินการต่อไปยังขั้นตอนแรก</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>ดำเนินการต่อไปยังมอดูลถัดไป</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>ดำเนินการต่อโดยไม่มีการบันทึกการดำเนินการ</value>
+  </data>
+  <data name="contributor">
+    <value>ผู้สนับสนุน</value>
+  </data>
+  <data name="contributorDescription">
+    <value>ผู้ใช้รายนี้เคยมีส่วนร่วมในที่เก็บ {repo}</value>
+  </data>
+  <data name="contributorGuide">
+    <value>สนับสนุน</value>
+  </data>
+  <data name="contributors">
+    <value>ผู้สนับสนุน</value>
+  </data>
+  <data name="copy">
+    <value>คัดลอก</value>
+  </data>
+  <data name="correctChoice">
+    <value>ตัวเลือกถูกต้อง</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>คุณลงชื่อเข้าใช้ด้วยบัญชีองค์กรของ Microsoft ({0}) และประสบการณ์ของคุณจะแตกต่างไปจากการใช้งานบัญชีส่วนบุคคลดังนี้:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>คุณสมบัติของเกมิฟิเคชันบางประการยังไม่พร้อมให้พนักงานของ Microsoft ใช้งาน</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>โปรไฟล์ของคุณจะระบุสู่สาธารณะว่าคุณทำงานที่ Microsoft</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>หากคุณสูญเสียการเข้าถึงอีเมล คุณจะสามารถเข้าสู่ระบบไซต์นี้ได้</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>หากคุณต้องการใช้ไซต์ในสำหรับกิจกรรมส่วนบุคคล โปรดลงชื่อเข้าใช้ด้วยบัญชีอื่น</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>หากต้องการเชื่อมต่อบัญชี คุณจำเป็นต้องทำตามข้อมูลต่อไปนี้</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>โดยการใช้ Microsoft Learn &lt;strong&gt;คุณเข้าใจและยอมรับ&lt;/strong&gt; ว่าการเป็นสมาชิกของคุณจะหมายความว่าเครือข่ายของไซต์และแอปพลิเคชันของเราจะบันทึกไว้ และติดตามความสำเร็จและกิจกรรมต่างๆ ของคุณและเราอาจแบ่งปันผลลัพธ์และกิจกรรมต่างๆ กับทีมอื่นภายใน Microsoft นอกจากนี้ ชื่อผู้ใช้ ชื่อที่แสดง ความสำเร็จ และกิจกรรมของคุณจะเปิดเผยต่อสาธารณะ&lt;ul&gt;&lt;li&gt;โปรไฟล์ของคุณจะระบุสู่สาธารณะว่าคุณทำงานที่ Microsoft&lt;/li&gt;&lt;li&gt;หากคุณสูญเสียการเข้าถึงอีเมล คุณจะไม่สามารถเข้าสู่ระบบไซต์นี้ได้&lt;/li&gt;&lt;li&gt;คุณสมบัติของเกมิฟิเคชันบางประการยังไม่พร้อมให้พนักงานของ Microsoft ใช้งาน&lt;/li&gt;&lt;li&gt;หากคุณต้องการใช้ไซต์ในสำหรับกิจกรรมส่วนบุคคล โปรดลงชื่อเข้าใช้ด้วยบัญชีอื่น&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>เมื่อได้เป็นสมาชิก คุณจะเข้าใจและยอมรับว่าการเป็นสมาชิก Microsoft Learn หมายถึงเครือข่ายของไซต์และแอปพลิเคชันของเราจะบันทึกความสำเร็จและกิจกรรมของคุณ ชื่อผู้ใช้ ชื่อที่แสดง ความสำเร็จ และกิจกรรมของคุณจะเปิดเผยต่อสาธารณะ</value>
+  </data>
+  <data name="createNewArchive">
+    <value>สร้างที่เก็บถาวรใหม่</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>กำลังสร้างการเชื่อมต่อ</value>
+  </data>
+  <data name="currentSelection">
+    <value>การเลือกปัจจุบัน:</value>
+  </data>
+  <data name="dark">
+    <value>มืด</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} วันที่แล้ว</value>
+  </data>
+  <data name="defaultValue">
+    <value>ค่าเริ่มต้น</value>
+  </data>
+  <data name="definition">
+    <value>คำจำกัดความ</value>
+  </data>
+  <data name="definitions">
+    <value>คำจำกัดความ</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>ผู้แทน</value>
+  </data>
+  <data name="delete">
+    <value>ลบ</value>
+  </data>
+  <data name="deleteParameter">
+    <value>ลบพารามิเตอร์</value>
+  </data>
+  <data name="deployToAzure">
+    <value>ปรับใช้กับ Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>API นี้ล้าสมัยแล้ว</value>
+  </data>
+  <data name="derived">
+    <value>สิ่งที่ได้รับ</value>
+  </data>
+  <data name="description">
+    <value>คำอธิบาย</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>นักพัฒนา</value>
+  </data>
+  <data name="developers">
+    <value>นักพัฒนา</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>ปิดกล่องข้อความนี้</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>มี Sandbox อื่นเปิดใช้งานอยู่</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>คุณได้ทำการเปิดใช้งาน sandbox ในโมดูล &lt;a href="{0}"&gt;{1}&lt;/a&gt;. หากคุณเปิดใช้งาน sandbox นี้ คุณจะสูญเสียงานของคุณในโมดูลอื่น</value>
+  </data>
+  <data name="disable">
+    <value>ปิดใช้งาน</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>ผลลัพธ์การค้นหามาจากคู่มือเวอร์ชันก่อนหน้าและไม่ได้รับการอัปเดตเป็นประจำ</value>
+  </data>
+  <data name="docsProfile">
+    <value>โปรไฟล์ Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>รายละเอียดเอกสาร</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>อย่าแก้ไขส่วนนี้ กำหนดให้ต้องจัดทำ docs.microsoft.com ➟ การเชื่อมโยงปัญหา GitHub</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>คู่มือ .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>ตัวแก้ไข .NET</value>
+  </data>
+  <data name="download">
+    <value>ดาวน์โหลด</value>
+  </data>
+  <data name="downloadPdf">
+    <value>ดาวน์โหลด PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>ดาวน์โหลด ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>ผลลัพธ์ของการดำเนินงานนี้เป็นแบบไดนามิก</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>รับความสำเร็จเพิ่ม</value>
+  </data>
+  <data name="edit">
+    <value>แก้ไข</value>
+  </data>
+  <data name="editdesc">
+    <value>แก้ไขเอกสารนี้</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>การปรับใช้อินเทอร์เฟซแบบเปิดเผย</value>
+  </data>
+  <data name="email">
+    <value>อีเมล</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>จำเป็นต้องใช้อีเมลเพื่อเปิดใช้งาน Sandbox</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>บัญชี Microsoft ของคุณจะต้องเชื่อมโยงกับอีเมลที่ถูกต้องเพื่อเปิดใช้งาน Sandbox ไปที่ &lt;a href="https://account.live.com" target="_blank"&gt;การตั้งค่าบัญชี Microsoft&lt;/a&gt; เพื่อเชื่อมต่ออีเมลของคุณและลองอีกครั้ง</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>ชื่อจะต้องไม่ว่าง</value>
+  </data>
+  <data name="enable">
+    <value>เปิดใช้งาน</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>เข้าสู่โหมดโฟกัส</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enums</value>
+  </data>
+  <data name="error">
+    <value>ข้อผิดพลาด</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>ข้อผิดพลาดในการสร้างข้อคิดเห็น คุณสามารถลองอีกครั้งบน &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; ได้ หากต้องการ</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>ข้อผิดพลาดในการสร้างปัญหา คุณสามารถลองอีกครั้งบน &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; ได้ หากต้องการ</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>เราไม่สามารถโหลดผลลัพธ์การค้นหาของคุณได้ โปรดลองอีกครั้งในภายหลัง</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>ข้อผิดพลาดในการโหลดข้อคิดเห็น</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>ข้อผิดพลาดในการโหลดคำติชม</value>
+  </data>
+  <data name="europe">
+    <value>ยุโรป</value>
+  </data>
+  <data name="eventDetails">
+    <value>รายละเอียดเหตุการณ์</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>กิจกรรม</value>
+  </data>
+  <data name="examples">
+    <value>ตัวอย่าง</value>
+  </data>
+  <data name="exceptions">
+    <value>ข้อยกเว้น</value>
+  </data>
+  <data name="exit">
+    <value>ออก</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>ออกจากโหมดโฟกัส</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>ขยายเมนูข้อคิดเห็นเกี่ยวกับคู่มือ</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>สำรวจมอดูลอื่น</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>สำรวจเส้นทางอื่น</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>คุณไม่มีข้อมูลสำหรับส่งออกใดๆ</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>เมธอดเพื่อการขยาย</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>คำติชม</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[ป้อนคำติชมที่นี่]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>มอบคำติชมผลิตภัณฑ์</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>ฟิลด์</value>
+  </data>
+  <data name="fieldValue">
+    <value>ค่าเขตข้อมูล</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>ตัวกรอง</value>
+  </data>
+  <data name="findALanguage">
+    <value>ค้นหาภาษา</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>ค่าจาระไนนี้มี {0} แอตทริบิวต์ซึ่งช่วยให้สามารถนำค่าสมาชิกมาทำการผสมผสานระดับบิตได้</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>รายละเอียดฟังก์ชัน</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>ฟังก์ชัน</value>
+  </data>
+  <data name="getHelp">
+    <value>รับความช่วยเหลือ</value>
+  </data>
+  <data name="giveFeedback">
+    <value>ให้คำติชม</value>
+  </data>
+  <data name="globalParameters">
+    <value>พารามิเตอร์ส่วนกลาง</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>กลับไปเพื่อทำให้เสร็จสิ้น</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>กลับไปเพื่อทำมอดูลให้เสร็จสิ้น</value>
+  </data>
+  <data name="goodWork">
+    <value>ทำงานได้ดี!</value>
+  </data>
+  <data name="greatWork">
+    <value>ทำงานได้ยอดเยี่ยม!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>แล็บแบบลงมือทำ</value>
+  </data>
+  <data name="headers">
+    <value>ส่วนหัว</value>
+  </data>
+  <data name="heart">
+    <value>หัวใจ</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} การตอบสนองด้วยหัวใจ</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>ช่วยฉันเลือก</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;คำแนะนำ:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>ไชโย</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} การตอบสนองด้วยไชโย</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} ชั่วโมงที่แล้ว</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>เราสามารถพัฒนาได้อย่างไร</value>
+  </data>
+  <data name="hr">
+    <value>ชม.</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} ชม. {1} นาที</value>
+  </data>
+  <data name="implements">
+    <value>การดำเนินการ</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;ข้อสำคัญ&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>ใน</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>ตัวเลือกไม่ถูกต้อง</value>
+  </data>
+  <data name="inheritance">
+    <value>การสืบทอด</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>สมาชิกที่สืบทอดมา</value>
+  </data>
+  <data name="input">
+    <value>ข้อมูลป้อนเข้า</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>อินเทอร์เฟซ</value>
+  </data>
+  <data name="intermediate">
+    <value>ปานกลาง</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>API นี้รองรับโครงสร้างพื้นฐานผลิตภัณฑ์ และไม่ได้มีไว้สำหรับใช้โดยตรงจากรหัสของคุณ</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>คำติชม Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>เปิดเมื่อ {time ago} โดย {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>รายงานปัญหาผลิตภัณฑ์</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>หน้านี้มีประโยชน์หรือไม่</value>
+  </data>
+  <data name="itPro">
+    <value>IT Pro</value>
+  </data>
+  <data name="justNow">
+    <value>ตอนนี้</value>
+  </data>
+  <data name="key">
+    <value>คีย์:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>ตรวจสอบความรู้</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>ตรวจสอบความรู้เสร็จสมบูรณ์ คุณตอบคำถามทุกข้ออย่างถูกต้อง</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>ตรวจสอบความรู้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>คุณทำการตรวจสอบความรู้{tutorial}เสร็จสมบูรณ์แล้ว</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>คุณทำส่วน{tutorial}ของโมดูลนี้เสร็จแล้ว ตอนนี้ คุณสามารถไปทำต่อที่ส่วนถัดไป{nextUnitName}ได้แล้ว</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>ขออภัย เราไม่สามารถตรวจสอบระดับความรู้ของคุณได้ โปรดลองใหม่อีกครั้ง</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>คุณทำส่วนนี้เสร็จแล้ว ดำเนินการต่อไปที่ส่วนถัดไป {nextUnitName}</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>คุณทำส่วนนี้เสร็จแล้ว ดำเนินการต่อไปที่บทช่วยสอนเพิ่มเติม</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>คุณได้ปลดล็อคความสำเร็จ{moduleName}แล้ว ด้วยการตรวจสอบความรู้นี้จนเสร็จสมบูรณ์</value>
+  </data>
+  <data name="landmarkToc">
+    <value>สารบัญ</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>ตัวกรองสารบัญ</value>
+  </data>
+  <data name="language">
+    <value>ภาษา</value>
+  </data>
+  <data name="laugh">
+    <value>หัวเราะ</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} การตอบสนองด้วยหัวเราะ</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>สำรวจเทคโนโลยีของ Microsoft ด้วยบทช่วยสอนสดรวมถึงกิจกรรมแบบลงมือทำ ประสบการณ์นี้อยู่ในตัวอย่าง โปรด&lt;a href="https://aka.ms/learningfeedback"&gt;ส่งความคิดเห็นของคุณมาให้เรา&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>เส้นทางการเรียนรู้</value>
+  </data>
+  <data name="learnmore">
+    <value>เรียนรู้เพิ่มเติม</value>
+  </data>
+  <data name="leaveAComment">
+    <value>แสดงความคิดเห็น</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>นอกจากนี้คุณยังสามารถให้คำติชม&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;โดยตรงบน GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;</value>
+  </data>
+  <data name="level">
+    <value>ระดับ {0}</value>
+  </data>
+  <data name="levels">
+    <value>ระดับ</value>
+  </data>
+  <data name="light">
+    <value>สว่าง</value>
+  </data>
+  <data name="limits">
+    <value>ขีดจำกัด</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>กำลังโหลด...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>กำลังโหลดข้อคิดเห็น...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>กำลังโหลดข้อมูลของ Sandbox...</value>
+  </data>
+  <data name="loadMore">
+    <value>เพิ่มเติม&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>โหลดผลลัพธ์เพิ่มเติม</value>
+  </data>
+  <data name="login">
+    <value>เข้าสู่ระบบ</value>
+  </data>
+  <data name="loginAzure">
+    <value>โปรดเข้าสู่ระบบด้วยบัญชี Azure</value>
+  </data>
+  <data name="mainNavigation">
+    <value>การนำทางหลัก</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>จัดการโปรไฟล์ของฉัน</value>
+  </data>
+  <data name="maximize">
+    <value>ขยาย</value>
+  </data>
+  <data name="member">
+    <value>สมาชิก</value>
+  </data>
+  <data name="memberDescription">
+    <value>ผู้ใช้รายนี้เป็นสมาชิกขององค์กร {org}</value>
+  </data>
+  <data name="memberDetails">
+    <value>รายละเอียดสมาชิก</value>
+  </data>
+  <data name="members">
+    <value>สมาชิก</value>
+  </data>
+  <data name="methodDetails">
+    <value>รายละเอียดวิธีการ</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>วิธีการ</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>ประกาศความเป็นส่วนตัวของพนักงานของ Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>คุณได้ลงชื่อเข้าใจด้วยบัญชีองค์กรของ Microsoft ({email}) โดยการใช้ Microsoft Learn &lt;strong&gt;คุณเข้าใจและยอมรับ&lt;/strong&gt; ว่าการเป็นสมาชิกของคุณจะหมายความว่าเครือข่ายของไซต์และแอปพลิเคชันของเราจะบันทึกไว้ และติดตามความสำเร็จและกิจกรรมต่างๆ ของคุณและเราอาจแบ่งปันผลลัพธ์และกิจกรรมต่างๆ กับทีมอื่นภายใน Microsoft นอกจากนี้ ชื่อผู้ใช้ ชื่อที่แสดง ความสำเร็จ และกิจกรรมของคุณจะเปิดเผยต่อสาธารณะ</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>ปัญหาการเรียนรู้ของ Microsoft</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn คือแพลตฟอร์มโฉมใหม่และเรามุ่งมั่นในการปรับปรุงเนื้อหาและประสบการณ์โดยอิงจากผลตอบรับของลูกค้า
+
+เราอยากได้ยินจากคุณ!
+
+โปรดเติมข้อมูลดังต่อไปนี้ให้แก่เรา:
+1. ปัญหาหรือคำติชมที่คุณต้องการรายงาน
+2. มีสิ่งอื่นใดที่คุณต้องการแจ้งให้เราทราบหรือไม่
+
+หมายเหตุ: ในขณะที่เราไม่สามารถตอบสนองต่อลูกค้าได้ทันทีนั้น โปรดทราบไว้ว่าเรากำลังตรวจสอบคำติชมทุกข้อความที่เราได้รับเข้ามานั่นเอง
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>ตะวันออกกลาง</value>
+  </data>
+  <data name="min">
+    <value>{0} นาที</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>ย่อ</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} นาที</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} นาทีที่แล้ว</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 นาที</value>
+  </data>
+  <data name="minuteToRead">
+    <value>เหลือเวลา {0} นาทีในการอ่าน</value>
+  </data>
+  <data name="module">
+    <value>โมดูล</value>
+  </data>
+  <data name="moduleComplete">
+    <value>มอดูลเสร็จสมบูรณ์</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>มอดูลไม่เสร็จสมบูรณ์</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} การอ้างอิงมอดูล</value>
+  </data>
+  <data name="modules">
+    <value>โมดูล</value>
+  </data>
+  <data name="modulesInPath">
+    <value>โมดูลในพาธการเรียนรู้นี้</value>
+  </data>
+  <data name="monikerFallback">
+    <value>เพจที่ร้องขอไม่พร้อมใช้งานสำหรับ {0} คุณได้ถูกเปลี่ยนเส้นทางไปที่ผลิตภัณฑ์รุ่นใหม่ล่าสุดที่หน้านี้จะพร้อมให้ใช้งาน</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} เดือนที่แล้ว</value>
+  </data>
+  <data name="more">
+    <value>อื่นๆ</value>
+  </data>
+  <data name="moreInfo">
+    <value>ข้อมูลเพิ่มเติม</value>
+  </data>
+  <data name="moreTutorials">
+    <value>บทช่วยสอนเพิ่มเติม</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} โมดูล</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} หน่วย</value>
+  </data>
+  <data name="name">
+    <value>ชื่อ</value>
+  </data>
+  <data name="namespace">
+    <value>Namespace</value>
+  </data>
+  <data name="namespaces">
+    <value>Namespace</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>ระบบข้อคิดเห็นแบบใหม่ของเราสร้างในวันที่ออกตัว GitHub อ่านเกี่ยวกับการเปลี่ยนแปลงใน &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;บล็อกโพสต์ของเรา&lt;/a&gt;</value>
+  </data>
+  <data name="next">
+    <value>ถัดไป</value>
+  </data>
+  <data name="nextPage">
+    <value>หน้าถัดไป</value>
+  </data>
+  <data name="no">
+    <value>ไม่</value>
+  </data>
+  <data name="noAchievements">
+    <value>ขณะนี้คุณไม่มีความสำเร็จ &lt;a href="{0}"&gt;ทำโมดูลให้เสร็จสมบูรณ์เพื่อรับความสำเร็จบางส่วน&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} ไม่มีความสำเร็จ</value>
+  </data>
+  <data name="noClosed">
+    <value>ไม่มีปัญหาที่ปิดแล้ว</value>
+  </data>
+  <data name="noOpen">
+    <value>ไม่มีปัญหาที่เปิดอยู่</value>
+  </data>
+  <data name="noOutput">
+    <value>ไม่มีเอาท์พุท</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>ไม่พบผลลัพธ์</value>
+  </data>
+  <data name="noResultsRest">
+    <value>ยังไม่พบผลลัพธ์ ให้ลองต่อไป...</value>
+  </data>
+  <data name="noResultsToc">
+    <value>ไม่พบผลลัพธ์สำหรับคำว่า {term}&lt;br /&gt;&lt;a href="{url}"&gt;ค้นหาคำว่า "{filter-text}"ในเอกสาร {scope} ทั้งหมด&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;หมายเหตุ&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>หมายเหตุถึงผู้โทร</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>หมายเหตุถึงผู้ดำเนินการ</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>หมายเหตุถึงผู้สร้างการสืบทอด</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} ปิดแล้ว</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} เปิดอยู่</value>
+  </data>
+  <data name="officeDocs">
+    <value>คู่มือ Office</value>
+  </data>
+  <data name="ok">
+    <value>ตกลง</value>
+  </data>
+  <data name="okGotIt">
+    <value>ตกลง เข้าใจแล้ว</value>
+  </data>
+  <data name="oneModule">
+    <value>1 โมดูล</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 หน่วย</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>การนำทางในหน้า</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>ในวันที่ {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>ปัญหาที่เปิดอยู่</value>
+  </data>
+  <data name="openIssues">
+    <value>ปัญหาที่เปิดอยู่</value>
+  </data>
+  <data name="operationId">
+    <value>ID การดำเนินงาน:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>ผู้ดำเนินการ</value>
+  </data>
+  <data name="optionalParameters">
+    <value>พารามิเตอร์เผื่อเลือก</value>
+  </data>
+  <data name="options">
+    <value>ตัวเลือก</value>
+  </data>
+  <data name="output">
+    <value>เอาท์พุท</value>
+  </data>
+  <data name="overloads">
+    <value>โอเวอร์โหลด</value>
+  </data>
+  <data name="overrides">
+    <value>แทนที่</value>
+  </data>
+  <data name="overview">
+    <value>ภาพรวม</value>
+  </data>
+  <data name="owner">
+    <value>เจ้าของ</value>
+  </data>
+  <data name="ownerDescription">
+    <value>ผู้ใช้รายนี้เป็นเจ้าของที่เก็บ {repo}</value>
+  </data>
+  <data name="pacific">
+    <value>แปซิฟิก</value>
+  </data>
+  <data name="package">
+    <value>แพคเกจ</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} การอ้างอิงแพคเกจ</value>
+  </data>
+  <data name="packages">
+    <value>แพคเกจ</value>
+  </data>
+  <data name="page">
+    <value>หน้า {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>การดำเนินการบนหน้า</value>
+  </data>
+  <data name="parameters">
+    <value>พารามิเตอร์</value>
+  </data>
+  <data name="path">
+    <value>เส้นทาง:</value>
+  </data>
+  <data name="pickReaction">
+    <value>เลือกการตอบสนองของคุณ</value>
+  </data>
+  <data name="platform">
+    <value>แพลตฟอร์ม</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>โปรดป้อนเขตข้อมูลนี้</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>โปรดลองใหม่อีกครั้ง</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>เปิดใช้พอร์ทัล Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>กำลังโหลดพอร์ทัล Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>เปิดแล็บในหน้าต่างใหม่</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>หน่วยนี้ต้องใช้พอร์ทัล Azure เพื่อทำให้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>พอร์ทัลแล็บของ Azure จะให้การเข้าถึงทรัพยากรของ Azure แบบไม่มีค่าใช้จ่ายเพื่อให้ทำขั้นตอนภายในหน่วยนี้ให้เสร็จสมบูรณ์ แล็บพอร์ทัล Azure ไม่มีผลกระทบต่อการสมัครใช้งาน Azure ของคุณ คุณจะไม่ต้องจ่ายค่าธรรมเนียม</value>
+  </data>
+  <data name="portallab_ready">
+    <value>แล็บพอร์ทัล Azure ของคุณพร้อมแล้ว</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>ใช่ เปิดใช้งานแล็บใหม่</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>แล็บพอร์ทัล Azure สำหรับหน่วยอื่นๆ ทำงานอยู่แล้ว</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>คุณเปิดพอร์ทัลแล็บของ Azure ในหน่วยอื่นอยู่ในตอนนี้ ({lab-name}) คุณต้องการทิ้งแล็บปัจจุบันของคุณแล้วเปิดใช้งานแล็บใหม่สำหรับหน่วยนี้หรือไม่</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>ลองเปิดใช้งานแล็บใหม่</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>ลงชื่อเข้าใช้เพื่อเปิดใช้พอร์ทัล Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>สิ่งที่จำเป็นต้องมี</value>
+  </data>
+  <data name="preview">
+    <value>แสดงตัวอย่าง</value>
+  </data>
+  <data name="previewTypescript">
+    <value>API นี้จะแสดงเป็นตัวอย่างสำหรับนักพัฒนาและอาจมีการเปลี่ยนแปลงโดยขึ้นอยู่กับคำติชมที่เราได้รับ อย่าใช้ API นี้ในสภาพแวดล้อมผลิตภัณฑ์</value>
+  </data>
+  <data name="previous">
+    <value>ก่อนหน้า</value>
+  </data>
+  <data name="previousPage">
+    <value>หน้าก่อนหน้า</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Docs เวอร์ชันก่อนหน้า</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>คำชี้แจงสิทธิ์ส่วนบุคคล</value>
+  </data>
+  <data name="product">
+    <value>ผลิตภัณฑ์</value>
+  </data>
+  <data name="productFeedback">
+    <value>คำติชมผลิตภัณฑ์</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>ผลิตภัณฑ์</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>แอปพลิเคชันทางธุรกิจ</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>โปรไฟล์</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>คุณสมบัติ</value>
+  </data>
+  <data name="propertyDetails">
+    <value>รายละเอียดคุณสมบัติ</value>
+  </data>
+  <data name="propertyValue">
+    <value>ค่าคุณสมบัติ</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>กำลังสร้าง Sandbox ของคุณ จะใช้เวลาเพียงหนึ่งนาที...</value>
+  </data>
+  <data name="quickfilters">
+    <value>ตัวกรองด่วน</value>
+  </data>
+  <data name="quizComplete">
+    <value>ยินดีด้วย!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>ไม่สามารถโหลดข้อคิดเห็นได้ เกินขีดจำกัดอัตรา GitHub API แล้ว</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>ไม่สามารถค้นหาปัญหาได้ เกินขีดจำกัดอัตรา GitHub API แล้ว</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>ช้อคิดเห็นหรือข้อเสนอแนะ &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;บอกเราที่นี่&lt;/a&gt;</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>โปรดแชร์ความคิดของคุณ เรายินดีรับข้อคิดเห็นในภาษาใดก็ได้</value>
+  </data>
+  <data name="readInEnglish">
+    <value>อ่านในภาษาอังกฤษ</value>
+  </data>
+  <data name="readonly">
+    <value>อ่านอย่างเดียว</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>คุณได้รับความสำเร็จ {0} สำหรับการทำ {1} เสร็จสมบูรณ์</value>
+  </data>
+  <data name="references">
+    <value>เอกสารอ้างอิง</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>ปรับปรุงเนื้อหาการเรียนรู้</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>โมดูลนี้เป็นส่วนหนึ่งของเส้นทางการเรียนรู้เหล่านี้</value>
+  </data>
+  <data name="remaining">
+    <value>คงเหลือ</value>
+  </data>
+  <data name="remarks">
+    <value>หมายเหตุ</value>
+  </data>
+  <data name="removeItem">
+    <value>เอา {0} ออก</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>ระยะเวลาการต่ออายุ</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>ขอบคุณที่รายงานถึงความกังวลของคุณให้แก่เรา เราตรวจสอบการส่งรายงานเหล่านี้อย่างถี่ถ้วนและจะทำตามขั้นตอนที่เหมาะสมเพื่อแก้ไขปัญหานี้ เนื่องจากความกังวลด้านกฎหมายและความเป็นส่วนตัว เราจึงมิอาจมอบการอัพเดตเพิ่มเติมใดๆ เกี่ยวกับการส่งรายงานครั้งนี้ ขอบคุณอีกครั้งที่ทำการติดต่อเรา</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>รายงานปัญหา</value>
+  </data>
+  <data name="requestBody">
+    <value>เนื้อความของคำขอ</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>เนื้อความของคำขออาจเป็นหนึ่งในรายการต่อไปนี้</value>
+  </data>
+  <data name="requestHeader">
+    <value>ส่วนหัวของคำขอ</value>
+  </data>
+  <data name="requestPreview">
+    <value>ร้องขอภาพตัวอย่าง</value>
+  </data>
+  <data name="requestUrl">
+    <value>ร้องขอ URL</value>
+  </data>
+  <data name="required">
+    <value>จำเป็น</value>
+  </data>
+  <data name="requiredParameters">
+    <value>พารามิเตอร์ที่จำเป็น</value>
+  </data>
+  <data name="requirements">
+    <value>ข้อกำหนด</value>
+  </data>
+  <data name="resource_type">
+    <value>ประเภท</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>การตอบสนอง</value>
+  </data>
+  <data name="restart">
+    <value>รีสตาร์ต</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>เราไม่สามารถเชิญคุณไปยังผู้เช่า Sandbox ได้ เนื่องจากข้อจำกัดของบัญชีของคุณ โปรดติดต่อผู้ดูแลระบบของคุณ</value>
+  </data>
+  <data name="resultsFound">
+    <value>พบผลลัพธ์ {0}</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>ลองเปิดใช้งาน Sandbox ใหม่</value>
+  </data>
+  <data name="returns">
+    <value>การส่งคืน</value>
+  </data>
+  <data name="returnValue">
+    <value>ค่าส่งกลับ</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>ตรวจทานประวัติเส้นทางการเรียนรู้ของคุณ</value>
+  </data>
+  <data name="roles">
+    <value>บทบาท</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>เรียกใช้</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Sandbox เปิดใช้งานแล้ว!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>การเข้าถึง Sandbox หมดอายุแล้ว</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Sandbox ของคุณหมดอายุแล้ว เปิดใช้งาน Sandbox ใหม่</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>sandbox จะให้การเข้าถึงทรัพยากรของ Azure โดยไม่มีค่าใช้จ่ายให้แก่คุณเพื่อให้สามารถใช้ทรัพยากรที่ต้องการในการทำให้หน่วยนี้เสร็จสมบูรณ์ การสมัครใช้งาน Azure ของคุณจะไม่มีค่าธรรมเนียมใดๆ</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>การใช้คุณลักษณะ Sandbox ต้องให้คุณยอมรับ Azure Tenant Invite</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Sandbox สำหรับโมดูลนี้ถูกปิดใช้งานชั่วคราวเพื่อซ่อมบำรุง</value>
+  </data>
+  <data name="search">
+    <value>ค้นหา</value>
+  </data>
+  <data name="searchNavigation">
+    <value>การนำทางการค้นหา</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>ค้นหาเวอร์ชันก่อนหน้า</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>ฟิลเตอร์การค้นหาถูกตั้งค่าไว้เป็น "{0}" แตะเพื่อเอาออก</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} วินาทีที่แล้ว</value>
+  </data>
+  <data name="security">
+    <value>ความปลอดภัย</value>
+  </data>
+  <data name="seeAlso">
+    <value>นอกจากนี้ โปรดดู</value>
+  </data>
+  <data name="selectedVersion">
+    <value>เวอร์ชันที่เลือก</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>กรองรายการภาษาด้วยการเลือกภูมิภาคหรือพิมพ์ชื่อภาษาหรือรหัสตำแหน่งที่ตั้ง</value>
+  </data>
+  <data name="selectPackage">
+    <value>เลือกแพคเกจ</value>
+  </data>
+  <data name="selectVersion">
+    <value>เลือกรุ่น</value>
+  </data>
+  <data name="selectYourRole">
+    <value>เลือกบทบาทของคุณ</value>
+  </data>
+  <data name="service">
+    <value>บริการ</value>
+  </data>
+  <data name="services">
+    <value>การบริการ</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>บริการนี้ไม่สามารถใช้งานได้ชั่วคราว เรากำลังดำเนินการแก้ไขอยู่ในขณะนี้</value>
+  </data>
+  <data name="share">
+    <value>แชร์</value>
+  </data>
+  <data name="shareAchievement">
+    <value>แชร์ความสำเร็จใน {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>เช็คเอาท์ความสำเร็จที่ฉันได้รับใน {moduleName} การเรียนรู้ตามคำแนะนำ Microsoft #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[บทความที่แชร์] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>แชร์เอกสารนี้</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>แบ่งปันความสำเร็จของคุณ:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>ดูคลาสสืบทอดทั้งหมด</value>
+  </data>
+  <data name="signIn">
+    <value>ลงชื่อเข้าใช้</value>
+  </data>
+  <data name="signInAzure">
+    <value>โปรดลงชื่อเข้าใช้ด้วยบัญชี Azure</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>ลงชื่อเข้าใช้เพื่อตรวจสอบงานของคุณ</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>คุณลงชื่อเข้าใช้ใน Cloud Shell แล้ว ด้วยบัญชีที่แตกต่างจากบัญชีเอกสารของคุณ โปรดลงชื่อออกจาก Cloud Shell เพื่อลองเข้าถึง Sandbox อีกครั้ง</value>
+  </data>
+  <data name="signingIn">
+    <value>กำลังลงชื่อเข้าใช้...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>ลงชื่อเข้าใช้เพื่อเปิดใช้งาน Sandbox</value>
+  </data>
+  <data name="signInToComment">
+    <value>ลงชื่อเข้าใช้เพื่อแสดงความคิดเห็น</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>ลงชื่อเข้าใช้เพื่อแสดงข้อคิดเห็นเกี่ยวกับคู่มือ</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>ลงชื่อเข้าใช้เพื่อให้คำติชม</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;ลงชื่อเข้าใช้&lt;/a&gt; เพื่อเพิ่มขีดจำกัดอัตรา GitHub API ของคุณ</value>
+  </data>
+  <data name="signInToReact">
+    <value>ลงชื่อเข้าใช้เพื่อเพิ่มการตอบสนองของคุณ</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>ลงชื่อเข้าใช้เพื่อบันทึกความคืบหน้า</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;ลงชื่อเข้าใช้&lt;/a&gt; เพื่อดูโปรไฟล์ผู้ใช้ของคุณ</value>
+  </data>
+  <data name="signOut">
+    <value>ลงชื่อออก</value>
+  </data>
+  <data name="siteFeedback">
+    <value>ไซต์คำติชม</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>โซลูชันสถาปนิก</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>เอ่อ มีปัญหาบางอย่างเกิดขึ้น</value>
+  </data>
+  <data name="start">
+    <value>เริ่ม</value>
+  </data>
+  <data name="startHere">
+    <value>เริ่มต้นที่นี่</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>ขั้นตอน {step-index} ของ {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Structs</value>
+  </data>
+  <data name="submit">
+    <value>ส่ง</value>
+  </data>
+  <data name="submitFeedback">
+    <value>ส่งข้อคิดเห็น</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>การส่งเสร็จสมบูรณ์!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>เสนอความเห็นเกี่ยวกับผลิตภัณฑ์</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>งานไม่ได้เสร็จสมบูรณ์อย่างถูกต้อง</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>เรากำลังอัปเดตหน้านี้ด้วยประสบการณ์แบบโต้ตอบใหม่ กลับมาตรวจสอบเร็วๆ นี้!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>ขอบคุณสำหรับข้อคิดเห็น!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>ไม่ค่อยปกติสักเท่าไหร่</value>
+  </data>
+  <data name="theme">
+    <value>ธีม</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>ขณะนี้ยังไม่มีข้อคิดเห็นเกี่ยวกับเอกสารนี้ ข้อคิดเห็นที่ถูกส่งแล้วจะปรากฏที่นี่</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>สมาชิกทั้งหมดของคลาสนี้ได้รับการตรวจสอบความถูกต้องของเธรดแล้ว</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>สมาชิกแบบอินสแตนซ์ทั้งหมดของคลาสนี้ได้รับการตรวจสอบความถูกต้องของเธรดแล้ว</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>สมาชิกแบบคงที่ทั้งหมดของคลาสนี้ได้รับการตรวจสอบความถูกต้องของเธรดแล้ว</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>ประเภทนี้ไม่ได้รับการตรวจสอบความถูกต้องของเธรด</value>
+  </data>
+  <data name="threadSafety">
+    <value>การตรวจสอบความถูกต้องของเธรด</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} การตอบสนองด้วยคว่ำนิ้วโป้ง</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} การตอบสนองด้วยชูนิ้วโป้ง</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;เคล็ดลับ&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>ชื่อเรื่อง</value>
+  </data>
+  <data name="toggleIssue">
+    <value>สลับเปลี่ยนสถานะปัญหา</value>
+  </data>
+  <data name="toggleUnits">
+    <value>สลับเปลี่ยนหน่วย</value>
+  </data>
+  <data name="trademarks">
+    <value>เครื่องหมายการค้า</value>
+  </data>
+  <data name="triggers">
+    <value>ทริกเกอร์</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>คุณได้รับรางวัลสำหรับการทำเสร็จสิ้น</value>
+  </data>
+  <data name="tryAgain">
+    <value>ลองอีกครั้ง</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>ลองใช้รหัสในเบราว์เซอร์ของคุณ</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>ลองใช้ REST API กับข้อมูลที่ป้อนเข้าด้านล่างนี้</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>ผู้สนับสนุนทั้งหมด {0} ราย</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>เสร็จแล้ว 100%!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>ยินดีด้วย!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>ดำเนินการต่อที่นี่</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>ผู้สนับสนุน</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>อ่านเพิ่มเติม</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>บทนำ</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>เหลือเวลา {0} นาที</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>เหลือเวลา {0} นาทีเพื่อดำเนินการให้สมบูรณ์</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>ขั้นตอนถัดไป</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>บทช่วยสอนถัดไป</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>ทรัพยากร</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>ดู {0} หรือมาร่วมเป็นผู้สนับสนุนด้วยการแนะนำการปรับปรุงบน {1}</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>คุณได้เรียนรู้วิธี...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>คุณศึกษาบทช่วยสอน "{0}" เสร็จสมบูรณ์แล้ว</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>คุณจะได้เรียนรู้วิธี...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>มีข้อคิดเห็นหรือติดขัดอะไรในของส่วนบทช่วยสอนหรือไม่?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>รายงานปัญหาใน Github</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>ขั้นตอนถัดไป</value>
+  </data>
+  <data name="twitter">
+    <value>ทวิตเตอร์</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>เรียบเรียงทวีตตาม</value>
+  </data>
+  <data name="type">
+    <value>ชนิด</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>พิมพ์คำจำกัดความ</value>
+  </data>
+  <data name="typeParameters">
+    <value>พารามิเตอร์ชนิดทั่วไป</value>
+  </data>
+  <data name="unit">
+    <value>หน่วย</value>
+  </data>
+  <data name="unitComplete">
+    <value>หน่วยเสร็จสมบูรณ์</value>
+  </data>
+  <data name="unitMarker">
+    <value>{index} หน่วยจาก {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>หน่วยต้องใช้ Sandbox เพื่อทำให้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="units">
+    <value>หน่วย</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>พารามิเตอร์ URI</value>
+  </data>
+  <data name="usage">
+    <value>การใช้</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>ใช้เครื่องเสมือน</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>ไปที่ไซต์ของแล็บแบบลงมือทำเพื่อรับคำแนะนำเบ็ดเสร็จ</value>
+  </data>
+  <data name="userNameFallback">
+    <value>เรียนรู้เอกสารต่างๆ</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>ใช้คอมพิวเตอร์เฉพาะที่ของคุณ</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>คงอยู่ที่ไซต์นี้และปฏิบัติตามคำแนะนำด้วยเครื่องของคุณเอง</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>การใช้ตัวเชื่อมต่อนี้</value>
+  </data>
+  <data name="value">
+    <value>ค่า</value>
+  </data>
+  <data name="valueFrom">
+    <value>ค่าจาก</value>
+  </data>
+  <data name="version">
+    <value>เวอร์ชัน</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>ดูปัญหานี้บน GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>ดูคำติชมเพิ่มเติมบน GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>ดูบน GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>ดู {username} บน GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>เราขอแนะนำให้ใช้ Visual Studio 2017</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>ดาวน์โหลดตอนนี้</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>คู่มือ Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>เปิดใช้โหมดเครื่องเสมือน</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>กำลังโหลดเครื่องเสมือน...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>หน่วยต้องใช้เครื่องเสมือนเพื่อทำให้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>โหมดเครื่องเสมือนให้การเข้าถึงเครื่องเสมือนของ Azure ฟรีเพื่อทำขั้นตอนต่างๆ ในหน่วยนี้ให้เสร็จสมบูรณ์ การสมัครใช้งาน Azure ของคุณจะไม่มีค่าใช้จ่ายใดๆ</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>ใช่ เปิดใช้งานเครื่องเสมือนแบบใหม่</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>เปิดใช้งานเครื่องเสมือนในหน่วยอื่นแล้ว</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>คุณได้เปิดโหมดเครื่องเสมือนในโมดูล {lab-name} แล้ว หากคุณเปิดใช้งานเครื่องเสมือนนี้ คุณจะสูญเสียงานของคุณในโมดูลอื่น</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>ลองเปิดใช้งานโหมดเครื่องเสมือนใหม่</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>ลงชื่อเข้าใช้เพื่อเปิดใช้โหมดเครื่องเสมือน</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;คำเตือน&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} สัปดาห์ที่แล้ว</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>เราต้องการรับฟังความคิดเห็นของคุณ เลือกประเภทที่คุณต้องการระบุ:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>ข้อกำหนดของ Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>คู่มือ Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>ทั่วโลก</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>คุณต้องการให้คำติชมหรือไม่</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>ใช่</value>
+  </data>
+  <data name="youDidIt">
+    <value>คุณทำได้แล้ว!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>คุณได้รับคะแนนประสบการณ์สำหรับการตรวจสอบความรู้ให้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>คุณได้รับคะแนนประสบการณ์สำหรับการทำงานให้เสร็จสมบูรณ์</value>
+  </data>
+  <data name="youGotXp">
+    <value>คุณเพิ่งได้รับคะแนนประสบการณ์เป็น &lt;span class="experience-points"&gt;&lt;/span&gt;</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>คุณต้องตอบคำถามทั้งหมดก่อนที่จะตรวจสอบงานของคุณ</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>คุณต้องใช้ทรัพยากรที่มีให้โดย Sandbox เพื่อตรวจสอบงานของคุณ</value>
+  </data>
+  <data name="youNailedIt">
+    <value>คุณทำได้เยี่ยม</value>
+  </data>
+  <data name="yourAccount">
+    <value>บัญชีของคุณ</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>บัญชีของคุณได้ถูกลบแล้ว</value>
+  </data>
+  <data name="yourData">
+    <value>ข้อมูลของคุณ</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>ดาวน์โหลดหรือลบความคืบหน้าและความสำเร็จที่บันทึกไว้บน Docs ลบข้อมูลที่ไม่มีผลกระทบกับข้อมูลประจำตัว Microsoft ของคุณ</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>งานของคุณไม่เสร็จสมบูรณ์อย่างถูกต้อง</value>
+  </data>
+</root>

@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>valeurs acceptées</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Accepter l’invitation</value>
+  </data>
+  <data name="achievements">
+    <value>Succès</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Découvrez le succès que je viens d’obtenir pour {0} sur l’Apprentissage guidé Microsoft.</value>
+  </data>
+  <data name="actions">
+    <value>Actions</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Oui, activer un nouveau bac à sable</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Activer le bac à sable</value>
+  </data>
+  <data name="aDayAgo">
+    <value>il y a un jour</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Exigences et fonctionnalités supplémentaires</value>
+  </data>
+  <data name="addParameter">
+    <value>Ajouter un paramètre</value>
+  </data>
+  <data name="administrator">
+    <value>Administrateur</value>
+  </data>
+  <data name="advanced">
+    <value>Avancé</value>
+  </data>
+  <data name="africa">
+    <value>Afrique</value>
+  </data>
+  <data name="all">
+    <value>tous</value>
+  </data>
+  <data name="allapis">
+    <value>Toutes les API</value>
+  </data>
+  <data name="allPackages">
+    <value>Tous les paquets</value>
+  </data>
+  <data name="americas">
+    <value>Amérique</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>il y a une minute</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>il y a un mois</value>
+  </data>
+  <data name="anHourAgo">
+    <value>il y a une heure</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>Référence d’API {0}</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>La recherche d’API n’est pas disponible. Veuillez réessayer plus tard.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Versions précédentes</value>
+  </data>
+  <data name="areYouSure">
+    <value>Êtes-vous sûr?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>La suppression de vos données est irréversible.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>Il y a une seconde</value>
+  </data>
+  <data name="asia">
+    <value>Asie</value>
+  </data>
+  <data name="askQuestion">
+    <value>Poser une question</value>
+  </data>
+  <data name="assemblies">
+    <value>Assemblys</value>
+  </data>
+  <data name="assembly">
+    <value>Assembly</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Événements attachés</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Propriétés attachées</value>
+  </data>
+  <data name="attributes">
+    <value>Attributs</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>il y a une semaine</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell utilise vos abonnements Azure existants. L’utilisation de Cloud Shell et l’exécution de commandes engendrera des frais connexes.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Documentation Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Vous avez gagné un badge pour avoir terminé</value>
+  </data>
+  <data name="begin">
+    <value>Début</value>
+  </data>
+  <data name="beginner">
+    <value>Débutant</value>
+  </data>
+  <data name="beta">
+    <value>bêta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Corps</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Chemin de navigation</value>
+  </data>
+  <data name="browse">
+    <value>Parcourir</value>
+  </data>
+  <data name="browseCode">
+    <value>Parcourir le code</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Analyste d'entreprise</value>
+  </data>
+  <data name="businessUser">
+    <value>Utilisateur professionnel</value>
+  </data>
+  <data name="calls">
+    <value>Appels</value>
+  </data>
+  <data name="capabilities">
+    <value>Fonctionnalités</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Attention&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Vérifier vos réponses</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Revérifier votre travail</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Vérifier vos connaissances</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Vérifier votre travail</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Choisir une réaction</value>
+  </data>
+  <data name="claimReward">
+    <value>Déverrouiller un succès</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Classes</value>
+  </data>
+  <data name="clearfilter">
+    <value>Effacer le filtre</value>
+  </data>
+  <data name="clearterm">
+    <value>Effacer le terme</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Cliquer pour le flux RSS</value>
+  </data>
+  <data name="close">
+    <value>Fermer</value>
+  </data>
+  <data name="closedIssue">
+    <value>Problème fermé</value>
+  </data>
+  <data name="closedIssues">
+    <value>Problèmes fermés</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Cette API n’est pas conforme CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Alternative à la conformité CLS</value>
+  </data>
+  <data name="code">
+    <value>Code</value>
+  </data>
+  <data name="collaborator">
+    <value>Collaborateur</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Cet utilisateur a été invité à collaborer sur {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Commandes</value>
+  </data>
+  <data name="comment">
+    <value>Commentaire</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} commentaires</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} a commenté {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Commentaires</value>
+  </data>
+  <data name="complete">
+    <value>Terminé</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Configuration de Cloud Shell pour l’accès au bac à sable...</value>
+  </data>
+  <data name="confused">
+    <value>Confus</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} réactions avec un emoji Confus</value>
+  </data>
+  <data name="congratulations">
+    <value>Félicitations!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Connexions par compte</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Détails du constructeur</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Constructeurs</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Commentaires sur le contenu</value>
+  </data>
+  <data name="contents">
+    <value>Contenu</value>
+  </data>
+  <data name="continue">
+    <value>Continuer</value>
+  </data>
+  <data name="continueHere">
+    <value>Pour continuer, cliquez ici</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Passer à la première étape</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Passer au module suivant</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Continuer sans enregistrer la progression</value>
+  </data>
+  <data name="contributor">
+    <value>Contributeur</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Cet utilisateur a précédemment contribué au référentiel {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Contribuer</value>
+  </data>
+  <data name="contributors">
+    <value>Contributeurs</value>
+  </data>
+  <data name="copy">
+    <value>Copier</value>
+  </data>
+  <data name="correctChoice">
+    <value>Choix correct</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Vous êtes connecté avec votre compte d’organisation Microsoft ({0}) et votre expérience diffère d’un compte personnel :</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Les employés de Microsoft n’ont pas accès à certaines fonctionnalités de gamification.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Votre profil indique publiquement que vous travaillez chez Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Si vous perdez l’accès à l’e-mail, vous ne pouvez plus vous connecter à ce site.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Si vous souhaitez utiliser ce site pour vos activités personnelles, connectez-vous avec un autre compte.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Pour connecter votre compte, vous avez besoin des informations suivantes:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>En utilisant Microsoft Learn, &lt;strong&gt;vous comprenez et acceptez&lt;/strong&gt; que votre adhésion signifie que notre réseau de sites et d’applications va enregistrer et suivre vos réalisations et activités, et que nous sommes susceptibles de partager vos résultats et activités avec d’autres équipes Microsoft. En outre, vos nom d’utilisateur, nom d’affichage, réalisations et activités seront publiquement visibles.&lt;ul&gt;&lt;li&gt;Votre profil indique publiquement que vous travaillez chez Microsoft.&lt;/li&gt;&lt;li&gt;Si vous perdez l’accès à l’e-mail, vous ne pouvez plus vous connecter au site.&lt;/li&gt;&lt;li&gt;Les employés de Microsoft n’ont pas accès à certaines fonctionnalités de gamification.&lt;/li&gt;&lt;li&gt;Si vous souhaitez utiliser ce site pour vos activités personnelles, connectez-vous avec un autre compte.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>En devenant membre, vous comprenez et reconnaissez que votre adhésion à Microsoft Learn signifie que notre réseau de sites et d’applications enregistrera vos réalisations et activités. Vos nom d’utilisateur, nom d’affichage, réalisations et activités seront publiquement visibles.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Créer une archive</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Création d’une connexion</value>
+  </data>
+  <data name="currentSelection">
+    <value>Sélection en cours :</value>
+  </data>
+  <data name="dark">
+    <value>Sombre</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>il y a {0} jours</value>
+  </data>
+  <data name="defaultValue">
+    <value>valeur par défaut</value>
+  </data>
+  <data name="definition">
+    <value>Définition</value>
+  </data>
+  <data name="definitions">
+    <value>Définitions</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Délégués</value>
+  </data>
+  <data name="delete">
+    <value>Supprimer</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Supprimer un paramètre</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Déployer sur Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Cette API est désormais obsolète.</value>
+  </data>
+  <data name="derived">
+    <value>Dérivé</value>
+  </data>
+  <data name="description">
+    <value>Description</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Développeur</value>
+  </data>
+  <data name="developers">
+    <value>Développeurs</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Fermer cette boîte de dialogue</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Un autre bac à sable est déjà actif</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Vous avez déjà activé un bac à sable dans le module &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Si vous activez ce bac à sable, vous perdrez votre travail dans l’autre module.</value>
+  </data>
+  <data name="disable">
+    <value>Désactiver</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Les résultats de la recherche proviennent de la documentation de versions précédentes et ne sont pas mis à jour régulièrement.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Détails du document</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Ne pas modifier cette section. C’est obligatoire pour docs.microsoft.com ➟ liaison des problèmes GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Documentation .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET Editor</value>
+  </data>
+  <data name="download">
+    <value>Télécharger</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Téléchargez au format PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Télécharger le ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Les sorties de cette opération sont dynamiques.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Remportez d’autres succès</value>
+  </data>
+  <data name="edit">
+    <value>Modifier</value>
+  </data>
+  <data name="editdesc">
+    <value>Modifier ce document</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Implémentations d’interfaces explicites</value>
+  </data>
+  <data name="email">
+    <value>Courrier</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Vous devez indiquer une adresse e-mail pour activer un bac à sable</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Votre compte Microsoft doit être lié à une adresse e-mail valide pour activer un bac à sable. Accédez aux &lt;a href="https://account.live.com" target="_blank"&gt;paramètres du compte Microsoft&lt;/a&gt; pour lier votre e-mail, puis réessayez.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Nom vide non autorisé</value>
+  </data>
+  <data name="enable">
+    <value>Activer</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Passer en mode focus</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Énumérations</value>
+  </data>
+  <data name="error">
+    <value>Erreur</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Erreur lors de la création du commentaire. Si vous le souhaitez, vous pouvez réessayer sur &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Erreur lors de la création du problème. Si vous le souhaitez, vous pouvez réessayer sur &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Nous n’avons pas pu charger les résultats de votre recherche. Veuillez réessayer plus tard.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Erreur lors du chargement des commentaires.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Erreur lors du chargement du commentaire.</value>
+  </data>
+  <data name="europe">
+    <value>Europe</value>
+  </data>
+  <data name="eventDetails">
+    <value>Détails de l'événement</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Événements</value>
+  </data>
+  <data name="examples">
+    <value>Exemples</value>
+  </data>
+  <data name="exceptions">
+    <value>Exceptions</value>
+  </data>
+  <data name="exit">
+    <value>Quitter</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Quitter le mode focus</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Développer le menu de commentaires sur la documentation</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Explorer d’autres modules</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Explorer d’autres parcours</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Vous n’aviez aucune information à exporter.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Méthodes d’extension</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Commentaires</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Tapez vos commentaires ici]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Envoyer des commentaires sur le produit</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Champs</value>
+  </data>
+  <data name="fieldValue">
+    <value>Valeur de champ</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filtrer</value>
+  </data>
+  <data name="findALanguage">
+    <value>Rechercher une langue</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Cette énumération a un attribut {0} qui permet une combinaison au niveau du bit de ses valeurs membres.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Informations relatives à la fonction</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Fonctions</value>
+  </data>
+  <data name="getHelp">
+    <value>Aide</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Envoyer des commentaires</value>
+  </data>
+  <data name="globalParameters">
+    <value>Paramètres globaux</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Revenir pour terminer</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Revenir pour terminer un module</value>
+  </data>
+  <data name="goodWork">
+    <value>Beau travail !</value>
+  </data>
+  <data name="greatWork">
+    <value>Beau travail !</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Travaux pratiques</value>
+  </data>
+  <data name="headers">
+    <value>En-têtes</value>
+  </data>
+  <data name="heart">
+    <value>Adore</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} réactions avec un emoji Cœur</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Comment choisir?</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Conseil :&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Bravo</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} réactions avec un emoji Hourra</value>
+  </data>
+  <data name="hoursAgo">
+    <value>il y a {0} heures</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Comment pouvons-nous nous améliorer ?</value>
+  </data>
+  <data name="hr">
+    <value>heure(s)</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} heure(s) {1} minute(s)</value>
+  </data>
+  <data name="implements">
+    <value>Implémente</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Important&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>dans</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Choix incorrect</value>
+  </data>
+  <data name="inheritance">
+    <value>Héritage</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Membres hérités</value>
+  </data>
+  <data name="input">
+    <value>Entrée</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Interfaces</value>
+  </data>
+  <data name="intermediate">
+    <value>Intermédiaire</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Cette API prend en charge l'infrastructure du produit et n'est pas destinée à être utilisée directement à partir de votre code.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Commentaires Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>a été ouvert {time ago} par {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Signaler un problème de produit</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Cette page est-elle utile ?</value>
+  </data>
+  <data name="itPro">
+    <value>Professionnel de l’informatique</value>
+  </data>
+  <data name="justNow">
+    <value>maintenant</value>
+  </data>
+  <data name="key">
+    <value>Clé :</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Contrôle des connaissances</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Contrôle des connaissances terminé. Vous avez répondu correctement à toutes les questions.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Contrôle des connaissances terminé</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Vous avez terminé le contrôle des connaissances acquises lors du tutoriel {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Vous avez terminé la section {tutorial} du module. Vous pouvez maintenant passer à la section suivante {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Désolé, nous n’avons pas pu noter votre contrôle des connaissances. Recommencez.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Vous avez terminé cette section. Continuez vers la partie suivante {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Vous avez terminé cette section. Continuez pour d’autres didacticiels.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>En terminant le contrôle des connaissances, vous avez déverrouillé le succès {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Table des matières</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Filter la table des matières</value>
+  </data>
+  <data name="language">
+    <value>Langage</value>
+  </data>
+  <data name="laugh">
+    <value>Rire</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} réactions avec un emoji Rire</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Explorez la technologie Microsoft à l’aide de didacticiels en directs, y compris des activités pratiques. Cette expérience étant en préversion, merci de &lt;a href="https://aka.ms/learningfeedback"&gt;nous envoyer vos commentaires&lt;/a&gt;.</value>
+  </data>
+  <data name="learningpath">
+    <value>Parcours d’apprentissage</value>
+  </data>
+  <data name="learnmore">
+    <value>En savoir plus</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Laisser un commentaire</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Vous pouvez également laisser des commentaires &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;directement sur GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Niveau {0}</value>
+  </data>
+  <data name="levels">
+    <value>Niveaux</value>
+  </data>
+  <data name="light">
+    <value>Clair</value>
+  </data>
+  <data name="limits">
+    <value>Limites</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Chargement...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Chargement du commentaire...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Chargement des informations relatives au bac à sable...</value>
+  </data>
+  <data name="loadMore">
+    <value>Plus&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Charger plus de résultats</value>
+  </data>
+  <data name="login">
+    <value>Connexion</value>
+  </data>
+  <data name="loginAzure">
+    <value>Connectez-vous avec votre compte Azure.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Barre de navigation</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Gérer mon profil</value>
+  </data>
+  <data name="maximize">
+    <value>Agrandir</value>
+  </data>
+  <data name="member">
+    <value>Membre</value>
+  </data>
+  <data name="memberDescription">
+    <value>Cet utilisateur est un membre de l’organisation {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Détails du membre</value>
+  </data>
+  <data name="members">
+    <value>Membres</value>
+  </data>
+  <data name="methodDetails">
+    <value>Détails de la méthode</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Méthodes</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Déclaration de confidentialité d’employé Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Vous vous êtes connecté avec votre compte Microsoft ou votre compte d'organisation ({email}). En utilisant Microsoft Learn, &lt;strong&gt;vous comprenez et acceptez&lt;/strong&gt; que votre adhésion signifie que notre réseau de sites et d’applications va enregistrer et suivre vos réalisations et activités, et que nous sommes susceptibles de partager vos résultats et activités avec d’autres équipes Microsoft. En outre, vos nom d’utilisateur, nom d’affichage, réalisations et activités seront publiquement visibles.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Problème Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn est une toute nouvelle plateforme et nous nous efforçons d’améliorer le contenu et les expériences en fonction des réponses des clients.
+
+Nous voulons avoir votre avis.
+
+Remplissez les informations suivantes :
+1. Le problème rencontré ou vos commentaires.
+2. D’autres commentaires que vous souhaitez nous transmettre.
+
+Remarque : bien que nous ne répondions pas directement à tous les clients, sachez que nous examinons tous les commentaires qui nous parviennent.
+
+URL : {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Moyen-Orient</value>
+  </data>
+  <data name="min">
+    <value>{0} minute(s)</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Réduire</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} minutes</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>il y a {0} minutes</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minute</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} minutes de lecture</value>
+  </data>
+  <data name="module">
+    <value>Module</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Module terminé</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Module non terminé</value>
+  </data>
+  <data name="moduleReference">
+    <value>Référence de module {0}</value>
+  </data>
+  <data name="modules">
+    <value>Modules</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Modules de ce parcours d’apprentissage</value>
+  </data>
+  <data name="monikerFallback">
+    <value>La page demandée n’est pas disponible pour {0}. Vous avez été redirigé vers la dernière version du produit pour laquelle cette page est disponible.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>il y a {0} mois</value>
+  </data>
+  <data name="more">
+    <value>Plus</value>
+  </data>
+  <data name="moreInfo">
+    <value>Plus d’informations</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Autres didacticiels</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} modules</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} unités</value>
+  </data>
+  <data name="name">
+    <value>Nom</value>
+  </data>
+  <data name="namespace">
+    <value>Espace de noms</value>
+  </data>
+  <data name="namespaces">
+    <value>Espaces de noms</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Notre nouveau système de commentaires est basé sur l’infrastructure de problèmes GitHub. Pour en savoir plus sur ce changement, consultez &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;notre billet de blog&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Suivant</value>
+  </data>
+  <data name="nextPage">
+    <value>Page suivante</value>
+  </data>
+  <data name="no">
+    <value>Non</value>
+  </data>
+  <data name="noAchievements">
+    <value>Vous n’avez actuellement obtenu aucun succès. &lt;a href="{0}"&gt;Accomplissez des modules pour en obtenir.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} n’a obtenu aucun succès.</value>
+  </data>
+  <data name="noClosed">
+    <value>Il n’y a pas de problème fermé</value>
+  </data>
+  <data name="noOpen">
+    <value>Il n’y a pas de problème ouvert</value>
+  </data>
+  <data name="noOutput">
+    <value>Aucune sortie</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Aucun résultat trouvé</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Pas encore de résultats, mais continuez à taper…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Aucun résultat pour {term}&lt;br /&gt;&lt;a href="{url}"&gt;Rechercher « {filter-text} » dans toute la documentation {scope}&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Note&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Notes pour les appelants</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Notes pour les responsables de l’implémentation</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Notes pour les héritiers</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} fermé</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} ouvert</value>
+  </data>
+  <data name="officeDocs">
+    <value>Documentation Office</value>
+  </data>
+  <data name="ok">
+    <value>Ok</value>
+  </data>
+  <data name="okGotIt">
+    <value>J'ai compris.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 module</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 unité</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Sur la page de navigation</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>sur {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Problème ouvert</value>
+  </data>
+  <data name="openIssues">
+    <value>Problèmes ouverts</value>
+  </data>
+  <data name="operationId">
+    <value>ID d'opération:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Opérateurs</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Paramètres facultatifs</value>
+  </data>
+  <data name="options">
+    <value>Options</value>
+  </data>
+  <data name="output">
+    <value>Sortie</value>
+  </data>
+  <data name="overloads">
+    <value>Surcharges</value>
+  </data>
+  <data name="overrides">
+    <value>Remplacements</value>
+  </data>
+  <data name="overview">
+    <value>Vue d’ensemble</value>
+  </data>
+  <data name="owner">
+    <value>Propriétaire</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Cet utilisateur est le propriétaire du référentiel {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Pacifique</value>
+  </data>
+  <data name="package">
+    <value>Paquet</value>
+  </data>
+  <data name="packageReference">
+    <value>Référence de package {0}</value>
+  </data>
+  <data name="packages">
+    <value>Paquets</value>
+  </data>
+  <data name="page">
+    <value>Page {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Actions sur la page</value>
+  </data>
+  <data name="parameters">
+    <value>Paramètres</value>
+  </data>
+  <data name="path">
+    <value>Chemin d'accès:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Choisissez votre réaction</value>
+  </data>
+  <data name="platform">
+    <value>Plateforme</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Renseignez ce champ.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Recommencez.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Lancer le portail Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Chargement du portail Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Ouvrir le labo dans une nouvelle fenêtre</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>La réalisation de cette unité nécessite le portail Azure.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Un labo Portail Azure fournit des ressources Azure gratuites pour effectuer les étapes de cette unité. Les labos Portail Azure n’affectent pas votre abonnement Azure. Vous ne serez pas facturé.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Votre labo Portail Azure est prêt.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Oui, activer un nouveau labo</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Un labo Portail Azure pour une autre unité est déjà actif</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Vous avez actuellement un labo Portail Azure ouvert pour une autre unité ({lab-name}). Voulez-vous ignorer votre labo actuel et activer un nouveau labo pour cette unité ?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Retenter le lancement du labo</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Se connecter pour lancer le portail Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Prérequis :</value>
+  </data>
+  <data name="preview">
+    <value>Préversion</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Cet API est fourni en tant qu’aperçu pour les développeurs et peut être modifié en fonction des commentaires que nous avons reçus. N’utilisez pas cet API dans un environnement de production.</value>
+  </data>
+  <data name="previous">
+    <value>Précédent</value>
+  </data>
+  <data name="previousPage">
+    <value>Page précédente</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Version précédente de Docs</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Déclaration de confidentialité</value>
+  </data>
+  <data name="product">
+    <value>Produit</value>
+  </data>
+  <data name="productFeedback">
+    <value>Commentaires sur le produit</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Produits</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Applications métier</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Propriétés</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Détails de la propriété</value>
+  </data>
+  <data name="propertyValue">
+    <value>Valeur de propriété</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Création de votre bac à sable. Cette opération ne prend qu’une minute...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Filtres rapides</value>
+  </data>
+  <data name="quizComplete">
+    <value>Félicitations!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Impossible de charger les commentaires. Débit maximal d’API GitHub dépassé.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Impossible de rechercher les problèmes. Débit maximal d’API GitHub dépassé.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Vous avez des commentaires ou des suggestions ? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Donnez-nous votre avis ici&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Envoyez-nous vos idées. Vos commentaires sont les bienvenus dans n’importe quelle langue.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Lire en anglais</value>
+  </data>
+  <data name="readonly">
+    <value>lecture seule</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Vous avez obtenu ce succès {0} après avoir accompli le {1}.</value>
+  </data>
+  <data name="references">
+    <value>Références</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Affiner le contenu de la formation</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Ce module fait partie de ces parcours d’apprentissage</value>
+  </data>
+  <data name="remaining">
+    <value>restant</value>
+  </data>
+  <data name="remarks">
+    <value>Remarques</value>
+  </data>
+  <data name="removeItem">
+    <value>Supprimer {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Période de renouvellement</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Nous vous remercions d’avoir partagé votre inquiétude avec nous. Nous étudions ces contributions très attentivement et prendrons des mesures appropriées pour résoudre ce problème. Pour des questions juridiques et de confidentialité, nous nous réservons le droit de ne pas vous fournir de mise à jour supplémentaire concernant cette contribution. Merci encore de nous avoir contacté.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Signaler un problème</value>
+  </data>
+  <data name="requestBody">
+    <value>Corps de la demande</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Le corps de la requête peut être l’un des suivants :</value>
+  </data>
+  <data name="requestHeader">
+    <value>En-tête de la demande</value>
+  </data>
+  <data name="requestPreview">
+    <value>Aperçu de la demande</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL de demande</value>
+  </data>
+  <data name="required">
+    <value>obligatoire</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Paramètres obligatoires</value>
+  </data>
+  <data name="requirements">
+    <value>Configuration requise</value>
+  </data>
+  <data name="resource_type">
+    <value>Types</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Réponses</value>
+  </data>
+  <data name="restart">
+    <value>Redémarrer</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>En raison de restrictions sur votre compte, nous ne sommes pas en mesure de vous inviter dans un locataire bac à sable. Veuillez contacter votre administrateur.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} résultats trouvés</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Essayer de réactiver le bac à sable</value>
+  </data>
+  <data name="returns">
+    <value>Retours</value>
+  </data>
+  <data name="returnValue">
+    <value>Valeur renvoyée</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Passer en revue l’historique de vos parcours d’apprentissage</value>
+  </data>
+  <data name="roles">
+    <value>Rôles</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Exécuter</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Bac à sable activé.</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>L’accès au bac à sable a expiré</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Votre bac à sable a expiré. Activez un nouveau bac à sable.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Le bac à sable vous donne un accès gratuit aux ressources Azure nécessaires pour effectuer cette unité. Votre abonnement Azure n’est pas facturé.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Pour utiliser un bac à sable, vous devez accepter une invitation du locataire Azure</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Le bac à sable de ce module est temporairement désactivé pour maintenance.</value>
+  </data>
+  <data name="search">
+    <value>Rechercher</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Navigation par recherche</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Rechercher les versions antérieures</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Le filtre de recherche est défini sur « {0} ». Appuyez pour le supprimer.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>il y a {0} secondes</value>
+  </data>
+  <data name="security">
+    <value>Sécurité</value>
+  </data>
+  <data name="seeAlso">
+    <value>Voir aussi</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Version sélectionnée</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Filtrez la liste de langues en sélectionnant une région ou en tapant le nom de la langue ou le code des paramètres régionaux.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Sélectionner un package</value>
+  </data>
+  <data name="selectVersion">
+    <value>Sélectionner une version</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Sélectionner votre rôle</value>
+  </data>
+  <data name="service">
+    <value>Service</value>
+  </data>
+  <data name="services">
+    <value>Services</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Le service est temporairement indisponible. Nous y travaillons.</value>
+  </data>
+  <data name="share">
+    <value>Partager</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Partagez ce succès sur {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Découvrez le succès que je viens d’obtenir pour {moduleName} sur l’Apprentissage guidé Microsoft. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Article partagé] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Partager ce document</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Partager votre succès :</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Afficher toutes les classes dérivées</value>
+  </data>
+  <data name="signIn">
+    <value>Se connecter</value>
+  </data>
+  <data name="signInAzure">
+    <value>Veuillez vous connecter avec votre compte Azure.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Connectez-vous pour vérifier votre travail</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Vous êtes connecté au Cloud Shell avec un compte différent de votre compte Docs. Déconnectez-vous du Cloud Shell pour réessayer d’accéder au bac à sable.</value>
+  </data>
+  <data name="signingIn">
+    <value>Connexion...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Se connecter pour activer le bac à sable</value>
+  </data>
+  <data name="signInToComment">
+    <value>Se connecter pour commenter</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Se connecter pour fournir des commentaires sur la documentation</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Se connecter pour envoyer des commentaires</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Se connecter&lt;/a&gt; pour augmenter votre débit maximal d’API GitHub.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Connectez-vous pour ajouter votre réaction</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Se connecter pour enregistrer la progression</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Connectez-vous&lt;/a&gt; pour voir votre profil utilisateur.</value>
+  </data>
+  <data name="signOut">
+    <value>Se déconnecter</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Commentaires sur le site</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Architecte de solutions</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Nous avons rencontré un problème</value>
+  </data>
+  <data name="start">
+    <value>Démarrer</value>
+  </data>
+  <data name="startHere">
+    <value>Commencer ici</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Étape {step-index} sur {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Structures</value>
+  </data>
+  <data name="submit">
+    <value>Envoyer</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Envoyer le commentaire</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Envoi réussi.</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Suggérer une idée de produit</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>La tâche n’a pas été effectuée correctement.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Nous mettons à jour cette page avec une nouvelle expérience interactive. Revenez nous voir bientôt!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Merci pour vos commentaires !</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Ce n’est pas tout à fait juste.</value>
+  </data>
+  <data name="theme">
+    <value>Thème</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Aucun commentaire n’a été soumis pour ce document. Les commentaires envoyés apparaîtront ici.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Tous les membres de cette classe sont thread-safe.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Toutes les instances de cette classe sont thread-safe.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Tous les membres statiques de cette classe sont thread-safe.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Ce type n’est pas thread-safe.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Cohérence de thread</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} réactions avec un emoji Pouce baissé</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} réactions avec un emoji Pouce levé</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Conseil&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Titre</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Problème de basculement</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Changer d’unité</value>
+  </data>
+  <data name="trademarks">
+    <value>Marques</value>
+  </data>
+  <data name="triggers">
+    <value>Déclencheurs</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Vous avez gagné un trophée pour avoir terminé</value>
+  </data>
+  <data name="tryAgain">
+    <value>Réessayez</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Essayer le code dans votre navigateur</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Essayez l’API REST avec les entrées ci-dessous.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>Tous les contributeurs {0}</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>Tout est terminé!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Félicitations!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Pour continuer, cliquez ici</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Contributeurs</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>En savoir plus</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Introduction</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0}  minutes restantes</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} minutes avant d’avoir terminé</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Étapes suivantes</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Didacticiel suivant</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Ressources</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Affichez les {0} ou devenez un contributeur en suggérant des améliorations sur {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Vous avez appris à...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Vous avez suivi le didacticiel « {0} ».</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Vous allez apprendre à...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Vous avez des commentaires ou êtes bloqué sur une partie de ce tutoriel?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Signaler un problème sur GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Étapes suivantes</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Tweets sélectionnés par</value>
+  </data>
+  <data name="type">
+    <value>type</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Définition de type</value>
+  </data>
+  <data name="typeParameters">
+    <value>Paramètres de type</value>
+  </data>
+  <data name="unit">
+    <value>Unité</value>
+  </data>
+  <data name="unitComplete">
+    <value>Unité terminée</value>
+  </data>
+  <data name="unitMarker">
+    <value>Unité {index} sur {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>La réalisation de cette unité nécessite un bac à sable</value>
+  </data>
+  <data name="units">
+    <value>Unités</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Paramètres URI</value>
+  </data>
+  <data name="usage">
+    <value>Utilisation</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Utiliser une machine virtuelle</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Visitez le site de travaux pratiques pour des instructions intégrées.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Apprentissage via la documentation</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Utiliser votre ordinateur local</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Restez sur ce site et suivez les instructions sur votre ordinateur.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Utilisation de ce connecteur</value>
+  </data>
+  <data name="value">
+    <value>Valeur</value>
+  </data>
+  <data name="valueFrom">
+    <value>valeur de</value>
+  </data>
+  <data name="version">
+    <value>Version</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Afficher ce problème sur GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Afficher plus de commentaires sur GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Voir sur GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Voir {username} sur GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Nous recommandons l’utilisation de Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Télécharger maintenant</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Documentation Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Lancer le mode Machine virtuelle</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Chargement de la machine virtuelle...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Cette unité requiert qu’une machine virtuelle soit lancée.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Le mode Machine virtuelle fournit un accès gratuit aux machines virtuelles Azure pour effectuer les étapes de cette unité. Votre abonnement Azure n’est pas facturé</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Oui, activer une nouvelle machine virtuelle</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Une machine virtuelle pour une autre unité est déjà active</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Vous avez déjà ouvert une machine virtuelle dans le module {lab-name}. Si vous activez cette machine virtuelle, vous perdrez votre travail dans l’autre module.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Retenter le lancement du mode Machine virtuelle</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Connectez-vous pour lancer le mode Machine virtuelle</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Avertissement&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>Il y a {0} semaines</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Ce que vous avez à dire nous intéresse. Choisissez le type que vous aimeriez fournir :</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Exigences de Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Documentation Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Monde</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Voulez-vous envoyer des commentaires ?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Oui</value>
+  </data>
+  <data name="youDidIt">
+    <value>Vous avez réussi.</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Vous avez gagné des points d’expérience, car vous avez effectué votre contrôle des connaissances.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Vous avez gagné des points d’expérience, car vous avez effectué la tâche.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Vous venez de gagner &lt;span class="experience-points"&gt;&lt;/span&gt; points d’expérience.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Vous devez répondre à toutes les questions avant de vérifier votre travail.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Vous devez utiliser les ressources fournies par le bac à sable pour vérifier votre travail.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Parfait</value>
+  </data>
+  <data name="yourAccount">
+    <value>Votre compte</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Votre compte a été supprimé.</value>
+  </data>
+  <data name="yourData">
+    <value>Vos données</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Téléchargez ou supprimez vos progrès et succès enregistrés dans Docs. La suppression de vos informations n’a pas de conséquences sur votre identité Microsoft.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Votre travail n’a pas été effectué correctement.</value>
+  </data>
+</root>

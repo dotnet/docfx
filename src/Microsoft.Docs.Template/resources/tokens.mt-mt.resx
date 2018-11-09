@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>valuri aċċettati</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Aċċetta l-istedina</value>
+  </data>
+  <data name="achievements">
+    <value>Kisbiet</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Iċċekkja l-kisba li għadni kif ksibt għal {0} fuq Microsoft Guided Learning!</value>
+  </data>
+  <data name="actions">
+    <value>Azzjonijiet</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Iva, attiva sandbox ġdid</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Attiva sandbox</value>
+  </data>
+  <data name="aDayAgo">
+    <value>jum ilu</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Karatteristiki u rekwiżiti addizzjonali</value>
+  </data>
+  <data name="addParameter">
+    <value>Żid Parametru</value>
+  </data>
+  <data name="administrator">
+    <value>Min jamministra</value>
+  </data>
+  <data name="advanced">
+    <value>Avvanzat</value>
+  </data>
+  <data name="africa">
+    <value>l-Afrika</value>
+  </data>
+  <data name="all">
+    <value>kollha</value>
+  </data>
+  <data name="allapis">
+    <value>L-APIs kollha</value>
+  </data>
+  <data name="allPackages">
+    <value>Il-Pakketti Kollha</value>
+  </data>
+  <data name="americas">
+    <value>l-Ameriki</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>minuta ilu</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>xahar ilu</value>
+  </data>
+  <data name="anHourAgo">
+    <value>siegħa ilu</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} Referenza API</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>It-tiftixa API mhijex disponibbli. Erġa' pprova aktar tard.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Verżjonijiet preċedenti</value>
+  </data>
+  <data name="areYouSure">
+    <value>Inti żgur?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Meta tħassar id-dejta tiegħek din ma tistax tittreġġa' lura.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>sekonda ilu</value>
+  </data>
+  <data name="asia">
+    <value>l-Ażja</value>
+  </data>
+  <data name="askQuestion">
+    <value>Agħmel mistoqsija</value>
+  </data>
+  <data name="assemblies">
+    <value>Montaturi</value>
+  </data>
+  <data name="assembly">
+    <value>Montatura</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Avvenimenti Mehmuża</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Propjetajiet Mehmuża</value>
+  </data>
+  <data name="attributes">
+    <value>Attribwiti</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>ġimgħa ilu</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell tuża l-abbonamenti eżistenti tiegħek ta' Azure. L-użu ta' Cloud Shell u l-eżekuzzjoni ta' kmandi jistgħu jeħlu spejjeż assoċjati.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Dokumentazzjoni ta' Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Ksibt beġġ għax lestejt</value>
+  </data>
+  <data name="begin">
+    <value>Ibda</value>
+  </data>
+  <data name="beginner">
+    <value>Prinċipjant</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Korp</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Breadcrumb</value>
+  </data>
+  <data name="browse">
+    <value>Ibbrawżja</value>
+  </data>
+  <data name="browseCode">
+    <value>Kodiċi tal-ibbrawżjar</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="businessUser">
+    <value>Utent tan-Negozju</value>
+  </data>
+  <data name="calls">
+    <value>Sejħiet</value>
+  </data>
+  <data name="capabilities">
+    <value>Kapaċitajiet</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Kawtela&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Iċċekkja t-tweġibiet tiegħek</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Erġa' ċċekkja x-xogħol tiegħek</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Iċċekkja l-għarfien tiegħek</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Iċċekkja x-xogħol tiegħek</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Agħżel reazzjoni</value>
+  </data>
+  <data name="claimReward">
+    <value>Iftaħ il-kisba</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Klassijiet</value>
+  </data>
+  <data name="clearfilter">
+    <value>Neħħi l-Filtru</value>
+  </data>
+  <data name="clearterm">
+    <value>Neħħi t-Terminu</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Ikklikkja għal feed RSS</value>
+  </data>
+  <data name="close">
+    <value>Agħlaq</value>
+  </data>
+  <data name="closedIssue">
+    <value>Problema Magħluqa</value>
+  </data>
+  <data name="closedIssues">
+    <value>Problemi Magħluqa</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Dan l-API mhux konformi mas-CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Alternattiva konformi mas-CLS</value>
+  </data>
+  <data name="code">
+    <value>Kodiċi</value>
+  </data>
+  <data name="collaborator">
+    <value>Kollaboratur</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Dan l-utent ġie mistieden jikkollabora fuq {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Kmandi</value>
+  </data>
+  <data name="comment">
+    <value>Kumment</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} kummenti</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} ikkummenta/t {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Kummenti</value>
+  </data>
+  <data name="complete">
+    <value>Lest</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Qed Jikkonfigura Cloud Shell għall-aċċess ta' sandbox...</value>
+  </data>
+  <data name="confused">
+    <value>Konfuż</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} reazzjonijiet konfużi</value>
+  </data>
+  <data name="congratulations">
+    <value>Prosit!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Konnessjonijiet għal kull Kont</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Dettalji tal-Kostruttur</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Kostrutturi</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Feedback tal-kontenut</value>
+  </data>
+  <data name="contents">
+    <value>Kontenut</value>
+  </data>
+  <data name="continue">
+    <value>Kompli</value>
+  </data>
+  <data name="continueHere">
+    <value>Kompli Hawn</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Kompli lejn l-ewwel pass</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Kompli għall-modulu li jmiss</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Kompli mingħajr ma tissejvja l-progress</value>
+  </data>
+  <data name="contributor">
+    <value>Kontributur</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Dan l-utent preċedentement ikkommetta ruħu għar-repożitorju {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Ikkontribwixxi</value>
+  </data>
+  <data name="contributors">
+    <value>Kontributuri</value>
+  </data>
+  <data name="copy">
+    <value>Ikkopja</value>
+  </data>
+  <data name="correctChoice">
+    <value>L-Għażla t-Tajba</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Dħalt bil-kont tal-organizzazzjoni tiegħek ta' Microsoft ({0}), u l-esperjenza tiegħek se tkun differenti minn kont personali:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Xi karatteristiki tal-logħob mhumiex disponibbli għall-impjegati ta' Microsoft.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Il-profil tiegħek jindika pubblikament ix-xogħol tiegħek f'Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Jekk titlef l-aċċess għall-posta elettroniku, ma tkunx tista' tidħol f'dan is-sit.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Jekk tixtieq tuża dan is-sit għal attività personal, idħol b'kont differenti.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Biex tikkollega l-kont tiegħek, ikollok bżonn l-informazzjoni li ġejja:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Permezz ta' Microsoft Learn, &lt;strong&gt;inti tifhem u tirrikonoxxi&lt;/strong&gt; li s-sħubija tiegħek tfisser li n-netwerk tas-siti u l-applikazzjonijiet tagħna jirreġistraw u jintraċċaw il-kisbiet u l-attivitajiet tiegħek u aħna nistgħu nixxerjaw ir-riżultati u l-attivitajiet tiegħek ma' timijiet oħra f'Microsoft. Barra minn dan, isem l-utent, l-isem muri, il-kisbiet u l-attivitajiet tiegħek ikunu viżibbli għall-pubbliku.&lt;ul&gt;&lt;li&gt;Il-profil tiegħek jindika pubblikament ix-xogħol tiegħek f'Microsoft.&lt;/li&gt;&lt;li&gt;Jekk titlef l-aċċess għall-ittra elettronika, ma tkunx tista' tidħol fis-sit.&lt;/li&gt;&lt;li&gt;Xi karatteristiki tal-logħob mhumiex disponibbli għall-impjegati ta' Microsoft.&lt;/li&gt;&lt;li&gt;Jekk tixtieq tuża dan is-sit għal attività personal, idħol b'kont differenti.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Meta ssir membru, tifhem u tirrikonoxxi li s-sħubija tiegħek f'Microsoft Learn tfisser li n-netwerk ta' siti u applikazzjonijiet tagħna tirreġistra l-kisbiet u l-attivitajiet tiegħek. Isem l-utent, l-isem li jintwera, il-kisbiet u l-attivitajiet tiegħek ikun viżibbli pubblikament.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Oħloq arkivju ġdid</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Oħloq konnessjoni</value>
+  </data>
+  <data name="currentSelection">
+    <value>Selezzjoni Kurrenti:</value>
+  </data>
+  <data name="dark">
+    <value>Skur</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} ijiem ilu</value>
+  </data>
+  <data name="defaultValue">
+    <value>valur default</value>
+  </data>
+  <data name="definition">
+    <value>Definizzjoni</value>
+  </data>
+  <data name="definitions">
+    <value>Definizzjonijiet</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegati</value>
+  </data>
+  <data name="delete">
+    <value>Ħassar</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Ħassar il-Parametru</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Ħaddem f'Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Dan l-API issa huwa skadut.</value>
+  </data>
+  <data name="derived">
+    <value>Derivat</value>
+  </data>
+  <data name="description">
+    <value>Deskrizzjoni</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Żviluppatur</value>
+  </data>
+  <data name="developers">
+    <value>Żviluppaturi</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Agħlaq dan id-djalogu</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Sandbox differenti huwa diġà attiv</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Diġà għandek sandbox attivat fil-modulu &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Jekk tattiva dan is-sandbox, titlef ix-xogħol tiegħek fil-modulu l-ieħor.</value>
+  </data>
+  <data name="disable">
+    <value>Iddiżattiva</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Ir-riżultati tat-tiftix huma minn verżjonijiet ta' dokumentazzjoni preċedenti u ma jiġux aġġornati regolarment.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil ta' Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Dettalji tad-Dokument</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Teditjax din is-sezzjoni. Hija meħtieġa għal docs.microsoft.com ➟ illinkjat ta' problemi GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Dokumentazzjoni .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Editur .NET</value>
+  </data>
+  <data name="download">
+    <value>Niżżel</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Niżel il-PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Niżżel ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>L-outputs ta' din l-operazzjoni huma dinamiċi.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Iggwadanja Aktar Kisbiet</value>
+  </data>
+  <data name="edit">
+    <value>Editja</value>
+  </data>
+  <data name="editdesc">
+    <value>Editja dan id-Dokument</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Implimentazzjonijiet Espliċiti tal-Interface</value>
+  </data>
+  <data name="email">
+    <value>Posta elettronika</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Indirizz elettroniku huwa meħtieġ biex tattiva sandbox</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Il-kont tiegħek ta' Microsoft jeħtieġ li jkun illinkjat ma' indirizz elettroniku validu biex tattiva sandbox. Mur fis-&lt;a href="https://account.live.com" target="_blank"&gt;Settings tal-Kont ta' Microsoft&lt;/a&gt; biex tillinkja l-indirizz elettroniku tiegħek u erġa' pprova.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Isem vojt mhuwiex permess</value>
+  </data>
+  <data name="enable">
+    <value>Attiva</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Idħol fil-modalità tal-fokus</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enums</value>
+  </data>
+  <data name="error">
+    <value>Żball</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Żball fil-ħolqien ta' kumment. Jekk tixtieq, tista' terġa' tipprova fuq &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Żball fil-ħolqien ta' problema. Jekk tixtieq, tista' terġa' tipprova fuq &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Ma stajniex intellgħu r-riżultati tat-tiftix tiegħek. Erġa' pprova aktar tard.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Żball biex itella' l-kummenti.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Żball biex itella' l-feedback.</value>
+  </data>
+  <data name="europe">
+    <value>L-Ewropa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Dettalji tal-Avveniment</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Avvenimenti</value>
+  </data>
+  <data name="examples">
+    <value>Eżempji</value>
+  </data>
+  <data name="exceptions">
+    <value>Eċċezzjonijiet</value>
+  </data>
+  <data name="exit">
+    <value>Oħroġ</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Oħroġ mill-modalità tal-fokus</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Espandi l-menù tad-dokumentazzjoni tal-feedback</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Esplora moduli oħra</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Esplora Mogħdijiet oħra</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Ma kellekx informazzjoni x'tesporta.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Metodi ta' Estensjoni</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Feedback</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Daħħal il-feedback hawn]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Agħti feedback dwar il-prodott</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Oqsma</value>
+  </data>
+  <data name="fieldValue">
+    <value>Valur tal-Qasam</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filtru</value>
+  </data>
+  <data name="findALanguage">
+    <value>Sib lingwa</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Din l-enumerazzjoni għandha {0} attribut li jippermetti kombinazzjoni ta' bitwise tal-valuri tal-membri tagħha.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Dettalji tal-Funzjoni</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funzjonijiet</value>
+  </data>
+  <data name="getHelp">
+    <value>Ikseb l-għajnuna</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Agħti feedback</value>
+  </data>
+  <data name="globalParameters">
+    <value>Parametri Globali</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Mur lura lejn it-tmiem</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Mur lura biex ittemm il-modulu</value>
+  </data>
+  <data name="goodWork">
+    <value>Tajjeb!</value>
+  </data>
+  <data name="greatWork">
+    <value>Tajjeb Ħafna!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Laboratorju tal-Prattika</value>
+  </data>
+  <data name="headers">
+    <value>Intestazzjonijiet</value>
+  </data>
+  <data name="heart">
+    <value>Qalb</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} reazzjonijiet tal-qalb</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Għinni nagħżel</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Ħjiel:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Evviva</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} reazzjonijiet ta' evviva</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} sigħat ilu</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Kif nistgħu nsiru aħjar?</value>
+  </data>
+  <data name="hr">
+    <value>siegħa</value>
+  </data>
+  <data name="hrMin">
+    <value>{0}hr {1}min</value>
+  </data>
+  <data name="implements">
+    <value>Jimplimenta</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Importanti&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>fi</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>L-Għażla l-Ħażina</value>
+  </data>
+  <data name="inheritance">
+    <value>Wirt</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Membri li Ntwirtu</value>
+  </data>
+  <data name="input">
+    <value>Input</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Interfaces</value>
+  </data>
+  <data name="intermediate">
+    <value>Intermedju</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Dan l-API jappoġġja l-infrastruttura tal-prodott u mhux maħsub biex jintuża direttament mill-kodiċi tiegħek.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Feedback ta' Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>infetaħ {time ago} minn {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Irrapporta problema bi prodott</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Din il-paġna sibtha utli?</value>
+  </data>
+  <data name="itPro">
+    <value>IT Pro</value>
+  </data>
+  <data name="justNow">
+    <value>issa</value>
+  </data>
+  <data name="key">
+    <value>Ewlieni:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Test tal-Għarfien</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Il-verifika tal-għarfien lesta. Weġibt tajjeb il-mistoqsijiet kollha.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Test tal-Għarfien Lest</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Għadek kemm lestejt it-test tal-għarfien ta’ {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Għadek kemm temmejt it-taqsima ta’ {tutorial} tal-modulu. Issa tista' tmur fit-taqsima li jmiss {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Oops, ma stajniex nagħtu marka lit-test tal-għarfien tiegħek. Erġa' pprova.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Temmejt din is-sezzjoni. Kompli għall-parti li jmiss {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Temmejt din is-sezzjoni. Kompli għal aktar tutorials.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Meta tlesti l-isfida tat-test tal-għarfien tiftaħ il-kisba {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Werrej</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Iffiltra l-Werrej</value>
+  </data>
+  <data name="language">
+    <value>Lingwa</value>
+  </data>
+  <data name="laugh">
+    <value>Daħqa</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0}reazzjonijiet ta' daħqa</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Esplora t-teknoloġija ta' Microsoft b'tutorials diretti, inkluż attivitajiet prattiċi. Din l-esperjenza hija f'previżjoni għalhekk &lt;a href="https://aka.ms/learningfeedback"&gt;iibgħatilna l-feedback tiegħek&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Mogħdija tat-Tagħlim</value>
+  </data>
+  <data name="learnmore">
+    <value>Aktar tagħrif</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Ħalli kumment</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Tista' wkoll tħalli feedback &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;direttament fuq GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Livell {0}</value>
+  </data>
+  <data name="levels">
+    <value>Livelli</value>
+  </data>
+  <data name="light">
+    <value>Ċar</value>
+  </data>
+  <data name="limits">
+    <value>Limiti</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Qed jillowdja...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Qed jillowdja l-feedback...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Qed itella' l-informazzjoni tas-sandbox...</value>
+  </data>
+  <data name="loadMore">
+    <value>Aktar&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Illowdja aktar riżultati</value>
+  </data>
+  <data name="login">
+    <value>Login</value>
+  </data>
+  <data name="loginAzure">
+    <value>Idħol bil-kont Azure tiegħek.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Navigazzjoni Ewlenija</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Immaniġġja l-profil tiegħi</value>
+  </data>
+  <data name="maximize">
+    <value>Immassimizza</value>
+  </data>
+  <data name="member">
+    <value>Membru</value>
+  </data>
+  <data name="memberDescription">
+    <value>Dan l-utent huwa membru tal-organizzazzjoni {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Dettalji tal-Membru</value>
+  </data>
+  <data name="members">
+    <value>Membri</value>
+  </data>
+  <data name="methodDetails">
+    <value>Dettalji tal-Metodu</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Metodi</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Notifika ta' Privatezza tal-Impjegati ta' Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Dħalt bil-kont tal-organizzazzjoni tiegħek ta' Microsoft ({email}). Permezz ta' Microsoft Learn, &lt;strong&gt;inti tifhem u tirrikonoxxi&lt;/strong&gt; li s-sħubija tiegħek tfisser li n-netwerk tas-siti u l-applikazzjonijiet tagħna jirreġistraw u jintraċċaw il-kisbiet u l-attivitajiet tiegħek u aħna nistgħu nixxerjaw ir-riżultati u l-attivitajiet tiegħek ma' timijiet oħra f'Microsoft. Barra minn dan, isem l-utent, l-isem muri, il-kisbiet u l-attivitajiet tiegħek ikunu viżibbli għall-pubbliku.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Problema ta'Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn hija pjattaforma ġdida fjamanta u qed naħdmu biex intejbu l-kontenut u l-esperjenzi bbażati fuq ir-rispons tal-klijenti.
+
+Irridu nisimgħu mingħandek!
+
+Imlielna l-informazzjoni li ġejja:
+1. Il-problema jew feedback li qed tirrapporta dwarha.
+2. Hemm xi ħaġa oħra li tixtieq tgħidilna.
+
+Nota: Filwaqt li mhux qed inwieġbu lill-klijenti direttament bħalissa, kun af li qed nirrevedu kull feedback li qed nirċievu.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Lvant Nofsani</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Imminimizza</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} minuti</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} minuti ilu</value>
+  </data>
+  <data name="minuteSingular">
+    <value>Minuta 1</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} minuti biex taqra</value>
+  </data>
+  <data name="module">
+    <value>Modulu</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modulu lest</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modulu mhux komplut</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} Referenza tal-Modulu</value>
+  </data>
+  <data name="modules">
+    <value>Moduli</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Moduli f'din il-mogħdija ta' tagħlim</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Il-paġna mitluba mhijiex disponibbli għal {0}. Ġejt ridirett lejn l-aktar verżjoni ġdida tal-prodott li għalih din il-paġna hija disponibbli.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} xhur ilu</value>
+  </data>
+  <data name="more">
+    <value>Aktar</value>
+  </data>
+  <data name="moreInfo">
+    <value>Aktar Informazzjoni</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Aktar tutorials</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} Moduli</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} Unitajiet</value>
+  </data>
+  <data name="name">
+    <value>Isem</value>
+  </data>
+  <data name="namespace">
+    <value>Namespace</value>
+  </data>
+  <data name="namespaces">
+    <value>Namespaces</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Is-sistema l-ġdida tagħna tal-feedback hija mibnija fuq Problemi ta’ GitHub. Aqra dwar din il-bidla fil-&lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;post tal-blogg tagħna&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Li Jmiss</value>
+  </data>
+  <data name="nextPage">
+    <value>Il-paġna li jmiss</value>
+  </data>
+  <data name="no">
+    <value>Le</value>
+  </data>
+  <data name="noAchievements">
+    <value>Bħalissa m'għandekx kisbiet. &lt;a href="{0}"&gt;Lesti l-moduli biex tikseb xi ftit.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} m'għandux kisbiet.</value>
+  </data>
+  <data name="noClosed">
+    <value>M'hemmx problemi magħluqa</value>
+  </data>
+  <data name="noOpen">
+    <value>M'hemmx problemi miftuħa</value>
+  </data>
+  <data name="noOutput">
+    <value>Ebda output</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Ma nstab ebda riżultat</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Ebda riżultat għalissa, imma ibqa' ipprova…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Ebda riżultat għal {term}&lt;br /&gt;&lt;a href="{url}"&gt;Fittex "{filter-text}" fid-dokumentazzjoni {scope} kollha&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Nota&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Noti lill-Callers</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Noti lill-Implimentaturi</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Noti lill-Werrieta</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} Magħluq</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} Miftuħ</value>
+  </data>
+  <data name="officeDocs">
+    <value>Dokumentazzjoni ta' Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Ok, fhimt.</value>
+  </data>
+  <data name="oneModule">
+    <value>Modulu 1</value>
+  </data>
+  <data name="oneUnit">
+    <value>Unità 1</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Fuq il-paġna tan-navigazzjoni</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>fuq {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Iftaħ Problema</value>
+  </data>
+  <data name="openIssues">
+    <value>Iftaħ Problemi</value>
+  </data>
+  <data name="operationId">
+    <value>ID tal-Operazzjoni:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operaturi</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Parametri Fakultattivi</value>
+  </data>
+  <data name="options">
+    <value>Għażliet</value>
+  </data>
+  <data name="output">
+    <value>Output</value>
+  </data>
+  <data name="overloads">
+    <value>Overloads</value>
+  </data>
+  <data name="overrides">
+    <value>Overrides</value>
+  </data>
+  <data name="overview">
+    <value>Ħarsa Ġenerali</value>
+  </data>
+  <data name="owner">
+    <value>Sid</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Dan l-utent huwa s-sid tar-repożitorju {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Paċifiku</value>
+  </data>
+  <data name="package">
+    <value>Pakkett</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} Referenza tal-Pakkett</value>
+  </data>
+  <data name="packages">
+    <value>Pakketti</value>
+  </data>
+  <data name="page">
+    <value>Paġna {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Azzjonijiet tal-Paġni</value>
+  </data>
+  <data name="parameters">
+    <value>Parametri</value>
+  </data>
+  <data name="path">
+    <value>Mogħdija:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Agħżel ir-reazzjoni tiegħek</value>
+  </data>
+  <data name="platform">
+    <value>Pjattaforma</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Imla dan il-qasam.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Erġa' pprova.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Niedi l-portal ta' Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Qed itella' portal ta' Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Iftaħ il-lab f'tieqa ġdida</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Din l-unità teħtieġ li portal ta' Azure itemm.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Azure Portal Lab jipprovdi aċċess għal riżorzi bla ħlas ta' Azure biex ittem il-passi f'din l-Unità. Azure Portal Labs ma jaffettwawx l-abbonament tiegħek ta' Azure. Ma tiġix iċċarġjat.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>L-Azure Portal Lab tiegħek lest.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Iva, attiva lab ġdid</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Azure Portal Lab għal unità differenti huwa diġà attiv</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Bħalissa għandek Azure Portal Lab miftuħ għal unità oħra ({lab-name}). Tixtieq twarrab il-lab kurrenti tiegħek u tattiva lab ġdid għal din l-unità?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Erġa' pprova niedi l-lab</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Idħol biex tniedi portal ta' Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Prerekwiżiti:</value>
+  </data>
+  <data name="preview">
+    <value>Previżjoni</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Dan l-API huwa fornut f'previżjoni għall-iżviluppaturi u jista' jinbidel skont il-feedback li nirċievu. Tużax dan l-API f'ambjent ta' produzzjoni.</value>
+  </data>
+  <data name="previous">
+    <value>Preċedenti</value>
+  </data>
+  <data name="previousPage">
+    <value>Il-paġna preċedenti</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Verżjonijiet Preċedenti tad-Dokumenti</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Dikjarazzjoni ta' Privatezza</value>
+  </data>
+  <data name="product">
+    <value>Prodott</value>
+  </data>
+  <data name="productFeedback">
+    <value>Feedback dwar il-prodott</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Prodotti</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Applikazzjonijiet tan-Negozju</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Propjetajiet</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Dettalji tal-Proprjetà</value>
+  </data>
+  <data name="propertyValue">
+    <value>Valur tal-Propjetà</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Qed jibni s-sandbox tiegħek. Din se tieħu minuta biss...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Filtri Veloċi</value>
+  </data>
+  <data name="quizComplete">
+    <value>Prosit!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Ma jistax itella' l-kummenti. Il-limitu tar-rata GitHub API nqabeż.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Ma jistax ifittex problemi. Il-limitu tar-rata GitHub API nqabeż.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Kummenti jew suġġerimenti? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Għidilna hawn&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Ixxerja l-ideat tiegħek. Nilqgħu feedback bi kwalunkwe lingwa.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Aqra bl-Ingliż</value>
+  </data>
+  <data name="readonly">
+    <value>qari biss</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Irċevejt din il-kisba {0} għax temmejt {1}.</value>
+  </data>
+  <data name="references">
+    <value>Referenzi</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Kontenut ta' Tagħlim Irfinut</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Dan il-modulu huwa parti minn dawn il-mogħdijiet tat-tagħlim</value>
+  </data>
+  <data name="remaining">
+    <value>li baqa'</value>
+  </data>
+  <data name="remarks">
+    <value>Rimarki</value>
+  </data>
+  <data name="removeItem">
+    <value>Neħħi {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Perjodu ta' Tiġdid</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Grazzi li rrappurtajtilna t-tħassib tiegħek. Nirrevedu dawn is-sottomissjonijiet bir-reqqa u nieħdu l-passi xierqa biex nindirizzaw din il-kwistjoni. Minħabba tħassib legali u ta' privatezza, nistgħu ma nipprovdukx b'aġġornamenti addizzjonali dwar din is-sottomissjoni. Grazzi għal darba oħra talli kkuntattjajtna.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Irrapporta problema</value>
+  </data>
+  <data name="requestBody">
+    <value>Itlob Korp</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Il-korp tat-talba jista' jkun waħda minn dawn li ġejjin:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Itlob Intestatura</value>
+  </data>
+  <data name="requestPreview">
+    <value>Itlob Previżjoni</value>
+  </data>
+  <data name="requestUrl">
+    <value>Itlob URL</value>
+  </data>
+  <data name="required">
+    <value>meħtieġa</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Parametri Meħtieġa</value>
+  </data>
+  <data name="requirements">
+    <value>Rekwiżiti</value>
+  </data>
+  <data name="resource_type">
+    <value>Tipi</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Tweġibiet</value>
+  </data>
+  <data name="restart">
+    <value>Erġa' ibda</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Ma nistgħux nistednuk f'tenant ta' sandbox minħabba restrizzjonijiet fil-kont tiegħek. Ikkuntattja lill-amministratur tiegħek.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} riżultati misjuba</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Erġa' pprova attiva s-sandbox</value>
+  </data>
+  <data name="returns">
+    <value>Jirritorna</value>
+  </data>
+  <data name="returnValue">
+    <value>Valur tar-Ritorn</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Irrevedi l-kronoloġija tal-Mogħdija tat-Tagħlim tiegħek</value>
+  </data>
+  <data name="roles">
+    <value>Rwoli</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Ħaddem</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Sandbox attivat!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>L-aċċess għal Sandbox skada</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Is-sandbox tiegħek skada. Attiva sandbox ġdid.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Is-sandbox jagħtik aċċess bla ħlas għar-riżorsi ta' Azure meħtieġa biex tlesti din l-unità. L-abbonament ta' Azure tiegħek ma jiġix iċċarġjat.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>L-użu ta' sandbox jeħtieġ li taċċetta stedina tat-tenant ta' Azure</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Is-sandbox għal dan il-modulu huwa temporanjament diżattivat għall-manutenzjoni.</value>
+  </data>
+  <data name="search">
+    <value>Fittex</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Navigazzjoni tat-Tiftix</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Fittex verżjonijiet preċedenti</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Il-filtru tat-tiftixa huwa "{0}". Taptap biex tneħħi.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} sekondi ilu</value>
+  </data>
+  <data name="security">
+    <value>Sigurtà</value>
+  </data>
+  <data name="seeAlso">
+    <value>Ara Wkoll</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Verżjoni Magħżula</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Iffiltra l-lista tal-lingwi billi tagħżel reġjun jew billi tittajpja isem il-lingwa jew il-kodiċi tal-parametru reġjonali.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Agħżel Pakkett</value>
+  </data>
+  <data name="selectVersion">
+    <value>Agħżel Verżjoni</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Agħżel ir-rwol tiegħek</value>
+  </data>
+  <data name="service">
+    <value>Servizz</value>
+  </data>
+  <data name="services">
+    <value>Servizzi</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Is-servizz huwa temporanjament mhux disponibbli. Qed naħdmu fuqha.</value>
+  </data>
+  <data name="share">
+    <value>Ixxerja</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Ixxerja din il-kisba fuq {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Iċċekkja l-kisba li għadni kif ksibt għal {moduleName} fuq Microsoft Guided Learning. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Artiklu Xxerjat] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Ixxerja Dan id-Dokument</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Ixxerja l-kisba tiegħek:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Uri l-klassijiet derivati kollha</value>
+  </data>
+  <data name="signIn">
+    <value>Idħol</value>
+  </data>
+  <data name="signInAzure">
+    <value>Idħol bil-kont Azure tiegħek.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Idħol biex tiċċekkja x-xogħol tiegħek</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Dħalt fil-cloud shell b'kont li huwa differenti mill-kont tad-dokumenti tiegħek. Oħroġ mill-cloud shell biex terġa' tipprova taċċessa s-sandbox.</value>
+  </data>
+  <data name="signingIn">
+    <value>Qed jidħol fi...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Idħol biex tattiva sandbox</value>
+  </data>
+  <data name="signInToComment">
+    <value>Idħol biex tikkummenta</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Idħol biex tagħti feedback dwar id-dokumentazzjoni</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Idħol biex tagħti feedback</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Idħol biex&lt;/a&gt; iżżid il-limitu tar-rata tal-GitHub API tiegħek.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Idħol biex iżżid ir-reazzjoni tiegħek</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Idħol biex tissejvja l-progress</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Idħol&lt;/a&gt; biex tara l-profil tal-utent tiegħek.</value>
+  </data>
+  <data name="signOut">
+    <value>Oħroġ</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Feedback tas-Sit</value>
+  </data>
+  <data name="slack">
+    <value>Laxk</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hmm, ġrat xi ħaġa ħażina</value>
+  </data>
+  <data name="start">
+    <value>Ibda</value>
+  </data>
+  <data name="startHere">
+    <value>Ibda Hawn</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Pass {step-index} ta' {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Strutturi</value>
+  </data>
+  <data name="submit">
+    <value>Issottometti</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Issottometti feedback</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Ġiet Sottomessa b'Suċċess!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Issuġġerixxi idea għal prodott</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Il-kompitu ma ntemmx sew.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Qed naġġornaw din il-paġna b'esperjenza interattiva ġdida. Erġa' ċċekkja dalwaqt!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Grazzi tal-feedback!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Ma tantx hi tajba.</value>
+  </data>
+  <data name="theme">
+    <value>Tema</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Bħalissa m'hemmx feedback għal dan id-dokument. Il-feedback sottomess se jidher hawn.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Il-membri kollha ta' din il-klassi huma siguri mill-fil.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Il-membri kollha tal-istanzi ta' din il-klassi huma siguri mill-fil.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Il-membri statiċi kollha ta' din il-klassi huma siguri mill-fil.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Dan it-tip mhuwiex sigur mill-fil.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Sigurtà tal-Fil</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} reazzjonijiet ta' disfatta</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} reazzjonijiet ta' approvazzjoni</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Suġġeriment&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Titlu</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Problema bl-ittoggiljar</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Ittogilja l-Unitajiet</value>
+  </data>
+  <data name="trademarks">
+    <value>Trademarks</value>
+  </data>
+  <data name="triggers">
+    <value>Triggers</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Qlajt trofew talli lestejt</value>
+  </data>
+  <data name="tryAgain">
+    <value>Erġa' pprova</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Ipprova l-kodiċi fil-brawżer tiegħek</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Ipprova r-REST API bl-inputs t' hawn taħt.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>il-kontributuri {0} kollha</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>Lest 100%!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Prosit!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Kompli Hawn</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Kontributuri</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Qari Ulterjuri</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Introduzzjoni</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>għad fadal {0} minuti</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} minuti biex ilesti</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Il-passi li jmiss</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>It-Tutorial Li Jmiss</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Riżorsi</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Ara {0} jew sir kontributur billi tissuġġerixxi titjib fuq {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Tgħallimt kif...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Temmejt it-tutorial "{0}" .</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Titgħallem kif...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Għandek feedback jew weħilt f’xi parti ta’ dan it-tutorial?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Irrapporta problema fuq GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Il-passi li jmiss</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Tweets ikkurati minn</value>
+  </data>
+  <data name="type">
+    <value>tip</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Definizzjoni ta' Tip</value>
+  </data>
+  <data name="typeParameters">
+    <value>Parametri ta' Tip</value>
+  </data>
+  <data name="unit">
+    <value>Unità</value>
+  </data>
+  <data name="unitComplete">
+    <value>Unità Lesta</value>
+  </data>
+  <data name="unitMarker">
+    <value>Unità {index} minn {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Din l-unità teħtieġ sandbox biex tintemm</value>
+  </data>
+  <data name="units">
+    <value>Unitajiet</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Parametri URI</value>
+  </data>
+  <data name="usage">
+    <value>Użu</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Uża magna virtwali</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Żur is-sit tal-Laboratorju tal-prattika għal tagħlim integrat.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Student ta' Docs</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Uża l-kompjuter lokali tiegħek</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Ibqa' fuq dan is-sit u segwi l-istruzzjonijiet bil-magna tiegħek stess.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>L-Użu ta' dan il-Konnettur</value>
+  </data>
+  <data name="value">
+    <value>Valur</value>
+  </data>
+  <data name="valueFrom">
+    <value>valur minn</value>
+  </data>
+  <data name="version">
+    <value>Verżjoni</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Ara din il-problema fuq GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Ara aktar feedback fuq GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Ara fuq GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Ara {username} fuq GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Nirrikmandaw li tuża Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Niżżel issa</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Dokumentazzjoni ta' Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Niedi l-modalità VM</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Qed itella' magna virtwali...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Din l-unità teħtieġ li VM ittemm.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Il-modalità VM tipprovdi aċċess bla ħlas għal magna virtwali ta' Azure biex ittemm il-passi f'din l-unità. L-abbonament tiegħek ta' Azure mhux se jinbidel</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Iva, attiva VM ġdid</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>VM għall-unità differenti diġà attiv</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Inti diġà ftaħt VM fil-modulu {lab-name}. Jekk tattiva din il-VM, titlef ix-xogħol kollu tiegħek fil-modulu l-ieħor.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Erġa' pprova niedi l-modalità VM</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Idħol biex tniedi l-modalità VM</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Twissija&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} ġimgħat ilu</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Nieħdu gost inkunu nafu x'taħseb. Agħżel it-tip li tixtieq tipprovdi:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Rekwiżiti ta' Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Dokumentazzjoni ta' Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Madwar id-dijja</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Tixtieq tipprovdi feedback?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Iva</value>
+  </data>
+  <data name="youDidIt">
+    <value>Irnexxielek!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Ksibt punti ta' esperjenza talli temmejtu l-verifika tal-għarfien.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Ksibt punti ta' esperjenza talli temmejt il-kompitu.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Għadek kemm qlajt &lt;span class="experience-points"&gt;&lt;/span&gt; punti tal-esperjenza.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Jeħtieġ twieġeb il-mistoqsijiet kollha qabel tirrevedi xogħlok.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Jeħtieġ tuża r-riżorsi pprovduti mis-sandbox biex tivverifika x-xogħol tiegħek.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Irnexxielek</value>
+  </data>
+  <data name="yourAccount">
+    <value>Il-Kont Tiegħek</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Il-kont tiegħek tħassar.</value>
+  </data>
+  <data name="yourData">
+    <value>Id-dejta tiegħek</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Niżżel jew ħassar il-progress u l-kisbiet issejvjati tiegħek fuq Docs. Meta tħassar l-informazzjoni tiegħek dan ma jkollux impatt fuq l-identità tiegħek ta' Microsoft.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Ix-xogħol tiegħek ma tlestiex sew.</value>
+  </data>
+</root>

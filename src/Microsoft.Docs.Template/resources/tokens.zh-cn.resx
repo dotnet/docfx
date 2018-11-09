@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>接受的值</value>
+  </data>
+  <data name="acceptInvite">
+    <value>接受邀请</value>
+  </data>
+  <data name="achievements">
+    <value>成就</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>看看我刚刚在 Microsoft 引导式学习中获得的 {0} 成就吧!</value>
+  </data>
+  <data name="actions">
+    <value>操作</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>是，激活新的沙盒</value>
+  </data>
+  <data name="activateSandbox">
+    <value>激活沙盒</value>
+  </data>
+  <data name="aDayAgo">
+    <value>1 天前</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>其他功能和要求</value>
+  </data>
+  <data name="addParameter">
+    <value>添加参数</value>
+  </data>
+  <data name="administrator">
+    <value>管理员</value>
+  </data>
+  <data name="advanced">
+    <value>高级</value>
+  </data>
+  <data name="africa">
+    <value>非洲</value>
+  </data>
+  <data name="all">
+    <value>全部</value>
+  </data>
+  <data name="allapis">
+    <value>所有 API</value>
+  </data>
+  <data name="allPackages">
+    <value>所有包</value>
+  </data>
+  <data name="americas">
+    <value>美洲</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>1 分钟前</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>1 个月前</value>
+  </data>
+  <data name="anHourAgo">
+    <value>1 小时前</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} API 引用</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>API 搜索不可用。 请稍后再试。</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>旧版</value>
+  </data>
+  <data name="areYouSure">
+    <value>确实要执行此操作吗?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>删除数据的操作无法撤消。</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>1 秒前</value>
+  </data>
+  <data name="asia">
+    <value>亚洲</value>
+  </data>
+  <data name="askQuestion">
+    <value>提问</value>
+  </data>
+  <data name="assemblies">
+    <value>程序集</value>
+  </data>
+  <data name="assembly">
+    <value>程序集</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>附加事件</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>附加属性</value>
+  </data>
+  <data name="attributes">
+    <value>属性</value>
+  </data>
+  <data name="avatar">
+    <value>头像</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>1 周前</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell 使用现有的 Azure 订阅。 使用 Cloud Shell 执行命令将产生相关费用。</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure 文档</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>你已成功完成，赢得了徽章</value>
+  </data>
+  <data name="begin">
+    <value>开始</value>
+  </data>
+  <data name="beginner">
+    <value>初级</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>正文</value>
+  </data>
+  <data name="breadcrumb">
+    <value>痕迹</value>
+  </data>
+  <data name="browse">
+    <value>浏览</value>
+  </data>
+  <data name="browseCode">
+    <value>浏览代码</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>业务分析师</value>
+  </data>
+  <data name="businessUser">
+    <value>业务用户</value>
+  </data>
+  <data name="calls">
+    <value>调用</value>
+  </data>
+  <data name="capabilities">
+    <value>功能</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;注意&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>检查你的答案</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>再次检查你的作业</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>知识检测</value>
+  </data>
+  <data name="checkYourWork">
+    <value>检查你的工作</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>选择回应</value>
+  </data>
+  <data name="claimReward">
+    <value>解锁成就</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>类</value>
+  </data>
+  <data name="clearfilter">
+    <value>清除筛选</value>
+  </data>
+  <data name="clearterm">
+    <value>清除术语</value>
+  </data>
+  <data name="clickForRSS">
+    <value>单击 RSS 源</value>
+  </data>
+  <data name="close">
+    <value>关闭</value>
+  </data>
+  <data name="closedIssue">
+    <value>已关闭的问题</value>
+  </data>
+  <data name="closedIssues">
+    <value>已关闭的问题</value>
+  </data>
+  <data name="clsCompliant">
+    <value>此 API 不符合 CLS。</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>符合 CLS 的替代方案</value>
+  </data>
+  <data name="code">
+    <value>代码</value>
+  </data>
+  <data name="collaborator">
+    <value>协作者</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>此用户已受邀与人协作处理 {repo}。</value>
+  </data>
+  <data name="commands">
+    <value>命令</value>
+  </data>
+  <data name="comment">
+    <value>评论</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} 条评论</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{time ago} {name} 发表了评论</value>
+  </data>
+  <data name="comments">
+    <value>注释</value>
+  </data>
+  <data name="complete">
+    <value>完成</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>正在配置 Cloud Shell 进行沙盒访问...</value>
+  </data>
+  <data name="confused">
+    <value>困惑</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} 个困惑的反应</value>
+  </data>
+  <data name="congratulations">
+    <value>恭喜！</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>每个帐户的连接数</value>
+  </data>
+  <data name="constructorDetails">
+    <value>构造函数详细信息</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>构造函数</value>
+  </data>
+  <data name="contentFeedback">
+    <value>内容反馈</value>
+  </data>
+  <data name="contents">
+    <value>内容</value>
+  </data>
+  <data name="continue">
+    <value>继续</value>
+  </data>
+  <data name="continueHere">
+    <value>在此处继续</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>继续第一个步骤</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>继续探索下一个模块</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>继续操作而不保存进度</value>
+  </data>
+  <data name="contributor">
+    <value>参与者</value>
+  </data>
+  <data name="contributorDescription">
+    <value>此用户之前参与过 {repo} 存储库。</value>
+  </data>
+  <data name="contributorGuide">
+    <value>参与</value>
+  </data>
+  <data name="contributors">
+    <value>作者</value>
+  </data>
+  <data name="copy">
+    <value>复制</value>
+  </data>
+  <data name="correctChoice">
+    <value>选择正确</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>你已使用 Microsoft 组织帐户 ({0}) 登录，使用体验将不同于个人帐户：</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>一些游戏化功能对 Microsoft 员工不可用。</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>你的个人资料将公开指明你是 Microsoft 员工。</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>如果无法访问电子邮件，将无法登录此网站。</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>若要使用此网站执行个人活动，请使用其他帐户登录。</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>若要连接帐户，需要提供以下信息:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>使用 Microsoft Learn 即表示你了解并确认你的成员资格意味着我们的网站和应用程序网络将记录和跟踪你的成就和活动，我们可能会将你的结果和活动与 Microsoft 的其他团队共享。 此外，你的用户名、显示名称、成就和活动将公开可见。&lt;ul&gt;&lt;li&gt;你的个人资料将公开指明你是 Microsoft 员工。&lt;/li&gt;&lt;li&gt;如果无法访问电子邮件，将无法登录此网站。&lt;/li&gt;&lt;li&gt;一些游戏化功能对 Microsoft 员工不可用。&lt;/li&gt;&lt;li&gt;若要使用此网站执行个人活动，请使用其他帐户登录。&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>成为成员即表示你理解并同意你获得 Microsoft Learn 中的成员资格，这意味着我们的站点和应用程序网络将记录你的成就和活动。 你的用户名、显示名称、成就和活动将公开可见。</value>
+  </data>
+  <data name="createNewArchive">
+    <value>创建新存档</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>正在创建连接</value>
+  </data>
+  <data name="currentSelection">
+    <value>当前选择</value>
+  </data>
+  <data name="dark">
+    <value>暗</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} 天前</value>
+  </data>
+  <data name="defaultValue">
+    <value>默认值</value>
+  </data>
+  <data name="definition">
+    <value>定义</value>
+  </data>
+  <data name="definitions">
+    <value>定义</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>委托</value>
+  </data>
+  <data name="delete">
+    <value>删除</value>
+  </data>
+  <data name="deleteParameter">
+    <value>删除参数</value>
+  </data>
+  <data name="deployToAzure">
+    <value>部署到 Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>此 API 现已过时。</value>
+  </data>
+  <data name="derived">
+    <value>派生</value>
+  </data>
+  <data name="description">
+    <value>说明</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>开发人员</value>
+  </data>
+  <data name="developers">
+    <value>开发者</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>关闭此对话</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>其他沙盒已处于活动状态</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>你已激活模块 &lt;a href="{0}"&gt;{1}&lt;/a&gt; 中的沙盒。 如果激活此沙盒，其他模块中的作业会丢失。</value>
+  </data>
+  <data name="disable">
+    <value>禁用</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>搜索结果来自上一版本的文档，该文档已不再定期更新。</value>
+  </data>
+  <data name="docsProfile">
+    <value>文档配置文件</value>
+  </data>
+  <data name="documentDetails">
+    <value>文档详细信息</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>请勿编辑此部分。 docs.microsoft.com ➟ GitHub 问题链接必须具有此部分。</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET 文档</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET 编辑器</value>
+  </data>
+  <data name="download">
+    <value>下载</value>
+  </data>
+  <data name="downloadPdf">
+    <value>下载 PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>下载 ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>此操作输出是动态内容。</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>获得更多成就</value>
+  </data>
+  <data name="edit">
+    <value>编辑</value>
+  </data>
+  <data name="editdesc">
+    <value>编辑本文</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>显式界面实现</value>
+  </data>
+  <data name="email">
+    <value>电子邮件</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>需要电子邮件才能激活沙盒</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Microsoft 帐户必须关联有效电子邮件才能激活沙盒。 前往 &lt;a href="https://account.live.com" target="_blank"&gt;Microsoft 帐户设置&lt;/a&gt;关联电子邮件并重试。</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>禁止使用空名称</value>
+  </data>
+  <data name="enable">
+    <value>启用</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>进入焦点模式</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>枚举</value>
+  </data>
+  <data name="error">
+    <value>错误</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>创建注释时出错。 如有需要，可在 &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; 上重试。</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>创建问题时出错。 如有需要，可在 &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; 上重试。</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>无法加载搜索结果。 请稍后再试。</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>加载注释时出错。</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>加载反馈时出错。</value>
+  </data>
+  <data name="europe">
+    <value>欧洲</value>
+  </data>
+  <data name="eventDetails">
+    <value>事件详细信息</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>事件</value>
+  </data>
+  <data name="examples">
+    <value>示例</value>
+  </data>
+  <data name="exceptions">
+    <value>异常</value>
+  </data>
+  <data name="exit">
+    <value>退出</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>退出焦点模式</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>展开文档反馈菜单</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>探索其他模块</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>了解其他路径</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>你没有任何要导出的信息。</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>扩展方法</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>反馈</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[在此处输入反馈]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>提供产品反馈</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>字段</value>
+  </data>
+  <data name="fieldValue">
+    <value>字段值</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>筛选器</value>
+  </data>
+  <data name="findALanguage">
+    <value>查找语言</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>此枚举有一个 {0} 属性，允许按位组合成员值。</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>函数详细信息</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>函数</value>
+  </data>
+  <data name="getHelp">
+    <value>获取帮助</value>
+  </data>
+  <data name="giveFeedback">
+    <value>提供反馈</value>
+  </data>
+  <data name="globalParameters">
+    <value>全局参数</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>返回以结束</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>返回以结束模块</value>
+  </data>
+  <data name="goodWork">
+    <value>做得很好！</value>
+  </data>
+  <data name="greatWork">
+    <value>干得漂亮!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>动手实践实验室</value>
+  </data>
+  <data name="headers">
+    <value>标头</value>
+  </data>
+  <data name="heart">
+    <value>爱心</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} 个爱心的反应</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>帮助我选择</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;提示：&lt;/strong&gt;{0}</value>
+  </data>
+  <data name="hooray">
+    <value>万岁</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} 个万岁的反应</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} 小时前</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>我们应该如何改进?</value>
+  </data>
+  <data name="hr">
+    <value>小时</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} 小时 {1} 分钟</value>
+  </data>
+  <data name="implements">
+    <value>实现</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;重要&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>在</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>选择错误</value>
+  </data>
+  <data name="inheritance">
+    <value>继承</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>继承成员</value>
+  </data>
+  <data name="input">
+    <value>输入</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>界面</value>
+  </data>
+  <data name="intermediate">
+    <value>中级</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>此 API 支持产品基础结构，不能在代码中直接使用。</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Intune 反馈</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>{time ago} {name} 创建了待解决问题</value>
+  </data>
+  <data name="issueProduct">
+    <value>报告产品问题</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>此页面有帮助吗?</value>
+  </data>
+  <data name="itPro">
+    <value>IT 专业人员</value>
+  </data>
+  <data name="justNow">
+    <value>刚刚</value>
+  </data>
+  <data name="key">
+    <value>密钥:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>知识检查</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>知识检查完成。 你正确地回答了所有问题。</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>知识检查完成</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>你已完成 {tutorial} 知识检查。</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>已完成本模块的 {tutorial} 部分。 现在可以继续学习下一部分 {nextUnitName}。</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>糟糕，我们无法对你的知识检查进行评分。 请重试。</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>你已完成本部分。 继续学习下一部分 {nextUnitName}。</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>你已完成本部分。 继续学习更多教程。</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>完成此知识检查挑战即可解锁 {moduleName} 成就。</value>
+  </data>
+  <data name="landmarkToc">
+    <value>目录</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>筛选目录</value>
+  </data>
+  <data name="language">
+    <value>语言</value>
+  </data>
+  <data name="laugh">
+    <value>大笑</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} 个大笑的反应</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>通过实时教程（包括动手实践活动）探索 Microsoft 技术。 该体验目前处于预览状态，请&lt;a href="https://aka.ms/learningfeedback"&gt;向我们发送反馈&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>学习路径</value>
+  </data>
+  <data name="learnmore">
+    <value>了解更多</value>
+  </data>
+  <data name="leaveAComment">
+    <value>发表评论</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>也可以&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;直接在 GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;上提供反馈。</value>
+  </data>
+  <data name="level">
+    <value>级别 {0}</value>
+  </data>
+  <data name="levels">
+    <value>级别</value>
+  </data>
+  <data name="light">
+    <value>亮</value>
+  </data>
+  <data name="limits">
+    <value>限制</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>正在加载...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>正在加载反馈...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>正在加载沙盒信息...</value>
+  </data>
+  <data name="loadMore">
+    <value>更多&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>加载更多结果</value>
+  </data>
+  <data name="login">
+    <value>登录</value>
+  </data>
+  <data name="loginAzure">
+    <value>请使用 Azure 帐户登录。</value>
+  </data>
+  <data name="mainNavigation">
+    <value>主导航</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>管理我的个人资料</value>
+  </data>
+  <data name="maximize">
+    <value>最大化</value>
+  </data>
+  <data name="member">
+    <value>成员</value>
+  </data>
+  <data name="memberDescription">
+    <value>此用户是 {org} 组织的成员。</value>
+  </data>
+  <data name="memberDetails">
+    <value>成员详细信息</value>
+  </data>
+  <data name="members">
+    <value>成员</value>
+  </data>
+  <data name="methodDetails">
+    <value>方法详细信息</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>方法</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsoft 员工隐私声明</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>你已使用 Microsoft 组织帐户 ({email}) 登录。 使用 Microsoft Learn 即表示你了解并确认你的成员资格意味着我们的网站和应用程序网络将记录和跟踪你的成就和活动，我们可能会将你的结果和活动与 Microsoft 的其他团队共享。 此外，你的用户名、显示名称、成就和活动将公开可见。</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Learn 问题</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn 是一个全新的平台，我们将根据客户的回复努力改善内容和体验。
+
+我们希望收到你的反馈！
+
+请填写以下信息：
+1. 你报告的问题或反馈。
+2. 你想要向我们反馈的其他问题。
+
+注意：虽然我们此次不会直接回应所有客户，但请相信，我们会查看收到的所有反馈。
+
+URL：{page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>中东</value>
+  </data>
+  <data name="min">
+    <value>{0} 分钟</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>最小化</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} 分钟</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} 分钟前</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 分钟</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} 分钟阅读时长</value>
+  </data>
+  <data name="module">
+    <value>模块</value>
+  </data>
+  <data name="moduleComplete">
+    <value>模块完成</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>模块未完成</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} 模块引用</value>
+  </data>
+  <data name="modules">
+    <value>模块</value>
+  </data>
+  <data name="modulesInPath">
+    <value>本学习路径中的模块</value>
+  </data>
+  <data name="monikerFallback">
+    <value>对 {0} 而言，请求的页面不可用。 已重定向到此页面针对的最新版产品的相应页面。</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} 个月前</value>
+  </data>
+  <data name="more">
+    <value>更多</value>
+  </data>
+  <data name="moreInfo">
+    <value>更多信息</value>
+  </data>
+  <data name="moreTutorials">
+    <value>更多教程</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} 个模块</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} 个单元</value>
+  </data>
+  <data name="name">
+    <value>名称</value>
+  </data>
+  <data name="namespace">
+    <value>命名空间</value>
+  </data>
+  <data name="namespaces">
+    <value>命名空间</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>我们就 GitHub 问题建立了新的反馈系统。 阅读&lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;我们的博客文章&lt;/a&gt;，了解相关内容。</value>
+  </data>
+  <data name="next">
+    <value>下一篇</value>
+  </data>
+  <data name="nextPage">
+    <value>下一页</value>
+  </data>
+  <data name="no">
+    <value>否</value>
+  </data>
+  <data name="noAchievements">
+    <value>当前没有成就。 &lt;a href="{0}"&gt;完成模块以获得一些成就。&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} 尚无任何成就。</value>
+  </data>
+  <data name="noClosed">
+    <value>没有已关闭的问题</value>
+  </data>
+  <data name="noOpen">
+    <value>没有未决问题</value>
+  </data>
+  <data name="noOutput">
+    <value>没有输出</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>找不到任何结果</value>
+  </data>
+  <data name="noResultsRest">
+    <value>还没有结果，请继续键入…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>搜索 {term} 无结果&lt;br /&gt;&lt;a href="{url}"&gt;在所有 {scope} 文档中搜索“{filter-text}”&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;备注&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>调用方说明</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>实施者说明</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>继承者说明</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} 条已关闭</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} 条未结</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office 文档</value>
+  </data>
+  <data name="ok">
+    <value>确定</value>
+  </data>
+  <data name="okGotIt">
+    <value>明白了。</value>
+  </data>
+  <data name="oneModule">
+    <value>1 个模块</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 个单元</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>业内导航</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>关于 {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>未结的问题</value>
+  </data>
+  <data name="openIssues">
+    <value>未结的问题</value>
+  </data>
+  <data name="operationId">
+    <value>操作 ID:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>操作员</value>
+  </data>
+  <data name="optionalParameters">
+    <value>可选参数</value>
+  </data>
+  <data name="options">
+    <value>选项</value>
+  </data>
+  <data name="output">
+    <value>输出</value>
+  </data>
+  <data name="overloads">
+    <value>重载</value>
+  </data>
+  <data name="overrides">
+    <value>替代</value>
+  </data>
+  <data name="overview">
+    <value>概述</value>
+  </data>
+  <data name="owner">
+    <value>所有者</value>
+  </data>
+  <data name="ownerDescription">
+    <value>此用户是 {repo} 存储库的所有者。</value>
+  </data>
+  <data name="pacific">
+    <value>太平洋</value>
+  </data>
+  <data name="package">
+    <value>包</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} 包参考</value>
+  </data>
+  <data name="packages">
+    <value>包</value>
+  </data>
+  <data name="page">
+    <value>第 {0} 页</value>
+  </data>
+  <data name="pageActions">
+    <value>页面操作</value>
+  </data>
+  <data name="parameters">
+    <value>参数</value>
+  </data>
+  <data name="path">
+    <value>路径:</value>
+  </data>
+  <data name="pickReaction">
+    <value>选取回应</value>
+  </data>
+  <data name="platform">
+    <value>平台</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>请填写此字段。</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>请重试。</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>启动 Azure 门户</value>
+  </data>
+  <data name="portallab_loading">
+    <value>正在加载 Azure 门户...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>在新窗口中打开实验室</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>要完成本单元，需使用 Azure 门户。</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Azure 门户实验室提供免费的 Azure 资源访问，以完成本单元中的步骤。 Azure 门户实验室不会影响 Azure 订阅。 不会收取任何费用。</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Azure 门户实验室已准备就绪。</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>是，激活新的实验室</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>其他单元的 Azure 门户实验室已处于活动状态</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>当前已打开另一个单元 ({lab-name}) 的 Azure 门户实验室。 是否要放弃当前的实验室并激活此单元的新实验室？</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>重新尝试启动实验室</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>登录以启动 Azure 门户</value>
+  </data>
+  <data name="prerequisites">
+    <value>先决条件：</value>
+  </data>
+  <data name="preview">
+    <value>预览</value>
+  </data>
+  <data name="previewTypescript">
+    <value>此 API 以预览状态提供给开发者，可能根据我们收到的反馈更改。 请勿在生产环境中使用此 API。</value>
+  </data>
+  <data name="previous">
+    <value>上一步</value>
+  </data>
+  <data name="previousPage">
+    <value>上一页</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>旧版文档</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>隐私声明</value>
+  </data>
+  <data name="product">
+    <value>产品</value>
+  </data>
+  <data name="productFeedback">
+    <value>产品反馈</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>产品</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>商业应用程序</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>配置文件</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>属性</value>
+  </data>
+  <data name="propertyDetails">
+    <value>属性详细信息</value>
+  </data>
+  <data name="propertyValue">
+    <value>属性值</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>正在构建沙盒。 该操作将需要 1 分钟时间...</value>
+  </data>
+  <data name="quickfilters">
+    <value>快速筛选</value>
+  </data>
+  <data name="quizComplete">
+    <value>恭喜！</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>无法加载注释。 已超出 GitHub API 速率限制。</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>无法搜索问题。 已超出 GitHub API 速率限制。</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>意见或建议? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;请在此处告诉我们&lt;/a&gt;。</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>请分享你的想法。 我们乐于倾听用任何语言提出的反馈。</value>
+  </data>
+  <data name="readInEnglish">
+    <value>使用英语阅读</value>
+  </data>
+  <data name="readonly">
+    <value>只读</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>你完成了 {1}，获得成就 {0}。</value>
+  </data>
+  <data name="references">
+    <value>参考</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>优化学习内容</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>此模块属于这些学习路径</value>
+  </data>
+  <data name="remaining">
+    <value>剩余</value>
+  </data>
+  <data name="remarks">
+    <value>注解</value>
+  </data>
+  <data name="removeItem">
+    <value>删除 {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>续订期</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>感谢你向我们报告问题。 我们非常仔细地查看了这些提交内容，并将采取相应的步骤来解决此问题。 鉴于法律和隐私要求，我们可能不会向你提供有关此提交的任何其他更新。 再次感谢你联系我们。</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>报告问题</value>
+  </data>
+  <data name="requestBody">
+    <value>请求正文</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>请求正文可以为下列任一内容：</value>
+  </data>
+  <data name="requestHeader">
+    <value>请求头</value>
+  </data>
+  <data name="requestPreview">
+    <value>请求预览</value>
+  </data>
+  <data name="requestUrl">
+    <value>请求 URL</value>
+  </data>
+  <data name="required">
+    <value>必需</value>
+  </data>
+  <data name="requiredParameters">
+    <value>必需参数</value>
+  </data>
+  <data name="requirements">
+    <value>要求</value>
+  </data>
+  <data name="resource_type">
+    <value>类型</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>响应</value>
+  </data>
+  <data name="restart">
+    <value>重启</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>由于你帐户存在限制，我们无法将你邀请到沙盒租户。 请与管理员联系。</value>
+  </data>
+  <data name="resultsFound">
+    <value>找到 {0} 个结果</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>重新尝试激活沙盒</value>
+  </data>
+  <data name="returns">
+    <value>返回</value>
+  </data>
+  <data name="returnValue">
+    <value>返回值</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>查看你的学习路径历史记录</value>
+  </data>
+  <data name="roles">
+    <value>角色</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>运行</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>沙盒已激活！</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>沙盒访问权限过期</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>沙盒已过期。 激活新的沙盒。</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>通过沙盒可以免费访问完成本单元所需的 Azure 资源。 Azure 订阅将不会收费。</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>要接受 Azure 租户邀请才可使用沙盒</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>因维护原因，已暂时禁用此模块的沙盒。</value>
+  </data>
+  <data name="search">
+    <value>搜索</value>
+  </data>
+  <data name="searchNavigation">
+    <value>搜索导航</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>搜索以前的版本</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>搜索筛选器为“{0}”。 点击可删除。</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} 秒前</value>
+  </data>
+  <data name="security">
+    <value>安全性</value>
+  </data>
+  <data name="seeAlso">
+    <value>另请参阅</value>
+  </data>
+  <data name="selectedVersion">
+    <value>选定的版本</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>选择区域或者键入语言名或区域性代码，筛选语言列表。</value>
+  </data>
+  <data name="selectPackage">
+    <value>选择包</value>
+  </data>
+  <data name="selectVersion">
+    <value>选择版本</value>
+  </data>
+  <data name="selectYourRole">
+    <value>选择你的角色</value>
+  </data>
+  <data name="service">
+    <value>服务</value>
+  </data>
+  <data name="services">
+    <value>服务</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>该服务暂时不可用。 我们正在处理。</value>
+  </data>
+  <data name="share">
+    <value>共享</value>
+  </data>
+  <data name="shareAchievement">
+    <value>在 {0} 上共享此成就</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>看看我刚刚在 Microsoft 引导式学习中获得的 {moduleName} 成就吧。 #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[共享文章] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>共享本文</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>共享你的成就：</value>
+  </data>
+  <data name="showAllDerived">
+    <value>显示所有派生类</value>
+  </data>
+  <data name="signIn">
+    <value>登录</value>
+  </data>
+  <data name="signInAzure">
+    <value>请使用 Azure 帐户登录。</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>登录以检查你的工作</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>你使用不同于 Docs 帐户的帐户登录到云 shell。 请注销云 shell 以再次尝试访问沙盒。</value>
+  </data>
+  <data name="signingIn">
+    <value>正在登录…...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>登录以激活沙盒</value>
+  </data>
+  <data name="signInToComment">
+    <value>登录以评论</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>登录以提供文档反馈</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>登录即可提供反馈</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;登录&lt;/a&gt;以提高 GitHub API 速率限制。</value>
+  </data>
+  <data name="signInToReact">
+    <value>登录以添加回应</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>登录即可保存进度</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;登录&lt;/a&gt;以查看用户配置文件。</value>
+  </data>
+  <data name="signOut">
+    <value>注销</value>
+  </data>
+  <data name="siteFeedback">
+    <value>网站反馈</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>解决方案架构师</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>嗯，出现问题</value>
+  </data>
+  <data name="start">
+    <value>开始</value>
+  </data>
+  <data name="startHere">
+    <value>由此开始</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>步骤 {step-index} (共 {step-count} 个步骤)</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>结构</value>
+  </data>
+  <data name="submit">
+    <value>提交</value>
+  </data>
+  <data name="submitFeedback">
+    <value>提交反馈</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>成功提交！</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>提出产品意见</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>任务未正确完成。</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>我们正在更新此页，以提供全新的交互式体验。 请稍后再查看!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>感谢你提供反馈!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>不完全正确。</value>
+  </data>
+  <data name="theme">
+    <value>主题</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>本文档当前无任何反馈。 提交的反馈将显示在此处。</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>此类的所有成员均为线程安全。</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>此类的所有实例成员均为线程安全。</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>此类的所有静态成员均为线程安全。</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>此类型并非线程安全。</value>
+  </data>
+  <data name="threadSafety">
+    <value>线程安全性</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} 个太差了的反应</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} 个太棒了的反应</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;提示&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>标题</value>
+  </data>
+  <data name="toggleIssue">
+    <value>切换问题</value>
+  </data>
+  <data name="toggleUnits">
+    <value>切换单元</value>
+  </data>
+  <data name="trademarks">
+    <value>商标</value>
+  </data>
+  <data name="triggers">
+    <value>触发器</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>你已获得完结徽章</value>
+  </data>
+  <data name="tryAgain">
+    <value>重试</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>在浏览器中尝试运行代码</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>通过下面的输入内容来试用 REST API。</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>全部 {0} 参与者</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% 完成！</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>恭喜！</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>在此处继续</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>作者</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>深入阅读</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>简介</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>剩余 {0} 分钟</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} 分钟后完成</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>后续步骤</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>下一个教程</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>资源</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>查看 {0} 或建议有关对 {1} 的改进来成为参与者。</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>你已了解操作方式...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>你已完成“{0}”教程。</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>你将了解操作方式...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>希望提供反馈或在此部分教程中遇到难题？</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>在 GitHub 上报告问题</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>后续步骤</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>精选推文作者</value>
+  </data>
+  <data name="type">
+    <value>类型</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>类型定义</value>
+  </data>
+  <data name="typeParameters">
+    <value>类型参数</value>
+  </data>
+  <data name="unit">
+    <value>单元</value>
+  </data>
+  <data name="unitComplete">
+    <value>单元已完成</value>
+  </data>
+  <data name="unitMarker">
+    <value>第 {index} 单元（共 {total} 个单元）</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>本单元需要沙盒才可完成</value>
+  </data>
+  <data name="units">
+    <value>单元</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI 参数</value>
+  </data>
+  <data name="usage">
+    <value>使用情况</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>使用虚拟机</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>访问动手实践实验室网站，了解完整说明。</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs 学习者</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>使用本地计算机</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>停留在该网站并按照说明在你自己的计算机进行操作。</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>使用此连接器</value>
+  </data>
+  <data name="value">
+    <value>值</value>
+  </data>
+  <data name="valueFrom">
+    <value>值来自</value>
+  </data>
+  <data name="version">
+    <value>版本</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>在 GitHub 上查看此问题</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>在 GitHub 上查看更多反馈</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>在 GitHub 上查看</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>在 GitHub 上查看 {username}</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>我们建议使用 Visual Studio 2017。</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>立即下载</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual Studio 文档</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>启动 VM 模式</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>正在加载虚拟机...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>本单元需要 VM 才可完成。</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>VM 模式提供了免费的 Azure 虚拟机访问权限，可用于完成本单元中的步骤。 Azure 订阅将不会收费</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>是，激活新的 VM</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>其他单元的 VM 已处于活动状态</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>你已经打开模块 {lab-name} 中的 VM。 如果激活此 VM，其他模块中的作业会丢失。</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>重新尝试启动 VM 模式</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>登录以启动 VM 模式</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;警告&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} 周前</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>我们衷心期待你的反馈意见。 请选择要提供的反馈类型：</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows 10 要求</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windows 文档</value>
+  </data>
+  <data name="worldwide">
+    <value>全球</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>想要提供反馈吗？</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>是</value>
+  </data>
+  <data name="youDidIt">
+    <value>你成功了！</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>你完成了知识检查，获得了相应的经验点数。</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>你完成了该任务，获得了相应的经验点数。</value>
+  </data>
+  <data name="youGotXp">
+    <value>你刚才赚取了 &lt;span class="experience-points"&gt;&lt;/span&gt; 点经验值。</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>在检查工作前，必须回答所有问题。</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>必须使用沙盒提供的资源来检查工作。</value>
+  </data>
+  <data name="youNailedIt">
+    <value>你做到了</value>
+  </data>
+  <data name="yourAccount">
+    <value>你的帐户</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>已删除你的帐户。</value>
+  </data>
+  <data name="yourData">
+    <value>你的数据</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>下载或删除在文档上保存的进度和成就。删除信息不会影响你的 Microsoft 标识。</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>工作未正确完成。</value>
+  </data>
+</root>

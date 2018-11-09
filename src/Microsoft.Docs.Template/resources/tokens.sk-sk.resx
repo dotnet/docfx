@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>prijaté hodnoty</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Prijať pozvánku</value>
+  </data>
+  <data name="achievements">
+    <value>Odmeny</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Pozrite si odmenu, ktorú som v rámci interaktívneho vzdelávania od Microsoftu dostal/-a za toto: {0}</value>
+  </data>
+  <data name="actions">
+    <value>Akcie</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Áno, aktivovať nové testovacie prostredie (sandbox)</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Aktivovať testovacie prostredie</value>
+  </data>
+  <data name="aDayAgo">
+    <value>pred jedným dňom</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Ďalšie funkcie a požiadavky</value>
+  </data>
+  <data name="addParameter">
+    <value>Pridať parameter</value>
+  </data>
+  <data name="administrator">
+    <value>Správca</value>
+  </data>
+  <data name="advanced">
+    <value>Pokročilí</value>
+  </data>
+  <data name="africa">
+    <value>Afrika</value>
+  </data>
+  <data name="all">
+    <value>všetko</value>
+  </data>
+  <data name="allapis">
+    <value>Všetky rozhrania API</value>
+  </data>
+  <data name="allPackages">
+    <value>Všetky balíky</value>
+  </data>
+  <data name="americas">
+    <value>Amerika (Severná a Južná)</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>pred minútou</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>pred mesiacom</value>
+  </data>
+  <data name="anHourAgo">
+    <value>pred hodinou</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>Odkaz na rozhranie API {0}</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Vyhľadávanie v rozhraní API nie je k dispozícii. Skúste to znova neskôr.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Predchádzajúce verzie</value>
+  </data>
+  <data name="areYouSure">
+    <value>Ste si istí?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Odstránenie údajov sa nedá vrátiť späť.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>pred jednou sekundou</value>
+  </data>
+  <data name="asia">
+    <value>Ázia</value>
+  </data>
+  <data name="askQuestion">
+    <value>Položiť otázku</value>
+  </data>
+  <data name="assemblies">
+    <value>Zostavy</value>
+  </data>
+  <data name="assembly">
+    <value>Zostava</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Pripojené udalosti</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Pripojené vlastnosti</value>
+  </data>
+  <data name="attributes">
+    <value>Atribúty</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>pred týždňom</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Prostredie Azure Cloud Shell používa vaše existujúce predplatné na Azure. Pri používaní prostredia Cloud Shell a vykonávaní príkazov sa účtujú súvisiace poplatky.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Dokumentácia k Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Získali ste odznak za dokončenie modulu</value>
+  </data>
+  <data name="begin">
+    <value>Začať</value>
+  </data>
+  <data name="beginner">
+    <value>Začiatočníci</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Základný text</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Popis cesty</value>
+  </data>
+  <data name="browse">
+    <value>Prehľadávať</value>
+  </data>
+  <data name="browseCode">
+    <value>Prehľadávať podľa kódu</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Podnikový analytik</value>
+  </data>
+  <data name="businessUser">
+    <value>Podnikoví používatelia</value>
+  </data>
+  <data name="calls">
+    <value>Volania</value>
+  </data>
+  <data name="capabilities">
+    <value>Možnosti</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Výstraha&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Skontrolovať odpovede</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Skontrolovať prácu znova</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Skontrolovať znalosti</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Skontrolovať prácu</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Vybrať reakciu</value>
+  </data>
+  <data name="claimReward">
+    <value>Odomknúť úspech</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Triedy</value>
+  </data>
+  <data name="clearfilter">
+    <value>Vymazať filter</value>
+  </data>
+  <data name="clearterm">
+    <value>Vymazať výraz</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Kliknutím zobrazíte informačný kanál RSS</value>
+  </data>
+  <data name="close">
+    <value>Zavrieť</value>
+  </data>
+  <data name="closedIssue">
+    <value>Uzavretý problém</value>
+  </data>
+  <data name="closedIssues">
+    <value>Uzavreté problémy</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Toto rozhranie API nie je kompatibilné s CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Alternatíva kompatibilná s CLS</value>
+  </data>
+  <data name="code">
+    <value>Kód</value>
+  </data>
+  <data name="collaborator">
+    <value>Spolupracovník</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Tento používateľ bol pozvaný, aby spolupracoval v odkladacom priestore {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Príkazy</value>
+  </data>
+  <data name="comment">
+    <value>Komentár</value>
+  </data>
+  <data name="commentCount">
+    <value>Komentáre: {0}</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} komentoval/-a {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Komentáre</value>
+  </data>
+  <data name="complete">
+    <value>Dokončené</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Konfiguruje sa Cloud Shell na prístup k testovaciemu prostrediu (sandbox)...</value>
+  </data>
+  <data name="confused">
+    <value>Zmätenosť</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>Zmätené reakcie: {0}</value>
+  </data>
+  <data name="congratulations">
+    <value>Blahoželáme!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Pripojenia na konto</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Podrobnosti o konštruktoroch</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Konštruktory</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Pripomienky k obsahu</value>
+  </data>
+  <data name="contents">
+    <value>Obsah</value>
+  </data>
+  <data name="continue">
+    <value>Pokračovať</value>
+  </data>
+  <data name="continueHere">
+    <value>Pokračujte tu</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Pokračovať na prvý krok</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Pokračovať na ďalším modul</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Pokračovať bez uloženie priebehu</value>
+  </data>
+  <data name="contributor">
+    <value>Prispievateľ</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Tento používateľ v minulosti potvrdil odkladací priestor {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Prispieť</value>
+  </data>
+  <data name="contributors">
+    <value>Prispievatelia</value>
+  </data>
+  <data name="copy">
+    <value>Kopírovať</value>
+  </data>
+  <data name="correctChoice">
+    <value>Správny výber</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Prihlásili ste sa prostredníctvom konta organizácie spoločnosti Microsoft ({0}) a vaše možnosti sa budú líšiť od možností osobného konta:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Niektoré funkcie gamifikácie nie sú pre zamestnancov spoločnosti Microsoft k dispozícii.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Váš profil bude verejne označovať, že pracujete v spoločnosti Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Ak stratíte prístup k e-mailu, nebudete sa môcť prihlásiť na tejto lokalite.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Ak chcete túto lokalitu používať na osobné účely, prihláste sa s iným kontom.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Na pripojenie svojho konta budete potrebovať tieto informácie:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Ak budete používať Microsoft Learn, &lt;strong&gt;porozumeli ste a oboznámili ste sa s tým&lt;/strong&gt;, že svojím členstvom vyjadrujete súhlas so zaznamenávaním a sledovaním vašich výsledkov a aktivít našou sieťou lokalít a aplikácií, a že tieto výsledky a aktivity môžeme zdieľať s ostatnými tímami v rámci spoločnosti Microsoft. Navyše vaše meno používateľa, zobrazované meno, výsledky a aktivity budú viditeľné verejne.&lt;ul&gt;&lt;li&gt;Váš profil bude verejne označovať, že pracujete v spoločnosti Microsoft.&lt;/li&gt;&lt;li&gt;Ak stratíte prístup k e-mailu, nebudete sa môcť na tejto lokalite prihlásiť.&lt;/li&gt;&lt;li&gt;Niektoré funkcie gamifikácie nie sú pre zamestnancov spoločnosti Microsoft k dispozícii.&lt;/li&gt;&lt;li&gt;Ak chcete túto lokalitu používať na osobné účely, prihláste sa s iným kontom.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Ak sa stanete členom, porozumeli ste a oboznámili sa s tým, že svojím členstvom v službe Microsoft Learn súhlasíte so zaznamenávaním vašich výsledkov a aktivít našou sieťou lokalít a aplikácií. Vaše meno používateľa, zobrazované meno, výsledky a aktivity budú viditeľné verejne.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Vytvoriť nový archív</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Vytvorenie pripojenia</value>
+  </data>
+  <data name="currentSelection">
+    <value>Aktuálny výber:</value>
+  </data>
+  <data name="dark">
+    <value>Tmavý</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>pred {0} dňami</value>
+  </data>
+  <data name="defaultValue">
+    <value>predvolená hodnota</value>
+  </data>
+  <data name="definition">
+    <value>Definícia</value>
+  </data>
+  <data name="definitions">
+    <value>Definície</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegáti</value>
+  </data>
+  <data name="delete">
+    <value>Odstrániť</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Odstrániť parameter</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Nasadiť do Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Toto rozhranie API sa už nepoužíva.</value>
+  </data>
+  <data name="derived">
+    <value>Odvodené</value>
+  </data>
+  <data name="description">
+    <value>Popis</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Vývojár</value>
+  </data>
+  <data name="developers">
+    <value>Vývojári</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Zavrieť toto dialógové okno</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Už je aktívne iné testovacie prostredie (sandbox)</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Testovacie prostredie (sandbox) ste už aktivovali v module &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Ak aktivujete toto testovacie prostredie (sandbox), stratíte svoju prácu v inom module.</value>
+  </data>
+  <data name="disable">
+    <value>Zakázať</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Výsledky hľadania sú z dokumentácie predchádzajúcich verzií a neaktualizujú sa pravidelne.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil na lokalite Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Podrobnosti o dokumente</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Neupravujte túto sekciu. Vyžaduje sa pre lokalitu docs.microsoft.com ➟ prepojenie na problém v službe GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Dokumentácia k technológii .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET Editor</value>
+  </data>
+  <data name="download">
+    <value>Stiahnuť</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Stiahnuť PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Stiahnuť ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Výstupy tejto operácie sú dynamické.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Získať ďalšie odmeny</value>
+  </data>
+  <data name="edit">
+    <value>Upraviť</value>
+  </data>
+  <data name="editdesc">
+    <value>Upraviť tento dokument</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Explicitné implementácie rozhrania</value>
+  </data>
+  <data name="email">
+    <value>E-mail</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Na aktivovanie testovacieho prostredia (sandbox) sa vyžaduje e-mail</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Ak chcete aktivovať testovacie prostredie (sandbox), vaše konto Microsoft musí byť prepojené s platným e-mailom. Ak chcete vytvoriť prepojenie na e-mail, prejdite na lokalitu &lt;a href="https://account.live.com" target="_blank"&gt;Nastavenia konta Microsoft&lt;/a&gt; a skúste to znova.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Prázdny názov nie je povolený</value>
+  </data>
+  <data name="enable">
+    <value>Povoliť</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Spustiť režim zamerania</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enumerácie</value>
+  </data>
+  <data name="error">
+    <value>Chyba</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Pri vytváraní komentára došlo k chybe. Ak chcete, môžete to skúsiť znova v službe &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Pri vytváraní problému došlo k chybe. Ak chcete, môžete to skúsiť znova v službe &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Nepodarilo sa nám načítať vaše výsledky vyhľadávania. Skúste to znova neskôr.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Pri načítavaní komentárov došlo k chybe.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Pri načítavaní pripomienok došlo k chybe.</value>
+  </data>
+  <data name="europe">
+    <value>Európa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Podrobnosti o udalostiach</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Udalosti</value>
+  </data>
+  <data name="examples">
+    <value>Príklady</value>
+  </data>
+  <data name="exceptions">
+    <value>Výnimky</value>
+  </data>
+  <data name="exit">
+    <value>Ukončiť</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Ukončiť režim zamerania</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Rozbaliť ponuku s pripomienkami k dokumentácii</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Preskúmať ďalšie moduly</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Preskúmať ďalšie programy</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Nemáte žiadne informácie na exportovanie.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Metódy rozšírenia</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Pripomienky</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Sem zadajte pripomienky]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Odoslať pripomienky k produktu</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Polia</value>
+  </data>
+  <data name="fieldValue">
+    <value>Hodnota poľa</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filter</value>
+  </data>
+  <data name="findALanguage">
+    <value>Nájsť jazyk</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Táto enumerácia má atribút {0}, ktorý umožňuje bitovú kombináciu hodnôt členov.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Podrobnosti o funkciách</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funkcie</value>
+  </data>
+  <data name="getHelp">
+    <value>Získať pomoc</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Odoslať pripomienky</value>
+  </data>
+  <data name="globalParameters">
+    <value>Globálne parametre</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Späť na dokončenie</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Späť na dokončenie modulu</value>
+  </data>
+  <data name="goodWork">
+    <value>Dobrá práca!</value>
+  </data>
+  <data name="greatWork">
+    <value>Výborne!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Praktické laboratórium</value>
+  </data>
+  <data name="headers">
+    <value>Hlavičky</value>
+  </data>
+  <data name="heart">
+    <value>Srdce</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>Reakcie srdiečkami: {0}</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Potrebujem pomoc pri výbere</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Tip:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Nadšenie</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>Nadšené reakcie: {0}</value>
+  </data>
+  <data name="hoursAgo">
+    <value>pred {0} hodinami</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Ako sa môžeme zlepšiť?</value>
+  </data>
+  <data name="hr">
+    <value>hod</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} h {1} min</value>
+  </data>
+  <data name="implements">
+    <value>Implementácie</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Dôležité&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>v</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Nesprávny výber</value>
+  </data>
+  <data name="inheritance">
+    <value>Dedičnosť</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Zdedení členovia</value>
+  </data>
+  <data name="input">
+    <value>Vstup</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Rozhrania</value>
+  </data>
+  <data name="intermediate">
+    <value>Mierne pokročilí</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Toto rozhranie API podporuje infraštruktúru produktu a nie je určené na to, aby sa používalo priamo z kódu.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Pripomienky k službe Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>otvorené {time ago} používateľom {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Nahlásiť problém s produktom</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Je táto stránka užitočná?</value>
+  </data>
+  <data name="itPro">
+    <value>IT profesionáli</value>
+  </data>
+  <data name="justNow">
+    <value>práve teraz</value>
+  </data>
+  <data name="key">
+    <value>Kľúč:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Kontrola vedomostí</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Kontrola vedomostí bola dokončená. Na všetky otázky ste odpovedali správne.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Kontrola vedomostí bola dokončená</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Dokončili ste kontrolu vedomostí pre kurz {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Dokončili ste sekciu {tutorial} modulu. Môžete prejsť na ďalšiu sekciu {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Ľutujeme, nepodarilo sa nám ohodnotiť vašu kontrolu vedomostí. Skúste to znova.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Dokončili ste túto sekciu. Pokračujte na ďalšiu časť {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Dokončili ste túto sekciu. Pokračujte na ďalšie kurzy.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Dokončením kontroly vedomostí ste odblokovali odmeny v module {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Obsah</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Filtrovať obsah</value>
+  </data>
+  <data name="language">
+    <value>Jazyk</value>
+  </data>
+  <data name="laugh">
+    <value>Smiech</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>Reakcie smiechom: {0}</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Preskúmajte technológie od spoločnosti Microsoft pomocou kurzov naživo vrátane praktických aktivít. Toto prostredie je vo verzii ukážky, takže nám &lt;a href="https://aka.ms/learningfeedback"&gt;pošlite pripomienky&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Študijný program</value>
+  </data>
+  <data name="learnmore">
+    <value>Ďalšie informácie</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Zadať komentár</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Pripomienky môžete nechať aj &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;priamo v GitHube&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Úroveň {0}</value>
+  </data>
+  <data name="levels">
+    <value>Úrovne</value>
+  </data>
+  <data name="light">
+    <value>Svetlý</value>
+  </data>
+  <data name="limits">
+    <value>Limity</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Načítava sa...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Načítavajú sa pripomienky...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Načítavajú sa informácie o testovacom prostredí (sandbox)...</value>
+  </data>
+  <data name="loadMore">
+    <value>Viac&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Načítať viac výsledkov</value>
+  </data>
+  <data name="login">
+    <value>Prihlásiť sa</value>
+  </data>
+  <data name="loginAzure">
+    <value>Prihláste sa s kontom Azure.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Hlavná navigácia</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Spravovať môj profil</value>
+  </data>
+  <data name="maximize">
+    <value>Maximalizovať</value>
+  </data>
+  <data name="member">
+    <value>Člen</value>
+  </data>
+  <data name="memberDescription">
+    <value>Tento používateľ je členom organizácie {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Podrobnosti o členoch</value>
+  </data>
+  <data name="members">
+    <value>Členovia</value>
+  </data>
+  <data name="methodDetails">
+    <value>Podrobnosti o metódach</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Metódy</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Vyhlásenie o ochrane osobných údajov zamestnancov spoločnosti Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Prihlásili ste sa prostredníctvom konta organizácie spoločnosti Microsoft ({email}). Ak budete používať Microsoft Learn, &lt;strong&gt;porozumeli ste a oboznámili ste sa s tým&lt;/strong&gt;, že svojím členstvom vyjadrujete súhlas so zaznamenávaním a sledovaním vašich výsledkov a aktivít našou sieťou lokalít a aplikácií, a že tieto výsledky a aktivity môžeme zdieľať s ostatnými tímami v rámci spoločnosti Microsoft. Navyše vaše meno používateľa, zobrazované meno, výsledky a aktivity budú viditeľné verejne.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Problém služby Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Služba Microsoft Learn je úplne nová platforma. Usilujeme sa preto vylepšiť jej obsah a funkcie na základe pripomienok od zákazníkov.
+
+Chceme počuť váš názor!
+
+Pomôžte nám vyplnením nasledujúcich informácií:
+1. Problém alebo pripomienka, ktorú nahlasujete.
+2. Chcete nám povedať ešte niečo?
+
+Poznámka: Keďže aktuálne neodpovedáme priamo všetkým zákazníkom, vedzte, že kontrolujeme všetky pripomienky, ktoré k nám prichádzajú.
+
+URL adresa: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Stredný Východ</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimalizovať</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} min</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>pred {0} minútami</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minúta</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} min na prečítanie</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modul dokončený</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modul nedokončený</value>
+  </data>
+  <data name="moduleReference">
+    <value>Odkaz na modul {0}</value>
+  </data>
+  <data name="modules">
+    <value>Moduly</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Moduly v tomto študijnom programe</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Požadovaná stránka nie je k dispozícii pre {0}. Boli ste presmerovaní na najnovšiu verziu produktu, pre ktorú je táto stránka k dispozícii.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>pred {0} mesiacmi</value>
+  </data>
+  <data name="more">
+    <value>Viac</value>
+  </data>
+  <data name="moreInfo">
+    <value>Ďalšie informácie</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Ďalšie kurzy</value>
+  </data>
+  <data name="multipleModules">
+    <value>Moduly ({numberOf})</value>
+  </data>
+  <data name="multipleUnits">
+    <value>Lekcie: {numberOf}</value>
+  </data>
+  <data name="name">
+    <value>Názov</value>
+  </data>
+  <data name="namespace">
+    <value>Priestor názvov</value>
+  </data>
+  <data name="namespaces">
+    <value>Priestory názvov</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Náš nový systém na pripomienky určený na problémy v službe GitHub. Prečítajte si o tejto zmene v &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;našom blogovom príspevku&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Nasledujúci</value>
+  </data>
+  <data name="nextPage">
+    <value>Nasledujúca strana</value>
+  </data>
+  <data name="no">
+    <value>Nie</value>
+  </data>
+  <data name="noAchievements">
+    <value>Momentálne nemáte žiadne odmeny. &lt;a href="{0}"&gt;Ak chcete nejaké získať, dokončite moduly.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} nemá žiadne úspechy.</value>
+  </data>
+  <data name="noClosed">
+    <value>Žiadne vyriešené problémy</value>
+  </data>
+  <data name="noOpen">
+    <value>Žiadne nevyriešené problémy</value>
+  </data>
+  <data name="noOutput">
+    <value>Žiadny výstup</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Nenašli sa žiadne výsledky</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Zatiaľ žiadne výsledky, no píšte ďalej…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Pre výraz {term} sa nenašli žiadne výsledky&lt;br /&gt;&lt;a href="{url}"&gt;Vyhľadajte výraz „{filter-text}“ vo všetkých {scope} dokumentáciách&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Poznámka&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Poznámky k volajúcim</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Poznámky k realizátorom</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Poznámky k dedičom</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>Uzavreté: {0}</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>Otvorené: {0}</value>
+  </data>
+  <data name="officeDocs">
+    <value>Dokumentácia k balíku Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Rozumiem.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 lekcia</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Navigácia na stránke</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>dňa {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Otvorený problém</value>
+  </data>
+  <data name="openIssues">
+    <value>Otvorené problémy</value>
+  </data>
+  <data name="operationId">
+    <value>ID operácie:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operátory</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Voliteľné parametre</value>
+  </data>
+  <data name="options">
+    <value>Možnosti</value>
+  </data>
+  <data name="output">
+    <value>Výstup</value>
+  </data>
+  <data name="overloads">
+    <value>Preťaženia</value>
+  </data>
+  <data name="overrides">
+    <value>Prepísania</value>
+  </data>
+  <data name="overview">
+    <value>Prehľad</value>
+  </data>
+  <data name="owner">
+    <value>Vlastník</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Tento používateľ je vlastníkom odkladacieho priestoru {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Tichomorie</value>
+  </data>
+  <data name="package">
+    <value>Balík</value>
+  </data>
+  <data name="packageReference">
+    <value>Odkaz na balík {0}</value>
+  </data>
+  <data name="packages">
+    <value>Balíky</value>
+  </data>
+  <data name="page">
+    <value>Strana {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Akcie strany</value>
+  </data>
+  <data name="parameters">
+    <value>Parametre</value>
+  </data>
+  <data name="path">
+    <value>Program:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Vyberte svoju reakciu</value>
+  </data>
+  <data name="platform">
+    <value>Platforma</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Vyplňte toto pole.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Skúste to znova.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Spustiť portál Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Načítava sa portál Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Otvoriť laboratórium v novom okne</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Táto lekcia vyžaduje na dokončenie portál Azure.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Laboratórium portálu Azure poskytuje bezplatný prístup k prostriedkom služby Azure na dokončenie krokov v tejto lekcii. Laboratóriá portálu Azure neovplyvňujú vaše predplatné služby Azure. Nebudeme vám nič účtovať.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Vaše laboratórium portálu Azure je pripravené.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Áno, aktivovať nové laboratórium</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Už je aktívne laboratórium portálu Azure pre inú lekciu</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Momentálne máte otvorené laboratórium portálu Azure pre inú lekciu ({lab-name}). Chcete zahodiť aktuálne laboratórium a aktivovať nové laboratórium pre túto lekciu?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Skúsiť znova spustiť laboratórium</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Prihláste sa a spustite portál Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Predpoklady:</value>
+  </data>
+  <data name="preview">
+    <value>Ukážka</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Toto rozhranie API sa poskytuje ako ukážka pre vývojárov a môže sa zmeniť na základe pripomienok, ktoré dostaneme. Nepoužívajte toto rozhranie API v produkčnom prostredí.</value>
+  </data>
+  <data name="previous">
+    <value>Predchádzajúci</value>
+  </data>
+  <data name="previousPage">
+    <value>Predchádzajúca strana</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Dokumenty predchádzajúcej verzie</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Vyhlásenie o ochrane osobných údajov</value>
+  </data>
+  <data name="product">
+    <value>Produkt</value>
+  </data>
+  <data name="productFeedback">
+    <value>Pripomienky k produktu</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Produkty</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Podnikové aplikácie</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Vlastnosti</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Podrobnosti o vlastnostiach</value>
+  </data>
+  <data name="propertyValue">
+    <value>Hodnota vlastnosti</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Vytvára sa vaše testovacie prostredie (sandbox). Bude to chvíľu trvať len chvíľku...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Rýchle filtre</value>
+  </data>
+  <data name="quizComplete">
+    <value>Blahoželáme!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Nie je možné načítať komentáre. Prekročil sa limit rýchlosti rozhrania API v službe GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Nie je možné hľadať problémy. Prekročil sa limit rýchlosti rozhrania API v službe GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Máte komentáre alebo návrhy? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Napíšte nám ich sem&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Podeľte sa o svoje nápady. Uvítame pripomienky v ľubovoľnom jazyku.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Čítať v angličtine</value>
+  </data>
+  <data name="readonly">
+    <value>iba na čítanie</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Túto odmenu ({0}) ste dosiahli za dokončenie tohto: {1}.</value>
+  </data>
+  <data name="references">
+    <value>Referencie</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Spresniť vzdelávací obsah</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Modul je súčasťou týchto študijných programov</value>
+  </data>
+  <data name="remaining">
+    <value>zostáva</value>
+  </data>
+  <data name="remarks">
+    <value>Poznámky</value>
+  </data>
+  <data name="removeItem">
+    <value>Odstrániť {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Obdobie obnovenia</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Ďakujeme vám za nahlásenie vašich obáv. Tieto oznámenia veľmi dôkladne preskúmavame a prijmeme príslušné kroky na riešenie tohto problému. Z dôvodu právnych záležitostí a ochrany súkromia vám možno neposkytneme aktualizované informácie o tomto oznámení. Ešte raz vám ďakujeme za to, že ste sa na nás obrátili.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Nahlásiť problém</value>
+  </data>
+  <data name="requestBody">
+    <value>Text požiadavky</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Textom požiadavky môže byť niektorá z týchto možností:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Hlavička požiadavky</value>
+  </data>
+  <data name="requestPreview">
+    <value>Ukážka požiadavky</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL adresa požiadavky</value>
+  </data>
+  <data name="required">
+    <value>povinné</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Povinné parametre</value>
+  </data>
+  <data name="requirements">
+    <value>Požiadavky</value>
+  </data>
+  <data name="resource_type">
+    <value>Typy</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Odpovede</value>
+  </data>
+  <data name="restart">
+    <value>Reštartovať</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Nemôžeme vás pozvať do nájomníka testovacieho prostredia (sandbox) z dôvodu obmedzení vášho konta. Obráťte sa na správcu.</value>
+  </data>
+  <data name="resultsFound">
+    <value>Nájdené výsledky: {0}</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Skúsiť znova aktivovať testovacie prostredie (sandbox)</value>
+  </data>
+  <data name="returns">
+    <value>Vrátené hodnoty</value>
+  </data>
+  <data name="returnValue">
+    <value>Vrátená hodnota</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Skontrolovať históriu študijných programov</value>
+  </data>
+  <data name="roles">
+    <value>Roly</value>
+  </data>
+  <data name="rss">
+    <value>technológia RSS</value>
+  </data>
+  <data name="run">
+    <value>Spustiť</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Testovacie prostredie (sandbox) bolo aktivované!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Platnosť prístupu k testovaciemu prostrediu (sandbox) uplynula</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Platnosť testovacieho prostredia (sandbox) uplynula. Aktivujte si nové testovacie prostredie (sandbox).</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Testovacie prostredie (sandbox) vám umožní bezplatný prístup k prostriedkom služby Azure, ktoré sú potrebné na dokončenie tejto lekcie. Vaše predplatné služby Azure nebude účtované.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Používanie testovacieho prostredia (sandbox) vyžaduje, aby ste prijali pozvánku nájomníka platformy Azure</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Testovacie prostredie (sandbox) pre tento modul je dočasne nedostupné z dôvodu údržby.</value>
+  </data>
+  <data name="search">
+    <value>Hľadať</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Hľadať – navigácia</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Hľadať v predchádzajúcich verziách</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Filter hľadania je {0}. Ťuknutím ho odstránite.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>pred {0} sekundami</value>
+  </data>
+  <data name="security">
+    <value>Zabezpečenie</value>
+  </data>
+  <data name="seeAlso">
+    <value>Pozri tiež</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Vybratá verzia</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Zoznam jazykov môžete filtrovať výberom oblasti alebo zadaním názvu jazyka, prípadne miestneho kódu.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Vyberte balík</value>
+  </data>
+  <data name="selectVersion">
+    <value>Vyberte verziu</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Vyberte svoju rolu</value>
+  </data>
+  <data name="service">
+    <value>Služba</value>
+  </data>
+  <data name="services">
+    <value>Služby</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Služba je dočasne nedostupná. Pracujeme na tom.</value>
+  </data>
+  <data name="share">
+    <value>Zdieľať</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Zdieľať túto odmenu v službe {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Pozrite si odmenu, ktorú som v rámci interaktívneho vzdelávania od Microsoftu dostal/-a za modul {moduleName}. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Zdieľaný článok] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Zdieľať tento dokument</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Zdieľajte svoj úspech:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Zobraziť všetky odvodené triedy</value>
+  </data>
+  <data name="signIn">
+    <value>Prihlásiť sa</value>
+  </data>
+  <data name="signInAzure">
+    <value>Prihláste sa s kontom Azure.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Prihláste sa a skontrolujte si prácu</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Do cloudu ste prihlásení s iným kontom než s vaším kontom dokumentov. Odhláste sa z cloudu a skúste znova získať prístup k testovaciemu prostrediu (sandbox).</value>
+  </data>
+  <data name="signingIn">
+    <value>Prihlasuje sa...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Prihláste sa a aktivujte testovacie prostredie (sandbox)</value>
+  </data>
+  <data name="signInToComment">
+    <value>Ak chcete komentovať, prihláste sa</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Ak chcete odoslať pripomienky k dokumentácii, prihláste sa</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Ak chcete odoslať pripomienky, prihláste sa</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Po prihlásení&lt;/a&gt; budete môcť zvýšiť limit rýchlosti rozhrania API v službe GitHub.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Ak chcete pridať svoju reakciu, prihláste sa</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Prihláste sa, ak chcete ukladať pokrok</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>Ak si chcete zobraziť svoj používateľský profil, &lt;a class='docs-sign-in' href="#"&gt;prihláste sa&lt;/a&gt;.</value>
+  </data>
+  <data name="signOut">
+    <value>Odhlásiť sa</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Pripomienky k lokalite</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Architekt riešení</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Vyskytla sa chyba</value>
+  </data>
+  <data name="start">
+    <value>Spustiť</value>
+  </data>
+  <data name="startHere">
+    <value>Začnite tu</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Krok {step-index} z {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Štruktúry</value>
+  </data>
+  <data name="submit">
+    <value>Odoslať</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Odoslať pripomienky</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Úspešne odoslané!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Odoslať nápad k produktu</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Úloha nevykonaná správne.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Túto stránku aktualizujeme o nové interaktívne prostredie. Vráťte sa trochu neskôr.</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Ďakujeme za vaše pripomienky!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Nie je to úplne pravda.</value>
+  </data>
+  <data name="theme">
+    <value>Motív</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>K tomuto dokumentu momentálne neexistujú žiadne pripomienky. Na tomto mieste sa zobrazia odoslané pripomienky.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Všetky členy tejto triedy sú zabezpečené z hľadiska vláken.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Všetky členy inštancie tejto triedy sú zabezpečené z hľadiska vláken.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Všetky statické členy tejto triedy sú zabezpečené z hľadiska vláken.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Tento typ nie je zabezpečený z hľadiska vláken.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Bezpečnosť vlákna</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>Reakcie palec dole: {0}</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>Reakcie palec hore: {0}</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Tip&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Názov</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Prepnúť problém</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Prepnúť lekcie</value>
+  </data>
+  <data name="trademarks">
+    <value>Ochranné známky</value>
+  </data>
+  <data name="triggers">
+    <value>Spúšťače</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Získali ste trofej za dokončenie modulu</value>
+  </data>
+  <data name="tryAgain">
+    <value>Skúsiť znova</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Kód vyskúšajte v prehliadači</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Rozhranie REST API vyskúšajte s nasledujúcimi vstupmi.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>všetci {0} prispievatelia</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>Dokončené na 100 %.</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Blahoželáme!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Pokračujte tu</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Prispievatelia</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Ďalšie informácie</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Úvod</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>Zostáva {0} min</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} min do konca</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Ďalšie kroky</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Ďalší kurz</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Zdroje informácií</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Pozrite si {0} alebo navrhnite vylepšenia pre {1} a sami sa staňte prispievateľom.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Naučili ste sa...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Dokončili ste kurz {0}.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Naučíte sa...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Máte pripomienky alebo si s niektorou časťou tohto kurzu neviete dať rady?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Nahlásiť problém v službe GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Ďalšie kroky</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Tweety vytvoril/-a</value>
+  </data>
+  <data name="type">
+    <value>zadať</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Zadať definíciu</value>
+  </data>
+  <data name="typeParameters">
+    <value>Zadať parametre</value>
+  </data>
+  <data name="unit">
+    <value>Lekcia</value>
+  </data>
+  <data name="unitComplete">
+    <value>Lekcia je dokončená</value>
+  </data>
+  <data name="unitMarker">
+    <value>Lekcia {index} z {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Táto lekcia vyžaduje na dokončenie testovacie prostredie (sandbox)</value>
+  </data>
+  <data name="units">
+    <value>Lekcie</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Parametre URI</value>
+  </data>
+  <data name="usage">
+    <value>Použitie</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Používanie virtuálneho počítača</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Navštívte lokalitu Praktické laboratórium pre integrovaný pokyn.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Dokumenty študenta</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Používanie lokálneho počítača</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Zostaňte na tejto lokalite a postupujte podľa pokynov s vaším počítačom.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Použitie konektora</value>
+  </data>
+  <data name="value">
+    <value>Hodnota</value>
+  </data>
+  <data name="valueFrom">
+    <value>hodnota od</value>
+  </data>
+  <data name="version">
+    <value>Verzia</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Zobraziť problém v GitHube</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Zobraziť ďalšie pripomienky v službe GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Zobraziť v službe GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Zobraziť používateľa {username} v GitHube</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Odporúčame používať Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Stiahnuť</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Dokumentácia k Visual Studiu</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Spustiť režim virtuálneho počítača</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Načítava sa virtuálny počítač...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Táto lekcia vyžaduje na dokončenie virtuálny počítač.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Režim virtuálneho počítača poskytuje bezplatný prístup k virtuálnemu počítaču služby Azure na dokončenie krokov v tejto lekcii. Vaše predplatné služby Azure nebude účtované</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Áno, aktivovať nový virtuálny počítač</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Už je aktívny virtuálny počítač pre inú lekciu</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Virtuálny počítač ste už otvorili v module {lab-name}. Ak aktivujete tento virtuálny počítač, stratíte svoju prácu v inom module.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Skúsiť znova spustiť režim virtuálneho počítača</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Prihláste sa a spustite režim virtuálneho počítača</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Upozornenie&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>pred {0} týždňami</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Radi si vypočujeme váš názor. Vyberte, aký typ chcete poskytnúť:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Požiadavky na Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Dokumentácia k Windowsu</value>
+  </data>
+  <data name="worldwide">
+    <value>Celý svet</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Chcete odoslať pripomienky?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Áno</value>
+  </data>
+  <data name="youDidIt">
+    <value>Zvládli ste to!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Získali ste body za skúsenosti za vykonanie kontroly vedomostí.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Získali ste body za skúsenosti za vykonanie úlohy.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Práve ste získali body za skúsenosti (&lt;span class="experience-points"&gt;&lt;/span&gt;).</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Musíte odpovedať na všetky otázky, až potom môžete skontrolovať svoju prácu.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Na skontrolovanie práce musíte použiť zdroje poskytované testovacím prostredím (sandbox).</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Skvelý výsledok</value>
+  </data>
+  <data name="yourAccount">
+    <value>Vaše konto</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Vaše konto bolo odstránené.</value>
+  </data>
+  <data name="yourData">
+    <value>Vaše údaje</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Stiahnite si svoj uložený pokrok a výsledky na lokalite Docs alebo ich odstráňte. Odstránenie informácií nebude mať vplyv na vašu identitu Microsoft.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Vaša práca sa nedokončila správne.</value>
+  </data>
+</root>

@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>akzeptéiert Wäerter</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Aluedung unhuelen</value>
+  </data>
+  <data name="achievements">
+    <value>Erfolleger</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Kuckt Iech den Erfolleg un, deen ech grad fir {0} op Microsoft Guided Learning verzeechent hunn!</value>
+  </data>
+  <data name="actions">
+    <value>Aktiounen</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Jo, eng nei Sandbox aktivéieren</value>
+  </data>
+  <data name="activateSandbox">
+    <value>D'Sandbox aktivéieren</value>
+  </data>
+  <data name="aDayAgo">
+    <value>virun engem Dag</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Zousätzlech Funktiounen an Ufuerderungen</value>
+  </data>
+  <data name="addParameter">
+    <value>Parameter derbäisetzen</value>
+  </data>
+  <data name="administrator">
+    <value>Administrator</value>
+  </data>
+  <data name="advanced">
+    <value>Fortgeschratt</value>
+  </data>
+  <data name="africa">
+    <value>Afrika</value>
+  </data>
+  <data name="all">
+    <value>all</value>
+  </data>
+  <data name="allapis">
+    <value>All APIen</value>
+  </data>
+  <data name="allPackages">
+    <value>All Päck</value>
+  </data>
+  <data name="americas">
+    <value>Nord-, Mëttel- a Südamerika</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>virun enger Minutt</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>virun engem Mount</value>
+  </data>
+  <data name="anHourAgo">
+    <value>virun enger Stonn</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0}-API-Referenz</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>API-Sich ass net verfügbar. Probéier et w. e. g. spéider erneit.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Viregt Versiounen:</value>
+  </data>
+  <data name="areYouSure">
+    <value>Sidd Dir sécher?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>D'Läsche vun Ären Date kann net réckgängeg gemaach ginn.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>virun enger Sekonn</value>
+  </data>
+  <data name="asia">
+    <value>Asien</value>
+  </data>
+  <data name="askQuestion">
+    <value>Eng Fro stellen</value>
+  </data>
+  <data name="assemblies">
+    <value>Baudeeler</value>
+  </data>
+  <data name="assembly">
+    <value>Baudeel</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Ugehaangen Evenementer</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Ugehaangen Eegeschaften</value>
+  </data>
+  <data name="attributes">
+    <value>Attributer</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>virun enger Woch</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell notzt Är existent Azure-Abonnementer. Wann Dir Cloud Shell notzt a Befeeler ausféiert, falen entspriechend Käschten un.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure-Dokumentatioun</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Dir hutt Iech fir d'Vervollstännegen en Ofzeeche verdéngt</value>
+  </data>
+  <data name="begin">
+    <value>Ufänken</value>
+  </data>
+  <data name="beginner">
+    <value>Ufänger</value>
+  </data>
+  <data name="beta">
+    <value>Beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Kierper</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Breadcrumb</value>
+  </data>
+  <data name="browse">
+    <value>Browsen</value>
+  </data>
+  <data name="browseCode">
+    <value>Code browsen</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="businessUser">
+    <value>Entreprisebenotzer</value>
+  </data>
+  <data name="calls">
+    <value>Uriff</value>
+  </data>
+  <data name="capabilities">
+    <value>Asazméiglechkeeten</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Warnung&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Iwwerpréift Är Äntwerten</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Iwwerpréift Är Aarbecht</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Äert Wëssen iwwerpréiwen</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Iwwerpréift Är Aarbecht</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Reaktioun auswielen</value>
+  </data>
+  <data name="claimReward">
+    <value>Erfolleg fräischalten</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Klassen</value>
+  </data>
+  <data name="clearfilter">
+    <value>Filter läschen</value>
+  </data>
+  <data name="clearterm">
+    <value>Begrëff läschen</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Klicken, fir RSS-Feed</value>
+  </data>
+  <data name="close">
+    <value>Zoumaachen</value>
+  </data>
+  <data name="closedIssue">
+    <value>Zouene Problem</value>
+  </data>
+  <data name="closedIssues">
+    <value>Zoue Problemer</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Dës API ass net CLS-konform.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>CLS-konform alternativ</value>
+  </data>
+  <data name="code">
+    <value>Code</value>
+  </data>
+  <data name="collaborator">
+    <value>Mataarbechter</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Dëse Benotzer gouf agelueden, u(n) {repo} matzeschaffen.</value>
+  </data>
+  <data name="commands">
+    <value>Befeeler</value>
+  </data>
+  <data name="comment">
+    <value>Kommentar</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} Kommentaren</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} huet {time ago} kommentéiert</value>
+  </data>
+  <data name="comments">
+    <value>Kommentaren</value>
+  </data>
+  <data name="complete">
+    <value>Ofgeschloss</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Konfiguréiere vun der Cloud Shell fir de Sandbox Zougang...</value>
+  </data>
+  <data name="confused">
+    <value>Duercherneen</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} duerchernee Reaktiounen</value>
+  </data>
+  <data name="congratulations">
+    <value>Gléckwonsch!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Verbindunge jee Kont</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Konstrukteursdetailer</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Konstrukteur</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Inhalt Feedback</value>
+  </data>
+  <data name="contents">
+    <value>Inhalter</value>
+  </data>
+  <data name="continue">
+    <value>Weider</value>
+  </data>
+  <data name="continueHere">
+    <value>Hei virufueren</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Weider mam éischte Schrëtt</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Mam nächste Modul virufueren</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Weider ouni de Fortschrëtt ze späicheren</value>
+  </data>
+  <data name="contributor">
+    <value>Auteur</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Dëse Benotzer huet sech virdrun dem {repo}-Repository verpflicht.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Matwierken</value>
+  </data>
+  <data name="contributors">
+    <value>Auteuren</value>
+  </data>
+  <data name="copy">
+    <value>Kopéieren</value>
+  </data>
+  <data name="correctChoice">
+    <value>Richteg Wiel</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Dir hutt Iech mat Ärem Microsoft Organisatiounskont ({0}) ugemellt, an Är Experienz wäert sech vun engem perséinleche Kont ënnerscheeden:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>E puer Spilleegeschafte sinn net fir Microsoft Ugestallte verfügbar.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Äre Profil wäert ëffentlech weisen, datt Dir bei Microsoft schafft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Wann Dir den Zougang zum E-Mail verléiert, kënnt Dir Iech net méi op dësem Site aloggen.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Wann Dir dëse Site fir perséinlech Aktivitéite benotze wëllt, mellt Iech w.e.g. mat engem anere Kont un.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Fir Äre Kont ze verbannen, braucht Dir déi folgend Informatiounen:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Mam Benotze vu Microsoft Learn &lt;strong&gt;verstitt Dir a bestätegt&lt;/strong&gt; datt Är Memberschaft  bedeit, datt eis Netzwierk u Websäiten an Applikatiounen Är Erfolleger an Aktivitéite späichert, an datt mir Är Resultater an Aktivitéite mat aneren Teams innerhalb vu Microsoft deelen. Zousätzlech sinn Äre Benotzernumm, Displaynumm, Erfolleger an Aktivitéiten  ëffentlech siichtbar.&lt;ul&gt;&lt;li&gt;Äre Profil wäert ëffentlech weisen, datt Dir bei Microsoft schafft.&lt;/li&gt;&lt;li&gt;Wann Dir den Zougang zum E-Mail verléiert, kënnt Dir Iech net méi op dësem Site aloggen.&lt;/li&gt;&lt;li&gt;E puer Spilleegeschafte sinn net fir Microsoft Ugestallte verfügbar.&lt;/li&gt;&lt;li&gt;Wann Dir dëse Site fir perséinlech Aktivitéite benotze wëllt, mellt Iech w.e.g. mat engem anere Kont un.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Andeems Dir e Member gitt, verstitt Dir an Dir sidd averstan, datt Är Memberschaft bei Microsoft Learn bedeit, datt eist Netzwierk u Websäiten an Applikatiounen Är Erfolleger an Aktivitéite späichert. Äre Benotzernumm, Displaynumm, Erfolleger an Aktivitéiten sinn ëffentlech siichtbar.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Neien Archiv schafen</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Eng Verbindung gëtt geschaf</value>
+  </data>
+  <data name="currentSelection">
+    <value>Aktuell Auswiel:</value>
+  </data>
+  <data name="dark">
+    <value>Donkel</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>Viru(n) {0} Deeg</value>
+  </data>
+  <data name="defaultValue">
+    <value>Standardwäert</value>
+  </data>
+  <data name="definition">
+    <value>Definitioun</value>
+  </data>
+  <data name="definitions">
+    <value>Definitiounen</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegéierter</value>
+  </data>
+  <data name="delete">
+    <value>Läschen</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Parameter Läschen</value>
+  </data>
+  <data name="deployToAzure">
+    <value>An Azure asetzen</value>
+  </data>
+  <data name="deprecated">
+    <value>Dës API ass elo vereelzt.</value>
+  </data>
+  <data name="derived">
+    <value>Ofgeleet</value>
+  </data>
+  <data name="description">
+    <value>Beschreiwung</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Entwéckler</value>
+  </data>
+  <data name="developers">
+    <value>Entwéckler</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Dëst Dialogfeld zoumaachen</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Eng aner Sandbox ass schonn aktiv</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Dir hutt Är Sandbox am Modul &lt;a href="{0}"&gt;{1}&lt;/a&gt; schonn aktéivéiert. Wann Dir dës Sandbox aktivéiert, verléiert Dir Är Aarbecht an deem anere Modul.</value>
+  </data>
+  <data name="disable">
+    <value>Desaktivéieren</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>D'Sichresultater si vun der Dokumentatioun vun de viregte Versiounen a ginn net regelméisseg aktualiséiert.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Docs-Profil</value>
+  </data>
+  <data name="documentDetails">
+    <value>Dokumentdetailer</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Dës Sektioun net editéieren. Se ass fir docs.microsoft.com ➟ GitHub-Problemverknäppung erfuerderlech.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET-Dokumentatioun</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET-Editeur</value>
+  </data>
+  <data name="download">
+    <value>Eroflueden</value>
+  </data>
+  <data name="downloadPdf">
+    <value>PDF eroflueden</value>
+  </data>
+  <data name="downloadZIP">
+    <value>ZIP eroflueden</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>D'Ausgabe vun dësem Virgang sinn dynamesch.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Méi Erfolleger verzeechnen</value>
+  </data>
+  <data name="edit">
+    <value>Editéieren</value>
+  </data>
+  <data name="editdesc">
+    <value>Dëst Dokument editéieren</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Explizit Interfaceimplementéierungen</value>
+  </data>
+  <data name="email">
+    <value>E-Mail</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>En E-Mail gëtt gebraucht fir d'Sandbox z'aktivéieren</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Äre Microsoft Kont muss mat enger gëlteger E-Mailadress verbonne si fir eng Sandbox z'aktivéieren. Gitt op &lt;a href="https://account.live.com" target="_blank"&gt;Microsoft Account Settings&lt;/a&gt; fir Är E-Mail ze verbannen a probéiert nach eng Kéier.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>En eidelen Numm ass net erlaabt</value>
+  </data>
+  <data name="enable">
+    <value>Aktivéieren</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>An de Fokusmodus wiesselen</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Opzielungen</value>
+  </data>
+  <data name="error">
+    <value>Feeler</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Feeler beim Schafe vum Kommentar. Wann Dir wëllt, kënnt Dir et op &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; erneit probéieren.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Feeler beim Schafe vum Problem. Wann Dir wëllt, kënnt Dir et op &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; erneit probéieren.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Mir konnten Är Sichresultater net lueden. Probéier et w. e. g. spéider erneit.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Feeler beim Luede vum Kommentar.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Feeler beim Luede vum Feedback.</value>
+  </data>
+  <data name="europe">
+    <value>Europa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Eventdetailer</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Evenementer</value>
+  </data>
+  <data name="examples">
+    <value>Beispiller</value>
+  </data>
+  <data name="exceptions">
+    <value>Ausnamen</value>
+  </data>
+  <data name="exit">
+    <value>Verloossen</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Fokusmodus verloossen</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Dokumentatiounsfeedbackmenü erweideren</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Aner Moduler entdecken</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Aner Pied entdecken</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Dir hat keng Informatiounen, fir z'exportéieren.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Erweiderungsmethoden</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Feedback</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Gitt Äre Feedback hei an]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Produktfeedback ofginn</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Felder</value>
+  </data>
+  <data name="fieldValue">
+    <value>Feldwäert</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filter</value>
+  </data>
+  <data name="findALanguage">
+    <value>Eng Sprooch sichen</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Dës Opzielung huet e(n) {0}-Attribut, deen eng bitweis Kombinatioun vu senge Memberwäerter erlaabt.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Funktiounsdetailer</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funktiounen</value>
+  </data>
+  <data name="getHelp">
+    <value>Hëllef kréien</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Feedback ginn</value>
+  </data>
+  <data name="globalParameters">
+    <value>Global Parameteren</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Gitt zréck fir ofzeschléissen</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Gitt zréck fir de Modul ofzeschléissen</value>
+  </data>
+  <data name="goodWork">
+    <value>Gutt geschafft!</value>
+  </data>
+  <data name="greatWork">
+    <value>Gutt gemaach!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Praktesche Labo</value>
+  </data>
+  <data name="headers">
+    <value>Kappzeilen</value>
+  </data>
+  <data name="heart">
+    <value>Häerz</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} Häerz-Reaktiounen</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Hëlleft mir auswielen</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Tipp:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Hurra</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} Hurra-Reaktiounen</value>
+  </data>
+  <data name="hoursAgo">
+    <value>Viru(n) {0} Stonnen</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Wéi kënne mir eis verbesseren?</value>
+  </data>
+  <data name="hr">
+    <value>St</value>
+  </data>
+  <data name="hrMin">
+    <value>{0}St {1}min</value>
+  </data>
+  <data name="implements">
+    <value>Implementéierungen</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Wichteg&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>an</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Falsch Wiel</value>
+  </data>
+  <data name="inheritance">
+    <value>Verierwung</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Verierft Memberen</value>
+  </data>
+  <data name="input">
+    <value>Agab</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Interfacen</value>
+  </data>
+  <data name="intermediate">
+    <value>Mëttel</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Dës API ënnerstëtzt d'Produktinfrastruktur an ass net dofir geduecht, direkt aus Ärem Code eraus benotzt ze ginn.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Intune-Feedback</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>{time ago} vu(n) {name} opgemaach</value>
+  </data>
+  <data name="issueProduct">
+    <value>E Produktproblem mellen</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Ass dës Säit hëllefräich?</value>
+  </data>
+  <data name="itPro">
+    <value>IT-Pro</value>
+  </data>
+  <data name="justNow">
+    <value>nëmmen elo</value>
+  </data>
+  <data name="key">
+    <value>Schlëssel:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Quiz</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Quizerausfuerdung ofgeschloss. Dir hutt all d'Froe korrekt beäntwert.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Quizerausfuerdung Ofgeschloss</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Dir hutt den {tutorial} Quiz ofgeschloss.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Dir hutt d'Sektioun {tutorial} vum Modul ofgeschloss. Dir kënnt elo op déi nächst Sektioun {nextUnitName} wiesselen.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Ups, mir konnten Äre Quiz net benouten. Probéiert et w. e. g. erneit.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Dir hutt dës Sektioun ofgeschloss. Fuert mam nächsten Deel {nextUnitName} virun.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Dir hutt dës Sektioun ofgeschloss. Mat méi Uleedunge virufueren.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Duerch d'Ofschléisse vun der Quizerausfuerderung hutt Dir den Erfolleg {moduleName} entspaart.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Inhaltsverzeechnes</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Inhaltsverzeechnes filteren</value>
+  </data>
+  <data name="language">
+    <value>Sprooch</value>
+  </data>
+  <data name="laugh">
+    <value>Laachen</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} Laachen-Reaktiounen</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Erfuerscht d'Microsoft-Technologie mat Liveuleedungen, inklusiv prakteschen Aktivitéiten. Dës Erfarung ass eng Virschau, &lt;a href="https://aka.ms/learningfeedback"&gt;schéckt eis also w. e. g. Äre Feedback&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Léierwee</value>
+  </data>
+  <data name="learnmore">
+    <value>Méi gewuer ginn</value>
+  </data>
+  <data name="leaveAComment">
+    <value>E Kommentar hannerloossen</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Dir kënnt Feedback och &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;direkt op GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; hannerloossen.</value>
+  </data>
+  <data name="level">
+    <value>Stuf {0}</value>
+  </data>
+  <data name="levels">
+    <value>Stufen</value>
+  </data>
+  <data name="light">
+    <value>Liicht</value>
+  </data>
+  <data name="limits">
+    <value>Limiten</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Gëtt gelueden …</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Feedback gëtt gelueden …</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>D'Sandboxinformatioun luet...</value>
+  </data>
+  <data name="loadMore">
+    <value>Méi&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Méi Resultater lueden</value>
+  </data>
+  <data name="login">
+    <value>Umellen</value>
+  </data>
+  <data name="loginAzure">
+    <value>Mellt Iech w. e. g. mat Ärem Azure-Kont un.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Haaptnavigatioun</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Mäi Profil verwalten</value>
+  </data>
+  <data name="maximize">
+    <value>Maximéieren</value>
+  </data>
+  <data name="member">
+    <value>Member</value>
+  </data>
+  <data name="memberDescription">
+    <value>Dëse Benotzer ass e Member vun der {org}-Organisatioun.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Memberdetailer</value>
+  </data>
+  <data name="members">
+    <value>Memberen</value>
+  </data>
+  <data name="methodDetails">
+    <value>Metoddetailer</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Methoden</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsoft Ugestallten Dateschutzerklärung</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Dir hutt Iech mat Ärem Microsoft Organisatiounskont ({email}) ugemellt. Mam Benotze vu Microsoft Learn &lt;strong&gt;verstitt Dir a bestätegt&lt;/strong&gt; datt Är Memberschaft  bedeit, datt eis Netzwierk u Websäiten an Applikatiounen Är Erfolleger an Aktivitéite späichert, an datt mir Är Resultater an Aktivitéite mat aneren Teams innerhalb vu Microsoft deelen. Zousätzlech sinn Äre Benotzernumm, Displaynumm, Erfolleger an Aktivitéiten  ëffentlech siichtbar.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Léierproblem</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn ass eng fonkelnei Plattform a mir striewen duerno den Inhalt an d'Erfarungen baséiert op Clientsfeedback ze verbesseren.
+
+Mir wëlle vun Iech héieren!
+
+Fëllt w.e.g. folgend Informatione fir eis aus:
+1. De Problem oder Feedback, deen Dir eis melle wëllt.
+2. Iergendeppes anescht, dat Dir eis matdeele wëllt.
+
+Opgepasst: Wärend mir de Moment net all Clienten direkt äntweren, soltl Dir awer wëssen, datt mir all eenzele Feedback, deen erakënnt, nokucken.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Mëttleren Osten</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimiséieren</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} Minutten</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0} m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>Viru(n) {0} Minutten</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 Minutt</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} Minutte fir ze liesen</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modul vollstänneg</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modul inkomplett</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0}-Modulreferenz</value>
+  </data>
+  <data name="modules">
+    <value>Moduler</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Modulen an dësem Léierpad</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Déi ugefuerdert Säit ass fir {0} net verfügbar. Dir gouft op déi neist Produktversioun ëmgeleet, fir déi dës Säit verfügbar ass.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>Viru(n) {0} Méint</value>
+  </data>
+  <data name="more">
+    <value>Méi</value>
+  </data>
+  <data name="moreInfo">
+    <value>Méi Informatiounen</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Méi Uleedungen</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} Moduler</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} Eenheeten</value>
+  </data>
+  <data name="name">
+    <value>Numm</value>
+  </data>
+  <data name="namespace">
+    <value>Namespace</value>
+  </data>
+  <data name="namespaces">
+    <value>Namespacen</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Eisen neie Feedbacksystem ass op GitHub Themen opgebaut. Liest méi iwwer dës Ännerung an &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;eisem Blog Post&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Nächst</value>
+  </data>
+  <data name="nextPage">
+    <value>Nächst Säit</value>
+  </data>
+  <data name="no">
+    <value>Nee</value>
+  </data>
+  <data name="noAchievements">
+    <value>Dir hutt den Ament keng Erfolleger. &lt;a href="{0}"&gt;Moduler ofschléissen, fir Erfolleger ze verzeechnen.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} huet keng Erfolleger.</value>
+  </data>
+  <data name="noClosed">
+    <value>Et gi keng zoue Problemer</value>
+  </data>
+  <data name="noOpen">
+    <value>Et gi keng oppe Problemer</value>
+  </data>
+  <data name="noOutput">
+    <value>Keng Ausgab</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Keng Resultater fonnt</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Nach keng Resultater, awer tippt weider …</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Keng Resultater fir {term}&lt;br /&gt;&lt;a href="{url}"&gt;Sich no "{filter-text}" an der ganzer {scope} Dokumentatioun&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Notiz&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Hiweiser fir Urufferen</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Hiweiser fir Implementéierer</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Hiweiser fir Ierwen</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} zou</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} Op</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office-Dokumentatioun</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Ok, ech hu verstan.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 Modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 Eenheet</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Op Säitennavigatioun</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>de(n) {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Oppene Problem</value>
+  </data>
+  <data name="openIssues">
+    <value>Oppe Problemer</value>
+  </data>
+  <data name="operationId">
+    <value>Virgang-ID:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Bedreiweren</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Optional Parameteren</value>
+  </data>
+  <data name="options">
+    <value>Optiounen</value>
+  </data>
+  <data name="output">
+    <value>Ausgab</value>
+  </data>
+  <data name="overloads">
+    <value>Iwwerluedungen</value>
+  </data>
+  <data name="overrides">
+    <value>Ausserkraaftsetzungen</value>
+  </data>
+  <data name="overview">
+    <value>Iwwerbléck</value>
+  </data>
+  <data name="owner">
+    <value>Besëtzer</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Dëse Benotzer ass de Besëtzer vum {repo}-Repository.</value>
+  </data>
+  <data name="pacific">
+    <value>Pazifik</value>
+  </data>
+  <data name="package">
+    <value>Pak</value>
+  </data>
+  <data name="packageReference">
+    <value>{0}-Pakreferenz</value>
+  </data>
+  <data name="packages">
+    <value>Päck</value>
+  </data>
+  <data name="page">
+    <value>Säit {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Säitaktiounen</value>
+  </data>
+  <data name="parameters">
+    <value>Parameteren</value>
+  </data>
+  <data name="path">
+    <value>Pad:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Är Reaktioun wielen</value>
+  </data>
+  <data name="platform">
+    <value>Plattform</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Fëllt w. e. g. dëst Feld aus.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Probéiert et w. e. g. erneit.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>D'Azure Portal starten</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Luede vum Azure Portal Lab...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>De Lab an enger neier Fënster opmaachen</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Dës Eenheet braucht en Azure Portal Lab fir ofzeschléissen.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>En Azure Portal Lab bitt fräien Azure Ressourcenzouganz fir d'Schrëtt an dëser Eenheet ze vervollstännegen. D'Azure Portal Labs wierke sech net op Äert Azure Abonnement aus. Et gëtt Iech näischt berechent.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Ären Azure Portal Lab ass prett.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Jo, en neie Lab aktivéieren</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>En Azure Portal Lab fir eng aner Eenheet ass schonn aktiv</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Dir hutt momentan schonn en Azure Portal Lab op fir eng aner Eenheet ({lab-name}). Géift Dir gär Ären aktuelle Lab verwerfen an en neie Lab fir dës Eenheet aktivéieren?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Starte vum Lab nach eng Kéier probéieren</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Mellt Iech u fir d'Azure Portal ze starten</value>
+  </data>
+  <data name="prerequisites">
+    <value>Viraussetzungen:</value>
+  </data>
+  <data name="preview">
+    <value>Virschau</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Dës API gëtt als Virschau fir Entwéckler ugebueden a ka sech baséierend um Feedback, dee mir kréien, änneren. Benotzt dës API net an engem Produktiounsëmfeld.</value>
+  </data>
+  <data name="previous">
+    <value>Viregt</value>
+  </data>
+  <data name="previousPage">
+    <value>Viregt Säit</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Viregt Versioun-Docs</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Dateschutzerklärung</value>
+  </data>
+  <data name="product">
+    <value>Produkt</value>
+  </data>
+  <data name="productFeedback">
+    <value>Produktfeedback</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Produkter</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Business Applikatiounen</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Eegeschaften</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Eegeschaftsdetailer</value>
+  </data>
+  <data name="propertyValue">
+    <value>Eegeschaftswäert</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Opbaue vun Ärer Sandbox. Dëst wäert e puer Minutten daueren...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Séier Filteren</value>
+  </data>
+  <data name="quizComplete">
+    <value>Gléckwonsch!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Kommentare kënnen net geluede ginn. GitHub-API-Tauxlimite iwwerschratt.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Problemer kënnen net gesicht ginn. GitHub-API-Tauxlimite iwwerschratt.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Kommentarer oder Empfeelungen? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Sot eis et hei&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Deelt w.e.g. Är Iddien. Mir sinn dankbar iwwer Feedback an all Sprooch.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Op Englesch liesen</value>
+  </data>
+  <data name="readonly">
+    <value>schreifgeschützt</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Dir hutt dësen Erfolleg {0} verzeechent, well Dir {1} ofgeschloss hutt.</value>
+  </data>
+  <data name="references">
+    <value>Referenzen</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Léierinhalt verfeineren</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Dëse Modul ass en Deel vun dëse Léierweeër</value>
+  </data>
+  <data name="remaining">
+    <value>verbleiwend</value>
+  </data>
+  <data name="remarks">
+    <value>Remarks</value>
+  </data>
+  <data name="removeItem">
+    <value>Ewechhuelen {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Erneierungszäitraum</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Merci, datt Dir eis dëse Problem gemellt hutt. Mir iwwerpréiwen dës Noriichte ganz suergfälteg an ënnerhuelen déi néideg Schrëtt fir dëse Problem ze léisen. Wéinst legalen a Privatsphärbedenke kënne mir Iech keng zousätzlech Aktualiséierungen iwwer dës Noriicht matdeelen. Villmools Merci nach eng Kéier, datt Dir eis kontaktéiert hutt.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>E Problem mellen</value>
+  </data>
+  <data name="requestBody">
+    <value>Ufrokierper</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Den Ufrokierper kann ee vun de Folgende sinn:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Ufrokappzeil</value>
+  </data>
+  <data name="requestPreview">
+    <value>Ufrovirschau</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL Ufroen</value>
+  </data>
+  <data name="required">
+    <value>erfuerderlech</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Erfuerderlech Parameteren</value>
+  </data>
+  <data name="requirements">
+    <value>Ufuerderungen</value>
+  </data>
+  <data name="resource_type">
+    <value>Typen</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Äntwerten</value>
+  </data>
+  <data name="restart">
+    <value>Nei starten</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Mir kënnen Iech net fir e Sandboxbesëtzer alueden duerch Aschränkungen op Ärem Kont. Kontaktéiert w.e.g. Ären Administrator.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} Resultater fonnt</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Aktivéiere vun der Sandbox nach eng Kéier probéieren</value>
+  </data>
+  <data name="returns">
+    <value>Réckmeldung</value>
+  </data>
+  <data name="returnValue">
+    <value>Réckmeldungwäert</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Iwwerpréift Äre Léierpadverlaf</value>
+  </data>
+  <data name="roles">
+    <value>Rollen</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Ausféieren</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Sandbox aktivéiert!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Sandbox Zougang ofgelaf</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Är Sandbox ass ofgelaf. Eng nei Sandbox aktivéieren.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>D'Sandbox gëtt Iech fräien Zougang zu den Azure Ressourcen, déi Dir braucht fir dës Eenheet ofzeschléissen. Äert Azure Abonnement gëtt Iech net berechent.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>D'Notze vun enger Sandbox brauch Äert Unhuele vun enger Azure Besëtzeraluedung</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>D'Sandbox fir dëse Modul ass de Moment aus Wartungsgrënn ausgeschalt.</value>
+  </data>
+  <data name="search">
+    <value>Sichen</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Sichnavigatioun</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Viregt Versiounen duerchsichen</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Sichfilter ass "{0}". Tippen, fir ewechzehuelen.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>Viru(n) {0} Sekonnen</value>
+  </data>
+  <data name="security">
+    <value>Sécherheet</value>
+  </data>
+  <data name="seeAlso">
+    <value>Kuckt Och</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Ausgewielt Versioun</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Filtert d'Sproochelëscht, andeem Dir eng Regioun auswielt oder andeem Dir den Numm oder de Gebittsschemacode vun der Sprooch antippt.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Pak auswielen</value>
+  </data>
+  <data name="selectVersion">
+    <value>Versioun auswielen</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Wielt Är Roll</value>
+  </data>
+  <data name="service">
+    <value>Service</value>
+  </data>
+  <data name="services">
+    <value>Servicer</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>De Service ass temporär net verfügbar. Mir schaffen dorun.</value>
+  </data>
+  <data name="share">
+    <value>Deelen</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Dësen Erfolleg op {0} deelen</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Kuckt Iech den Erfolleg un, deen ech grad fir {moduleName} op Microsoft Guided Learning verzeechent hunn. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Gedeelten Artikel] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Dëst Dokument deelen</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Deelt Ären Erfolleg:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>All ofgeleet Klassen uweisen</value>
+  </data>
+  <data name="signIn">
+    <value>Umellen</value>
+  </data>
+  <data name="signInAzure">
+    <value>Mellt Iech w. e. g. mat Ärem Azure-Kont un.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Mellt Iech u fir Är Aarbecht ze préiwen</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Dir hutt Iech an der Cloud Schuel mat engem Kont ugemellt, dee sech vun Ären Docs Kont ënnerscheet. Mellt Iech w.e.g. an der Cloud Schuel of fir nach eng Kéier ze probéieren Zougang zur Sandbox ze kréien.</value>
+  </data>
+  <data name="signingIn">
+    <value>Gëtt ugemellt …</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Mellt Iech u fir d'Sandbox z'aktivéieren</value>
+  </data>
+  <data name="signInToComment">
+    <value>Umellen, fir ze kommentéieren</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Umellen, fir Dokumentatiounsfeedback ofzeginn</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Umellen, fir Feedback ofzeginn</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Umellen&lt;/a&gt;, fir Är GitHub-API-Tauxlimite z'erhéijen.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Umellen, fir Är Reaktioun derbäizesetzen</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Mellt Iech u fir de Fortschrëtt ze späicheren</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Umellen&lt;/a&gt;, fir Äre Benotzerprofil unzeweisen.</value>
+  </data>
+  <data name="signOut">
+    <value>Ofmellen</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Sitefeedback</value>
+  </data>
+  <data name="slack">
+    <value>Stëllstand</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hmm, eppes ass schifgaangen</value>
+  </data>
+  <data name="start">
+    <value>Start</value>
+  </data>
+  <data name="startHere">
+    <value>Hei lassleeën</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Schrëtt {step-index} vu(n) {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Strukturen</value>
+  </data>
+  <data name="submit">
+    <value>Ofginn</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Feedback ofginn</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Erfollegräich Ofginn!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Eng Produktiddi virschloen</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>D'Aufgab ass net richteg geléist.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Mir aktualiséieren dës Säit mat enger neier interaktiver Erfarung. Kommt geschwënn zeréck!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Merci fir Äre Feedback!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Dat ass net ganz richteg.</value>
+  </data>
+  <data name="theme">
+    <value>Thema</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Fir dëst Dokument gëtt et kee Feedback. De Feedback, deen Dir geschéckt hutt, gëtt hei ugewisen.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>All Membere vun dëser Klass si threadsécher.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>All Instanzmembere vun dëser Klass si threadsécher.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>All statesch Membere vun dëser Klass si threadsécher.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Dësen Typ ass net threadsécher.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Threadsécherheet</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0}-Daum-erof-Reaktiounen</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0}-Daum-erop-Reaktiounen</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Tipp&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Titel</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Problem ëmschalten</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Toggle Eenheeten</value>
+  </data>
+  <data name="trademarks">
+    <value>Marken</value>
+  </data>
+  <data name="triggers">
+    <value>Ausléiser</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Dir hutt Iech fir d'Vervollstännegen eng Trophee verdéngt</value>
+  </data>
+  <data name="tryAgain">
+    <value>Probéiert nach eng Kéier</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Probéiert de Code an Ärem Browser</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Test d'REST-API mat den Agaben ënnen.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>All {0}-Auteuren</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100 % ofgeschloss!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Gléckwonsch!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Hei virufueren</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Auteuren</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Weider Lektür</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Aféierung</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0} Minutten iwwreg</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} Minutte fir ofzeschléissen</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Nächst Schrëtt</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Nächst Uleedung</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Ressourcen</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Kuckt {0} oder gitt en Auteur, andeem Dir Verbesserungen op {1} virschlot.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Dir hutt geléiert wéi Dir …</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Dir hutt d'Uleedung "{0}" ofgeschloss.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Dir léiert, wéi Dir …</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Hutt Dir Feedback oder hänkt Dir op engem Deel vun dësem Tutorial fest?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>E Problem op GitHub mellen</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Nächst Schrëtt</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Kuratéiert Tweete vu(n)</value>
+  </data>
+  <data name="type">
+    <value>Typ</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Typdefinitioun</value>
+  </data>
+  <data name="typeParameters">
+    <value>Typparameteren</value>
+  </data>
+  <data name="unit">
+    <value>Eenheet</value>
+  </data>
+  <data name="unitComplete">
+    <value>Eenheet ofgeschloss</value>
+  </data>
+  <data name="unitMarker">
+    <value>Eenheet {index} vun {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Dës Eenheet brauch eng Sandbox fir ofzeschléissen</value>
+  </data>
+  <data name="units">
+    <value>Eenheeten</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI-Parameteren</value>
+  </data>
+  <data name="usage">
+    <value>Benotzung</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>E virtuellen Apparat benotzen</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Besicht de Site "Praktesche Labo" fir integréiert Instruktiounen.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Benotzt Äre lokale Computer</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Bleift op dësem Site a befollegt d'Instruktioune mat Ärem eegenen Apparat.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Dëse Connecteur gëtt benotzt</value>
+  </data>
+  <data name="value">
+    <value>Wäert</value>
+  </data>
+  <data name="valueFrom">
+    <value>Wäert aus</value>
+  </data>
+  <data name="version">
+    <value>Versioun</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Dëse Problem op GitHub uweisen</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Méi Feedback op GitHub ukucken</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Op GitHub ukucken</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>{username} op GitHub uweisen</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Mir empfeele Visual Studio 2017 ze benotzen.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Elo eroflueden</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual-Studio-Dokumentatioun</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>De VM Modus starten</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Virtuellen Apparat luet...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Fir dës Eenheet muss d'Sandbox vervollstännegt ginn.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>De VM Modus bitt fräien Azure Virtuell Apparat Zougang fir d'Schrëtt an dëser Eenheet ze vervollstännegen. Äert Azure Abonnement gëtt Iech net berechent</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Jo, eng nei VM aktivéieren</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Eng VM fir en aner Eenheet ass schonn aktiv</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Dir hutt schonn eng VM am Modul {lab-name} opgemaach. Wann Dir dës VM aktivéiert, verléiert Dir Är Aarbecht an deem anere Modul.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Starte vum VM Modus nach eng Kéier probéieren</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Mellt Iech u fir de VM Modus ze starten</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Warnung&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>virun {0} Wochen</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Mir géife gär vun Iech héieren. Wielt den Typ, deen Dir ubidde wëllt:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows-10-Ufuerderungen</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windows-Dokumentatioun</value>
+  </data>
+  <data name="worldwide">
+    <value>Worldwide</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Wëllt Dir Feedback ofginn?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Jo</value>
+  </data>
+  <data name="youDidIt">
+    <value>Dir hutt et gepackt!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Dir hutt Erfarungspunkte gesammelt mam Ausfëlle vum Quiz.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Dir hutt Erfarungspunkte gesammelt mam Ausfëlle vun der Aufgab.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Dir elo just &lt;span class="experience-points"&gt;&lt;/span&gt; Experienzpunkte verdéngt.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Dir musst all Froe beäntweren virum Iwwerpréiwe vun der Aarbecht.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Dir musst d'Ressourcë vun der Sandbox benotze fir Är Aarbecht ze préiwen.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Dir hutt et ënner Dach a Fach bruecht</value>
+  </data>
+  <data name="yourAccount">
+    <value>Äre Kont</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Äre Kont gouf geläscht.</value>
+  </data>
+  <data name="yourData">
+    <value>Är Daten</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Luet Äre gespäicherte Fortschrëtt an Är Erfolleger op Docs erof oder läscht se. Wann Dir Är Informatioune läscht, huet dat keng Auswierkung op Är Microsoft-Identitéit.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Är Aarbecht gouf net richteg fäerdeggestallt.</value>
+  </data>
+</root>

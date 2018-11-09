@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>aktsepteeritud väärtused</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Võta kutse vastu</value>
+  </data>
+  <data name="achievements">
+    <value>Saavutused</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Vaata saavutust, mille teenisin Microsofti juhendatud õppimise teenuses mooduli {0} eest!</value>
+  </data>
+  <data name="actions">
+    <value>Toimingud</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Jah, aktiveeri uus liivakast</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Aktiveeri liivakast</value>
+  </data>
+  <data name="aDayAgo">
+    <value>1 päev tagasi</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Lisafunktsioonid ja -nõuded</value>
+  </data>
+  <data name="addParameter">
+    <value>Lisa parameeter</value>
+  </data>
+  <data name="administrator">
+    <value>Administraator</value>
+  </data>
+  <data name="advanced">
+    <value>Täpsem</value>
+  </data>
+  <data name="africa">
+    <value>Aafrika</value>
+  </data>
+  <data name="all">
+    <value>kõik</value>
+  </data>
+  <data name="allapis">
+    <value>Kõik API-d</value>
+  </data>
+  <data name="allPackages">
+    <value>Kõik paketid</value>
+  </data>
+  <data name="americas">
+    <value>Lõuna- ja Põhja-Ameerika</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>1 minut tagasi</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>1 kuu tagasi</value>
+  </data>
+  <data name="anHourAgo">
+    <value>1 tund tagasi</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} API viide</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>API otsing pole saadaval. Proovige hiljem uuesti.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Eelmised versioonid</value>
+  </data>
+  <data name="areYouSure">
+    <value>Kas olete kindel?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Andmete kustutamist ei saa tagasi võtta.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>1 sekund tagasi</value>
+  </data>
+  <data name="asia">
+    <value>Aasia</value>
+  </data>
+  <data name="askQuestion">
+    <value>Esitage küsimus</value>
+  </data>
+  <data name="assemblies">
+    <value>Assemblerid</value>
+  </data>
+  <data name="assembly">
+    <value>Assembler</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Manustatud sündmused</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Manustatud atribuudid</value>
+  </data>
+  <data name="attributes">
+    <value>Atribuudid</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>1 nädal tagasi</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell kasutab teie olemasolevaid Azure’i tellimusi. Cloud Shelli kasutamine ja käskude käivitamine tekitab seotud kulusid.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure’i dokumentatsioon</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Teenisite lõpetamise eest märgi</value>
+  </data>
+  <data name="begin">
+    <value>Alusta</value>
+  </data>
+  <data name="beginner">
+    <value>Algaja</value>
+  </data>
+  <data name="beta">
+    <value>beetaversioon</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Sisu</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Lingirida</value>
+  </data>
+  <data name="browse">
+    <value>Sirvi</value>
+  </data>
+  <data name="browseCode">
+    <value>Sirvi koodi</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Ärianalüütik</value>
+  </data>
+  <data name="businessUser">
+    <value>Ärikasutaja</value>
+  </data>
+  <data name="calls">
+    <value>Kõned</value>
+  </data>
+  <data name="capabilities">
+    <value>Võimalused</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Ettevaatust!&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Kontrollige oma vastuseid</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Kontrollige oma tööd uuesti</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Kontrollige oma teadmisi</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Kontrollige oma tööd</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Vali reaktsioon</value>
+  </data>
+  <data name="claimReward">
+    <value>Ava saavutus</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Klassid</value>
+  </data>
+  <data name="clearfilter">
+    <value>Eemalda filter</value>
+  </data>
+  <data name="clearterm">
+    <value>Eemalda termin</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Klõpsa RSS-kanali nägemiseks</value>
+  </data>
+  <data name="close">
+    <value>Sule</value>
+  </data>
+  <data name="closedIssue">
+    <value>Suletud küsimus</value>
+  </data>
+  <data name="closedIssues">
+    <value>Suletud küsimused</value>
+  </data>
+  <data name="clsCompliant">
+    <value>See API pole CLS-ga kooskõlas.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>CLS-i kooskõla alternatiiv</value>
+  </data>
+  <data name="code">
+    <value>Kood</value>
+  </data>
+  <data name="collaborator">
+    <value>Kolleeg</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>See kasutaja on kutsutud tegema koostööd hoidlas {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Käsud</value>
+  </data>
+  <data name="comment">
+    <value>Kommentaar</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} kommentaari</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} kommenteeris {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Kommentaarid</value>
+  </data>
+  <data name="complete">
+    <value>Valmis</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Cloud Shelli konfigureerimine liivakasti juurdepääsu jaoks…</value>
+  </data>
+  <data name="confused">
+    <value>Segaduses</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} segaduses reaktsiooni</value>
+  </data>
+  <data name="congratulations">
+    <value>Õnnitleme!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Ühendused konto kohta</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Konstruktori üksikasjad</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Konstruktorid</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Sisu tagasiside</value>
+  </data>
+  <data name="contents">
+    <value>Sisu</value>
+  </data>
+  <data name="continue">
+    <value>Jätka</value>
+  </data>
+  <data name="continueHere">
+    <value>Jätkake siin</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Jätka esimese etapi juurde</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Jätka järgmise mooduliga</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Jätkake edenemist salvestamata</value>
+  </data>
+  <data name="contributor">
+    <value>Kaasautor</value>
+  </data>
+  <data name="contributorDescription">
+    <value>See kasutaja on eelnevalt olnud seotud hoidlaga {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Panusta</value>
+  </data>
+  <data name="contributors">
+    <value>Kaasautorid</value>
+  </data>
+  <data name="copy">
+    <value>Kopeeri</value>
+  </data>
+  <data name="correctChoice">
+    <value>Õige valik</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Olete sisse loginud oma organisatsiooni Microsofti kontoga ({0}) ja teie kasutuskogemus on isikliku konto omast erinev:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Mõned mängustamise funktsioonid pole Microsofti töötajatele saadaval.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Teie profiilil kuvatakse avalikult, et töötate Microsoftis.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Kui te meilile enam juurde ei pääse, ei saa te sellele saidile sisse logida.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Kui soovite kasutada seda saiti isiklikuks tegevuseks, logige sisse mõne muu kontoga.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Oma konto ühendamiseks vajate järgmist teavet:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Microsoft Learni kasutamisega &lt;strong&gt;mõistate ja nõustute,&lt;/strong&gt; et teie liikmesus tähendab, et meie saitide ning rakenduste võrgustik salvestab ja jälgib teie saavutusi ning tegevusi ja me võime teie tulemusi ning tegevusi Microsofti siseselt teiste töörühmadega ühiskasutusse anda. Peale selle on teie kasutajanimi, kuvatav nimi, saavutused ja tegevused avalikult nähtavad.&lt;ul&gt;&lt;li&gt;Teie profiilil kuvatakse avalikult, et töötate Microsoftis.&lt;/li&gt;&lt;li&gt;Kui te meilile enam juurde ei pääse, ei saa te saidile sisse logida.&lt;/li&gt;&lt;li&gt;Mõned mängustamise funktsioonid pole Microsofti töötajatele saadaval.&lt;/li&gt;&lt;li&gt;Kui soovite kasutada seda saiti isiklikuks tegevuseks, logige sisse mõne muu kontoga.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Liikmeks astudes mõistate ja kinnitate, et teie Microsoft Learni liikmesus tähendab, et meie saitide ning rakenduste võrgustik salvestab teie saavutused ja tegevused. Teie kasutajanimi, kuvatav nimi, saavutused ja tegevused on avalikult nähtavad.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Uue arhiivi loomine</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Ühenduse loomine</value>
+  </data>
+  <data name="currentSelection">
+    <value>Praegune valik:</value>
+  </data>
+  <data name="dark">
+    <value>Tume</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} päeva tagasi</value>
+  </data>
+  <data name="defaultValue">
+    <value>vaikeväärtus</value>
+  </data>
+  <data name="definition">
+    <value>Määratlus</value>
+  </data>
+  <data name="definitions">
+    <value>Määratlused</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegaadid</value>
+  </data>
+  <data name="delete">
+    <value>Kustuta</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Kustuta parameeter</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Juuruta Azure’i</value>
+  </data>
+  <data name="deprecated">
+    <value>See API on nüüd aegunud.</value>
+  </data>
+  <data name="derived">
+    <value>Tuletatud</value>
+  </data>
+  <data name="description">
+    <value>Kirjeldus</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Arendaja</value>
+  </data>
+  <data name="developers">
+    <value>Arendajad</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Sule dialoog</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Muu liivakast on juba aktiivne</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Olete moodulis &lt;a href="{0}"&gt;{1}&lt;/a&gt; juba liivakasti aktiveerinud. Kui aktiveerite selle liivakasti, läheb teises moodulis teie töö kaotsi.</value>
+  </data>
+  <data name="disable">
+    <value>Keela</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Otsingutulemid pärinevad eelmiste versioonide dokumentatsioonist ja neid ei värskendata regulaarselt.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Docsi profiil</value>
+  </data>
+  <data name="documentDetails">
+    <value>Dokumendi üksikasjad</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Ärge seda jaotist redigeerige. See on vajalik docs.microsoft.com-i ➟ GitHubi probleemide linkimiseks.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET-i dokumentatsioon</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET Editor</value>
+  </data>
+  <data name="download">
+    <value>Laadi alla</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Laadi alla PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Laadi ZIP-fail alla</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Toimingu väljundid on dünaamilised.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Teenige rohkem saavutusi</value>
+  </data>
+  <data name="edit">
+    <value>Redigeeri</value>
+  </data>
+  <data name="editdesc">
+    <value>Redigeeri seda dokumenti</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Üksikasjalikud liidese juurutamised</value>
+  </data>
+  <data name="email">
+    <value>E-post</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Liivakasti aktiveerimiseks on vaja meiliaadressi</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Liivakasti aktiveerimiseks peab teie Microsofti konto olema seotud kehtiva meiliaadressiga. Meiliaadressi sidumiseks avage &lt;a href="https://account.live.com" target="_blank"&gt;Microsofti konto sätted&lt;/a&gt; ja proovige uuesti.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Tühi nimi pole lubatud</value>
+  </data>
+  <data name="enable">
+    <value>Luba</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Aktiveeri fookuserežiim</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Loetelud</value>
+  </data>
+  <data name="error">
+    <value>Tõrge</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Kommentaari loomisel ilmnes tõrge. Kui soovite, saate &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHubis &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; uuesti proovida.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Probleemi loomisel ilmnes tõrge. Kui soovite, saate &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHubis &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; uuesti proovida.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Me ei saanud teie otsingutulemeid laadida. Proovige hiljem uuesti.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Kommentaaride laadimisel ilmnes tõrge.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Tagasiside laadimisel ilmnes tõrge.</value>
+  </data>
+  <data name="europe">
+    <value>Euroopa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Sündmuse üksikasjad</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Sündmused</value>
+  </data>
+  <data name="examples">
+    <value>Näited</value>
+  </data>
+  <data name="exceptions">
+    <value>Erandid</value>
+  </data>
+  <data name="exit">
+    <value>Välju</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Välju fookuserežiimist</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Laienda dokumentatsiooni tagasiside menüüd</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Uurige muid mooduleid</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Uurige muid teid</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Teil ei olnud eksporditavat teavet.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Laiendusmeetodid</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Tagasiside</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[ Sisestage tagasiside siia]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Anna toote tagasisidet</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Väljad</value>
+  </data>
+  <data name="fieldValue">
+    <value>Välja väärtus</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filter</value>
+  </data>
+  <data name="findALanguage">
+    <value>Keele otsing</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Sellel loetelul on atribuut {0}, mis lubab oma liikmeväärtuste bitipõhist kombinatsiooni.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Funktsiooni üksikasjad</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funktsioonid</value>
+  </data>
+  <data name="getHelp">
+    <value>Hankige abi</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Anna tagasisidet</value>
+  </data>
+  <data name="globalParameters">
+    <value>Globaalsed parameetrid</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Lõpetamiseks minge tagasi</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Mooduli lõpetamiseks minge tagasi</value>
+  </data>
+  <data name="goodWork">
+    <value>Hea töö!</value>
+  </data>
+  <data name="greatWork">
+    <value>Hea töö!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Praktiline labor</value>
+  </data>
+  <data name="headers">
+    <value>Päised</value>
+  </data>
+  <data name="heart">
+    <value>Süda</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} südame reaktsiooni</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Aita mul valida</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Vihje:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Hurraa</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} hurraa reaktsiooni</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} tundi tagasi</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Mida saame täiustamiseks teha?</value>
+  </data>
+  <data name="hr">
+    <value>t</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} t {1} min</value>
+  </data>
+  <data name="implements">
+    <value>Juurutused</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Oluline&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>kohas</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Vale valik</value>
+  </data>
+  <data name="inheritance">
+    <value>Pärilus</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Päritud liikmed</value>
+  </data>
+  <data name="input">
+    <value>Sisend</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Liidesed</value>
+  </data>
+  <data name="intermediate">
+    <value>Edasijõudnu</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>API toetab toote taristut ja see ei ole mõeldud otse koodist kasutamiseks.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Intune’i tagasiside</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>kasutaja {name} avas {time ago}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Teata tootega seotud probleemist</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Kas sellest lehest oli abi?</value>
+  </data>
+  <data name="itPro">
+    <value>IT-professionaal</value>
+  </data>
+  <data name="justNow">
+    <value>just nüüd</value>
+  </data>
+  <data name="key">
+    <value>Võti:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Teadmiste kontroll</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Teadmiste kontroll on sooritatud. Vastasite kõigile küsimustele õigesti.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Teadmiste kontroll on lõpetatud</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Lõpetasite õppetüki {tutorial} teadmiste kontrolli.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Lõpetasite mooduli jaotise {tutorial}. Võite nüüd liikuda järgmise jaotise {nextUnitName} juurde.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Oih, me ei saanud teie teadmiste kontrolli hinnata. Proovige uuesti.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Olete selle jaotise lõpetanud. Jätkake järgmise osaga {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Olete selle jaotise lõpetanud. Jätkake rohkemate õppetükkidega.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Teadmiste kontrolli ülesande lõpetamisega avasite saavutuse {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Sisukord</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Filtreeri sisukorda</value>
+  </data>
+  <data name="language">
+    <value>Keel</value>
+  </data>
+  <data name="laugh">
+    <value>Naer</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} naeru reaktsiooni</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Uurige Microsofti tehnoloogiat reaalajas õppetükkide, sh praktiliste tegevuste abil. See teenus on eelvaateolekus, seega &lt;a href="https://aka.ms/learningfeedback"&gt;saatke meile tagasisidet&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Õppetee</value>
+  </data>
+  <data name="learnmore">
+    <value>Lisateave</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Jäta kommentaar</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Tagasisidet saate jätta ka &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;otse GitHubis &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Tase {0}</value>
+  </data>
+  <data name="levels">
+    <value>Tasemed</value>
+  </data>
+  <data name="light">
+    <value>Hele</value>
+  </data>
+  <data name="limits">
+    <value>Limiidid</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Laadimine …</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Tagasiside laadimine …</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Liivakastiteabe laadimine …</value>
+  </data>
+  <data name="loadMore">
+    <value>Rohkem&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Laadi rohkem tulemusi</value>
+  </data>
+  <data name="login">
+    <value>Logi sisse</value>
+  </data>
+  <data name="loginAzure">
+    <value>Logige oma Azure’i kontoga sisse.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Põhinavigeerimine</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Halda minu profiili</value>
+  </data>
+  <data name="maximize">
+    <value>Maksimeeri</value>
+  </data>
+  <data name="member">
+    <value>Liige</value>
+  </data>
+  <data name="memberDescription">
+    <value>See kasutaja on organisatsiooni {org} liige.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Liikme üksikasjad</value>
+  </data>
+  <data name="members">
+    <value>Liikmed</value>
+  </data>
+  <data name="methodDetails">
+    <value>Meetodi üksikasjad</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Meetodid</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsofti töötaja privaatsusavaldus</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Olete sisse loginud oma Microsofti ettevõtte kontoga ({email}). Microsoft Learni kasutamisega &lt;strong&gt;mõistate ja nõustute,&lt;/strong&gt; et teie liikmesus tähendab, et meie saitide ning rakenduste võrgustik salvestab ja jälgib teie saavutusi ning tegevusi ja me võime teie tulemusi ning tegevusi Microsofti siseselt teiste töörühmadega ühiskasutusse anda. Peale selle on teie kasutajanimi, kuvatav nimi, saavutused ja tegevused avalikult nähtavad.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Learni probleem</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn on täiesti uus platvorm ja me püüdleme klientide tagasiside põhjal sisu ning kogemuste täiustamise poole.
+
+Soovime teist kuulda!
+
+Täitke meie jaoks järgnev teave:
+1. Probleem või tagasiside, millest teatate.
+2. Kas sooviksite meile veel midagi rääkida?
+
+Märkus. Kuigi me ei vasta praegu kõigile klientidele isiklikult, võite kindel olla, et vaatame kogu saabuva tagasiside üle.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Lähis-Ida</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimeeri</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} minutit</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} minutit tagasi</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minut</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} minuti lugemine</value>
+  </data>
+  <data name="module">
+    <value>Moodul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Moodul on lõpetatud</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Moodul on lõpetamata</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} mooduli viide</value>
+  </data>
+  <data name="modules">
+    <value>Moodulid</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Selle õppetee moodulid</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Taotletud leht pole brauseri {0} jaoks saadaval. Teid suunatakse uusima tooteversiooni juurde, mille jaoks see leht saadaval on.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} kuud tagasi</value>
+  </data>
+  <data name="more">
+    <value>Rohkem</value>
+  </data>
+  <data name="moreInfo">
+    <value>Lisateave</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Rohkem õpetusi</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} moodulit</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} üksust</value>
+  </data>
+  <data name="name">
+    <value>Nimi</value>
+  </data>
+  <data name="namespace">
+    <value>Nimeruum</value>
+  </data>
+  <data name="namespaces">
+    <value>Nimeruumid</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Meie uus tagasisidesüsteem on ehitatud GitHubi probleemidele. Lugege muudatusest lähemalt &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;meie ajaveebi postitusest&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Järgmine</value>
+  </data>
+  <data name="nextPage">
+    <value>Järgmine lehekülg</value>
+  </data>
+  <data name="no">
+    <value>Ei</value>
+  </data>
+  <data name="noAchievements">
+    <value>Teil pole praegu ühtki saavutust. &lt;a href="{0}"&gt;Saavutuste teenimiseks läbige mooduleid.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>Kasutajal {0} pole ühtegi saavutust.</value>
+  </data>
+  <data name="noClosed">
+    <value>Suletud küsimusi ei ole</value>
+  </data>
+  <data name="noOpen">
+    <value>Avatud küsimusi ei ole</value>
+  </data>
+  <data name="noOutput">
+    <value>Väljund puudub</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Tulemusi ei leitud</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Praegu ei ole veel tulemusi, jätkake tippimist …</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Otsingusõnale {term} ei leitud tulemusi&lt;br /&gt;&lt;a href="{url}"&gt;Otsi teksti „{filter-text}” kogu {scope} dokumentatsioonist&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Märkus&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Märkused helistajatele</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Märkused juurutajatele</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Märkused pärijatele</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} suletud</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} avatud</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office’i dokumentatsioon</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>OK, sain aru.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 moodul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 üksus</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Lehel navigeerimine</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>kuupäeval {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Avatud küsimus</value>
+  </data>
+  <data name="openIssues">
+    <value>Avatud küsimused</value>
+  </data>
+  <data name="operationId">
+    <value>Toimingu ID:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operaatorid</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Valikulised parameetrid</value>
+  </data>
+  <data name="options">
+    <value>Suvandid</value>
+  </data>
+  <data name="output">
+    <value>Väljund</value>
+  </data>
+  <data name="overloads">
+    <value>Ülekoormused</value>
+  </data>
+  <data name="overrides">
+    <value>Alistamised</value>
+  </data>
+  <data name="overview">
+    <value>Ülevaade</value>
+  </data>
+  <data name="owner">
+    <value>Omanik</value>
+  </data>
+  <data name="ownerDescription">
+    <value>See kasutaja on hoidla {repo} omanik.</value>
+  </data>
+  <data name="pacific">
+    <value>Vaikne ookean</value>
+  </data>
+  <data name="package">
+    <value>Pakett</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} paketi viide</value>
+  </data>
+  <data name="packages">
+    <value>Paketid</value>
+  </data>
+  <data name="page">
+    <value>Lk {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Lehekülje toimingud</value>
+  </data>
+  <data name="parameters">
+    <value>Parameetrid</value>
+  </data>
+  <data name="path">
+    <value>Tee:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Vali oma reaktsioon</value>
+  </data>
+  <data name="platform">
+    <value>Platvorm</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Täitke see väli.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Proovige uuesti.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Käivita Azure’i portaal</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Azure’i portaali laadimine…</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Ava labor uues aknas</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Õppetükk nõuab lõpule viimiseks Azure’i portaali.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Azure’i portaalilabor pakub selle õppetüki etappide lõpuleviimiseks Azure’i ressurssidele tasuta juurdepääsu. Azure’i portaalilabor ei mõjuta teie Azure’i tellimust. Teie käest ei küsita tasu.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Teie Azure’i portaalilabor on valmis.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Jah, aktiveeri uus labor</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Teise õppetüki Azure’i portaalilabor on juba aktiivne</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Teil on praegu avatud Azure’i portaalilabor teise õppetüki jaoks ({lab-name}). Kas soovite hüljata praeguse labori ja aktiveerida sellele õppetükile uue labori?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Proovige laborit uuesti käivitada</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Azure’i portaali käivitamiseks logige sisse</value>
+  </data>
+  <data name="prerequisites">
+    <value>Eeltingimused:</value>
+  </data>
+  <data name="preview">
+    <value>Eelvaade</value>
+  </data>
+  <data name="previewTypescript">
+    <value>See API on esitatud arendajatele eelvaatena ja see võib saadud tagasiside põhjal muutuda. Ärge kasutage seda API-t töökeskkonnas.</value>
+  </data>
+  <data name="previous">
+    <value>Eelmine</value>
+  </data>
+  <data name="previousPage">
+    <value>Eelmine lehekülg</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Eelmise versiooni dokumendid</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Privaatsusavaldus</value>
+  </data>
+  <data name="product">
+    <value>Toode</value>
+  </data>
+  <data name="productFeedback">
+    <value>Toote tagasiside</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Tooted</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Ärirakendused</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profiil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Atribuudid</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Atribuudi üksikasjad</value>
+  </data>
+  <data name="propertyValue">
+    <value>Atribuudi väärtus</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Liivakasti koostamine. Selleks kulub vaid minut…</value>
+  </data>
+  <data name="quickfilters">
+    <value>Kiirfiltrid</value>
+  </data>
+  <data name="quizComplete">
+    <value>Õnnitleme!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Kommentaare ei saa laadida. GitHub API piirmäär on ületatud.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Probleeme ei saa otsida. GitHub API piirmäär on ületatud.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Kas teil on kommentaare või soovitusi? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Rääkige meile siin&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Jagage oma ideid. Tagasiside on teretulnud igas keeles.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Loe inglise keeles</value>
+  </data>
+  <data name="readonly">
+    <value>kirjutuskaitstud</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Saite selle saavutuse {0} mooduli {1} läbimise eest.</value>
+  </data>
+  <data name="references">
+    <value>Viited</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Piiritle õppematerjalide sisu</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>See moodul on nende õppeteede osa</value>
+  </data>
+  <data name="remaining">
+    <value>jäänud</value>
+  </data>
+  <data name="remarks">
+    <value>Märkused</value>
+  </data>
+  <data name="removeItem">
+    <value>Eemalda {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Uuendamise periood</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Aitäh, et meid oma muredest teavitasid. Vaatame neid ettepanekuid väga hoolikalt ja teeme probleemi lahendamiseks vajalikud sammud. Seaduslikel ja privaatsuse tagamise põhjustel ei pruugi meil olla võimalik teile selle ettepaneku kohta lisateavet anda. Aitäh veel kord, et ühedust võtsite.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Teata probleemist</value>
+  </data>
+  <data name="requestBody">
+    <value>Taotluse sisu</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Päringu sisu võib olla üks järgmistest:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Taotluse päis</value>
+  </data>
+  <data name="requestPreview">
+    <value>Taotluse eelvaade</value>
+  </data>
+  <data name="requestUrl">
+    <value>Taotluse URL</value>
+  </data>
+  <data name="required">
+    <value>nõutav</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Nõutavad parameetrid</value>
+  </data>
+  <data name="requirements">
+    <value>Nõuded</value>
+  </data>
+  <data name="resource_type">
+    <value>Tüübid</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Vastused</value>
+  </data>
+  <data name="restart">
+    <value>Taaskäivita</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Me ei saa teid liivakasti rentnikku kutsuda, sest teie kontol on piirangud. Pöörduge administraatori poole.</value>
+  </data>
+  <data name="resultsFound">
+    <value>Leiti {0} tulemit</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Proovige uuesti liivakast aktiveerida</value>
+  </data>
+  <data name="returns">
+    <value>Tagastused</value>
+  </data>
+  <data name="returnValue">
+    <value>Tagastusväärtus</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Vaadake üle oma õppetee ajalugu</value>
+  </data>
+  <data name="roles">
+    <value>Rollid</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Käivita</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Liivakast on aktiveeritud!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Liivakasti juurdepääs on aegunud</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Teie liivakast on aegunud. Aktiveeri uus liivakast.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Liivakast annab teile selle õppetüki lõpetamiseks vajalikele Azure’i ressurssidele tasuta juurdepääsu. Teie Azure’i tellimusele ei tule lisatasu.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Liivakasti kasutamiseks peate vastu võtma Azure’i rentniku kutse</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Selle mooduli liivakast on hoolduse tõttu ajutiselt keelatud.</value>
+  </data>
+  <data name="search">
+    <value>Otsing</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Otsingunavigatsioon</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Eelmiste versioonide otsing</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Otsingufilter on "{0}". Puudutage eemaldamiseks.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} sekundit tagasi</value>
+  </data>
+  <data name="security">
+    <value>Turve</value>
+  </data>
+  <data name="seeAlso">
+    <value>Vt ka</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Valitud versioon</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Keelte loendit saate filtrida, kui valite regiooni, tipite keele nime või lokaadi koodi.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Vali pakett</value>
+  </data>
+  <data name="selectVersion">
+    <value>Valige versioon</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Valige oma roll</value>
+  </data>
+  <data name="service">
+    <value>Teenus</value>
+  </data>
+  <data name="services">
+    <value>Teenused</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Teenus pole ajutiselt saadaval. Tegeleme probleemi lahendamisega.</value>
+  </data>
+  <data name="share">
+    <value>Anna ühiskasutusse</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Jagage saavutust teenuses {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Vaata saavutust, mille teenisin Microsofti juhendatud õppimise teenuses mooduli {moduleName} eest. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Ühiskasutusse antud artikkel] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Anna dokument ühiskasutusse</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Jagage oma saavutust:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Kuva kõik tuletatud klassid</value>
+  </data>
+  <data name="signIn">
+    <value>Logi sisse</value>
+  </data>
+  <data name="signInAzure">
+    <value>Logige oma Azure’i kontoga sisse.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Töö kontrollimiseks logige sisse</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Olete Cloud Shelli sisse logitud kontoga, mis erineb teie Docsi kontost. Selleks et proovida liivakastile uuesti juurde pääseda, logige Cloud Shellist välja.</value>
+  </data>
+  <data name="signingIn">
+    <value>Sisselogimine …</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Liivakasti aktiveerimiseks logige sisse</value>
+  </data>
+  <data name="signInToComment">
+    <value>Kommenteerimiseks logige sisse</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Dokumentatsiooni tagasiside andmiseks logige sisse</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Tagasiside andmiseks logige sisse</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>Oma GitHub API piirmäära suurendamiseks &lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;logige sisse&lt;/a&gt;.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Reaktsiooni lisamiseks logige sisse</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Edenemise salvestamiseks logige sisse</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Logige sisse&lt;/a&gt;, et vaadata oma kasutajaprofiili.</value>
+  </data>
+  <data name="signOut">
+    <value>Logi välja</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Saidi tagasiside</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Lahenduste arhitekt</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Midagi läks valesti</value>
+  </data>
+  <data name="start">
+    <value>Käivita</value>
+  </data>
+  <data name="startHere">
+    <value>Alustage siit</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>{step-index} toiming {step-count}-st</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Struktuurid</value>
+  </data>
+  <data name="submit">
+    <value>Esita</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Esita tagasiside</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Esitatud!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Soovita tooteideed</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Ülesanne ei ole õigesti lõpetatud.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Värskendame seda lehte uue interaktiivse kasutuskogemusega. Tulge varsti tagasi!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Täname tagasiside eest!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>See pole päris õige.</value>
+  </data>
+  <data name="theme">
+    <value>Kujundus</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Selle dokumendi jaoks praegu tagasisidet pole. Esitatud tagasiside kuvatakse siin.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Kõik selle klassi liikmed on lõime jaoks turvalised.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Kõik selle klassi eksemplariliikmed on lõime jaoks turvalised.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Kõik selle klassi staatilised liikmed on lõime jaoks turvalised.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>See tüüp pole lõime jaoks turvaline.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Lõime turvalisus</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} pöial alla reaktsiooni</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} pöial püsti reaktsiooni</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Näpunäide&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Pealkiri</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Probleemi ümberlülitus</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Lülitage õppetükid ümber</value>
+  </data>
+  <data name="trademarks">
+    <value>Kaubamärgid</value>
+  </data>
+  <data name="triggers">
+    <value>Päästikud</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Teenisite lõpetamise eest trofee</value>
+  </data>
+  <data name="tryAgain">
+    <value>Proovige uuesti</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Proovige kasutada koodi brauseris</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Proovige REST API-t allolevate sisenditega.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>kõik {0} kaasautorit</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% valmis!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Õnnitleme!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Jätkake siin</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Kaasautorid</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Lisalugemist</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Sissejuhatus</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0} minutit jäänud</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>Valmimiseni on {0} minutit</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Järgmised etapid</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Järgmine õppetükk</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Ressursid</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Vaadake üksust {0} või hakake kaasautoriks, soovitades tootele {1} täiustusi.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Õppisite, kuidas …</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Lõpetasite õppetüki "{0}".</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Nüüd õpite, kuidas …</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Kas soovite edastada tagasisidet või olete õppetüki osaga jännis?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Teata probleemist GitHubis</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Järgmised etapid</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Kureeritud säutsud kasutajalt:</value>
+  </data>
+  <data name="type">
+    <value>tüüp</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Tüübi määratlus</value>
+  </data>
+  <data name="typeParameters">
+    <value>Tüübi parameetrid</value>
+  </data>
+  <data name="unit">
+    <value>Üksus</value>
+  </data>
+  <data name="unitComplete">
+    <value>Õppetükk on valmis</value>
+  </data>
+  <data name="unitMarker">
+    <value>Üksus {index}/{total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>See õppetükk nõuab lõpuleviimiseks liivakasti</value>
+  </data>
+  <data name="units">
+    <value>Üksused</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI parameetrid</value>
+  </data>
+  <data name="usage">
+    <value>Kasutus</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Virtuaalarvuti kasutamine</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Integreeritud juhiste saamiseks külastage praktilise labori saiti.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Kasutage oma kohalikku arvutit</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Jääge siia saidile ja järgige juhiseid oma seadmest.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Konnektori kasutamine</value>
+  </data>
+  <data name="value">
+    <value>Väärtus</value>
+  </data>
+  <data name="valueFrom">
+    <value>väärtused alates</value>
+  </data>
+  <data name="version">
+    <value>Versioon</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Kuva probleem GitHubis</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Vaata rohkem tagasisidet GitHubis</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Vaata GitHubis</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Kuva kasutajanimi {username} GitHubis</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Soovitame kasutada programmi Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Laadi kohe alla</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual Studio dokumentatsioon</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Käivita virtuaalarvuti režiim</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Virtuaalarvuti laadimine…</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>See üksus nõuab lõpuleviimiseks virtuaalarvutit.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Virtuaalarvuti režiim pakub selle õppetüki etappide lõpuleviimiseks Azure’i virtuaalarvutile tasuta juurdepääsu. Teie Azure’i tellimusele ei tule lisatasu</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Jah, aktiveeri uus virtuaalarvuti</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Teise üksuse virtuaalarvuti on juba aktiivne</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Olete juba avanud virtuaalarvuti moodulis {lab-name}. Kui aktiveerite selle virtuaalarvuti, läheb teises moodulis teie töö kaotsi.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Proovige virtuaalarvuti režiimi uuesti käivitada</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Virtuaalarvuti käivitamiseks logige sisse</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Hoiatus&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} nädalat tagasi</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Tahaksime kuulda teie arvamust. Valige, millist tüüpi tagasisidet soovite anda.</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows 10 nõuded</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windowsi dokumentatsioon</value>
+  </data>
+  <data name="worldwide">
+    <value>Kogu maailmas</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Kas sooviksite anda tagasisidet?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Jah</value>
+  </data>
+  <data name="youDidIt">
+    <value>Tehtud!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Teenisite teadmistekontrolli lõpetamise eest kogemuspunkte.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Teenisite ülesande lõpetamise eest kogemuspunkte.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Teenisite just &lt;span class="experience-points"&gt;&lt;/span&gt; kogemuspunkti.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Enne töö kontrollimist peate kõigile küsimustele vastama.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Töö kontrollimiseks peate kasutama liivakasti pakutavaid ressursse.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Saite hästi hakkama</value>
+  </data>
+  <data name="yourAccount">
+    <value>Teie konto</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Teie konto on kustutatud.</value>
+  </data>
+  <data name="yourData">
+    <value>Teie andmed</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Laadige oma salvestatud edenemine ja saavutused Docsis alla või kustutage need. Teabe kustutamine ei mõjuta teie Microsofti kasutajat.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Teie töö ei ole õigesti lõpetatud.</value>
+  </data>
+</root>

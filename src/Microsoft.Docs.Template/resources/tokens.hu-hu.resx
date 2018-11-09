@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>elfogadott értékek</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Meghívás elfogadása</value>
+  </data>
+  <data name="achievements">
+    <value>Szintek</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Ezeket a szinteket értem el {0} témában a Microsoft Interaktív tanulásnál!</value>
+  </data>
+  <data name="actions">
+    <value>Műveletek</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Igen, aktiválok egy új tesztkörnyezetet</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Tesztkörnyezet aktiválása</value>
+  </data>
+  <data name="aDayAgo">
+    <value>egy nappal ezelőtt</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>További funkciók és követelmények</value>
+  </data>
+  <data name="addParameter">
+    <value>Paraméter hozzáadása</value>
+  </data>
+  <data name="administrator">
+    <value>Rendszergazda</value>
+  </data>
+  <data name="advanced">
+    <value>Felsőfokú</value>
+  </data>
+  <data name="africa">
+    <value>Afrika</value>
+  </data>
+  <data name="all">
+    <value>mind</value>
+  </data>
+  <data name="allapis">
+    <value>Minden API</value>
+  </data>
+  <data name="allPackages">
+    <value>Minden csomag</value>
+  </data>
+  <data name="americas">
+    <value>Észak-, Dél- és Közép-Amerika</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>egy perccel ezelőtt</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>egy hónappal ezelőtt</value>
+  </data>
+  <data name="anHourAgo">
+    <value>egy órával ezelőtt</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} API-referencia</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Az API-keresés nem elérhető. Próbálkozzon újra később.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Korábbi verziók</value>
+  </data>
+  <data name="areYouSure">
+    <value>Biztos benne?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Az adatok törlése nem visszavonható.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>egy másodperccel ezelőtt</value>
+  </data>
+  <data name="asia">
+    <value>Ázsia</value>
+  </data>
+  <data name="askQuestion">
+    <value>Kérdés küldése</value>
+  </data>
+  <data name="assemblies">
+    <value>Szerelvények</value>
+  </data>
+  <data name="assembly">
+    <value>Szerelvény</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Hozzácsatolt események</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Hozzácsatolt tulajdonságok</value>
+  </data>
+  <data name="attributes">
+    <value>Attribútumok</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>egy héttel ezelőtt</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Az Azure Cloud Shell a meglévő Azure-előfizetéseket használja. A Cloud Shell használatánál a parancsok futtatásáért a vonatkozó díjszabás szerinti díjakat számítjuk fel.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure-dokumentáció</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Jelvényt szerzett, mert teljesítette a következőt</value>
+  </data>
+  <data name="begin">
+    <value>Kezdés</value>
+  </data>
+  <data name="beginner">
+    <value>Kezdő</value>
+  </data>
+  <data name="beta">
+    <value>bétaverzió</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Törzs</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Útkövetés</value>
+  </data>
+  <data name="browse">
+    <value>Tallózás</value>
+  </data>
+  <data name="browseCode">
+    <value>Kód tallózása</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Üzleti elemző</value>
+  </data>
+  <data name="businessUser">
+    <value>Üzleti felhasználó</value>
+  </data>
+  <data name="calls">
+    <value>Hívások</value>
+  </data>
+  <data name="capabilities">
+    <value>Képességek</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Figyelemfelhívás&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Ellenőrizze válaszait</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Ellenőrizze újra a munkáját</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Tesztelje tudását</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Ellenőrizze munkáját</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Visszajelzés választása</value>
+  </data>
+  <data name="claimReward">
+    <value>Eredmény feloldása</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Osztályok</value>
+  </data>
+  <data name="clearfilter">
+    <value>Szűrő törlése</value>
+  </data>
+  <data name="clearterm">
+    <value>Kifejezés törlése</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Kattintson az RSS-csatornához</value>
+  </data>
+  <data name="close">
+    <value>Bezárás</value>
+  </data>
+  <data name="closedIssue">
+    <value>Lezárt probléma</value>
+  </data>
+  <data name="closedIssues">
+    <value>Lezárt probléma</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Ez az API nem CLS-kompatibilis.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>CLS-kompatibilis alternatíva</value>
+  </data>
+  <data name="code">
+    <value>Kód</value>
+  </data>
+  <data name="collaborator">
+    <value>Közreműködő</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>A felhasználó meg lett hívva a(z) {repo} adattárban való közreműködésre.</value>
+  </data>
+  <data name="commands">
+    <value>Parancsok</value>
+  </data>
+  <data name="comment">
+    <value>Megjegyzés</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} megjegyzés</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} megjegyzést adott hozzá {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Megjegyzések</value>
+  </data>
+  <data name="complete">
+    <value>Kész</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>A Cloud Shell konfigurálása tesztkörnyezet elérése céljából...</value>
+  </data>
+  <data name="confused">
+    <value>Zavaros</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} zavaros visszajelzés</value>
+  </data>
+  <data name="congratulations">
+    <value>Gratulálunk!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Fiókonkénti kapcsolatok</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Konstruktor adatai</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Konstruktorok</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Tartalmi visszajelzés</value>
+  </data>
+  <data name="contents">
+    <value>Tartalom</value>
+  </data>
+  <data name="continue">
+    <value>Folytatás</value>
+  </data>
+  <data name="continueHere">
+    <value>Folytatás itt</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Folytatás az első lépéssel</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Tovább a következő modulra</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Folytatás az előrehaladás mentése nélkül</value>
+  </data>
+  <data name="contributor">
+    <value>Közreműködő</value>
+  </data>
+  <data name="contributorDescription">
+    <value>A felhasználó korábban már végzett véglegesítést a(z) {repo} adattárban.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Közreműködés</value>
+  </data>
+  <data name="contributors">
+    <value>Közreműködők</value>
+  </data>
+  <data name="copy">
+    <value>Másolás</value>
+  </data>
+  <data name="correctChoice">
+    <value>Helyes válasz</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Ön a szervezeti Microsoft-fiókjával jelentkezett be ({0}), a felhasználói élmény így eltérő lesz a személyes fiókétól:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Egyes játékossá tételi funkciók nem érhetők el Microsoft-alkalmazottak számára.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>A profilja nyilvánosan jelezni fogja, hogy a Microsoftnál dolgozik.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Ha nem tud hozzáférni az e-mailhez, nem jelentkezhet be erre a webhelyre.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Ha személyes célra szeretné használni ezt a webhelyet, jelentkezzen be egy másik fiókkal.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>A fiók összekapcsolásához az alábbi információkra van szükség:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>A Microsoft Learn használatával Ön kijelenti, hogy &lt;strong&gt;megértette és elfogadja&lt;/strong&gt;, hogy a tagsággal az jár, hogy webhelyeink és alkalmazásaink tárolni és követni fogják az Ön eredményeit és tevékenységeit, és eredményeit és tevékenységeit más Microsoft-csapatokkal is megoszthatjuk. Ezen kívül a felhasználóneve, a megjelenített neve, az eredményei és a tevékenységei nyilvánosan láthatóak lesznek.&lt;ul&gt;&lt;li&gt;A profilja nyilvánosan jelezni fogja, hogy a Microsoftnál dolgozik.&lt;/li&gt;&lt;li&gt;Ha nem tud hozzáférni az e-mailhez, nem jelentkezhet be erre a webhelyre.&lt;/li&gt;&lt;li&gt;Egyes játékossá tételi funkciók nem érhetők el Microsoft-alkalmazottak számára.&lt;/li&gt;&lt;li&gt;Ha személyes célra szeretné használni ezt a webhelyet, jelentkezzen be egy másik fiókkal.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>A taggá válással kijelenti, hogy megértette és elfogadja, hogy a Microsoft Learn-tagsággal az jár, hogy webhelyeink és alkalmazásaink tárolni fogják az Ön eredményeit és tevékenységeit. A felhasználóneve, a megjelenített neve, az eredményei és a tevékenységei nyilvánosan láthatóak lesznek.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Új archívum létrehozása</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Kapcsolat létrehozása</value>
+  </data>
+  <data name="currentSelection">
+    <value>Aktuális kijelölés:</value>
+  </data>
+  <data name="dark">
+    <value>Sötét</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} nappal ezelőtt</value>
+  </data>
+  <data name="defaultValue">
+    <value>alapértelmezett érték</value>
+  </data>
+  <data name="definition">
+    <value>Definíció</value>
+  </data>
+  <data name="definitions">
+    <value>Definíciók</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Delegáltak</value>
+  </data>
+  <data name="delete">
+    <value>Törlés</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Paraméter törlése</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Üzembe helyezés az Azure-ban</value>
+  </data>
+  <data name="deprecated">
+    <value>Ez az API már elavult.</value>
+  </data>
+  <data name="derived">
+    <value>Származtatott</value>
+  </data>
+  <data name="description">
+    <value>Leírás</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Fejlesztő</value>
+  </data>
+  <data name="developers">
+    <value>Fejlesztők</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>A párbeszédablak bezárása</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Egy másik tesztkörnyezet már aktív</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>A(z) &lt;a href="{0}"&gt;{1}&lt;/a&gt; modulban már aktivált egy tesztkörnyezetet. Ha aktiválja ezt a tesztkörnyezetet, akkor elveszíti a másik modulban lévő munkáját.</value>
+  </data>
+  <data name="disable">
+    <value>Letiltás</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>A keresési eredmények egy korábbi verzió dokumentációjából származnak, amelynek rendszeres frissítése nem várható.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Docs-profil</value>
+  </data>
+  <data name="documentDetails">
+    <value>A dokumentum adatai</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Ezt a szakaszt ne szerkessze. A szakasz a docs.microsoft.com ➟ GitHub-problémák hivatkozásaihoz szükséges.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET-dokumentáció</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET-szerkesztő</value>
+  </data>
+  <data name="download">
+    <value>Letöltés</value>
+  </data>
+  <data name="downloadPdf">
+    <value>PDF letöltése</value>
+  </data>
+  <data name="downloadZIP">
+    <value>ZIP letöltése</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Ennek a műveletnek a kimenetei dinamikusak.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>További szintek megszerzése</value>
+  </data>
+  <data name="edit">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="editdesc">
+    <value>A dokumentum szerkesztése</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Explicit interfész-implementációk</value>
+  </data>
+  <data name="email">
+    <value>E-mail</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>A tesztkörnyezet aktiválásához kötelező megadni e-mail-címet</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Tesztkörnyezet aktiválásához Microsoft-fiókját egy érvényes e-mail-címhez kell hozzárendelnie. Az e-mail hozzárendelését végezze el a &lt;a href="https://account.live.com" target="_blank"&gt;Microsoft-fiók beállításai&lt;/a&gt; területen, majd pedig próbálja újra.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Üres név használata nem engedélyezett</value>
+  </data>
+  <data name="enable">
+    <value>Engedélyezés</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Belépés Fókusz módba</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enumerációk</value>
+  </data>
+  <data name="error">
+    <value>Hiba</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Hiba történt a dokumentum létrehozása során. Ha kívánja, újrapróbálhatja a &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHubon &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Hiba történt a probléma létrehozása során. Ha kívánja, újrapróbálhatja a &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHubon &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Nem sikerült betölteni a keresési eredményeket. Próbálkozzon újra később.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Hiba történt a megjegyzések betöltése közben.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Hiba történt a visszajelzés betöltése közben.</value>
+  </data>
+  <data name="europe">
+    <value>Európa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Esemény adatai</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Események</value>
+  </data>
+  <data name="examples">
+    <value>Példák</value>
+  </data>
+  <data name="exceptions">
+    <value>Kivételek</value>
+  </data>
+  <data name="exit">
+    <value>Kilépés</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Kilépés a Fókusz módból</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>A dokumentációval kapcsolatos visszajelzési menü kibontása</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>További modulok felfedezése</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>További tervek felfedezése</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Önnek nincsenek exportálható adatai.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Bővítő metódusok</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Visszajelzés</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Ide írja be a visszajelzését]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Visszajelzés a termékekről</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Mezők</value>
+  </data>
+  <data name="fieldValue">
+    <value>Mező értéke</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Szűrő</value>
+  </data>
+  <data name="findALanguage">
+    <value>Nyelv keresése</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Ez az enumerálás {0} attribútummal rendelkezik, amely lehetővé teszi a tagok értékének bitenkénti kombinációját.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Függvény adatai</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Függvények</value>
+  </data>
+  <data name="getHelp">
+    <value>Segítség kérése</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Visszajelzés küldése</value>
+  </data>
+  <data name="globalParameters">
+    <value>Globális paraméterek</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Vissza a befejezéshez</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Vissza a modul befejezéséhez</value>
+  </data>
+  <data name="goodWork">
+    <value>Gratulálunk!</value>
+  </data>
+  <data name="greatWork">
+    <value>Szép munka!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Gyakorlati tesztkörnyezet</value>
+  </data>
+  <data name="headers">
+    <value>Fejlécek</value>
+  </data>
+  <data name="heart">
+    <value>Szív</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} szív visszajelzés</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Segítség a választáshoz</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Tipp:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Hurrá</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} hurrá visszajelzés</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} órával ezelőtt</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Hogyan javíthatjuk szolgáltatásunkat?</value>
+  </data>
+  <data name="hr">
+    <value>ó</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} óra {1} perc</value>
+  </data>
+  <data name="implements">
+    <value>Megvalósítás</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Fontos&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>–</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Helytelen válasz</value>
+  </data>
+  <data name="inheritance">
+    <value>Öröklődés</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Öröklött tagok</value>
+  </data>
+  <data name="input">
+    <value>Bevitel</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Interfészek</value>
+  </data>
+  <data name="intermediate">
+    <value>Haladó</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Ez az API a termékinfrastruktúrát támogatja, és közvetlenül a kódból nem használható.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Visszajelzés az Intune-ról</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>megnyitotta {name} {time ago}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Termékkel kapcsolatos probléma bejelentése</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Hasznosnak találja ezt az oldalt?</value>
+  </data>
+  <data name="itPro">
+    <value>IT-szakértő</value>
+  </data>
+  <data name="justNow">
+    <value>éppen most</value>
+  </data>
+  <data name="key">
+    <value>Kulcs:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Tudásteszt</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Tudásteszt kész. Minden kérdésre helyesen válaszolt.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Tudásteszt kész</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Ön elvégezte a(z) {tutorial} tudástesztjét.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Teljesítette a modul {tutorial} szakaszát. Most már továbbléphet a következő szakaszra: {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Sajnos nem tudtuk pontozni a tudástesztjét. Próbálkozzon újra.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Ezt a szakaszt elvégezte. Folytassa a következő résszel: {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Ezt a szakaszt elvégezte. Folytassa további oktatóanyagokkal.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>A tudásteszt elvégzésével megszerezte a {moduleName} szintet.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Tartalomjegyzék</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Tartalomjegyzék szűrése</value>
+  </data>
+  <data name="language">
+    <value>Nyelv</value>
+  </data>
+  <data name="laugh">
+    <value>Nevetés</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} nevetés visszajelzés</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Fedezze fel a Microsoft-technológiákat élő oktatóanyagokkal és gyakorlati tevékenységekkel. Ez a funkció előzetes verzióban érhető el, ezért kérjük, &lt;a href="https://aka.ms/learningfeedback"&gt;küldjön róla visszajelzést&lt;/a&gt;.</value>
+  </data>
+  <data name="learningpath">
+    <value>Képzési terv</value>
+  </data>
+  <data name="learnmore">
+    <value>Tudjon meg többet</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Megjegyzés írása</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;Közvetlenül a GitHubon&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; is küldhet visszajelzést.</value>
+  </data>
+  <data name="level">
+    <value>Szint: {0}</value>
+  </data>
+  <data name="levels">
+    <value>Szintek</value>
+  </data>
+  <data name="light">
+    <value>Világos</value>
+  </data>
+  <data name="limits">
+    <value>Korlátok</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Betöltés...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Visszajelzés betöltése...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Tesztkörnyezet adatainak betöltése...</value>
+  </data>
+  <data name="loadMore">
+    <value>Tovább&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>További találatok betöltése</value>
+  </data>
+  <data name="login">
+    <value>Bejelentkezés</value>
+  </data>
+  <data name="loginAzure">
+    <value>Jelentkezzen be Azure-fiókjával.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Fő navigáció</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Saját profil kezelése</value>
+  </data>
+  <data name="maximize">
+    <value>Teljes méret</value>
+  </data>
+  <data name="member">
+    <value>Tag</value>
+  </data>
+  <data name="memberDescription">
+    <value>A felhasználó a(z) {org} szervezet tagja.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Tag adatai</value>
+  </data>
+  <data name="members">
+    <value>Tagok</value>
+  </data>
+  <data name="methodDetails">
+    <value>Metódus adatai</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Metódusok</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsoft-alkalmazottak adatvédelmi nyilatkozata</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Ön bejelentkezett Microsoft- vagy szervezeti fiókjával ({email}). A Microsoft Learn használatával Ön kijelenti, hogy &lt;strong&gt;megértette és elfogadja&lt;/strong&gt;, hogy a tagsággal az jár, hogy webhelyeink és alkalmazásaink tárolni és követni fogják az Ön eredményeit és tevékenységeit, és eredményeit és tevékenységeit más Microsoft-csapatokkal is megoszthatjuk. Ezen kívül a felhasználóneve, a megjelenített neve, az eredményei és a tevékenységei nyilvánosan láthatóak lesznek.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Learn-probléma</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>A Microsoft Learn egy teljesen új platform, és szeretnénk a tartalmat és a felhasználói élményt az ügyfelek visszajelzései alapján fejleszteni.
+
+Szeretnénk megismerni véleményét!
+
+Kérjük, adja meg az alábbi információt:
+1. A probléma vagy a visszajelzés témája.
+2. Bármi más, amit szeretne velünk tudatni.
+
+Megjegyzés: noha jelenleg nem válaszolunk személyesen minden ügyfélnek, szeretnénk biztosítani Önt, hogy minden beérkezett visszajelzést alaposan megfontolunk.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Közel-Kelet</value>
+  </data>
+  <data name="min">
+    <value>{0} perc</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Kis méret</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} perc</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} perccel ezelőtt</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 perc</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} perc alatt elolvasható</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>A modul befejeződött</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>A modul nem fejeződött be teljesen</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} Modul-hivatkozás</value>
+  </data>
+  <data name="modules">
+    <value>Modulok</value>
+  </data>
+  <data name="modulesInPath">
+    <value>A képzési terv moduljai</value>
+  </data>
+  <data name="monikerFallback">
+    <value>A kért lap {0} használata esetén nem érhető el. A rendszer átirányította a legújabb termékváltozatra, melyhez ez az oldal elérhető.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} hónappal ezelőtt</value>
+  </data>
+  <data name="more">
+    <value>Kibontás</value>
+  </data>
+  <data name="moreInfo">
+    <value>További információ</value>
+  </data>
+  <data name="moreTutorials">
+    <value>További oktatóanyagok</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} modul</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} lecke</value>
+  </data>
+  <data name="name">
+    <value>Név</value>
+  </data>
+  <data name="namespace">
+    <value>Névtér</value>
+  </data>
+  <data name="namespaces">
+    <value>Névterek</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Az új visszajelzési rendszer a GitHub Issues-ra épül. Erről a változásról a &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;blogbejegyzésben&lt;/a&gt; olvashat.</value>
+  </data>
+  <data name="next">
+    <value>Következő</value>
+  </data>
+  <data name="nextPage">
+    <value>Következő oldal</value>
+  </data>
+  <data name="no">
+    <value>Nem</value>
+  </data>
+  <data name="noAchievements">
+    <value>Jelenleg nincsenek eredményszintjei. &lt;a href="{0}"&gt;Eredmények szerzéséhez végezzen el modulokat.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} nem rendelkezik eredményekkel.</value>
+  </data>
+  <data name="noClosed">
+    <value>Nincsenek lezárt problémák</value>
+  </data>
+  <data name="noOpen">
+    <value>Nincsenek nyitott problémák</value>
+  </data>
+  <data name="noOutput">
+    <value>Nincs kimenet</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Nincs találat</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Még nincsenek eredmények, de folytassa...</value>
+  </data>
+  <data name="noResultsToc">
+    <value>{term} keresése nem járt eredménnyel&lt;br /&gt;&lt;a href="{url}"&gt;"{filter-text}" keresése az összes {scope} dokumentációban&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Megjegyzés&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Megjegyzések a hívókhoz</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Megjegyzések az implementálókhoz</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Megjegyzések az öröklőkhöz</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} Lezárva</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} Nyitva</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office-dokumentáció</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Rendben.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 lecke</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Oldalon belüli navigáció</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>dátum: {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Nyitott probléma</value>
+  </data>
+  <data name="openIssues">
+    <value>Nyitott probléma</value>
+  </data>
+  <data name="operationId">
+    <value>Műveletazonosító:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operátorok</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Opcionális paraméterek</value>
+  </data>
+  <data name="options">
+    <value>Beállítások</value>
+  </data>
+  <data name="output">
+    <value>Kimenet</value>
+  </data>
+  <data name="overloads">
+    <value>Túlterhelések</value>
+  </data>
+  <data name="overrides">
+    <value>Felülbírálások</value>
+  </data>
+  <data name="overview">
+    <value>Áttekintés</value>
+  </data>
+  <data name="owner">
+    <value>Tulajdonos</value>
+  </data>
+  <data name="ownerDescription">
+    <value>A felhasználó a(z) {repo} adattár tulajdonosa.</value>
+  </data>
+  <data name="pacific">
+    <value>Csendes-óceáni</value>
+  </data>
+  <data name="package">
+    <value>Csomag</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} csomaghivatkozás</value>
+  </data>
+  <data name="packages">
+    <value>Csomagok</value>
+  </data>
+  <data name="page">
+    <value>{0}. oldal</value>
+  </data>
+  <data name="pageActions">
+    <value>Lapműveletek</value>
+  </data>
+  <data name="parameters">
+    <value>Paraméterek</value>
+  </data>
+  <data name="path">
+    <value>Elérési út:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Válasszon visszajelzést</value>
+  </data>
+  <data name="platform">
+    <value>Platform</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Kérjük, töltse ki ezt a mezőt.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Próbálkozzon újra.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Az Azure Portal megnyitása</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Azure Portal betöltése...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>A tesztkörnyezet megnyitása új ablakban</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Ennek a leckének az elvégzéséhez Azure Portalra van szükség.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Az Azure Portal-tesztkörnyezet ingyenes hozzáférést biztosít azokhoz az Azure-erőforrásokhoz, amelyekre a lecke elvégzéséhez szükség van. Az Azure Portal-tesztkörnyezetek nem befolyásolják az Azure-előfizetését. Díjat nem számolunk fel érte.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Azure Portal-tesztkörnyezet használatra kész.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Igen, aktiválok egy új tesztkörnyezetet</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Egy Azure Portal-tesztkörnyezet már aktiválva van egy másik leckéhez</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Egy Azure Portal-tesztkörnyezet már meg van nyitva egy másik leckéhez ({lab-name}). Szeretné a jelenlegi tesztkörnyezetet elvetni, és aktiválni egy új tesztkörnyezetet ehhez a leckéhez?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>A tesztkörnyezet indításának újrapróbálása</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Az Azure Portal megnyitásához be kell jelentkeznie</value>
+  </data>
+  <data name="prerequisites">
+    <value>Előfeltételek:</value>
+  </data>
+  <data name="preview">
+    <value>Előnézet</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Ez az API fejlesztői előzetes verzióként szolgál, és a kapott visszajelzések alapján változhat. Ne használja ezt az API-t éles környezetben.</value>
+  </data>
+  <data name="previous">
+    <value>Előző</value>
+  </data>
+  <data name="previousPage">
+    <value>Előző oldal</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>A Docs korábbi verziói</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Adatvédelmi nyilatkozat</value>
+  </data>
+  <data name="product">
+    <value>Termék</value>
+  </data>
+  <data name="productFeedback">
+    <value>Visszajelzés a termékekről</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Termékek</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Üzleti alkalmazások</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Tulajdonságok</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Tulajdonság adatai</value>
+  </data>
+  <data name="propertyValue">
+    <value>Tulajdonság értéke</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>A tesztkörnyezet létrehozása folyamatban van. Ez csak néhány percig tart...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Gyorsszűrők</value>
+  </data>
+  <data name="quizComplete">
+    <value>Gratulálunk!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Nem sikerült betölteni a megjegyzéseket. Túllépte a GitHub API-kvótát.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Nem sikerült a keresés a problémák között. Túllépte a GitHub API-kvótát.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Megjegyzése vagy javaslata van? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Tudassa velünk itt&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Ossza meg velünk javaslatait. Visszajelzését bármilyen nyelven szívesen fogadjuk.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Olvasás angol nyelven</value>
+  </data>
+  <data name="readonly">
+    <value>csak olvasható</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Ezt a(z) {0} szintet a(z) {1} elvégzéséért kapta.</value>
+  </data>
+  <data name="references">
+    <value>Hivatkozások</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Oktatóanyag tartalmának finomítása</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Ez a modul az alábbi képzési tervek része</value>
+  </data>
+  <data name="remaining">
+    <value>hátralévő</value>
+  </data>
+  <data name="remarks">
+    <value>Megjegyzések</value>
+  </data>
+  <data name="removeItem">
+    <value>{0} eltávolítása</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Megújítási időszak</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Köszönjük, hogy jelentette aggodalmát. Alaposan át fogjuk tekinteni a bejelentését, és megtesszük a szükséges lépéseket. Jogi és adatvédelmi okokból kifolyólag azonban előfordulhat, hogy nem fogunk tudni hírekkel szolgálni a bejelentésével kapcsolatban. Köszönjük még egyszer, hogy kapcsolatba lépett velünk.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Probléma bejelentése</value>
+  </data>
+  <data name="requestBody">
+    <value>Kérelem törzse</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>A kérelem törzse az alábbiak valamelyike lehet:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Kérelem fejléce</value>
+  </data>
+  <data name="requestPreview">
+    <value>Előzetes kérése</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL-cím kérése</value>
+  </data>
+  <data name="required">
+    <value>kötelező</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Kötelező paraméterek</value>
+  </data>
+  <data name="requirements">
+    <value>Követelmények</value>
+  </data>
+  <data name="resource_type">
+    <value>Típusok</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Válaszok</value>
+  </data>
+  <data name="restart">
+    <value>Újraindítás</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>A fiókjára vonatkozó korlátozások miatt nem tudjuk Önt meghívni egy tesztkörnyezeti bérlőbe. Forduljon a rendszergazdához.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} találat</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Tesztkörnyezet aktiválásának újrapróbálása</value>
+  </data>
+  <data name="returns">
+    <value>Válaszok</value>
+  </data>
+  <data name="returnValue">
+    <value>Visszatérési érték</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Képzési terv előzményeinek áttekintése</value>
+  </data>
+  <data name="roles">
+    <value>Szerepkörök</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Futtatás</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Tesztkörnyezet aktiválva!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>A tesztkörnyezethez való hozzáférés lejárt</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>A tesztkörnyezet érvényessége lejárt. Aktiváljon egy új tesztkörnyezetet.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>A tesztkörnyezettel ingyenesen hozzáférhet azokhoz az Azure-erőforrásokhoz, amelyek a lecke elvégzéséhez szükségesek. Az Azure-előfizetésében nem számolunk fel díjakat.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Tesztkörnyezet használatához el kell fogadnia egy Azure-bérlői meghívót</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Az ehhez a modulhoz tartozó tesztkörnyezet karbantartás miatt nem elérhető.</value>
+  </data>
+  <data name="search">
+    <value>Keresés</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Keresés a navigációban</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Korábbi verziók keresése</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Keresési szűrőszolgáltatás állapota "{0}". Koppintson ide az eltávolításhoz.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} másodperccel ezelőtt</value>
+  </data>
+  <data name="security">
+    <value>Biztonság</value>
+  </data>
+  <data name="seeAlso">
+    <value>Lásd még</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Választott verzió</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>A nyelvek listáját a régió kiválasztásával szűkítheti, vagy begépelheti a nyelv nevét vagy a területi beállítás kódját.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Csomag kiválasztása</value>
+  </data>
+  <data name="selectVersion">
+    <value>Verzió kiválasztása</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Válasszon szerepkört</value>
+  </data>
+  <data name="service">
+    <value>Szolgáltatás</value>
+  </data>
+  <data name="services">
+    <value>Szolgáltatások</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>A szolgáltatás átmenetileg nem érhető el. Már dolgozunk a probléma megoldásán.</value>
+  </data>
+  <data name="share">
+    <value>Megosztás</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Az eredményszint megosztása itt: {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Ezeket a szinteket értem el {moduleName} témában a Microsoft Interaktív tanulásnál. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Megosztott cikk] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>A dokumentum megosztása</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Ossza meg eredményét:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Az összes származtatott osztály megjelenítése</value>
+  </data>
+  <data name="signIn">
+    <value>Bejelentkezés</value>
+  </data>
+  <data name="signInAzure">
+    <value>Jelentkezzen be Azure-fiókjával.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>A munka ellenőrzéséhez be kell jelentkeznie</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Nem a Docs-fiókjával van bejelentkezve a Cloud Shellbe. Mielőtt ismét megkísérli elérni a tesztkörnyezetet, jelentkezzen ki a Cloud Shellből.</value>
+  </data>
+  <data name="signingIn">
+    <value>Bejelentkezés...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>A tesztkörnyezet aktiválásához be kell jelentkeznie</value>
+  </data>
+  <data name="signInToComment">
+    <value>Megjegyzés írásához jelentkezzen be</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>A dokumentációhoz visszajelzést bejelentkezés után fűzhet</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Visszajelzés küldéséhez jelentkezzen be</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>A GitHub API-kvóta növeléséhez &lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;jelentkezzen be&lt;/a&gt;.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Visszajelzés hozzáadásához jelentkezzen be</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>A változtatások mentéséhez be kell jelentkeznie</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>A felhasználói profil megtekintéséhez &lt;a class='docs-sign-in' href="#"&gt;jelentkezzen be&lt;/a&gt;.</value>
+  </data>
+  <data name="signOut">
+    <value>Kijelentkezés</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Visszajelzés a webhellyel kapcsolatban</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Megoldástervező</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hiba történt</value>
+  </data>
+  <data name="start">
+    <value>Indítás</value>
+  </data>
+  <data name="startHere">
+    <value>Itt kezdje</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>{step-index}. / {step-count} lépés</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Struktúrák</value>
+  </data>
+  <data name="submit">
+    <value>Küldés</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Visszajelzés elküldése</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Sikeresen elküldve</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Termékkel kapcsolatos javaslat beküldése</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Nem helyesen végezte el a feladatot.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Ezt az oldalt új, interaktív felhasználói élménnyel frissítjük. Látogasson vissza hamarosan.</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Köszönjük visszajelzését.</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Ez nem egészen helyes.</value>
+  </data>
+  <data name="theme">
+    <value>Téma</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Ehhez a dokumentumhoz még nincs visszajelzés. Az elküldött visszajelzés itt fog megjelenni.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Ennek az osztálynak minden tagja szálbiztos.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Ennek az osztálynak minden tagpéldánya szálbiztos.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Ennek az osztálynak minden statikus tagja szálbiztos.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Ez a típus nem szálbiztos.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Szálbiztonság</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} lepontozás visszajelzés</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} felpontozás visszajelzés</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Tipp&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Cím</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Probléma váltása</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Egységek váltása</value>
+  </data>
+  <data name="trademarks">
+    <value>Védjegyek</value>
+  </data>
+  <data name="triggers">
+    <value>Triggerek</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>A kitöltéssel megszerzett egy díjat</value>
+  </data>
+  <data name="tryAgain">
+    <value>Próbálkozzon újra</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>A kód kipróbálása böngészőben</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Próbálja ki a REST API-t az alábbi bemeneti értékekkel.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>az összes {0} közreműködő</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% kész.</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Gratulálunk!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Folytatás itt</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Közreműködők</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>További információ</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Bevezetés</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0} perc van hátra</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} perc a befejezésig</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Következő lépések</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Következő oktatóanyag</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Források</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>{0} megtekintése – vagy legyen Ön is közreműködő, és küldje el javaslatát a(z) {1} kapcsán.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Elsajátított ismeretek:</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Elkészült a(z) "{0}" oktatóanyaggal.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Elsajátítandó ismeretek:</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Visszajelzést szeretne küldeni, vagy elakadt az oktatóanyagban?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Probléma jelentése a GitHubon</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Következő lépések</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Válogatott tweetek – közzétevő:</value>
+  </data>
+  <data name="type">
+    <value>típus</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Típusdefiníció</value>
+  </data>
+  <data name="typeParameters">
+    <value>Típusparaméterek</value>
+  </data>
+  <data name="unit">
+    <value>Egység</value>
+  </data>
+  <data name="unitComplete">
+    <value>Befejezte az egységet</value>
+  </data>
+  <data name="unitMarker">
+    <value>{index} / {total} lecke</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Ennek a leckének az elvégzéséhez tesztkörnyezetre van szükség</value>
+  </data>
+  <data name="units">
+    <value>Egységek</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI-paraméterek</value>
+  </data>
+  <data name="usage">
+    <value>Használat</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Virtuális gép használata</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Az integrációval kapcsolatos útmutatást a gyakorlati tesztkörnyezet webhelyén talál.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>A helyi számítógép használata</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Maradjon ezen a webhelyen, és kövesse az utasításokat saját gépét használva.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Az összekötő használata</value>
+  </data>
+  <data name="value">
+    <value>Érték</value>
+  </data>
+  <data name="valueFrom">
+    <value>érték forrása</value>
+  </data>
+  <data name="version">
+    <value>Verzió</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Probléma megtekintése a GitHubon</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>További visszajelzések a GitHubon</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Megtekintés a GitHubon</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>{username} megtekintése a GitHubon</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>A Visual Studio 2017 használatát javasoljuk.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Letöltés</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual Studio-dokumentáció</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>VM mód indítása</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Virtuális gép betöltése...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Ennek a leckének az elvégzéséhez szükség van virtuális gépre.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>A VM mód ingyenes hozzáférést biztosít az Azure-beli virtuális géphez, amely a lecke elvégzéséhez szükséges. Az Azure-előfizetésében nem számolunk fel díjakat</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Igen, aktiválok egy új virtuális gépet</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Egy másik egységhez tartozó VM már aktív</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>A virtuális gépet már megnyitotta a(z) {lab-name} modulban. Ha aktiválja ezt a virtuális gépet, akkor elveszíti a másik modulban lévő munkáját.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>A VM mód indításának újrapróbálása</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>A VM mód indításához be kell jelentkeznie</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Figyelmeztetés&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} héttel ezelőtt</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Kíváncsian várjuk véleményét. Válassza ki a kínálni kívánt típust:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows 10-követelmények</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windows-dokumentáció</value>
+  </data>
+  <data name="worldwide">
+    <value>Világszerte</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Szeretne visszajelzést küldeni?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Igen</value>
+  </data>
+  <data name="youDidIt">
+    <value>Megcsinálta!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>A tudáspróba elvégzésével tapasztalati pontokat szerzett.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>A feladat elvégzésével tapasztalati pontokat szerzett.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Ezzel &lt;span class="experience-points"&gt;&lt;/span&gt; tapasztalati pontot szerzett.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>A munka ellenőrzése előtt minden kérdésre válaszolnia kell.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Munkájának ellenőrzéséhez a tesztkörnyezetben elérhető erőforrásokat kell használnia.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Helyes</value>
+  </data>
+  <data name="yourAccount">
+    <value>Az Ön fiókja</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Fiókját töröltük.</value>
+  </data>
+  <data name="yourData">
+    <value>Az Ön adatai</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Mentett haladási adatait és szintjeit letöltheti vagy törölheti a Docsból. Az adatok törlése nem befolyásolja a Microsoft-identitását.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Nem helyesen végezte el a feladatot.</value>
+  </data>
+</root>

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.Docs.Build;
 
 namespace ImportTemplateResource
@@ -47,23 +50,12 @@ namespace ImportTemplateResource
                 MoveResourceFiles(cloneDir, locale);
             });
 
-            var (stdout, _) = await ProcessUtility.Execute("git", $"diff --ignore-all-space --ignore-blank-lines {templateResourceFolder}");
-            if (!string.IsNullOrEmpty(stdout))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Template resource change detected. Run ./build.ps1 locally and commit these json schema changes:");
-                Console.ResetColor();
-                Console.WriteLine("");
-                Console.WriteLine(stdout);
-                return 1;
-            }
-
             return 0;
 
             void MoveResourceFiles(string cloneDir, string locale)
             {
                 var sourceTokenFile = Path.Combine(cloneDir, $"LocalizedTokens/docs({locale}).html", "tokens.json");
-                var targetTokenFile = Path.Combine(templateResourceFolder, $"tokens.{locale}.json");
+                var targetTokenFile = Path.Combine(templateResourceFolder, $"tokens.{locale}.resx");
                 if (!File.Exists(sourceTokenFile))
                 {
                     lock (Console.Out)
@@ -76,7 +68,19 @@ namespace ImportTemplateResource
                     return;
                 }
 
-                File.Copy(sourceTokenFile, targetTokenFile, overwrite: true);
+                var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                XDocument doc = XDocument.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "tokens.resx"));
+                foreach(var (key, value) in JsonUtility.Deserialize<Dictionary<string, string>>(File.ReadAllText(sourceTokenFile)).model)
+                {
+                    if (keys.Add(key))
+                    {
+                        var name = new XElement("data", new XAttribute("name", key));
+                        name.Add(new XElement("value", value));
+                        doc.Root.Add(name);
+                    }
+                }
+
+                doc.Save(targetTokenFile, SaveOptions.None);
             }
         }
     }

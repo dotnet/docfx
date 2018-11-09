@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>承認された値</value>
+  </data>
+  <data name="acceptInvite">
+    <value>招待を承諾する</value>
+  </data>
+  <data name="achievements">
+    <value>実績</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Microsoft のガイド付き学習の {0} で獲得した実績をご覧ください。</value>
+  </data>
+  <data name="actions">
+    <value>アクション</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>はい。新しいサンドボックスをアクティブにします</value>
+  </data>
+  <data name="activateSandbox">
+    <value>サンドボックスをアクティブ化</value>
+  </data>
+  <data name="aDayAgo">
+    <value>1 日前</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>追加の機能と要件</value>
+  </data>
+  <data name="addParameter">
+    <value>パラメーターの追加</value>
+  </data>
+  <data name="administrator">
+    <value>管理者</value>
+  </data>
+  <data name="advanced">
+    <value>詳細</value>
+  </data>
+  <data name="africa">
+    <value>アフリカ</value>
+  </data>
+  <data name="all">
+    <value>すべて</value>
+  </data>
+  <data name="allapis">
+    <value>すべての API</value>
+  </data>
+  <data name="allPackages">
+    <value>すべてのパッケージ</value>
+  </data>
+  <data name="americas">
+    <value>米国</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>1 分前</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>1 か月前</value>
+  </data>
+  <data name="anHourAgo">
+    <value>1 時間前</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} API リファレンス</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>API 検索はご利用になれません。 後で再度お試しください。</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>以前のバージョン</value>
+  </data>
+  <data name="areYouSure">
+    <value>実行してもよろしいですか?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>データの削除は元に戻すことができません。</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>1 秒前</value>
+  </data>
+  <data name="asia">
+    <value>アジア</value>
+  </data>
+  <data name="askQuestion">
+    <value>質問をする</value>
+  </data>
+  <data name="assemblies">
+    <value>アセンブリ</value>
+  </data>
+  <data name="assembly">
+    <value>アセンブリ</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>添付イベント</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>添付プロパティ</value>
+  </data>
+  <data name="attributes">
+    <value>属性</value>
+  </data>
+  <data name="avatar">
+    <value>アバター</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>1 週間前</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell は既存の Azure サブスクリプションを使用します。 Cloud Shell と実行コマンドを使用すると関連費用が発生します。</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure ドキュメント</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>完了するためにバッジを獲得しました</value>
+  </data>
+  <data name="begin">
+    <value>開始</value>
+  </data>
+  <data name="beginner">
+    <value>初級</value>
+  </data>
+  <data name="beta">
+    <value>ベータ</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>本文</value>
+  </data>
+  <data name="breadcrumb">
+    <value>階層リンク</value>
+  </data>
+  <data name="browse">
+    <value>参照</value>
+  </data>
+  <data name="browseCode">
+    <value>コードを参照</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>ビジネス アナリスト</value>
+  </data>
+  <data name="businessUser">
+    <value>ビジネス ユーザー</value>
+  </data>
+  <data name="calls">
+    <value>呼び出し</value>
+  </data>
+  <data name="capabilities">
+    <value>機能</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;注意事項&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>回答を確認</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>もう一度作業を確認</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>知識を確認</value>
+  </data>
+  <data name="checkYourWork">
+    <value>作業を確認</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>リアクションの選択</value>
+  </data>
+  <data name="claimReward">
+    <value>実績のロックを解除</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>クラス</value>
+  </data>
+  <data name="clearfilter">
+    <value>フィルターをクリア</value>
+  </data>
+  <data name="clearterm">
+    <value>検索語をクリア</value>
+  </data>
+  <data name="clickForRSS">
+    <value>クリックして RSS フィードを表示</value>
+  </data>
+  <data name="close">
+    <value>閉じる</value>
+  </data>
+  <data name="closedIssue">
+    <value>クローズ済みの問題</value>
+  </data>
+  <data name="closedIssues">
+    <value>クローズ済みの問題</value>
+  </data>
+  <data name="clsCompliant">
+    <value>この API は CLS 準拠ではありません。</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>CLS 準拠の代替</value>
+  </data>
+  <data name="code">
+    <value>コード</value>
+  </data>
+  <data name="collaborator">
+    <value>コラボレーター</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>このユーザーは、{repo} の共同作業に招待されました。</value>
+  </data>
+  <data name="commands">
+    <value>コマンド</value>
+  </data>
+  <data name="comment">
+    <value>コメント</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} 件のコメント</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} が {time ago} にコメント</value>
+  </data>
+  <data name="comments">
+    <value>コメント</value>
+  </data>
+  <data name="complete">
+    <value>完了</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>サンドボックスにアクセスするために Cloud Shell を構成しています...</value>
+  </data>
+  <data name="confused">
+    <value>困惑</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} 件のリアクション (困惑)</value>
+  </data>
+  <data name="congratulations">
+    <value>おめでとうございます</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>アカウントあたりの接続数</value>
+  </data>
+  <data name="constructorDetails">
+    <value>コンストラクターの詳細</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>コンストラクター</value>
+  </data>
+  <data name="contentFeedback">
+    <value>コンテンツに関するフィードバック</value>
+  </data>
+  <data name="contents">
+    <value>コンテンツ</value>
+  </data>
+  <data name="continue">
+    <value>続行</value>
+  </data>
+  <data name="continueHere">
+    <value>こちらから続ける</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>最初のステップに進む</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>次のモジュールに進む</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>進行状況を保存せずに進む</value>
+  </data>
+  <data name="contributor">
+    <value>共同作成者</value>
+  </data>
+  <data name="contributorDescription">
+    <value>このユーザーは、既に {repo} リポジトリにコミットしました。</value>
+  </data>
+  <data name="contributorGuide">
+    <value>投稿</value>
+  </data>
+  <data name="contributors">
+    <value>共同作成者</value>
+  </data>
+  <data name="copy">
+    <value>コピー</value>
+  </data>
+  <data name="correctChoice">
+    <value>適切な選択</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Microsoft の組織アカウント ({0}) を使用してサインインしているため、個人用アカウントの場合と次の点でエクスペリエンスが異なります。</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Microsoft の従業員は一部のゲーミフィケーション機能を利用できません。</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Microsoft で働いていることがプロファイルで公開されます。</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>このメールにアクセスできなくなると、このサイトにログインできなくなります。</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>このサイトを個人的な活動に使用したい場合は、別のアカウントでサインインしてください。</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>アカウントに接続するには、次の情報が必要です:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>お客様は、Microsoft Learn をお使いになることで、Microsoft のサイトとアプリケーションのネットワークで Microsoft がお客様の実績とアクティビティを記録および追跡し、その結果とアクティビティを Microsoft 内の他のチームと共有する可能性があることを&lt;strong&gt;理解し、同意したものとみなされます&lt;/strong&gt;。 また、お客様のユーザー名、表示名、実績、アクティビティが公開されます。&lt;ul&gt;&lt;li&gt;Microsoft で働いていることがプロファイルで公開されます。&lt;/li&gt;&lt;li&gt;このメールにアクセスできなくなると、サイトにログインできなくなります。&lt;/li&gt;&lt;li&gt;Microsoft の従業員は一部のゲーミフィケーション機能を利用できません。&lt;/li&gt;&lt;li&gt;このサイトを個人的な活動に使用したい場合は、別のアカウントでサインインしてください。&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>お客様は、メンバーになることで、Microsoft Learn でのメンバーシップによって Microsoft のサイトとアプリケーションのネットワークで実績とアクティビティが記録されることを理解し、同意したものとみなされます。 ユーザー名、表示名、実績、アクティビティが公開されます。</value>
+  </data>
+  <data name="createNewArchive">
+    <value>新しいアーカイブの作成</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>接続を作成しています</value>
+  </data>
+  <data name="currentSelection">
+    <value>現在の選択:</value>
+  </data>
+  <data name="dark">
+    <value>黒</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} 日前</value>
+  </data>
+  <data name="defaultValue">
+    <value>既定値</value>
+  </data>
+  <data name="definition">
+    <value>定義</value>
+  </data>
+  <data name="definitions">
+    <value>定義</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>代理人</value>
+  </data>
+  <data name="delete">
+    <value>削除</value>
+  </data>
+  <data name="deleteParameter">
+    <value>パラメーターの削除</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Azure にデプロイ</value>
+  </data>
+  <data name="deprecated">
+    <value>この API は現在使われていません。</value>
+  </data>
+  <data name="derived">
+    <value>派生</value>
+  </data>
+  <data name="description">
+    <value>説明</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>開発者</value>
+  </data>
+  <data name="developers">
+    <value>開発者</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>このダイアログを閉じる</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>別のサンドボックスが既にアクティブになっています</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>モジュール &lt;a href="{0}"&gt;{1}&lt;/a&gt; のサンドボックスが既にアクティブになっています。 このサンドボックスをアクティブにすると、もう一方のモジュールでの作業内容が失われます。</value>
+  </data>
+  <data name="disable">
+    <value>無効にする</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>以前のバージョンのドキュメントからの検索結果です。それらのドキュメントは定期的に更新されてはいません。</value>
+  </data>
+  <data name="docsProfile">
+    <value>Docs プロファイル</value>
+  </data>
+  <data name="documentDetails">
+    <value>ドキュメントの詳細</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>このセクションを編集しないでください。 docs.microsoft.com で必須です ➟ GitHub の問題のリンク。</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET ドキュメント</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET エディター</value>
+  </data>
+  <data name="download">
+    <value>ダウンロード</value>
+  </data>
+  <data name="downloadPdf">
+    <value>PDF をダウンロード</value>
+  </data>
+  <data name="downloadZIP">
+    <value>ZIP をダウンロード</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>この操作の出力は状況に応じて変わります。</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>さらに実績を獲得</value>
+  </data>
+  <data name="edit">
+    <value>編集</value>
+  </data>
+  <data name="editdesc">
+    <value>このドキュメントを編集する</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>明示的なインターフェイスの実装</value>
+  </data>
+  <data name="email">
+    <value>電子メール</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>サンドボックスのアクティブ化にはメール アドレスが必要です</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>サンドボックスをアクティブ化するには、Microsoft アカウントが有効なメール アドレスにリンクされている必要があります。 &lt;a href="https://account.live.com" target="_blank"&gt;Microsoft アカウントの設定&lt;/a&gt;に移動し、メール アドレスをリンクさせてから、もう一度お試しください。</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>名前を空にすることはできません</value>
+  </data>
+  <data name="enable">
+    <value>有効にする</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>フォーカス モードの開始</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>列挙型</value>
+  </data>
+  <data name="error">
+    <value>エラー</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>コメント作成エラー。 必要に応じて、&lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; で再度お試しいただけます。</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>問題作成エラー。 必要に応じて、&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; で再度お試しいただけます。</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>検索結果を読み込めませんでした。 後で再度お試しください。</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>コメント読み込みエラー。</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>フィードバック読み込みエラー。</value>
+  </data>
+  <data name="europe">
+    <value>ヨーロッパ</value>
+  </data>
+  <data name="eventDetails">
+    <value>イベントの詳細</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>イベント</value>
+  </data>
+  <data name="examples">
+    <value>例</value>
+  </data>
+  <data name="exceptions">
+    <value>例外</value>
+  </data>
+  <data name="exit">
+    <value>終了</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>フォーカス モードの終了</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>ドキュメントに関するフィードバック メニューを展開</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>他のモジュールを探す</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>他のパスを探す</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>エクスポート対象の情報がありませんでした。</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>拡張メソッド</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>フィードバック</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[フィードバックをこちらに入力してください]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>製品フィードバックを送る</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>フィールド</value>
+  </data>
+  <data name="fieldValue">
+    <value>フィールド値</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>フィルター</value>
+  </data>
+  <data name="findALanguage">
+    <value>言語を探す</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>この列挙型には {0} 属性があり、メンバー値ではビットごとの組み合わせを使用できます。</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>関数の詳細</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>機能</value>
+  </data>
+  <data name="getHelp">
+    <value>ヘルプを取得</value>
+  </data>
+  <data name="giveFeedback">
+    <value>フィードバックを送る</value>
+  </data>
+  <data name="globalParameters">
+    <value>グローバル パラメーター</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>戻って完了する</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>戻ってモジュールを完了する</value>
+  </data>
+  <data name="goodWork">
+    <value>良くできました</value>
+  </data>
+  <data name="greatWork">
+    <value>上出来</value>
+  </data>
+  <data name="handsOnLab">
+    <value>ハンズオン ラボ</value>
+  </data>
+  <data name="headers">
+    <value>ヘッダー</value>
+  </data>
+  <data name="heart">
+    <value>ハート</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} 件のリアクション (ハート)</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>選択のヘルプ</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;ヒント:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>バンザイ</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} 件のリアクション (バンザイ)</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} 時間前</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>品質向上にご協力ください。</value>
+  </data>
+  <data name="hr">
+    <value>時間</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} 時間 {1} 分</value>
+  </data>
+  <data name="implements">
+    <value>実装</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;重要&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>/</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>不適切な選択</value>
+  </data>
+  <data name="inheritance">
+    <value>継承</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>継承メンバー</value>
+  </data>
+  <data name="input">
+    <value>入力</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>インターフェイス</value>
+  </data>
+  <data name="intermediate">
+    <value>中級</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>この API は製品インフラストラクチャをサポートします。コードから直接使用するものではありません。</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Intune フィードバック</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>{name} が {time ago} に閲覧</value>
+  </data>
+  <data name="issueProduct">
+    <value>製品の問題をレポート</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>このページはお役に立ちましたか?</value>
+  </data>
+  <data name="itPro">
+    <value>IT プロ</value>
+  </data>
+  <data name="justNow">
+    <value>たった今</value>
+  </data>
+  <data name="key">
+    <value>キー:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>知識確認</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>知識チェックが完了しました。 すべての質問に正しく回答しました。</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>知識確認の完了</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>{tutorial} の知識確認を完了しました。</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>モジュールの {tutorial} セクションを完了しました。 これで、次のセクション {nextUnitName} に進むことができます。</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>知識確認の成績を評価できませんでした。 もう一度やり直してください。</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>このセクションは完了しました。 次のセクション {nextUnitName} にお進みください。</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>このセクションは完了しました。 他のチュートリアルにお進みください。</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>知識確認の課題を完了したので、{moduleName} の修了が記録されました。</value>
+  </data>
+  <data name="landmarkToc">
+    <value>目次</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>新しい目次をフィルター</value>
+  </data>
+  <data name="language">
+    <value>言語</value>
+  </data>
+  <data name="laugh">
+    <value>笑い</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} 件のリアクション (笑い)</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>ハンズオン アクティビティを含むライブ チュートリアルを通じて、Microsoft のテクノロジをお試しください。 このエクスペリエンスはプレビュー段階です。&lt;a href="https://aka.ms/learningfeedback"&gt;フィードバックをお待ちしております&lt;/a&gt;。</value>
+  </data>
+  <data name="learningpath">
+    <value>ラーニング パス</value>
+  </data>
+  <data name="learnmore">
+    <value>詳細情報</value>
+  </data>
+  <data name="leaveAComment">
+    <value>コメントを残す</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>&lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub で直接&lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;フィードバックを残すこともできます。</value>
+  </data>
+  <data name="level">
+    <value>レベル {0}</value>
+  </data>
+  <data name="levels">
+    <value>レベル</value>
+  </data>
+  <data name="light">
+    <value>白</value>
+  </data>
+  <data name="limits">
+    <value>制限</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>読み込んでいます...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>フィードバックを読み込んでいます...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>サンドボックスの情報を読み込んでいます...</value>
+  </data>
+  <data name="loadMore">
+    <value>その他&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>結果をさらに読み込む</value>
+  </data>
+  <data name="login">
+    <value>ログイン</value>
+  </data>
+  <data name="loginAzure">
+    <value>Azure アカウントを使ってログインしてください。</value>
+  </data>
+  <data name="mainNavigation">
+    <value>メインのナビゲーション</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>マイ プロファイルの管理</value>
+  </data>
+  <data name="maximize">
+    <value>最大</value>
+  </data>
+  <data name="member">
+    <value>メンバー</value>
+  </data>
+  <data name="memberDescription">
+    <value>このユーザーは、{org} の組織のメンバーです。</value>
+  </data>
+  <data name="memberDetails">
+    <value>メンバーの詳細</value>
+  </data>
+  <data name="members">
+    <value>メンバー</value>
+  </data>
+  <data name="methodDetails">
+    <value>メソッドの詳細</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>方法</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsoft 社員のプライバシーに関する声明</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Microsoft の組織アカウント ({email}) でサインインしました。 お客様は、Microsoft Learn をお使いになることで、Microsoft のサイトとアプリケーションのネットワークで Microsoft がお客様の実績とアクティビティを記録および追跡し、その結果とアクティビティを Microsoft 内の他のチームと共有する可能性があることを&lt;strong&gt;理解し、同意したものとみなされます&lt;/strong&gt;。 また、お客様のユーザー名、表示名、実績、アクティビティが公開されます。</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Learn の問題</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn はまったく新しいプラットフォームです。Microsoft では、お客様の声を参考に、コンテンツとエクスペリエンスの向上に努めています。
+
+ぜひご意見をお寄せください。
+
+次の情報を記入し、Microsoft にご送付ください:
+1. 報告する問題点またはフィードバック。
+2. その他、Microsoft に伝えたいこと。
+
+注: 現時点では、すべてのお客様に直接お返事することはありませんが、お寄せいただいたフィードバックはすべて確認していますことをご承知おきください。
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>中東</value>
+  </data>
+  <data name="min">
+    <value>{0} 分</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>最小</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} 分</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} 分前</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 分</value>
+  </data>
+  <data name="minuteToRead">
+    <value>読了までの所要時間: {0} 分</value>
+  </data>
+  <data name="module">
+    <value>モジュール</value>
+  </data>
+  <data name="moduleComplete">
+    <value>モジュールが完了しました</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>モジュールが完了していません</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} モジュール リファレンス</value>
+  </data>
+  <data name="modules">
+    <value>モジュール</value>
+  </data>
+  <data name="modulesInPath">
+    <value>このラーニング パス内のモジュール</value>
+  </data>
+  <data name="monikerFallback">
+    <value>リクエストされたページは {0} で表示できません。 最新の製品バージョンで表示できるこのページにリダイレクトされました。</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} か月前</value>
+  </data>
+  <data name="more">
+    <value>詳細</value>
+  </data>
+  <data name="moreInfo">
+    <value>詳細情報</value>
+  </data>
+  <data name="moreTutorials">
+    <value>その他のチュートリアル</value>
+  </data>
+  <data name="multipleModules">
+    <value>モジュール数 {numberOf}</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} ユニット</value>
+  </data>
+  <data name="name">
+    <value>名前</value>
+  </data>
+  <data name="namespace">
+    <value>名前空間</value>
+  </data>
+  <data name="namespaces">
+    <value>名前空間</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>この新しいフィードバック システムは、GitHub Issues を利用して構築されています。 この変更については、&lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;こちらのブログ記事&lt;/a&gt;をご覧ください。</value>
+  </data>
+  <data name="next">
+    <value>次へ</value>
+  </data>
+  <data name="nextPage">
+    <value>次のページ</value>
+  </data>
+  <data name="no">
+    <value>いいえ</value>
+  </data>
+  <data name="noAchievements">
+    <value>現時点では実績はありません。 &lt;a href="{0}"&gt;モジュールを完了して実績を獲得してください。&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} には実績がありません。</value>
+  </data>
+  <data name="noClosed">
+    <value>クローズ済みの問題はありません</value>
+  </data>
+  <data name="noOpen">
+    <value>オープン中の問題はありません</value>
+  </data>
+  <data name="noOutput">
+    <value>出力なし</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>該当するものが見つかりません</value>
+  </data>
+  <data name="noResultsRest">
+    <value>まだ結果はありません。入力を続けてください…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>'{term}' に一致する結果は見つかりませんでした&lt;br /&gt;&lt;a href="{url}"&gt;{scope} の全ドキュメントを対象に "{filter-text}" を検索&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;注意&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>注意 (呼び出し元)</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>注意 (実装者)</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>注意 (継承者)</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>クローズ {0} 件</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>オープン {0} 件</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office ドキュメント</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>了解しました。</value>
+  </data>
+  <data name="oneModule">
+    <value>モジュール数 1</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 ユニット</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>ページ上のナビゲーション</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>{0} 上</value>
+  </data>
+  <data name="openIssue">
+    <value>オープン中の問題</value>
+  </data>
+  <data name="openIssues">
+    <value>オープン中の問題</value>
+  </data>
+  <data name="operationId">
+    <value>操作 ID:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>演算子</value>
+  </data>
+  <data name="optionalParameters">
+    <value>省略可能のパラメーター</value>
+  </data>
+  <data name="options">
+    <value>オプション</value>
+  </data>
+  <data name="output">
+    <value>出力</value>
+  </data>
+  <data name="overloads">
+    <value>オーバーロード</value>
+  </data>
+  <data name="overrides">
+    <value>上書き</value>
+  </data>
+  <data name="overview">
+    <value>概要</value>
+  </data>
+  <data name="owner">
+    <value>所有者</value>
+  </data>
+  <data name="ownerDescription">
+    <value>このユーザーは、{repo} リポジトリの所有者です。</value>
+  </data>
+  <data name="pacific">
+    <value>太平洋</value>
+  </data>
+  <data name="package">
+    <value>パッケージ</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} パッケージ リファレンス</value>
+  </data>
+  <data name="packages">
+    <value>パッケージ</value>
+  </data>
+  <data name="page">
+    <value>ページ {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>ページ アクション</value>
+  </data>
+  <data name="parameters">
+    <value>パラメーター</value>
+  </data>
+  <data name="path">
+    <value>パス:</value>
+  </data>
+  <data name="pickReaction">
+    <value>リアクションの選択</value>
+  </data>
+  <data name="platform">
+    <value>プラットフォーム</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>このフィールドに記入してください。</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>もう一度やり直してください。</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Azure portal を起動</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Azure portal を読み込んでいます...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>新しいウィンドウでラボを開く</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>このユニットでは、Azure portal を完了する必要があります。</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Azure portal ラボを使用すると、Azure リソースに無料でアクセスしてこのユニットの手順を完了できます。 Azure portal ラボを使用しても、現在お持ちの Azure サブスクリプションに影響が及ぶことはありません。 お客様に対する課金は行われません。</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Azure portal ラボの準備ができました。</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>はい。新しいラボをアクティブにします</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>別のユニットの Azure portal ラボが既にアクティブになっています</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>現在、別のユニット ({lab-name}) の Azure portal ラボが開かれています。 現在のラボを破棄して、このユニット用に新しいラボをアクティブにしますか?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>ラボの起動の再試行</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>サインインして Azure portal を起動</value>
+  </data>
+  <data name="prerequisites">
+    <value>前提条件:</value>
+  </data>
+  <data name="preview">
+    <value>プレビュー</value>
+  </data>
+  <data name="previewTypescript">
+    <value>この API は開発者向けにプレビューとして提供されており、寄せられたフィードバックにもとづいて変更される場合があります。 この API は運用環境で使用しないでください。</value>
+  </data>
+  <data name="previous">
+    <value>前へ</value>
+  </data>
+  <data name="previousPage">
+    <value>前のページ</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>以前のバージョンのドキュメント</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>プライバシーに関する声明</value>
+  </data>
+  <data name="product">
+    <value>製品</value>
+  </data>
+  <data name="productFeedback">
+    <value>製品に関するフィードバック</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>製品</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>ビジネス アプリケーション</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>プロファイル</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>プロパティ</value>
+  </data>
+  <data name="propertyDetails">
+    <value>プロパティの詳細</value>
+  </data>
+  <data name="propertyValue">
+    <value>プロパティ値</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>サンドボックスを作成しています。 わずか 1 分で完了します...</value>
+  </data>
+  <data name="quickfilters">
+    <value>クイック フィルター</value>
+  </data>
+  <data name="quizComplete">
+    <value>おめでとうございます</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>コメントを読み込めません。 GitHub API のレート制限を超過しました。</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>問題を検索できません。 GitHub API のレート制限を超過しました。</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>コメントまたは提案がおありですか? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;こちらからご意見をお寄せいただけます&lt;/a&gt;。</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>ぜひお客様のアイデアをお聞かせください。 Microsoft はあらゆる言語でのフィードバックを歓迎しております。</value>
+  </data>
+  <data name="readInEnglish">
+    <value>英語で読む</value>
+  </data>
+  <data name="readonly">
+    <value>読み取り専用</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>{1} を完了したため、この実績 {0} を獲得しました。</value>
+  </data>
+  <data name="references">
+    <value>参照</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>ラーニング コンテンツの改良</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>このモジュールはこれらのラーニング パスに含まれています</value>
+  </data>
+  <data name="remaining">
+    <value>残り</value>
+  </data>
+  <data name="remarks">
+    <value>注釈</value>
+  </data>
+  <data name="removeItem">
+    <value>{0} を削除</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>更新期間</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>問題をご報告いただき、ありがとうございます。 Microsoft はご報告の内容を慎重に検討し、この問題を解決するうえで適切な手順を実行いたします。 法令およびプライバシーに関わる問題が懸念される場合には、この報告について追加の更新情報をお客様にお送りしないことがあります。 ご連絡をいただき、重ねてお礼申し上げます。</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>問題の報告</value>
+  </data>
+  <data name="requestBody">
+    <value>要求本文</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>要求本文は、次のいずれかの可能性があります。</value>
+  </data>
+  <data name="requestHeader">
+    <value>要求ヘッダー</value>
+  </data>
+  <data name="requestPreview">
+    <value>プレビューのリクエスト</value>
+  </data>
+  <data name="requestUrl">
+    <value>要求 URL</value>
+  </data>
+  <data name="required">
+    <value>必須</value>
+  </data>
+  <data name="requiredParameters">
+    <value>必須のパラメーター</value>
+  </data>
+  <data name="requirements">
+    <value>要件</value>
+  </data>
+  <data name="resource_type">
+    <value>種類</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>応答</value>
+  </data>
+  <data name="restart">
+    <value>やり直し</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>ご使用のアカウントの制約のため、サンドボックス テナントに招待できませんでした。 管理者に問い合わせてください。</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} 件の結果が見つかりました</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>サンドボックスのアクティブ化の再試行</value>
+  </data>
+  <data name="returns">
+    <value>戻り値</value>
+  </data>
+  <data name="returnValue">
+    <value>戻り値</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>ラーニング パス履歴の確認</value>
+  </data>
+  <data name="roles">
+    <value>ロール</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>実行</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>サンドボックスがアクティブ化されました!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>サンドボックスへのアクセスが期限切れ</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>サンドボックスが期限切れになりました。 新しいサンドボックスをアクティブにしてください。</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>サンドボックスを使うと、このユニットを完了するために必要な Azure リソースに無料でアクセスできます。 お客様の Azure サブスクリプションに対する課金は行われません。</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>サンドボックスを使用するには、Azure テナントの招待を承諾する必要があります</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>このモジュール用のサンドボックスは、メンテナンスのために一時的に無効にされています。</value>
+  </data>
+  <data name="search">
+    <value>検索</value>
+  </data>
+  <data name="searchNavigation">
+    <value>検索ナビゲーション</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>以前のバージョンを検索</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>検索フィルターは "{0}" です。 タップして削除します。</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} 秒前</value>
+  </data>
+  <data name="security">
+    <value>セキュリティ</value>
+  </data>
+  <data name="seeAlso">
+    <value>こちらもご覧ください</value>
+  </data>
+  <data name="selectedVersion">
+    <value>バージョンを選択</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>リージョンを選択するか、言語名またはロケール コードを入力して言語リストをフィルターします。</value>
+  </data>
+  <data name="selectPackage">
+    <value>パッケージを選択</value>
+  </data>
+  <data name="selectVersion">
+    <value>バージョンを選択</value>
+  </data>
+  <data name="selectYourRole">
+    <value>役割を選択</value>
+  </data>
+  <data name="service">
+    <value>サービス</value>
+  </data>
+  <data name="services">
+    <value>サービス</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>サービスは一時的に利用できません。 現在対応中です。</value>
+  </data>
+  <data name="share">
+    <value>共有</value>
+  </data>
+  <data name="shareAchievement">
+    <value>{0} でこの実績を共有する</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Microsoft のガイド付き学習の {moduleName} で獲得した実績をご覧ください。 #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[共有された記事] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>このドキュメントを共有する</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>実績の共有:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>すべての派生クラスを表示</value>
+  </data>
+  <data name="signIn">
+    <value>サインイン</value>
+  </data>
+  <data name="signInAzure">
+    <value>Azure アカウントを使用してサインインしてください。</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>サインインして作業を確認</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>ご使用の Docs アカウントとは異なるアカウントで Cloud Shell にサインインしています。 Cloud Shell からサインアウトして、サンドボックスへのアクセスをもう一度お試しください。</value>
+  </data>
+  <data name="signingIn">
+    <value>サインインしています...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>サインインしてサンドボックスをアクティブにする</value>
+  </data>
+  <data name="signInToComment">
+    <value>サインインしてコメントする</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>サインインしてドキュメントに関するフィードバックを送る</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>サインインしてフィードバックを送る</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>GitHub API のレート制限の数を増やすには、&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;サインイン&lt;/a&gt;してください。</value>
+  </data>
+  <data name="signInToReact">
+    <value>サインインしてリアクションを追加</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>サインインして進行状況を保存</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>自分のユーザー プロファイルを表示するには、&lt;a class='docs-sign-in' href="#"&gt;サインイン&lt;/a&gt;する必要があります。</value>
+  </data>
+  <data name="signOut">
+    <value>サインアウト</value>
+  </data>
+  <data name="siteFeedback">
+    <value>サイトのフィードバック</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>ソリューション アーキテクト</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>問題が発生しました</value>
+  </data>
+  <data name="start">
+    <value>開始</value>
+  </data>
+  <data name="startHere">
+    <value>ここから開始</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>ステップ {step-index}/{step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>構造体</value>
+  </data>
+  <data name="submit">
+    <value>送信</value>
+  </data>
+  <data name="submitFeedback">
+    <value>フィードバックを送信</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>正常に送信されました</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>製品アイデアを提案する</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>タスクは正常に完了していません。</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>このページには、現在、新しいインタラクティブなエクスペリエンスを導入中です。 また後日アクセスしてみてください。</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>フィードバックをお送りいただき、ありがとうございます。</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>何か問題があります。</value>
+  </data>
+  <data name="theme">
+    <value>テーマ</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>このドキュメントには現在フィードバックがありません。 フィードバックが表示されると、ここに表示されます。</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>このクラスのメンバーはすべて、スレッド セーフです。</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>このクラスのインスタンス メンバーはすべて、スレッド セーフです。</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>このクラスの静的メンバーはすべて、スレッド セーフです。</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>この型はスレッド セーフではありません。</value>
+  </data>
+  <data name="threadSafety">
+    <value>スレッド セーフ</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} 件のリアクション (親指を下に向ける)</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} 件のリアクション (親指を立てる)</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;ヒント&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>タイトル</value>
+  </data>
+  <data name="toggleIssue">
+    <value>問題の切り替え</value>
+  </data>
+  <data name="toggleUnits">
+    <value>ユニットの切り替え</value>
+  </data>
+  <data name="trademarks">
+    <value>商標</value>
+  </data>
+  <data name="triggers">
+    <value>トリガー</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>完了のためのトロフィーを獲得しました</value>
+  </data>
+  <data name="tryAgain">
+    <value>もう一度お試しください</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>ブラウザーでコードを試す</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>以下の入力内容で REST API を試してください。</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>全 {0} 名の共同作成者</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% 完了しました</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>おめでとうございます</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>こちらから続ける</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>共同作成者</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>もっと読む</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>はじめに</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>残り {0} 分</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>完了まで {0} 分</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>次の手順</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>次のチュートリアル</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>リソース</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>{0} をご覧になるか、{1} の改善事項を提案して共同作成者になってください。</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>これまでに学習した内容</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>"{0}" のチュートリアルを完了しました。</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>これから学習する内容</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>このチュートリアルについてフィードバックや不明な点はありませんか?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>GitHub で問題を報告する</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>次の手順</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>キュレーション ツイートのオーナー</value>
+  </data>
+  <data name="type">
+    <value>型</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>型の定義</value>
+  </data>
+  <data name="typeParameters">
+    <value>型パラメーター</value>
+  </data>
+  <data name="unit">
+    <value>ユニット</value>
+  </data>
+  <data name="unitComplete">
+    <value>ユニットが完了しました</value>
+  </data>
+  <data name="unitMarker">
+    <value>ユニット {index}/{total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>このユニットでは、サンドボックスを完了する必要があります</value>
+  </data>
+  <data name="units">
+    <value>ユニット</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI パラメーター</value>
+  </data>
+  <data name="usage">
+    <value>使用</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>仮想マシンを使用する</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>ハンズオン ラボのサイトに移動し、そこに記載されている手順に従ってください。</value>
+  </data>
+  <data name="userNameFallback">
+    <value>ドキュメントの学習者</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>ローカル コンピューターを使用する</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>このサイトにとどまり、お使いのマシンで手順に従って操作を進めてください。</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>このコネクタを使用する</value>
+  </data>
+  <data name="value">
+    <value>値</value>
+  </data>
+  <data name="valueFrom">
+    <value>開始値</value>
+  </data>
+  <data name="version">
+    <value>バージョン</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>GitHub でこの問題を表示</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>GitHub でさらにフィードバックを表示</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>GitHub で表示</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>GitHub で {username} を表示</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Visual Studio 2017 を使用することをお勧めします。</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>今すぐダウンロード</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual Studio ドキュメント</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>VM モードを起動</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>仮想マシンを読み込んでいます...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>このユニットでは、VM を完了する必要があります。</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>VM モードを使用すると、Azure 仮想マシンに無料でアクセスしてこのユニットの手順を完了できます。 お客様の Azure サブスクリプションに対する課金は行われません</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>はい。新しい VM をアクティブにします</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>別のユニットの VM が既にアクティブになっています</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>モジュール {lab-name} 内の VM は既に開かれています。 この VM をアクティブにすると、もう一方のモジュールの作業内容が失われます。</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>VM モードの起動の再試行</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>サインインして VM モードを起動</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;警告&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} 週間前</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>お客様のご意見をお寄せください。 お寄せいただく内容の種類を選択:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows 10 要件</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windows ドキュメント</value>
+  </data>
+  <data name="worldwide">
+    <value>世界全域</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>フィードバックをご提供いただけますか?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>はい</value>
+  </data>
+  <data name="youDidIt">
+    <value>やりましたね</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>知識チェックを完了するための経験値を獲得しました。</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>タスクを完了するための経験値を獲得しました。</value>
+  </data>
+  <data name="youGotXp">
+    <value>&lt;span class="experience-points"&gt;&lt;/span&gt; の経験値を獲得しました。</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>作業を確認する前にすべての問題に回答する必要があります。</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>サンドボックスによって提供されたリソースを使用して、作業内容を確認する必要があります。</value>
+  </data>
+  <data name="youNailedIt">
+    <value>上手に成功しました</value>
+  </data>
+  <data name="yourAccount">
+    <value>お客様のアカウント</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>ご使用のアカウントは削除されました。</value>
+  </data>
+  <data name="yourData">
+    <value>お客様のデータ</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Docs 上に保存されている進行状況と実績をダウンロードまたは削除します。情報を削除しても、お客様の Microsoft ID に影響はありません。</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>作業が正常に完了されませんでした。</value>
+  </data>
+</root>

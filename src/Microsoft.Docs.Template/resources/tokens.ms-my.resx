@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>nilai diterima</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Terima jemputan</value>
+  </data>
+  <data name="achievements">
+    <value>Pencapaian</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Lihat pencapaian yang baru saya perolehi untuk {0} di Pembelajaran Berpandu Microsoft!</value>
+  </data>
+  <data name="actions">
+    <value>Tindakan</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Ya, aktifkan kotak pasir yang baru</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Aktifkan kotak pasir</value>
+  </data>
+  <data name="aDayAgo">
+    <value>sehari yang lalu</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Ciri dan keperluan tambahan</value>
+  </data>
+  <data name="addParameter">
+    <value>Tambah Parameter</value>
+  </data>
+  <data name="administrator">
+    <value>Pentadbir</value>
+  </data>
+  <data name="advanced">
+    <value>Lanjutan</value>
+  </data>
+  <data name="africa">
+    <value>Afrika</value>
+  </data>
+  <data name="all">
+    <value>Semua</value>
+  </data>
+  <data name="allapis">
+    <value>Semua API</value>
+  </data>
+  <data name="allPackages">
+    <value>Semua Pakej</value>
+  </data>
+  <data name="americas">
+    <value>Amerika Syarikat</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>seminit yang lalu</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>sebulan yang lalu</value>
+  </data>
+  <data name="anHourAgo">
+    <value>sejam yang lalu</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} Rujukan API</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Carian API tidak tersedia. Sila cuba sebentar lagi.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Versi sebelumnya</value>
+  </data>
+  <data name="areYouSure">
+    <value>Adakah anda pasti?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Memadamkan data anda tidak boleh dibuat asal.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>sesaat yang lalu</value>
+  </data>
+  <data name="asia">
+    <value>Asia</value>
+  </data>
+  <data name="askQuestion">
+    <value>Tanyakan soalan</value>
+  </data>
+  <data name="assemblies">
+    <value>Himpunan</value>
+  </data>
+  <data name="assembly">
+    <value>Himpunan</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Peristiwa Yang Dilampirkan</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Sifat Yang Dilampirkan</value>
+  </data>
+  <data name="attributes">
+    <value>Atribut</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>seminggu yang lalu</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Cangkerang Awan Azure menggunakan langganan Azure anda yang sedia ada. Penggunaan Cangkerang Awan dan pelaksanaan perintah akan dikenakan kos yang berkaitan.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Dokumentasi Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Anda telah memperoleh lencana untuk melengkapkan</value>
+  </data>
+  <data name="begin">
+    <value>Mula</value>
+  </data>
+  <data name="beginner">
+    <value>Permulaan</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Isi</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Jejak</value>
+  </data>
+  <data name="browse">
+    <value>Semak lalu</value>
+  </data>
+  <data name="browseCode">
+    <value>Kod semak lalu</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Juruanalisis Perniagaan</value>
+  </data>
+  <data name="businessUser">
+    <value>Pengguna Perniagaan</value>
+  </data>
+  <data name="calls">
+    <value>Panggilan</value>
+  </data>
+  <data name="capabilities">
+    <value>Keupayaan</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Awas&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Semak jawapan anda</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Semak kerja anda semula</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Semak pengetahuan anda</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Semak kerja anda</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Pilih reaksi</value>
+  </data>
+  <data name="claimReward">
+    <value>Buka kunci pencapaian</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Kelas</value>
+  </data>
+  <data name="clearfilter">
+    <value>Kosongkan Penapis</value>
+  </data>
+  <data name="clearterm">
+    <value>Kosongkan Istilah</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Klik untuk suapan RSS</value>
+  </data>
+  <data name="close">
+    <value>Tutup</value>
+  </data>
+  <data name="closedIssue">
+    <value>Isu Ditutup</value>
+  </data>
+  <data name="closedIssues">
+    <value>Isu-isu Ditutup</value>
+  </data>
+  <data name="clsCompliant">
+    <value>API ini tidak mematuhi CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Alternatif pematuhan CLS</value>
+  </data>
+  <data name="code">
+    <value>Kod</value>
+  </data>
+  <data name="collaborator">
+    <value>Kolaborator</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Pengguna ini telah dijemput untuk bekerjasama ke atas {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Perintah</value>
+  </data>
+  <data name="comment">
+    <value>Komen</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} komen</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} telah memberikan komen {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Komen</value>
+  </data>
+  <data name="complete">
+    <value>Lengkap</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Mengkonfigurasi Cangkerang Awan untuk capaian kotak pasir...</value>
+  </data>
+  <data name="confused">
+    <value>Keliru</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} reaksi keliru</value>
+  </data>
+  <data name="congratulations">
+    <value>Tahniah!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Sambungan setiap Akaun</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Butiran Pembina</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Pembina</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Maklum balas kandungan</value>
+  </data>
+  <data name="contents">
+    <value>Kandungan</value>
+  </data>
+  <data name="continue">
+    <value>Teruskan</value>
+  </data>
+  <data name="continueHere">
+    <value>Teruskan Di Sini</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Teruskan ke langkah pertama</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Teruskan ke modul seterusnya</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Teruskan tanpa menyimpan kemajuan</value>
+  </data>
+  <data name="contributor">
+    <value>Penyumbang</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Pengguna ini telah terikat kepada repositori {repo} sebelum ini.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Menyumbang</value>
+  </data>
+  <data name="contributors">
+    <value>Penyumbang</value>
+  </data>
+  <data name="copy">
+    <value>Salin</value>
+  </data>
+  <data name="correctChoice">
+    <value>Pilihan Yang Betul</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Anda telah mendaftar masuk dengan akaun organisasi Microsoft anda ({0}), dan pengalaman anda akan berbeza daripada akaun peribadi:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Sesetengah ciri gamifikasi tidak tersedia kepada pekerja Microsoft.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Profil anda akan secara terbuka menunjukkan bahawa anda bekerja di Microsoft.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Jika anda kehilangan capaian kepada e-mel, anda tidak akan dapat log masuk ke laman ini.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Jika anda ingin menggunakan laman ini untuk aktiviti peribadi, sila daftar masuk dengan akaun yang berbeza.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Untuk menyambungkan akaun, anda akan memerlukan maklumat yang berikut:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Dengan menggunakan Microsoft Learn, &lt;strong&gt;anda memahami dan memperakui&lt;/strong&gt; bahawa keahlian anda bermakna rangkaian laman dan aplikasi kami akan merekodkan dan menjejaki pencapaian dan aktiviti anda serta kami boleh berkongsi hasil dan aktiviti anda dengan pasukan lain dalam Microsoft. Di samping itu, nama pengguna, nama paparan, pencapaian dan aktiviti anda akan kelihatan secara terbuka.&lt;ul&gt;&lt;li&gt;Profil anda akan secara terbuka menunjukkan bahawa anda bekerja di Microsoft.&lt;/li&gt;&lt;li&gt;Jika anda kehilangan capaian kepada e-mel, anda tidak akan dapat log masuk ke laman tersebut.&lt;/li&gt;&lt;li&gt;Sesetengah ciri gamifikasi tidak tersedia kepada pekerja Microsoft.&lt;/li&gt;&lt;li&gt;Jika anda ingin menggunakan laman ini untuk aktiviti peribadi, sila daftar masuk dengan akaun yang berbeza.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Dengan menjadi ahli, anda memahami dan memperakui bahawa keahlian anda dalam Microsoft Learn bermakna rangkaian laman dan aplikasi kami akan merekodkan pencapaian dan aktiviti anda. Nama pengguna, nama paparan, pencapaian dan aktiviti anda akan kelihatan secara terbuka.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Cipta arkib baru</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Mencipta sambungan</value>
+  </data>
+  <data name="currentSelection">
+    <value>Pilihan Semasa:</value>
+  </data>
+  <data name="dark">
+    <value>Gelap</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} hari yang lalu</value>
+  </data>
+  <data name="defaultValue">
+    <value>nilai lalai</value>
+  </data>
+  <data name="definition">
+    <value>Takrif</value>
+  </data>
+  <data name="definitions">
+    <value>Takrif</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Wakil</value>
+  </data>
+  <data name="delete">
+    <value>Padam</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Padam Parameter</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Gunakan Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>API ini kini lapuk.</value>
+  </data>
+  <data name="derived">
+    <value>Terbitan</value>
+  </data>
+  <data name="description">
+    <value>Perihalan</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Pembangun</value>
+  </data>
+  <data name="developers">
+    <value>Pembangun</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Tutup dialog ini</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Kotak pasir yang berbeza telah pun aktif</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Anda telah mengaktifkan kotak pasir dalam modul &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Jika anda mengaktifkan kotak pasir ini, anda akan kehilangan kerja anda dalam modul yang lain.</value>
+  </data>
+  <data name="disable">
+    <value>Nyahdayakan</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Hasil carian adalah daripada dokumentasi versi sebelumnya dan tidak selalu dikemas kini.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil dokumen</value>
+  </data>
+  <data name="documentDetails">
+    <value>Butiran Dokumen</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Jangan edit bahagian ini. Ia diperlukan untuk docs.microsoft.com ➟ Pemautan isu GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Dokumentasi .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Editor .NET</value>
+  </data>
+  <data name="download">
+    <value>Muat turun</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Muat turun PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Muat turun ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Output operasi ini adalah dinamik.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Perolehi Lebih Banyak Pencapaian</value>
+  </data>
+  <data name="edit">
+    <value>Edit</value>
+  </data>
+  <data name="editdesc">
+    <value>Edit Dokumen Ini</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Pelaksanaan Antara Muka Tak Tersirat</value>
+  </data>
+  <data name="email">
+    <value>E-mel</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>E-mel diperlukan untuk mengaktifkan kotak pasir</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Akaun Microsoft anda mesti dipautkan kepada e-mel yang sah untuk mengaktifkan kotak pasir. Pergi ke &lt;a href="https://account.live.com" target="_blank"&gt;Seting Akaun Microsoft&lt;/a&gt; untuk memautkan e-mel anda dan cuba lagi.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Nama kosong tidak dibenarkan</value>
+  </data>
+  <data name="enable">
+    <value>Dayakan</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Masuk mod fokus</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enums</value>
+  </data>
+  <data name="error">
+    <value>Ralat</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Ralat semasa mencipta komen. Jika anda mahu, anda boleh mencuba semula pada &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Ralat semasa mencipta isu. Jika anda mahu, anda boleh mencuba semula pada &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Kami tidak dapat memuatkan hasil carian anda. Sila cuba sebentar lagi.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Ralat semasa memuatkan komen.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Ralat semasa memuatkan maklum balas.</value>
+  </data>
+  <data name="europe">
+    <value>Eropah</value>
+  </data>
+  <data name="eventDetails">
+    <value>Butiran Peristiwa</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Peristiwa</value>
+  </data>
+  <data name="examples">
+    <value>Contoh</value>
+  </data>
+  <data name="exceptions">
+    <value>Pengecualian</value>
+  </data>
+  <data name="exit">
+    <value>Keluar</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Keluar mod fokus</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Kembangkan menu maklum balas dokumentasi</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Terokai modul lain</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Terokai Laluan lain</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Anda tidak mempunyai sebarang maklumat untuk dieksport.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Kaedah Tambahan</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Maklum balas</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Masukkan maklum balas di sini]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Berikan maklum balas produk</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Medan</value>
+  </data>
+  <data name="fieldValue">
+    <value>Nilai Medan</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Tapis</value>
+  </data>
+  <data name="findALanguage">
+    <value>Cari bahasa</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Penyenaraian ini mempunyai {0} atribut yang membenarkan kombinasi bit daripada nilai ahlinya.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Butiran Fungsi</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Fungsi</value>
+  </data>
+  <data name="getHelp">
+    <value>Dapatkan bantuan</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Berikan maklum balas</value>
+  </data>
+  <data name="globalParameters">
+    <value>Parameter Sejagat</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Kembali ke tamat</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Kembali untuk melengkapkan modul</value>
+  </data>
+  <data name="goodWork">
+    <value>Kerja yang baik!</value>
+  </data>
+  <data name="greatWork">
+    <value>Kerja yang bagus!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Makmal Menggunakan Tangan</value>
+  </data>
+  <data name="headers">
+    <value>Pengepala</value>
+  </data>
+  <data name="heart">
+    <value>Hati</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} reaksi hati</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Bantu saya untuk memilih</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Petunjuk:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Hore</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} reaksi hore</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} jam yang lalu</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Bagaimanakah kami dapat memperbaiki?</value>
+  </data>
+  <data name="hr">
+    <value>jam</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} jam {1} min</value>
+  </data>
+  <data name="implements">
+    <value>Perkakas</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Penting&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>dalam</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Pilihan Yang Salah</value>
+  </data>
+  <data name="inheritance">
+    <value>Warisan</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Ahli Warisan</value>
+  </data>
+  <data name="input">
+    <value>Input</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Antara Muka</value>
+  </data>
+  <data name="intermediate">
+    <value>Pertengahan</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>API ini menyokong infrastruktur produk dan tidak bertujuan untuk digunakan secara terus daripada kod anda.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Maklum Balas Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>dibuka {time ago} oleh {name}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Laporkan isu produk</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Adakah halaman ini membantu?</value>
+  </data>
+  <data name="itPro">
+    <value>Pro IT</value>
+  </data>
+  <data name="justNow">
+    <value>sebentar tadi</value>
+  </data>
+  <data name="key">
+    <value>Kunci:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Semakan pengetahuan</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Semakan pengetahuan lengkap. Anda menjawab semua soalan dengan betul.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Semakan Pengetahuan Lengkap</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Anda telah melengkapkan {tutorial} semakan pengetahuan.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Anda telah melengkapkan bahagian {tutorial} modul. Sekarang anda boleh beralih ke bahagian seterusnya {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Op, kami tidak dapat menilai semakan pengetahuan anda. Sila cuba lagi.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Anda telah selesai bahagian ini. Teruskan ke bahagian seterusnya {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Anda telah selesai bahagian ini. Teruskan ke tutorial lagi.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Dengan melengkapkan cabaran semakan pengetahuan, anda telah membuka kunci pencapaian {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Jadual Kandungan</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Tapis Jadual Kandungan</value>
+  </data>
+  <data name="language">
+    <value>Bahasa</value>
+  </data>
+  <data name="laugh">
+    <value>Ketawa</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} reaksi ketawa</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Terokai teknologi Microsoft dengan tutorial secara langsung, termasuk aktiviti yang menggunakan tangan. Pengalaman ini adalah dalam pratonton, jadi sila &lt;a href="https://aka.ms/learningfeedback"&gt;hantarkan maklum balas anda kepada kami&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Laluan Pembelajaran</value>
+  </data>
+  <data name="learnmore">
+    <value>Ketahui lebih lanjut</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Tinggalkan komen</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Anda juga boleh meninggalkan maklum balas &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;secara terus pada GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Tahap {0}</value>
+  </data>
+  <data name="levels">
+    <value>Tahap</value>
+  </data>
+  <data name="light">
+    <value>Terang</value>
+  </data>
+  <data name="limits">
+    <value>Had</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Memuatkan...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Memuatkan maklum balas...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Memuatkan maklumat kotak pasir...</value>
+  </data>
+  <data name="loadMore">
+    <value>Lagi&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Muatkan lagi hasil</value>
+  </data>
+  <data name="login">
+    <value>Log masuk</value>
+  </data>
+  <data name="loginAzure">
+    <value>Sila log masuk dengan akaun Azure anda.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Navigasi Utama</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Uruskan profil saya</value>
+  </data>
+  <data name="maximize">
+    <value>Maksimumkan</value>
+  </data>
+  <data name="member">
+    <value>Ahli</value>
+  </data>
+  <data name="memberDescription">
+    <value>Pengguna ini ialah ahli organisasi {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Butiran Ahli</value>
+  </data>
+  <data name="members">
+    <value>Ahli</value>
+  </data>
+  <data name="methodDetails">
+    <value>Butiran Kaedah</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Kaedah</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Notis Privasi Pekerja Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Anda telah mendaftar masuk dengan akaun organisasi Microsoft anda ({email}). Dengan menggunakan Microsoft Learn, &lt;strong&gt;anda memahami dan memperakui&lt;/strong&gt; bahawa keahlian anda bermakna rangkaian laman dan aplikasi kami akan merekodkan dan menjejaki pencapaian dan aktiviti anda serta kami boleh berkongsi hasil dan aktiviti anda dengan pasukan lain dalam Microsoft. Di samping itu, nama pengguna, nama paparan, pencapaian dan aktiviti anda akan kelihatan secara terbuka.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Isu Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn adalah platform baru dan kami sedang berusaha untuk meningkatkan kandungan dan pengalaman berdasarkan respons pelanggan.
+
+Kami ingin mendengar daripada anda!
+
+Sila isikan maklumat berikut untuk kami:
+1. Isu atau maklum balas yang anda sedang laporkan.
+2. Ada sebarang perkara lagi yang anda ingin beritahu kami.
+
+Nota: Walaupun kami tidak memberikan respons secara langsung kepada semua pelanggan pada masa ini, sila ambil maklum bahawa kami sedang menyemak semula semua maklum balas yang diterima.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Timur Tengah</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimumkan</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} minit</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} minit yang lalu</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minit</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} minit untuk membaca</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modul lengkap</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modul tidak lengkap</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} Rujukan Modul</value>
+  </data>
+  <data name="modules">
+    <value>Modul</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Modul dalam laluan pembelajaran ini</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Halaman yang diminta tidak tersedia untuk {0}. Anda telah diubah hala ke versi produk terbaru yang disediakan oleh halaman ini.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} bulan yang lalu</value>
+  </data>
+  <data name="more">
+    <value>Lebih Banyak</value>
+  </data>
+  <data name="moreInfo">
+    <value>Maklumat Lanjut</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Lebih banyak tutorial</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} Modul</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} Unit</value>
+  </data>
+  <data name="name">
+    <value>Nama</value>
+  </data>
+  <data name="namespace">
+    <value>Ruang nama</value>
+  </data>
+  <data name="namespaces">
+    <value>Ruang nama</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Sistem maklum balas baru kami telah dibina di atas Isu GitHub. Baca tentang perubahan ini dalam &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;siaran blog kami&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Seterusnya</value>
+  </data>
+  <data name="nextPage">
+    <value>Halaman seterusnya</value>
+  </data>
+  <data name="no">
+    <value>Tidak</value>
+  </data>
+  <data name="noAchievements">
+    <value>Anda tidak mempunyai pencapaian pada masa ini. &lt;a href="{0}"&gt;Lengkapkan modul untuk memperolehi beberapa.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} tidak mempunyai sebarang pencapaian.</value>
+  </data>
+  <data name="noClosed">
+    <value>Tiada isu tertutup</value>
+  </data>
+  <data name="noOpen">
+    <value>Tiada isu terbuka</value>
+  </data>
+  <data name="noOutput">
+    <value>Tiada output</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Tiada hasil ditemui</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Tiada hasil lagi tetapi teruskan menaip…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Tiada hasil ditemui untuk {term}&lt;br /&gt;&lt;a href="{url}"&gt;Cari "{filter-text}" di dalam semua {scope} dokumen&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Nota&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Nota kepada Pemanggil</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Nota kepada Pelaksana</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Nota kepada Pewaris</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} Ditutup</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} Buka</value>
+  </data>
+  <data name="officeDocs">
+    <value>Dokumentasi Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Ok, faham.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 Modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 Unit</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Navigasi pada halaman</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>pada {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Isu Dibuka</value>
+  </data>
+  <data name="openIssues">
+    <value>Isu-isu Dibuka</value>
+  </data>
+  <data name="operationId">
+    <value>ID Operasi:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Pengendali</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Parameter Pilihan</value>
+  </data>
+  <data name="options">
+    <value>Opsyen</value>
+  </data>
+  <data name="output">
+    <value>Output</value>
+  </data>
+  <data name="overloads">
+    <value>Beban lebihan</value>
+  </data>
+  <data name="overrides">
+    <value>Penggantian</value>
+  </data>
+  <data name="overview">
+    <value>Gambaran keseluruhan</value>
+  </data>
+  <data name="owner">
+    <value>Pemilik</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Pengguna ini ialah pemilik repositori {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Pasifik</value>
+  </data>
+  <data name="package">
+    <value>Pakej</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} Rujukan Pakej</value>
+  </data>
+  <data name="packages">
+    <value>Pakej</value>
+  </data>
+  <data name="page">
+    <value>Halaman {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Tindakan Halaman</value>
+  </data>
+  <data name="parameters">
+    <value>Parameter</value>
+  </data>
+  <data name="path">
+    <value>Laluan:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Pilih reaksi anda</value>
+  </data>
+  <data name="platform">
+    <value>Platform</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Sila isikan medan ini.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Sila cuba lagi.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Lancarkan portal Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Memuatkan portal Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Buka makmal dalam tetingkap baru</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Unit ini memerlukan portal Azure untuk dilengkapkan.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Makmal Portal Azure menyediakan capaian sumber Azure percuma untuk melengkapkan langkah-langkah dalam Unit ini. Makmal Portal Azure tidak menjejaskan langganan Azure anda. Anda tidak akan dikenakan caj.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Makmal Portal Azure anda sudah sedia.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Ya, aktifkan makmal yang baru</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Makmal Portal Azure untuk unit yang berbeza telah pun aktif</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Pada masa ini anda mempunyai Makmal Portal Azure yang terbuka untuk unit lain ({lab-name}). Adakah anda ingin membuang makmal semasa anda dan mengaktifkan makmal yang baru untuk unit ini?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Cuba semula melancarkan makmal</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Daftar masuk untuk melancarkan portal Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Prasyarat:</value>
+  </data>
+  <data name="preview">
+    <value>Pratonton</value>
+  </data>
+  <data name="previewTypescript">
+    <value>API ini telah disediakan sebagai pratonton untuk pembangun dan mungkin berubah berdasarkan maklum balas yang kami terima. Jangan gunakan API ini dalam persekitaran pengeluaran.</value>
+  </data>
+  <data name="previous">
+    <value>Sebelumnya</value>
+  </data>
+  <data name="previousPage">
+    <value>Halaman sebelumnya</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Dokumen Versi Sebelumnya</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Pernyataan Privasi</value>
+  </data>
+  <data name="product">
+    <value>Produk</value>
+  </data>
+  <data name="productFeedback">
+    <value>Maklum balas produk</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Produk</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Aplikasi Perniagaan</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Sifat</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Butiran Sifat</value>
+  </data>
+  <data name="propertyValue">
+    <value>Nilai Sifat</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Membina kotak pasir anda. Ini hanya akan mengambil masa seminit...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Penapis Pantas</value>
+  </data>
+  <data name="quizComplete">
+    <value>Tahniah!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Tidak dapat memuatkan komen. Melebihi had kadar API GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Tidak dapat mencari isu. Melebihi had kadar API GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Komen atau cadangan? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Beritahu kami di sini&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Sila kongsikan idea anda. Kami mengalu-alukan maklum balas dalam mana-mana bahasa.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Dibaca dalam bahasa Inggeris</value>
+  </data>
+  <data name="readonly">
+    <value>baca sahaja</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Anda menerima pencapaian ini {0} kerana menyelesaikan {1}.</value>
+  </data>
+  <data name="references">
+    <value>Rujukan</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Perhalusi Kandungan Pembelajaran</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Modul ini adalah sebahagian daripada laluan pembelajaran berikut</value>
+  </data>
+  <data name="remaining">
+    <value>baki</value>
+  </data>
+  <data name="remarks">
+    <value>Kenyataan</value>
+  </data>
+  <data name="removeItem">
+    <value>Alih keluar {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Tempoh Pembaharuan</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Terima kasih kerana melaporkan kebimbangan anda kepada kami. Kami menyemak semula penyerahan ini dengan teliti dan akan mengambil langkah yang sesuai untuk menangani isu ini. Oleh kerana kebimbangan undang-undang dan privasi, kami mungkin tidak akan memberikan sebarang kemas kini tambahan tentang penyerahan ini. Terima kasih sekali lagi kerana menghubungi kami.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Laporkan isu</value>
+  </data>
+  <data name="requestBody">
+    <value>Isi Permintaan</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Badan permintaan boleh terdiri daripada salah satu yang berikut:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Pengepala Permintaan</value>
+  </data>
+  <data name="requestPreview">
+    <value>Pratonton Permintaan</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL Permintaan</value>
+  </data>
+  <data name="required">
+    <value>diperlukan</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Parameter Diperlukan</value>
+  </data>
+  <data name="requirements">
+    <value>Keperluan</value>
+  </data>
+  <data name="resource_type">
+    <value>Jenis</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Respons</value>
+  </data>
+  <data name="restart">
+    <value>Mula semula</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Kami tidak dapat menjemput anda ke penyewa kotak pasir kerana sekatan pada akaun anda. Sila hubungi pentadbir anda.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} hasil ditemui</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Cuba semula mengaktifkan kotak pasir</value>
+  </data>
+  <data name="returns">
+    <value>Pulangan</value>
+  </data>
+  <data name="returnValue">
+    <value>Nilai Kembali</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Semak semula sejarah Laluan Pembelajaran anda</value>
+  </data>
+  <data name="roles">
+    <value>Peranan</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Jalankan</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Kotak pasir diaktifkan!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Capaian Kotak Pasir tamat tempoh</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Kotak pasir anda telah tamat tempoh. Aktifkan kotak pasir yang baru.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Kotak pasir akan memberi anda capaian percuma kepada sumber Azure yang diperlukan untuk melengkapkan unit ini. Langganan Azure anda tidak akan dikenakan caj.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Anda perlu menerima jemputan penyewa Azure untuk menggunakan kotak pasir</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Kotak pasir untuk modul ini dinyahdayakan buat sementara waktu untuk penyelenggaraan.</value>
+  </data>
+  <data name="search">
+    <value>Cari</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Navigasi Carian</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Cari versi sebelumnya</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Penapis carian ialah "{0}". Ketik untuk mengalih keluar.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} saat yang lalu</value>
+  </data>
+  <data name="security">
+    <value>Keselamatan</value>
+  </data>
+  <data name="seeAlso">
+    <value>Lihat Juga</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Versi Dipilih</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Tapis senarai bahasa dengan memilih rantau atau dengan menaip nama bahasa atau kod tempatan.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Pilih Pakej</value>
+  </data>
+  <data name="selectVersion">
+    <value>Pilih Versi</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Pilih peranan anda</value>
+  </data>
+  <data name="service">
+    <value>Perkhidmatan</value>
+  </data>
+  <data name="services">
+    <value>Perkhidmatan</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Perkhidmatan tidak tersedia buat sementara. Kami sedang mengusahakannya.</value>
+  </data>
+  <data name="share">
+    <value>Kongsi</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Kongsi pencapaian ini di {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Semak pencapaian yang baru saya perolehi untuk {moduleName} di pembelajaran Berpandu Microsoft. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Artikel Kongsi] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Kongsikan Dokumen Ini</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Kongsi pencapaian anda:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Tunjukkan semua kelas terbitan</value>
+  </data>
+  <data name="signIn">
+    <value>Daftar masuk</value>
+  </data>
+  <data name="signInAzure">
+    <value>Sila daftar masuk dengan akaun Azure anda.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Daftar masuk untuk menyemak kerja anda</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Anda didaftar masuk ke dalam cangkerang awan dengan akaun yang berbeza dari akaun dokumen anda. Sila daftar keluar daripada cangkerang awan untuk mencuba mencapai kotak pasir semula.</value>
+  </data>
+  <data name="signingIn">
+    <value>Mendaftar masuk...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Daftar masuk untuk mengaktifkan kotak pasir</value>
+  </data>
+  <data name="signInToComment">
+    <value>Daftar masuk untuk memberikan komen</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Daftar masuk untuk memberikan maklum balas dokumentasi</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Daftar masuk untuk memberikan maklum balas</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Daftar masuk&lt;/a&gt; untuk meningkatkan had kadar API GitHub anda.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Daftar masuk untuk menambahkan reaksi anda</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Daftar masuk untuk menyimpan kemajuan</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Daftar masuk&lt;/a&gt; untuk melihat profil pengguna anda.</value>
+  </data>
+  <data name="signOut">
+    <value>Daftar keluar</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Maklum Balas Laman</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Penyelesaian Arkitek</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hmm, sesuatu yang tidak kena telah berlaku</value>
+  </data>
+  <data name="start">
+    <value>Mula</value>
+  </data>
+  <data name="startHere">
+    <value>Mula Di Sini</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Langkah {step-index} daripada {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Structs</value>
+  </data>
+  <data name="submit">
+    <value>Serah</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Serahkan maklum balas</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Berjaya Diserahkan!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Cadangkan idea produk</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Tugas tidak dilengkapkan dengan betul.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Kami sedang mengemas kini halaman ini dengan pengalaman interaktif baru. Semak semula tidak lama lagi!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Terima kasih atas maklum balas!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Itu tidak berapa betul.</value>
+  </data>
+  <data name="theme">
+    <value>Tema</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Tiada maklum balas untuk dokumen ini pada masa ini. Maklum balas yang telah diserahkan akan kelihatan di sini.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Semua ahli kelas ini adalah jaluran selamat.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Semua ahli tika kelas ini adalah jaluran selamat.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Semua ahli statik kelas ini adalah jaluran selamat.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Jenis ini bukan jaluran selamat.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Keselamatan Jaluran</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} reaksi tidak bagus</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} reaksi bagus</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Petua&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Tajuk</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Togol isu</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Togol Unit</value>
+  </data>
+  <data name="trademarks">
+    <value>Cap dagang</value>
+  </data>
+  <data name="triggers">
+    <value>Pencetus</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Anda telah memperoleh trofi kerana melengkapkannya</value>
+  </data>
+  <data name="tryAgain">
+    <value>Cuba semula</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Cuba kod dalam pelayar anda</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Cuba REST API dengan input di bawah.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>semua {0} penyumbang</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% selesai!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Tahniah!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Teruskan Di Sini</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Penyumbang</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Bacaan Lanjut</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Pengenalan</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>Berbaki {0} minit</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} minit untuk dilengkapkan</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Langkah seterusnya</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Tutorial Seterusnya</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Sumber</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Lihat {0} atau menjadi penyumbang dengan mencadangkan penambahbaikan pada {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Anda telah mengetahui cara...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Anda telah melengkapkan tutorial "{0}".</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Anda akan mengetahui cara...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Mempunyai maklum balas atau tersekat dalam bahagian tutorial ini?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Laporkan isu pada Github</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Langkah seterusnya</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Tweet yang dikumpul susun oleh</value>
+  </data>
+  <data name="type">
+    <value>jenis</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Takrif Jenis</value>
+  </data>
+  <data name="typeParameters">
+    <value>Parameter Jenis</value>
+  </data>
+  <data name="unit">
+    <value>Unit</value>
+  </data>
+  <data name="unitComplete">
+    <value>Unit Lengkap</value>
+  </data>
+  <data name="unitMarker">
+    <value>Unit {index} daripada {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Unit ini memerlukan kotak pasir untuk dilengkapkan</value>
+  </data>
+  <data name="units">
+    <value>Unit</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Parameter URI</value>
+  </data>
+  <data name="usage">
+    <value>Penggunaan</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Gunakan mesin maya</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Lawati laman Makmal Menggunakan Tangan untuk arahan bersepadu.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs Learner</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Gunakan komputer tempatan anda</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Kekal di laman ini dan ikuti arahan dengan mesin anda sendiri.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Menggunakan Penyambung ini</value>
+  </data>
+  <data name="value">
+    <value>Nilai</value>
+  </data>
+  <data name="valueFrom">
+    <value>nilai daripada</value>
+  </data>
+  <data name="version">
+    <value>Versi</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Lihat isu ini pada GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Lihat lebih banyak maklum balas pada GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Lihat pada GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Lihat {username} pada GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Kami syorkan menggunakan Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Muat turun sekarang</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Dokumentasi Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Lancarkan mod VM</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Memuatkan mesin maya...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Unit ini memerlukan VM untuk dilengkapkan.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Mod VM menyediakan capaian mesin maya Azure percuma untuk melengkapkan langkah-langkah dalam unit ini. Langganan Azure anda tidak akan dikenakan caj</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Ya, aktifkan VM yang baru</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>VM untuk unit yang berbeza telah pun aktif</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Anda telah membuka VM dalam modul {lab-name}. Jika anda mengaktifkan VM ini, anda akan kehilangan kerja anda dalam modul yang lain.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Cuba semula melancarkan mod VM</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Daftar masuk untuk melancarkan mod VM</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Amaran&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} minggu yang lalu</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Kami ingin mendengar pendapat anda. Pilih jenis yang ingin anda sediakan:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Keperluan Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Dokumentasi Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Seluruh dunia</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Adakah anda ingin memberikan maklum balas?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Ya</value>
+  </data>
+  <data name="youDidIt">
+    <value>Anda telah berjaya melakukannya!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Anda memperoleh mata pengalaman kerana melengkapkan semakan pengetahuan.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Anda memperoleh mata pengalaman kerana melengkapkan tugas.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Anda baru sahaja memperoleh &lt;span class="experience-points"&gt;&lt;/span&gt; mata pengalaman.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Anda mesti menjawab semua soalan sebelum menyemak kerja anda.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Anda mesti menggunakan sumber yang disediakan oleh kotak pasir untuk menyemak kerja anda.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Anda berjaya melakukannya dengan sempurna</value>
+  </data>
+  <data name="yourAccount">
+    <value>Akaun Anda</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Akaun anda telah dipadamkan.</value>
+  </data>
+  <data name="yourData">
+    <value>Data anda</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Muat turun atau padamkan kemajuan dan pencapaian anda yang disimpan pada Dokumen. Memadamkan maklumat anda tidak memberikan impak kepada identiti Microsoft anda.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Kerja anda tidak diselesaikan dengan betul.</value>
+  </data>
+</root>

@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>giá trị được chấp nhận</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Chấp nhận lời mời</value>
+  </data>
+  <data name="achievements">
+    <value>Thành tích</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Kiểm tra thành tích mà tôi vừa giành được cho {0} trên Microsoft Guided Learning!</value>
+  </data>
+  <data name="actions">
+    <value>Thao tác</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Có, kích hoạt hộp cát mới</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Kích hoạt hộp cát</value>
+  </data>
+  <data name="aDayAgo">
+    <value>một ngày trước</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Yêu cầu và tính năng bổ sung</value>
+  </data>
+  <data name="addParameter">
+    <value>Thêm tham số</value>
+  </data>
+  <data name="administrator">
+    <value>Quản trị viên</value>
+  </data>
+  <data name="advanced">
+    <value>Nâng cao</value>
+  </data>
+  <data name="africa">
+    <value>Châu Phi</value>
+  </data>
+  <data name="all">
+    <value>tất cả</value>
+  </data>
+  <data name="allapis">
+    <value>Tất cả API</value>
+  </data>
+  <data name="allPackages">
+    <value>Tất cả các gói</value>
+  </data>
+  <data name="americas">
+    <value>Châu Mỹ</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>một phút trước</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>một tháng trước</value>
+  </data>
+  <data name="anHourAgo">
+    <value>một giờ trước</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} Tài liệu tham khảo về API</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Tính năng tìm kiếm API không khả dụng. Vui lòng thử lại sau.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Các phiên bản trước</value>
+  </data>
+  <data name="areYouSure">
+    <value>Bạn có chắc chắn không?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Không thể hoàn tác hành động xóa dữ liệu của bạn.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>một giây trước</value>
+  </data>
+  <data name="asia">
+    <value>Châu Á</value>
+  </data>
+  <data name="askQuestion">
+    <value>Đặt câu hỏi</value>
+  </data>
+  <data name="assemblies">
+    <value>Các tập hợp</value>
+  </data>
+  <data name="assembly">
+    <value>Tập hợp</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Sự kiện đính kèm</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Thuộc tính đính kèm</value>
+  </data>
+  <data name="attributes">
+    <value>Thuộc tính</value>
+  </data>
+  <data name="avatar">
+    <value>Hình đại diện</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>một tuần trước</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell sử dụng đăng ký Azure hiện có của bạn. Sử dụng Cloud Shell và các lệnh thực thi sẽ phát sinh phí liên quan.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Tài liệu về Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Bạn đã giành được một huy hiệu vì hoàn thành</value>
+  </data>
+  <data name="begin">
+    <value>Bắt đầu</value>
+  </data>
+  <data name="beginner">
+    <value>Người mới bắt đầu</value>
+  </data>
+  <data name="beta">
+    <value>bê ta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Nội dung</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Dẫn hướng</value>
+  </data>
+  <data name="browse">
+    <value>Duyệt</value>
+  </data>
+  <data name="browseCode">
+    <value>Duyệt mã</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Nhà phân tích Kinh doanh</value>
+  </data>
+  <data name="businessUser">
+    <value>Người dùng doanh nghiệp</value>
+  </data>
+  <data name="calls">
+    <value>Gọi điện</value>
+  </data>
+  <data name="capabilities">
+    <value>Chức năng</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Thận trọng&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Kiểm tra câu trả lời của bạn</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Kiểm tra lại công việc của bạn</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Kiểm tra kiến thức của bạn</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Kiểm tra công việc của bạn</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Chọn phản ứng</value>
+  </data>
+  <data name="claimReward">
+    <value>Mở khóa thành tích</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Lớp học</value>
+  </data>
+  <data name="clearfilter">
+    <value>Xóa bộ lọc</value>
+  </data>
+  <data name="clearterm">
+    <value>Xóa điều khoản</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Bấm để xem nguồn cấp dữ liệu RSS</value>
+  </data>
+  <data name="close">
+    <value>Đóng</value>
+  </data>
+  <data name="closedIssue">
+    <value>Vấn đề đã đóng</value>
+  </data>
+  <data name="closedIssues">
+    <value>Vấn đề đã đóng</value>
+  </data>
+  <data name="clsCompliant">
+    <value>API này không tuân thủ CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>API thay thế tuân thủ CLS</value>
+  </data>
+  <data name="code">
+    <value>Mã</value>
+  </data>
+  <data name="collaborator">
+    <value>Cộng tác viên</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Người dùng này đã được mời cộng tác trên {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Lệnh</value>
+  </data>
+  <data name="comment">
+    <value>Nhận xét</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} nhận xét</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} đã nhận xét {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Nhận xét</value>
+  </data>
+  <data name="complete">
+    <value>Hoàn tất</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Đang định cấu hình Cloud Shell để truy cập vào hộp cát...</value>
+  </data>
+  <data name="confused">
+    <value>Lúng túng</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} phản ứng lúng túng</value>
+  </data>
+  <data name="congratulations">
+    <value>Xin chúc mừng!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Kết nối trên mỗi tài khoản</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Chi tiết hàm tạo</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Người hướng dẫn</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Phản hồi về nội dung</value>
+  </data>
+  <data name="contents">
+    <value>Nội dung</value>
+  </data>
+  <data name="continue">
+    <value>Tiếp tục</value>
+  </data>
+  <data name="continueHere">
+    <value>Tiếp tục tại đây</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Tiếp tục với bước đầu tiên</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Chuyển sang mô-đun tiếp theo</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Tiếp tục mà không lưu tiến độ</value>
+  </data>
+  <data name="contributor">
+    <value>Người đóng góp</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Người dùng này trước đây đã cam kết về kho lưu trữ {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Đóng góp</value>
+  </data>
+  <data name="contributors">
+    <value>Người đóng góp</value>
+  </data>
+  <data name="copy">
+    <value>Sao chép</value>
+  </data>
+  <data name="correctChoice">
+    <value>Lựa chọn đúng</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Bạn đã đăng nhập bằng tài khoản Microsoft của tổ chức ({0}) và sẽ có được trải nghiệm khác với việc sử dụng tài khoản cá nhân:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Một số tính năng game hóa không dành cho nhân viên Microsoft.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Thông tin làm việc tại Microsoft sẽ hiển thị công khai trên hồ sơ của bạn.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Nếu bạn mất quyền truy cập vào email, bạn sẽ không thể đăng nhập vào trang web này.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Nếu bạn muốn sử dụng trang web này cho hoạt động cá nhân, vui lòng đăng nhập bằng một tài khoản khác.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Để kết nối tài khoản của mình, bạn sẽ cần các thông tin sau:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Khi sử dụng Microsoft Learn, &lt;strong&gt;bạn hiểu và đồng ý&lt;/strong&gt; rằng tư cách thành viên của bạn đồng nghĩa với việc mạng trang web và ứng dụng của chúng tôi sẽ ghi và theo dõi thành tích cũng như hoạt động của bạn, đồng thời chúng tôi có thể chia sẻ kết quả và hoạt động đó với các nhóm khác trong Microsoft. Ngoài ra, tên người dùng, tên hiển thị, thành tích và hoạt động của bạn sẽ hiển thị công khai.&lt;ul&gt;&lt;li&gt;Thông tin làm việc tại Microsoft sẽ hiển thị công khai trên hồ sơ của bạn.&lt;/li&gt;&lt;li&gt;Nếu mất quyền truy cập vào email, bạn sẽ không thể đăng nhập vào trang web này.&lt;/li&gt;&lt;li&gt;Một số tính năng game hóa không dành cho nhân viên Microsoft.&lt;/li&gt;&lt;li&gt;Nếu bạn muốn sử dụng trang web này cho hoạt động cá nhân, vui lòng đăng nhập bằng một tài khoản khác.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Thông qua việc trở thành thành viên, bạn hiểu và xác nhận rằng tư cách thành viên của Microsoft Learn đồng nghĩa với việc mạng trang web và ứng dụng của chúng tôi sẽ ghi lại thành tích và hoạt động của bạn. Tên người dùng, tên hiển thị, thành tích và hoạt động của bạn sẽ hiển thị công khai.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Tạo bản lưu trữ mới</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Đang tạo kết nối</value>
+  </data>
+  <data name="currentSelection">
+    <value>Lựa chọn hiện tại:</value>
+  </data>
+  <data name="dark">
+    <value>Tối</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} ngày trước</value>
+  </data>
+  <data name="defaultValue">
+    <value>giá trị mặc định</value>
+  </data>
+  <data name="definition">
+    <value>Định nghĩa</value>
+  </data>
+  <data name="definitions">
+    <value>Định nghĩa</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Người ủy quyền</value>
+  </data>
+  <data name="delete">
+    <value>Xóa</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Xóa tham số</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Triển khai cho Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>API này hiện đã lỗi thời.</value>
+  </data>
+  <data name="derived">
+    <value>Nguồn gốc</value>
+  </data>
+  <data name="description">
+    <value>Mô tả</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Nhà phát triển</value>
+  </data>
+  <data name="developers">
+    <value>Nhà phát triển</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Đóng hộp thoại này</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Một hộp cát khác đang hoạt động</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Bạn đã kích hoạt một hộp cát trong mô-đun &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Nếu kích hoạt hộp cát này thì bạn sẽ bị mất công việc trong mô-đun khác.</value>
+  </data>
+  <data name="disable">
+    <value>Tắt</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Các kết quả tìm kiếm là từ tài liệu của các phiên bản trước và không được cập nhật thường xuyên.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Hồ sơ trên Tài liệu</value>
+  </data>
+  <data name="documentDetails">
+    <value>Chi tiết tài liệu</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Không chỉnh sửa phần này. Điều này là bắt buộc cho docs.microsoft.com ➟ Vấn đề khi liên kết GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Tài liệu .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Trình soạn thảo .NET</value>
+  </data>
+  <data name="download">
+    <value>Tải xuống</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Tải xuống PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Tải tệp ZIP xuống</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Các kết quả của thao tác này mang tính động.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Giành thêm thành tích</value>
+  </data>
+  <data name="edit">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="editdesc">
+    <value>Chỉnh sửa tài liệu này</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Triển khai giao diện rõ ràng</value>
+  </data>
+  <data name="email">
+    <value>Email</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Cần có email để kích hoạt hộp cát</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Bạn phải liên kết tài khoản Microsoft của mình với một email hợp lệ thì mới có thể kích hoạt hộp cát. Hãy chuyển đến phần &lt;a href="https://account.live.com" target="_blank"&gt;Cài đặt tài khoản Microsoft&lt;/a&gt; để liên kết email của bạn rồi thử lại.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Không cho phép tên trống</value>
+  </data>
+  <data name="enable">
+    <value>Bật</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Truy cập chế độ tập trung</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Enum</value>
+  </data>
+  <data name="error">
+    <value>Lỗi</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Có lỗi khi tạo nhận xét. Nếu muốn, bạn có thể thử lại trên &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Có lỗi khi tạo sự cố. Nếu muốn, bạn có thể thử lại trên &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Chúng tôi không thể tải kết quả tìm kiếm của bạn. Vui lòng thử lại sau.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Có lỗi khi tải nhận xét.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Có lỗi khi tải phản hồi.</value>
+  </data>
+  <data name="europe">
+    <value>Châu Âu</value>
+  </data>
+  <data name="eventDetails">
+    <value>Chi tiết sự kiện</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Sự kiện</value>
+  </data>
+  <data name="examples">
+    <value>Ví dụ</value>
+  </data>
+  <data name="exceptions">
+    <value>Ngoại lệ</value>
+  </data>
+  <data name="exit">
+    <value>Thoát</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Thoát khỏi chế độ tập trung</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Bung rộng menu phản hồi về tài liệu</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Khám phá các mô-đun khác</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Khám phá các Hướng dẫn khác</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Bạn không có thông tin nào để xuất.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Phương pháp mở rộng</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Phản hồi</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Nhập phản hồi vào đây]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Cung cấp phản hồi về sản phẩm</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Trường</value>
+  </data>
+  <data name="fieldValue">
+    <value>Giá trị trường</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Lọc</value>
+  </data>
+  <data name="findALanguage">
+    <value>Tìm ngôn ngữ</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Quá trình liệt kê này có thuộc tính {0} cho phép tổ đảo bit của các giá trị thành viên.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Chi tiết hàm</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Chức năng</value>
+  </data>
+  <data name="getHelp">
+    <value>Nhận trợ giúp</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Cung cấp phản hồi</value>
+  </data>
+  <data name="globalParameters">
+    <value>Tham số toàn cục</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Quay lại để hoàn tất</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Quay lại để hoàn tất mô-đun</value>
+  </data>
+  <data name="goodWork">
+    <value>Bạn làm rất tốt!</value>
+  </data>
+  <data name="greatWork">
+    <value>Thật tuyệt!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Phòng thí nghiệm tại chỗ</value>
+  </data>
+  <data name="headers">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="heart">
+    <value>Thả tim</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} phản ứng thả tim</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Giúp tôi chọn</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Gợi ý:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Hoan hô</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} phản ứng hoan hô</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} giờ trước</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Chúng tôi có thể cải thiện bằng cách nào?</value>
+  </data>
+  <data name="hr">
+    <value>giờ</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} giờ {1} phút</value>
+  </data>
+  <data name="implements">
+    <value>Triển khai</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Quan trọng&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>trong</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Lựa chọn sai</value>
+  </data>
+  <data name="inheritance">
+    <value>Kế thừa</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Thành viên kế thừa</value>
+  </data>
+  <data name="input">
+    <value>Nhập</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Giao diện</value>
+  </data>
+  <data name="intermediate">
+    <value>Người có trình độ trung bình</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>API này hỗ trợ cơ sở hạ tầng sản phẩm và không nhằm mục đích được sử dụng trực tiếp từ mã của bạn.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Phản hồi về Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>{name} đã mở {time ago}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Báo cáo vấn đề về sản phẩm</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Trang này có hữu ích không?</value>
+  </data>
+  <data name="itPro">
+    <value>Chuyên gia CNTT</value>
+  </data>
+  <data name="justNow">
+    <value>vừa xong</value>
+  </data>
+  <data name="key">
+    <value>Khóa:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Bài kiểm tra kiến thức</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Đã hoàn thành bài kiểm tra kiến thức. Bạn đã trả lời chính xác tất cả câu hỏi.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Đã hoàn thành bài kiểm tra kiến thức</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Bạn đã hoàn thành bài kiểm tra kiến thức {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Bạn đã hoàn thành phần {tutorial} của mô-đun. Bây giờ, bạn có thể chuyển sang phần tiếp theo {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Rất tiếc, chúng tôi không thể chấm điểm bài kiểm tra kiến thức của bạn. Vui lòng thử lại.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Bạn đã hoàn thành phần này. Tiếp tục với phần tiếp theo {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Bạn đã hoàn thành phần này. Tiếp tục với các hướng dẫn khác.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Bằng cách hoàn thành thử thách bài kiểm tra kiến thức, bạn đã mở khóa được thành tích {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Mục lục</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Lọc mục lục</value>
+  </data>
+  <data name="language">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="laugh">
+    <value>Cười</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} phản ứng cười</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Khám phá công nghệ của Microsoft với các hướng dẫn trực tiếp, bao gồm cả các hoạt động thực tiễn. Trải nghiệm này đang ở chế độ xem trước. Vì vậy, vui lòng &lt;a href="https://aka.ms/learningfeedback"&gt;gửi cho chúng tôi phản hồi của bạn&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Lộ trình học tập</value>
+  </data>
+  <data name="learnmore">
+    <value>Tìm hiểu thêm</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Để lại nhận xét</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Bạn cũng có thể để lại phản hồi &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;ngay trên GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Cấp {0}</value>
+  </data>
+  <data name="levels">
+    <value>Mức</value>
+  </data>
+  <data name="light">
+    <value>Sáng</value>
+  </data>
+  <data name="limits">
+    <value>Giới hạn</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Đang tải...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Đang tải phản hồi...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Đang tải thông tin hộp cát...</value>
+  </data>
+  <data name="loadMore">
+    <value>Thêm&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Tải thêm kết quả</value>
+  </data>
+  <data name="login">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="loginAzure">
+    <value>Vui lòng đăng nhập bằng tài khoản Azure của bạn.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Điều hướng chính</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Quản lý hồ sơ của tôi</value>
+  </data>
+  <data name="maximize">
+    <value>Tối đa hóa</value>
+  </data>
+  <data name="member">
+    <value>Thành viên</value>
+  </data>
+  <data name="memberDescription">
+    <value>Người dùng này là thành viên của tổ chức {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Chi tiết thành viên</value>
+  </data>
+  <data name="members">
+    <value>Thành viên</value>
+  </data>
+  <data name="methodDetails">
+    <value>Chi tiết phương pháp</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Phương pháp</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Thông báo về quyền riêng tư của nhân viên Microsoft</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Bạn đã đăng nhập bằng tài khoản Microsoft của tổ chức mình ({email}). Khi sử dụng Microsoft Learn, &lt;strong&gt;bạn hiểu và đồng ý&lt;/strong&gt; rằng tư cách thành viên của bạn đồng nghĩa với việc mạng trang web và ứng dụng của chúng tôi sẽ ghi và theo dõi thành tích cũng như hoạt động của bạn, đồng thời chúng tôi có thể chia sẻ kết quả và hoạt động đó với các nhóm khác trong Microsoft. Ngoài ra, tên người dùng, tên hiển thị, thành tích và hoạt động của bạn sẽ hiển thị công khai.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Bản phát hành Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn là một nền tảng hoàn toàn mới và chúng tôi hiện đang nỗ lực cải thiện nội dung cũng như trải nghiệm dựa trên phản hồi của khách hàng.
+
+Chúng tôi muốn lắng nghe ý kiến của bạn!
+
+Vui lòng điền thông tin sau:
+1. Sự cố hoặc phản hồi mà bạn muốn báo cáo.
+2. Mọi ý kiến khác mà bạn muốn đóng góp.
+
+Lưu ý: Dù hiện tại chúng tôi chưa phản hồi trực tiếp cho mọi khách hàng nhưng xin lưu ý rằng chúng tôi sẽ xem xét mọi phản hồi từ các bạn.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Trung Đông</value>
+  </data>
+  <data name="min">
+    <value>{0} phút</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Giảm thiểu</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} phút</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0} phút</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} phút trước</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 phút</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} phút để đọc</value>
+  </data>
+  <data name="module">
+    <value>Mô-đun</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Hoàn tất mô-đun</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Mô-đun chưa hoàn tất</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} Tài liệu tham khảo về mô-đun</value>
+  </data>
+  <data name="modules">
+    <value>Mô-đun</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Mô-đun trong lộ trình học tập này</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Trang đã yêu cầu không khả dụng đối với {0}. Bạn đã được chuyển hướng đến phiên bản sản phẩm mới nhất có trang này.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} tháng trước</value>
+  </data>
+  <data name="more">
+    <value>Thêm</value>
+  </data>
+  <data name="moreInfo">
+    <value>Thông tin thêm</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Hướng dẫn khác</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} mô-đun</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} đơn vị</value>
+  </data>
+  <data name="name">
+    <value>Tên</value>
+  </data>
+  <data name="namespace">
+    <value>Không gian tên</value>
+  </data>
+  <data name="namespaces">
+    <value>Không gian tên</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Hệ thống phản hồi mới của chúng tôi được xây dựng dựa trên các vấn đề GitHub. Hãy đọc &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;bài đăng blog của chúng tôi&lt;/a&gt; để biết nội dung thay đổi này.</value>
+  </data>
+  <data name="next">
+    <value>Tiếp theo</value>
+  </data>
+  <data name="nextPage">
+    <value>Trang tiếp theo</value>
+  </data>
+  <data name="no">
+    <value>Không</value>
+  </data>
+  <data name="noAchievements">
+    <value>Bạn hiện không có thành tích nào. &lt;a href="{0}"&gt;Hoàn thành các mô-đun để giành được một số thành tích.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} không có thành tích.</value>
+  </data>
+  <data name="noClosed">
+    <value>Không có vấn đề nào đã đóng</value>
+  </data>
+  <data name="noOpen">
+    <value>Không có vấn đề nào đang mở</value>
+  </data>
+  <data name="noOutput">
+    <value>Không có đầu ra</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Không tìm thấy kết quả</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Chưa có kết quả, nhưng hãy tiếp tục nhập...</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Không có kết quả cho {term}&lt;br /&gt;&lt;a href="{url}"&gt;Tìm kiếm "{filter-text}" trong tất cả {scope} tài liệu&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Lưu ý&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Ghi chú cho Người gọi</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Ghi chú cho Người thực hiện</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Ghi chú cho Người kế thừa</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} Đã đóng</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} Đang mở</value>
+  </data>
+  <data name="officeDocs">
+    <value>Tài liệu Office</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Đã hiểu.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 mô-đun</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 đơn vị</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Điều hướng trên trang</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>trên {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Vấn đề đang mở</value>
+  </data>
+  <data name="openIssues">
+    <value>Vấn đề đang mở</value>
+  </data>
+  <data name="operationId">
+    <value>ID thao tác:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Nhà cung cấp dịch vụ</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Tham số tùy chọn</value>
+  </data>
+  <data name="options">
+    <value>Tùy chọn</value>
+  </data>
+  <data name="output">
+    <value>Đầu ra</value>
+  </data>
+  <data name="overloads">
+    <value>Quá tải</value>
+  </data>
+  <data name="overrides">
+    <value>Ghi đè</value>
+  </data>
+  <data name="overview">
+    <value>Tổng quan</value>
+  </data>
+  <data name="owner">
+    <value>Chủ sở hữu</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Người dùng này là chủ sở hữu của kho lưu trữ {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Thái Bình Dương</value>
+  </data>
+  <data name="package">
+    <value>Gói</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} Tài liệu tham khảo về gói</value>
+  </data>
+  <data name="packages">
+    <value>Gói</value>
+  </data>
+  <data name="page">
+    <value>Trang {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Hành động với trang</value>
+  </data>
+  <data name="parameters">
+    <value>Tham số</value>
+  </data>
+  <data name="path">
+    <value>Đường dẫn:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Chọn phản ứng của bạn</value>
+  </data>
+  <data name="platform">
+    <value>Nền tảng</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Vui lòng điền vào trường này.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Vui lòng thử lại.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Khởi chạy Cổng thông tin Microsoft Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Đang tải Cổng thông tin Microsoft Azure...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Mở một phòng thí nghiệm trong cửa sổ mới</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Cần có Cổng thông tin Microsoft Azure để hoàn tất bài học này.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Phòng thí nghiệm trên Cổng thông tin Azure cung cấp tài nguyên miễn phí trên Azure để hoàn tất cả bước trong Bài học này. Phòng thí nghiệm trên Cổng thông tin Azure không ảnh hưởng đến gói đăng ký Azure của bạn. Bạn sẽ không phải trả phí.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Phòng thí nghiệm trên Cổng thông tin Azure đã sẵn sàng.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Có, kích hoạt một phòng thí nghiệm mới</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Phòng thí nghiệm trên Cổng thông tin Azure cho một bài học khác hiện đang hoạt động</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Bạn hiện đang có một Phòng thí nghiệm mở trên Cổng thông tin Azure cho một bài học khác ({lab-name}). Bạn có muốn bỏ phòng thí nghiệm hiện tại và kích hoạt một phòng thí nghiệm khác cho bài học này không?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Thử khởi chạy lại phòng thí nghiệm</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Đăng nhập để khởi chạy Cổng thông tin Microsoft Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Điều kiện tiên quyết:</value>
+  </data>
+  <data name="preview">
+    <value>Xem trước</value>
+  </data>
+  <data name="previewTypescript">
+    <value>API này được cung cấp dưới dạng bản xem trước cho các nhà phát triển và có thể thay đổi dựa trên phản hồi mà chúng tôi nhận được. Không sử dụng API này trong môi trường sản xuất.</value>
+  </data>
+  <data name="previous">
+    <value>Trước</value>
+  </data>
+  <data name="previousPage">
+    <value>Trang trước</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Tài liệu phiên bản trước</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Điều khoản về quyền riêng tư</value>
+  </data>
+  <data name="product">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="productFeedback">
+    <value>Phản hồi về sản phẩm</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Các ứng dụng dành cho doanh nghiệp</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Thuộc tính</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Chi tiết thuộc tính</value>
+  </data>
+  <data name="propertyValue">
+    <value>Giá trị thuộc tính</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Đang tạo hộp cát của bạn. Quá trình này sẽ chỉ mất một vài phút...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Bộ lọc nhanh</value>
+  </data>
+  <data name="quizComplete">
+    <value>Xin chúc mừng!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Không thể tải nhận xét. Đã vượt quá giới hạn tỷ lệ API GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Không thể tìm kiếm sự cố. Đã vượt quá giới hạn tỷ lệ API GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Nhận xét hoặc đề xuất? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Cho chúng tôi biết ý kiến ở đây&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Vui lòng chia sẻ ý kiến của bạn. Chúng tôi mong muốn nhận phản hồi bằng mọi ngôn ngữ.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Đọc bằng tiếng Anh</value>
+  </data>
+  <data name="readonly">
+    <value>chỉ đọc</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Bạn nhận được thành tích này {0} vì đã hoàn thành {1}.</value>
+  </data>
+  <data name="references">
+    <value>Tham chiếu</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Tinh chỉnh nội dung học tập</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Mô-đun này nằm trong các lộ trình học tập sau</value>
+  </data>
+  <data name="remaining">
+    <value>còn lại</value>
+  </data>
+  <data name="remarks">
+    <value>Nhận xét</value>
+  </data>
+  <data name="removeItem">
+    <value>Xóa {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Khoản thời gian gia hạn</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Cảm ơn bạn vì đã báo cáo mối lo ngại cho chúng tôi. Chúng tôi sẽ xem xét kỹ những nội dung gửi này và thực hiện các bước thích hợp để giải quyết sự cố này. Do những mối lo ngại về pháp lý và quyền riêng tư, chúng tôi có thể không cung cấp được cho bạn bất kỳ nội dung cập nhật bổ sung nào về nội dung gửi này. Cảm ơn bạn đã liên hệ với chúng tôi.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Báo cáo sự cố</value>
+  </data>
+  <data name="requestBody">
+    <value>Nội dung yêu cầu</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Nội dung của yêu cầu có thể là một trong các nội dung sau:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Tiêu đề yêu cầu</value>
+  </data>
+  <data name="requestPreview">
+    <value>Yêu cầu xem trước</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL yêu cầu</value>
+  </data>
+  <data name="required">
+    <value>đã yêu cầu</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Tham số được yêu cầu</value>
+  </data>
+  <data name="requirements">
+    <value>Các yêu cầu</value>
+  </data>
+  <data name="resource_type">
+    <value>Loại</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Phản hồi</value>
+  </data>
+  <data name="restart">
+    <value>Khởi động lại</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Chúng tôi không thể mời bạn sử dụng một đối tượng thuê hộp cát do giới hạn trên tài khoản của bạn. Vui lòng liên hệ với người quản trị của bạn.</value>
+  </data>
+  <data name="resultsFound">
+    <value>Đã tìm thấy {0} kết quả</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Thử kích hoạt lại hộp cát</value>
+  </data>
+  <data name="returns">
+    <value>Trả về</value>
+  </data>
+  <data name="returnValue">
+    <value>Giá trị trả về</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Xem lại lịch sử Hướng dẫn học tập</value>
+  </data>
+  <data name="roles">
+    <value>Vai trò</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Chạy</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Đã kích hoạt hộp cát!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Quyền truy cập vào hộp cát đã hết hạn</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Hộp cát của bạn đã hết hạn. Kích hoạt hộp cát mới.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Hộp cát sẽ cung cấp cho bạn quyền truy cập miễn phí vào các tài nguyên cần thiết trên Azure để hoàn thành bài học này. Đơn đăng ký Azure của bạn sẽ không bị tính phí.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Bạn phải chấp nhận lời mời của đối tượng thuê trên Azure thì mới sử dụng được hộp cát</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Hộp cát cho mô-đun này tạm thời bị tắt để bảo trì.</value>
+  </data>
+  <data name="search">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Điều hướng tìm kiếm</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Tìm kiếm các phiên bản trước</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Bộ lọc tìm kiếm là "{0}". Nhấn để xóa.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} giây trước</value>
+  </data>
+  <data name="security">
+    <value>Bảo mật</value>
+  </data>
+  <data name="seeAlso">
+    <value>Cũng xem</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Phien bản đã chọn</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Lọc danh sách các ngôn ngữ bằng cách chọn khu vực hoặc bằng cách nhập tên ngôn ngữ hoặc mã ngôn ngữ.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Chọn gói</value>
+  </data>
+  <data name="selectVersion">
+    <value>Chọn phiên bản</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Chọn vai trò của bạn</value>
+  </data>
+  <data name="service">
+    <value>Dịch vụ</value>
+  </data>
+  <data name="services">
+    <value>Dịch vụ</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Dịch vụ tạm thời không khả dụng. Chúng tôi đang nỗ lực khắc phục vấn đề này.</value>
+  </data>
+  <data name="share">
+    <value>Chia sẻ</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Chia sẻ thành tích này trên {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Kiểm tra thành tích mà tôi vừa giành được cho {moduleName} trên Microsoft Guided Learning. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Bài viết được chia sẻ] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Chia sẻ tài liệu này</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Chia sẻ thành tích của bạn:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Hiển thị tất cả lớp nguồn gốc</value>
+  </data>
+  <data name="signIn">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="signInAzure">
+    <value>Vui lòng đăng nhập bằng tài khoản Azure của bạn.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Đăng nhập để kiểm tra công việc của bạn</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Bạn đã đăng nhập vào Cloud Shell bằng một tài khoản khác với tài khoản Docs của mình. Vui lòng đăng xuất khỏi Cloud Shell rồi thử truy cập lại hộp cát đó.</value>
+  </data>
+  <data name="signingIn">
+    <value>Đang đăng nhập...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Đăng nhập để kích hoạt hộp cát</value>
+  </data>
+  <data name="signInToComment">
+    <value>Đăng nhập để nhận xét</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Đăng nhập để gửi phản hồi về tài liệu</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Đăng nhập để cung cấp phản hồi</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Đăng nhập&lt;/a&gt; để tăng giới hạn tỷ lệ API GitHub của bạn.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Đăng nhập để thêm phản ứng của bạn</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Đăng nhập để lưu tiến trình</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Đăng nhập&lt;/a&gt; để xem hồ sơ người dùng của bạn.</value>
+  </data>
+  <data name="signOut">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Phản hồi trang web</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Kiến trúc sư giải pháp</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Rất tiếc, đã xảy ra lỗi</value>
+  </data>
+  <data name="start">
+    <value>Bắt đầu</value>
+  </data>
+  <data name="startHere">
+    <value>Bắt đầu tại đây</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Bước {step-index}/{step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Cấu trúc</value>
+  </data>
+  <data name="submit">
+    <value>Gửi</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Gửi phản hồi</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Đã gửi thành công!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Đề xuất ý kiến về sản phẩm</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Chưa hoàn tất nhiệm vụ đúng cách.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Chúng tôi sẽ cập nhật trang này bằng trải nghiệm tương tác mới. Hãy sớm kiểm tra lại!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Cảm ơn bạn đã gửi phản hồi!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Chưa chính xác.</value>
+  </data>
+  <data name="theme">
+    <value>Chủ đề</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Hiện không có phản hồi nào cho tài liệu này. Phản hồi đã gửi sẽ hiển thị ở đây.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Tất cả các thành viên của lớp này đều an toàn luồng.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Tất cả các thành viên thể hiện của lớp này đều an toàn luồng.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Tất cả các thành viên tĩnh của lớp này đều an toàn luồng.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Loại này không an toàn luồng.</value>
+  </data>
+  <data name="threadSafety">
+    <value>An toàn luồng</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} phản ứng không thích</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} phản ứng thích</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Mẹo&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Bật/tắt sự cố</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Chuyển đổi Bài học</value>
+  </data>
+  <data name="trademarks">
+    <value>Thương hiệu</value>
+  </data>
+  <data name="triggers">
+    <value>Trình kích hoạt</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Bạn đã giành được một cúp vì hoàn thành</value>
+  </data>
+  <data name="tryAgain">
+    <value>Thử lại</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Thử mã này trong trình duyệt của bạn</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Dùng thử API REST với thông tin như dưới đây.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>tất cả {0} người đóng góp</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% hoàn tất!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Xin chúc mừng!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Tiếp tục tại đây</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Người đóng góp</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Đọc thêm</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>Còn lại {0} phút</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} phút để hoàn thành</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Bước tiếp theo</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Hướng dẫn tiếp theo</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Tài nguyên</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Xem {0} hoặc trở thành người đóng góp bằng cách đề xuất cải tiến về {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Bạn đã tìm hiểu cách...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Bạn đã hoàn thành hướng dẫn "{0}".</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Bạn sẽ tìm hiểu cách...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Bạn có phản hồi hoặc vướng mắc với một phần của hướng dẫn này?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Báo cáo sự cố trên Github</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Bước tiếp theo</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Các tin được tuyển chọn bởi</value>
+  </data>
+  <data name="type">
+    <value>loại</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Nhập định nghĩa</value>
+  </data>
+  <data name="typeParameters">
+    <value>Tham số nhập</value>
+  </data>
+  <data name="unit">
+    <value>Đơn vị</value>
+  </data>
+  <data name="unitComplete">
+    <value>Hoàn tất bài học</value>
+  </data>
+  <data name="unitMarker">
+    <value>{index}/{total} đơn vị</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Cần có hộp cát để hoàn tất bài học này</value>
+  </data>
+  <data name="units">
+    <value>Đơn vị</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Tham số URI</value>
+  </data>
+  <data name="usage">
+    <value>Mức sử dụng</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Sử dụng máy ảo</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Truy cập trang web của Phòng thí nghiệm tại chỗ để biết hướng dẫn tích hợp.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Người tìm hiểu về Tài liệu</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Sử dụng máy tính nội bộ của bạn</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Ở lại trang web này và thực hiện các hướng dẫn bằng máy của riêng bạn.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Sử dụng Trình kết nối này</value>
+  </data>
+  <data name="value">
+    <value>Giá trị</value>
+  </data>
+  <data name="valueFrom">
+    <value>giá trị từ</value>
+  </data>
+  <data name="version">
+    <value>Phiên bản</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Xem sự cố này trên GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Xem thêm phản hồi về GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Xem trên GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Xem {username} trên GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Chúng tôi khuyên bạn nên sử dụng Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Tải xuống ngay</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Tài liệu Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Khởi chạy chế độ VM</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Đang tải máy ảo...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Cần có VM để hoàn tất đơn vị này.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Chế độ Máy ảo cung cấp quyền truy cập miễn phí vào máy ảo trên Azure để hoàn tất các bước trong bài học này. Gói đăng ký Azure của bạn sẽ không bị tính phí</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Có, kích hoạt VM mới</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Một VM cho một đơn vị khác hiện đang hoạt động</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Bạn hiện đã mở một Máy ảnh trong mô-đun {lab-name}. Nếu kích hoạt Máy ảo này thì bạn sẽ bị mất công việc trong mô-đun khác.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Thử khởi chạy lại chế độ Máy ảo</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Đăng nhập để khởi chạy chế độ VM</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Cảnh báo&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} tuần trước</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Chúng tôi muốn nghe suy nghĩ của bạn. Chọn loại bạn muốn cung cấp:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Yêu cầu dành cho Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Tài liệu Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Toàn thế giới</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Bạn muốn cung cấp phản hồi?</value>
+  </data>
+  <data name="xp">
+    <value>{0} Lập trình cực hạn</value>
+  </data>
+  <data name="yes">
+    <value>Có</value>
+  </data>
+  <data name="youDidIt">
+    <value>Bạn đã hoàn thành!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Bạn đã kiếm được điểm kinh nghiệm nhờ hoàn tất bài kiểm tra kiến thức.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Bạn đã kiếm được điểm kinh nghiệm nhờ hoàn tất nhiệm vụ.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Bạn đã kiếm được &lt;span class="experience-points"&gt;&lt;/span&gt; điểm kinh nghiệm.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Bạn phải trả lời tất cả câu hỏi thì mới có thể kiểm tra công việc của mình.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Bạn phải sử dụng các tài nguyên hộp cát cung cấp để kiểm tra công việc của mình.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Bạn đã làm được</value>
+  </data>
+  <data name="yourAccount">
+    <value>Tài khoản của bạn</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Tài khoản của bạn đã bị xóa.</value>
+  </data>
+  <data name="yourData">
+    <value>Dữ liệu của bạn</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Tải xuống hoặc xóa tiến trình và thành tích bạn đã lưu trên Tài liệu. Việc xóa thông tin của bạn không ảnh hưởng đến danh tính Microsoft của bạn.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Bạn chưa hoàn thành công việc một cách chính xác.</value>
+  </data>
+</root>

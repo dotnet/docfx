@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>sprejete vrednosti</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Sprejmi povabilo</value>
+  </data>
+  <data name="achievements">
+    <value>Dosežki</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Preverite dosežek, ki sem ga pravkar prejel(-a) za {0} v Microsoftovem vodenem izobraževanju.</value>
+  </data>
+  <data name="actions">
+    <value>Dejanja</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Da, aktiviraj nov peskovnik</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Aktiviranje peskovnika</value>
+  </data>
+  <data name="aDayAgo">
+    <value>pred enim dnem</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Dodatne funkcije in zahteve</value>
+  </data>
+  <data name="addParameter">
+    <value>Dodaj parameter</value>
+  </data>
+  <data name="administrator">
+    <value>Skrbnik</value>
+  </data>
+  <data name="advanced">
+    <value>Izkušen uporabnik</value>
+  </data>
+  <data name="africa">
+    <value>Afrika</value>
+  </data>
+  <data name="all">
+    <value>vse</value>
+  </data>
+  <data name="allapis">
+    <value>Vsi vmesniki API</value>
+  </data>
+  <data name="allPackages">
+    <value>Vsi paketi</value>
+  </data>
+  <data name="americas">
+    <value>Severna in Južna Amerika</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>pred eno minuto</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>pred enim mesecem</value>
+  </data>
+  <data name="anHourAgo">
+    <value>pred eno uro</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>Sklic na vmesnik API za {0}</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>Iskanje vmesnikov API ni na voljo. Poskusite znova pozneje.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Prejšnje različice</value>
+  </data>
+  <data name="areYouSure">
+    <value>Ali ste prepričani?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Brisanja svojih podatkov ne morete razveljaviti.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>pred eno sekundo</value>
+  </data>
+  <data name="asia">
+    <value>Azija</value>
+  </data>
+  <data name="askQuestion">
+    <value>Postavite vprašanje</value>
+  </data>
+  <data name="assemblies">
+    <value>Zbiri</value>
+  </data>
+  <data name="assembly">
+    <value>Zbir</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Priloženi dogodki</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Priložene lastnosti</value>
+  </data>
+  <data name="attributes">
+    <value>Atributi</value>
+  </data>
+  <data name="avatar">
+    <value>Avatar</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>pred enim tednom</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell uporablja vaše obstoječe naročnine na Azure. Uporabo storitve Cloud Shell in izvajanje ukazov je treba plačati.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Dokumentacija za Azure</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Za dokončanje ste si prislužili značko</value>
+  </data>
+  <data name="begin">
+    <value>Začetek</value>
+  </data>
+  <data name="beginner">
+    <value>Začetnik</value>
+  </data>
+  <data name="beta">
+    <value>beta</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Telo</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Sledenje poti</value>
+  </data>
+  <data name="browse">
+    <value>Prebrskaj</value>
+  </data>
+  <data name="browseCode">
+    <value>Poišči kodo</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Poslovni analitik</value>
+  </data>
+  <data name="businessUser">
+    <value>Poslovni uporabnik</value>
+  </data>
+  <data name="calls">
+    <value>Klici</value>
+  </data>
+  <data name="capabilities">
+    <value>Zmogljivosti</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Svarilo&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Preverite svoje odgovore</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Znova preverite svoje delo</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Preverite svoje znanje</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Preverite svoje delo</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Izberite odziv</value>
+  </data>
+  <data name="claimReward">
+    <value>Odkleni dosežek</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Razredi</value>
+  </data>
+  <data name="clearfilter">
+    <value>Počisti filter</value>
+  </data>
+  <data name="clearterm">
+    <value>Počisti izraz</value>
+  </data>
+  <data name="clickForRSS">
+    <value>Kliknite za vir RSS</value>
+  </data>
+  <data name="close">
+    <value>Zapri</value>
+  </data>
+  <data name="closedIssue">
+    <value>Zaprta težava</value>
+  </data>
+  <data name="closedIssues">
+    <value>Zaprte težave</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Ta API ni v skladu s specifikacijo CLS.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>Nadomestna možnost, ki je v skladu s specifikacijo CLS</value>
+  </data>
+  <data name="code">
+    <value>Koda</value>
+  </data>
+  <data name="collaborator">
+    <value>Sodelavec</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Ta uporabnik je bil povabljen k sodelovanju pri shrambi {repo}.</value>
+  </data>
+  <data name="commands">
+    <value>Ukazi</value>
+  </data>
+  <data name="comment">
+    <value>Komentar</value>
+  </data>
+  <data name="commentCount">
+    <value>Komentarji: {0}</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>Oseba {name} je komentirala {time ago}</value>
+  </data>
+  <data name="comments">
+    <value>Komentarji</value>
+  </data>
+  <data name="complete">
+    <value>Dokončano</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Konfiguriranje lupine v oblaku za dostop do peskovnika ...</value>
+  </data>
+  <data name="confused">
+    <value>Zmeden</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>Zmedeni odzivi: {0}</value>
+  </data>
+  <data name="congratulations">
+    <value>Čestitamo!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Povezave na račun</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Podrobnosti konstruktorjev</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Konstruktorji</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Povratne informacije o vsebini</value>
+  </data>
+  <data name="contents">
+    <value>Vsebina</value>
+  </data>
+  <data name="continue">
+    <value>Naprej</value>
+  </data>
+  <data name="continueHere">
+    <value>Nadaljujte tukaj</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Nadaljujte na prvi korak</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Nadaljuj z naslednjim modulom</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Nadaljuj brez shranjevanja napredka</value>
+  </data>
+  <data name="contributor">
+    <value>Sodelavec</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Ta uporabnik se je v preteklosti potrdil shrambo {repo}.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Prispevaj</value>
+  </data>
+  <data name="contributors">
+    <value>Sodelavci</value>
+  </data>
+  <data name="copy">
+    <value>Kopiraj</value>
+  </data>
+  <data name="correctChoice">
+    <value>Popravi možnost</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Vpisali ste z Microsoftovim računom organizacije ({0}), zato bo vaša izkušnja drugačna od tiste z osebnim računom:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Nekatere funkcije igrifikacije niso na voljo zaposlenim pri Microsoftu.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>V vašem profilu bo javno navedeno, da ste zaposleni pri Microsoftu.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Če izgubite dostop do e-pošte, se ne boste mogli prijaviti na to spletno mesto.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Če želite to spletno mesto uporabljati za osebno dejavnost, se vpišite z drugačnim računom.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Za povezavo svojega računa potrebujete te podatke:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Z uporabo storitve Microsoft Learn &lt;strong&gt;potrjujete in soglašate&lt;/strong&gt;, da bo naše omrežje spletnih mest in aplikacij v okviru vašega članstva beležilo in spremljajo vaše dosežke in dejavnosti ter da lahko vaše rezultate in dejavnosti posredujemo drugim skupinam v Microsoftu. Poleg tega bodo javno prikazani tudi vaše uporabniško ime, prikazano ime, dosežki in dejavnosti.&lt;ul&gt;&lt;li&gt;V vašem profilu bo javno navedeno, da ste zaposleni pri Microsoftu.&lt;/li&gt;&lt;li&gt;Če izgubite dostop do e-pošte, se ne boste mogli prijaviti na spletno mesto.&lt;/li&gt;&lt;li&gt;Nekatere funkcije igrifikacije niso na voljo zaposlenim pri Microsoftu.&lt;/li&gt;&lt;li&gt;Če želite to spletno mesto uporabljati za osebno dejavnost, se vpišite z drugačnim računom.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Če postanete član, potrjujete in soglašate, da bodo vaši dosežki in dejavnosti v okviru vašega članstva v storitvi Microsoft Learn zabeleženi v našem omrežju spletnih mest in aplikacij. Vaše uporabniško ime, prikazano ime, dosežki in dejavnosti bodo javno prikazani.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Ustvari nov arhiv</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Ustvarjanje povezave</value>
+  </data>
+  <data name="currentSelection">
+    <value>Trenutni izbor:</value>
+  </data>
+  <data name="dark">
+    <value>Temna</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>Pred toliko dnevi: {0}</value>
+  </data>
+  <data name="defaultValue">
+    <value>privzeta vrednost</value>
+  </data>
+  <data name="definition">
+    <value>Definicija</value>
+  </data>
+  <data name="definitions">
+    <value>Definicije</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Pooblaščenci</value>
+  </data>
+  <data name="delete">
+    <value>Izbriši</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Izbriši parameter</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Uvedi v Azure</value>
+  </data>
+  <data name="deprecated">
+    <value>Ta vmesnik API je zdaj zastarel.</value>
+  </data>
+  <data name="derived">
+    <value>Izpeljano</value>
+  </data>
+  <data name="description">
+    <value>Opis</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Razvijalec</value>
+  </data>
+  <data name="developers">
+    <value>Razvijalci</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Zapri to pogovorno okno</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Aktiviran je že drug peskovnik</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Peskovnik ste že aktivirali v modulu &lt;a href="{0}"&gt;{1}&lt;/a&gt;. Če aktivirate ta peskovnik, boste izgubili svoje delo v drugem modulu.</value>
+  </data>
+  <data name="disable">
+    <value>Onemogoči</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Rezultati iskanja so iz dokumentacije za prejšnje različice, ki je ne posodabljamo redno.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Profil v storitvi Docs</value>
+  </data>
+  <data name="documentDetails">
+    <value>Podrobnosti dokumenta</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Ne uredite tega razdelka. Potreben je za povezovanje težav med storitvama docs.microsoft.com in GitHub.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>Dokumentacija za .NET</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>Urejevalnik za ogrodje .NET</value>
+  </data>
+  <data name="download">
+    <value>Prenos</value>
+  </data>
+  <data name="downloadPdf">
+    <value>Prenos datoteke PDF</value>
+  </data>
+  <data name="downloadZIP">
+    <value>Prenos datoteke ZIP</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Rezultati tega postopka so dinamični.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Zaslužite več dosežkov</value>
+  </data>
+  <data name="edit">
+    <value>Uredi</value>
+  </data>
+  <data name="editdesc">
+    <value>Uredite ta dokument</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Izrecne uvedbe vmesnika</value>
+  </data>
+  <data name="email">
+    <value>E-pošta</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Za aktiviranje peskovnika potrebujete e-poštni naslov</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Za aktiviranje peskovnika mora biti z vašim Microsoftovim računom povezan veljaven e-poštni naslov. V &lt;a href="https://account.live.com" target="_blank"&gt;nastavitvah Microsoftovega računa&lt;/a&gt; povežite svoj e-poštni naslov in poskusite znova.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Prazno ime ni dovoljeno</value>
+  </data>
+  <data name="enable">
+    <value>Omogoči</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Odpri način v fokusu</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Oštevilčenja</value>
+  </data>
+  <data name="error">
+    <value>Napaka</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Napaka pri ustvarjanju komentarja. Če želite, lahko poskusite znova v storitvi &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Napaka pri ustvarjanju težave. Če želite, lahko poskusite znova v storitvi &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Vaših rezultatov iskanja ni bilo mogoče naložiti. Poskusite znova pozneje.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Napaka pri nalaganju komentarjev.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Napaka pri nalaganju povratnih informacij.</value>
+  </data>
+  <data name="europe">
+    <value>Evropa</value>
+  </data>
+  <data name="eventDetails">
+    <value>Podrobnosti dogodkov</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Dogodki</value>
+  </data>
+  <data name="examples">
+    <value>Primeri</value>
+  </data>
+  <data name="exceptions">
+    <value>Izjeme</value>
+  </data>
+  <data name="exit">
+    <value>Izhod</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Zapri način v fokusu</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Razširim meni za povratne informacije o dokumentaciji</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Razišči druge module</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Razišči druge poti</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Na voljo ni bilo nobenih informacij za izvoz.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Načini razširitve</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Povratne informacije</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Sem vnesite povratne informacije]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Pošljite povratne informacije o izdelku</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Polja</value>
+  </data>
+  <data name="fieldValue">
+    <value>Vrednost polja</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Filter</value>
+  </data>
+  <data name="findALanguage">
+    <value>Poiščite jezik</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>To oštevilčevanje vsebuje atribut {0}, ki omogoča bitno združevanje njegovih članskih vrednosti.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Podrobnosti funkcij</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Funkcije</value>
+  </data>
+  <data name="getHelp">
+    <value>Dobite pomoč</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Pošljite povratne informacije</value>
+  </data>
+  <data name="globalParameters">
+    <value>Globalni parametri</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Vrnite se in dokončajte</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Vrnite se in dokončajte modul</value>
+  </data>
+  <data name="goodWork">
+    <value>Odlično opravljeno!</value>
+  </data>
+  <data name="greatWork">
+    <value>Odlično opravljeno!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Praktične preizkušnje</value>
+  </data>
+  <data name="headers">
+    <value>Glave</value>
+  </data>
+  <data name="heart">
+    <value>Prisrčen</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>Prisrčni odzivi: {0}</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Pomagajte mi izbrati</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Namig:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Navdušen</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>Navdušeni odzivi: {0}</value>
+  </data>
+  <data name="hoursAgo">
+    <value>Pred {0} h</value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Kako se lahko izboljšamo?</value>
+  </data>
+  <data name="hr">
+    <value>h</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} h {1} min</value>
+  </data>
+  <data name="implements">
+    <value>Uvedbe</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Pomembno&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>v</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Nepravilna možnost</value>
+  </data>
+  <data name="inheritance">
+    <value>Dediščina</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Podedovani člani</value>
+  </data>
+  <data name="input">
+    <value>Vnos</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Vmesniki</value>
+  </data>
+  <data name="intermediate">
+    <value>Poznavalec</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Ta vmesnik API podpira infrastrukturo izdelka in ni namenjen uporabi neposredno z vašo kodo.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Povratne informacije o storitvi Intune</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>oseba {name} je odprla {time ago}</value>
+  </data>
+  <data name="issueProduct">
+    <value>Prijavite težavo z izdelkom</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Ali je ta stran uporabna?</value>
+  </data>
+  <data name="itPro">
+    <value>Strokovnjak za IT</value>
+  </data>
+  <data name="justNow">
+    <value>pravkar</value>
+  </data>
+  <data name="key">
+    <value>Ključ:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Preverjanje znanja</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Preverjanje znanja je dokončano. Na vsa vprašanja ste odgovorili pravilno.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Preverjanje znanja je dokončano</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Dokončali ste preverjanje znanja vadnice {tutorial}.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Dokončali ste poglavje vadnice {tutorial} za modul. Zdaj lahko nadaljujete z naslednjim poglavjem {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Vašega preverjanja znanja žal nismo mogli oceniti. Poskusite znova.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>To poglavje ste dokončali. Nadaljujte z naslednjim poglavjem {nextUnitName}.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>To poglavje ste dokončali. Nadaljujte z dodatnimi vadnicami.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Ko dokončate preverjanje znanja za vadnico, odklenete dosežek {moduleName}.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Kazalo vsebine</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Filtriraj kazalo vsebine</value>
+  </data>
+  <data name="language">
+    <value>Jezik</value>
+  </data>
+  <data name="laugh">
+    <value>Nasmejan</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>Nasmejani odzivi: {0}</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Raziščite Microsoftovo tehnologijo z vadnicami v živo, vključno s praktičnimi dejavnostmi. To je predogledna različica izkušnje, zato &lt;a href="https://aka.ms/learningfeedback"&gt;nam pošljite sgvoje povratne informacije&lt;/a&gt;.</value>
+  </data>
+  <data name="learningpath">
+    <value>Vodeno učenje</value>
+  </data>
+  <data name="learnmore">
+    <value>Več informacij</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Dodajte komentar</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Povratne informacije lahko vnesete tudi &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;neposredno v storitvi GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt;.</value>
+  </data>
+  <data name="level">
+    <value>Raven {0}</value>
+  </data>
+  <data name="levels">
+    <value>Ravni</value>
+  </data>
+  <data name="light">
+    <value>Svetla</value>
+  </data>
+  <data name="limits">
+    <value>Omejitve</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Nalaganje ...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Nalaganje povratnih informacij ...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Nalaganje informacij o peskovniku ...</value>
+  </data>
+  <data name="loadMore">
+    <value>Več informacij&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Naloži več rezultatov</value>
+  </data>
+  <data name="login">
+    <value>Prijava</value>
+  </data>
+  <data name="loginAzure">
+    <value>Prijavite se s svojim računom za Azure.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Glavna vrstica za krmarjenje</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Upravljaj moj profil</value>
+  </data>
+  <data name="maximize">
+    <value>Maksimiziraj</value>
+  </data>
+  <data name="member">
+    <value>Član</value>
+  </data>
+  <data name="memberDescription">
+    <value>Ta uporabnik je član organizacije {org}.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Podrobnosti članov</value>
+  </data>
+  <data name="members">
+    <value>Člani</value>
+  </data>
+  <data name="methodDetails">
+    <value>Podrobnosti načinov</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Načini</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Obvestilo o zasebnosti za zaposlene pri Microsoftu</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Vpisali ste se z Microsoftovim računom svoje organizacije ({email}). Z uporabo storitve Microsoft Learn &lt;strong&gt;potrjujete in soglašate&lt;/strong&gt;, da bo naše omrežje spletnih mest in aplikacij v okviru vašega članstva beležilo in spremljajo vaše dosežke in dejavnosti ter da lahko vaše rezultate in dejavnosti posredujemo drugim skupinam v Microsoftu. Poleg tega bodo javno prikazani tudi vaše uporabniško ime, prikazano ime, dosežki in dejavnosti.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Težava s storitvijo Microsoft Learn</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn je povsem nova platforma, za katero si prizadevamo izboljšati vsebino in izkušnje na podlagi povratnih informacij strank.
+
+Prosimo vas za vaše mnenje.
+
+Pošljite nam te informacije:
+1. Težavo, ki jo želite prijaviti, ali povratne informacije.
+2. Kar koli drugega, kar nam želite zaupati.
+
+Opomba: čeprav trenutno ne bomo odgovorili vsem uporabnikom, upoštevajte, da pregledamo katere koli in kakršne koli povratne informacije, ki jih prejmemo.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Bližnji vzhod</value>
+  </data>
+  <data name="min">
+    <value>{0} min</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Minimiziraj</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} min</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0} m</value>
+  </data>
+  <data name="minutesAgo">
+    <value>Pred {0} min</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 minuta</value>
+  </data>
+  <data name="minuteToRead">
+    <value>{0} min za branje</value>
+  </data>
+  <data name="module">
+    <value>Modul</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Modul je dokončan</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Modul ni dokončan</value>
+  </data>
+  <data name="moduleReference">
+    <value>Sklic na modul {0}</value>
+  </data>
+  <data name="modules">
+    <value>Moduli</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Moduli v tem vodenem učenju</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Zahtevana stran ni na voljo za {0}. Preusmerjeni ste bili na najnovejšo različico izdelka, za katero je na voljo ta stran.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>Pred toliko meseci: {0}</value>
+  </data>
+  <data name="more">
+    <value>Več</value>
+  </data>
+  <data name="moreInfo">
+    <value>Več informacij</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Več vadnic</value>
+  </data>
+  <data name="multipleModules">
+    <value>Št. modulov: {numberOf}</value>
+  </data>
+  <data name="multipleUnits">
+    <value>Št. enot: {numberOf}</value>
+  </data>
+  <data name="name">
+    <value>Ime</value>
+  </data>
+  <data name="namespace">
+    <value>Imenski prostor</value>
+  </data>
+  <data name="namespaces">
+    <value>Imenski prostori</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Naš novi sistem za posredovanje povratnih informacije temelji na sistemu za prijavo težav storitve GitHub. Več informacij o tej spremembi najdete v &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;naši objavi v spletnem dnevniku&lt;/a&gt;.</value>
+  </data>
+  <data name="next">
+    <value>Naprej</value>
+  </data>
+  <data name="nextPage">
+    <value>Naslednja stran</value>
+  </data>
+  <data name="no">
+    <value>Ne</value>
+  </data>
+  <data name="noAchievements">
+    <value>Trenutno nimate nobenega dosežka. &lt;a href="{0}"&gt;Če jih želite zaslužiti, dokončajte module.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} nima dosežkov.</value>
+  </data>
+  <data name="noClosed">
+    <value>Ni zaprtih težav</value>
+  </data>
+  <data name="noOpen">
+    <value>Ni odprtih težav</value>
+  </data>
+  <data name="noOutput">
+    <value>Ni rezultatov</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Ni rezultatov</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Trenutno ni še nobenih rezultatov, vendar nadaljujte vnašanje ...</value>
+  </data>
+  <data name="noResultsToc">
+    <value>Ni rezultatov za {term}&lt;br /&gt;&lt;a href="{url}"&gt;Poiščite »{filter-text}« v celotni dokumentaciji za {scope}&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Opomba&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Opombe za klicatelje</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Opombe za izvajalce</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Opombe za podedovalce</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>Zaprtih: {0}</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>Odprtih: {0}</value>
+  </data>
+  <data name="officeDocs">
+    <value>Dokumentacija za Office</value>
+  </data>
+  <data name="ok">
+    <value>V redu</value>
+  </data>
+  <data name="okGotIt">
+    <value>Razumem.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 modul</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 enota</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Krmarjenje na strani</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>dne {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Odprta težava</value>
+  </data>
+  <data name="openIssues">
+    <value>Odprte težave</value>
+  </data>
+  <data name="operationId">
+    <value>ID operacije:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Operatorji</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Izbirni parametri</value>
+  </data>
+  <data name="options">
+    <value>Možnosti</value>
+  </data>
+  <data name="output">
+    <value>Rezultat</value>
+  </data>
+  <data name="overloads">
+    <value>Preobremenitve</value>
+  </data>
+  <data name="overrides">
+    <value>Prepisi</value>
+  </data>
+  <data name="overview">
+    <value>Pregled</value>
+  </data>
+  <data name="owner">
+    <value>Lastnik</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Ta uporabnik je lastnik shrambe {repo}.</value>
+  </data>
+  <data name="pacific">
+    <value>Pacifik</value>
+  </data>
+  <data name="package">
+    <value>Paket</value>
+  </data>
+  <data name="packageReference">
+    <value>Informacije o paketu {0}</value>
+  </data>
+  <data name="packages">
+    <value>Paketi</value>
+  </data>
+  <data name="page">
+    <value>Stran {0}</value>
+  </data>
+  <data name="pageActions">
+    <value>Dejanja strani</value>
+  </data>
+  <data name="parameters">
+    <value>Parametri</value>
+  </data>
+  <data name="path">
+    <value>Pot:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Izberite odziv</value>
+  </data>
+  <data name="platform">
+    <value>Platforma</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Izpolnite to polje.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Poskusite znova.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Zaženite portal Azure</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Nalaganje portala Azure ...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Odpri laboratorij v novem oknu</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Za dokončanje te enote potrebujete portal Azure.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Laboratorij portala Azure zagotavlja prost dostop do sredstev Azure, s katerimi je mogoče dokončati korake v tej enoti. Laboratoriji portala Azure ne vplivajo na vašo naročnino na Azure. Teh virov vam ni treba plačati.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Vaš laboratorij portala Azure je pripravljen.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Da, aktiviraj nov laboratorij</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Laboratorij portala Azure za drugo enoto je že aktiviran</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Trenutno imate odprt laboratorij portala Azure v drugi enoti ({lab-name}). Ali želite zavreči svoj trenutni laboratorij in aktivirati novega za to enoto?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Poskusi znova zagnati laboratorij</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Vpišite se za zagon portala Azure</value>
+  </data>
+  <data name="prerequisites">
+    <value>Zahteve:</value>
+  </data>
+  <data name="preview">
+    <value>Predogled</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Ta API je na voljo kot predogledna različica za razvijalce in se lahko spremeni na podlagi prejetih povratnih informacij. Tega vmesnika API ne uporabljajte v produkcijskem okolju.</value>
+  </data>
+  <data name="previous">
+    <value>Nazaj</value>
+  </data>
+  <data name="previousPage">
+    <value>Prejšnja stran</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Prejšnja različica storitve Docs</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Izjava o zasebnosti</value>
+  </data>
+  <data name="product">
+    <value>Izdelek</value>
+  </data>
+  <data name="productFeedback">
+    <value>Povratne informacije o izdelku</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Izdelki</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Poslovne aplikacije</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Profil</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Lastnosti</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Podrobnosti lastnosti</value>
+  </data>
+  <data name="propertyValue">
+    <value>Vrednost lastnosti</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Ustvarjanje vašega peskovnika. Ta postopek bo trajal minuto ...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Hitri filtri</value>
+  </data>
+  <data name="quizComplete">
+    <value>Čestitamo!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Komentarjev ni mogoče naložiti. Dosegli ste omejitev števila ocen vmesnika API v storitvi GitHub.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Težav ni mogoče poiskati. Dosegli ste omejitev števila ocen vmesnika API v storitvi GitHub.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Imate komentarje ali predloge? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Dodajte jih sem&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Posredujte nam svoje ideje. Veseli smo povratnih informacij v katerem koli jeziku.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Preberi v angleščini</value>
+  </data>
+  <data name="readonly">
+    <value>samo za branje</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Ta dosežek {0} ste prejeli, ker ste dokončali {1}.</value>
+  </data>
+  <data name="references">
+    <value>Reference</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Natančneje določi vsebino za učenje</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Ta modul je del tega vodenega učenja</value>
+  </data>
+  <data name="remaining">
+    <value>preostane</value>
+  </data>
+  <data name="remarks">
+    <value>Pripombe</value>
+  </data>
+  <data name="removeItem">
+    <value>Odstrani {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Obdobje podaljšanja</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Zahvaljujemo se vam za prijavo te težave. Te prijave skrbno pregledamo, težavo pa bomo poskusili odpraviti z ustreznimi ukrepi. Zaradi pravnih vprašanj in vprašanj v zvezi z varstvom zasebnosti vam morda ne bomo posredovali nobenih dodatnih posodobitev o tej prijavi. Hvala, ker ste vzpostavili stik z nami.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Prijavite težavo</value>
+  </data>
+  <data name="requestBody">
+    <value>Telo zahteve</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Telo zahteve je lahko le nekaj od tega:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Glava zahteve</value>
+  </data>
+  <data name="requestPreview">
+    <value>Predogled zahteve</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL zahteve</value>
+  </data>
+  <data name="required">
+    <value>zahtevano</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Zahtevani parametri</value>
+  </data>
+  <data name="requirements">
+    <value>Zahteve</value>
+  </data>
+  <data name="resource_type">
+    <value>Vrste</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Odgovori</value>
+  </data>
+  <data name="restart">
+    <value>Zaženi znova</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Zaradi omejitev v vašem računu vam ne moremo poslati povabila v najemnika peskovnika. Obrnite se na skrbnika.</value>
+  </data>
+  <data name="resultsFound">
+    <value>Št, najdenih rezultatov: {0}</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Poskusi znova aktivirati peskovnik</value>
+  </data>
+  <data name="returns">
+    <value>Vrnjeno</value>
+  </data>
+  <data name="returnValue">
+    <value>Vrnjena vrednost</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Oglejte si zgodovino vodenega učenja</value>
+  </data>
+  <data name="roles">
+    <value>Vloge</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Zagon</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Peskovnik je aktiviran.</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Dostop do peskovnika je potekel</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Vaš peskovnik je potekel. Aktivirajte nov peskovnik.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Peskovnik vam zagotavlja brezplačen dostop do sredstev Azure, ki jih potrebujete za dokončanje te enote. Teh sredstev vam ne bo treba plačati v okviru svoje naročnine na Azure.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Če želite uporabljati peskovnik, morate sprejeti povabilo najemnika Azure.</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Peskovnik za ta modul je začasno onemogočen zaradi vzdrževanja.</value>
+  </data>
+  <data name="search">
+    <value>Išči</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Krmarjenje po iskanju</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Preišči prejšnje različice</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Filter iskanja je nastavljen na »{0}«. Tapnite, če želite odstraniti.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>Pred {0} s</value>
+  </data>
+  <data name="security">
+    <value>Varnost</value>
+  </data>
+  <data name="seeAlso">
+    <value>Glejte tudi</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Izbrana različica</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Filtrirajte seznam jezikov tako, da izberete regijo oziroma vnesete ime jezika ali kodo območnih nastavitev.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Izberite paket</value>
+  </data>
+  <data name="selectVersion">
+    <value>Izberite različico</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Izberite svojo vlogo</value>
+  </data>
+  <data name="service">
+    <value>Storitev</value>
+  </data>
+  <data name="services">
+    <value>Storitve</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Storitev trenutno ni na voljo. Delamo na tem.</value>
+  </data>
+  <data name="share">
+    <value>Skupna raba</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Dajte ta dosežek v skupno rabo v storitvi {0}</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Preverite dosežek, ki sem ga pravkar prejel(-a) za {moduleName} v Microsoftovem vodenem izobraževanju. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Članek v skupni rabi] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Dajte ta dokument v skupno rabo</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Delite svoj dosežek z drugimi:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Prikaži vse izpeljane razrede</value>
+  </data>
+  <data name="signIn">
+    <value>Vpis</value>
+  </data>
+  <data name="signInAzure">
+    <value>Vpišite se s svojim računom za Azure.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Vpišite se, da preverite svoje delo</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>V lupino v oblaku ste vpisani z računom, ki je drugačen od vašega računa za docs. Izpišite se iz lupine v oblaku in poskusite znova odpreti peskovnik.</value>
+  </data>
+  <data name="signingIn">
+    <value>Vpisovanje ...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Vpišite se, da aktivirate peskovnik</value>
+  </data>
+  <data name="signInToComment">
+    <value>Vpišite se, če želite komentirati</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Vpišite, če želite poslati povratne informacije o dokumentaciji</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Vpišite se, če želite poslati povratne informacije</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>&lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;Vpišite se&lt;/a&gt;, če želite povečati omejitev števila ocen vmesnika API storitve GitHub.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Vpišite se, če želite dodati svoj odziv</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Vpišite se, da boste lahko shranili napredek</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>&lt;a class='docs-sign-in' href="#"&gt;Vpišite se&lt;/a&gt; za ogled uporabniškega profila.</value>
+  </data>
+  <data name="signOut">
+    <value>Izpis</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Povratne informacije o spletnem mestu</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Sestavljavec rešitev</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Hm, prišlo je do težave.</value>
+  </data>
+  <data name="start">
+    <value>Začni</value>
+  </data>
+  <data name="startHere">
+    <value>Začnite tukaj</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Korak {step-index} od {step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Strukture</value>
+  </data>
+  <data name="submit">
+    <value>Pošlji</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Pošlji povratne informacije</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Uspešno poslano.</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Predlagajte idejo za izdelek</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Opravilo ni bilo pravilno dokončano.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>To stran posodabljamo z novo interaktivno izkušnjo. Kmalu znova obiščite to stran.</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Zahvaljujemo se vam za povratne informacije.</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>To ni povsem pravilno.</value>
+  </data>
+  <data name="theme">
+    <value>Tema</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Za ta dokument trenutno niso na voljo nobene povratne informacije. Poslane povratne informacije bodo prikazane tukaj.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Vsi člani tega razreda so varni za nit.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Vsi člani primerka tega razreda so varni za nit.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Vsi statični člani tega razreda so varni za nit.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Ta vrsta ni varna za nit.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Varnost niti</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>Odzivi z »Ni mi všeč«: {0}</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>Odzivi z »Všeč mi je«: {0}</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Nasvet&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Naslov</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Prikaži/skrij težavo</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Prikaži/skrij enote</value>
+  </data>
+  <data name="trademarks">
+    <value>Blagovne znamke</value>
+  </data>
+  <data name="triggers">
+    <value>Sprožilci</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Za dokončanje ste si prislužili nagrado</value>
+  </data>
+  <data name="tryAgain">
+    <value>Poskusi znova</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Kodo poskusite uporabiti v svojem brskalniku</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>Preskusite vmesnik API za REST s spodnjimi vnosi.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>vseh toliko sodelavcev: {0}</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100 % dokončano!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Čestitamo!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Nadaljujte tukaj</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Sodelavci</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Nadaljnje branje</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Uvod</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>Preostane {0} min</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>{0} min do zaključka</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Naslednji koraki</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Naslednja vadnica</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Viri</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>Oglejte si {0} ali pa postanite sodelavec tako, da predlagate izboljšave v {1}.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Naučili ste se, kako ...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>Zaključili ste vadnico »{0}«.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Naučili se boste, kako ...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Ali imate povratne informacije oziroma ste obtičali v delu te vadnice?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Prijavite to težavo v storitvi GitHub</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Naslednji koraki</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Kurirani tviti osebe</value>
+  </data>
+  <data name="type">
+    <value>vrsta</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Vnesite vzdevke</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Definicija vrste</value>
+  </data>
+  <data name="typeParameters">
+    <value>Parametri za vrsto</value>
+  </data>
+  <data name="unit">
+    <value>Enota</value>
+  </data>
+  <data name="unitComplete">
+    <value>Enota je končana</value>
+  </data>
+  <data name="unitMarker">
+    <value>Enota {index} od {total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Ta enota zahteva peskovnik za dokončanje</value>
+  </data>
+  <data name="units">
+    <value>Enote</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>Parametri naslova URI</value>
+  </data>
+  <data name="usage">
+    <value>Uporaba</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Uporaba navideznega računalnika</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Če si želite ogledati vgrajena navodila, obiščite spletno mesto za praktične preizkušnje.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Učenec za Docs</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Uporaba lokalnega računalnika</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Ostanite na tem spletnem mestu in upoštevajte navodila v svojem računalniku.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Uporaba tega priključka</value>
+  </data>
+  <data name="value">
+    <value>Vrednost</value>
+  </data>
+  <data name="valueFrom">
+    <value>vrednost od</value>
+  </data>
+  <data name="version">
+    <value>Različica</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>Prikaži to težavo v storitvi GitHub</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Prikaži več povratnih informacij v storitvi GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>Prikaži v storitvi GitHub</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>Prikaži uporabnika {username} v storitvi GitHub</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Priporočamo, da uporabite Visual Studio 2017.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Prenesite ga zdaj</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Dokumentacija za Visual Studio</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Zaženi način navideznega računalnika</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Nalaganje navideznega računalnika ...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Ta enota zahteva navidezni računalnik za dokončanje.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Način navideznega računalnika zagotavlja prost dostop do navideznega računalnika Azure, s katerim je mogoče dokončati korake v tej enoti. Teh sredstev vam ne bo treba plačati v okviru svoje naročnine na Azure.</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Da, aktiviraj nov navidezni računalnik</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Navidezni računalnik za drugo enoto je že aktiviran</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Navidezni računalnik ste že odprli v modulu {lab-name}. Če aktivirate ta navidezni računalnik, boste izgubili svoje delo v drugem modulu.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Poskusi znova zagnati način navideznega računalnika</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Vpišite se, če želite zagnati način navideznega računalnika</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Opozorilo&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>Pred toliko tedni: {0}</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Prosimo vas za povratne informacije. Izberite vrsto povratnih informacij, ki nam jih želite posredovati:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Zahteve za Windows 10</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Dokumentacija za Windows</value>
+  </data>
+  <data name="worldwide">
+    <value>Po svetu</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Ali želite poslati povratne informacije?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Da</value>
+  </data>
+  <data name="youDidIt">
+    <value>Uspelo vam je!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Ker ste dokončali preizkus znanja, se si prislužili točke izkušenj.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Ker ste dokončali opravilo, ste si prislužili točke izkušenj.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Pravkar ste si prislužili toliko točk za izkušnje: &lt;span class="experience-points"&gt;&lt;/span&gt;.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Pred preverjanjem svojega dela morate odgovoriti na vsa vprašanja.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Za ogled svojega dela morate uporabiti vire, ki jih zagotavlja peskovnik.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Dobro opravljeno</value>
+  </data>
+  <data name="yourAccount">
+    <value>Vaš račun</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Vaš račun je izbrisan.</value>
+  </data>
+  <data name="yourData">
+    <value>Vaši podatki</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Prenesite ali izbrišite svoj shranjeni napredek in dosežke v storitvi Docs. Z izbrisom svojih podatkov ne vplivate na svojo identiteto v Microsoftu.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Vaše delo ni bilo pravilno dokončano.</value>
+  </data>
+</root>

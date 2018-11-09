@@ -11,4 +11,18 @@
     <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="tokens.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>tokens.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="tokens.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

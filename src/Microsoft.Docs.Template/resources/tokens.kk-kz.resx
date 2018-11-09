@@ -1,0 +1,1993 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="acceptedValues">
+    <value>қабылданған мәндер</value>
+  </data>
+  <data name="acceptInvite">
+    <value>Шақыруды қабылдау</value>
+  </data>
+  <data name="achievements">
+    <value>Жетістіктер</value>
+  </data>
+  <data name="achievementsBlastMessage">
+    <value>Microsoft басқарылатын оқытуы бойынша {0} үшін мен жеткен жетістіктерді қарау!</value>
+  </data>
+  <data name="actions">
+    <value>Әрекеттер</value>
+  </data>
+  <data name="activateNewSandbox">
+    <value>Иә, жаңа құм жәшікті белсендіру</value>
+  </data>
+  <data name="activateSandbox">
+    <value>Құм жәшікті белсендіру</value>
+  </data>
+  <data name="aDayAgo">
+    <value>бір күн бұрын</value>
+  </data>
+  <data name="additionalFeaturesAndRequirements">
+    <value>Қосымша мүмкіндіктер мен талаптар</value>
+  </data>
+  <data name="addParameter">
+    <value>Параметрді енгізу</value>
+  </data>
+  <data name="administrator">
+    <value>Әкімші</value>
+  </data>
+  <data name="advanced">
+    <value>Тәжірибелі</value>
+  </data>
+  <data name="africa">
+    <value>Африка</value>
+  </data>
+  <data name="all">
+    <value>барлығы</value>
+  </data>
+  <data name="allapis">
+    <value>Барлық API интерфейстері</value>
+  </data>
+  <data name="allPackages">
+    <value>Барлық жиынтықтар</value>
+  </data>
+  <data name="americas">
+    <value>Солтүстік және Оңтүстік Америка</value>
+  </data>
+  <data name="aMinuteAgo">
+    <value>бір минут бұрын</value>
+  </data>
+  <data name="aMonthAgo">
+    <value>бір ай бұрын</value>
+  </data>
+  <data name="anHourAgo">
+    <value>бір сағат бұрын</value>
+  </data>
+  <data name="apiInPreview">
+    <value>This API is in preview.</value>
+  </data>
+  <data name="apiReference">
+    <value>{0} API анықтамасы</value>
+  </data>
+  <data name="apiSearchIsUnavailable">
+    <value>API іздеу қолжетімді емес. Кейінірек қайталап көріңіз.</value>
+  </data>
+  <data name="appliesTo">
+    <value>Applies to:</value>
+  </data>
+  <data name="archiveDocs">
+    <value>Алдыңғы нұсқалары</value>
+  </data>
+  <data name="areYouSure">
+    <value>Сенімдісіз бе?</value>
+  </data>
+  <data name="areYouSureDescription">
+    <value>Деректерді жою әрекетін қайтару мүмкін емес.</value>
+  </data>
+  <data name="aSecondAgo">
+    <value>бір секунд бұрын</value>
+  </data>
+  <data name="asia">
+    <value>Азия</value>
+  </data>
+  <data name="askQuestion">
+    <value>Сұрақ қою</value>
+  </data>
+  <data name="assemblies">
+    <value>Жиындар</value>
+  </data>
+  <data name="assembly">
+    <value>Жиын</value>
+  </data>
+  <data name="attachedEventsInSubtitle">
+    <value>Тіркелген оқиғалар</value>
+  </data>
+  <data name="attachedPropertiesInSubtitle">
+    <value>Тіркелген сипаттар</value>
+  </data>
+  <data name="attributes">
+    <value>Атрибуттар</value>
+  </data>
+  <data name="avatar">
+    <value>Аватар</value>
+  </data>
+  <data name="aWeekAgo">
+    <value>бір апта бұрын</value>
+  </data>
+  <data name="azureDisclaimer">
+    <value>Azure Cloud Shell бар Azure жазылымдарыңызды пайдаланады. Cloud Shell функциясын пайдалану және пәрмендерді орындау ілеспе шығындарға әкеледі.</value>
+  </data>
+  <data name="azureDocs">
+    <value>Azure құжаттамасы</value>
+  </data>
+  <data name="azureSelectorPrompt">
+    <value>-- Select Value --</value>
+  </data>
+  <data name="badgeEarnedFor">
+    <value>Аяқтау үшін таңба алдыңыз</value>
+  </data>
+  <data name="begin">
+    <value>Бастау</value>
+  </data>
+  <data name="beginner">
+    <value>Жаңа бастаушы</value>
+  </data>
+  <data name="beta">
+    <value>бета</value>
+  </data>
+  <data name="blog">
+    <value>Blog</value>
+  </data>
+  <data name="body">
+    <value>Негізгі мәтін</value>
+  </data>
+  <data name="breadcrumb">
+    <value>Иерархия</value>
+  </data>
+  <data name="browse">
+    <value>Шолу</value>
+  </data>
+  <data name="browseCode">
+    <value>Кодты шолу</value>
+  </data>
+  <data name="business_analyst">
+    <value>Business Analyst</value>
+  </data>
+  <data name="business_user">
+    <value>Business User</value>
+  </data>
+  <data name="businessAnalyst">
+    <value>Бизнес сарапшы</value>
+  </data>
+  <data name="businessUser">
+    <value>Бизнес пайдаланушы</value>
+  </data>
+  <data name="calls">
+    <value>Қоңыраулар</value>
+  </data>
+  <data name="capabilities">
+    <value>Мүмкіндіктер</value>
+  </data>
+  <data name="caution">
+    <value>&lt;p&gt;Назар аударыңыз!&lt;/p&gt;</value>
+  </data>
+  <data name="checkAnswers">
+    <value>Жауаптарыңызды тексеріңіз</value>
+  </data>
+  <data name="checkWorkAgain">
+    <value>Жұмысыңызды қайта тексеру</value>
+  </data>
+  <data name="checkYourKnowledge">
+    <value>Біліміңізді тексеру</value>
+  </data>
+  <data name="checkYourWork">
+    <value>Жұмысыңызды тексеріңіз</value>
+  </data>
+  <data name="chooseAzureAccount">
+    <value>Choose one of your Azure accounts.</value>
+  </data>
+  <data name="chooseReaction">
+    <value>Реакцияны таңдау</value>
+  </data>
+  <data name="claimReward">
+    <value>Жетістікті блоктан шығару</value>
+  </data>
+  <data name="classesInSubtitle">
+    <value>Кластар</value>
+  </data>
+  <data name="clearfilter">
+    <value>Сүзгіні тазалау</value>
+  </data>
+  <data name="clearterm">
+    <value>Терминді тазалау</value>
+  </data>
+  <data name="clickForRSS">
+    <value>RSS арнасы үшін басу</value>
+  </data>
+  <data name="close">
+    <value>Жабу</value>
+  </data>
+  <data name="closedIssue">
+    <value>Шешілген мәселе</value>
+  </data>
+  <data name="closedIssues">
+    <value>Шешілген мәселелер</value>
+  </data>
+  <data name="clsCompliant">
+    <value>Бұл API CLS үйлесімді емес.</value>
+  </data>
+  <data name="clsCompliantAlt">
+    <value>CLS үйлесімді нұсқа</value>
+  </data>
+  <data name="code">
+    <value>Код</value>
+  </data>
+  <data name="collaborator">
+    <value>Бірлесіп жұмыс істеуші</value>
+  </data>
+  <data name="collaboratorDescription">
+    <value>Бұл пайдаланушы {repo} бойынша бірлесіп жұмыс істеу үшін шақырылды.</value>
+  </data>
+  <data name="commands">
+    <value>Пәрмендер</value>
+  </data>
+  <data name="comment">
+    <value>Түсініктеме</value>
+  </data>
+  <data name="commentCount">
+    <value>{0} пікір</value>
+  </data>
+  <data name="commentPostedFormat">
+    <value>{name} {time ago} комментарий жазды</value>
+  </data>
+  <data name="comments">
+    <value>Түсініктемелер</value>
+  </data>
+  <data name="complete">
+    <value>Аяқтау</value>
+  </data>
+  <data name="configuringCloudShellForSandbox">
+    <value>Құм жәшікке кіру үшін Cloud Shell қызметін конфигурациялау...</value>
+  </data>
+  <data name="confused">
+    <value>Абыржыған</value>
+  </data>
+  <data name="confusedReactionCount">
+    <value>{0} «абыржыған» реакциясы</value>
+  </data>
+  <data name="congratulations">
+    <value>Құттықтаймыз!</value>
+  </data>
+  <data name="connectionsPerAccount">
+    <value>Әр тіркелгідегі байланыстар</value>
+  </data>
+  <data name="constructorDetails">
+    <value>Құрастырғыш мәліметтері</value>
+  </data>
+  <data name="constructorsInSubtitle">
+    <value>Құрастырғыштар</value>
+  </data>
+  <data name="contentFeedback">
+    <value>Контент туралы пікір</value>
+  </data>
+  <data name="contents">
+    <value>Мазмұны</value>
+  </data>
+  <data name="continue">
+    <value>Жалғастыру</value>
+  </data>
+  <data name="continueHere">
+    <value>Осында жалғастыру</value>
+  </data>
+  <data name="continueToFirstStep">
+    <value>Бірінші қадамға өту</value>
+  </data>
+  <data name="continueToNextModule">
+    <value>Келесі модульге өту</value>
+  </data>
+  <data name="continueWithoutSaving">
+    <value>Орындалу барысы туралы мәліметтерді сақтамай жалғастыру</value>
+  </data>
+  <data name="contributor">
+    <value>Қатысушы</value>
+  </data>
+  <data name="contributorDescription">
+    <value>Бұл пайдаланушы бұрын {repo} репозиторийіне қатысты.</value>
+  </data>
+  <data name="contributorGuide">
+    <value>Қатысу</value>
+  </data>
+  <data name="contributors">
+    <value>Қатысушылар</value>
+  </data>
+  <data name="copy">
+    <value>Көшіру</value>
+  </data>
+  <data name="correctChoice">
+    <value>Дұрыс таңдау</value>
+  </data>
+  <data name="createAADProfileExplanation">
+    <value>Сіз жүйеге Microsoft ұйым тіркелгісімен ({0}) кірдіңіз және пайдалану тәжірибеңіз жеке тіркелгіден өзгеше болады:</value>
+  </data>
+  <data name="createAADProfileGamificationNotAvailable">
+    <value>Кейбір геймификация мүмкіндіктері Microsoft қызметкерлері үшін қолжетімді емес.</value>
+  </data>
+  <data name="createAADProfileIndicateWork">
+    <value>Профиліңіз сіздің Microsoft қызметкері екеніңізді ашық көрсетеді.</value>
+  </data>
+  <data name="createAADProfileLoseAccess">
+    <value>Электрондық поштаға кіру мүмкіндігін жоғалтсаңыз, бұл сайтқа кіре алмайсыз.</value>
+  </data>
+  <data name="createAADProfilePersonalActivity">
+    <value>Бұл сайтты жеке әрекеттер үшін пайдаланғыңыз келсе, басқа тіркелгімен кіріңіз.</value>
+  </data>
+  <data name="createConnectionInstruction">
+    <value>Тіркелгіні байланыстыру үшін келесі ақпарат қажет болады:</value>
+  </data>
+  <data name="createFTEProfileExplanation">
+    <value>Microsoft Learn веб-сайтын пайдалану арқылы, мүше болған жағдайда, сайттарымыздың желісі мен бағдарламаларымыздың жетістіктеріңіз бен әрекеттеріңізді жазатынын және қадағалайтынын және нәтижелеріңіз бен әрекеттеріңізді Microsoft корпорациясындағы басқа топтармен бөлісуіміз мүмкін екендігін &lt;strong&gt;түсінесіз және растайсыз&lt;/strong&gt;. Сонымен қатар, пайдаланушы атыңыз, көрсетілетін атыңыз, жетістіктеріңіз бен әрекеттеріңіз ашық түрде көрсетіледі.&lt;ul&gt;&lt;li&gt;Профиліңіз сіздің Microsoft қызметкері екеніңізді ашық көрсетеді.&lt;/li&gt;&lt;li&gt;Электрондық поштаға кіру мүмкіндігін жоғалтсаңыз, сайтқа кіре алмайсыз.&lt;/li&gt;&lt;li&gt;Кейбір геймификация мүмкіндіктері Microsoft қызметкерлері үшін қолжетімді емес.&lt;/li&gt;&lt;li&gt;Бұл сайтты жеке әрекеттер үшін пайдаланғыңыз келсе, басқа тіркелгімен кіріңіз.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="createMSAProfileExplanation">
+    <value>Мүше болу арқылы сіз Microsoft Learn ресурсына мүше болғанда сайттарымыздың желісі мен бағдарламаларымыз сіздің жетістіктеріңіз бен әрекеттеріңізді жазатынын түсінесіз және растайсыз. Пайдаланушы атыңыз, көрсетілетін атыңыз, жетістіктеріңіз бен әрекеттеріңіз ашық түрде көрсетіледі.</value>
+  </data>
+  <data name="createNewArchive">
+    <value>Жаңа мұрағат жасау</value>
+  </data>
+  <data name="creatingAConnection">
+    <value>Байланыс құру</value>
+  </data>
+  <data name="currentSelection">
+    <value>Ағымдағы таңдау:</value>
+  </data>
+  <data name="dark">
+    <value>Күңгірт</value>
+  </data>
+  <data name="dateNotAvailable">
+    <value>date not available</value>
+  </data>
+  <data name="daysAgo">
+    <value>{0} күн бұрын</value>
+  </data>
+  <data name="defaultValue">
+    <value>әдепкі мән</value>
+  </data>
+  <data name="definition">
+    <value>Анықтама</value>
+  </data>
+  <data name="definitions">
+    <value>Анықтамалар</value>
+  </data>
+  <data name="delegatesInSubtitle">
+    <value>Өкілдер</value>
+  </data>
+  <data name="delete">
+    <value>Жою</value>
+  </data>
+  <data name="deleteParameter">
+    <value>Параметрді жою</value>
+  </data>
+  <data name="deployToAzure">
+    <value>Azure жүйесіне орналастыру</value>
+  </data>
+  <data name="deprecated">
+    <value>Бұл API енді ескірген.</value>
+  </data>
+  <data name="derived">
+    <value>Алынған</value>
+  </data>
+  <data name="description">
+    <value>Сипаттама</value>
+  </data>
+  <data name="descriptionNotAvailable">
+    <value>description not available</value>
+  </data>
+  <data name="developer">
+    <value>Әзірлеуші</value>
+  </data>
+  <data name="developers">
+    <value>Әзірлеушілер</value>
+  </data>
+  <data name="dialogCloseWindow">
+    <value>Осы диалогты жабу</value>
+  </data>
+  <data name="differentSandboxAlreadyActive">
+    <value>Басқа құм жәшік белсендірілген</value>
+  </data>
+  <data name="differentSandboxAlreadyActiveExplanation">
+    <value>Құм жәшікті &lt;a href="{0}"&gt;{1}&lt;/a&gt; модулінде белсендірдіңіз. Бұл құм жәшікті белсендірсеңіз, басқа модульдегі жұмысыңызды жоғалтасыз.</value>
+  </data>
+  <data name="disable">
+    <value>Ажырату</value>
+  </data>
+  <data name="disclaimer_archive">
+    <value>We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveMachineTranslated">
+    <value>This article was translated by machine. We're no longer updating this content regularly. Check the &lt;a href='https://support.microsoft.com/en-us/lifecycle/selectindex'&gt;Microsoft Product Lifecycle&lt;/a&gt; for information about how this product, service, technology, or API is supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetire">
+    <value>This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_archiveRetireMachineTranslated">
+    <value>This article was translated by machine. This content has been retired and may not be updated in the future.  The product, service, or technology mentioned in this content is no longer supported.</value>
+  </data>
+  <data name="disclaimer_dismissAlert">
+    <value>Dismiss alert</value>
+  </data>
+  <data name="disclaimer_learnMobileInteractive">
+    <value>Contains learning options not available on mobile</value>
+  </data>
+  <data name="disclaimer_machineTranslatedOnly">
+    <value>Parts of this topic may be machine translated. You can suggest a better translation by clicking the Edit button; instructions can be found in the &lt;a href="https://docs.microsoft.com/en-us/contribute/"&gt;contribution guide&lt;/a&gt;.</value>
+  </data>
+  <data name="disclaimer_moniker">
+    <value>This API is not supported in the currently selected framework.</value>
+  </data>
+  <data name="disclaimer_recommendedVersion">
+    <value>Recommended Version</value>
+  </data>
+  <data name="disclaimer_returnToMain">
+    <value>Return to main site</value>
+  </data>
+  <data name="disclaimer_sxs_human">
+    <value>You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_sxs_machine">
+    <value>This article was translated by machine. You can display the English text in a popup window by moving the mouse pointer over the text.</value>
+  </data>
+  <data name="disclaimer_text">
+    <value>This content is not available in your language. Here is the English version.</value>
+  </data>
+  <data name="disclaimerSearchPreviousVersions">
+    <value>Іздеу нәтижелері алдыңғы нұсқалардың құжаттамасынан алынған және жүйелі түрде жаңартылмайды.</value>
+  </data>
+  <data name="docsProfile">
+    <value>Docs профилі</value>
+  </data>
+  <data name="documentDetails">
+    <value>Құжат туралы мәліметтер</value>
+  </data>
+  <data name="doNotEditThis">
+    <value>Бұл бөлімді өзгертпеңіз. Ол docs.microsoft.com үшін қажет ➟ GitHub мәселесіне сілтеме.</value>
+  </data>
+  <data name="dotnetDocs">
+    <value>.NET құжаттамасы</value>
+  </data>
+  <data name="dotnetEditor">
+    <value>.NET өңдегіші</value>
+  </data>
+  <data name="download">
+    <value>Жүктеп алу</value>
+  </data>
+  <data name="downloadPdf">
+    <value>PDF жүктеп алу</value>
+  </data>
+  <data name="downloadZIP">
+    <value>ZIP жүктеп алу</value>
+  </data>
+  <data name="dynamicOutputsDescription">
+    <value>Бұл операцияның нәтижесі өзгермелі болады.</value>
+  </data>
+  <data name="earnMoreAchievements">
+    <value>Қосымша жетістіктерге жету</value>
+  </data>
+  <data name="edit">
+    <value>Өзгерту</value>
+  </data>
+  <data name="editdesc">
+    <value>Осы құжатты өзгерту</value>
+  </data>
+  <data name="eiisInSubtitle">
+    <value>Анық интерфейс орындаулары</value>
+  </data>
+  <data name="email">
+    <value>Электрондық пошта</value>
+  </data>
+  <data name="emailIsRequired">
+    <value>Құм жәшікті белсендіру үшін электрондық пошта қажет</value>
+  </data>
+  <data name="emailIsRequiredExplanation">
+    <value>Құм жәшікті белсендіру үшін Microsoft тіркелгісі жарамды электрондық поштамен байланыстырылған болуы тиіс. Электрондық поштаңызды байланыстыру үшін &lt;a href="https://account.live.com" target="_blank"&gt;Microsoft тіркелгісінің параметрлері&lt;/a&gt; бөліміне өтіп, әрекетті қайталаңыз.</value>
+  </data>
+  <data name="emptyNameNotAllowed">
+    <value>Атау бос болмауы керек</value>
+  </data>
+  <data name="enable">
+    <value>Қосу</value>
+  </data>
+  <data name="enterFocusMode">
+    <value>Фокус режиміне өту</value>
+  </data>
+  <data name="enumsInSubtitle">
+    <value>Тізімдер</value>
+  </data>
+  <data name="error">
+    <value>Қате</value>
+  </data>
+  <data name="errorCreatingComment">
+    <value>Комментарий жасау кезіндегі қате. Қажет болса, &lt;a data-bi-name="create-comment-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; арқылы қайталауға болады.</value>
+  </data>
+  <data name="errorCreatingIssue">
+    <value>Мәселе жасау кезіндегі қате. Қажет болса, &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; арқылы қайталауға болады.</value>
+  </data>
+  <data name="errorLoadingBrowseContent">
+    <value>Іздеу нәтижелері жүктелмеді. Кейінірек қайталап көріңіз.</value>
+  </data>
+  <data name="errorLoadingComments">
+    <value>Комментарийлерді жүктеу кезіндегі қате.</value>
+  </data>
+  <data name="errorLoadingFeedback">
+    <value>Пікірді жүктеу кезіндегі қате.</value>
+  </data>
+  <data name="europe">
+    <value>Еуропа</value>
+  </data>
+  <data name="eventDetails">
+    <value>Оқиға мәліметтері</value>
+  </data>
+  <data name="eventsInSubtitle">
+    <value>Оқиғалар</value>
+  </data>
+  <data name="examples">
+    <value>Мысалдар</value>
+  </data>
+  <data name="exceptions">
+    <value>Ерекшеліктер</value>
+  </data>
+  <data name="exit">
+    <value>Шығу</value>
+  </data>
+  <data name="exitFocusMode">
+    <value>Фокус режимінен шығу</value>
+  </data>
+  <data name="expandDocumentationFeedbackMenu">
+    <value>Құжаттаманың пікір жазу мәзірінен шығу</value>
+  </data>
+  <data name="exploreOtherModules">
+    <value>Басқа модульдерді қарап шығу</value>
+  </data>
+  <data name="exploreOtherPaths">
+    <value>Басқа жолдарды қарап шығу</value>
+  </data>
+  <data name="exportProfileNoInformation">
+    <value>Сізде экспорттау үшін ақпарат болмады.</value>
+  </data>
+  <data name="extensionMethodsInSubtitle">
+    <value>Кеңейтім әдістері</value>
+  </data>
+  <data name="facebook">
+    <value>Facebook</value>
+  </data>
+  <data name="feedback">
+    <value>Кері байланыс</value>
+  </data>
+  <data name="feedbackPlaceholder">
+    <value>[Пікіріңізді осы жерге енгізіңіз]</value>
+  </data>
+  <data name="feedbackProduct">
+    <value>Өнім туралы пікір жіберу</value>
+  </data>
+  <data name="fieldsInSubtitle">
+    <value>Өрістер</value>
+  </data>
+  <data name="fieldValue">
+    <value>Өріс мәні</value>
+  </data>
+  <data name="filter">
+    <value>Filter</value>
+  </data>
+  <data name="filterByTitle">
+    <value>Filter by title</value>
+  </data>
+  <data name="filterPlaceholder">
+    <value>Сүзгі</value>
+  </data>
+  <data name="findALanguage">
+    <value>Тілді табу</value>
+  </data>
+  <data name="flagsAttributeDisclaimer">
+    <value>Бұл санақта {0} атрибуты бар, ол мүшесі мәнінің биттік тіркесіміне мүмкіндік береді.</value>
+  </data>
+  <data name="functional_consultant">
+    <value>Functional Consultant</value>
+  </data>
+  <data name="functionDetails">
+    <value>Функция мәліметтері</value>
+  </data>
+  <data name="functionsInSubtitle">
+    <value>Функциялар</value>
+  </data>
+  <data name="getHelp">
+    <value>Анықтама алу</value>
+  </data>
+  <data name="giveFeedback">
+    <value>Пікір жіберу</value>
+  </data>
+  <data name="globalParameters">
+    <value>Глобалдық параметрлер</value>
+  </data>
+  <data name="goBackToFinish">
+    <value>Аяқтау үшін оралу</value>
+  </data>
+  <data name="goBackToFinishModule">
+    <value>Модульді аяқтау үшін оралу</value>
+  </data>
+  <data name="goodWork">
+    <value>Жақсы жұмыс!</value>
+  </data>
+  <data name="greatWork">
+    <value>Керемет жұмыс!</value>
+  </data>
+  <data name="handsOnLab">
+    <value>Hands-on Lab</value>
+  </data>
+  <data name="headers">
+    <value>Тақырыптар</value>
+  </data>
+  <data name="heart">
+    <value>Жүрек</value>
+  </data>
+  <data name="heartReactionCount">
+    <value>{0} «жүрек» реакциясы</value>
+  </data>
+  <data name="helpMeChoose">
+    <value>Маған таңдауға көмектесіңіз</value>
+  </data>
+  <data name="hint">
+    <value>&lt;strong&gt;Нұсқау:&lt;/strong&gt; {0}</value>
+  </data>
+  <data name="hooray">
+    <value>Қуану</value>
+  </data>
+  <data name="hoorayReactionCount">
+    <value>{0} «қуану» реакциясы</value>
+  </data>
+  <data name="hoursAgo">
+    <value>{0} сағат бұрын </value>
+  </data>
+  <data name="howCanWeImprove">
+    <value>Қалай жақсарта аламыз?</value>
+  </data>
+  <data name="hr">
+    <value>сағ</value>
+  </data>
+  <data name="hrMin">
+    <value>{0} сағ {1} мин</value>
+  </data>
+  <data name="implements">
+    <value>Орындау</value>
+  </data>
+  <data name="important">
+    <value>&lt;p&gt;Маңызды&lt;/p&gt;</value>
+  </data>
+  <data name="impressum">
+    <value>Impressum</value>
+  </data>
+  <data name="in">
+    <value>ішінде</value>
+  </data>
+  <data name="incorrectChoice">
+    <value>Дұрыс емес таңдау</value>
+  </data>
+  <data name="inheritance">
+    <value>Иелену</value>
+  </data>
+  <data name="inheritedMembers">
+    <value>Иеленген мүшелер</value>
+  </data>
+  <data name="input">
+    <value>Кіріс</value>
+  </data>
+  <data name="interfacesInSubtitle">
+    <value>Интерфейстер</value>
+  </data>
+  <data name="intermediate">
+    <value>Орташа деңгей</value>
+  </data>
+  <data name="internalUseOnly">
+    <value>Бұл API өнімнің инфрақұрылымын қолдайды және кодыңыздан тікелей пайдалануға арналмаған.</value>
+  </data>
+  <data name="inThisArticle">
+    <value>In this article</value>
+  </data>
+  <data name="intuneFeedback">
+    <value>Intune кері байланысы</value>
+  </data>
+  <data name="issueOpenedFormat">
+    <value>{name} {time ago} ашты</value>
+  </data>
+  <data name="issueProduct">
+    <value>Өнім ақауы туралы хабарлау</value>
+  </data>
+  <data name="isThisHelpful">
+    <value>Бұл бет пайдалы ма?</value>
+  </data>
+  <data name="itPro">
+    <value>IT Pro</value>
+  </data>
+  <data name="justNow">
+    <value>қазір ғана</value>
+  </data>
+  <data name="key">
+    <value>Перне:</value>
+  </data>
+  <data name="knowledgeCheck">
+    <value>Білімді тексеру</value>
+  </data>
+  <data name="knowledgeCheckCompleAllAnswers">
+    <value>Білімді тексеру аяқталды. Барлық сұрақтарға дұрыс жауап бердіңіз.</value>
+  </data>
+  <data name="knowledgeCheckComplete">
+    <value>Білімді тексеру аяқталды</value>
+  </data>
+  <data name="knowledgeCheckCompleted">
+    <value>Сіз {tutorial} білімді тексеруін аяқтадыңыз.</value>
+  </data>
+  <data name="knowledgeCheckCompletedText">
+    <value>Енді келесі {tutorial} бөліміне өте аласыз. {nextUnitName} бөліміне өту</value>
+  </data>
+  <data name="knowledgeCheckCouldNotGrade">
+    <value>Кешіріңіз, білімді тексеруді бағалай алмадық. Әрекетті қайталаңыз.</value>
+  </data>
+  <data name="knowledgeCheckFinishSection">
+    <value>Бұл бөлімді аяқтадыңыз. Келесі {nextUnitName} бөліміне өтіңіз.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionContinueMoreTutorials">
+    <value>Бұл бөлімді аяқтадыңыз. Басқа оқулықтарға өтіңіз.</value>
+  </data>
+  <data name="knowledgeCheckFinishSectionModule">
+    <value>Білімді тексеруді тапсырмасын аяқтау арқылы {moduleName} жетістігін аштыңыз.</value>
+  </data>
+  <data name="landmarkToc">
+    <value>Мазмұны</value>
+  </data>
+  <data name="landmarkTocFilterFormLabel">
+    <value>Мазмұнды сүзгіден өткізу</value>
+  </data>
+  <data name="language">
+    <value>Тіл</value>
+  </data>
+  <data name="laugh">
+    <value>Күлу</value>
+  </data>
+  <data name="laughReactionCount">
+    <value>{0} «күлу» реакциясы</value>
+  </data>
+  <data name="learnDisclaimer">
+    <value>Тәжірибелік әрекеттерді қоса алғанда, тікелей оқу материалдары көмегімен Microsoft технологиясын зерттеңіз. Бұл тәжірибе алдын ала қарау күйінде, сондықтан &lt;a href="https://aka.ms/learningfeedback"&gt;бізге пікіріңізді жіберіңіз&lt;/a&gt;!</value>
+  </data>
+  <data name="learningpath">
+    <value>Оқыту жолы</value>
+  </data>
+  <data name="learnmore">
+    <value>Қосымша мәліметтер</value>
+  </data>
+  <data name="leaveAComment">
+    <value>Түсініктеме қалдыру</value>
+  </data>
+  <data name="leaveFeedbackDirectly">
+    <value>Пкіріңізді тікелей &lt;a data-bi-name="create-issue-on-github" href="{0}"&gt;GitHub &lt;span class="docon docon-navigate-external" aria-hidden="true"&gt;&lt;/span&gt;&lt;/a&gt; қызметінде де қалдыра аласыз.</value>
+  </data>
+  <data name="level">
+    <value>Деңгей {0}</value>
+  </data>
+  <data name="levels">
+    <value>Деңгейлер</value>
+  </data>
+  <data name="light">
+    <value>Ашық</value>
+  </data>
+  <data name="limits">
+    <value>Шектеулер</value>
+  </data>
+  <data name="linkedin">
+    <value>LinkedIn</value>
+  </data>
+  <data name="loading">
+    <value>Жүктелуде...</value>
+  </data>
+  <data name="loadingFeedback">
+    <value>Пікір жүктелуде...</value>
+  </data>
+  <data name="loadingSandboxInformation">
+    <value>Құм жәшік ақпараты жүктелуде...</value>
+  </data>
+  <data name="loadMore">
+    <value>Қосымша&amp;#8230;</value>
+  </data>
+  <data name="loadMoreResults">
+    <value>Басқа нәтижелерді жүктеу</value>
+  </data>
+  <data name="login">
+    <value>Кіру</value>
+  </data>
+  <data name="loginAzure">
+    <value>Azure тіркелгісімен кіріңіз.</value>
+  </data>
+  <data name="mainNavigation">
+    <value>Негізгі навигация</value>
+  </data>
+  <data name="manageMyProfile">
+    <value>Профилімді басқару</value>
+  </data>
+  <data name="maximize">
+    <value>Жаю</value>
+  </data>
+  <data name="member">
+    <value>Мүше</value>
+  </data>
+  <data name="memberDescription">
+    <value>Бұл пайдаланушы {org} ұйымының мүшесі.</value>
+  </data>
+  <data name="memberDetails">
+    <value>Мүше мәліметтері</value>
+  </data>
+  <data name="members">
+    <value>Мүшелер</value>
+  </data>
+  <data name="methodDetails">
+    <value>Әдіс мәліметтері</value>
+  </data>
+  <data name="methodsInSubtitle">
+    <value>Әдістер</value>
+  </data>
+  <data name="microsoftEmployeePrivacyNotice">
+    <value>Microsoft қызметкері үшін құпиялылық туралы мәлімдеме</value>
+  </data>
+  <data name="microsoftEmployeePrivacyStatement">
+    <value>Microsoft ұйым тіркелгісімен ({email}) кірдіңіз. Microsoft Learn веб-сайтын пайдалану арқылы, мүше болған жағдайда, сайттарымыздың желісі мен бағдарламаларымыздың жетістіктеріңіз бен әрекеттеріңізді жазатынын және қадағалайтынын және нәтижелеріңіз бен әрекеттеріңізді Microsoft корпорациясындағы басқа топтармен бөлісуіміз мүмкін екендігін &lt;strong&gt;түсінесіз және растайсыз&lt;/strong&gt;. Сонымен қатар, пайдаланушы атыңыз, көрсетілетін атыңыз, жетістіктеріңіз бен әрекеттеріңіз ашық түрде көрсетіледі.</value>
+  </data>
+  <data name="microsoftLearnIssue">
+    <value>Microsoft Learn қатесі</value>
+  </data>
+  <data name="microsoftLearnIssueBody">
+    <value>Microsoft Learn мүлдем жаңа платформа болып табылады және тұтынушылардың жауаптарына негізделіп контент пен тәжірибелерді жақсартуға тырысамыз.
+
+Сізден хабар алғымыз келеді!
+
+Біз үшін келесі ақпаратты толтырыңыз:
+1. Сіз хабарлап жатқан мәселе немесе пікір.
+2. Бізге хабарлағыңыз келген басқа нәрсе.
+
+Ескертпе: қазір барлық тұтынушыларға тікелей жауап бермесек те, келген барлық пікірлерді тексереміз.
+
+URL: {page-url}</value>
+  </data>
+  <data name="middleEast">
+    <value>Таяу Шығыс</value>
+  </data>
+  <data name="min">
+    <value>{0} мин</value>
+  </data>
+  <data name="minFormat">
+    <value>{0} min</value>
+  </data>
+  <data name="minimize">
+    <value>Қайыру</value>
+  </data>
+  <data name="minutePlural">
+    <value>{0} минут</value>
+  </data>
+  <data name="minutes_abbreviation">
+    <value>{0}м</value>
+  </data>
+  <data name="minutesAgo">
+    <value>{0} минут бұрын</value>
+  </data>
+  <data name="minuteSingular">
+    <value>1 минут</value>
+  </data>
+  <data name="minuteToRead">
+    <value>оқуға {0} минут керек</value>
+  </data>
+  <data name="module">
+    <value>Модуль</value>
+  </data>
+  <data name="moduleComplete">
+    <value>Модуль аяқталды</value>
+  </data>
+  <data name="moduleIncomplete">
+    <value>Модуль аяқталмады</value>
+  </data>
+  <data name="moduleReference">
+    <value>{0} модуль анықтамасы</value>
+  </data>
+  <data name="modules">
+    <value>Модульдер</value>
+  </data>
+  <data name="modulesInPath">
+    <value>Бұл оқу жолындағы модульдер</value>
+  </data>
+  <data name="monikerFallback">
+    <value>Сұралған бет {0} үшін қолжетімді емес. Сіз бұл бет үшін қолжетімді өнімнің ең жаңа нұсқасына қайта бағытталдыңыз.</value>
+  </data>
+  <data name="monthsAgo">
+    <value>{0} ай бұрын</value>
+  </data>
+  <data name="more">
+    <value>Қосымша</value>
+  </data>
+  <data name="moreInfo">
+    <value>Қосымша ақпарат</value>
+  </data>
+  <data name="moreTutorials">
+    <value>Қосымша оқулықтар</value>
+  </data>
+  <data name="multipleModules">
+    <value>{numberOf} модуль</value>
+  </data>
+  <data name="multipleUnits">
+    <value>{numberOf} бөлім</value>
+  </data>
+  <data name="name">
+    <value>Аты</value>
+  </data>
+  <data name="namespace">
+    <value>Аттар кеңістігі</value>
+  </data>
+  <data name="namespaces">
+    <value>Аттар кеңістіктері</value>
+  </data>
+  <data name="newFeedbackMessage">
+    <value>Жаңа кері байланыс жүйеміз GitHub мәселелері негізінде жасалған. Бұл өзгеріс туралы &lt;a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs"&gt;блог жазбасынан&lt;/a&gt; оқыңыз.</value>
+  </data>
+  <data name="next">
+    <value>Келесі</value>
+  </data>
+  <data name="nextPage">
+    <value>Келесі бет</value>
+  </data>
+  <data name="no">
+    <value>Жоқ</value>
+  </data>
+  <data name="noAchievements">
+    <value>Сізде қазір жетістіктер жоқ. &lt;a href="{0}"&gt;Жетістіктерге жету үшін модульдерді аяқтаңыз.&lt;/a&gt;</value>
+  </data>
+  <data name="noAchievementsPublicProfile">
+    <value>{0} жетістіктерге ие емес.</value>
+  </data>
+  <data name="noClosed">
+    <value>Жабылған мәселелер жоқ</value>
+  </data>
+  <data name="noOpen">
+    <value>Шешілмеген мәселелер жоқ</value>
+  </data>
+  <data name="noOutput">
+    <value>Шығыс жоқ</value>
+  </data>
+  <data name="noResults">
+    <value>No results</value>
+  </data>
+  <data name="noResultsFound">
+    <value>Нәтижелер табылмады</value>
+  </data>
+  <data name="noResultsRest">
+    <value>Әлі нәтижелер жоқ, бірақ енгізуді жалғастырыңыз…</value>
+  </data>
+  <data name="noResultsToc">
+    <value>{term} үшін нәтижелер жоқ&lt;br /&gt;&lt;a href="{url}"&gt;"{filter-text}" барлық {scope} құжаттамада іздеу&lt;/a&gt;</value>
+  </data>
+  <data name="noSearchTerm">
+    <value>No search term</value>
+  </data>
+  <data name="note">
+    <value>&lt;p&gt;Ескерім&lt;/p&gt;</value>
+  </data>
+  <data name="notesToCallers">
+    <value>Қоңырау шалушылар үшін ескертпелер</value>
+  </data>
+  <data name="notesToImplementers">
+    <value>Орындаушылар үшін ескертпелер</value>
+  </data>
+  <data name="notesToInheritors">
+    <value>Алушылар үшін ескертпелер</value>
+  </data>
+  <data name="numberClosedIssues">
+    <value>{0} жабық</value>
+  </data>
+  <data name="numberOpenIssues">
+    <value>{0} ашық</value>
+  </data>
+  <data name="officeDocs">
+    <value>Office құжаттамасы</value>
+  </data>
+  <data name="ok">
+    <value>OK</value>
+  </data>
+  <data name="okGotIt">
+    <value>Жарайды, түсінікті.</value>
+  </data>
+  <data name="oneModule">
+    <value>1 модуль</value>
+  </data>
+  <data name="oneUnit">
+    <value>1 бөлім</value>
+  </data>
+  <data name="onPageNavigation">
+    <value>Беттегі навигация</value>
+  </data>
+  <data name="onSpecificDate">
+    <value>қайда: {0}</value>
+  </data>
+  <data name="openIssue">
+    <value>Шешілмеген мәселе</value>
+  </data>
+  <data name="openIssues">
+    <value>Шешілмеген мәселелер</value>
+  </data>
+  <data name="operationId">
+    <value>Операцияның идентификаторы:</value>
+  </data>
+  <data name="operatorsInSubtitle">
+    <value>Операторлар</value>
+  </data>
+  <data name="optionalParameters">
+    <value>Қосымша параметрлер</value>
+  </data>
+  <data name="options">
+    <value>Опциялар</value>
+  </data>
+  <data name="output">
+    <value>Шығыс</value>
+  </data>
+  <data name="overloads">
+    <value>Шамадан тыс жүктемелер</value>
+  </data>
+  <data name="overrides">
+    <value>Қайта анықтау</value>
+  </data>
+  <data name="overview">
+    <value>Шолу</value>
+  </data>
+  <data name="owner">
+    <value>Иесі</value>
+  </data>
+  <data name="ownerDescription">
+    <value>Бұл пайдаланушы {repo} репозиторийінің иесі болып табылады.</value>
+  </data>
+  <data name="pacific">
+    <value>Тынық мұхиты аймағы</value>
+  </data>
+  <data name="package">
+    <value>Жиынтық</value>
+  </data>
+  <data name="packageReference">
+    <value>{0} орам анықтамасы</value>
+  </data>
+  <data name="packages">
+    <value>Жиынтықтар</value>
+  </data>
+  <data name="page">
+    <value>{0}-бет</value>
+  </data>
+  <data name="pageActions">
+    <value>Бет әрекеттері</value>
+  </data>
+  <data name="parameters">
+    <value>Параметрлер</value>
+  </data>
+  <data name="path">
+    <value>Жолы:</value>
+  </data>
+  <data name="pickReaction">
+    <value>Реакцияңызды таңдаңыз</value>
+  </data>
+  <data name="platform">
+    <value>Платформа</value>
+  </data>
+  <data name="pleaseFillOut">
+    <value>Осы өрісті толтырыңыз.</value>
+  </data>
+  <data name="pleaseTryAgain">
+    <value>Әрекетті қайталаңыз.</value>
+  </data>
+  <data name="portallab_launchButton">
+    <value>Azure порталын іске қосу</value>
+  </data>
+  <data name="portallab_loading">
+    <value>Azure порталы жүктелуде...</value>
+  </data>
+  <data name="portallab_openButton">
+    <value>Зертхананы жаңа терезеде ашу</value>
+  </data>
+  <data name="portallab_prompt1">
+    <value>Бұл бөлім аяқтау үшін Azure порталын қажет етеді.</value>
+  </data>
+  <data name="portallab_prompt2">
+    <value>Azure порталының зертханасы осы бөлімдегі қадамдарды аяқтау үшін тегін Azure ресурсына кіру мүмкіндігін қамтамасыз етеді. Azure порталының зертханалары Azure жазылымына әсер етпейді. Сізден ақы алынбайды.</value>
+  </data>
+  <data name="portallab_ready">
+    <value>Azure порталының зертханасы дайын.</value>
+  </data>
+  <data name="portallab_releaseButton">
+    <value>Иә, жаңа зертхананы белсендіру</value>
+  </data>
+  <data name="portallab_releasePrompt1">
+    <value>Басқа бөлім үшін Azure порталының зертханасы белсенді күйде тұр</value>
+  </data>
+  <data name="portallab_releasePrompt2">
+    <value>Қазір басқа бөлім үшін Azure порталының зертханасы ашық ({lab-name}). Бұл бөлім үшін ағымдағы зертхананы жауып, жаңа зертхананы белсендіргіңіз келе ме?</value>
+  </data>
+  <data name="portallab_retryButton">
+    <value>Зертхананы іске қосуды қайталау</value>
+  </data>
+  <data name="portallab_signInButton">
+    <value>Azure порталын іске қосу үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="prerequisites">
+    <value>Қажетті шарттар:</value>
+  </data>
+  <data name="preview">
+    <value>Алдын ала қарау</value>
+  </data>
+  <data name="previewTypescript">
+    <value>Осы API жасақтаушылар үшін алдын ала қарау ретінде беріледі және біз алатын пікірлердің негізінде өзгеруі мүмкін. Осы API параметрін жұмыс ортасында пайдаланбаңыз.</value>
+  </data>
+  <data name="previous">
+    <value>Алдыңғы</value>
+  </data>
+  <data name="previousPage">
+    <value>Алдыңғы бет</value>
+  </data>
+  <data name="previousVersionDocs">
+    <value>Алдыңғы нұсқа құжаттары</value>
+  </data>
+  <data name="privacyAndCookies">
+    <value>Privacy &amp;amp; Cookies</value>
+  </data>
+  <data name="privacystatement">
+    <value>Құпиялылық туралы мәлімдеме</value>
+  </data>
+  <data name="product">
+    <value>Өнім</value>
+  </data>
+  <data name="productFeedback">
+    <value>Өнім туралы пікір</value>
+  </data>
+  <data name="productFeedbackPrompt">
+    <value>To submit product feedback, please visit</value>
+  </data>
+  <data name="products">
+    <value>Өнімдер</value>
+  </data>
+  <data name="products_azure">
+    <value>Azure</value>
+  </data>
+  <data name="products_azure_active_directory">
+    <value>Azure Active Directory</value>
+  </data>
+  <data name="products_azure_advisor">
+    <value>Azure Advisor</value>
+  </data>
+  <data name="products_azure_application_insights">
+    <value>Application Insights</value>
+  </data>
+  <data name="products_azure_cdn">
+    <value>Content Delivery Network</value>
+  </data>
+  <data name="products_azure_clis">
+    <value>CLIs</value>
+  </data>
+  <data name="products_azure_cloud_shell">
+    <value>Cloud Shell</value>
+  </data>
+  <data name="products_azure_container_instances">
+    <value>Container Instances</value>
+  </data>
+  <data name="products_azure_container_registry">
+    <value>Container Registry</value>
+  </data>
+  <data name="products_azure_cosmos_db">
+    <value>Cosmos DB</value>
+  </data>
+  <data name="products_azure_cost_management">
+    <value>Cost Management</value>
+  </data>
+  <data name="products_azure_event_grid">
+    <value>Event Grid</value>
+  </data>
+  <data name="products_azure_event_hubs">
+    <value>Event Hubs</value>
+  </data>
+  <data name="products_azure_functions">
+    <value>Functions</value>
+  </data>
+  <data name="products_azure_iot_central">
+    <value>IoT Central</value>
+  </data>
+  <data name="products_azure_key_vault">
+    <value>Key Vault</value>
+  </data>
+  <data name="products_azure_log_analytics">
+    <value>Log Analytics</value>
+  </data>
+  <data name="products_azure_monitor">
+    <value>Monitor</value>
+  </data>
+  <data name="products_azure_portal">
+    <value>Azure Portal</value>
+  </data>
+  <data name="products_azure_redis_cache">
+    <value>Redis Cache</value>
+  </data>
+  <data name="products_azure_resource_manager">
+    <value>Azure Resource Manager</value>
+  </data>
+  <data name="products_azure_sdks">
+    <value>SDKs</value>
+  </data>
+  <data name="products_azure_service_bus">
+    <value>Service Bus</value>
+  </data>
+  <data name="products_azure_sql_database">
+    <value>SQL Database</value>
+  </data>
+  <data name="products_azure_storage">
+    <value>Storage</value>
+  </data>
+  <data name="products_azure_virtual_machines">
+    <value>Virtual Machines</value>
+  </data>
+  <data name="products_bizapps">
+    <value>Іскерлік бағдарламалар</value>
+  </data>
+  <data name="products_bizapps_d365">
+    <value>Dynamics 365</value>
+  </data>
+  <data name="products_bizapps_flow">
+    <value>Flow</value>
+  </data>
+  <data name="products_bizapps_power_apps">
+    <value>PowerApps</value>
+  </data>
+  <data name="products_bizapps_power_bi">
+    <value>Power BI</value>
+  </data>
+  <data name="products_vs">
+    <value>Visual Studio</value>
+  </data>
+  <data name="products_vs_code">
+    <value>Visual Studio Code</value>
+  </data>
+  <data name="profile">
+    <value>Профиль</value>
+  </data>
+  <data name="propertiesInSubtitle">
+    <value>Сипаттар</value>
+  </data>
+  <data name="propertyDetails">
+    <value>Сипат мәліметтері</value>
+  </data>
+  <data name="propertyValue">
+    <value>Сипат мәні</value>
+  </data>
+  <data name="provisioningSandbox">
+    <value>Құм жәшікті құрастыру. Бұған аз уақыт кетеді...</value>
+  </data>
+  <data name="quickfilters">
+    <value>Жедел сүзгілер</value>
+  </data>
+  <data name="quizComplete">
+    <value>Құттықтаймыз!</value>
+  </data>
+  <data name="rateLimitedLoadingComments">
+    <value>Комментарийлерді жүктеу мүмкін емес. GitHub API көрсеткішінің шегінен асып кетті.</value>
+  </data>
+  <data name="rateLimitedLoadingIssues">
+    <value>Мәселелерді іздеу мүмкін емес. GitHub API көрсеткішінің шегінен асып кетті.</value>
+  </data>
+  <data name="ratingCommentsPrompt">
+    <value>Комментарийлер немесе ұсыныстар? &lt;a href="#" data-bi-name="rating-verbatim-link"&gt;Осында айтыңыз&lt;/a&gt;.</value>
+  </data>
+  <data name="ratingShareIdeas">
+    <value>Идеяларыңызды бөлісіңіз. Пікірлерді кез келген тілде күтеміз.</value>
+  </data>
+  <data name="readInEnglish">
+    <value>Ағылшын тілінде оқу</value>
+  </data>
+  <data name="readonly">
+    <value>тек оқу үшін</value>
+  </data>
+  <data name="receivedAchievement">
+    <value>Бұл жетістікті {0} сіз {1} аяқтағаныңыз үшін алдыңыз.</value>
+  </data>
+  <data name="references">
+    <value>Сілтемелер</value>
+  </data>
+  <data name="refineHeaderText">
+    <value>Оқу контентін нақтылау</value>
+  </data>
+  <data name="relatedLearningPaths">
+    <value>Бұл модуль осы оқыту жолдарының бөлігі болып табылады</value>
+  </data>
+  <data name="remaining">
+    <value>қалғаны</value>
+  </data>
+  <data name="remarks">
+    <value>Ескертпелер</value>
+  </data>
+  <data name="removeItem">
+    <value>Жою {0}</value>
+  </data>
+  <data name="renewalPeriod">
+    <value>Жаңарту мерзімі:</value>
+  </data>
+  <data name="reportAbuseResponse">
+    <value>Проблема туралы бізге хабарлағаныңыз үшін рақмет. Жіберген хабарыңызды мұқият қарап шығамыз және бұл проблеманы шешу үшін тиісті шараларды қолданамыз. Құқықтық және құпиялылық себептерге байланысты бұл жіберу туралы сізге қосымша жаңартулар бере алмаймыз. Бізге хабарласқаныңыз үшін рақмет.</value>
+  </data>
+  <data name="reportAnIssue">
+    <value>Проблема туралы хабарлау</value>
+  </data>
+  <data name="requestBody">
+    <value>Сұрау мәтіні</value>
+  </data>
+  <data name="requestBodyCanBeFollowing">
+    <value>Сұрау мәтіні мыналардың бірі болуы мүмкін:</value>
+  </data>
+  <data name="requestHeader">
+    <value>Сұрау тақырыбы</value>
+  </data>
+  <data name="requestPreview">
+    <value>Алдын ала қарап алуды сұрау</value>
+  </data>
+  <data name="requestUrl">
+    <value>URL мекенжайын сұрау</value>
+  </data>
+  <data name="required">
+    <value>қажетті</value>
+  </data>
+  <data name="requiredParameters">
+    <value>Қажетті параметрлер</value>
+  </data>
+  <data name="requirements">
+    <value>Талаптар</value>
+  </data>
+  <data name="resource_type">
+    <value>Түрлер</value>
+  </data>
+  <data name="resourcesFooter_startups">
+    <value>Startups</value>
+  </data>
+  <data name="resourcesFooter_students">
+    <value>Students</value>
+  </data>
+  <data name="resourcesFooter_title">
+    <value>Resources</value>
+  </data>
+  <data name="resourcesFooter_videoLearning">
+    <value>Video Learning</value>
+  </data>
+  <data name="responseCode">
+    <value>Response Code</value>
+  </data>
+  <data name="responses">
+    <value>Жауаптар</value>
+  </data>
+  <data name="restart">
+    <value>Қайта іске қосу</value>
+  </data>
+  <data name="restrictedCloud">
+    <value>Тіркелгіңіздегі шектеулерге байланысты сізді құм жәшік клиентіне шақыра алмаймыз. Әкімшіңізге хабарласыңыз.</value>
+  </data>
+  <data name="resultsFound">
+    <value>{0} нәтиже табылды</value>
+  </data>
+  <data name="retryActivatingSandbox">
+    <value>Құм жәшікті белсендіруді қайталау</value>
+  </data>
+  <data name="returns">
+    <value>Қайтару</value>
+  </data>
+  <data name="returnValue">
+    <value>Қайтару мәні</value>
+  </data>
+  <data name="reviewYourLearnHistory">
+    <value>Оқу жолы журналын қарап шығу</value>
+  </data>
+  <data name="roles">
+    <value>Рөлдер</value>
+  </data>
+  <data name="rss">
+    <value>RSS</value>
+  </data>
+  <data name="run">
+    <value>Орындау</value>
+  </data>
+  <data name="sandboxAccessAvailable">
+    <value>Құм жәшік белсендірілді!</value>
+  </data>
+  <data name="sandboxAccessExpired">
+    <value>Құм жәшікке кіру мүмкіндігінің мерзімі аяқталды</value>
+  </data>
+  <data name="sandboxExpiredExplanation">
+    <value>Құм жәшігіңіздің мерзімі аяқталды. Жаңа құм жәшікті белсендіріңіз.</value>
+  </data>
+  <data name="sandboxExplanation">
+    <value>Құм жәшік осы бөлімді аяқтау үшін қажет Azure ресурстарына тегін кіру мүмкіндігін береді. Azure жазылымы үшін ақы алынбайды.</value>
+  </data>
+  <data name="sandboxRequiresInvite">
+    <value>Құм жәшікті пайдалану Azure клиентінің шақыруын қабылдауды қажет етеді</value>
+  </data>
+  <data name="sandboxTemporaryDisabled">
+    <value>Бұл модульге арналған құм жәшік техникалық қызмет көрсету мақсатында уақытша ажыратылған.</value>
+  </data>
+  <data name="search">
+    <value>Іздеу</value>
+  </data>
+  <data name="searchNavigation">
+    <value>Іздеу навигациясы</value>
+  </data>
+  <data name="searchPreviousVersions">
+    <value>Алдыңғы нұсқаларды іздеу</value>
+  </data>
+  <data name="searchResultsFor">
+    <value>Search results for</value>
+  </data>
+  <data name="searchScopeTitle">
+    <value>Іздеу сүзгісі: «{0}». Жою үшін түртіңіз.</value>
+  </data>
+  <data name="secondsAgo">
+    <value>{0} секунд бұрын</value>
+  </data>
+  <data name="security">
+    <value>Қауіпсіздік</value>
+  </data>
+  <data name="seeAlso">
+    <value>Тағы қараңыз</value>
+  </data>
+  <data name="selectedVersion">
+    <value>Таңдалған нұсқа</value>
+  </data>
+  <data name="selectLocaleInstructions">
+    <value>Аймақты таңдау немесе тіл атауын немесе тіл кодын енгізу арқылы тілдер тізімін сүзіңіз.</value>
+  </data>
+  <data name="selectPackage">
+    <value>Жиынтықты таңдау</value>
+  </data>
+  <data name="selectVersion">
+    <value>Нұсқаны таңдау</value>
+  </data>
+  <data name="selectYourRole">
+    <value>Өз рөліңізді таңдаңыз</value>
+  </data>
+  <data name="service">
+    <value>Қызмет</value>
+  </data>
+  <data name="services">
+    <value>Қызметтер</value>
+  </data>
+  <data name="serviceUnavailable">
+    <value>Қызмет уақытша қолжетімді емес. Осы мәселені шешу бойынша жұмыс жүргізілуде.</value>
+  </data>
+  <data name="share">
+    <value>Ортақ пайдалану</value>
+  </data>
+  <data name="shareAchievement">
+    <value>Бұл жетістікті {0} бөлісу</value>
+  </data>
+  <data name="shareAchievementMessage">
+    <value>Microsoft басқарылатын оқытуы бойынша {moduleName} үшін мен жеткен жетістікті қарау. #docsmfst</value>
+  </data>
+  <data name="sharedArticleSubject">
+    <value>[Ортақ мақала] {0}</value>
+  </data>
+  <data name="sharedesc">
+    <value>Осы құжатты ортақ пайдалану</value>
+  </data>
+  <data name="shareYourAchievement">
+    <value>Жетістігіңізді бөлісіңіз:</value>
+  </data>
+  <data name="showAllDerived">
+    <value>Барлық алынған кластарды көрсету</value>
+  </data>
+  <data name="signIn">
+    <value>Жүйеге кіру</value>
+  </data>
+  <data name="signInAzure">
+    <value>Azure тіркелгіңізбен жүйеге кіріңіз.</value>
+  </data>
+  <data name="signinCheckYourWork">
+    <value>Жұмысыңызды тексеру үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="signInCloudShellWithDifferentAccount">
+    <value>Cloud Shell қызметіне Docs тіркелгісінен басқа тіркелгімен кірдіңіз. Құм жәшікке қайта кіріп көру үшін Cloud Shell жүйесінен шығыңыз.</value>
+  </data>
+  <data name="signingIn">
+    <value>Жүйеге кіруде...</value>
+  </data>
+  <data name="signInToActivateSandbox">
+    <value>Құм жәшікті белсендіру үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="signInToComment">
+    <value>Түсініктемеге кіру</value>
+  </data>
+  <data name="signInToGiveDocumentationFeedback">
+    <value>Құжат туралы пікір қалдыру үшін кіру</value>
+  </data>
+  <data name="signInToGiveFeedback">
+    <value>Пікір жіберу үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="signInToIncreaseRateLimit">
+    <value>GitHub API көрсеткішінің шегін үлкейту үшін &lt;a class="feedback-sign-in-button" data-bi-name="rate-limit-sign-in" href="#"&gt;жүйеге кіріңіз&lt;/a&gt;.</value>
+  </data>
+  <data name="signInToReact">
+    <value>Реакцияңызды таңдау үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="signInToSaveProgress">
+    <value>Орындалу туралы мәліметтерді сақтау үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="signInToSeeProfile">
+    <value>Пайдаланушы профиліңізді көру үшін &lt;a class='docs-sign-in' href="#"&gt;кіріңіз&lt;/a&gt;.</value>
+  </data>
+  <data name="signOut">
+    <value>Шығу</value>
+  </data>
+  <data name="siteFeedback">
+    <value>Сайт туралы пікір</value>
+  </data>
+  <data name="slack">
+    <value>Slack</value>
+  </data>
+  <data name="solution_architect">
+    <value>Solution Architect</value>
+  </data>
+  <data name="solutionArchitect">
+    <value>Шешімдер архитекторы</value>
+  </data>
+  <data name="somethingWentWrong">
+    <value>Бірдеңе дұрыс болмады</value>
+  </data>
+  <data name="start">
+    <value>Бастау</value>
+  </data>
+  <data name="startHere">
+    <value>Осында бастаңыз</value>
+  </data>
+  <data name="stepOfSteps">
+    <value>Қадам {step-index}/{step-count}</value>
+  </data>
+  <data name="structsInSubtitle">
+    <value>Құрылымдар</value>
+  </data>
+  <data name="submit">
+    <value>Жіберу</value>
+  </data>
+  <data name="submitFeedback">
+    <value>Пікір жіберу</value>
+  </data>
+  <data name="successfullySubmitted">
+    <value>Сәтті жіберілді!</value>
+  </data>
+  <data name="suggestionProduct">
+    <value>Өнім туралы идея ұсыну</value>
+  </data>
+  <data name="taskNotComplete">
+    <value>Тапсырма дұрыс орындалмады.</value>
+  </data>
+  <data name="tempUpdatingPage">
+    <value>Бұл бетті жаңа интерактивтік тәжірибемен жаңартып жатырмыз. Кейінірек тексеріп көріңіз!</value>
+  </data>
+  <data name="termsOfUse">
+    <value>Terms of Use</value>
+  </data>
+  <data name="thanksForFeedback">
+    <value>Пікіріңіз үшін рақмет!</value>
+  </data>
+  <data name="thatIsNotRight">
+    <value>Бұл мүлдем дұрыс емес.</value>
+  </data>
+  <data name="theme">
+    <value>Тақырып</value>
+  </data>
+  <data name="thereIsCurrentlyNoFeedback">
+    <value>Бұл құжат үшін қазір пікір жоқ. Жіберілген пікір осы жерде көрінеді.</value>
+  </data>
+  <data name="threadMemberScope_all">
+    <value>Бұл кластағы барлық мүшелер үшін ағын қауіпсіздігі қамтамасыз етілген.</value>
+  </data>
+  <data name="threadMemberScope_instance">
+    <value>Бұл кластағы барлық нұсқа мүшелері үшін ағын қауіпсіздігі қамтамасыз етілген.</value>
+  </data>
+  <data name="threadMemberScope_static">
+    <value>Бұл кластағы барлық статикалық мүшелер үшін ағын қауіпсіздігі қамтамасыз етілген.</value>
+  </data>
+  <data name="threadMemberScope_unsupported">
+    <value>Бұл түр үшін ағын қауіпсіздігі қамтамасыз етілмеген.</value>
+  </data>
+  <data name="threadSafety">
+    <value>Ағын қауіпсіздігі</value>
+  </data>
+  <data name="thumbsDownReactionCount">
+    <value>{0} «ұнатпау» реакциясы</value>
+  </data>
+  <data name="thumbsUpReactionCount">
+    <value>{0} «ұнату» реакциясы</value>
+  </data>
+  <data name="tip">
+    <value>&lt;p&gt;Кеңес&lt;/p&gt;</value>
+  </data>
+  <data name="title">
+    <value>Тақырып</value>
+  </data>
+  <data name="toggleIssue">
+    <value>Мәселені ауыстыру</value>
+  </data>
+  <data name="toggleUnits">
+    <value>Бөлімдерді ауыстыру</value>
+  </data>
+  <data name="trademarks">
+    <value>Сауда белгілері</value>
+  </data>
+  <data name="triggers">
+    <value>Триггерлер</value>
+  </data>
+  <data name="trophyEarnedFor">
+    <value>Аяқтау үшін олжа алдыңыз</value>
+  </data>
+  <data name="tryAgain">
+    <value>Қайталау</value>
+  </data>
+  <data name="tryInBrowser">
+    <value>Браузеріңізде кодты қолданып көру</value>
+  </data>
+  <data name="tryIt">
+    <value>Try It</value>
+  </data>
+  <data name="tryItDescription">
+    <value>REST API интерфейсін төмендегі енгізілетін мәндермен пайдаланып көріңіз.</value>
+  </data>
+  <data name="tutorial_allContributors">
+    <value>барлық {0} үлес қосушы</value>
+  </data>
+  <data name="tutorial_complete100">
+    <value>100% аяқталды!</value>
+  </data>
+  <data name="tutorial_congratulations">
+    <value>Құттықтаймыз!</value>
+  </data>
+  <data name="tutorial_continueHere">
+    <value>Осында жалғастыру</value>
+  </data>
+  <data name="tutorial_contributors">
+    <value>Қатысушылар</value>
+  </data>
+  <data name="tutorial_furtherReading">
+    <value>Әрі қарай оқу</value>
+  </data>
+  <data name="tutorial_introduction">
+    <value>Кіріспе</value>
+  </data>
+  <data name="tutorial_minsRemaining">
+    <value>{0} минут қалды</value>
+  </data>
+  <data name="tutorial_minutesToComplete">
+    <value>аяқтауға {0} минут қалды</value>
+  </data>
+  <data name="tutorial_nextSteps">
+    <value>Келесі қадамдар</value>
+  </data>
+  <data name="tutorial_nextTutorial">
+    <value>Келесі оқулық</value>
+  </data>
+  <data name="tutorial_resources">
+    <value>Ресурстар</value>
+  </data>
+  <data name="tutorial_seeAllContributors">
+    <value>{0} қараңыз немесе {1} бойынша жақсартулар енгізу арқылы үлес қосыңыз.</value>
+  </data>
+  <data name="tutorial_youLearned">
+    <value>Сіздің үйренгеніңіз...</value>
+  </data>
+  <data name="tutorial_youveCompleted">
+    <value>«{0}» оқулығын аяқтадыңыз.</value>
+  </data>
+  <data name="tutorial_youWillLearn">
+    <value>Сіздің үйренетініңіз...</value>
+  </data>
+  <data name="tutorialFeedback">
+    <value>Бұл оқулықтың бөліміне қатысты пікіріңіз бар ма?</value>
+  </data>
+  <data name="tutorialIssue">
+    <value>Қате туралы Github қызметінде хабарлау</value>
+  </data>
+  <data name="tutorialNextSteps">
+    <value>Келесі қадамдар</value>
+  </data>
+  <data name="twitter">
+    <value>Twitter</value>
+  </data>
+  <data name="twitterAttribution">
+    <value>Твиттерді жинау әдісі</value>
+  </data>
+  <data name="type">
+    <value>түр</value>
+  </data>
+  <data name="typeAliasInSubtitle">
+    <value>Type Aliases</value>
+  </data>
+  <data name="typeDefinition">
+    <value>Түр анықтамасы</value>
+  </data>
+  <data name="typeParameters">
+    <value>Түр параметрлері</value>
+  </data>
+  <data name="unit">
+    <value>Бөлім</value>
+  </data>
+  <data name="unitComplete">
+    <value>Бөлім аяқталды</value>
+  </data>
+  <data name="unitMarker">
+    <value>Бөлім {index}/{total}</value>
+  </data>
+  <data name="unitRequiresSandbox">
+    <value>Бұл бөлімді аяқтау үшін құм жәшік қажет</value>
+  </data>
+  <data name="units">
+    <value>Бөлімдер</value>
+  </data>
+  <data name="updated">
+    <value>updated</value>
+  </data>
+  <data name="uriParameters">
+    <value>URI параметрлері</value>
+  </data>
+  <data name="usage">
+    <value>Пайдалану</value>
+  </data>
+  <data name="useAVirtualMachine">
+    <value>Виртуалды машинаны пайдалану</value>
+  </data>
+  <data name="useAVirtualMachineExplanation">
+    <value>Құрама нұсқауларды Hands-on Lab сайтынан қараңыз.</value>
+  </data>
+  <data name="userNameFallback">
+    <value>Docs үйренушісі</value>
+  </data>
+  <data name="useYourLocalComputer">
+    <value>Жергілікті компьютерді пайдалану</value>
+  </data>
+  <data name="useYourLocalComputerExplanation">
+    <value>Осы сайтта қалып, құрылғыңызбен нұсқауларды орындаңыз.</value>
+  </data>
+  <data name="usingThisConnector">
+    <value>Осы коннекторды пайдалану</value>
+  </data>
+  <data name="value">
+    <value>Мән</value>
+  </data>
+  <data name="valueFrom">
+    <value>мән келесіден</value>
+  </data>
+  <data name="version">
+    <value>Нұсқа</value>
+  </data>
+  <data name="viewCode">
+    <value>View Code</value>
+  </data>
+  <data name="viewIssueOnGH">
+    <value>GitHub қызметінде осы мәселені көру</value>
+  </data>
+  <data name="viewMoreOnGitHub">
+    <value>Қосымша пікірлерді көру, GitHub</value>
+  </data>
+  <data name="viewOnGitHub">
+    <value>GitHub ішінде қарау</value>
+  </data>
+  <data name="viewUserOnGH">
+    <value>GitHub қызметінде {username} атты пайдаланушыны көру</value>
+  </data>
+  <data name="visualStudioArchive">
+    <value>Біз Visual Studio 2017 бағдарламасын пайдалануды ұсынамыз.</value>
+  </data>
+  <data name="visualStudioArchiveDownload">
+    <value>Қазір жүктеп алу</value>
+  </data>
+  <data name="visualStudioDocs">
+    <value>Visual Studio құжаттамасы</value>
+  </data>
+  <data name="vmlab_launchButton">
+    <value>Виртуалды машина режимін іске қосу</value>
+  </data>
+  <data name="vmlab_loading">
+    <value>Виртуалды машина жүктелуде...</value>
+  </data>
+  <data name="vmlab_prompt1">
+    <value>Бұл бөлім аяқтау үшін виртуалды машинаны қажет етеді.</value>
+  </data>
+  <data name="vmlab_prompt2">
+    <value>Виртуалды машина режимі осы бөлімдегі қадамдарды аяқтау үшін тегін Azure виртуалды машинасына кіру мүмкіндігін қамтамасыз етеді. Azure жазылымы үшін ақы алынбайды</value>
+  </data>
+  <data name="vmlab_releaseButton">
+    <value>Иә, жаңа виртуалды машинаны белсендіру</value>
+  </data>
+  <data name="vmlab_releasePrompt1">
+    <value>Басқа бөлім үшін виртуалды машина белсендірілген</value>
+  </data>
+  <data name="vmlab_releasePrompt2">
+    <value>Виртуалды машинаны {lab-name} модулінде аштыңыз. Бұл виртуалды машинаны белсендірсеңіз, басқа модульдегі жұмысыңызды жоғалтасыз.</value>
+  </data>
+  <data name="vmlab_retryButton">
+    <value>Виртуалды машина режимін іске қосуды қайталау</value>
+  </data>
+  <data name="vmlab_signInButton">
+    <value>Виртуалды машина режимін іске қосу үшін жүйеге кіріңіз</value>
+  </data>
+  <data name="warning">
+    <value>&lt;p&gt;Ескерту&lt;/p&gt;</value>
+  </data>
+  <data name="weeksAgo">
+    <value>{0} апта бұрын</value>
+  </data>
+  <data name="whatTypeOfFeedback">
+    <value>Ойларыңызды білгіміз келеді. Түрін таңдаңыз:</value>
+  </data>
+  <data name="win10Requirements">
+    <value>Windows 10 талаптары</value>
+  </data>
+  <data name="windowsDocs">
+    <value>Windows құжаттамасы</value>
+  </data>
+  <data name="worldwide">
+    <value>Дүние жүзі</value>
+  </data>
+  <data name="wouldYouLikeToProvideFeedback">
+    <value>Пікір жібергіңіз келе ме?</value>
+  </data>
+  <data name="xp">
+    <value>{0} XP</value>
+  </data>
+  <data name="yes">
+    <value>Иә</value>
+  </data>
+  <data name="youDidIt">
+    <value>Жарайсыз!</value>
+  </data>
+  <data name="youEarnedXpKnowledgeCheck">
+    <value>Білімді тексеруді аяқтағаныңыз үшін тәжірибе ұпайларын алдыңыз.</value>
+  </data>
+  <data name="youEarnedXpTask">
+    <value>Тапсырманы аяқтағаныңыз үшін тәжірибе ұпайларын алдыңыз.</value>
+  </data>
+  <data name="youGotXp">
+    <value>Сіз &lt;span class="experience-points"&gt;&lt;/span&gt; тәжірибе ұпайын алдыңыз.</value>
+  </data>
+  <data name="youMustAnswerAll">
+    <value>Жұмысыңызды тексеруден бұрын барлық сұрақтарға жауап беруіңіз керек.</value>
+  </data>
+  <data name="youMustUseSandboxResources">
+    <value>Жұмысыңызды тексеру үшін құм жәшік берген ресурстарды пайдалануыңыз тиіс.</value>
+  </data>
+  <data name="youNailedIt">
+    <value>Сәтті орындадыңыз</value>
+  </data>
+  <data name="yourAccount">
+    <value>Тіркелгіңіз</value>
+  </data>
+  <data name="yourAccountHasBeenDeleted">
+    <value>Тіркелгіңіз жойылды.</value>
+  </data>
+  <data name="yourData">
+    <value>Деректеріңіз</value>
+  </data>
+  <data name="yourDataDescription">
+    <value>Docs жүйесінде сақталған орындалу барысы мен жетістіктерді жүктеп алыңыз немесе жойыңыз. Ақпаратыңызды жою Microsoft идентификацияңызға әсер етпейді.</value>
+  </data>
+  <data name="yourWorkNotCompletedCorrectly">
+    <value>Жұмысыңыз дұрыс орындалмады.</value>
+  </data>
+</root>

@@ -6,6 +6,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -147,21 +150,24 @@ namespace Microsoft.Docs.Build
             var locale = t_status.Peek().Locale;
             var markdownTokens = s_markdownTokens.GetOrAdd(locale, _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
             {
-                var tokenFile = $"resources/tokens.{locale}.json";
-                var tokens = (Dictionary<string, string>)null;
-                if (File.Exists(tokenFile))
+                var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var templateAssembly = Assembly.GetAssembly(typeof(PageModel));
+                var resourceName = templateAssembly.GetManifestResourceNames().FirstOrDefault(n => n.Contains(locale, StringComparison.OrdinalIgnoreCase));
+
+                if (string.IsNullOrEmpty(resourceName))
                 {
-                    tokens = JsonUtility.Deserialize<Dictionary<string, string>>(File.ReadAllText(tokenFile)).model;
+                    return result;
                 }
 
-                var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                if (tokens != null)
+                using (var reader = new ResourceReader(templateAssembly.GetManifestResourceStream(resourceName)))
                 {
-                    foreach (var token in tokens)
+                    var dict = reader.GetEnumerator();
+                    while (dict.MoveNext())
                     {
-                        result[token.Key] = token.Value;
+                        result[dict.Key.ToString()] = dict.Value.ToString();
                     }
                 }
+
                 return result;
             }));
 
