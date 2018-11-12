@@ -130,6 +130,17 @@ namespace Microsoft.Docs.Build
         public readonly LocalizationConfig Localization = new LocalizationConfig();
 
         /// <summary>
+        /// Gets the moniker range mapping
+        /// </summary>
+        public readonly Dictionary<string, string> MonikerRange = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Get the definition of monikers
+        /// It should be absolute url or relative path
+        /// </summary>
+        public readonly string MonikerDefinitionUrl = string.Empty;
+
+        /// <summary>
         /// Gets the config file name.
         /// </summary>
         [JsonIgnore]
@@ -144,6 +155,7 @@ namespace Microsoft.Docs.Build
 
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
+            yield return MonikerDefinitionUrl;
         }
 
         /// <summary>

@@ -232,6 +232,15 @@
     },
     "localization": {
       "$ref": "#/definitions/LocalizationConfig"
+    },
+    "monikerRange": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "monikerDefinitionUrl": {
+      "type": "string"
     }
   }
 }
