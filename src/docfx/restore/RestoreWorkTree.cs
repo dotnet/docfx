@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             async Task AddWorkTrees()
             {
-                var existingWorkTrees = new ConcurrentDictionary<string, int>((await GitUtility.ListWorkTrees(restorePath, false)).ToDictionary(k => k, v => 0));
+                var existingWorkTrees = new ConcurrentDictionary<string, int>((await GitUtility.ListWorkTree(restorePath)).ToDictionary(k => k, v => 0));
                 await ParallelUtility.ForEach(hrefs, async href =>
                 {
                     var (_, rev) = GitUtility.GetGitRemoteInfo(href);
