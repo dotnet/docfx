@@ -28,11 +28,10 @@ namespace Microsoft.Docs.Build
                     response = await s_httpClient.SendAsync(message);
                 }
                 catch (Exception ex) when (
-                i < RetryCount - 1 &&
-                (ex is HttpRequestException ||
-                ex is TimeoutException ||
-                ex is TaskCanceledException ||
-                ex is OperationCanceledException))
+                    i < RetryCount - 1 &&
+                    (ex is HttpRequestException ||
+                     ex is TimeoutException ||
+                     ex is OperationCanceledException))
                 {
                     await Task.Delay(RetryInterval);
                     continue;

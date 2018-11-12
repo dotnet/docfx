@@ -8,7 +8,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "metadata": { "robots": "noindex, nofollow" } }
-  build.manifest:
 ---
 # generate normal document id and version id
 # backward compatible to docs.com
@@ -26,7 +25,6 @@ inputs:
 outputs:
   sccm/mdt/release-notes.json: |
     { "content": "", "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98" }
-  build.manifest:
 ---
 # generate index document id and version id
 # backward compatible to docs.com
@@ -47,7 +45,6 @@ outputs:
     { "content": "", "document_id": "29602e3e-439e-865c-f1c9-2eb706f97b31", "document_version_independent_id": "34196fc5-28d6-b496-a21f-8661876802c7" }
   sccm/mdm/index.json: |
     { "content": "", "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
-  build.manifest:
 ---
 # generate same document id and version id with 'redirection with document id'
 # A => B, B's ids should be same with A's
@@ -67,7 +64,6 @@ outputs:
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   sccm/mdm/index.json: |
     { "redirect_url":"/sccm/mdm/understand/hybrid-mobile-device-management" }
-  build.manifest:
 ---
 # generate same document id and version id with 'redirection with document id' even it's out of build scope
 # A => B, A is out of build scope, B's ids should be same with A's
@@ -87,7 +83,6 @@ outputs:
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   build.log: |
     ["warning","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in docfx.yml"]
-  build.manifest:
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
@@ -106,7 +101,6 @@ outputs:
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
   sccm/mdm/index.json: |
     { "redirect_url":"/sccm/mdm/understand/hybrid-mobile-device-management" }
-  build.manifest:
 ---
 # get conflicted redirection document id warning if two or more files redirect to the same file with document id
 inputs:
@@ -128,7 +122,6 @@ outputs:
     { "redirect_url":"/sccm/mdm/understand/hybrid-mobile-device-management"}
   sccm/mdm/index2.json: |
     { "redirect_url":"/sccm/mdm/understand/hybrid-mobile-device-management" }
-  build.manifest:
   build.log: |
     ["warning","redirected-id-conflict","Multiple documents redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with document id: 'sccm/mdm/index.md', 'sccm/mdm/index2.md'","docfx.yml"]
 ---
@@ -156,7 +149,6 @@ outputs:
     {"document_id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","document_version_independent_id":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
   azure/billing/billing-add-change-azure-subscription-administrator.json: |
     {"document_id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
-  build.manifest:
 ---
 # yaml&json toc metadata
 inputs:
@@ -172,17 +164,16 @@ inputs:
     items:
       - name: title
 outputs:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "metadata": {"a": "b"},
       "items":[{"toc_title":"title"}]
     }
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "metadata": {"a": "b"},
       "items":[{"toc_title":"title"}]
     }
-  build.manifest:
 ---
 # yaml&json toc leaf metadata
 inputs:
@@ -193,15 +184,14 @@ inputs:
     - name: title
       a: b
 outputs:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "items":[{"toc_title":"title", "a": "b"}]
     }
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"title", "a": "b"}]
     }
-  build.manifest:
 ---
 # yaml&json toc metadata inclusion
 # child's root metadata will be dropped
@@ -216,11 +206,10 @@ inputs:
     - name: toc reference
       tocHref: ../json/TOC.json
 outputs:
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"toc reference", "children": [{"toc_title":"title", "c": "d"}]}]
     }
-  build.manifest:
 ---
 # toc global metadata
 inputs:
@@ -237,19 +226,18 @@ inputs:
   docs/md/TOC.md: |
     # title
 outputs:
-  docs/yaml/TOC.json: |
+  docs/yaml/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b", "c": "d"}
     }
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }
-  docs/md/TOC.json: |
+  docs/md/toc.json: |
     {  
       "items":[{"toc_title":"title"}], "metadata": {"a":"b"}
     }
-  build.manifest:
 ---
 # redirect to redirect
 inputs:
@@ -270,7 +258,6 @@ outputs:
     {"document_id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
   azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.json:
   azure/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.json:
-  build.manifest:
 ---
 # index.yml is treated as index.md when calculating document id
 # id: 
@@ -290,7 +277,6 @@ inputs:
 outputs:
   articles/active-directory-b2c/index.json: |
     { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
-  build.manifest:
 ---
 # index.yml's document id also follows the redirection rules
 inputs:
@@ -311,7 +297,6 @@ outputs:
   azure/app-service/index.json: |
     { "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}
   azure/virtual-machines/windows/classic/web-app-visual-studio.json:
-  build.manifest:
 ---
 # Generate canonical URL
 inputs:
@@ -327,4 +312,3 @@ outputs:
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
   azure/app-service/index.experimental.json: |
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
-  build.manifest:

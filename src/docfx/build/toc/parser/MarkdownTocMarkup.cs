@@ -15,18 +15,17 @@ namespace Microsoft.Docs.Build
     {
         private static readonly HashSet<Type> s_blockWhiteList = new HashSet<Type> { typeof(HeadingBlock) /*header*/, typeof(YamlFrontMatterBlock) /*yaml header*/, typeof(HtmlBlock) /*comment*/ };
 
-        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, string filePath)
+        public static (List<Error> errors, TableOfContentsInputModel model) LoadMdTocModel(string tocContent, Document file, Context context)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-
             var (ast, result) = Markup.Parse(tocContent);
             errors.AddRange(result.Errors);
             foreach (var block in ast)
             {
                 if (!s_blockWhiteList.Contains(block.GetType()))
                 {
-                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), filePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
+                    errors.Add(Errors.InvalidTocSyntax(new Range(block.Line, block.Column), file.FilePath, tocContent.Substring(block.Span.Start, block.Span.Length)));
                 }
 
                 if (block is HeadingBlock headingBlock)
@@ -35,18 +34,20 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            errors.AddRange(metaErrors);
             var tocModel = new TableOfContentsInputModel
             {
-                Metadata = result.Metadata,
+                Metadata = metadata,
             };
 
             try
             {
-                tocModel.Items = ConvertTo(filePath, headingBlocks.ToArray(), errors).children;
+                tocModel.Items = ConvertTo(file.FilePath, headingBlocks.ToArray(), errors).children;
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.Add(ex.Error);
+                errors.Add(dex.Error);
             }
 
             return (errors, tocModel);

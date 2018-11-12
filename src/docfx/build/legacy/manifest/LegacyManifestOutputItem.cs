@@ -12,6 +12,13 @@ namespace Microsoft.Docs.Build
 
         // output path relative to site base path
         [JsonProperty("relative_path")]
-        public string OutputPathRelativeToSiteBasePath { get; set; }
+        public string RelativePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets output absolute path, used when output not within build output directory
+        /// e.g. resource's output when <see cref="OutputConfig.CopyResources"/> = false
+        /// </summary>
+        [JsonProperty("link_to_path")]
+        public string LinkToPath { get; set; }
     }
 }

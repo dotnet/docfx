@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, JToken token) LoadJsonFile(Document file) => _cache.LoadJsonFile(file);
 
+        public (List<Error> errors, JObject metadata) ExtractMetadata(Document file) => _cache.ExtractMetadata(file);
+
         public bool Report(string file, IEnumerable<Error> errors)
         {
             var hasErrors = false;
@@ -62,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             return File.Create(destinationPath);
         }
@@ -89,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             File.WriteAllText(destinationPath, contents);
         }
@@ -105,7 +107,7 @@ namespace Microsoft.Docs.Build
             var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
             var destinationPath = Path.Combine(_outputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+            PathUtility.CreateDirectoryFromFilePath(destinationPath);
 
             File.Copy(sourcePath, destinationPath, overwrite: true);
         }
@@ -125,6 +127,7 @@ namespace Microsoft.Docs.Build
         private sealed class Cache
         {
             private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>> _tokenCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JToken)>>();
+            private readonly ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>> _metadataCache = new ConcurrentDictionary<string, Lazy<(List<Error>, JObject)>>();
 
             public (List<Error> errors, JToken token) LoadYamlFile(Document file)
                 => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
@@ -140,6 +143,15 @@ namespace Microsoft.Docs.Build
                     var content = file.ReadText();
                     GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                     return JsonUtility.Deserialize(content);
+                })).Value;
+
+            public (List<Error> errors, JObject metadata) ExtractMetadata(Document file)
+                => _metadataCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JObject)>(() =>
+                {
+                    using (var reader = new StreamReader(file.ReadStream()))
+                    {
+                        return ExtractYamlHeader.Extract(reader);
+                    }
                 })).Value;
 
             private string GetKeyFromFile(Document file)

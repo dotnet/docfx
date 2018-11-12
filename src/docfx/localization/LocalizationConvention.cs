@@ -21,38 +21,44 @@ namespace Microsoft.Docs.Build
         /// // TODO: org name can be different
         /// </summary>
         /// <returns>The loc remote url</returns>
-        public static string GetLocalizationRepo(LocalizationMapping localizationMapping, string remote, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizationRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
-            if (localizationMapping != LocalizationMapping.Repository && localizationMapping != LocalizationMapping.RepositoryAndFolder)
+            if (mapping != LocalizationMapping.Repository && mapping != LocalizationMapping.RepositoryAndFolder)
             {
-                return remote;
+                return (remote, branch);
             }
 
             if (string.Equals(locale, defaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                return remote;
+                return (remote, branch);
             }
 
             if (string.IsNullOrEmpty(remote))
             {
-                return remote;
+                return (remote, branch);
+            }
+
+            if (string.IsNullOrEmpty(branch))
+            {
+                return (remote, branch);
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return remote;
+                return (remote, branch);
             }
 
-            var newLocale = localizationMapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
+            var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".localization";
+            var newBranch = bilingual ? $"{branch}-sxs" : branch;
             var repoName = remote.Split(new char[] { '/', '\\' }).Last();
             var match = s_repoNameWithLocale.Match(repoName);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 var originLocale = match.Groups[1].Value;
-                return remote.Replace(originLocale, newLocale);
+                return (remote.Replace(originLocale, newLocale), newBranch);
             }
 
-            return $"{remote}{newLocale}";
+            return ($"{remote}{newLocale}", newBranch);
         }
 
         public static string GetLocalizationDocsetPath(string docsetPath, Config config, string locale, RestoreMap restoreMap)
@@ -63,7 +69,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(restoreMap != null);
 
             var localizationDocsetPath = docsetPath;
-            switch (config.LocalizationMapping)
+            switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
                 case LocalizationMapping.RepositoryAndFolder:
@@ -73,20 +79,30 @@ namespace Microsoft.Docs.Build
                         {
                             return null;
                         }
-                        var locRemote = GetLocalizationRepo(config.LocalizationMapping, repo.Remote, locale, config.DefaultLocale);
-                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{repo.Branch}");
-                        localizationDocsetPath = config.LocalizationMapping == LocalizationMapping.Repository
+                        var (locRemote, locBranch) = GetLocalizationRepo(
+                            config.Localization.Mapping,
+                            config.Localization.Bilingual,
+                            repo.Remote,
+                            repo.Branch,
+                            locale,
+                            config.Localization.DefaultLocale);
+                        var restorePath = restoreMap.GetGitRestorePath($"{locRemote}#{locBranch}");
+                        localizationDocsetPath = config.Localization.Mapping == LocalizationMapping.Repository
                             ? restorePath
                             : Path.Combine(restorePath, locale);
                         break;
                     }
                 case LocalizationMapping.Folder:
                     {
+                        if (config.Localization.Bilingual)
+                        {
+                            throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
+                        }
                         localizationDocsetPath = Path.Combine(localizationDocsetPath, "localization", locale);
                         break;
                     }
                 default:
-                    throw new NotSupportedException($"{config.LocalizationMapping} is not supported yet");
+                    throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
             }
 
             return localizationDocsetPath;

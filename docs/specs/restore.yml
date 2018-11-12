@@ -1,72 +1,67 @@
 ---
 # Restore dependencies with their children
+repos:
+  https://docs.com/restore/a:
+    - files:
+        docs/a.md: a
 inputs:
   docfx.yml: |
     dependencies:
-      docfx-test-dependencies1: https://github.com/docascode/docfx-test-dependencies
-      docfx-test-dependencies2: https://github.com/docascode/docfx-test-dependencies
-restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/*Restore dependencies with their children-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
-  restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+      docfx-test-dependencies1: https://docs.com/restore/a
+      docfx-test-dependencies2: https://docs.com/restore/a
+  docs/a.md: |
+    [link to 1](~/docfx-test-dependencies1/docs/a.md)
+    [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
-  build.manifest:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+  docs/a.json: |
+    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a</p>\n"}
 ---
 # Restore urls
-inputs:
-  docfx.yml: |
-    contribution:
-      gitCommitsTime: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json
-restores:
-  url/raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json/bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b: |
-    {
-      "commits": [
-        {
-          "sha": "ba823dc527860ca0a5d7844fd80c9824dd993170",
-          "built_at": "1874-01-01"
-        }
-      ]
-    }
-  restore-lock/*Restore urls-*-lock.json: |
-    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
+repos:
+  https://github.com/restore/b:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          github:
+            userCache: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/github-user-cache-file/user_profile.json
+            resolveUsers: true
+      author: OsmondJiang
+      email: xinjiang@microsoft.com
 outputs:
-  build.manifest:
+  docs/a.json: |
+    {"author":{"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}}
 ---
 # Restore urls with extends
-inputs:
-  docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend2.yml
-restores:
-  url/raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json/bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b: |
-    {
-      "commits": [
-        {
-          "sha": "ba823dc527860ca0a5d7844fd80c9824dd993170",
-          "built_at": "1874-01-01"
-        }
-      ]
-    }
-  restore-lock/*Restore urls with extends-*-lock.json: |
-    {"url":{"https://raw.githubusercontent.com/docascode/docfx-test-dependencies/git-test-3/build_history.json":"bc49cd50f70f1cf1cfc00b7bcd241e63a70ba53b"}}
+repos:
+  https://github.com/restore/c:
+    - files:
+        docs/a.md:
+        docfx.yml: |
+          extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-2/extend2.yml
+      author: OsmondJiang
+      email: xinjiang@microsoft.com
 outputs:
-  build.manifest:
+  docs/a.json: |
+    {"author":{"name":"OsmondJiang","profile_url":"https://github.com/OsmondJiang","display_name":"Osmond Jiang","id":"19990166"}}
 ---
 # Restore dependencies with extends
+repos:
+  https://github.com/restore/d:
+    - files:
+        docs/a.md: d
 inputs:
   docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-1/extend3.yml
-restores:
-  git/github.com/docascode/docfx-test-dependencies/9ab39126f6d6642131084e741ca6206989db505a/dep.md: DEP
-  git/github.com/docascode/docfx-test-dependencies/5736374c0a142252063bbedafe5d98db495e263d/dep.md: child-DEP
-  restore-lock/*Restore dependencies with extends-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies":"9ab39126f6d6642131084e741ca6206989db505a"}}
-  restore-lock/9ab39126f6d6642131084e741ca6206989db505a-*-lock.json: |
-    {"git":{"https://github.com/docascode/docfx-test-dependencies#child":"5736374c0a142252063bbedafe5d98db495e263d"}}
+    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/extend-test-2/extend3.yml
+  docs/a.md: |
+    [link to 1](~/docfx-test-dependencies1/docs/a.md)
+    [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
-  build.manifest:
+  build.log: |
+    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md"]
+  docs/a.json: |
+    {"content":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
 # Show error when download failed
 inputs:
@@ -134,7 +129,6 @@ outputs:
     {
       "content": "<p>for long file path test.</p>"
     }
-  build.manifest:
 ---
 # Restore private repos with dependencies
 inputs:
@@ -145,9 +139,11 @@ inputs:
       https://ceapex.visualstudio.com:
         headers:
           Authorization: Bearer {SYSTEM_ACCESS_TOKEN}
+  docs/a.md: |
+    [link to readmd](~/dep/README.md)
 environments:
   - SYSTEM_ACCESS_TOKEN
-restores:
-  git/ceapex.visualstudio.com/Engineering/_git/docs-host-vnext/c9c018ce36b67713af186be2aaddeb734d8b1dbd/README.md:
 outputs:
-  build.manifest:
+  docs/a.json:
+  build.log: |
+    ["warning","link-is-dependency","File 'dep/README.md' referenced by link '~/dep/README.md' will not be built because it is from a dependency docset","docs/a.md"]

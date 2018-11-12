@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class BuildTableOfContents
     {
         public static (IEnumerable<Error>, TableOfContentsModel, DependencyMap) Build(
-            Context context, Document file, TableOfContentsMap tocMap, Action<Document> buildChild)
+            Context context, Document file, TableOfContentsMap tocMap)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -21,15 +21,11 @@ namespace Microsoft.Docs.Build
                 return (Enumerable.Empty<Error>(), null, DependencyMap.Empty);
             }
 
+            // todo: build resource files linked by toc
             var dependencyMapBuilder = new DependencyMapBuilder();
             var (errors, tocModel, tocMetadata, refArticles, refTocs) = Load(context, file, dependencyMapBuilder);
 
-            foreach (var article in refArticles)
-            {
-                buildChild(article);
-            }
-
-            var model = new TableOfContentsModel { Items = tocModel, Metadata = JsonUtility.Merge(Metadata.GetFromConfig(file), tocMetadata) };
+            var model = new TableOfContentsModel { Items = tocModel, Metadata = file.Docset.Metadata.GetMetadata(file, tocMetadata) };
 
             return (errors, model, dependencyMapBuilder.Build());
         }
@@ -62,9 +58,9 @@ namespace Microsoft.Docs.Build
 
                 tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
             }
-            catch (DocfxException ex)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.Report(fileToBuild.ToString(), ex.Error);
+                context.Report(fileToBuild.ToString(), dex.Error);
             }
         }
 

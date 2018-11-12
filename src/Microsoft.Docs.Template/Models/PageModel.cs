@@ -48,6 +48,10 @@ namespace Microsoft.Docs.Build
         public string Gitcommit { get; set; }
 
         public FileMetadata Metadata { get; set; }
+
+        public bool Bilingual { get; set; }
+
+        public List<string> Monikers { get; set; }
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

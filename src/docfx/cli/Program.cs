@@ -62,12 +62,16 @@ namespace Microsoft.Docs.Build
                         case "watch":
                             await Watch.Run(docset, options);
                             break;
+                        case "gc":
+                            await GarbageCollector.Collect(options.RetentionDays);
+                            Done(stopwatch.Elapsed, report);
+                            break;
                     }
                     return 0;
                 }
-                catch (DocfxException ex)
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    report.Write(ex.Error);
+                    report.Write(dex.Error, true);
                     return 1;
                 }
             }
@@ -104,6 +108,11 @@ namespace Microsoft.Docs.Build
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                 syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
+
+                // GC command
+                // usage: docfx gc [--retention-days days]
+                syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
+                syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
 
             return (command, docset, options);
@@ -152,6 +161,7 @@ namespace Microsoft.Docs.Build
 # docfx crash report: {exception.GetType()}
 
 docfx: `{GetDocfxVersion()}`
+x64: `{Environment.Is64BitProcess}`
 cmd: `{Environment.CommandLine}`
 cwd: `{Directory.GetCurrentDirectory()}`
 git: `{GetGitVersion()}`

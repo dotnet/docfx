@@ -8,7 +8,6 @@ outputs:
     { "content": "<p>Link to &lt;xref:a&gt;</p>" }
   build.log: |
     ["warning","uid-not-found","Cannot find uid 'a' using xref '<xref:a>'","docs/a.md"]
-  build.manifest:
 ---
 # Unknown xrefs using @ syntax are output as is with a informational message
 inputs:
@@ -19,7 +18,6 @@ outputs:
     { "content": "<p>Link to @a</p>" }
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/a.md"]
-  build.manifest:
 ---
 # Restore xref map from configured url and use the map for resolving
 inputs:
@@ -40,12 +38,10 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
-  build.manifest:
 ---
 # Define uid in conceptual, resolve it
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.md: |
     ---
     title: Title from yaml header a
@@ -62,7 +58,6 @@ outputs:
     {"content":"<p>Link to <a href=\"docs/a.json\">Title from yaml header a</a></p>\n"}
   docs/a.json:
   docs/b.json:
-  build.manifest:
   xrefmap.json: | 
     {
       "references":[
@@ -79,10 +74,11 @@ outputs:
       ]
     }
 ---
-# Define uid in SDP, resolve it
+# Define uid in SDP
+# Resolve xref with display property in conceptual document
+# Resolve xref with non-existing display property, display name
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -91,20 +87,21 @@ inputs:
       "fullName": "test.test",
       "description": "a.description"
     }
-  docs/c.md: Link to @a
+  docs/c.md: |
+    Link to <xref:a?displayProperty=fullName>
+    Link to @a
+    Link to <xref:a?displayProperty=notExisting>
 outputs:
   docs/c.json: | 
-    {"content":"<p>Link to <a href=\"docs/a.json\">test</a></p>\n"}
+    {"content":"<p>Link to <a href=\"docs/a.json\">test.test</a>\nLink to <a href=\"docs/a.json\">test</a>\nLink to <a href=\"docs/a.json\">test</a></p>\n"}
   docs/a.json:
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
 # Define duplicate uid in conceptual and SDP 
 # should output warning and resolve it with the first one ordered by href
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
@@ -121,14 +118,12 @@ outputs:
     {"content":"<p>Link to <a href=\"docs/a.json\">a</a></p>\n"}
   build.log: |
     ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': docs/a.json,docs/b.json"]
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
 # Resolve xref in SDP
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -148,35 +143,36 @@ outputs:
     {
       "content": {"xref": "docs/a.json"}
     }
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
-# Define xref property without uid at root level, should output warning
+# Define uid with error
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "",
+      "uid": "a",
       "name": "test",
       "fullName": "test.test",
-      "description": "a.description",
-      "data": {"name": "name without uid"}
+      "description":
+    }
+  docs/b.json: | 
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a"
     }
 outputs:
-  docs/a.json:
+  docs/b.json: | 
+    { "content": {"!xref": null}}
   build.log: |
-    ["warning","uid-missing","Uid is missing for xref property assignment, uid should be defined at the root level.","docs/a.json"]
-  build.manifest:
+    ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json","description",7]
   xrefmap.json: | 
     {"references":[]}
 ---
 # Define uid in non-root object level, it will be ignored
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -192,22 +188,50 @@ outputs:
   docs/b.json:
   build.log: |
     ["info","at-uid-not-found","Cannot find uid 'b' using xref '@b'","docs/b.md"]
-  build.manifest:
   xrefmap.json: | 
     {"references":[{"uid":"a","href":"docs/a.json"}]}
 ---
 # Xref property field which supports markdown content
 inputs:
-  docfx.yml: |
-    buildInternalXrefMap: true
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "a",
-      "summary": "Hello `docfx`!"
+      "summary": "    Hello `docfx`!"
     }
 outputs:
   docs/a.json:
-  build.manifest:
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","summary":"<p>Hello <code>docfx</code>!</p>"}]}
+    {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
+---
+# Xref property field which supports inline markdown content
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "inlineDescription": "    Hello `docfx`!"
+    }
+outputs:
+  docs/a.json:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}
+---
+# Xref property field with dependecy
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "inlineDescription": "[!INCLUDE[B](b.md)]"
+    }
+  docs/b.md: |
+    Hello `docfx`!
+outputs:
+  docs/a.json:
+  docs/b.json:
+  xrefmap.json: | 
+    {"references":[{"uid":"a","href":"docs/a.json","inlineDescription":"Hello <code>docfx</code>!"}]}

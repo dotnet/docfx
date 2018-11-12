@@ -2,12 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json.Linq;
@@ -18,35 +21,61 @@ namespace Microsoft.Docs.Build
 {
     public static class E2ETest
     {
+        private static readonly ConcurrentDictionary<string, int> s_mockRepos = new ConcurrentDictionary<string, int>();
+
         public static readonly TheoryData<string> Specs = FindTestSpecs();
+
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_mockedRepos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+
+        static E2ETest()
+        {
+            GitUtility.GitRemoteProxy = remote =>
+            {
+                var mockedRepos = t_mockedRepos.Value;
+                if (mockedRepos != null && mockedRepos.TryGetValue(remote, out var mockedLocation))
+                {
+                    return mockedLocation;
+                }
+                return remote;
+            };
+        }
 
         [Theory]
         [MemberData(nameof(Specs))]
         public static async Task Run(string name)
         {
-            var (docsetPath, spec) = await CreateDocset(name);
+            var (docsetPath, spec, mockedRepos) = await CreateDocset(name);
             if (spec == null)
             {
                 return;
             }
 
-            if (spec.Watch)
+            try
             {
-                await RunWatchCore(docsetPath, spec);
-            }
-            else
-            {
+                t_mockedRepos.Value = mockedRepos;
+
                 var osMatches = string.IsNullOrEmpty(spec.OS) || spec.OS.Split(',').Any(
                     os => RuntimeInformation.IsOSPlatform(OSPlatform.Create(os.Trim().ToUpperInvariant())));
 
                 if (osMatches)
                 {
-                    await RunCore(docsetPath, spec);
+                    if (spec.Watch)
+                    {
+                        await RunWatchCore(docsetPath, spec);
+                    }
+                    else
+                    {
+                        await RunCore(docsetPath, spec);
+                    }
                 }
                 else
                 {
                     await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, spec));
                 }
+            }
+            finally
+            {
+                t_mockedRepos.Value = null;
             }
         }
 
@@ -62,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             // Verify output
             var docsetOutputPath = Path.Combine(docsetPath, "_site");
-            Assert.True(Directory.Exists(docsetOutputPath));
+            Assert.True(Directory.Exists(docsetOutputPath), $"{docsetOutputPath} does not exist");
 
             var outputs = Directory.GetFiles(docsetOutputPath, "*", SearchOption.AllDirectories);
             var outputFileNames = outputs.Select(file => file.Substring(docsetOutputPath.Length + 1).Replace('\\', '/')).ToList();
@@ -73,13 +102,14 @@ namespace Microsoft.Docs.Build
                 Assert.True(false, File.ReadAllText(Path.Combine(docsetOutputPath, "build.log")));
             }
 
-            // Verify restored files
-            foreach (var (file, content) in spec.Restores)
+            // These files output mostly contains empty content which e2e tests are not intrested in
+            // we can just skip the verification for them
+            foreach (var skippableItem in spec.SkippableOutputs)
             {
-                var restoredFile = Directory.EnumerateFiles(AppData.AppDataDir, file, SearchOption.TopDirectoryOnly).FirstOrDefault();
-                Assert.NotNull(restoredFile);
-                Assert.True(File.Exists(restoredFile));
-                VerifyFile(restoredFile, content);
+                if (!spec.Outputs.ContainsKey(skippableItem))
+                {
+                    outputFileNames.Remove(skippableItem);
+                }
             }
 
             // Verify output
@@ -94,7 +124,7 @@ namespace Microsoft.Docs.Build
         private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
         {
             var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions()));
-            
+
             foreach (var (request, response) in spec.Http)
             {
                 var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = "/" + request);
@@ -150,7 +180,8 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static async Task<(string docsetPath, E2ESpec spec)> CreateDocset(string specName)
+        private static async Task<(string docsetPath, E2ESpec spec, IReadOnlyDictionary<string, string> mockedRepos)>
+            CreateDocset(string specName)
         {
             var match = Regex.Match(specName, "^(.+?)/(\\d+). (.*)");
             var specPath = match.Groups[1].Value + ".yml";
@@ -160,23 +191,12 @@ namespace Microsoft.Docs.Build
 
             Assert.StartsWith($"# {match.Groups[3].Value}", yaml);
 
+            var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
+            var name = ToSafePathString(specName) + "-" + yamlHash;
+
             var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
-            var docsetPath = Path.Combine("specs-drop", ToSafePathString(specName));
 
-            if (Directory.Exists(docsetPath))
-            {
-                // Directory.Delete(recursive: true) does not delete hidden files. .git folder is hidden.
-                DeleteDirectory(docsetPath);
-            }
-
-            if (!string.IsNullOrEmpty(spec.Repo))
-            {
-                var (remote, refspec) = GitUtility.GetGitRemoteInfo(spec.Repo);
-                await GitUtility.Clone(Path.GetDirectoryName(docsetPath), remote, Path.GetFileName(docsetPath), refspec);
-                Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-            }
-
-            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));;
+            var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (skip)
             {
                 return default;
@@ -186,51 +206,121 @@ namespace Microsoft.Docs.Build
                 spec.Environments.Length > 0 &&
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
-            foreach (var (file, content) in spec.Inputs)
+            var docsetPath = Path.Combine("specs-drop", name);
+            var mockedRepos = MockGitRepos(name, spec);
+
+            if (Directory.Exists(docsetPath))
             {
-                var mutableContent = content;
-                var filePath = Path.Combine(docsetPath, file);
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                if (Directory.Exists(Path.Combine(docsetPath, "_site")))
                 {
-                    foreach (var env in spec.Environments)
+                    Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                }
+            }
+            else
+            {
+                var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
+                if (!string.IsNullOrEmpty(inputRepo))
+                {
+                    try
                     {
-                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        t_mockedRepos.Value = mockedRepos;
+
+                        var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
+                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                    }
+                    finally
+                    {
+                        t_mockedRepos.Value = null;
                     }
                 }
-                File.WriteAllText(filePath, mutableContent);
+
+                foreach (var (file, content) in spec.Inputs)
+                {
+                    var mutableContent = content;
+                    var filePath = Path.Combine(docsetPath, file);
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
+                    if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                    {
+                        foreach (var env in spec.Environments)
+                        {
+                            mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        }
+                    }
+                    File.WriteAllText(filePath, mutableContent);
+                }
             }
 
-            return (docsetPath, spec);
+            return (docsetPath, spec, mockedRepos);
         }
 
         private static string ToSafePathString(string value)
         {
+            value = value.Replace('/', ' ').Replace('\\', ' ');
             foreach (var ch in Path.GetInvalidPathChars())
             {
-                value = value.Replace(ch, ' ');
+                value = value.Replace(ch.ToString(), "");
             }
-
-            return value.Replace('/', ' ').Replace('\\', ' ').Replace("<", "").Replace(">", "");
+            foreach (var ch in Path.GetInvalidFileNameChars())
+            {
+                value = value.Replace(ch.ToString(), "");
+            }
+            return value;
         }
 
-        private static void DeleteDirectory(string targetDir)
+        private static IReadOnlyDictionary<string, string> MockGitRepos(string name, E2ESpec spec)
         {
-            string[] files = Directory.GetFiles(targetDir);
-            string[] dirs = Directory.GetDirectories(targetDir);
+            var result = new ConcurrentDictionary<string, string>();
+            var repos =
+                from pair in spec.Repos
+                let info = GitUtility.GetGitRemoteInfo(pair.Key)
+                group (info.refspec, pair.Value)
+                by info.remote;
 
-            foreach (string file in files)
+            Parallel.ForEach(repos, repoInfo =>
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
-            }
+                var remote = repoInfo.Key;
+                var repoPath = Path.Combine("repos", name, ToSafePathString(remote));
+                result[remote] = Path.GetFullPath(repoPath);
+                if (Directory.Exists(repoPath))
+                {
+                    return;
+                }
 
-            foreach (string dir in dirs)
-            {
-                DeleteDirectory(dir);
-            }
+                using (var repo = new LibGit2Sharp.Repository(LibGit2Sharp.Repository.Init(repoPath, isBare: true)))
+                {
+                    foreach (var (branch, commits) in repoInfo)
+                    {
+                        Debug.Assert(s_mockRepos.TryAdd($"{remote}#{branch}", 0), $"mock repo's remote: {remote}#{branch} is duplicated");
 
-            Directory.Delete(targetDir, false);
+                        var lastCommit = default(LibGit2Sharp.Commit);
+                        foreach (var commit in commits.Reverse())
+                        {
+                            var author = new LibGit2Sharp.Signature(commit.Author, commit.Email, commit.Time);
+                            var tree = new LibGit2Sharp.TreeDefinition();
+                            var commitIndex = 0;
+
+                            foreach (var (path, content) in commit.Files)
+                            {
+                                var blob = repo.ObjectDatabase.CreateBlob(new MemoryStream(Encoding.UTF8.GetBytes(content?.Replace("\r", "") ?? "")));
+                                tree.Add(path, blob, LibGit2Sharp.Mode.NonExecutableFile);
+                            }
+
+                            var currentCommit = repo.ObjectDatabase.CreateCommit(
+                                author,
+                                author, $"Commit {commitIndex++}",
+                                repo.ObjectDatabase.CreateTree(tree),
+                                lastCommit != null ? new[] { lastCommit } : Array.Empty<LibGit2Sharp.Commit>(),
+                                prettifyMessage: false);
+
+                            lastCommit = currentCommit;
+                        }
+
+                        repo.Branches.Add(branch, lastCommit);
+                    }
+                }
+            });
+            return result;
         }
 
         private static void VerifyFile(string file, string content)

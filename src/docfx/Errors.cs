@@ -15,6 +15,9 @@ namespace Microsoft.Docs.Build
         public static Error InvalidRedirection(string path, ContentType contentType)
             => new Error(ErrorLevel.Error, "invalid-redirection", $"The '{path}' shouldn't belong to redirections since it's a {contentType}");
 
+        public static Error InvalidGlobPattern(string pattern, Exception ex)
+            => new Error(ErrorLevel.Error, "invalid-glob-pattern", $"The glob pattern '{pattern}' is invalid: {ex.Message}");
+
         public static Error ConfigNotFound(string docsetPath, string configFile)
             => new Error(ErrorLevel.Error, "config-not-found", $"Cannot find {configFile} at '{docsetPath}'");
 
@@ -100,22 +103,25 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static Error PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents publish to the same url '{url}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => file.ContentType == ContentType.Redirection ? $"'{file} <redirection>'" : $"'{file}'").Take(5))}");
+            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents of the same version publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         public static Error IncludeRedirection(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
 
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {string.Join(", ", files.OrderBy(file => file.FilePath).Select(file => $"'{file}'").Take(5))}");
+            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
-            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {string.Join(", ", redirectFromDocs.OrderBy(f => f.FilePath).Select(f => $"'{f}'"))}");
+            => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");
 
-        public static Error GitShadowClone(string repoPath)
-            => new Error(ErrorLevel.Error, "git-shadow-clone", $"Does not support git shallow clone: '{repoPath}'");
+        public static Error GitLogError(string repoPath, int errorCode)
+            => new Error(ErrorLevel.Error, "git-log-error", $"Error computing git log [{errorCode}] for '{repoPath}', did you used a shadow clone?");
 
         public static Error GitNotFound()
             => new Error(ErrorLevel.Error, "git-not-found", $"Cannot find git, install git https://git-scm.com/");
+
+        public static Error CommittishNotFound(string repo, string committish)
+            => new Error(ErrorLevel.Error, "committish-not-found", $"Cannot find branch, tag or commit '{committish}'for repo '{repo}'.");
 
         public static Error BookmarkNotFound(Document relativeTo, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", relativeTo.ToString());
@@ -130,7 +136,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         public static Error SchemaNotFound(string schema)
-            => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(schema) ? $"Unknown schema '{schema}', object model is missing." : $"Unknown schema '{schema}'");
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
@@ -141,8 +147,14 @@ namespace Microsoft.Docs.Build
             return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
 
-        public static Error UidMissing()
-            => new Error(ErrorLevel.Warning, "uid-missing", "Uid is missing for xref property assignment, uid should be defined at the root level.");
+        public static Error MonikerNameConflict(string monikerName)
+            => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
+
+        public static Error InvalidMonikerRange(string monikerRange, string message)
+            => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
+
+        private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
+            => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 
         /// <summary>
         /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,

@@ -14,6 +14,14 @@ namespace Microsoft.Docs.Build
 {
     internal class GitHubUserCache
     {
+        public IEnumerable<GitHubUser> Users => _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct();
+
+        // calls GitHubAccessor.GetUserByLogin, which only for private use, and tests can swap this out
+        internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
+
+        // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
+        internal Func<string, string, string, Task<(Error, string)>> _getLoginByCommitFromGitHub;
+
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
 
@@ -22,24 +30,35 @@ namespace Microsoft.Docs.Build
         private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
 
         // Ensures we only call GitHub once for parallel requests with same input parameter
-        private readonly ConcurrentDictionary<string, Task<(Error, GitHubUser)>> _outgoingGetUserByLoginRequests
-                   = new ConcurrentDictionary<string, Task<(Error, GitHubUser)>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>> _outgoingGetUserByLoginRequests
+                   = new ConcurrentDictionary<string, Lazy<Task<(Error, GitHubUser)>>>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly ConcurrentDictionary<string, Task<(Error, string)>> _outgoingGetLoginByCommitRequests
-                   = new ConcurrentDictionary<string, Task<(Error, string)>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Lazy<Task<(Error, string)>>> _outgoingGetLoginByCommitRequests
+                   = new ConcurrentDictionary<string, Lazy<Task<(Error, string)>>>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly Config _config;
-        private readonly GitHubAccessor _github;
         private readonly string _cachePath;
+        private readonly double _expirationInHours;
         private bool _updated = false;
+
+        /// <summary>
+        /// Only for test purpose
+        /// </summary>
+        internal GitHubUserCache(GitHubUser[] users, string cachePath, double expirationInHours)
+        {
+            _cachePath = cachePath;
+            _expirationInHours = expirationInHours;
+            UnsafeUpdateUsers(users);
+        }
 
         private GitHubUserCache(Docset docset, string token)
         {
-            _config = docset.Config;
-            _github = new GitHubAccessor(token);
-            _cachePath = string.IsNullOrEmpty(_config.GitHub.UserCache)
+            var github = new GitHubAccessor(token);
+            _getUserByLoginFromGitHub = github.GetUserByLogin;
+            _getLoginByCommitFromGitHub = github.GetLoginByCommit;
+            _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
                 ? Path.Combine(AppData.CacheDir, "github-users.json")
-                : docset.RestoreMap.GetUrlRestorePath(docset.DocsetPath, _config.GitHub.UserCache);
+                : docset.RestoreMap.GetUrlRestorePath(docset.Config.GitHub.UserCache);
+            _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
 
         public static async Task<GitHubUserCache> Create(Docset docset, string token)
@@ -58,13 +77,23 @@ namespace Microsoft.Docs.Build
 
             var user = TryGetByLogin(login);
             if (user != null)
-                return user.IsValid() ? ((Error)null, user) : (Errors.GitHubUserNotFound(login), null);
+            {
+                if (user.IsValid())
+                    return ((Error)null, user);
+                if (!user.IsPartial())
+                    return (Errors.GitHubUserNotFound(login), null);
+            }
 
-            (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(login, _ => _github.GetUserByLogin(login));
-            _outgoingGetUserByLoginRequests.TryRemove(login, out _);
+            (error, user) = await _outgoingGetUserByLoginRequests.GetOrAdd(
+                login,
+                new Lazy<Task<(Error, GitHubUser)>>(
+                    () => _getUserByLoginFromGitHub(login))).Value;
 
             if (user != null)
+            {
+                user.Expiry = NextExpiry();
                 UpdateUser(user);
+            }
 
             if (error != null)
                 return (error, null);
@@ -81,10 +110,12 @@ namespace Microsoft.Docs.Build
             if (user != null)
                 return (null, user.IsValid() ? user : null);
 
-            var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(commitSha, _ => _github.GetLoginByCommit(repoOwner, repoName, commitSha));
-            _outgoingGetLoginByCommitRequests.TryRemove(commitSha, out _);
+            var (error, login) = await _outgoingGetLoginByCommitRequests.GetOrAdd(
+                commitSha,
+                new Lazy<Task<(Error, string)>>(
+                    () => _getLoginByCommitFromGitHub(repoOwner, repoName, commitSha))).Value;
 
-            UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail } });
+            UpdateUser(new GitHubUser { Login = login, Emails = new[] { authorEmail }, Expiry = NextExpiry() });
 
             if (login == null)
                 return (error, null);
@@ -94,16 +125,18 @@ namespace Microsoft.Docs.Build
 
         public Task SaveChanges()
         {
-            return _updated ? ProcessUtility.RunInsideMutex(_cachePath, WriteCache) : Task.CompletedTask;
-
-            Task WriteCache()
+            if (!_updated)
             {
-                lock (_lock)
-                {
-                    var users = _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct().ToList();
-                    JsonUtility.WriteJsonFile(_cachePath, users);
-                }
                 return Task.CompletedTask;
+            }
+
+            lock (_lock)
+            {
+                var file = new GitHubUserCacheFile
+                {
+                    Users = Users.ToArray(),
+                };
+                return ProcessUtility.WriteFile(_cachePath, JsonUtility.Serialize(file));
             }
         }
 
@@ -145,7 +178,7 @@ namespace Microsoft.Docs.Build
         ///   1.2 Invalid User: { "login": "..." }
         ///
         /// 2. Get login-email matching from GitHub Commits API. It has 2 forms depending on whether matching is got:
-        ///   2.1 Valid login-email pair: { "login": "...", "emails": [ "..." ] }
+        ///   2.1 Valid login-email pair (partial user): { "login": "...", "emails": [ "..." ] }
         ///   2.2 Invalid email: { "emails": [ "..." ] }
         ///
         /// 3. Construct cache when first read from disk. It can be one of the following formats:
@@ -156,10 +189,14 @@ namespace Microsoft.Docs.Build
         private void UnsafeUpdateUser(GitHubUser user)
         {
             Debug.Assert(user != null);
+            if (user.IsExpired())
+                return;
 
-            if (IsValidLoginEmailPair(user) && _usersByLogin.TryGetValue(user.Login, out var existingUser) && !existingUser.IsExpired())
+            if (user.Login != null
+                && _usersByLogin.TryGetValue(user.Login, out var existingUser)
+                && !existingUser.IsExpired())
             {
-                existingUser.Emails = existingUser.Emails.Concat(user.Emails).Distinct().ToArray();
+                existingUser.Merge(user);
                 user = existingUser;
             }
 
@@ -171,38 +208,32 @@ namespace Microsoft.Docs.Build
 
             foreach (var email in user.Emails)
                 _usersByEmail[email] = user;
-
-            bool IsValidLoginEmailPair(GitHubUser u) => !string.IsNullOrEmpty(u.Login) && u.Emails.Length > 0;
         }
 
         private DateTime NextExpiry()
+            => DateTime.UtcNow.AddHours((_expirationInHours / 2) + (t_random.Value.NextDouble() * _expirationInHours));
+
+        private async Task ReadCacheFile()
         {
-            var expirationInHours = (double)_config.GitHub.UserCacheExpirationInHours;
-
-            return DateTime.UtcNow.AddHours((expirationInHours / 2) + (t_random.Value.NextDouble() * expirationInHours));
-        }
-
-        private Task ReadCacheFile()
-        {
-            return ProcessUtility.RunInsideMutex(_cachePath, UpdateCache);
-
-            Task UpdateCache()
+            if (File.Exists(_cachePath))
             {
-                if (File.Exists(_cachePath))
+                var content = await ProcessUtility.ReadFile(_cachePath);
+                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Item2?.Users;
+                if (users != null)
                 {
-                    var users = JsonUtility.ReadJsonFile<GitHubUserCacheFile>(_cachePath)?.Users;
-                    if (users != null)
+                    lock (_lock)
                     {
-                        lock (_lock)
-                        {
-                            foreach (var user in users)
-                            {
-                                UnsafeUpdateUser(user);
-                            }
-                        }
+                        UnsafeUpdateUsers(users);
                     }
                 }
-                return Task.CompletedTask;
+            }
+        }
+
+        private void UnsafeUpdateUsers(GitHubUser[] users)
+        {
+            foreach (var user in users)
+            {
+                UnsafeUpdateUser(user);
             }
         }
     }

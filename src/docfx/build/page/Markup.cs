@@ -2,8 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Immutable;
+using System.Globalization;
+using System.Linq;
+using System.Resources;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -20,21 +25,7 @@ namespace Microsoft.Docs.Build
 
     internal static class Markup
     {
-        // In docfx 2, a localized text is prepended to quotes beginning with
-        // [!NOTE], [!TIP], [!WARNING], [!IMPORTANT], [!CAUTION].
-        //
-        // Docfx 2 reads localized tokens from template repo. In docfx3, build (excluding static page generation)
-        // does not depend on template, thus these tokens are managed by us.
-        //
-        // TODO: add localized tokens
-        private static readonly IReadOnlyDictionary<string, string> s_markdownTokens = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "Note", "<p>Note</p>" },
-            { "Tip", "<p>Tip</p>" },
-            { "Warning", "<p>Warning</p>" },
-            { "Important", "<p>Important</p>" },
-            { "Caution", "<p>Caution</p>" },
-        };
+        private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 
         private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
             new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
@@ -46,80 +37,61 @@ namespace Microsoft.Docs.Build
                 };
 
         [ThreadStatic]
-        private static MarkupResult t_result;
+        private static ImmutableStack<Status> t_status;
 
-        [ThreadStatic]
-        private static DependencyMapBuilder t_dependencyMap;
-
-        [ThreadStatic]
-        private static BookmarkValidator t_bookmarkValidator;
-
-        [ThreadStatic]
-        private static Action<Document> t_buildChild;
-
-        [ThreadStatic]
-        private static XrefMap t_xrefMap;
-
-        public static MarkupResult Result => t_result;
+        public static MarkupResult Result => t_status.Peek().Result;
 
         public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             try
             {
-                t_result = new MarkupResult();
+                var status = new Status
+                {
+                    Result = new MarkupResult(),
+                };
+                t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
 
-                return (ast, t_result);
+                return (ast, Result);
             }
             finally
             {
-                t_result = null;
+                t_status = t_status.Pop();
             }
         }
 
         public static (string html, MarkupResult result) ToHtml(
             string markdown,
             Document file,
-            XrefMap xrefMap,
-            DependencyMapBuilder dependencyMap,
-            BookmarkValidator bookmarkValidator,
-            Action<Document> buildChild,
+            Func<string, object, (string, object)> readFile,
+            Func<string, object, object, string> getLink,
+            Func<string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
-            if (t_result != null)
-            {
-                throw new NotImplementedException("Nested call to Markup.ToHtml");
-            }
-
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    t_result = new MarkupResult();
-                    t_dependencyMap = dependencyMap;
-                    t_bookmarkValidator = bookmarkValidator;
-                    t_buildChild = buildChild;
-                    t_xrefMap = xrefMap;
+                    var status = new Status
+                    {
+                        Result = new MarkupResult(),
+                        Culture = file.Docset.Culture,
+                        ReadFileDelegate = readFile,
+                        GetLinkDelegate = getLink,
+                        ResolveXrefDelegate = resolveXref,
+                    };
+                    t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
                     var html = Markdown.ToHtml(markdown, s_pipelineMapping[pipelineType]);
-                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !t_result.HasTitle)
+                    if (pipelineType == MarkdownPipelineType.ConceptualMarkdown && !Result.HasTitle)
                     {
-                        t_result.Errors.Add(Errors.HeadingNotFound(file));
+                        Result.Errors.Add(Errors.HeadingNotFound(file));
                     }
-                    return (html, t_result);
+                    return (html, Result);
                 }
                 finally
                 {
-                    t_result = null;
-                    t_dependencyMap = null;
-                    t_bookmarkValidator = null;
-                    t_buildChild = null;
-                    t_xrefMap = null;
+                    t_status = t_status.Pop();
                 }
             }
         }
@@ -131,7 +103,6 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseExtractYamlHeader()
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
@@ -145,7 +116,6 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseExtractYamlHeader()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
                 .Build();
@@ -171,13 +141,22 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(markdownContext)
-                .UseExtractYamlHeader()
                 .Build();
         }
 
         private static string GetToken(string key)
         {
-            return s_markdownTokens.TryGetValue(key, out var value) ? value : null;
+            var culture = t_status.Peek().Culture;
+            var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
+            {
+                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
+                using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
+                {
+                    return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
+                }
+            }));
+
+            return markdownTokens.Value.TryGetValue(key, out var value) ? value : null;
         }
 
         private static void LogError(string code, string message, string doc, int line)
@@ -190,43 +169,23 @@ namespace Microsoft.Docs.Build
             Result.Errors.Add(new Error(ErrorLevel.Warning, code, message, doc, new Range(line, 0)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo)
+        private static (string content, object file) ReadFile(string path, object relativeTo) => t_status.Peek().ReadFileDelegate(path, relativeTo);
+
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_status.Peek().GetLinkDelegate(path, relativeTo, resultRelativeTo);
+
+        private static XrefSpec ResolveXref(string uid) => t_status.Peek().ResolveXrefDelegate(uid);
+
+        private sealed class Status
         {
-            Debug.Assert(relativeTo is Document);
+            public MarkupResult Result { get; set; }
 
-            var (error, content, child) = ((Document)relativeTo).TryResolveContent(path);
+            public CultureInfo Culture { get; set; }
 
-            Result.Errors.AddIfNotNull(error);
+            public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
 
-            t_dependencyMap?.AddDependencyItem((Document)relativeTo, child, DependencyType.Inclusion);
+            public Func<string, object, object, string> GetLinkDelegate { get; set; }
 
-            return (content, child);
-        }
-
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo)
-        {
-            Debug.Assert(relativeTo is Document);
-            Debug.Assert(resultRelativeTo is Document);
-
-            var self = (Document)relativeTo;
-            var (error, link, fragment, child) = self.TryResolveHref(path, (Document)resultRelativeTo);
-
-            Result.Errors.AddIfNotNull(error);
-
-            if (child != null && t_buildChild != null)
-            {
-                t_buildChild(child);
-                t_dependencyMap?.AddDependencyItem(self, child, HrefUtility.FragmentToDependencyType(fragment));
-            }
-
-            t_bookmarkValidator?.AddBookmarkReference(self, child ?? self, fragment);
-
-            return link;
-        }
-
-        private static XrefSpec ResolveXref(string uid)
-        {
-            return t_xrefMap?.Resolve(uid);
+            public Func<string, XrefSpec> ResolveXrefDelegate { get; set; }
         }
     }
 }

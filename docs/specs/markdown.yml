@@ -6,7 +6,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p>Hello <code>docfx</code>!</p>" }
-  build.manifest:
 ---
 # Basic markdown syntax
 inputs:
@@ -15,7 +14,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<p><em>this</em> <em>is</em> an <em><strong>inline</strong></em> <code>markdown</code> <strong>test</strong></p>" }
-  build.manifest:
 ---
 # Report warning when Yaml header has null value
 inputs:
@@ -27,7 +25,6 @@ inputs:
     hello
 outputs:
   docs/a.json:
-  build.manifest:
   build.log: |
     ["info","null-value","'title' contains null value","docs/a.md","title",1,1]
 ---
@@ -45,7 +42,6 @@ outputs:
       "content": "<p>hello</p>",
       "metadata": { "title": "me" }
     }
-  build.manifest:
 ---
 # Yaml header title in lower-case
 inputs:
@@ -64,7 +60,6 @@ outputs:
       "title": "title from yaml header",
       "metadata": { "title": "title from yaml header" }
     }
-  build.manifest:
 ---
 # Yaml header title in upper-case
 inputs:
@@ -83,7 +78,6 @@ outputs:
       "title": "Title from H1",
       "metadata": { "title": "Title from yaml header" }
     }
-  build.manifest:
 ---
 # No H1
 inputs:
@@ -98,7 +92,6 @@ inputs:
     hello
 outputs:
   docs/a.json:
-  build.manifest:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
@@ -117,7 +110,6 @@ inputs:
     # Heading
 outputs:
   docs/a.json:
-  build.manifest:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
@@ -138,7 +130,6 @@ outputs:
     {
       "raw_title": "<h1 id=\"title-from-h1\">Title from H1</h1>",
     }
-  build.manifest:
 ---
 # Markdown block between yaml header and H1
 inputs:
@@ -157,7 +148,6 @@ outputs:
     {
       "raw_title": "",
     }
-  build.manifest:
 ---
 # include another file
 inputs:
@@ -169,7 +159,6 @@ outputs:
     { "content": "<p>a b</p>" }
   docs/b.json: |
     { "content": "<p>b</p>" }
-  build.manifest:
 ---
 # heading in included file
 inputs:
@@ -192,7 +181,6 @@ outputs:
       "content": "<h1 id=\"heading-from-c\">Heading from C</h1>",
       "raw_title": "<h1 id=\"heading-from-d\">Heading from D</h1>"
     }
-  build.manifest:
 ---
 # No heading in include file
 inputs:
@@ -213,7 +201,6 @@ outputs:
       "content": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
       "raw_title": ""
     }
-  build.manifest:
   build.log: |
     ["warning","heading-not-found","The first visible block is not a heading block with `#`","docs/a.md"]
 ---
@@ -226,7 +213,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<div class=\"NOTE\"><p>Note</p><p>note</p></div>" }
-  build.manifest:
 ---
 # title
 inputs:
@@ -246,7 +232,6 @@ outputs:
       "raw_title": "<h1 id=\"this-is-a-title\">This is <em>a</em> title</h1>",
       "metadata": { "metaKey": "metaValue" }
     }
-  build.manifest:
 ---
 # Errors from one file does not affect another file
 inputs:
@@ -259,7 +244,6 @@ inputs:
   docs/b.md:
 outputs:
   docs/b.json:
-  build.manifest:
   build.log: |
     ["error","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md","",2,1]
 ---
@@ -276,7 +260,6 @@ inputs:
 outputs:
   docs/a.json: |
     { "content": "<div></div><p>body</p>" }
-  build.manifest:
 ---
 # do not process auto links
 inputs:
@@ -285,8 +268,7 @@ inputs:
     http://*.windowsupdate.microsoft.com
 outputs:
   docs/a.json: |
-    { "content": "<p><a href=\"http://*.windowsupdate.microsoft.com\">http://*.windowsupdate.microsoft.com</a></p>" }
-  build.manifest:
+    { "content": "<p>http://*.windowsupdate.microsoft.com</p>" }
 ---
 # validate bookmarks in markdown documents
 inputs:
@@ -318,7 +300,6 @@ outputs:
     ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md"]
-  build.manifest:
 ---
 # do not output file if bookmark-not-found is treated as error
 inputs:
@@ -332,7 +313,6 @@ outputs:
   docs/b.json:
   build.log: |
     ["error","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/b.md'","docs/a.md"]
-  build.manifest:
 ---
 # Bookmark suggestion and validation
 inputs:
@@ -358,7 +338,6 @@ outputs:
     ["warning","bookmark-not-found","Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","docs/b.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","docs/c.md"]
     ["warning","bookmark-not-found","Cannot find bookmark '#bookmark123456' in 'docs/c.md'","docs/d.md"]
-  build.manifest:
 ---
 # experimental pairs
 inputs:

@@ -12,19 +12,21 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
         private readonly string _templateDir;
+        private readonly string _locale;
         private readonly LiquidTemplate _liquid;
         private readonly JavaScript _js;
 
         public JObject Global { get; }
 
-        public LegacyTemplate(string templateDir)
+        public LegacyTemplate(string templateDir, string locale)
         {
             var contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
 
             _templateDir = templateDir;
+            _locale = locale.ToLowerInvariant();
             _liquid = new LiquidTemplate(templateDir);
             _js = new JavaScript(contentTemplateDir);
-            Global = LoadGlobalTokens(templateDir);
+            Global = LoadGlobalTokens(templateDir, _locale);
         }
 
         public string Render(PageModel model, Document file)
@@ -62,16 +64,16 @@ namespace Microsoft.Docs.Build
                     Parallel.ForEach(Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories), file =>
                     {
                         var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
-                        Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+                        PathUtility.CreateDirectoryFromFilePath(outputFilePath);
                         File.Copy(file, outputFilePath, overwrite: true);
                     });
                 }
             }
         }
 
-        private JObject LoadGlobalTokens(string templateDir)
+        private JObject LoadGlobalTokens(string templateDir, string locale)
         {
-            var path = Path.Combine(templateDir, "LocalizedTokens/docs(en-us).html/tokens.json");
+            var path = Path.Combine(templateDir, $"LocalizedTokens/docs({locale}).html/tokens.json");
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
     }

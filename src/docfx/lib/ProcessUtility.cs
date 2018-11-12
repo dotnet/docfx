@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -15,14 +16,17 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static class ProcessUtility
     {
+        private static AsyncLocal<object> t_innerCall = new AsyncLocal<object>();
+
         /// <summary>
         /// Start a new process and wait for its execution asynchroniously
         /// </summary>
-        public static Task<string> Execute(string fileName, string commandLineArgs, string cwd = null, bool redirectOutput = true)
+        public static Task<(string stdout, string stderr)> Execute(
+            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, bool stderr = true)
         {
             Debug.Assert(!string.IsNullOrEmpty(fileName));
 
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<(string, string)>();
 
             var error = new StringBuilder();
             var output = new StringBuilder();
@@ -32,14 +36,9 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 Arguments = commandLineArgs,
                 UseShellExecute = false,
+                RedirectStandardOutput = stdout,
+                RedirectStandardError = stderr,
             };
-
-            if (redirectOutput)
-            {
-                psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardError = true;
-            }
 
             var process = new Process
             {
@@ -47,9 +46,12 @@ namespace Microsoft.Docs.Build
                 StartInfo = psi,
             };
 
-            if (redirectOutput)
+            if (stdout)
             {
                 process.OutputDataReceived += (sender, e) => output.AppendLine(e.Data);
+            }
+            if (stderr)
+            {
                 process.ErrorDataReceived += (sender, e) => error.AppendLine(e.Data);
             }
 
@@ -64,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 if (process.ExitCode == 0)
                 {
-                    tcs.TrySetResult(output.ToString().Trim());
+                    tcs.TrySetResult((output.ToString().Trim(), error.ToString().Trim()));
                 }
                 else
                 {
@@ -78,17 +80,78 @@ namespace Microsoft.Docs.Build
             {
                 process.Start();
 
-                if (redirectOutput)
+                if (stdout)
                 {
                     // Thread.Sleep(10000);
                     // BeginOutputReadLine() and Exited event handler may have competition issue, above code can easily reproduce this problem
                     // Add lock to ensure the locked area code can be always exected before exited event
                     process.BeginOutputReadLine();
+                }
+                if (stderr)
+                {
                     process.BeginErrorReadLine();
                 }
             }
 
             return tcs.Task;
+        }
+
+        /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static async Task<string> ReadFile(string path)
+        {
+            string result = null;
+            await RunInsideMutex(path, () =>
+            {
+                result = File.ReadAllText(path);
+                return Task.CompletedTask;
+            });
+            return result;
+        }
+
+        public static async Task<T> ReadFile<T>(string path, Func<Stream, T> read)
+        {
+            T result = default;
+            await RunInsideMutex(path, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+                {
+                    result = read(fs);
+                    return Task.CompletedTask;
+                }
+            });
+            return result;
+        }
+
+        /// <summary>
+        /// Reads the content of a file.
+        /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
+        /// </summary>
+        public static Task WriteFile(string path, string content)
+        {
+            return RunInsideMutex(path, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                using (var writer = new StreamWriter(fs))
+                {
+                    writer.Write(content);
+                }
+                return Task.CompletedTask;
+            });
+        }
+
+        public static Task WriteFile(string path, Action<Stream> write)
+        {
+            return RunInsideMutex(path, () =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
+                {
+                    write(fs);
+                }
+                return Task.CompletedTask;
+            });
         }
 
         /// <summary>
@@ -100,26 +163,64 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(mutexName));
 
-            Directory.CreateDirectory(AppData.MutexDir);
-
-            var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
-
-            using (await AcquireFileMutex(mutexName, lockPath))
+            // avoid the RunInsideMutex to be nested used
+            // doesn't support to require a lock before releasing a lock
+            // which may cause deadlock
+            if (t_innerCall.Value != null)
             {
-                await action();
+                throw new NotImplementedException("Nested call to RunInsideMutex is not supported yet");
+            }
+
+            t_innerCall.Value = new object();
+
+            try
+            {
+                Directory.CreateDirectory(AppData.MutexDir);
+
+                var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+
+                using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
+                {
+                    await action();
+                }
+
+                FileStream CreateFile() => new FileStream(
+                    lockPath,
+                    FileMode.CreateNew,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    1,
+                    FileOptions.DeleteOnClose);
+            }
+            finally
+            {
+                t_innerCall.Value = null;
             }
         }
 
         /// <summary>
         /// Checks if the exception thrown by Process.Start is caused by file not found.
         /// </summary>
-        public static bool IsNotFound(Win32Exception ex)
+        public static bool IsExeNotFoundException(Win32Exception ex)
         {
-            return ex.ErrorCode == -2147467259 || // Error_ENOENT = 0x1002D, No such file or directory
-                   ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
+            return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
+                || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
         }
 
-        private static async Task<FileStream> AcquireFileMutex(string mutexName, string lockPath)
+        /// <summary>
+        /// Checks if the exception thrown by new FileStream is caused by another process holding the file lock.
+        /// </summary>
+        public static bool IsFileAlreadyExistsException(Exception ex)
+        {
+            if (ex is IOException ioe)
+            {
+                return ex.HResult == 17 // Mac
+                    || ex.HResult == -2147024816; // Windows
+            }
+            return ex is UnauthorizedAccessException;
+        }
+
+        private static async Task<T> RetryUntilSucceed<T>(string name, Func<Exception, bool> expectException, Func<T> action)
         {
             var retryDelay = 100;
             var lastWait = DateTime.UtcNow;
@@ -128,9 +229,9 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return new FileStream(lockPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
+                    return action();
                 }
-                catch
+                catch (Exception ex) when (expectException(ex))
                 {
                     if (DateTime.UtcNow - lastWait > TimeSpan.FromSeconds(30))
                     {
@@ -140,7 +241,7 @@ namespace Microsoft.Docs.Build
 #pragma warning restore CA2002
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                            Console.WriteLine($"Waiting for another process to access '{name}'");
                             Console.ResetColor();
                         }
                     }
