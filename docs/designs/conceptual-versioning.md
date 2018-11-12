@@ -237,12 +237,12 @@ There are several scenarios:
 
 |Reference type                                                                 |Resolve result             |Validation                 |
 |-------------------------------------------------------------------------------|---------------------------|---------------------------|
-|relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check |
-|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check|
+|relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check, do not check whether monikerRange of target file is same with current file |
+|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version is existed in target file |
 |absolute link/external link without verison query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
 |absolute link/external link with verison query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
-|internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check |
-|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check |
+|internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check, do not check whether monikerRange of uid is same with current file |
+|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, do not check whether version is existed in uid |
 
 #### 2.3 Moniker Definition File
 
@@ -444,7 +444,7 @@ So if the content writer want redirect URL `{host}/{docset-base-path}/articles/o
 name: dotnet
 content: "articles/**/*.md"
 monikerRange:
-    "articles/v1.0/**/*.md": "netcore-1.0"
+    "articles/v1.0/**/*.md": "netcore-1.0 || netcore-1.1"
     "articles/v2.0/**/*.md": "netcore-2.0"
 routing:
     "articles/v1.0/": "articles/"
@@ -532,12 +532,12 @@ In phase 1, when resolving the `toc_rel` of each file, we still take the nearest
 
 #### 5.4 Redirection
 
-For redirection file, the output file also contains `monikers` information, which will be used by DHS to do fallback.
+For redirection file, the output file also contains `monikers` information.
 
 #### 6. Dependencies
 
 1. Support publishing with overlapping monikerRange in DHS.
-2. API to generate moniker definition file.
+2. API to get moniker definition file.
 
 #### 7. Open questions
 
