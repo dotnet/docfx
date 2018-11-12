@@ -10,7 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal class ManifestBuilder
     {
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _siteUrlConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
