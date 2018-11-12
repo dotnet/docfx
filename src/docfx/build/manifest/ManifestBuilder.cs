@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
         public (FileManifest[], List<Document>) Build(Context context)
         {
             // Handle publish url conflicts
+            // TODO: Report more detail info for url conflict
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
                 var conflictMoniker = files
