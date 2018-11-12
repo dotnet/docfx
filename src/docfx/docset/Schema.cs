@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 return (mime, schema);
             }
 
-            return default;
+            return (mime, null);
         }
     }
 }
