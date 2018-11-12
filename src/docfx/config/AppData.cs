@@ -10,15 +10,47 @@ namespace Microsoft.Docs.Build
     {
         public static readonly string AppDataDir = GetAppDataDir();
 
-        public static string GitRestoreDir => Path.Combine(AppDataDir, "git");
+        public static string GitDir => Path.Combine(AppDataDir, "git");
 
-        public static string UrlRestoreDir => Path.Combine(AppDataDir, "url");
+        public static string DownloadsDir => Path.Combine(AppDataDir, "downloads");
 
         public static string MutexDir => Path.Combine(AppDataDir, "mutex");
 
         public static string CacheDir => Path.Combine(AppDataDir, "cache");
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
+
+        public static string GitHubUserCachePath => Path.Combine(CacheDir, "github-users.json");
+
+        public static string GetGitDir(string url)
+        {
+            return PathUtility.NormalizeFolder(Path.Combine(GitDir, UrlToPath(url)));
+        }
+
+        public static string GetFileDownloadDir(string url)
+        {
+            // URL to a resource is case sensitive, query string matters, so hash the download path
+            return PathUtility.NormalizeFolder(Path.Combine(DownloadsDir, UrlToPath(url) + "-" + url.Trim().GetMd5HashShort()));
+        }
+
+        public static string GetCommitCachePath(string remote)
+        {
+            return Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(remote));
+        }
+
+        private static string UrlToPath(string url)
+        {
+            (url, _, _) = HrefUtility.SplitHref(url);
+
+            // Trim https://
+            var i = url.IndexOf(':');
+            if (i > 0)
+            {
+                url = url.Substring(i);
+            }
+
+            return HrefUtility.EscapeUrl(url.TrimStart('/', '\\', '.', ':').Trim());
+        }
 
         /// <summary>
         /// Get the global configuration path, default is under <see cref="AppDataDir"/>

@@ -9,30 +9,25 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreUrl
+    internal static class RestoreFile
     {
         public static string GetRestoreVersionPath(string restoreDir, string version)
             => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
 
         public static string GetRestoreRootDir(string address)
-            => Docs.Build.Restore.GetRestoreRootDir(address, AppData.UrlRestoreDir);
+            => Docs.Build.Restore.GetRestoreRootDir(address, AppData.DownloadsDir);
 
         public static async Task<string> Restore(string address, Config config)
         {
             var tempFile = await DownloadToTempFile(address, config);
 
-            var fileVersion = "";
-            using (var fileStream = File.Open(tempFile, FileMode.Open, FileAccess.Read))
-            {
-                fileVersion = HashUtility.GetSha1Hash(fileStream);
-            }
-
-            Debug.Assert(!string.IsNullOrEmpty(fileVersion));
+            var fileHash = HashUtility.GetFileSha1Hash(tempFile);
+            Debug.Assert(!string.IsNullOrEmpty(fileHash));
 
             var restoreDir = GetRestoreRootDir(address);
-            var restorePath = GetRestoreVersionPath(restoreDir, fileVersion);
+            var restorePath = GetRestoreVersionPath(restoreDir, fileHash);
             await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.UrlRestoreDir, restoreDir)),
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.DownloadsDir, restoreDir)),
                 () =>
                 {
                     if (!File.Exists(restorePath))
@@ -51,13 +46,13 @@ namespace Microsoft.Docs.Build
                     return Task.CompletedTask;
                 });
 
-            return fileVersion;
+            return fileHash;
         }
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
         {
-            Directory.CreateDirectory(AppData.UrlRestoreDir);
-            var tempFile = Path.Combine(AppData.UrlRestoreDir, "." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(AppData.DownloadsDir);
+            var tempFile = Path.Combine(AppData.DownloadsDir, "." + Guid.NewGuid().ToString("N"));
 
             try
             {

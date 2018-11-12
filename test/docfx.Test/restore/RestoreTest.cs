@@ -78,10 +78,10 @@ dependencies:
             var docsetPath = "restore-urls";
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
-            var restoreDir = RestoreUrl.GetRestoreRootDir(url);
+            var restoreDir = RestoreFile.GetRestoreRootDir(url);
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
-                var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
+                var restorePath = RestoreFile.GetRestoreVersionPath(restoreDir, version.ToString());
                 PathUtility.CreateDirectoryFromFilePath(restorePath);
                 File.WriteAllText(restorePath, $"{version}");
                 File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));

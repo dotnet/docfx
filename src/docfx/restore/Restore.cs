@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    await RestoreUrl.Restore(restoreUrl, config);
+                    await RestoreFile.Restore(restoreUrl, config);
                 });
 
             // extend the config before loading
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    await RestoreUrl.Restore(restoreUrl, extendedConfig);
+                    await RestoreFile.Restore(restoreUrl, extendedConfig);
                 });
         }
     }

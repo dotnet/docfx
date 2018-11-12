@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal static class RestoreGit
     {
         public static string GetRestoreRootDir(string url)
-            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
+            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitDir);
 
         public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
         {
