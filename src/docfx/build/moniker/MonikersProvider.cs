@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, monikerRange) in config.MonikerRange)
             {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange)));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange).ToList()));
             }
             _rules.Reverse();
         }

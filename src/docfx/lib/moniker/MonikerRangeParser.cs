@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public List<string> Parse(string rangeString)
+        public IEnumerable<string> Parse(string rangeString)
         {
             List<string> monikerNames = null;
             try

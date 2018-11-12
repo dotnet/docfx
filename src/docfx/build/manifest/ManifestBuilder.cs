@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _siteUrlConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>> _filesBySiteUrl = new ConcurrentDictionary<string, List<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, FileManifest> _manifest = new ConcurrentDictionary<Document, FileManifest>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             file.OutputPath = manifest.OutputPath;
 
             // Find publish url conflicts
-            if (!_filesBySiteUrl.TryAdd(manifest.SiteUrl, new List<(Document doc, List<string> monikers)> { (file, monikers) })
+            if (!_filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) })
                 && _filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
             {
                 foreach (var item in existingFiles)
