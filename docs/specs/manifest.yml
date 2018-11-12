@@ -21,7 +21,7 @@ outputs:
       ]
     }
 ---
-# Manifest contains sourcePath when copyResources is set to false
+# Manifest outputPath is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
     files: '**'
@@ -32,7 +32,7 @@ outputs:
   build.manifest: |
     {
       "files": [
-        { "siteUrl": "/a.png", "sourcePath": "a.png", "!outputPath": "" }
+        { "siteUrl": "/a.png", "sourcePath": "a.png", "outputPath": "../a.png" }
       ]
     }
 ---

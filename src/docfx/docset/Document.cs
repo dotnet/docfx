@@ -66,19 +66,6 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; }
 
         /// <summary>
-        /// Gets the output file path relative to output directory that is:
-        ///       |                output-path                            |
-        ///       locale    moniker                 site-path
-        ///       |-^-| |------^------| |----------------^----------------|
-        /// _site/en-us/netstandard-2.0/dotnet/api/system.string/index.json
-        ///
-        ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
-        ///  - Does not start with '/'
-        ///  - Does not end with '/'
-        /// </summary>
-        public string OutputPath { get; }
-
-        /// <summary>
         /// Gets the document id and version independent id
         /// </summary>
         public (string id, string versionIndependentId) Id => _id.Value;
@@ -100,6 +87,12 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
 
+        // TODO:
+        // This is a temporary property just so that legacy can access OutputPath,
+        // I'll slowly converge legacy into main build and remove this property eventually.
+        // Do not use this property in main build.
+        internal string OutputPath;
+
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.TryCreateFromFile(Docset, string)"/> instead.
         /// </summary>
@@ -108,7 +101,6 @@ namespace Microsoft.Docs.Build
             string filePath,
             string sitePath,
             string siteUrl,
-            string outputPath,
             ContentType contentType,
             string mime,
             Schema schema,
@@ -122,7 +114,6 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            OutputPath = outputPath;
             ContentType = contentType;
             Mime = mime;
             Schema = schema;
@@ -132,7 +123,6 @@ namespace Microsoft.Docs.Build
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
 
             Debug.Assert(IsValidRelativePath(FilePath));
-            Debug.Assert(IsValidRelativePath(OutputPath));
             Debug.Assert(IsValidRelativePath(SitePath));
 
             Debug.Assert(SiteUrl.StartsWith('/'));
@@ -222,7 +212,6 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(sitePath, type, schema, docset.Config.Output.Json);
-            var outputPath = sitePath;
             var contentType = redirectionUrl != null ? ContentType.Redirection : type;
 
             if (contentType == ContentType.Redirection && type != ContentType.Page)
@@ -230,7 +219,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.InvalidRedirection(filePath, type), null);
             }
 
-            return (null, new Document(docset, filePath, sitePath, siteUrl, outputPath, contentType, mime, schema, isExperimental, redirectionUrl));
+            return (null, new Document(docset, filePath, sitePath, siteUrl, contentType, mime, schema, isExperimental, redirectionUrl));
         }
 
         /// <summary>

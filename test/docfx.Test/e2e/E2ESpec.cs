@@ -24,13 +24,11 @@ namespace Microsoft.Docs.Build
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>();
 
-        public readonly Dictionary<string, string> Restores = new Dictionary<string, string>();
-
         public class E2ECommit
         {
             public readonly string Author = "docfx";
             public readonly string Email = "docfx@microsoft.com";
-            public readonly DateTime Time = new DateTime(2018, 10, 30);
+            public readonly DateTime Time = new DateTime(2018, 10, 30, 0, 0, 0, DateTimeKind.Utc);
             public readonly Dictionary<string, string> Files;
         }
     }
