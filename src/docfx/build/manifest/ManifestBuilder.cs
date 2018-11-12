@@ -9,9 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class ManifestBuilder
     {
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _siteUrlConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, Document> _filesBySiteUrl = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, FileManifest> _manifest = new ConcurrentDictionary<Document, FileManifest>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
@@ -21,22 +20,12 @@ namespace Microsoft.Docs.Build
             _filesWithErrors.Add(file);
         }
 
-        public bool TryAdd(Document file, FileManifest manifest)
+        public bool TryAdd(Document file, FileManifest manifest, List<string> monikers)
         {
             _manifest[file] = manifest;
 
             // TODO: see comments in Document.OutputPath.
             file.OutputPath = manifest.OutputPath;
-
-            // Find publish url conflicts
-            if (!_filesBySiteUrl.TryAdd(manifest.SiteUrl, file))
-            {
-                if (_filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFile) && existingFile != file)
-                {
-                    _siteUrlConflicts.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
-                }
-                return false;
-            }
 
             // Find output path conflicts
             if (!_filesByOutputPath.TryAdd(manifest.OutputPath, file))
@@ -48,33 +37,35 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
+            if (monikers.Count == 0)
+            {
+                monikers = new List<string> { "NONE_VERSION" };
+            }
+            _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
+
             return true;
         }
 
         public (FileManifest[], List<Document>) Build(Context context)
         {
-            // Handle publish conflicts
-            foreach (var (siteUrl, conflict) in _siteUrlConflicts)
+            // Handle publish url conflicts
+            // TODO: Report more detail info for url conflict
+            foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
-                var conflictingFiles = new HashSet<Document>();
-
-                foreach (var conflictingFile in conflict)
+                var conflictMoniker = files
+                    .SelectMany(file => file.Value)
+                    .GroupBy(moniker => moniker)
+                    .Where(group => group.Count() > 1);
+                if (conflictMoniker.Count() > 0)
                 {
-                    conflictingFiles.Add(conflictingFile);
-                }
+                    context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys));
 
-                if (_filesBySiteUrl.TryRemove(siteUrl, out var removed))
-                {
-                    conflictingFiles.Add(removed);
-                }
-
-                context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
-
-                foreach (var conflictingFile in conflictingFiles)
-                {
-                    if (_manifest.TryRemove(conflictingFile, out var manifest))
+                    foreach (var conflictingFile in files.Keys)
                     {
-                        context.Delete(manifest.OutputPath);
+                        if (_manifest.TryRemove(conflictingFile, out var manifest))
+                        {
+                            context.Delete(manifest.OutputPath);
+                        }
                     }
                 }
             }
