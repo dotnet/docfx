@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<string>(() =>
                 {
                     // get the file path from restore map
-                    var restoreDir = AppData.GetGitDir(url);
+                    var restoreDir = AppData.GetFileDownloadDir(url);
 
                     if (!Directory.Exists(restoreDir))
                     {
