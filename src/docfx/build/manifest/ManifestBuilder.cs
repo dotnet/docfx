@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Microsoft.Docs.Build
     internal class ManifestBuilder
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentBag<(Document doc, List<string> monikers)>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, FileManifest> _manifest = new ConcurrentDictionary<Document, FileManifest>();
         private readonly ConcurrentBag<Document> _filesWithErrors = new ConcurrentBag<Document>();
@@ -38,34 +37,29 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentBag<(Document doc, List<string> monikers)>()).Add((file, monikers));
+            if (monikers.Count == 0)
+            {
+                monikers = new List<string> { "NONE_VERSION" };
+            }
+            _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
 
             return true;
         }
 
         public (FileManifest[], List<Document>) Build(Context context)
         {
-            // Handle publish conflicts
+            // Handle publish url conflicts
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
-                var hasConflict = false;
-                var uniqueFiles = files.GroupBy(file => file.doc).ToList();
-                for (var i = 0; i < uniqueFiles.Count; i++)
+                var conflictMoniker = files
+                    .SelectMany(file => file.Value)
+                    .GroupBy(moniker => moniker)
+                    .Where(group => group.Count() > 1);
+                if (conflictMoniker.Count() > 0)
                 {
-                    var firstMonikers = uniqueFiles[i].FirstOrDefault().monikers;
-                    if (uniqueFiles.Skip(i + 1).Any(file => CheckMonikerConflict(firstMonikers, file.FirstOrDefault().monikers)))
-                    {
-                        hasConflict = true;
-                        break;
-                    }
-                }
+                    context.Report(Errors.PublishUrlConflict(siteUrl, files.Keys));
 
-                if (hasConflict)
-                {
-                    var conflictingFiles = uniqueFiles.Select(file => file.Key).ToList();
-                    context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
-
-                    foreach (var conflictingFile in conflictingFiles)
+                    foreach (var conflictingFile in files.Keys)
                     {
                         if (_manifest.TryRemove(conflictingFile, out var manifest))
                         {
@@ -116,15 +110,6 @@ namespace Microsoft.Docs.Build
             return (
                 _manifest.Values.OrderBy(item => item.SourcePath).ToArray(),
                 _manifest.Keys.OrderBy(item => item.FilePath).ToList());
-        }
-
-        private bool CheckMonikerConflict(List<string> existingMonikers, List<string> currentMonikers)
-        {
-            if (existingMonikers.Intersect(currentMonikers, StringComparer.OrdinalIgnoreCase).Any() || (!existingMonikers.Any() && !currentMonikers.Any()))
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

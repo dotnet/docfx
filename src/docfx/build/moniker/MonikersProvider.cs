@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, monikerRange) in config.MonikerRange)
             {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange).ToList()));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRangeParser.Parse(monikerRange)));
             }
             _rules.Reverse();
         }
