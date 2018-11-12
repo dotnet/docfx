@@ -30,7 +30,6 @@
     <PackageReference Include="Stubble.Core" Version="1.1.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006" PrivateAssets="All" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-e171109-2" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
     <PackageReference Include="YamlDotNet" Version="5.2.1" />
   </ItemGroup>

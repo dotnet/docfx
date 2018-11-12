@@ -2,13 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Resources;
 using Markdig;
 using Markdig.Syntax;
@@ -42,14 +41,13 @@ namespace Microsoft.Docs.Build
 
         public static MarkupResult Result => t_status.Peek().Result;
 
-        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, CultureInfo culture)
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content)
         {
             try
             {
                 var status = new Status
                 {
                     Result = new MarkupResult(),
-                    Culture = culture,
                 };
                 t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
@@ -152,17 +150,10 @@ namespace Microsoft.Docs.Build
             var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
             {
                 var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
-                var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
                 {
-                    var e = resourceSet.GetEnumerator();
-                    while (e.MoveNext())
-                    {
-                        result[e.Key.ToString()] = e.Value.ToString();
-                    }
+                    return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
                 }
-
-                return result;
             }));
 
             return markdownTokens.Value.TryGetValue(key, out var value) ? value : null;
