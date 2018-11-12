@@ -19,9 +19,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        private static readonly char[] s_newline = new[] { '\r', '\n' };
-        private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
-
         internal static Func<string, string> GitRemoteProxy;
 
         /// <summary>
