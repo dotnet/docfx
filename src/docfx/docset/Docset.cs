@@ -68,6 +68,11 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> ReversedRoutes { get; }
 
         /// <summary>
+        /// Gets the moniker range parser
+        /// </summary>
+        public MonikerRangeParser MonikerRangeParser => _monikerRangeParser.Value;
+
+        /// <summary>
         /// Gets the redirection map.
         /// </summary>
         public RedirectionMap Redirections => _redirections.Value;
@@ -84,6 +89,8 @@ namespace Microsoft.Docs.Build
 
         public MetadataProvider Metadata => _metadata.Value;
 
+        public MonikersProvider MonikersProvider => _monikersProvider.Value;
+
         public LegacyTemplate LegacyTemplate => _legacyTemplate.Value;
 
         private readonly CommandLineOptions _options;
@@ -93,6 +100,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<RedirectionMap> _redirections;
         private readonly Lazy<LegacyTemplate> _legacyTemplate;
         private readonly Lazy<MetadataProvider> _metadata;
+        private readonly Lazy<MonikerRangeParser> _monikerRangeParser;
+        private readonly Lazy<MonikersProvider> _monikersProvider;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
             : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null, null)
@@ -134,6 +143,8 @@ namespace Microsoft.Docs.Build
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
+            _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
+            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config, MonikerRangeParser));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
@@ -223,6 +234,17 @@ namespace Microsoft.Docs.Build
             }
 
             return scanScope;
+        }
+
+        private MonikerRangeParser CreateMonikerRangeParser()
+        {
+            var monikerDefinition = new MonikerDefinitionModel();
+            if (!string.IsNullOrEmpty(Config.MonikerDefinitionUrl))
+            {
+                var path = RestoreMap.GetUrlRestorePath(Config.MonikerDefinitionUrl);
+                (_, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+            }
+            return new MonikerRangeParser(monikerDefinition);
         }
     }
 }
