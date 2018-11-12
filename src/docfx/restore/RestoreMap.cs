@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                 return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
             }
 
-            var downloadPath = s_downloadPath.GetOrAdd(path, new Lazy<string>(FindLastModifiedDownload)).Value;
+            var downloadPath = s_downloadPath.GetOrAdd(path, new Lazy<string>(FindLastModifiedFile)).Value;
 
             if (!File.Exists(downloadPath))
             {
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
 
             return downloadPath;
 
-            string FindLastModifiedDownload()
+            string FindLastModifiedFile()
             {
                 // get the file path from restore map
                 var restoreDir = AppData.GetFileDownloadDir(path);

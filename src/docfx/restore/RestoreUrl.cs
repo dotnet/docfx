@@ -10,12 +10,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreUrl
     {
-        public static async Task Restore(string address, Config config)
+        public static async Task Restore(string url, Config config)
         {
-            var tempFile = await DownloadToTempFile(address, config);
+            var tempFile = await DownloadToTempFile(url, config);
 
             var fileHash = HashUtility.GetFileSha1Hash(tempFile);
-            var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(address), fileHash));
+            var filePath = PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), fileHash));
 
             await ProcessUtility.RunInsideMutex(filePath, MoveFile);
 
@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<string> DownloadToTempFile(string address, Config config)
+        private static async Task<string> DownloadToTempFile(string url, Config config)
         {
             Directory.CreateDirectory(AppData.DownloadsDir);
             var tempFile = Path.Combine(AppData.DownloadsDir, "." + Guid.NewGuid().ToString("N"));
 
             try
             {
-                var response = await HttpClientUtility.GetAsync(address, config);
+                var response = await HttpClientUtility.GetAsync(url, config);
 
                 using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
                 using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             }
             catch (HttpRequestException ex)
             {
-                throw Errors.DownloadFailed(address, ex.Message).ToException(ex);
+                throw Errors.DownloadFailed(url, ex.Message).ToException(ex);
             }
             return tempFile;
         }

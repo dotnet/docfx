@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
-        public static Error GitCloneFailed(string url)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' failed.");
+        public static Error GitCloneFailed(string url, IEnumerable<string> branches)
+            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' failed. Branches: {Join(branches)}");
 
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");

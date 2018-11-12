@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,20 +38,25 @@ namespace Microsoft.Docs.Build
                         }
                         catch (Exception ex)
                         {
-                            throw Errors.GitCloneFailed(remote).ToException(ex);
+                            throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                         }
                     });
 
                 async Task AddWorkTrees()
                 {
+                    var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTreePath(repoPath));
+
                     await ParallelUtility.ForEach(branches, async branch =>
                     {
-                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{PathUtility.Encode(branch)}";
-                        var workTreePath = Path.Combine(repoPath, "../", workTreeHead);
-
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
-                        await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{PathUtility.Encode(branch)}";
+                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
+
+                        if (existingWorkTreePath.TryAdd(workTreePath))
+                        {
+                            await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                        }
 
                         // update the last write time
                         Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);

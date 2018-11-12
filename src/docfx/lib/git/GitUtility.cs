@@ -19,9 +19,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        private static readonly char[] s_newline = new[] { '\r', '\n' };
-        private static readonly char[] s_newlineTab = new[] { ' ', '\t' };
-
         internal static Func<string, string> GitRemoteProxy;
 
         /// <summary>
@@ -125,30 +122,31 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// List work trees for a given repo
+        /// List work trees for a given repo, returns
         /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        public static Task<List<string>> ListWorkTrees(string cwd, bool includeMain)
+        public static Task<List<string>> ListWorkTreePath(string cwd)
         {
-            return Execute(cwd, $"worktree list", ParseWorkTreeList);
+            return Execute(cwd, $"worktree list --porcelain", ParseWorkTreeList);
 
             List<string> ParseWorkTreeList(string stdout, string stderr)
             {
                 Debug.Assert(stdout != null);
-                var worktreeLines = stdout.Split(s_newline, StringSplitOptions.RemoveEmptyEntries);
-                var workTreePaths = new List<string>();
 
-                var i = 0;
-                foreach (var workTreeLine in worktreeLines)
+                // https://git-scm.com/docs/git-worktree#_porcelain_format
+                var result = new List<string>();
+                foreach (var property in stdout.Split("\n", StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (i++ > 0 || includeMain)
+                    var i = property.IndexOf(' ');
+                    if (i > 0)
                     {
-                        // The main worktree is listed first, followed by each of the linked worktrees.
-                        workTreePaths.Add(workTreeLine.Split(s_newlineTab, StringSplitOptions.RemoveEmptyEntries)[0]);
+                        var key = property.Substring(0, i);
+                        if (key == "worktree")
+                        {
+                            result.Add(property.Substring(i + 1).Trim());
+                        }
                     }
                 }
-
-                return workTreePaths;
+                return result;
             }
         }
 

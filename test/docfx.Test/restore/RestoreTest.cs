@@ -49,8 +49,8 @@ dependencies:
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
-            Assert.Equal(6, workTreeList.Count);
+            var workTreeList = await GitUtility.ListWorkTreePath(restorePath);
+            Assert.Equal(7, workTreeList.Count);
 
             foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
             {
@@ -67,8 +67,8 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
             await Program.Run(new[] { "gc" });
 
-            workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
-            Assert.Equal(2, workTreeList.Count);
+            workTreeList = await GitUtility.ListWorkTreePath(restorePath);
+            Assert.Equal(3, workTreeList.Count);
         }
 
         [Fact]
