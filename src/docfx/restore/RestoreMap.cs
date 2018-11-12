@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<string>(() =>
                 {
                     var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
-                    var restoreDir = RestoreGit.GetRestoreRootDir(remote);
+                    var restoreDir = AppData.GetGitDir(remote);
 
                     if (!Directory.Exists(restoreDir))
                     {
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<string>(() =>
                 {
                     // get the file path from restore map
-                    var restoreDir = RestoreFile.GetRestoreRootDir(url);
+                    var restoreDir = AppData.GetGitDir(url);
 
                     if (!Directory.Exists(restoreDir))
                     {

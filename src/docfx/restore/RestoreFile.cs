@@ -11,12 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
-        public static string GetRestoreVersionPath(string restoreDir, string version)
-            => PathUtility.NormalizeFile(Path.Combine(restoreDir, version));
-
-        public static string GetRestoreRootDir(string address)
-            => Docs.Build.Restore.GetRestoreRootDir(address, AppData.DownloadsDir);
-
         public static async Task<string> Restore(string address, Config config)
         {
             var tempFile = await DownloadToTempFile(address, config);
@@ -24,8 +18,8 @@ namespace Microsoft.Docs.Build
             var fileHash = HashUtility.GetFileSha1Hash(tempFile);
             Debug.Assert(!string.IsNullOrEmpty(fileHash));
 
-            var restoreDir = GetRestoreRootDir(address);
-            var restorePath = GetRestoreVersionPath(restoreDir, fileHash);
+            var restoreDir = AppData.GetFileDownloadDir(address);
+            var restorePath = PathUtility.NormalizeFile(Path.Combine(restoreDir, fileHash));
             await ProcessUtility.RunInsideMutex(
                 PathUtility.NormalizeFile(Path.GetRelativePath(AppData.DownloadsDir, restoreDir)),
                 () =>
