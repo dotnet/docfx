@@ -212,7 +212,6 @@ outputs:
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]
 ---
 # Show warning if redirection file conflicts with existing file
-# [only]
 inputs:
   docfx.yml: |
     redirections:
