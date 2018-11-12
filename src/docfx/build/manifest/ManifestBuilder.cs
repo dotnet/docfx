@@ -28,15 +28,6 @@ namespace Microsoft.Docs.Build
             // TODO: see comments in Document.OutputPath.
             file.OutputPath = manifest.OutputPath;
 
-            if (_filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
-            {
-                existingFiles.Add((file, monikers));
-            }
-            else
-            {
-                _filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) });
-            }
-
             // Find output path conflicts
             if (!_filesByOutputPath.TryAdd(manifest.OutputPath, file))
             {
@@ -45,6 +36,15 @@ namespace Microsoft.Docs.Build
                     _outputPathConflicts.GetOrAdd(manifest.OutputPath, _ => new ConcurrentBag<Document>()).Add(file);
                 }
                 return false;
+            }
+
+            if (_filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
+            {
+                existingFiles.Add((file, monikers));
+            }
+            else
+            {
+                _filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) });
             }
 
             return true;
