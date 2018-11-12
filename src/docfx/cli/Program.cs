@@ -110,7 +110,6 @@ namespace Microsoft.Docs.Build
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml.");
 
                 // GC command
-                // usage: docfx gc [--retention-days days]
                 syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
                 syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });
