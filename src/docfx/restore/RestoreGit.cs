@@ -49,72 +49,60 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static async Task GC(string docsetPath, Config config, Func<string, Task> gcChild, string locale)
-        {
-            var restoreDirs = GetRestoreItems(docsetPath, config, locale).Select(i => i.restoreDir);
-
-            await ParallelUtility.ForEach(
-               restoreDirs,
-               async restoreDir =>
-               {
-                   var leftWorkTrees = await RestoreWorkTree.CleanupWorkTrees(restoreDir);
-                   foreach (var leftWorkTree in leftWorkTrees)
-                   {
-                       await gcChild(leftWorkTree);
-                   }
-               },
-               progress: Progress.Update);
-        }
-
         private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
         {
-            // restore dependency repositories
-            var restoreItems = config.Dependencies.Values.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+            var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
 
-            // restore loc repository
-            var (locRestoreDir, locRepoHref) = GetLocRestoreItem(docsetPath, config, locale);
-            if (!string.IsNullOrEmpty(locRepoHref) && !string.IsNullOrEmpty(locRestoreDir))
-            {
-                restoreItems.Add((locRestoreDir, new List<string> { locRepoHref }));
-            }
-
-            return restoreItems;
+            return gitDependencies.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
         }
 
-        private static (string locRestoreDir, string href) GetLocRestoreItem(string docsetPath, Config config, string locale)
+        private static IEnumerable<string> GetLocRestoreItem(string docsetPath, Config config, string locale)
         {
-            // restore loc repository
             if (string.IsNullOrEmpty(locale))
             {
-                return default;
+                yield break;
             }
 
             if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                return default;
+                yield break;
             }
 
             if (config.Localization.Mapping != LocalizationMapping.Repository && config.Localization.Mapping != LocalizationMapping.RepositoryAndFolder)
             {
-                return default;
+                yield break;
             }
 
             var repo = Repository.CreateFromFolder(Path.GetFullPath(docsetPath));
             if (repo == null)
             {
-                return default;
+                yield break;
             }
 
-            var (locRemote, locBranch) = LocalizationConvention.GetLocalizationRepo(
+            if (config.Localization.Bilingual)
+            {
+                // Bilingual repos also depend on non bilingual branch
+                yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+                    config.Localization.Mapping,
+                    bilingual: false,
+                    repo.Remote,
+                    repo.Branch,
+                    locale,
+                    config.Localization.DefaultLocale));
+            }
+
+            yield return ToHref(LocalizationConvention.GetLocalizationRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,
                 repo.Branch,
                 locale,
-                config.Localization.DefaultLocale);
-            var locRepoUrl = $"{locRemote}#{locBranch}";
+                config.Localization.DefaultLocale));
 
-            return (GetRestoreRootDir(locRepoUrl), locRepoUrl);
+            string ToHref((string url, string branch) value)
+            {
+                return string.Concat(value.url, "#", value.branch);
+            }
         }
     }
 }

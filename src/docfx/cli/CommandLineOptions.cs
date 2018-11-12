@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public string GitHubToken;
         public string Locale;
+        public int RetentionDays = 15;
 
         public JObject ToJObject()
         {
@@ -20,6 +21,7 @@ namespace Microsoft.Docs.Build
                 {
                     ["path"] = Output != null ? (JValue)Output : JValue.CreateNull(),
                     ["json"] = Legacy ? (JValue)true : JValue.CreateNull(),
+                    ["copyResources"] = Legacy ? (JValue)false : JValue.CreateNull(),
                 },
                 ["gitHub"] = new JObject
                 {

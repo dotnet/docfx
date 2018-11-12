@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -9,18 +11,19 @@ namespace Microsoft.Docs.Build
     {
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
-        public MonikerRangeParser(IEnumerable<Moniker> monikers)
+        public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
-            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikers);
+            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public IEnumerable<string> Parse(string rangeString)
+        public List<string> Parse(string rangeString)
         {
-            IEnumerable<string> monikerNames = null;
+            List<string> monikerNames = null;
             try
             {
                 var expression = ExpressionCreator.Create(rangeString);
-                monikerNames = expression.Accept(_monikersEvaluator);
+                monikerNames = expression.Accept(_monikersEvaluator).ToList();
+                monikerNames.Sort();
             }
             catch (MonikerRangeException ex)
             {

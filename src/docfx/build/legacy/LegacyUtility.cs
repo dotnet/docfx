@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(File.Exists(sourceFileName));
             if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                PathUtility.CreateDirectoryFromFilePath(destFileName);
 
                 File.Delete(destFileName);
                 File.Move(sourceFileName, destFileName);
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
         {
-            return Path.Combine(docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
+            return Path.Combine(docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.RelativePath);
         }
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)

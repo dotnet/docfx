@@ -19,7 +19,9 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, Repository> _repositoryByFolder = new ConcurrentDictionary<string, Repository>();
 
-        private readonly ConcurrentDictionary<string, (Repository, List<GitCommit> commits)> _commitsByFile = new ConcurrentDictionary<string, (Repository, List<GitCommit> commits)>();
+        private readonly ConcurrentDictionary<string, List<GitCommit>> _contributionCommitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
+
+        private readonly ConcurrentDictionary<string, List<GitCommit>> _commitsByFile = new ConcurrentDictionary<string, List<GitCommit>>();
 
         private ContributionProvider(GitHubUserCache gitHubUserCache)
         {
@@ -39,8 +41,14 @@ namespace Microsoft.Docs.Build
             string authorName)
         {
             Debug.Assert(document != null);
+            var (repo, _) = GetRepository(document);
+            if (repo == null)
+            {
+                return default;
+            }
 
-            var (repo, commits) = _commitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
+            var commits = _contributionCommitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
+
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
             var contributors = new List<Contributor>();
@@ -136,8 +144,8 @@ namespace Microsoft.Docs.Build
                 return default;
 
             var repoHost = GitHubUtility.TryParse(repo.Remote, out _, out _) ? GitHost.GitHub : GitHost.Unknown;
-            var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.commits.Count > 0
-                ? value.commits[0].Sha
+            var commit = _commitsByFile.TryGetValue(document.FilePath, out var value) && value.Count > 0
+                ? value[0].Sha
                 : repo.Commit;
 
             return (GetEditUrl(), GetContentUrl(), GetCommitUrl());
@@ -149,7 +157,7 @@ namespace Microsoft.Docs.Build
                     case GitHost.GitHub:
                         return commit != null ? $"{repo.Remote}/blob/{commit}/{pathToRepo}" : null;
                     default:
-                        throw new NotSupportedException($"{repoHost}");
+                        return null;
                 }
             }
 
@@ -160,7 +168,7 @@ namespace Microsoft.Docs.Build
                     case GitHost.GitHub:
                         return $"{repo.Remote}/blob/{repo.Branch}/{pathToRepo}";
                     default:
-                        throw new NotSupportedException($"{repoHost}");
+                        return null;
                 }
             }
 
@@ -249,7 +257,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = group.Key;
                     var repoPath = repo.Path;
-                    var repoBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
+                    var contributionBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
                     var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
@@ -257,7 +265,18 @@ namespace Microsoft.Docs.Build
                     {
                         ParallelUtility.ForEach(
                             group,
-                            pair => _commitsByFile[pair.file.FilePath] = (group.Key, commitsProvider.GetCommitHistory(pair.pathToRepo, repoBranch)),
+                            pair =>
+                            {
+                                _commitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo);
+                                if (!string.IsNullOrEmpty(contributionBranch))
+                                {
+                                    _contributionCommitsByFile[pair.file.FilePath] = commitsProvider.GetCommitHistory(pair.pathToRepo, contributionBranch);
+                                }
+                                else
+                                {
+                                    _contributionCommitsByFile[pair.file.FilePath] = _commitsByFile[pair.file.FilePath];
+                                }
+                            },
                             Progress.Update);
 
                         await commitsProvider.SaveCache();

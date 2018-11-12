@@ -6,55 +6,52 @@ using System.Linq;
 
 using Xunit;
 
-namespace Microsoft.Docs.Build.moniker
+namespace Microsoft.Docs.Build
 {
     public class MonikerRangeParserTest
     {
-        private readonly Moniker[] _monikers =
+        private readonly MonikerDefinitionModel _monikerDefinition = new MonikerDefinitionModel
         {
-            new Moniker
+            Monikers =
             {
-                MonikerName = "netcore-1.0",
-                Order = 1,
-                ProductName = ".NET Core",
-            },
-            new Moniker
-            {
-                MonikerName = "netcore-2.0",
-                Order = 2,
-                ProductName = ".NET Core",
-            },
-            new Moniker
-            {
-                MonikerName = "netcore-3.0",
-                Order = 3,
-                ProductName = ".NET Core",
-            },
-            new Moniker
-            {
-                MonikerName = "dotnet-1.0",
-                Order = 1,
-                ProductName = ".NET Framework",
-            },
-            new Moniker
-            {
-                MonikerName = "dotnet-2.0",
-                Order = 2,
-                ProductName = ".NET Framework",
-            },
-            new Moniker
-            {
-                MonikerName = "dotnet-3.0",
-                Order = 3,
-                ProductName = ".NET Framework",
-            },
+                new Moniker
+                {
+                    Name = "netcore-1.0",
+                    Product = ".NET Core",
+                },
+                new Moniker
+                {
+                    Name = "netcore-2.0",
+                    Product = ".NET Core",
+                },
+                new Moniker
+                {
+                    Name = "netcore-3.0",
+                    Product = ".NET Core",
+                },
+                new Moniker
+                {
+                    Name = "dotnet-1.0",
+                    Product = ".NET Framework",
+                },
+                new Moniker
+                {
+                    Name = "dotnet-2.0",
+                    Product = ".NET Framework",
+                },
+                new Moniker
+                {
+                    Name = "dotnet-3.0",
+                    Product = ".NET Framework",
+                },
+            }
         };
 
         private readonly MonikerRangeParser _monikerRangeParser;
 
         public MonikerRangeParserTest()
         {
-            _monikerRangeParser = new MonikerRangeParser(_monikers);
+            _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
         }
 
         [Theory]
@@ -66,31 +63,37 @@ namespace Microsoft.Docs.Build.moniker
             "netcore-1.0")]
         [InlineData(
             "netcore-1.0 || dotnet-3.0",
-             "netcore-1.0 dotnet-3.0")]
+             "dotnet-3.0 netcore-1.0")]
+        [InlineData(
+            "dotnet-3.0 || netcore-1.0",
+             "dotnet-3.0 netcore-1.0")]
         [InlineData(
             ">netcore-1.0<netcore-3.0",
+            "netcore-2.0")]
+        [InlineData(
+            ">NETCORE-1.0 <NETcore-3.0",
             "netcore-2.0")]
         [InlineData(
             "netcore-1.0<netcore-3.0",
             "netcore-1.0")]
         [InlineData(
             ">= netcore-1.0 < netcore-2.0 || dotnet-3.0",
-            "netcore-1.0 dotnet-3.0")]
+            "dotnet-3.0 netcore-1.0")]
         [InlineData(
             ">= netcore-2.0 || > dotnet-2.0",
-            "netcore-3.0 netcore-2.0 dotnet-3.0")]
+            "dotnet-3.0 netcore-2.0 netcore-3.0")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(rangeString);
-            Enumerable.SequenceEqual(expectedMonikers.Split(' ', StringSplitOptions.RemoveEmptyEntries), result);
+            Assert.True(Enumerable.SequenceEqual(expectedMonikers.Split(' ', StringSplitOptions.RemoveEmptyEntries), result));
         }
 
         [Theory]
-        [InlineData("netcore-xp", "Moniker `netcore-xp` is not found in available monikers list")]
+        [InlineData("netcore-xp", "Moniker `netcore-xp` is not defined")]
         [InlineData("netcore-1.0 < || netcore-2.0", "Expect a moniker string, but got ` || netcore-2.0`")]
         [InlineData(">netcore&-1.0", "Parse ends before reaching end of string, unrecognized string: `&-1.0`")]
         [InlineData(">=>netcore&-1.0", "Expect a moniker string, but got `>netcore&-1.0`")]
-        [InlineData(">netcore<-1.0", "Moniker `netcore` is not found in available monikers list")]
+        [InlineData(">netcore<-1.0", "Moniker `netcore` is not defined")]
         [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Expect a comparator set, but got `| >netcore-2.0`")]
         [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ` ||`")]
         [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ``")]
@@ -104,30 +107,40 @@ namespace Microsoft.Docs.Build.moniker
         [Fact]
         public void TestDuplicateMonikerNameShouldFail()
         {
-            Moniker[] monikers =
+            var monikerDefinition = new MonikerDefinitionModel
             {
-                new Moniker
+                Monikers =
                 {
-                    MonikerName = "netcore-1.0",
-                    Order = 1,
-                    ProductName = ".NET Core",
-                },
-                new Moniker
-                {
-                    MonikerName = "netcore-1.0",
-                    Order = 2,
-                    ProductName = ".NET Core",
-                },
-               new Moniker
-                {
-                    MonikerName = "netcore-2.0",
-                    Order = 2,
-                    ProductName = ".NET Core",
-                },
+                    new Moniker
+                    {
+                        Name = "netcore-1.0",
+                        Product = ".NET Core",
+                    },
+                    new Moniker
+                    {
+                        Name = "netcore-1.0",
+                        Product = ".NET Core",
+                    },
+                   new Moniker
+                    {
+                        Name = "netcore-2.0",
+                        Product = ".NET Core",
+                    },
+                }
             };
-            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(monikers));
+
+            var exception = Assert.Throws<DocfxException>(() => new MonikerRangeParser(monikerDefinition));
             Assert.Equal("moniker-name-conflict", exception.Error.Code);
             Assert.Equal("Two or more moniker definitions have the same monikerName `netcore-1.0`", exception.Error.Message);
+        }
+
+        [Fact]
+        public void TestNullDefinitionShouldFail()
+        {
+            var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
+            var exception = Assert.Throws<DocfxException>(() => monikerRangeParser.Parse("netcore-1.0"));
+            Assert.Equal("invalid-moniker-range", exception.Error.Code);
+            Assert.Equal("MonikerRange `netcore-1.0` is invalid: Moniker `netcore-1.0` is not defined", exception.Error.Message);
         }
     }
 }

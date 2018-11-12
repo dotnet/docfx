@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<(IEnumerable<Error> errors, object result, DependencyMap dependencies)> Build(
+        public static async Task<(IEnumerable<Error> errors, object result, DependencyMap dependencies, List<string>)> Build(
             Context context,
             Document file,
             TableOfContentsMap tocMap,
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var (errors, schema, model, yamlHeader) = await Load(context, file, callback);
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(JsonUtility.Merge(Metadata.GetFromConfig(file), yamlHeader));
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
@@ -30,6 +30,10 @@ namespace Microsoft.Docs.Build
             model.OpenToPublicContributors = file.Docset.Config.Contribution.ShowEdit;
             model.TocRel = tocMap.FindTocRelativePath(file);
             model.CanonicalUrl = GetCanonicalUrl(file);
+            model.Bilingual = file.Docset.Config.Localization.Bilingual;
+
+            var monikers = file.Docset.MonikersProvider.GetMonikers(file);
+            model.Monikers = monikers;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
@@ -47,7 +51,7 @@ namespace Microsoft.Docs.Build
                     : await RazorTemplate.Render(model.PageType, model);
             }
 
-            return (errors, output, callback.DependencyMapBuilder.Build());
+            return (errors, output, callback.DependencyMapBuilder.Build(), monikers);
         }
 
         private static string GetCanonicalUrl(Document file)
