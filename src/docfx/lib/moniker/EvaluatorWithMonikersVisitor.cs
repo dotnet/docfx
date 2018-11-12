@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var result = new Dictionary<string, MonikerProductInfo>();
+            var result = new Dictionary<string, MonikerProductInfo>(StringComparer.OrdinalIgnoreCase);
             foreach (var productMonikerList in productNameDictionary.Values)
             {
                 for (var i = 0; i < productMonikerList.Count(); i++)

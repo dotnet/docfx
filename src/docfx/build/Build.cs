@@ -144,6 +144,7 @@ namespace Microsoft.Docs.Build
                 var model = (object)null;
                 var dependencies = DependencyMap.Empty;
                 var errors = Enumerable.Empty<Error>();
+                var monikers = new List<string>();
 
                 switch (file.ContentType)
                 {
@@ -151,7 +152,7 @@ namespace Microsoft.Docs.Build
                         model = BuildResource(file);
                         break;
                     case ContentType.Page:
-                        (errors, model, dependencies) = await BuildPage.Build(context, file, tocMap, contribution, callback);
+                        (errors, model, dependencies, monikers) = await BuildPage.Build(context, file, tocMap, contribution, callback);
                         break;
                     case ContentType.TableOfContents:
                         (errors, model, dependencies) = BuildTableOfContents.Build(context, file, tocMap);
@@ -172,10 +173,10 @@ namespace Microsoft.Docs.Build
                 {
                     SourcePath = file.FilePath,
                     SiteUrl = file.SiteUrl,
-                    OutputPath = GetOutputPath(file),
+                    OutputPath = GetOutputPath(file, monikers),
                 };
 
-                if (manifestBuilder.TryAdd(file, manifest))
+                if (manifestBuilder.TryAdd(file, manifest, monikers))
                 {
                     if (model is ResourceModel copy)
                     {
@@ -203,7 +204,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOutputPath(Document file)
+        private static string GetOutputPath(Document file, List<string> monikers)
         {
             if (file.ContentType == ContentType.Resource && !file.Docset.Config.Output.CopyResources)
             {
@@ -213,7 +214,14 @@ namespace Microsoft.Docs.Build
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path)),
                         Path.GetFullPath(Path.Combine(docset.DocsetPath, file.FilePath))));
             }
-            return file.SitePath;
+
+            var outputPath = file.SitePath;
+            if (monikers.Count != 0)
+            {
+                var monikerSeg = HashUtility.GetMd5Hash(string.Join(',', monikers)).Substring(0, 8);
+                outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
+            }
+            return outputPath;
         }
 
         private static ResourceModel BuildResource(Document file)

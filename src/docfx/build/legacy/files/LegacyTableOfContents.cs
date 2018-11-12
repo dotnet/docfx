@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
 
             toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();
 
-            var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath);
+            var dirName = Path.GetDirectoryName(legacyManifestOutput.TocOutput.RelativePath);
             var pdfAbsolutePath = PathUtility.NormalizeFile(
-                $"/{docset.Config.DocumentId.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.OutputPathRelativeToSiteBasePath, ".pdf")}");
+                $"/{docset.Config.DocumentId.SiteBasePath}/opbuildpdf/{Path.ChangeExtension(legacyManifestOutput.TocOutput.RelativePath, ".pdf")}");
             toc.Metadata.PdfAbsolutePath = pdfAbsolutePath;
 
             File.Delete(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath));
