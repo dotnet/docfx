@@ -52,6 +52,16 @@ outputs:
       "content": { "title": "my title" }
     }
 ---
+# Throw error when defined schema is not found
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:SchemaNotExisting
+    title: my title
+outputs:
+  build.log: |
+   ["error","schema-not-found","Unknown schema 'SchemaNotExisting', object model is missing.","docs/a.yml"]
+---
 # Support schema documents with Href content
 inputs:
   docfx.yml:
