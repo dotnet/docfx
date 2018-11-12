@@ -9,6 +9,8 @@ obj
 *.sdf
 *.user
 
+*.DS_Store
+
 _site
 
 # Carried from DocFX v2
