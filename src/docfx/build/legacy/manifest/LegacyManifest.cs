@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                             : new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = document.ContentType == ContentType.Resource
+                                RelativePath = document.ContentType == ContentType.Resource
                                 ? legacyOutputPathRelativeToBaseSitePath + ".mta.json"
                                 : Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".mta.json"),
                             },
@@ -38,15 +38,19 @@ namespace Microsoft.Docs.Build
 
                         if (document.ContentType == ContentType.Resource)
                         {
-                            output.ResourceOutput = new LegacyManifestOutputItem
+                            var resourceOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = docset.Config.Output.CopyResources
-                                    ? legacyOutputPathRelativeToBaseSitePath
-                                    : PathUtility.NormalizeFile(Path.GetRelativePath(
-                                        Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path, docset.Config.DocumentId.SiteBasePath)),
-                                        Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath)))),
                             };
+                            if (docset.Config.Output.CopyResources)
+                            {
+                                resourceOutput.RelativePath = legacyOutputPathRelativeToBaseSitePath;
+                            }
+                            else
+                            {
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath));
+                            }
+                            output.ResourceOutput = resourceOutput;
                         }
 
                         if (document.ContentType == ContentType.TableOfContents)
@@ -54,7 +58,7 @@ namespace Microsoft.Docs.Build
                             output.TocOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                OutputPathRelativeToSiteBasePath = legacyOutputPathRelativeToBaseSitePath,
+                                RelativePath = legacyOutputPathRelativeToBaseSitePath,
                             };
                         }
 
@@ -66,7 +70,7 @@ namespace Microsoft.Docs.Build
                                 output.TocOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    OutputPathRelativeToSiteBasePath = legacyOutputPathRelativeToBaseSitePath,
+                                    RelativePath = legacyOutputPathRelativeToBaseSitePath,
                                 };
                             }
                             else
@@ -74,7 +78,7 @@ namespace Microsoft.Docs.Build
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    OutputPathRelativeToSiteBasePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
+                                    RelativePath = Path.ChangeExtension(legacyOutputPathRelativeToBaseSitePath, ".raw.page.json"),
                                 };
                             }
                         }
