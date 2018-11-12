@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "violate-schema", $"{message}", range: range, jsonPath: path);
 
         public static Error SchemaNotFound(string schema)
-            => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{schema}'");
+            => new Error(ErrorLevel.Error, "schema-not-found", !string.IsNullOrEmpty(schema) ? $"Unknown schema '{schema}', object model is missing." : $"Unknown schema '{schema}'");
 
         public static Error ExceedMaxErrors(int maxErrors)
             => new Error(ErrorLevel.Error, "exceed-max-errors", $"Error or warning count exceed '{maxErrors}'. Build will continue but newer logs will be ignored.");
