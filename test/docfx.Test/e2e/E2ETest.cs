@@ -181,46 +181,41 @@ namespace Microsoft.Docs.Build
             var docsetPath = Path.Combine("specs-drop", name);
             var mockedRepos = MockGitRepos(name, spec);
 
-            if (Directory.Exists(docsetPath))
+            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
             {
-                if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+            }
+
+            var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
+            if (!string.IsNullOrEmpty(inputRepo))
+            {
+                try
                 {
-                    Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
+                    t_mockedRepos.Value = mockedRepos;
+
+                    var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
+                    await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
+                    Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
+                }
+                finally
+                {
+                    t_mockedRepos.Value = null;
                 }
             }
-            else
+
+            foreach (var (file, content) in spec.Inputs)
             {
-                var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
-                if (!string.IsNullOrEmpty(inputRepo))
+                var mutableContent = content;
+                var filePath = Path.Combine(docsetPath, file);
+                PathUtility.CreateDirectoryFromFilePath(filePath);
+                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
                 {
-                    try
+                    foreach (var env in spec.Environments)
                     {
-                        t_mockedRepos.Value = mockedRepos;
-
-                        var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
-                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
-                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-                    }
-                    finally
-                    {
-                        t_mockedRepos.Value = null;
+                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
                     }
                 }
-
-                foreach (var (file, content) in spec.Inputs)
-                {
-                    var mutableContent = content;
-                    var filePath = Path.Combine(docsetPath, file);
-                    PathUtility.CreateDirectoryFromFilePath(filePath);
-                    if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
-                    {
-                        foreach (var env in spec.Environments)
-                        {
-                            mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
-                        }
-                    }
-                    File.WriteAllText(filePath, mutableContent);
-                }
+                File.WriteAllText(filePath, mutableContent);
             }
 
             return (docsetPath, spec, mockedRepos);

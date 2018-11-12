@@ -41,8 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 url = url.Substring(i);
             }
-            url = url.TrimStart('/', '\\', '.', ':').Trim();
-            return url;
+            return HrefUtility.EscapeUrl(url.TrimStart('/', '\\', '.', ':').Trim());
         }
 
         /// <summary>
