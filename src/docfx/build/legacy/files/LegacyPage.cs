@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 var outputRootRelativePath =
                     PathUtility.NormalizeFolder(
                         Path.GetRelativePath(
-                            PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.OutputPathRelativeToSiteBasePath)),
+                            PathUtility.NormalizeFolder(Path.GetDirectoryName(legacyManifestOutput.PageOutput.RelativePath)),
                             PathUtility.NormalizeFolder(".")));
 
                 var themesRelativePathToOutputRoot = "_themes/";
