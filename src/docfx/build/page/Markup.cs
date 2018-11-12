@@ -2,8 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
+using System.Linq;
+using System.Resources;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -20,21 +25,7 @@ namespace Microsoft.Docs.Build
 
     internal static class Markup
     {
-        // In docfx 2, a localized text is prepended to quotes beginning with
-        // [!NOTE], [!TIP], [!WARNING], [!IMPORTANT], [!CAUTION].
-        //
-        // Docfx 2 reads localized tokens from template repo. In docfx3, build (excluding static page generation)
-        // does not depend on template, thus these tokens are managed by us.
-        //
-        // TODO: add localized tokens
-        private static readonly IReadOnlyDictionary<string, string> s_markdownTokens = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "Note", "<p>Note</p>" },
-            { "Tip", "<p>Tip</p>" },
-            { "Warning", "<p>Warning</p>" },
-            { "Important", "<p>Important</p>" },
-            { "Caution", "<p>Caution</p>" },
-        };
+        private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>> s_markdownTokens = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
 
         private static readonly Dictionary<MarkdownPipelineType, MarkdownPipeline> s_pipelineMapping =
             new Dictionary<MarkdownPipelineType, MarkdownPipeline>()
@@ -84,6 +75,7 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Result = new MarkupResult(),
+                        Culture = file.Docset.Culture,
                         ReadFileDelegate = readFile,
                         GetLinkDelegate = getLink,
                         ResolveXrefDelegate = resolveXref,
@@ -154,7 +146,17 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            return s_markdownTokens.TryGetValue(key, out var value) ? value : null;
+            var culture = t_status.Peek().Culture;
+            var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
+            {
+                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
+                using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
+                {
+                    return resourceSet.Cast<DictionaryEntry>().ToDictionary(k => k.Key.ToString(), v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
+                }
+            }));
+
+            return markdownTokens.Value.TryGetValue(key, out var value) ? value : null;
         }
 
         private static void LogError(string code, string message, string doc, int line)
@@ -176,6 +178,8 @@ namespace Microsoft.Docs.Build
         private sealed class Status
         {
             public MarkupResult Result { get; set; }
+
+            public CultureInfo Culture { get; set; }
 
             public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
 

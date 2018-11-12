@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// De-serialize a string to an object
         /// </summary>
-        public static (List<Error>, T) Deserialize<T>(string json)
+        public static (List<Error> errors, T model) Deserialize<T>(string json)
         {
             var (errors, token) = Deserialize(json);
             var (mismatchingErrors, result) = ToObject<T>(token);
