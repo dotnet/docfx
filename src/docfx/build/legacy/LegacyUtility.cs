@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset)
         {
-            return Path.Combine(docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.OutputPathRelativeToSiteBasePath);
+            return Path.Combine(docset.Config.DocumentId.SiteBasePath, legacyManifestOutputItem.RelativePath);
         }
 
         public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
