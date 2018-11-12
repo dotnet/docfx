@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 // https://git-scm.com/docs/git-worktree#_porcelain_format
                 var result = new List<string>();
                 var isMain = true;
-                foreach (var property in stdout.Split("\n", StringSplitOptions.RemoveEmptyEntries))
+                foreach (var property in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries))
                 {
                     var i = property.IndexOf(' ');
                     if (i > 0)
