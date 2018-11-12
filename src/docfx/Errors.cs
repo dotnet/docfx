@@ -103,13 +103,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Info, "at-uid-not-found", $"Cannot find uid '{uid}' using xref '{rawXref}'", file.ToString());
 
         public static Error PublishUrlConflict(string url, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
+            => new Error(ErrorLevel.Warning, "publish-url-conflict", $"Two or more documents of the same version publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         public static Error IncludeRedirection(Document relativeTo, string path)
             => new Error(ErrorLevel.Warning, "include-is-redirection", $"Referenced inclusion {path} relative to '{relativeTo}' shouldn't belong to redirections", relativeTo.ToString());
 
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {Join(files)}");
+            => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more documents output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
 
         public static Error RedirectionDocumentIdConflict(IEnumerable<Document> redirectFromDocs, string redirectTo)
             => new Error(ErrorLevel.Warning, "redirected-id-conflict", $"Multiple documents redirected to '{redirectTo}' with document id: {Join(redirectFromDocs)}");

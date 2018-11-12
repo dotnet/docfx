@@ -18,22 +18,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        {
-            "name": "netcore-1.0",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-1.1",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-2.0",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-2.1",
-            "product": ".NET Core"
-        }
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-2.0", "product": ".NET Core" },
+        { "name": "netcore-2.1", "product": ".NET Core" }
       ]
     }
 outputs:
@@ -72,25 +60,13 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        {
-            "name": "netcore-1.0",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-1.1",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-2.0",
-            "product": ".NET Core"
-        },
-        {
-            "name": "netcore-2.1",
-            "product": ".NET Core"
-        }
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-2.0", "product": ".NET Core" },
+        { "name": "netcore-2.1", "product": ".NET Core" }
       ]
     }
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md', 'docs/v2/a.md'"]
 ---

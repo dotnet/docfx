@@ -16,7 +16,7 @@ inputs:
   docs/a.png:
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'"]
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'"]
 ---
 # Redirection config is case insensitive on windows and mac
 os: windows, osx

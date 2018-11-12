@@ -143,7 +143,7 @@ inputs:
   docs/a.png:
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:
@@ -212,6 +212,7 @@ outputs:
     ["warning","include-not-found","Cannot resolve 'redirect.md' relative to 'docs/a.md'.","docs/a.md"]
 ---
 # Show warning if redirection file conflicts with existing file
+# [only]
 inputs:
   docfx.yml: |
     redirections:
@@ -219,7 +220,8 @@ inputs:
   docs/redirect.md:
 outputs:
   build.log: |
-    ["warning","publish-url-conflict","Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url '/docs/redirect': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
+    ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/redirect': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
+    ["warning","output-path-conflict","Two or more documents output to the same path 'docs/redirect.json': 'docs/redirect.md', 'docs/redirect.md <redirection>'"]
 ---
 # Show warning if link to a page outside build scope
 inputs:

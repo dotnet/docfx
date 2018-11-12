@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,22 +29,13 @@ namespace Microsoft.Docs.Build
             // TODO: see comments in Document.OutputPath.
             file.OutputPath = manifest.OutputPath;
 
-            // Find publish url conflicts
-            if (!_filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) })
-                && _filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
+            if (_filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
             {
-                foreach (var item in existingFiles)
-                {
-                    if (CheckMonikerConflict(item.monikers, monikers))
-                    {
-                        if (item.doc != file)
-                        {
-                            _siteUrlConflicts.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentBag<Document>()).Add(file);
-                        }
-                        return false;
-                    }
-                }
                 existingFiles.Add((file, monikers));
+            }
+            else
+            {
+                _filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) });
             }
 
             // Find output path conflicts
@@ -62,27 +54,31 @@ namespace Microsoft.Docs.Build
         public (FileManifest[], List<Document>) Build(Context context)
         {
             // Handle publish conflicts
-            foreach (var (siteUrl, conflict) in _siteUrlConflicts)
+            foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
-                var conflictingFiles = new HashSet<Document>();
-
-                foreach (var conflictingFile in conflict)
+                var hasConflict = false;
+                var uniqueFiles = files.GroupBy(file => file.doc).ToDictionary(group => group.Key, group => group.First().monikers).ToList();
+                for (var i = 0; i < uniqueFiles.Count; i++)
                 {
-                    conflictingFiles.Add(conflictingFile);
-                }
-
-                if (_filesBySiteUrl.TryRemove(siteUrl, out var removed))
-                {
-                    conflictingFiles.UnionWith(removed.Select(item => item.doc).ToHashSet());
-                }
-
-                context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
-
-                foreach (var conflictingFile in conflictingFiles)
-                {
-                    if (_manifest.TryRemove(conflictingFile, out var manifest))
+                    var firstMonikers = uniqueFiles[i].Value;
+                    if (uniqueFiles.Skip(i + 1).Any(file => CheckMonikerConflict(firstMonikers, file.Value)))
                     {
-                        context.Delete(manifest.OutputPath);
+                        hasConflict = true;
+                        break;
+                    }
+                }
+
+                if (hasConflict)
+                {
+                    var conflictingFiles = uniqueFiles.Select(file => file.Key).ToList();
+                    context.Report(Errors.PublishUrlConflict(siteUrl, conflictingFiles));
+
+                    foreach (var conflictingFile in conflictingFiles)
+                    {
+                        if (_manifest.TryRemove(conflictingFile, out var manifest))
+                        {
+                            context.Delete(manifest.OutputPath);
+                        }
                     }
                 }
             }
@@ -132,7 +128,7 @@ namespace Microsoft.Docs.Build
 
         private bool CheckMonikerConflict(List<string> existingMonikers, List<string> currentMonikers)
         {
-            if (existingMonikers.Intersect(currentMonikers).Count() > 0 || existingMonikers.Concat(currentMonikers).Count() == 0)
+            if (existingMonikers.Intersect(currentMonikers, StringComparer.OrdinalIgnoreCase).Any() || (!existingMonikers.Any() && !currentMonikers.Any()))
             {
                 return true;
             }

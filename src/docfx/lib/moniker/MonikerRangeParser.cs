@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             {
                 var expression = ExpressionCreator.Create(rangeString);
                 monikerNames = expression.Accept(_monikersEvaluator).ToList();
-                monikerNames.Sort(StringComparer.Ordinal);
+                monikerNames.Sort();
             }
             catch (MonikerRangeException ex)
             {
