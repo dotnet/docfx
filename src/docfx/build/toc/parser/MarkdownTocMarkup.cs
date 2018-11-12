@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (ast, result) = Markup.Parse(tocContent, file.Docset.Locale);
+            var (ast, result) = Markup.Parse(tocContent, file.Docset.Culture);
             errors.AddRange(result.Errors);
             foreach (var block in ast)
             {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,14 +42,14 @@ namespace Microsoft.Docs.Build
 
         public static MarkupResult Result => t_status.Peek().Result;
 
-        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, string locale)
+        public static (MarkdownDocument ast, MarkupResult result) Parse(string content, CultureInfo culture)
         {
             try
             {
                 var status = new Status
                 {
                     Result = new MarkupResult(),
-                    Locale = locale,
+                    Culture = culture,
                 };
                 t_status = t_status == null ? ImmutableStack.Create(status) : t_status.Push(status);
                 var ast = Markdown.Parse(content, s_pipelineMapping[MarkdownPipelineType.TocMarkdown]);
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Result = new MarkupResult(),
-                        Locale = file.Docset.Locale,
+                        Culture = file.Docset.Culture,
                         ReadFileDelegate = readFile,
                         GetLinkDelegate = getLink,
                         ResolveXrefDelegate = resolveXref,
@@ -147,24 +148,17 @@ namespace Microsoft.Docs.Build
 
         private static string GetToken(string key)
         {
-            var locale = t_status.Peek().Locale;
-            var markdownTokens = s_markdownTokens.GetOrAdd(locale, _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
+            var culture = t_status.Peek().Culture;
+            var markdownTokens = s_markdownTokens.GetOrAdd(culture.ToString(), _ => new Lazy<IReadOnlyDictionary<string, string>>(() =>
             {
+                var resourceManager = new ResourceManager("Microsoft.Docs.Template.resources.tokens", typeof(PageModel).Assembly);
                 var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                var templateAssembly = Assembly.GetAssembly(typeof(PageModel));
-                var resourceName = templateAssembly.GetManifestResourceNames().FirstOrDefault(n => n.Contains(locale, StringComparison.OrdinalIgnoreCase));
-
-                if (string.IsNullOrEmpty(resourceName))
+                using (var resourceSet = resourceManager.GetResourceSet(culture, true, true))
                 {
-                    return result;
-                }
-
-                using (var reader = new ResourceReader(templateAssembly.GetManifestResourceStream(resourceName)))
-                {
-                    var dict = reader.GetEnumerator();
-                    while (dict.MoveNext())
+                    var e = resourceSet.GetEnumerator();
+                    while (e.MoveNext())
                     {
-                        result[dict.Key.ToString()] = dict.Value.ToString();
+                        result[e.Key.ToString()] = e.Value.ToString();
                     }
                 }
 
@@ -194,7 +188,7 @@ namespace Microsoft.Docs.Build
         {
             public MarkupResult Result { get; set; }
 
-            public string Locale { get; set; }
+            public CultureInfo Culture { get; set; }
 
             public Func<string, object, (string, object)> ReadFileDelegate { get; set; }
 
