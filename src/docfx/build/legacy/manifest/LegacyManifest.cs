@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                                 OutputPathRelativeToSiteBasePath = docset.Config.Output.CopyResources
                                     ? legacyOutputPathRelativeToBaseSitePath
                                     : PathUtility.NormalizeFile(Path.GetRelativePath(
-                                        Path.GetFullPath(Path.Combine(docset.Config.Output.Path, docset.Config.DocumentId.SiteBasePath)),
+                                        Path.GetFullPath(Path.Combine(docset.DocsetPath, docset.Config.Output.Path, docset.Config.DocumentId.SiteBasePath)),
                                         Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath)))),
                             };
                         }
