@@ -38,14 +38,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (_filesBySiteUrl.TryGetValue(manifest.SiteUrl, out var existingFiles))
-            {
-                existingFiles.Add((file, monikers));
-            }
-            else
-            {
-                _filesBySiteUrl.TryAdd(manifest.SiteUrl, new ConcurrentBag<(Document doc, List<string> monikers)> { (file, monikers) });
-            }
+            _filesBySiteUrl.GetOrAdd(manifest.SiteUrl, _ => new ConcurrentBag<(Document doc, List<string> monikers)>()).Add((file, monikers));
 
             return true;
         }
@@ -56,11 +49,11 @@ namespace Microsoft.Docs.Build
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
                 var hasConflict = false;
-                var uniqueFiles = files.GroupBy(file => file.doc).ToDictionary(group => group.Key, group => group.First().monikers).ToList();
+                var uniqueFiles = files.GroupBy(file => file.doc).ToList();
                 for (var i = 0; i < uniqueFiles.Count; i++)
                 {
-                    var firstMonikers = uniqueFiles[i].Value;
-                    if (uniqueFiles.Skip(i + 1).Any(file => CheckMonikerConflict(firstMonikers, file.Value)))
+                    var firstMonikers = uniqueFiles[i].FirstOrDefault().monikers;
+                    if (uniqueFiles.Skip(i + 1).Any(file => CheckMonikerConflict(firstMonikers, file.FirstOrDefault().monikers)))
                     {
                         hasConflict = true;
                         break;
