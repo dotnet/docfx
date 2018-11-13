@@ -8,34 +8,34 @@ namespace Microsoft.Docs.Build
 {
     internal static class AppData
     {
-        public static readonly string AppDataDir = GetAppDataDir();
+        private static readonly string s_root = GetAppDataRoot();
 
-        public static string GitDir => Path.Combine(AppDataDir, "git");
+        public static string GitRoot => Path.Combine(s_root, "git");
 
-        public static string DownloadsDir => Path.Combine(AppDataDir, "downloads");
+        public static string DownloadsRoot => Path.Combine(s_root, "downloads");
 
-        public static string MutexDir => Path.Combine(AppDataDir, "mutex");
+        public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheDir => Path.Combine(AppDataDir, "cache");
+        public static string CacheRoot => Path.Combine(s_root, "cache");
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
-        public static string GitHubUserCachePath => Path.Combine(CacheDir, "github-users.json");
+        public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
         public static string GetGitDir(string url)
         {
-            return PathUtility.NormalizeFolder(Path.Combine(GitDir, UrlToPath(url)));
+            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, UrlToPath(url)));
         }
 
         public static string GetFileDownloadDir(string url)
         {
             // URL to a resource is case sensitive, query string matters, so hash the download path
-            return PathUtility.NormalizeFolder(Path.Combine(DownloadsDir, UrlToPath(url) + "-" + url.Trim().GetMd5HashShort()));
+            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, UrlToPath(url) + "-" + url.Trim().GetMd5HashShort()));
         }
 
         public static string GetCommitCachePath(string remote)
         {
-            return Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(remote));
+            return Path.Combine(AppData.CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
         private static string UrlToPath(string url)
@@ -53,12 +53,12 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the global configuration path, default is under <see cref="AppDataDir"/>
+        /// Get the global configuration path, default is under <see cref="s_root"/>
         /// </summary>
         private static string GetGlobalConfigPath()
         {
             var docfxGlobalConfig = Environment.GetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH");
-            Config.TryGetConfigPath(AppDataDir, out string configPath, out string configFile);
+            Config.TryGetConfigPath(s_root, out string configPath, out string configFile);
             return string.IsNullOrEmpty(docfxGlobalConfig) ? configPath : Path.GetFullPath(docfxGlobalConfig);
         }
 
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         /// Get the application cache root dir, default is under user proflie dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
         /// </summary>
-        private static string GetAppDataDir()
+        private static string GetAppDataRoot()
         {
             // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");

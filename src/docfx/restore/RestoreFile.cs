@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             var restoreDir = AppData.GetFileDownloadDir(address);
             var restorePath = PathUtility.NormalizeFile(Path.Combine(restoreDir, fileHash));
             await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.DownloadsDir, restoreDir)),
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.DownloadsRoot, restoreDir)),
                 () =>
                 {
                     if (!File.Exists(restorePath))
@@ -45,8 +45,8 @@ namespace Microsoft.Docs.Build
 
         private static async Task<string> DownloadToTempFile(string address, Config config)
         {
-            Directory.CreateDirectory(AppData.DownloadsDir);
-            var tempFile = Path.Combine(AppData.DownloadsDir, "." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(AppData.DownloadsRoot);
+            var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
 
             try
             {

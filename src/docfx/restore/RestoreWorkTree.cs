@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var workTreeHeads = new ConcurrentBag<(string href, string head)>();
 
             await ProcessUtility.RunInsideMutex(
-                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitDir, restorePath)),
+                PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRoot, restorePath)),
                 async () =>
                 {
                     try

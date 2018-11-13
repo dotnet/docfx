@@ -23,12 +23,12 @@ namespace Microsoft.Docs.Build
         private static async Task<int> CollectGit(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.GitDir))
+            if (!Directory.Exists(AppData.GitRoot))
             {
                 return cleaned;
             }
 
-            var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitDir, ".git", SearchOption.AllDirectories);
+            var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories);
 
             using (Progress.Start("Cleaning git repositories"))
             {
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             Task CleanWorkTrees(string gitWorkTreeRoot)
             {
                 return ProcessUtility.RunInsideMutex(
-                       PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitDir, gitWorkTreeRoot)),
+                       PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRoot, gitWorkTreeRoot)),
                        async () =>
                        {
                            var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
@@ -67,12 +67,12 @@ namespace Microsoft.Docs.Build
         private static int CollectUrls(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.DownloadsDir))
+            if (!Directory.Exists(AppData.DownloadsRoot))
             {
                 return cleaned;
             }
 
-            var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsDir, "*", SearchOption.AllDirectories);
+            var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories);
 
             using (Progress.Start("Cleaning downloaded files"))
             {
