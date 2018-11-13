@@ -18,7 +18,12 @@ namespace Microsoft.Docs.Build
 
         public List<string> Parse(string rangeString)
         {
-            List<string> monikerNames = null;
+            List<string> monikerNames = new List<string>();
+            if (string.IsNullOrWhiteSpace(rangeString))
+            {
+                return monikerNames;
+            }
+
             try
             {
                 var expression = ExpressionCreator.Create(rangeString);

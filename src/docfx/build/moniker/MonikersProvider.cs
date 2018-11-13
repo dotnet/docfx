@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,17 +21,25 @@ namespace Microsoft.Docs.Build
             _rules.Reverse();
         }
 
-        public List<string> GetMonikers(Document file)
+        public List<string> GetMonikers(Document file, JObject yamlHeader = null)
         {
-            // TODO: merge with the monikers from yaml header
+            var result = new List<string>();
             foreach (var (glob, monikers) in _rules)
             {
                 if (glob(file.FilePath))
                 {
-                    return monikers;
+                    result = monikers;
                 }
             }
-            return new List<string>();
+
+            if (yamlHeader != null && yamlHeader.HasValues)
+            {
+                var monikerRange = yamlHeader.Value<string>("monikerRange");
+                var yamlHeaderMonikers = file.Docset.MonikerRangeParser.Parse(monikerRange);
+                return result.Intersect(yamlHeaderMonikers).ToList();
+            }
+
+            return result;
         }
     }
 }

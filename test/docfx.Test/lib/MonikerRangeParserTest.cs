@@ -55,6 +55,9 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData(null, "")]
+        [InlineData("  ", "")]
+        [InlineData("", "")]
         [InlineData(
             "netcore-1.0 netcore-3.0",
             "")]
@@ -85,7 +88,7 @@ namespace Microsoft.Docs.Build
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(rangeString);
-            Assert.True(Enumerable.SequenceEqual(expectedMonikers.Split(' ', StringSplitOptions.RemoveEmptyEntries), result));
+            Assert.Equal(expectedMonikers, string.Join(' ', result));
         }
 
         [Theory]

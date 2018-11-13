@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static IExpression Create(string rangeString)
         {
             var expression = GetMonikerRange();
-            if (!Eos())
+            if (!string.IsNullOrWhiteSpace(rangeString))
             {
                 throw new MonikerRangeException($"Parse ends before reaching end of string, unrecognized string: `{rangeString}`");
             }
@@ -74,8 +74,7 @@ namespace Microsoft.Docs.Build
 
             bool TryGetComparator(out IExpression comparator)
             {
-                string @operator;
-                var foundOperator = Accept(SymbolType.Operator, out @operator);
+                var foundOperator = Accept(SymbolType.Operator, out string @operator);
                 if (!foundOperator)
                 {
                     @operator = "=";
@@ -104,11 +103,6 @@ namespace Microsoft.Docs.Build
                     return true;
                 }
                 return false;
-            }
-
-            bool Eos()
-            {
-                return string.IsNullOrWhiteSpace(rangeString);
             }
 
             bool TryMatchSymbol(SymbolType type, out string value)
