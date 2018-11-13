@@ -21,7 +21,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var (errors, schema, model, yamlHeader) = await Load(context, file, callback);
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
+            var temp = file.Docset.Metadata.GetMetadata(file, yamlHeader);
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(temp);
             errors.AddRange(metaErrors);
 
             model.PageType = schema.Name;
@@ -32,7 +33,8 @@ namespace Microsoft.Docs.Build
             model.CanonicalUrl = GetCanonicalUrl(file);
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
-            var monikers = file.Docset.MonikersProvider.GetMonikers(file, yamlHeader);
+            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(error);
             model.Monikers = monikers;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;

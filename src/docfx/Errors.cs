@@ -153,6 +153,15 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMonikerRange(string monikerRange, string message)
             => new Error(ErrorLevel.Error, "invalid-moniker-range", $"MonikerRange `{monikerRange}` is invalid: {message}");
 
+        public static Error MonikerConfigMissing()
+            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata.");
+
+        public static Error NoMonikersIntersection(string configMonikerRange, List<string> configMonikers, string fileMonikerRange, List<string> fileMonikers)
+            => new Error(
+                ErrorLevel.Warning,
+                "no-moniker-intersection",
+                $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range {configMonikerRange} is {string.Join(',', configMonikers)}, while file moniker range {fileMonikerRange} is {string.Join(',', fileMonikers)}");
+
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 
