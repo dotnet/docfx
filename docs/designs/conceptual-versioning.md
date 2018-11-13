@@ -202,7 +202,10 @@ monikerRange: >=netcore-1.0
 ```
 
 > [!NOTE]
-> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, an error throws.
+> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, a warning will be logged.
+
+> [!NOTE]
+> The `config file` level moniker range should be defined to enable versioning. If moniker range is not defined in `config file`, and `Yaml header` moniker range is defined, a warning will be logged.
 
 ##### 2.2.2 Moniker zone
 
