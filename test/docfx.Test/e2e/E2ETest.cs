@@ -207,16 +207,10 @@ namespace Microsoft.Docs.Build
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
             var docsetPath = Path.Combine("specs-drop", name);
+            var docsetCreatedFlag = Path.Combine("specs-flags", name);
             var mockedRepos = MockGitRepos(name, spec);
 
-            if (Directory.Exists(docsetPath))
-            {
-                if (Directory.Exists(Path.Combine(docsetPath, "_site")))
-                {
-                    Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
-                }
-            }
-            else
+            if (!File.Exists(docsetCreatedFlag))
             {
                 var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
                 if (!string.IsNullOrEmpty(inputRepo))
@@ -249,6 +243,14 @@ namespace Microsoft.Docs.Build
                     }
                     File.WriteAllText(filePath, mutableContent);
                 }
+
+                PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);
+                File.Create(docsetCreatedFlag);
+            }
+
+            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+            {
+                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
             }
 
             return (docsetPath, spec, mockedRepos);
