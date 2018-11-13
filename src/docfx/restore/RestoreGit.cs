@@ -25,8 +25,8 @@ namespace Microsoft.Docs.Build
             {
                 var remote = group.Key;
                 var branches = group.Distinct();
-                var repoPath = Path.Combine(AppData.GetGitDir(remote), ".git");
-                var workTreePathes = new List<string>();
+                var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
+                var childRepos = new List<string>();
 
                 await ProcessUtility.RunInsideMutex(
                     remote,
@@ -43,9 +43,9 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                foreach (var workTreePath in workTreePathes)
+                foreach (var child in childRepos)
                 {
-                    await restoreChild(workTreePath);
+                    await restoreChild(child);
                 }
 
                 async Task AddWorkTrees()
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                             await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
                         }
 
-                        workTreePathes.Add(workTreePath);
+                        childRepos.Add(workTreePath);
 
                         // update the last write time
                         Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
