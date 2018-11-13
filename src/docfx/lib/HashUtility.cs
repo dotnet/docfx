@@ -21,6 +21,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string GetMd5HashShort(this string input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4);
+            }
+        }
+
         public static Guid GetMd5Guid(this string input)
         {
             using (var md5 = MD5.Create())
@@ -30,22 +38,33 @@ namespace Microsoft.Docs.Build
         }
 
         public static string GetSha1Hash(string input)
-            => GetSha1Hash(new MemoryStream(Encoding.UTF8.GetBytes(input)));
-
-        public static string GetSha1Hash(Stream stream)
         {
+            using (var sha1 = new SHA1CryptoServiceProvider())
+            {
+                return ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
+            }
+        }
+
+        public static string GetFileSha1Hash(string fileName)
+        {
+            using (var stream = File.OpenRead(fileName))
             using (var sha1 = new SHA1CryptoServiceProvider())
             {
                 return ToHexString(sha1.ComputeHash(stream));
             }
         }
 
-        private static string ToHexString(byte[] bytes)
+        private static string ToHexString(byte[] bytes, int digits = 0)
         {
             var formatted = new StringBuilder(2 * bytes.Length);
-            foreach (byte b in bytes)
+            if (digits == 0)
             {
-                formatted.AppendFormat("{0:x2}", b);
+                digits = bytes.Length;
+            }
+
+            for (var i = 0; i < digits; i++)
+            {
+                formatted.AppendFormat("{0:x2}", bytes[i]);
             }
             return formatted.ToString();
         }

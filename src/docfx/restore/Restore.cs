@@ -39,18 +39,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetRestoreRootDir(string url, string root)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-
-            var uri = new Uri(url);
-            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(root, repo);
-
-            // todo: encode the dir converted from url
-            return PathUtility.NormalizeFolder(dir);
-        }
-
         private static void ReportErrors(Report report, List<Error> errors)
         {
             foreach (var error in errors)
@@ -78,7 +66,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(config.Extend),
                 async restoreUrl =>
                 {
-                    await RestoreUrl.Restore(restoreUrl, config);
+                    await RestoreFile.Restore(restoreUrl, config);
                 });
 
             // extend the config before loading
@@ -93,7 +81,7 @@ namespace Microsoft.Docs.Build
                 GetRestoreUrls(extendedConfig.GetExternalReferences()),
                 async restoreUrl =>
                 {
-                    await RestoreUrl.Restore(restoreUrl, extendedConfig);
+                    await RestoreFile.Restore(restoreUrl, extendedConfig);
                 });
         }
     }

@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var path = docset.RestoreMap.GetFileRestorePath(docset.Config.Contribution.GitCommitsTime);
                 var content = await ProcessUtility.ReadFile(path);
 
                 foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
@@ -258,10 +258,9 @@ namespace Microsoft.Docs.Build
                     var repo = group.Key;
                     var repoPath = repo.Path;
                     var contributionBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
-                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, commitCachePath))
+                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, AppData.GetCommitCachePath(repo.Remote)))
                     {
                         ParallelUtility.ForEach(
                             group,
