@@ -30,10 +30,9 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Cleaning git repositories"))
             {
-                await ParallelUtility.ForEach(
-                    Directory.EnumerateDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories),
-                    CleanWorkTrees,
-                    Progress.Update);
+                var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories);
+
+                await ParallelUtility.ForEach(gitWorkTreeRoots, CleanWorkTrees, Progress.Update);
             }
 
             Task CleanWorkTrees(string gitWorkTreeRoot)
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
                            var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
                            var existingWorkTreeFolders = Directory
                                 .EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
-                                .Where(f => !f.EndsWith(".git/"));
+                                .Where(f => !f.EndsWith(".git"));
 
                            foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
                            {
@@ -73,8 +72,10 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Cleaning downloaded files"))
             {
+                 var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories);
+
                 ParallelUtility.ForEach(
-                    Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories),
+                    downloadedFiles,
                     downloadedFile =>
                     {
                         if (new FileInfo(downloadedFile).LastWriteTimeUtc + TimeSpan.FromDays(retentionDays) < DateTime.UtcNow)
