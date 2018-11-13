@@ -59,6 +59,9 @@ namespace Microsoft.Docs.Build
                             await Build.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report);
                             break;
+                        case "watch":
+                            await Watch.Run(docset, options);
+                            break;
                         case "gc":
                             await GarbageCollector.Collect(options.RetentionDays);
                             Done(stopwatch.Elapsed, report);
@@ -89,22 +92,24 @@ namespace Microsoft.Docs.Build
             ArgumentSyntax.Parse(args, syntax =>
             {
                 // Restore command
-                // usage: docfx restore [docset] [--git-token token] [--locale locale]
                 syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                 syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // Build command
-                // usage: docfx build [docset] [-o/--output output] [--log log] [--legacy] [--git-token token] [--locale locale]
                 syntax.DefineCommand("build", ref command, "Builds a docset.");
                 syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                 syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                syntax.DefineOption("github-token", ref options.GitHubToken, "The GitHub token used to get contribution information from GitHub API");
-                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
+                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+
+                // Watch command
+                syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
+                syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
+                syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                 syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
 
                 // GC command
-                // usage: docfx gc [--retention-days days]
                 syntax.DefineCommand("gc", ref command, "Grabage collect for `AppData` folder");
                 syntax.DefineOption("retention-days", ref options.RetentionDays, "Keep the files accessed/written within <d> days");
             });

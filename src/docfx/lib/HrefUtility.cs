@@ -67,12 +67,22 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool IsHttpHref(string str)
-            => !string.IsNullOrEmpty(str) && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
+        {
+            return !string.IsNullOrEmpty(str)
+                && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
 
         public static string EscapeUrl(string path)
         {
             return string.Join('/', path.Split('/', '\\').Select(segment => Uri.EscapeDataString(segment)));
+        }
+
+        public static string EscapeUrlSegment(string path)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
+            return Uri.EscapeDataString(path);
         }
     }
 }
