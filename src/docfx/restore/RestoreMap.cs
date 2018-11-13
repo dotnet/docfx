@@ -24,13 +24,13 @@ namespace Microsoft.Docs.Build
 
         public string GetGitRepositoryPath(string remote)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(url));
 
             var gitRestorePath = s_gitPath.GetOrAdd(remote, new Lazy<string>(FindLastModifiedGitRepository)).Value;
 
             if (!Directory.Exists(gitRestorePath))
             {
-                throw Errors.NeedRestore(remote).ToException();
+                throw Errors.NeedRestore(url).ToException();
             }
 
             return gitRestorePath;
@@ -55,20 +55,20 @@ namespace Microsoft.Docs.Build
 
         public string GetFileDownloadPath(string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!string.IsNullOrEmpty(url));
 
-            if (!HrefUtility.IsHttpHref(path))
+            if (!HrefUtility.IsHttpHref(url))
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(_docsetPath, path);
-                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
+                var fullPath = Path.Combine(_docsetPath, url);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, url).ToException();
             }
 
             var downloadPath = s_downloadPath.GetOrAdd(path, new Lazy<string>(FindLastModifiedFile)).Value;
 
             if (!File.Exists(downloadPath))
             {
-                throw Errors.NeedRestore(path).ToException();
+                throw Errors.NeedRestore(url).ToException();
             }
 
             return downloadPath;

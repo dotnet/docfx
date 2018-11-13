@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreUrl
+    internal static class RestoreFile
     {
         public static async Task Restore(string url, Config config)
         {
@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
 
         private static async Task<string> DownloadToTempFile(string url, Config config)
         {
-            Directory.CreateDirectory(AppData.DownloadsDir);
-            var tempFile = Path.Combine(AppData.DownloadsDir, "." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(AppData.DownloadsRoot);
+            var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
 
             try
             {

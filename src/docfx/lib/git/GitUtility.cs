@@ -124,9 +124,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// List work trees for a given repo, returns
         /// </summary>
-        public static Task<List<string>> ListWorkTreePath(string cwd)
+        public static Task<List<string>> ListWorkTree(string repoPath)
         {
-            return Execute(cwd, $"worktree list --porcelain", ParseWorkTreeList);
+            return Execute(repoPath, $"worktree list --porcelain", ParseWorkTreeList);
 
             List<string> ParseWorkTreeList(string stdout, string stderr)
             {
@@ -134,7 +134,8 @@ namespace Microsoft.Docs.Build
 
                 // https://git-scm.com/docs/git-worktree#_porcelain_format
                 var result = new List<string>();
-                foreach (var property in stdout.Split("\n", StringSplitOptions.RemoveEmptyEntries))
+                var isMain = true;
+                foreach (var property in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries))
                 {
                     var i = property.IndexOf(' ');
                     if (i > 0)
@@ -142,7 +143,15 @@ namespace Microsoft.Docs.Build
                         var key = property.Substring(0, i);
                         if (key == "worktree")
                         {
-                            result.Add(property.Substring(i + 1).Trim());
+                            if (isMain)
+                            {
+                                // The main worktree is listed first, followed by each of the linked worktrees.
+                                isMain = false;
+                            }
+                            else
+                            {
+                                result.Add(property.Substring(i + 1).Trim());
+                            }
                         }
                     }
                 }

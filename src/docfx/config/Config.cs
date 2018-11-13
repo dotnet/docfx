@@ -258,7 +258,7 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetFileDownloadPath(globalConfigPath);
+                var filePath = restoreMap.GetFileRestorePath(globalConfigPath);
                 (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var filePath = restoreMap.GetFileDownloadPath(str);
+                        var filePath = restoreMap.GetFileRestorePath(str);
                         var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
                         result.Merge(extendConfigObject, JsonUtility.MergeSettings);

@@ -109,12 +109,6 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
 
-                    // loc redirection files
-                    if (docset.FallbackDocset != null && file.Docset.FallbackDocset != null && file.ContentType == ContentType.Redirection)
-                    {
-                        return false;
-                    }
-
                     return file.ContentType != ContentType.Unknown && recurseDetector.TryAdd(file);
                 }
 
@@ -218,7 +212,7 @@ namespace Microsoft.Docs.Build
             var outputPath = file.SitePath;
             if (monikers.Count != 0)
             {
-                var monikerSeg = HashUtility.GetMd5Hash(string.Join(',', monikers)).Substring(0, 8);
+                var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));
             }
             return outputPath;
