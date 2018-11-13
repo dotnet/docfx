@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             });
             _scanScope = new Lazy<HashSet<Document>>(() => CreateScanScope());
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
-            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRepositoryPath(Config.Dependencies["_themes"]), Locale));
+            _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
             _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config, MonikerRangeParser));
         }
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var dir = restoreMap.GetGitRepositoryPath(url);
+                var dir = restoreMap.GetGitRestorePath(url);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

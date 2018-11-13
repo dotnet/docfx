@@ -22,11 +22,11 @@ namespace Microsoft.Docs.Build
             _docsetPath = docsetPath;
         }
 
-        public string GetGitRepositoryPath(string remote)
+        public string GetGitRestorePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
-            var gitRestorePath = s_gitPath.GetOrAdd(remote, new Lazy<string>(FindLastModifiedGitRepository)).Value;
+            var gitRestorePath = s_gitPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedGitRepository)).Value;
 
             if (!Directory.Exists(gitRestorePath))
             {
@@ -37,23 +37,22 @@ namespace Microsoft.Docs.Build
 
             string FindLastModifiedGitRepository()
             {
-                var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
+                var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
                 var restoreDir = AppData.GetGitDir(url);
 
                 if (!Directory.Exists(restoreDir))
                 {
-                    throw Errors.NeedRestore(remote).ToException();
+                    throw Errors.NeedRestore(url).ToException();
                 }
 
                 return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                    .Select(f => PathUtility.NormalizeFolder(f))
-                    .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
+                    .Where(f => f.EndsWith(HrefUtility.EscapeUrlSegment(branch)))
                     .OrderByDescending(f => new DirectoryInfo(f).LastWriteTimeUtc)
                     .FirstOrDefault();
             }
         }
 
-        public string GetFileDownloadPath(string path)
+        public string GetFileRestorePath(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 
@@ -64,7 +63,7 @@ namespace Microsoft.Docs.Build
                 return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, url).ToException();
             }
 
-            var downloadPath = s_downloadPath.GetOrAdd(path, new Lazy<string>(FindLastModifiedFile)).Value;
+            var downloadPath = s_downloadPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedFile)).Value;
 
             if (!File.Exists(downloadPath))
             {
@@ -76,11 +75,11 @@ namespace Microsoft.Docs.Build
             string FindLastModifiedFile()
             {
                 // get the file path from restore map
-                var restoreDir = AppData.GetFileDownloadDir(path);
+                var restoreDir = AppData.GetFileDownloadDir(url);
 
                 if (!Directory.Exists(restoreDir))
                 {
-                    throw Errors.NeedRestore(path).ToException();
+                    throw Errors.NeedRestore(url).ToException();
                 }
 
                 return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)

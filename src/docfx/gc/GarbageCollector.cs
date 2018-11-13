@@ -42,22 +42,23 @@ namespace Microsoft.Docs.Build
             {
                 return ProcessUtility.RunInsideMutex(
                        PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRoot, gitWorkTreeRoot)),
-                       async () =>
+                       () =>
                        {
                            var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
                            var existingWorkTreeFolders = Directory.EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
                                                       .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
 
-                foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
-                {
-                    if (new DirectoryInfo(existingWorkTreeFolder).LastWriteTimeUtc + TimeSpan.FromDays(retentionDays) < DateTime.UtcNow)
-                    {
-                        Interlocked.Increment(ref cleaned);
-                        Directory.Delete(existingWorkTreeFolder, true);
-                    }
-                }
+                           foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
+                           {
+                               if (new DirectoryInfo(existingWorkTreeFolder).LastWriteTimeUtc + TimeSpan.FromDays(retentionDays) < DateTime.UtcNow)
+                               {
+                                   Interlocked.Increment(ref cleaned);
+                                   Directory.Delete(existingWorkTreeFolder, true);
+                               }
+                           }
 
-                return GitUtility.PruneWorkTrees(workTreeFolder);
+                           return GitUtility.PruneWorkTrees(workTreeFolder);
+                       });
             }
 
             return cleaned;

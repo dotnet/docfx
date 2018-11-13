@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// List work trees for a given repo, returns
+        /// List work trees for a given repo
         /// </summary>
         public static Task<List<string>> ListWorkTree(string repoPath)
         {

@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             // no need to extend config
             await ParallelUtility.ForEach(
                 config.Extend.Where(HrefUtility.IsHttpHref),
-                restoreUrl => RestoreUrl.Restore(restoreUrl, config));
+                restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
             // extend the config before loading
             var (errors, extendedConfig) = Config.Load(docsetPath, options);
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             // restore urls except extend url
             await ParallelUtility.ForEach(
                 extendedConfig.GetExternalReferences().Where(HrefUtility.IsHttpHref),
-                restoreUrl => RestoreUrl.Restore(restoreUrl, extendedConfig));
+                restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig));
         }
 
         private static void ReportErrors(Report report, List<Error> errors)

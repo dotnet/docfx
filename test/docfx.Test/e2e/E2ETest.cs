@@ -184,31 +184,36 @@ namespace Microsoft.Docs.Build
 
             if (!File.Exists(docsetCreatedFlag))
             {
-                try
+                var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
+                if (!string.IsNullOrEmpty(inputRepo))
                 {
-                    t_mockedRepos.Value = mockedRepos;
-
-                    var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
-                    await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
-                    Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
-                }
-                finally
-                {
-                    t_mockedRepos.Value = null;
-                }
-            }
-
-            foreach (var (file, content) in spec.Inputs)
-            {
-                var mutableContent = content;
-                var filePath = Path.Combine(docsetPath, file);
-                PathUtility.CreateDirectoryFromFilePath(filePath);
-                if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
-                {
-                    foreach (var env in spec.Environments)
+                    try
                     {
-                        mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        t_mockedRepos.Value = mockedRepos;
+
+                        var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
+                        await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
+                        Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
                     }
+                    finally
+                    {
+                        t_mockedRepos.Value = null;
+                    }
+                }
+
+                foreach (var (file, content) in spec.Inputs)
+                {
+                    var mutableContent = content;
+                    var filePath = Path.Combine(docsetPath, file);
+                    PathUtility.CreateDirectoryFromFilePath(filePath);
+                    if (replaceEnvironments && Path.GetFileNameWithoutExtension(file) == "docfx")
+                    {
+                        foreach (var env in spec.Environments)
+                        {
+                            mutableContent = content.Replace($"{{{env}}}", Environment.GetEnvironmentVariable(env));
+                        }
+                    }
+                    File.WriteAllText(filePath, mutableContent);
                 }
 
                 PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);

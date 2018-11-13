@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitCachePath(string remote)
         {
-            return Path.Combine(AppData.CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
+            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
         private static string UrlToPath(string url)
@@ -48,6 +48,7 @@ namespace Microsoft.Docs.Build
             {
                 url = url.Substring(i);
             }
+
             return HrefUtility.EscapeUrl(url.TrimStart('/', '\\', '.', ':').Trim());
         }
 

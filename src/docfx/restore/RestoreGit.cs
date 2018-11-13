@@ -50,13 +50,13 @@ namespace Microsoft.Docs.Build
 
                 async Task AddWorkTrees()
                 {
-                    var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTreePath(repoPath));
+                    var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
 
                     await ParallelUtility.ForEach(branches, async branch =>
                     {
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
-                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{PathUtility.Encode(branch)}";
+                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{HrefUtility.EscapeUrlSegment(branch)}";
                         var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
 
                         if (existingWorkTreePath.TryAdd(workTreePath))
