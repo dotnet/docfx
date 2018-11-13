@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,6 +12,8 @@ namespace Microsoft.Docs.Build
         public readonly string OS;
 
         public readonly string Repo;
+
+        public readonly bool Watch;
 
         public readonly string[] Environments = Array.Empty<string>();
 
@@ -23,6 +26,8 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, string> Inputs = new Dictionary<string, string>();
 
         public readonly Dictionary<string, string> Outputs = new Dictionary<string, string>();
+
+        public readonly Dictionary<string, JToken> Http = new Dictionary<string, JToken>();
 
         public class E2ECommit
         {
