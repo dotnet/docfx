@@ -166,4 +166,4 @@ inputs:
 outputs:
   docs/a.json:
   build.log: |
-    ["warning","no-moniker-intersection","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0,netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
+    ["warning","no-moniker-intersection","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is ''netcore-1.0', 'netcore-1.1'', while file moniker range '> netcore-2.0' is ''netcore-2.1''","docs/v1/a.md"]
