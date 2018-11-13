@@ -175,9 +175,9 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                Directory.CreateDirectory(AppData.MutexDir);
+                Directory.CreateDirectory(AppData.MutexRoot);
 
-                var lockPath = Path.Combine(AppData.MutexDir, HashUtility.GetMd5Hash(mutexName));
+                var lockPath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(mutexName));
 
                 using (await RetryUntilSucceed(mutexName, IsFileAlreadyExistsException, CreateFile))
                 {

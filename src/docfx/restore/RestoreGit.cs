@@ -12,9 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        public static string GetRestoreRootDir(string url)
-            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
-
         public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
         {
             var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
@@ -53,7 +50,7 @@ namespace Microsoft.Docs.Build
         {
             var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
 
-            return gitDependencies.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+            return gitDependencies.GroupBy(d => AppData.GetGitDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
         }
 
         private static IEnumerable<string> GetLocRestoreItem(string docsetPath, Config config, string locale)
