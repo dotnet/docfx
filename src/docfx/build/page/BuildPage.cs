@@ -20,9 +20,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, schema, model, yamlHeader) = await Load(context, file, callback);
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
-            errors.AddRange(metaErrors);
+            var (errors, schema, model, metadata) = await Load(context, file, callback);
 
             model.PageType = schema.Name;
             model.Locale = file.Docset.Locale;
@@ -70,7 +68,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             Load(
             Context context, Document file, PageCallback callback)
         {
@@ -87,7 +85,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file, callback);
         }
 
-        private static (List<Error> errors, Schema schema, PageModel model, JObject metadata)
+        private static (List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)
             LoadMarkdown(
             Context context, Document file, PageCallback callback)
         {
@@ -95,11 +93,13 @@ namespace Microsoft.Docs.Build
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
-            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            var (yamlHeaderErrors, yamlHeader) = ExtractYamlHeader.Extract(file, context);
+            errors.AddRange(yamlHeaderErrors);
+
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, yamlHeader));
             errors.AddRange(metaErrors);
 
-            var monikerRange = metadata.Value<string>("monikerRange") ?? null;
-            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, monikerRange);
+            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, metadata.MonikerRange);
             errors.AddIfNotNull(error);
 
             // TODO: handle blank page
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
-            var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
+            var title = yamlHeader.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
             var finalHtml = markup.HasHtml ? htmlDom.StripTags().OuterHtml : html;
             var wordCount = HtmlUtility.CountWord(htmlDom);
 
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
             return (errors, Schema.Conceptual, model, metadata);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadYaml(
             Context context, Document file, PageCallback callback)
         {
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, callback);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadJson(
             Context context, Document file, PageCallback callback)
         {
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
             return await LoadSchemaDocument(errors, token, file, callback);
         }
 
-        private static async Task<(List<Error> errors, Schema schema, PageModel model, JObject metadata)>
+        private static async Task<(List<Error> errors, Schema schema, PageModel model, FileMetadata metadata)>
             LoadSchemaDocument(
             List<Error> errors, JToken token, Document file, PageCallback callback)
         {
@@ -175,14 +175,17 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: add check before to avoid case failure
-            var metadata = obj?.Value<JObject>("metadata") ?? new JObject();
-            var title = metadata.Value<string>("title") ?? obj?.Value<string>("title");
+            var fileMetadata = obj?.Value<JObject>("metadata") ?? new JObject();
+            var title = fileMetadata.Value<string>("title") ?? obj?.Value<string>("title");
+            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, fileMetadata));
+            errors.AddRange(metaErrors);
 
             var model = new PageModel
             {
                 Content = content,
                 Title = title,
                 RawTitle = file.Docset.Legacy ? $"<h1>{obj?.Value<string>("title")}</h1>" : null,
+                Monikers = new List<string>(),
             };
 
             return (errors, schema, model, metadata);
