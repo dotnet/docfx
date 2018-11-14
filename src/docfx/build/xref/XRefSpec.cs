@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,6 +10,8 @@ namespace Microsoft.Docs.Build
     public class XrefSpec
     {
         public string Uid { get; set; }
+
+        public HashSet<string> Monikers { get; } = new HashSet<string>();
 
         public string Href { get; set; }
 
