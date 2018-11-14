@@ -301,12 +301,6 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static JToken DeserializeData(string json)
-        {
-            var (_, token) = JToken.Parse(json).RemoveNulls();
-            return token ?? JValue.CreateNull();
-        }
-
         private static (Range, string message, string path) ParseException(Exception ex)
         {
             // TODO: Json.NET type conversion error message is developer friendly but not writer friendly.
