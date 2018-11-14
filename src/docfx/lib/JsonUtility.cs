@@ -164,7 +164,15 @@ namespace Microsoft.Docs.Build
             using (var stringReader = new StringReader(json))
             using (var reader = new JsonTextReader(stringReader))
             {
-                return DefaultSerializer.Deserialize<T>(reader);
+                try
+                {
+                    return DefaultSerializer.Deserialize<T>(reader);
+                }
+                catch (JsonReaderException ex)
+                {
+                    var (range, message, path) = ParseException(ex);
+                    throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+                }
             }
         }
 

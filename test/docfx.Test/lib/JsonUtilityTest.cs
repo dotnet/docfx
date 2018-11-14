@@ -532,18 +532,14 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        [Fact]
-        public void SyntaxErrorShouldBeThrown()
+        [Theory]
+        [InlineData(@"{'b: 1 }")]
+        [InlineData(@"{'b': 'not number'}")]
+        public void SyntaxErrorShouldBeThrown(string json)
         {
-            var json = @"{'b: 1 }";
-            Assert.Throws<JsonReaderException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
-        }
-
-        [Fact]
-        public void TypeMismatchShouldBeThrown()
-        {
-            var json = @"{'b': 'not number'}";
-            Assert.Throws<JsonReaderException> (() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
+            Assert.Equal("json-syntax-error", exception.Error.Code);
+            Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
 
         public class BasicClass
