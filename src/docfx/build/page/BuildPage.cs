@@ -32,7 +32,8 @@ namespace Microsoft.Docs.Build
             model.CanonicalUrl = GetCanonicalUrl(file);
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
-            var monikers = file.Docset.MonikersProvider.GetMonikers(file);
+            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, metadata.MonikerRange);
+            errors.AddIfNotNull(error);
             model.Monikers = monikers;
 
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
