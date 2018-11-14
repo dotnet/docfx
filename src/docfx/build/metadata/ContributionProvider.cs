@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                 var (locRemote, locBranch) = (repo.Remote, repo.Branch);
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    (locRemote, locBranch) = GitUtility.GetGitRemoteInfo(document.Docset.Config.Contribution.Repository);
+                    (locRemote, locBranch) = HrefUtility.SplitGitHref(document.Docset.Config.Contribution.Repository);
                     (locRemote, _) = LocalizationConvention.GetLocalizationRepo(
                         document.Docset.Config.Localization.Mapping,
                         document.Docset.Config.Localization.Bilingual,

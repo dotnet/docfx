@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             string FindLastModifiedGitRepository()
             {
-                var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
+                var (remote, branch) = HrefUtility.SplitGitHref(url);
                 var restoreDir = AppData.GetGitDir(url);
 
                 if (!Directory.Exists(restoreDir))
@@ -45,10 +45,16 @@ namespace Microsoft.Docs.Build
                     throw Errors.NeedRestore(url).ToException();
                 }
 
-                return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                    .Where(f => f.EndsWith(HrefUtility.EscapeUrlSegment(branch)))
-                    .OrderByDescending(f => new DirectoryInfo(f).LastWriteTimeUtc)
-                    .FirstOrDefault();
+                return (
+                    from path in Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                    let name = Path.GetFileName(path)
+                    where name.StartsWith(HrefUtility.EscapeUrlSegment(branch) + "-") &&
+
+                        // Adding the HEAD file is the last step in a worktree checkout, use it to
+                        // filter out worktrees that are still in progress.
+                        File.Exists(Path.Combine(restoreDir, ".git/worktrees", name, "HEAD"))
+                    orderby new DirectoryInfo(path).LastWriteTimeUtc
+                    select path).FirstOrDefault();
             }
         }
 

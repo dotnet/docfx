@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
                     {
                         t_mockedRepos.Value = mockedRepos;
 
-                        var (remote, refspec) = GitUtility.GetGitRemoteInfo(inputRepo);
+                        var (remote, refspec) = HrefUtility.SplitGitHref(inputRepo);
                         await GitUtility.CloneOrUpdate(docsetPath, remote, refspec);
                         Process.Start(new ProcessStartInfo("git", "submodule update --init") { WorkingDirectory = docsetPath }).WaitForExit();
                     }
@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
             var result = new ConcurrentDictionary<string, string>();
             var repos =
                 from pair in spec.Repos
-                let info = GitUtility.GetGitRemoteInfo(pair.Key)
+                let info = HrefUtility.SplitGitHref(pair.Key)
                 group (info.refspec, pair.Value)
                 by info.remote;
 
