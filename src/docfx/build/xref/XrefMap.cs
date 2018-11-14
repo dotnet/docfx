@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             foreach (var url in docset.Config.Xref)
             {
                 var json = File.ReadAllText(docset.RestoreMap.GetFileRestorePath(url));
-                var xRefMap = JsonUtility.DeserializeData<XrefMapModel>(json);
+                var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
                 foreach (var sepc in xRefMap.References)
                 {
                     map[sepc.Uid] = sepc;

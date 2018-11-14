@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Document doc,
             LegacyManifestOutput legacyManifestOutput)
         {
-            var toc = JsonUtility.DeserializeData<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
+            var toc = JsonUtility.Deserialize<LegacyTableOfContentsModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath)));
             ConvertLegacyItems(toc.Items);
 
             toc.Metadata = toc.Metadata ?? new LegacyTableOfContentsMetadata();

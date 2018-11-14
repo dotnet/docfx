@@ -241,11 +241,11 @@ namespace Microsoft.Docs.Build
             JObject config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }

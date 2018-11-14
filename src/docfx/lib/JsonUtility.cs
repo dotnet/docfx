@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        public static (List<Error> errors, T model) Deserialize<T>(string json)
+        public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
         {
             var (errors, token) = Deserialize(json);
             var (mismatchingErrors, result) = ToObject<T>(token);
@@ -159,11 +159,13 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T DeserializeData<T>(string json)
+        public static T Deserialize<T>(string json)
         {
-            var token = DeserializeData(json);
-            var (_, obj) = ToObject(token, typeof(T), null, false);
-            return (T)obj;
+            using (var stringReader = new StringReader(json))
+            using (var reader = new JsonTextReader(stringReader))
+            {
+                return DefaultSerializer.Deserialize<T>(reader);
+            }
         }
 
         /// <summary>
@@ -179,8 +181,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, object) ToObject(
             JToken token,
             Type type,
-            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null,
-            bool userInput = true)
+            Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)
         {
             var errors = new List<Error>();
             try
@@ -198,12 +199,7 @@ namespace Microsoft.Docs.Build
                     NullValueHandling = NullValueHandling.Ignore,
                     ContractResolver = DefaultSerializer.ContractResolver,
                 };
-
-                if (userInput)
-                {
-                    serializer.Error += HandleError;
-                }
-
+                serializer.Error += HandleError;
                 var value = token.ToObject(type, serializer);
                 errors.AddRange(t_status.Peek().SchemaViolationErrors);
                 return (errors, value);

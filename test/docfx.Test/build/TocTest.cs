@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private static readonly Docset s_docset = new Docset(
             new Context(new Report(), "."),
             Directory.GetCurrentDirectory(),
-            JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')).Item2,
+            JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"')),
             new CommandLineOptions());
 
         [Theory]
