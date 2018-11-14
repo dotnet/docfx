@@ -102,14 +102,14 @@ namespace Microsoft.Docs.Build
                     ["contributors"] = pageModel.Contributors != null
                         ? new JArray(pageModel.Contributors.Select(c => c.ToJObject()))
                         : null,
-                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern, docset.Culture),
+                    ["update_at"] = pageModel.UpdatedAt.ToString(docset.Culture.DateTimeFormat.ShortDatePattern),
                     ["updated_at_date_time"] = pageModel.UpdatedAt,
                 };
             }
             if (!string.IsNullOrEmpty(pageModel.Author?.Name))
                 rawMetadata["author"] = pageModel.Author?.Name;
             if (pageModel.UpdatedAt != default)
-                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt", docset.Culture);
+                rawMetadata["updated_at"] = pageModel.UpdatedAt.ToString("yyyy-MM-dd hh:mm tt");
 
             if (pageModel.Bilingual)
             {
