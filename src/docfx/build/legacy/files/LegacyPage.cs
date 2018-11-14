@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             if (legacyManifestOutput.TocOutput != null)
             {
                 var outputPath = legacyManifestOutput.TocOutput.ToLegacyOutputPath(docset);
-                var (_, model) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
+                var model = JsonUtility.DeserializeData<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(outputPath)));
                 context.Delete(doc.OutputPath);
                 context.WriteJson(model.Content, outputPath);
             }
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                     docset.GetAbsoluteOutputPathFromRelativePath(doc.OutputPath),
                     docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath));
 
-                var (_, pageModel) = JsonUtility.Deserialize<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
+                var pageModel = JsonUtility.DeserializeData<PageModel>(File.ReadAllText(docset.GetAbsoluteOutputPathFromRelativePath(rawPageOutputPath)));
 
                 var content = pageModel.Content as string;
                 if (!string.IsNullOrEmpty(content))

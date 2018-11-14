@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
                 var path = docset.RestoreMap.GetFileRestorePath(docset.Config.Contribution.GitCommitsTime);
                 var content = await ProcessUtility.ReadFile(path);
 
-                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
+                foreach (var commit in JsonUtility.DeserializeData<GitCommitsTime>(content).Commits)
                 {
                     _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
                 }

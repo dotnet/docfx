@@ -362,12 +362,12 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestNestedObjectTypeWithNotSealedType()
         {
-            var yaml = @"[{
+            var json = @"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e"",
 ""NestedSealedMember"": {""Unknown"": 1}}]";
-            var (errors, value) = JsonUtility.Deserialize<List<NotSealedClass>>(yaml);
+            var (errors, value) = JsonUtility.Deserialize<List<NotSealedClass>>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
@@ -431,7 +431,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(18, error.Column);
             });
         }
-         
+
         [Fact]
         public void TestMultipleSchemaViolation()
         {
@@ -530,6 +530,20 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
                 Assert.Equal("AnotherItems[1].Items", error.JsonPath);
             });
+        }
+
+        [Fact]
+        public void SyntaxErrorShouldBeThrown()
+        {
+            var json = @"{'b: 1 }";
+            Assert.Throws<JsonReaderException>(() => JsonUtility.DeserializeData<BasicClass>(json.Replace('\'', '\"')));
+        }
+
+        [Fact]
+        public void TypeMismatchShouldBeThrown()
+        {
+            var json = @"{'b': 'not number'}";
+            Assert.Throws<JsonReaderException> (() => JsonUtility.DeserializeData<BasicClass>(json.Replace('\'', '\"')));
         }
 
         public class BasicClass
