@@ -66,6 +66,7 @@ namespace Microsoft.Docs.Build
             Func<string, object, (string, object)> readFile,
             Func<string, object, object, string> getLink,
             Func<string, XrefSpec> resolveXref,
+            Func<string, List<string>> parseMonikerRange,
             MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
@@ -79,6 +80,7 @@ namespace Microsoft.Docs.Build
                         ReadFileDelegate = readFile,
                         GetLinkDelegate = getLink,
                         ResolveXrefDelegate = resolveXref,
+                        ParseMonikerRangeDelegate = parseMonikerRange,
                     };
                     t_status = t_status is null ? ImmutableStack.Create(status) : t_status.Push(status);
 
@@ -106,6 +108,7 @@ namespace Microsoft.Docs.Build
                 .UseExtractTitle()
                 .UseResolveHtmlLinks(markdownContext)
                 .UseResolveXref(ResolveXref)
+                .UseMonikerZone(ParseMonikerRange)
                 .Build();
         }
 
@@ -175,6 +178,8 @@ namespace Microsoft.Docs.Build
 
         private static XrefSpec ResolveXref(string uid) => t_status.Peek().ResolveXrefDelegate(uid);
 
+        private static List<string> ParseMonikerRange(string monikerRange) => t_status.Peek().ParseMonikerRangeDelegate(monikerRange);
+
         private sealed class Status
         {
             public MarkupResult Result { get; set; }
@@ -186,6 +191,8 @@ namespace Microsoft.Docs.Build
             public Func<string, object, object, string> GetLinkDelegate { get; set; }
 
             public Func<string, XrefSpec> ResolveXrefDelegate { get; set; }
+
+            public Func<string, List<string>> ParseMonikerRangeDelegate { get; set; }
         }
     }
 }

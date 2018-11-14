@@ -51,12 +51,34 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Count == 0)
                 {
-                    error = Errors.NoMonikersIntersection(configMonikerRange, configMonikers, fileMonikerRange, fileMonikers);
+                    error = Errors.NoMonikersIntersection($"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is '{string.Join(',', configMonikers)}', while file moniker range '{fileMonikerRange}' is '{string.Join(',', fileMonikers)}'");
                 }
                 return (error, intersection);
             }
 
             return (error, configMonikers);
+        }
+
+        public List<string> GetMonikers(Document file, string rangeString, List<string> fileLevelMonikers, List<Error> errors)
+        {
+            var monikers = new List<string>();
+
+            // Moniker range not defined in docfx.yml/docfx.json,
+            // User should not define it in moniker zone
+            if (fileLevelMonikers.Count == 0)
+            {
+                errors.Add(Errors.MonikerConfigMissing());
+                return new List<string>();
+            }
+
+            var zoneLevelMonikers = file.Docset.MonikerRangeParser.Parse(rangeString);
+            monikers = fileLevelMonikers.Intersect(zoneLevelMonikers).ToList();
+
+            if (monikers.Count == 0)
+            {
+                errors.Add(Errors.NoMonikersIntersection($"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is '{string.Join(',', zoneLevelMonikers)}', while file level monikers is '{string.Join(',', fileLevelMonikers)}'."));
+            }
+            return monikers;
         }
     }
 }

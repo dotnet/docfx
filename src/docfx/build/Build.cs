@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
             }
 
             var outputPath = file.SitePath;
-            if (monikers.Count != 0)
+            if (monikers != null && monikers.Count != 0)
             {
                 var monikerSeg = HashUtility.GetMd5HashShort(string.Join(',', monikers));
                 outputPath = PathUtility.NormalizeFile(Path.Combine(monikerSeg, file.SitePath));

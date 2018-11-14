@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (monikers.Count == 0)
+            if (monikers == null || monikers.Count == 0)
             {
                 monikers = new List<string> { "NONE_VERSION" };
             }

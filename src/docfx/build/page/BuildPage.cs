@@ -32,10 +32,6 @@ namespace Microsoft.Docs.Build
             model.CanonicalUrl = GetCanonicalUrl(file);
             model.Bilingual = file.Docset.Config.Localization.Bilingual;
 
-            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, metadata.MonikerRange);
-            errors.AddIfNotNull(error);
-            model.Monikers = monikers;
-
             (model.DocumentId, model.DocumentVersionIndependentId) = file.Docset.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (model.ContentGitUrl, model.OriginalContentGitUrl, model.Gitcommit) = contribution.GetGitUrls(file);
 
@@ -52,7 +48,7 @@ namespace Microsoft.Docs.Build
                     : await RazorTemplate.Render(model.PageType, model);
             }
 
-            return (errors, output, callback.DependencyMapBuilder.Build(), monikers);
+            return (errors, output, callback.DependencyMapBuilder.Build(), model.Monikers);
         }
 
         private static string GetCanonicalUrl(Document file)
@@ -98,16 +94,25 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
+
+            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
+            errors.AddRange(metaErrors);
+
+            var monikerRange = metadata.Value<string>("monikerRange") ?? null;
+            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, monikerRange);
+            errors.AddIfNotNull(error);
+
+            // TODO: handle blank page
             var (html, markup) = Markup.ToHtml(
                 content,
                 file,
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
                 (uid) => Resolve.ResolveXref(uid, callback.XrefMap),
+                (rangeString) => file.Docset.MonikersProvider.GetMonikers(file, rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
-            var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);
-            errors.AddRange(metaErrors);
+
             var htmlDom = HtmlUtility.LoadHtml(html);
             var htmlTitleDom = HtmlUtility.LoadHtml(markup.HtmlTitle);
             var title = metadata.Value<string>("title") ?? HtmlUtility.GetInnerText(htmlTitleDom);
@@ -120,6 +125,7 @@ namespace Microsoft.Docs.Build
                 Title = title,
                 RawTitle = markup.HtmlTitle,
                 WordCount = wordCount,
+                Monikers = monikers,
             };
 
             var bookmarks = HtmlUtility.GetBookmarks(htmlDom).Concat(HtmlUtility.GetBookmarks(htmlTitleDom)).ToHashSet();
