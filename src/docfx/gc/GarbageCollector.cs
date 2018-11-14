@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Cleaning downloaded files"))
             {
-                 var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories);
+                var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories);
 
                 ParallelUtility.ForEach(
                     downloadedFiles,
