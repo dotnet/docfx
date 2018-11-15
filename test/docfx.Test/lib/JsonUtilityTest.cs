@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             var sw = new StringWriter();
             JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
-            var (errors, value) = JsonUtility.Deserialize<BasicClass>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<BasicClass>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(0, value.B);
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Serialize(sw, new object[] { true, false });
             var json = sw.ToString();
             Assert.Equal("[true,false]", json);
-            var (errors, value) = JsonUtility.Deserialize<object[]>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<object[]>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(2, value.Length);
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             var json = JsonUtility.Serialize(
                 (from i in Enumerable.Range(0, 10)
                  select new BasicClass { B = i, C = $"Good{i}!", D = (i % 2 == 0) ? true : false }).ToList());
-            var (errors, values) = JsonUtility.Deserialize<List<BasicClass>>(json);
+            var (errors, values) = JsonUtility.DeserializeWithSchemaValidation<List<BasicClass>>(json);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
 {
     ""b"": ""test""
 }";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithReadOnlyField>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithReadOnlyField>(json);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
   ""d"": true
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -211,8 +211,8 @@ namespace Microsoft.Docs.Build
             "{\"key1\":\"value1\",\"key2\":\"value2\"}")]
         public void TestMerge(string target, string source, string result)
         {
-            var (_, targetJson) = JsonUtility.Deserialize<JObject>(target);
-            var (_, sourceJson) = JsonUtility.Deserialize<JObject>(source);
+            var targetJson = JsonUtility.Deserialize<JObject>(target);
+            var sourceJson = JsonUtility.Deserialize<JObject>(source);
             var resultJson = JsonUtility.Merge(targetJson, sourceJson);
             var resultJsonString = JsonUtility.Serialize(resultJson);
             Assert.Equal(result, resultJsonString);
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
         [InlineData("[1,,1,1]", "'[1]' contains null value", "[1]")]
         public void TestListWithNullItem(string json, string message, string jsonPath)
         {
-            var (errors, result) = JsonUtility.Deserialize<JToken>(json.Replace('\'', '"'));
+            var (errors, result) = JsonUtility.DeserializeWithSchemaValidation<JToken>(json.Replace('\'', '"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Info, error.Level);
@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
             var json = @"{""mismatchField1"": ""name"",
 ""mismatchField2"": ""name"",
 ""ValueRequired"": ""a""}";
-            var (errors, result) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, result) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -322,7 +322,7 @@ namespace Microsoft.Docs.Build
         internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn, string expectedPath)
         {
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json.Replace('\'', '\"'));
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json.Replace('\'', '\"'));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -362,12 +362,12 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestNestedObjectTypeWithNotSealedType()
         {
-            var yaml = @"[{
+            var json = @"[{
 ""B"": 1,
 ""C"": ""c"",
 ""E"": ""e"",
 ""NestedSealedMember"": {""Unknown"": 1}}]";
-            var (errors, value) = JsonUtility.Deserialize<List<NotSealedClass>>(yaml);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<List<NotSealedClass>>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Warning, error.Level);
@@ -388,7 +388,7 @@ namespace Microsoft.Docs.Build
         internal void TestSchemaViolation(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
             int expectedErrorLine, int expectedErrorColumn, string expectedPath)
         {
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -407,7 +407,7 @@ namespace Microsoft.Docs.Build
 ""B"" : ""b"",
 ""ValueEnum"":""Four"",
 ""ValueRequired"": ""a""}";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -431,7 +431,7 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(18, error.Column);
             });
         }
-         
+
         [Fact]
         public void TestMultipleSchemaViolation()
         {
@@ -441,7 +441,7 @@ namespace Microsoft.Docs.Build
 ""listValueWithLengthRestriction"":[],
 ""nestedMember"": {""valueWithLengthRestriction"":""abcd""},
 ""Items"": ""notArray""}";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -504,7 +504,7 @@ namespace Microsoft.Docs.Build
 ],
 ""ValueRequired"": ""a""
 }";
-            var (errors, value) = JsonUtility.Deserialize<ClassWithMoreMembers>(json);
+            var (errors, value) = JsonUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(json);
             Assert.Collection(errors,
             error =>
             {
@@ -530,6 +530,16 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("The field Items must be a string or array type with a minimum length of '1'.", error.Message);
                 Assert.Equal("AnotherItems[1].Items", error.JsonPath);
             });
+        }
+
+        [Theory]
+        [InlineData(@"{'b: 1 }")]
+        [InlineData(@"{'b': 'not number'}")]
+        public void SyntaxErrorShouldBeThrown(string json)
+        {
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
+            Assert.Equal("json-syntax-error", exception.Error.Code);
+            Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
 
         public class BasicClass
