@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(Config.MonikerDefinitionUrl))
             {
                 var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinitionUrl);
-                (_, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             return new MonikerRangeParser(monikerDefinition);
         }

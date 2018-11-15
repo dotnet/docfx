@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName) + "-" + yamlHash;
 
-            var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
+            var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
             var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (skip)
