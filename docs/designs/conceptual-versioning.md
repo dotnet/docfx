@@ -63,7 +63,7 @@ This document specifies Docfx vnext versioning dev design.
             "articles/folder1/": "articles/"
             "articles/folder2/": "articles/"
             "articles/folder3/": "articles/"
-        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        monikerDefinition: "https://api.docs.com/monikers/"
         ```
 
         If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder3/b.md)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-1.0`, which is the output of file `folder2/b.md`.
@@ -95,7 +95,7 @@ This document specifies Docfx vnext versioning dev design.
             "articles/folder1/": "articles/"
             "articles/folder2/": "articles/"
             "articles/folder3/": "articles/"
-        monikerDefinitionUrl: "https://api.docs.com/monikers/"
+        monikerDefinition: "https://api.docs.com/monikers/"
         ```
 
         If content writer want to reference `folder3/b.md` in `folder1/a.md` by link `'[B](../folder2/b.md?view=netcore-2.0)'`, when the reader click the link [B]() on page `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, they will jump to page `{host}/{docset-base-path}/articles/b?view=netcore-2.0`, which is the output of file `folder3/b.md`.
@@ -141,7 +141,7 @@ monikerRange:
 routing:
     "articles/v1.0/": "articles/"
     "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
+monikerDefinition: "https://api.docs.com/monikers/"
 ```
 
 ##### Explanation
@@ -179,7 +179,7 @@ monikerDefinitionUrl: "https://api.docs.com/monikers/"
 
     If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files' *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
 
-4. `monikerDefinitionUrl` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
+4. `monikerDefinition` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
 
     A better user experience sample when using the new config:
 
@@ -193,7 +193,7 @@ monikerDefinitionUrl: "https://api.docs.com/monikers/"
 
 ##### 2.2.1 YAML header
 
-For conceptual markdown file, file level monikerRange setting is supported by using YAML header.
+For conceptual markdown file, file level monikerRange setting is supported, user can set the file level monikerRange in `GlobalMetadata` and `FileMetadata` in config or YAML header.
 
 ```markdown
 ---
@@ -202,7 +202,7 @@ monikerRange: >=netcore-1.0
 ```
 
 > [!NOTE]
-> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from `YAML header`, if the intersection is empty, a warning will be logged.
+> The final file level moniker range is the intersection of moniker range from `config file` and moniker range from fileMetadata, if the intersection is empty, a warning will be logged.
 
 > [!NOTE]
 > The `config file` level moniker range should be defined to enable versioning. If moniker range is not defined in `config file`, but `Yaml header` moniker range is defined, a warning will be logged.
@@ -230,7 +230,10 @@ content just in `>netcore-1.0`
 ```
 
 > [!NOTE]
-> The final zone moniker range is the intersection of moniker range of this file and moniker range of this zone. If the intersection is empty, an error throws.
+> The final zone moniker range is the intersection of file level moniker range and moniker range of this zone. If the intersection is empty, a warning will be logged.
+
+> [!NOTE]
+> The `config file` level moniker range should be defined to enable versioning. If moniker range is not defined in `config file`, but moniker zone syntax has been used, a warning will be logged.
 
 ##### 2.2.3 Link/Xref
 
@@ -251,7 +254,7 @@ There are several scenarios:
 
 In **Restore** step, moniker definition file will be restored to local storage, which will be used to evaluate monikerRange expression.
 
-An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinitionUrl`, the file structure should be:
+An **ordered** moniker list is provided by moniker definition file restored from `monikerDefinition`, the file structure should be:
 
 ```json
 {
@@ -433,7 +436,7 @@ monikerRange:
 routing:
     "articles/v1.0/": "articles/"
     "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
+monikerDefinition: "https://api.docs.com/monikers/"
 redirections:
     articles/v1.0/old/a: /articles/a
     articles/v2.0/old/a: /articles/a
@@ -452,7 +455,7 @@ monikerRange:
 routing:
     "articles/v1.0/": "articles/"
     "articles/v2.0/": "articles/"
-monikerDefinitionUrl: "https://api.docs.com/monikers/"
+monikerDefinition: "https://api.docs.com/monikers/"
 redirections:
     articles/v1.0/old/a: /articles/a?view=netcore-1.0
     articles/v2.0/old/a: /articles/a?view=netcore-2.0

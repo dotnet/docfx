@@ -4,7 +4,8 @@
 using System;
 using System.Collections.Generic;
 using Markdig;
-using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,13 +13,17 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseMonikerZone(this MarkdownPipelineBuilder builder, Func<string, List<string>> parseMonikerRange)
         {
-            return builder.Use((pipeline, renderer) =>
+            return builder.Use(document =>
             {
-                var htmlRenderer = renderer as HtmlRenderer;
-                if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<MonikerRangeRender>())
+                document.Replace(node =>
                 {
-                    htmlRenderer.ObjectRenderers.Insert(0, new MonikerRangeRender(parseMonikerRange));
-                }
+                    if (node is MonikerRangeBlock monikerRangeBlock)
+                    {
+                        monikerRangeBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("range", monikerRangeBlock.MonikerRange));
+                        monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(" ", parseMonikerRange(monikerRangeBlock.MonikerRange)));
+                    }
+                    return node;
+                });
             });
         }
     }

@@ -8,7 +8,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
@@ -50,7 +50,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-1.0'
@@ -96,7 +96,7 @@ inputs:
       'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.2'
     routes:
       docs/v1/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1, netcore-1.2
     ::: moniker range="<= netcore-1.1"
@@ -126,7 +126,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1, netcore-2.0
   docs/v2/a.md: |
@@ -149,7 +149,7 @@ outputs:
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
   docfx.yml: |
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-1.0'
@@ -172,7 +172,7 @@ outputs:
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:
   docfx.yml: |
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ::: moniker range="netcore-1.0"
     Moniker: netcore-1.0
@@ -195,7 +195,7 @@ inputs:
       'docs/v1/**/*.md': '< netcore-2.0'
     routes:
       docs/v1/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-2.0'
@@ -222,7 +222,7 @@ inputs:
       'docs/v1/**/*.md': '<= netcore-1.1'
     routes:
       docs/v1/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
     ::: moniker range="netcore-1.2"

@@ -107,26 +107,20 @@ namespace Microsoft.Docs.Build
             return builder;
         }
 
-        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, Action<MarkdownPipeline, IMarkdownRenderer> setupRenderer)
-        {
-            builder.Extensions.Add(new DelegatingExtension(null, setupRenderer));
-            return builder;
-        }
-
         private class DelegatingExtension : IMarkdownExtension
         {
             private readonly Action<MarkdownPipelineBuilder> _setupPipeline;
-            private readonly Action<MarkdownPipeline, IMarkdownRenderer> _setupRenderer;
 
-            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline, Action<MarkdownPipeline, IMarkdownRenderer> setupRenderer = null)
+            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline)
             {
                 _setupPipeline = setupPipeline;
-                _setupRenderer = setupRenderer;
             }
 
             public void Setup(MarkdownPipelineBuilder pipeline) => _setupPipeline?.Invoke(pipeline);
 
-            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer) => _setupRenderer?.Invoke(pipeline, renderer);
+            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+            {
+            }
         }
     }
 }

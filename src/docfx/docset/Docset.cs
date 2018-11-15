@@ -239,9 +239,9 @@ namespace Microsoft.Docs.Build
         private MonikerRangeParser CreateMonikerRangeParser()
         {
             var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(Config.MonikerDefinitionUrl))
+            if (!string.IsNullOrEmpty(Config.MonikerDefinition))
             {
-                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinitionUrl);
+                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinition);
                 (_, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             return new MonikerRangeParser(monikerDefinition);
