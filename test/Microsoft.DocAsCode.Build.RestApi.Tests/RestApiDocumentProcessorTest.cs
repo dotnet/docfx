@@ -183,16 +183,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefNotExist.json" }, "TestData/");
-            try
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidInputFile);
+            Logger.RegisterListener(listener);
+
+            using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
             {
                 BuildDocument(files);
             }
-            catch (DocfxException ex)
-            {
-                Assert.True(ex.Message.Contains("External swagger path not exist"));
-                return;
-            }
-            Assert.True(false, $"Should throws {nameof(DocfxException)}.");
+
+            Assert.NotNull(listener.Items);
+            Assert.Single(listener.Items);
+            Assert.Contains("External swagger path not exist", listener.Items[0].Message);
         }
 
         [Fact]
@@ -200,16 +201,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefWithRefInside.json" }, "TestData/");
-            try
+            var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter(WarningCodes.Build.InvalidInputFile);
+            Logger.RegisterListener(listener);
+
+            using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
             {
                 BuildDocument(files);
             }
-            catch (DocfxException ex)
-            {
-                Assert.Equal(ex.Message, "$ref in refWithRefInside.json is not supported in external reference currently.");
-                return;
-            }
-            Assert.True(false, $"Should throws {nameof(DocfxException)}.");
+
+            Assert.NotNull(listener.Items);
+            Assert.Single(listener.Items);
+            Assert.Contains("$ref in refWithRefInside.json is not supported in external reference currently.", listener.Items[0].Message);
         }
 
         [Fact]
@@ -452,7 +454,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void SystemKeysListShouldBeComplete()
         {
-            var userKeys = new[] { "meta", "swagger", "securityDefinitions", "schemes"};
+            var userKeys = new[] { "meta", "swagger", "securityDefinitions", "schemes" };
             FileCollection files = new FileCollection(_defaultFiles);
             BuildDocument(files);
 

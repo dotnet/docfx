@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
 
     using Newtonsoft.Json;
@@ -14,10 +15,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The information for steps.
         /// </summary>
         public List<ProcessorStepInfo> Steps { get; } = new List<ProcessorStepInfo>();
+
         /// <summary>
         /// The file link for the BuildModel manifest file(type is <see cref="ModelManifest"/>).
         /// </summary>
         public string IntermediateModelManifestFile { get; set; }
+
+        /// <summary>
+        /// Get the list of invalid source files that fail to load.
+        /// </summary>
+        public ImmutableList<string> InvalidSourceFiles { get; set; } = ImmutableList.Create<string>();
+
         /// <summary>
         /// Deserialized build intermediate model manifest.
         /// </summary>

@@ -11,8 +11,22 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal interface IHostServiceCreator
     {
         bool ShouldProcessorTraceInfo(IDocumentProcessor processor);
+
         bool CanProcessorIncremental(IDocumentProcessor processor);
-        FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file);
+
+        /// <summary>
+        /// Load file into model
+        /// </summary>
+        /// <returns>
+        /// model: the file Model, returns null if no need to load in incremental build or loading file failed
+        /// valid: whether loading file succeeds
+        /// </returns>
+        (FileModel model, bool valid) Load(
+            IDocumentProcessor processor,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
+            FileAndType file);
+
         HostService CreateHostService(
             DocumentBuildParameters parameters,
             TemplateProcessor templateProcessor,

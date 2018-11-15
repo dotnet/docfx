@@ -457,6 +457,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Logger.LogVerbose(message);
                 return false;
             }
+            if (lpi.InvalidSourceFiles.Count > 0)
+            {
+                string message = $"Processor {processor.Name} disable incremental build because last build contains invalid input files";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
+                return false;
+            }
             if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
             {
                 string message = $"Processor {processor.Name} disable incremental build because incremental context hash changed.";

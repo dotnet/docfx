@@ -39,6 +39,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }
 
+        public ImmutableList<string> InvalidSourceFiles { get; set; }
+
         public ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; set; }
 
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();

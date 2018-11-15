@@ -181,8 +181,13 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
-            var ex = Assert.Throws<ArgumentException>(() => BuildDocument(files));
-            Assert.Equal("Uid must not be null or empty", ex.Message);
+            using (var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest)))
+            {
+                BuildDocument(files);
+                Assert.NotNull(listener.Items);
+                Assert.Single(listener.Items);
+                Assert.Contains("Uid must not be null or empty", listener.Items[0].Message);
+            }
         }
 
         private void BuildDocument(FileCollection files)

@@ -41,9 +41,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             IDocumentProcessor processor,
             IEnumerable<FileAndType> files)
         {
+            var (models, invalidFiles) = LoadModels(files, parameters, processor);
             var hostService = new HostService(
                 parameters.Files.DefaultBaseDir,
-                LoadModels(files, parameters, processor),
+                models,
                 parameters.VersionName,
                 parameters.VersionDir,
                 parameters.LruSize,
@@ -56,11 +57,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Validators = metadataValidator?.ToImmutableList(),
                 ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
                 CanIncrementalBuild = CanProcessorIncremental(processor),
+                InvalidSourceFiles = invalidFiles.ToImmutableList(),
             };
             return hostService;
         }
 
-        public virtual FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file)
+        public virtual (FileModel model, bool valid) Load(
+            IDocumentProcessor processor,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
+            FileAndType file)
         {
             using (new LoggerFileScope(file.File))
             {
@@ -70,36 +76,41 @@ namespace Microsoft.DocAsCode.Build.Engine
                 metadata = ApplyFileMetadata(path, metadata, fileMetadata);
                 try
                 {
-                    return processor.Load(file, metadata);
+                    return (processor.Load(file, metadata), true);
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(
+                    Logger.LogWarning(
                         $"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}",
-                        code: ErrorCodes.Build.InvalidInputFile);
-                    throw;
+                        code: WarningCodes.Build.InvalidInputFile);
+                    return (null, false);
                 }
             }
         }
 
-        private IEnumerable<FileModel> LoadModels(IEnumerable<FileAndType> files, DocumentBuildParameters parameters, IDocumentProcessor processor)
+        private (IEnumerable<FileModel> models, IEnumerable<string> invalidFiles) LoadModels(IEnumerable<FileAndType> files, DocumentBuildParameters parameters, IDocumentProcessor processor)
         {
-            var models = new ConcurrentBag<FileModel>();
             if (files == null)
             {
-                return models;
+                return (Enumerable.Empty<FileModel>(), Enumerable.Empty<string>());
             }
 
+            var models = new ConcurrentBag<FileModel>();
+            var invalidFiles = new ConcurrentBag<string>();
             files.RunAll(file =>
             {
-                var model = Load(processor, parameters.Metadata, parameters.FileMetadata, file);
+                var (model, valid) = Load(processor, parameters.Metadata, parameters.FileMetadata, file);
                 if (model != null)
                 {
                     models.Add(model);
                 }
+                if (!valid)
+                {
+                    invalidFiles.Add(file.File);
+                }
             }, _context.MaxParallelism);
 
-            return models;
+            return (models, invalidFiles);
         }
 
         private static ImmutableDictionary<string, object> ApplyFileMetadata(
