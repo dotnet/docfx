@@ -40,13 +40,10 @@ namespace Microsoft.Docs.Build
                         {
                             var resourceOutput = new LegacyManifestOutputItem
                             {
+                                RelativePath = legacyOutputPathRelativeToBaseSitePath,
                                 IsRawPage = false,
                             };
-                            if (docset.Config.Output.CopyResources)
-                            {
-                                resourceOutput.RelativePath = legacyOutputPathRelativeToBaseSitePath;
-                            }
-                            else
+                            if (!docset.Config.Output.CopyResources)
                             {
                                 resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath));
                             }
