@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 file,
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
-                (uid) => Resolve.ResolveXref(uid, callback.XrefMap),
+                (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, moniker),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
             var (metaErrors, metadata) = ExtractYamlHeader.Extract(file, context);

@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
-        public HashSet<string> Monikers { get; } = new HashSet<string>();
+        public SortedSet<string> Monikers { get; } = new SortedSet<string>();
 
         public string Href { get; set; }
 

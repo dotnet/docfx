@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             Document file,
             Func<string, object, (string, object)> readFile,
             Func<string, object, object, string> getLink,
-            Func<string, XrefSpec> resolveXref,
+            Func<string, string, XrefSpec> resolveXref,
             MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetLink(string path, object relativeTo, object resultRelativeTo) => t_status.Peek().GetLinkDelegate(path, relativeTo, resultRelativeTo);
 
-        private static XrefSpec ResolveXref(string uid) => t_status.Peek().ResolveXrefDelegate(uid);
+        private static XrefSpec ResolveXref(string uid, string moniker) => t_status.Peek().ResolveXrefDelegate(uid, moniker);
 
         private sealed class Status
         {
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
 
             public Func<string, object, object, string> GetLinkDelegate { get; set; }
 
-            public Func<string, XrefSpec> ResolveXrefDelegate { get; set; }
+            public Func<string, string, XrefSpec> ResolveXrefDelegate { get; set; }
         }
     }
 }

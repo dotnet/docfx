@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
@@ -145,6 +146,17 @@ namespace Microsoft.Docs.Build
         {
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
             return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+        }
+
+        public static Error MonikerOverlapping(IEnumerable<SortedSet<string>> items)
+        {
+            var display = items.Count() > 5 ? "(only displaying 5 if more)" : "";
+            var message = new StringBuilder($"Two or more documents have defined overlapping moniker range{display}");
+            foreach (var monikers in items.Take(5))
+            {
+                message.Append($" ({Join(monikers)})");
+            }
+            return new Error(ErrorLevel.Error, "moniker-overlapping", message.ToString());
         }
 
         public static Error MonikerNameConflict(string monikerName)
