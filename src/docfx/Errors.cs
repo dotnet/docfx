@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
         public static Error DownloadFailed(string url, string message)
             => new Error(ErrorLevel.Error, "download-failed", $"Download '{url}' failed: {message}");
 
-        public static Error GitCloneFailed(string url, IEnumerable<string> branches)
-            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' ({Join(branches)}) failed.");
+        public static Error GitCloneFailed(string url)
+            => new Error(ErrorLevel.Error, "git-clone-failed", $"Cloning git repository '{url}' failed.");
 
         public static Error YamlHeaderNotObject(bool isArray)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}");
@@ -156,8 +156,8 @@ namespace Microsoft.Docs.Build
         public static Error MonikerConfigMissing()
             => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.");
 
-        public static Error NoMonikersIntersection(string message)
-            => new Error(ErrorLevel.Warning, "no-moniker-intersection", message);
+        public static Error EmptyMonikers(string message)
+            => new Error(ErrorLevel.Warning, "empty-monikers", message);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
