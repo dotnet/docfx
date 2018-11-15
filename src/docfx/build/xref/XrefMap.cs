@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             {
                 var json = File.ReadAllText(docset.RestoreMap.GetFileRestorePath(url));
                 var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
-                foreach (var sepc in xRefMap.References)
+                foreach (var spec in xRefMap.References)
                 {
                     map[spec.Uid] = spec;
                 }
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title;
 
-            var (error, monikers) = file.Docset.MonikersProvider.GetMonikers(file, metadata.MonikerRange);
+            var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
             foreach (var moniker in monikers)
             {
                 xref.Monikers.Add(moniker);

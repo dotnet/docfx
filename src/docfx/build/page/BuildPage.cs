@@ -108,9 +108,8 @@ namespace Microsoft.Docs.Build
                 file,
                 (path, relativeTo) => Resolve.ReadFile(path, relativeTo, errors, callback.DependencyMapBuilder),
                 (path, relativeTo, resultRelativeTo) => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback.BuildChild, callback.DependencyMapBuilder, callback.BookmarkValidator),
-                (uid) => Resolve.ResolveXref(uid, callback.XrefMap),
-                (rangeString) => file.Docset.MonikersProvider.GetZoneMonikers(file, rangeString, monikers, errors),
                 (uid, moniker) => Resolve.ResolveXref(uid, callback.XrefMap, moniker),
+                (rangeString) => file.Docset.MonikersProvider.GetZoneMonikers(file, rangeString, monikers, errors),
                 MarkdownPipelineType.ConceptualMarkdown);
             errors.AddRange(markup.Errors);
 
