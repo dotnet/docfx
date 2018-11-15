@@ -8,7 +8,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
@@ -50,7 +50,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-1.0'
@@ -89,6 +89,34 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
 ---
+# Moniker Zone syntax
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1, netcore-1.2
+    ::: moniker range="<= netcore-1.1"
+    Moniker: netcore-1.0, netcore-1.1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  2420f88b/docs/a.json: |
+    {
+      "content": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p><div data-moniker=\"netcore-1.0 netcore-1.1\"><p>Moniker: netcore-1.0, netcore-1.1</p></div>",
+      "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]
+    }
+---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
   docfx.yml: |
@@ -98,7 +126,7 @@ inputs:
     routes:
       docs/v1/: docs/
       docs/v2/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1, netcore-2.0
   docs/v2/a.md: |
@@ -121,7 +149,7 @@ outputs:
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
   docfx.yml: |
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-1.0'
@@ -139,7 +167,26 @@ inputs:
 outputs:
   docs/v1/a.json:
   build.log: |
-    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata.","docs/v1/a.md"]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
+---
+# With moniker range not defined in config, user should not define it in moniker zone
+inputs:
+  docfx.yml: |
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ::: moniker range="netcore-1.0"
+    Moniker: netcore-1.0
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" }
+      ]
+    }
+outputs:
+  docs/v1/a.json:
+  build.log: |
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
 ---
 # No intersection of config monikers and file monikers
 inputs:
@@ -148,7 +195,7 @@ inputs:
       'docs/v1/**/*.md': '< netcore-2.0'
     routes:
       docs/v1/: docs/
-    monikerDefinitionUrl: monikerDefinition.json
+    monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
     ---
     monikerRange: '> netcore-2.0'
@@ -327,3 +374,30 @@ outputs:
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker range ('netcore-2.0', 'netcore-2.1') ('netcore-1.1', 'netcore-2.0')"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
+    ["warning","empty-monikers","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0,netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
+---
+# No intersection of file level monikers and zone monikers
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '<= netcore-1.1'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+    ::: moniker range="netcore-1.2"
+    Moniker: netcore-1.2
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json:
+  build.log: |
+    ["warning","empty-monikers","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0,netcore-1.1'.","docs/v1/a.md"]

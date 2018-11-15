@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
-            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config, MonikerRangeParser));
+            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
@@ -239,10 +239,10 @@ namespace Microsoft.Docs.Build
         private MonikerRangeParser CreateMonikerRangeParser()
         {
             var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(Config.MonikerDefinitionUrl))
+            if (!string.IsNullOrEmpty(Config.MonikerDefinition))
             {
-                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinitionUrl);
-                (_, monikerDefinition) = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
+                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             return new MonikerRangeParser(monikerDefinition);
         }

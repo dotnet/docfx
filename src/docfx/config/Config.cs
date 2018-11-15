@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly string MonikerDefinitionUrl = string.Empty;
+        public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
         /// Gets the config file name.
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
 
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
-            yield return MonikerDefinitionUrl;
+            yield return MonikerDefinition;
         }
 
         /// <summary>
@@ -241,11 +241,11 @@ namespace Microsoft.Docs.Build
             JObject config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }

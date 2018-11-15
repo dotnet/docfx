@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             if (File.Exists(_cachePath))
             {
                 var content = await ProcessUtility.ReadFile(_cachePath);
-                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Item2?.Users;
+                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
                 if (users != null)
                 {
                     lock (_lock)
