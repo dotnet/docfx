@@ -9,13 +9,13 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikersProvider
     {
-        private readonly List<(Func<string, bool> glob, (string monikerRange, List<string> monikers))> _rules = new List<(Func<string, bool>, (string, List<string>))>();
+        private readonly List<(Func<string, bool> glob, string monikerRange)> _rules = new List<(Func<string, bool>, string)>();
 
-        public MonikersProvider(Config config, MonikerRangeParser monikerRangeParser)
+        public MonikersProvider(Config config)
         {
             foreach (var (key, monikerRange) in config.MonikerRange)
             {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, monikerRangeParser.Parse(monikerRange))));
+                _rules.Add((GlobUtility.CreateGlobMatcher(key), monikerRange));
             }
             _rules.Reverse();
         }
@@ -25,12 +25,12 @@ namespace Microsoft.Docs.Build
             Error error = null;
             string configMonikerRange = null;
             var configMonikers = new List<string>();
-            foreach (var (glob, (monikerRange, monikers)) in _rules)
+            foreach (var (glob, monikerRange) in _rules)
             {
                 if (glob(file.FilePath))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers = monikers;
+                    configMonikers = file.Docset.MonikerRangeParser.Parse(monikerRange);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var fileMonikers = file.Docset.MonikerRangeParser.Parse(fileMonikerRange);
-                var intersection = configMonikers.Intersect(fileMonikers).ToList();
+                var intersection = configMonikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
                 // With non-empty config monikers,
                 // warn if no intersection of config monikers and file monikers
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             }
 
             var zoneLevelMonikers = file.Docset.MonikerRangeParser.Parse(rangeString);
-            monikers = fileLevelMonikers.Intersect(zoneLevelMonikers).ToList();
+            monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
 
             if (monikers.Count == 0)
             {

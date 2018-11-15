@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             _metadata = new Lazy<MetadataProvider>(() => new MetadataProvider(config));
             _legacyTemplate = new Lazy<LegacyTemplate>(() => new LegacyTemplate(RestoreMap.GetGitRestorePath(Config.Dependencies["_themes"]), Locale));
             _monikerRangeParser = new Lazy<MonikerRangeParser>(() => CreateMonikerRangeParser());
-            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config, MonikerRangeParser));
+            _monikersProvider = new Lazy<MonikersProvider>(() => new MonikersProvider(Config));
         }
 
         private CultureInfo CreateCultureInfo(string locale)
