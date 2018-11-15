@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitCachePath(string remote)
         {
-            return Path.Combine(AppData.CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
+            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
         private static string UrlToPath(string url)
@@ -68,7 +68,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static string GetAppDataRoot()
         {
-            // TODO: document this environment variable
             var docfxAppData = Environment.GetEnvironmentVariable("DOCFX_APPDATA_PATH");
 
             return string.IsNullOrEmpty(docfxAppData)
