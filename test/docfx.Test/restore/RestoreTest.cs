@@ -52,7 +52,7 @@ dependencies:
             var workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(6, workTreeList.Count);
 
-            foreach(var wirkTreeFolder in workTreeList.Where(w => w.Contains("clean")))
+            foreach(var wirkTreeFolder in workTreeList.Where(w => w.Contains("-clean-")))
             {
                 Directory.SetLastWriteTimeUtc(wirkTreeFolder, DateTime.UtcNow - TimeSpan.FromDays(20));
             }
