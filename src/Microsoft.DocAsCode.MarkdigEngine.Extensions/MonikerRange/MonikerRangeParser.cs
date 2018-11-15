@@ -92,8 +92,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Span = new SourceSpan(sourcePosition, slice.End),
             };
 
-            var htmlAttributes = monikerRange.GetAttributes();
-            htmlAttributes.AddPropertyIfNotExist("range", monikerRange.MonikerRange);
+            monikerRange.GetAttributes().AddPropertyIfNotExist("range", monikerRange.MonikerRange);
 
             processor.NewBlocks.Push(monikerRange);
 
