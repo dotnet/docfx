@@ -239,7 +239,7 @@
         "type": "string"
       }
     },
-    "monikerDefinitionUrl": {
+    "monikerDefinition": {
       "type": "string"
     }
   }

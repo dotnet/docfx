@@ -12,51 +12,74 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        public static string GetRestoreRootDir(string url)
-            => Docs.Build.Restore.GetRestoreRootDir(url, AppData.GitRestoreDir);
-
-        public static async Task<IEnumerable<(string href, string workTreeHead)>> Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
+        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
         {
-            var workTreeMappings = new ConcurrentBag<(string href, string workTreeHead)>();
+            var gitDependencies =
+                from git in GetGitDependencies(docsetPath, config, locale)
+                group git.branch
+                by git.remote;
 
-            // process git restore items
-            await ParallelUtility.ForEach(
-               GetRestoreItems(docsetPath, config, locale),
-               async restoreItem =>
-               {
-                   var (restoreDir, hrefs) = restoreItem;
-                   var workTreeHeads = await RestoreGitRepo(restoreDir, hrefs);
-                   foreach (var workTreeHead in workTreeHeads)
-                   {
-                       workTreeMappings.Add(workTreeHead);
-                   }
-               },
-               progress: Progress.Update);
+            return ParallelUtility.ForEach(gitDependencies, RestoreGitRepo, Progress.Update);
 
-            return workTreeMappings;
-
-            async Task<List<(string href, string head)>> RestoreGitRepo(string restoreDir, List<string> hrefs)
+            async Task RestoreGitRepo(IGrouping<string, string> group)
             {
-                var workTreeHeads = await RestoreWorkTree.AddWorkTrees(restoreDir, hrefs, config);
+                var remote = group.Key;
+                var branches = group.Distinct();
+                var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
+                var childRepos = new List<string>();
 
-                foreach (var (_, workTreeHead) in workTreeHeads)
+                await ProcessUtility.RunInsideMutex(
+                    remote,
+                    async () =>
+                    {
+                        try
+                        {
+                            await GitUtility.CloneOrUpdateBare(repoPath, remote, branches, config);
+                            await AddWorkTrees();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw Errors.GitCloneFailed(remote, branches).ToException(ex);
+                        }
+                    });
+
+                foreach (var child in childRepos)
                 {
-                    var childDir = RestoreWorkTree.GetRestoreWorkTreeDir(restoreDir, workTreeHead);
-                    await restoreChild(childDir);
+                    await restoreChild(child);
                 }
 
-                return workTreeHeads;
+                async Task AddWorkTrees()
+                {
+                    var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
+
+                    await ParallelUtility.ForEach(branches, async branch =>
+                    {
+                        // use branch name instead of commit hash
+                        // https://git-scm.com/docs/git-worktree#_commands
+                        var workTreeHead = $"{GitUtility.RevParse(repoPath, branch)}-{HrefUtility.EscapeUrlSegment(branch)}";
+                        var workTreePath = Path.GetFullPath(Path.Combine(repoPath, "../", workTreeHead)).Replace('\\', '/');
+
+                        if (existingWorkTreePath.TryAdd(workTreePath))
+                        {
+                            await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
+                        }
+
+                        childRepos.Add(workTreePath);
+
+                        // update the last write time
+                        Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);
+                    });
+                }
             }
         }
 
-        private static List<(string restoreDir, List<string> hrefs)> GetRestoreItems(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch)> GetGitDependencies(string docsetPath, Config config, string locale)
         {
-            var gitDependencies = config.Dependencies.Values.Concat(GetLocRestoreItem(docsetPath, config, locale));
-
-            return gitDependencies.GroupBy(d => GetRestoreRootDir(d), PathUtility.PathComparer).Select(g => (g.Key, g.Distinct().ToList())).ToList();
+            return config.Dependencies.Values.Select(GitUtility.GetGitRemoteInfo)
+                         .Concat(GetLocalizationGitDependencies(docsetPath, config, locale));
         }
 
-        private static IEnumerable<string> GetLocRestoreItem(string docsetPath, Config config, string locale)
+        private static IEnumerable<(string remote, string branch)> GetLocalizationGitDependencies(string docsetPath, Config config, string locale)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -82,27 +105,22 @@ namespace Microsoft.Docs.Build
             if (config.Localization.Bilingual)
             {
                 // Bilingual repos also depend on non bilingual branch
-                yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+                yield return LocalizationConvention.GetLocalizationRepo(
                     config.Localization.Mapping,
                     bilingual: false,
                     repo.Remote,
                     repo.Branch,
                     locale,
-                    config.Localization.DefaultLocale));
+                    config.Localization.DefaultLocale);
             }
 
-            yield return ToHref(LocalizationConvention.GetLocalizationRepo(
+            yield return LocalizationConvention.GetLocalizationRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
                 repo.Remote,
                 repo.Branch,
                 locale,
-                config.Localization.DefaultLocale));
-
-            string ToHref((string url, string branch) value)
-            {
-                return string.Concat(value.url, "#", value.branch);
-            }
+                config.Localization.DefaultLocale);
         }
     }
 }

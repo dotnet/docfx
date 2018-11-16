@@ -11,7 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreMap
     {
-        private static readonly ConcurrentDictionary<string, Lazy<string>> s_mappings = new ConcurrentDictionary<string, Lazy<string>>();
+        private static readonly ConcurrentDictionary<string, Lazy<string>> s_gitPath = new ConcurrentDictionary<string, Lazy<string>>();
+        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadPath = new ConcurrentDictionary<string, Lazy<string>>();
+
         private readonly string _docsetPath;
 
         public RestoreMap(string docsetPath)
@@ -20,71 +22,70 @@ namespace Microsoft.Docs.Build
             _docsetPath = docsetPath;
         }
 
-        public string GetGitRestorePath(string remote)
+        public string GetGitRestorePath(string url)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remote));
+            Debug.Assert(!string.IsNullOrEmpty(url));
 
-            var gitRestorePath = s_mappings.GetOrAdd(
-                $"{remote}",
-                new Lazy<string>(() =>
-                {
-                    var (url, branch) = GitUtility.GetGitRemoteInfo(remote);
-                    var restoreDir = RestoreGit.GetRestoreRootDir(url);
-
-                    if (!Directory.Exists(restoreDir))
-                    {
-                        throw Errors.NeedRestore(remote).ToException();
-                    }
-
-                    return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                        .Select(f => PathUtility.NormalizeFolder(f))
-                        .Where(f => f.EndsWith($"{PathUtility.Encode(branch)}/"))
-                        .OrderByDescending(f => new DirectoryInfo(f).LastAccessTimeUtc)
-                        .FirstOrDefault();
-                })).Value;
+            var gitRestorePath = s_gitPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedGitRepository)).Value;
 
             if (!Directory.Exists(gitRestorePath))
             {
-                throw Errors.NeedRestore(remote).ToException();
+                throw Errors.NeedRestore(url).ToException();
             }
 
             return gitRestorePath;
+
+            string FindLastModifiedGitRepository()
+            {
+                var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
+                var restoreDir = AppData.GetGitDir(url);
+
+                if (!Directory.Exists(restoreDir))
+                {
+                    throw Errors.NeedRestore(url).ToException();
+                }
+
+                return Directory.EnumerateDirectories(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                    .Where(f => f.EndsWith(HrefUtility.EscapeUrlSegment(branch)))
+                    .OrderByDescending(f => new DirectoryInfo(f).LastWriteTimeUtc)
+                    .FirstOrDefault();
+            }
         }
 
-        public string GetUrlRestorePath(string path)
+        public string GetFileRestorePath(string url)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
+            Debug.Assert(!string.IsNullOrEmpty(url));
 
-            if (!HrefUtility.IsHttpHref(path))
+            if (!HrefUtility.IsHttpHref(url))
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(_docsetPath, path);
-                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, path).ToException();
+                var fullPath = Path.Combine(_docsetPath, url);
+                return File.Exists(fullPath) ? fullPath : throw Errors.FileNotFound(_docsetPath, url).ToException();
             }
 
-            var urlRestorePath = s_mappings.GetOrAdd(
-                $"{_docsetPath}:{path}",
-                new Lazy<string>(() =>
-                {
-                    // get the file path from restore map
-                    var restoreDir = RestoreUrl.GetRestoreRootDir(path);
+            var downloadPath = s_downloadPath.GetOrAdd(url, new Lazy<string>(FindLastModifiedFile)).Value;
 
-                    if (!Directory.Exists(restoreDir))
-                    {
-                        throw Errors.NeedRestore(path).ToException();
-                    }
-
-                    return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
-                           .OrderByDescending(f => new FileInfo(f)
-                           .LastAccessTimeUtc).FirstOrDefault();
-                })).Value;
-
-            if (!File.Exists(urlRestorePath))
+            if (!File.Exists(downloadPath))
             {
-                throw Errors.NeedRestore(path).ToException();
+                throw Errors.NeedRestore(url).ToException();
             }
 
-            return urlRestorePath;
+            return downloadPath;
+
+            string FindLastModifiedFile()
+            {
+                // get the file path from restore map
+                var restoreDir = AppData.GetFileDownloadDir(url);
+
+                if (!Directory.Exists(restoreDir))
+                {
+                    throw Errors.NeedRestore(url).ToException();
+                }
+
+                return Directory.EnumerateFiles(restoreDir, "*", SearchOption.TopDirectoryOnly)
+                       .OrderByDescending(f => new FileInfo(f).LastWriteTimeUtc)
+                       .FirstOrDefault();
+            }
         }
     }
 }

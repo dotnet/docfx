@@ -30,12 +30,13 @@ outputs:
 # Show git contribution info when userProfile & commitsTime is set to relative file path
 repo: https://github.com/docascode/docfx-test-dependencies#github-user-cache-file
 inputs:
-  files: README.md
-  gitHub:
-    userCache: user_profile.json
-    resolveUsers: true
-  contribution:
-    gitCommitsTime: build_history.json
+  docfx.yml: |
+    content: README.md
+    gitHub:
+      userCache: user_profile.json
+      resolveUsers: true
+    contribution:
+      gitCommitsTime: build_history.json
 outputs:
   readme.json: |
     {

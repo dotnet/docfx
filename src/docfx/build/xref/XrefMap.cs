@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
             Dictionary<string, XrefSpec> map = new Dictionary<string, XrefSpec>();
             foreach (var url in docset.Config.Xref)
             {
-                var json = File.ReadAllText(docset.RestoreMap.GetUrlRestorePath(url));
-                var (_, xRefMap) = JsonUtility.Deserialize<XrefMapModel>(json);
+                var json = File.ReadAllText(docset.RestoreMap.GetFileRestorePath(url));
+                var xRefMap = JsonUtility.Deserialize<XrefMapModel>(json);
                 foreach (var sepc in xRefMap.References)
                 {
                     map[sepc.Uid] = sepc;
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, content) = JsonUtility.ToObject(obj, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
+            var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(obj, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
             errors.AddRange(schemaErrors);
             var xref = new XrefSpec
             {

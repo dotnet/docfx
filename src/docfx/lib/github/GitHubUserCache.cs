@@ -56,8 +56,8 @@ namespace Microsoft.Docs.Build
             _getUserByLoginFromGitHub = github.GetUserByLogin;
             _getLoginByCommitFromGitHub = github.GetLoginByCommit;
             _cachePath = string.IsNullOrEmpty(docset.Config.GitHub.UserCache)
-                ? Path.Combine(AppData.CacheDir, "github-users.json")
-                : docset.RestoreMap.GetUrlRestorePath(docset.Config.GitHub.UserCache);
+                ? AppData.GitHubUserCachePath
+                : docset.RestoreMap.GetFileRestorePath(docset.Config.GitHub.UserCache);
             _expirationInHours = docset.Config.GitHub.UserCacheExpirationInHours;
         }
 
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             if (File.Exists(_cachePath))
             {
                 var content = await ProcessUtility.ReadFile(_cachePath);
-                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Item2?.Users;
+                var users = JsonUtility.Deserialize<GitHubUserCacheFile>(content).Users;
                 if (users != null)
                 {
                     lock (_lock)

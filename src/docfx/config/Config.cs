@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly string MonikerDefinitionUrl = string.Empty;
+        public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
         /// Gets the config file name.
@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
 
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
-            yield return MonikerDefinitionUrl;
+            yield return MonikerDefinition;
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
             finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
+            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
             return (errors, config);
@@ -248,11 +248,11 @@ namespace Microsoft.Docs.Build
             JObject config = null;
             if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = YamlUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = YamlUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                (errors, config) = JsonUtility.Deserialize<JObject>(File.ReadAllText(filePath));
+                (errors, config) = JsonUtility.DeserializeWithSchemaValidation<JObject>(File.ReadAllText(filePath));
             }
             return (errors, Expand(config ?? new JObject()));
         }
@@ -265,7 +265,7 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetUrlRestorePath(globalConfigPath);
+                var filePath = restoreMap.GetFileRestorePath(globalConfigPath);
                 (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var filePath = restoreMap.GetUrlRestorePath(str);
+                        var filePath = restoreMap.GetFileRestorePath(str);
                         var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
                         result.Merge(extendConfigObject, JsonUtility.MergeSettings);

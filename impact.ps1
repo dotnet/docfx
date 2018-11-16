@@ -27,6 +27,6 @@ exec "git clean -xdf"
 exec "git status"
 
 exec "npm install"
-exec "npm run impact -- --push"
+exec "npm run impact -- --push --pack"
 
 popd

@@ -1013,7 +1013,7 @@ outputs:
   docs/toc.json: |
     {"items":[{"toc_title":"Title3", "href": "https://github.com/docfx"}]}
 ---
-# Expanded and MaintainContext
+# Expanded, MaintainContext and DisplayName
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -1021,6 +1021,7 @@ inputs:
       maintainContext: true
       expanded: true
       name: "test"
+      displayName: "display name"
 outputs:
   docs/toc.json: |
-    {"items": [{"maintainContext": true, "expanded": true}]}
+    {"items": [{"maintainContext": true, "expanded": true, "displayName": "display name"}]}

@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
@@ -58,7 +59,14 @@ namespace Microsoft.Docs.Build
 
                 if (osMatches)
                 {
-                    await RunCore(docsetPath, spec);
+                    if (spec.Watch)
+                    {
+                        await RunWatchCore(docsetPath, spec);
+                    }
+                    else
+                    {
+                        await RunCore(docsetPath, spec);
+                    }
                 }
                 else
                 {
@@ -111,6 +119,26 @@ namespace Microsoft.Docs.Build
             {
                 VerifyFile(Path.GetFullPath(Path.Combine(docsetOutputPath, filename)), content);
             }
+        }
+
+        private static async Task RunWatchCore(string docsetPath, E2ESpec spec)
+        {
+            var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions()));
+
+            foreach (var (request, response) in spec.Http)
+            {
+                var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = "/" + request);
+                var body = new StreamReader(responseContext.Response.Body).ReadToEnd();
+                var actualResponse = new JObject
+                {
+                    ["status"] = responseContext.Response.StatusCode,
+                    ["body"] = body,
+                };
+                TestUtility.VerifyJsonContainEquals(response, actualResponse);
+            }
+
+            // Verify no output in output directory
+            Assert.False(Directory.Exists(Path.Combine(docsetPath, "_site")));
         }
 
         private static TheoryData<string> FindTestSpecs()
@@ -166,7 +194,7 @@ namespace Microsoft.Docs.Build
             var yamlHash = HashUtility.GetMd5Hash(yaml).Substring(0, 5);
             var name = ToSafePathString(specName) + "-" + yamlHash;
 
-            var (_, spec) = YamlUtility.Deserialize<E2ESpec>(yaml, false);
+            var spec = YamlUtility.Deserialize<E2ESpec>(yaml, false);
 
             var skip = spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
             if (skip)
@@ -179,16 +207,10 @@ namespace Microsoft.Docs.Build
                 !spec.Environments.Any(env => string.IsNullOrEmpty(Environment.GetEnvironmentVariable(env)));
 
             var docsetPath = Path.Combine("specs-drop", name);
+            var docsetCreatedFlag = Path.Combine("specs-flags", name);
             var mockedRepos = MockGitRepos(name, spec);
 
-            if (Directory.Exists(docsetPath))
-            {
-                if (Directory.Exists(Path.Combine(docsetPath, "_site")))
-                {
-                    Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
-                }
-            }
-            else
+            if (!File.Exists(docsetCreatedFlag))
             {
                 var inputRepo = spec.Repo ?? spec.Repos.Select(item => item.Key).FirstOrDefault();
                 if (!string.IsNullOrEmpty(inputRepo))
@@ -221,6 +243,14 @@ namespace Microsoft.Docs.Build
                     }
                     File.WriteAllText(filePath, mutableContent);
                 }
+
+                PathUtility.CreateDirectoryFromFilePath(docsetCreatedFlag);
+                File.Create(docsetCreatedFlag);
+            }
+
+            if (Directory.Exists(Path.Combine(docsetPath, "_site")))
+            {
+                Directory.Delete(Path.Combine(docsetPath, "_site"), recursive: true);
             }
 
             return (docsetPath, spec, mockedRepos);

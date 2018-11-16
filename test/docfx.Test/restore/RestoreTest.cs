@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             var docsetPath = "restore-worktrees";
             var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
             Directory.CreateDirectory(docsetPath);
-            var restorePath = PathUtility.NormalizeFolder(Path.Combine(RestoreGit.GetRestoreRootDir(gitUrl), ".git"));
+            var restorePath = PathUtility.NormalizeFolder(Path.Combine(AppData.GetGitDir(gitUrl), ".git"));
 
             File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
 dependencies:
@@ -49,7 +49,7 @@ dependencies:
 
             // run restroe and check the work trees
             await Program.Run(new[] { "restore", docsetPath });
-            var workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
+            var workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(6, workTreeList.Count);
 
             foreach(var wirkTreeFolder in workTreeList.Where(w => w.EndsWith("clean")))
@@ -67,7 +67,7 @@ dependencies:
             await Program.Run(new[] { "restore", docsetPath });
             await Program.Run(new[] { "gc" });
 
-            workTreeList = await GitUtility.ListWorkTrees(restorePath, false);
+            workTreeList = await GitUtility.ListWorkTree(restorePath);
             Assert.Equal(2, workTreeList.Count);
         }
 
@@ -78,10 +78,10 @@ dependencies:
             var docsetPath = "restore-urls";
             Directory.CreateDirectory(docsetPath);
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
-            var restoreDir = RestoreUrl.GetRestoreRootDir(url);
+            var restoreDir = AppData.GetFileDownloadDir(url);
             await ParallelUtility.ForEach(Enumerable.Range(0, 10), version =>
             {
-                var restorePath = RestoreUrl.GetRestoreVersionPath(restoreDir, version.ToString());
+                var restorePath = Path.Combine(restoreDir, version.ToString());
                 PathUtility.CreateDirectoryFromFilePath(restorePath);
                 File.WriteAllText(restorePath, $"{version}");
                 File.SetLastWriteTimeUtc(restorePath, DateTime.UtcNow - TimeSpan.FromDays(20));

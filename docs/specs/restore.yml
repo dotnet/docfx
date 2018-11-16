@@ -78,7 +78,7 @@ inputs:
       error: https://github.com/docascode/docfx-test-dependencies#bad-branch
 outputs:
   build.log: |
-    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies#bad-branch' failed."]
+    ["error","git-clone-failed","Cloning git repository 'https://github.com/docascode/docfx-test-dependencies' ('bad-branch') failed."]
 ---
 # Show error when dependent repo can't be found
 commands:

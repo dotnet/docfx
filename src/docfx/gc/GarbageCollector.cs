@@ -23,30 +23,28 @@ namespace Microsoft.Docs.Build
         private static async Task<int> CollectGit(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.GitRestoreDir))
+            if (!Directory.Exists(AppData.GitRoot))
             {
                 return cleaned;
             }
 
-            var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRestoreDir, ".git", SearchOption.AllDirectories);
-
             using (Progress.Start("Cleaning git repositories"))
             {
-                await ParallelUtility.ForEach(
-                    gitWorkTreeRoots,
-                    CleanWorkTrees,
-                    Progress.Update);
+                var gitWorkTreeRoots = Directory.EnumerateDirectories(AppData.GitRoot, ".git", SearchOption.AllDirectories);
+
+                await ParallelUtility.ForEach(gitWorkTreeRoots, CleanWorkTrees, Progress.Update);
             }
 
             Task CleanWorkTrees(string gitWorkTreeRoot)
             {
                 return ProcessUtility.RunInsideMutex(
-                       PathUtility.NormalizeFile(Path.GetRelativePath(AppData.GitRestoreDir, gitWorkTreeRoot)),
-                       async () =>
+                       Path.GetFullPath(gitWorkTreeRoot),
+                       () =>
                        {
                            var workTreeFolder = Path.GetDirectoryName(gitWorkTreeRoot);
-                           var existingWorkTreeFolders = Directory.EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
-                                                      .Select(f => PathUtility.NormalizeFolder(f)).Where(f => !f.EndsWith(".git/")).ToList();
+                           var existingWorkTreeFolders = Directory
+                                .EnumerateDirectories(workTreeFolder, "*", SearchOption.TopDirectoryOnly)
+                                .Where(f => !f.EndsWith(".git"));
 
                            foreach (var existingWorkTreeFolder in existingWorkTreeFolders)
                            {
@@ -57,7 +55,7 @@ namespace Microsoft.Docs.Build
                                }
                            }
 
-                           await GitUtility.PruneWorkTrees(workTreeFolder);
+                           return GitUtility.PruneWorkTrees(workTreeFolder);
                        });
             }
 
@@ -67,15 +65,15 @@ namespace Microsoft.Docs.Build
         private static int CollectUrls(int retentionDays)
         {
             var cleaned = 0;
-            if (!Directory.Exists(AppData.UrlRestoreDir))
+            if (!Directory.Exists(AppData.DownloadsRoot))
             {
                 return cleaned;
             }
 
-            var downloadedFiles = Directory.EnumerateFiles(AppData.UrlRestoreDir, "*", SearchOption.AllDirectories);
-
             using (Progress.Start("Cleaning downloaded files"))
             {
+                var downloadedFiles = Directory.EnumerateFiles(AppData.DownloadsRoot, "*", SearchOption.AllDirectories);
+
                 ParallelUtility.ForEach(
                     downloadedFiles,
                     downloadedFile =>

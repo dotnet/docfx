@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,47 +37,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetRestoreRootDir(string url, string root)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-
-            var uri = new Uri(url);
-            var repo = Path.Combine(uri.Host, uri.AbsolutePath.Substring(1));
-            var dir = Path.Combine(root, repo);
-
-            // todo: encode the dir converted from url
-            return PathUtility.NormalizeFolder(dir);
-        }
-
-        private static void ReportErrors(Report report, List<Error> errors)
-        {
-            foreach (var error in errors)
-            {
-                report.Write(error);
-            }
-        }
-
-        private static IEnumerable<string> GetRestoreUrls(IEnumerable<string> paths)
-        {
-            foreach (var url in paths)
-            {
-                if (!string.IsNullOrEmpty(url) && HrefUtility.IsHttpHref(url))
-                {
-                    yield return url;
-                }
-            }
-        }
-
         private static async Task RestoreOneDocset(Report report, string docsetPath, CommandLineOptions options, Config config, Func<string, Task> restoreChild, bool restoreLocRepo = false)
         {
             // restore extend url firstly
             // no need to extend config
             await ParallelUtility.ForEach(
-                GetRestoreUrls(config.Extend),
-                async restoreUrl =>
-                {
-                    await RestoreUrl.Restore(restoreUrl, config);
-                });
+                config.Extend.Where(HrefUtility.IsHttpHref),
+                restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
             // extend the config before loading
             var (errors, extendedConfig) = Config.Load(docsetPath, options);
@@ -90,11 +54,16 @@ namespace Microsoft.Docs.Build
 
             // restore urls except extend url
             await ParallelUtility.ForEach(
-                GetRestoreUrls(extendedConfig.GetExternalReferences()),
-                async restoreUrl =>
-                {
-                    await RestoreUrl.Restore(restoreUrl, extendedConfig);
-                });
+                extendedConfig.GetExternalReferences().Where(HrefUtility.IsHttpHref),
+                restoreUrl => RestoreFile.Restore(restoreUrl, extendedConfig));
+        }
+
+        private static void ReportErrors(Report report, List<Error> errors)
+        {
+            foreach (var error in errors)
+            {
+                report.Write(error);
+            }
         }
     }
 }

@@ -47,7 +47,8 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var commits = _contributionCommitsByFile.TryGetValue(document.FilePath, out var value) ? value : default;
+            var contributionCommits = _contributionCommitsByFile.TryGetValue(document.FilePath, out var cc) ? cc : default;
+            var commits = _commitsByFile.TryGetValue(document.FilePath, out var fc) ? fc : default;
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
@@ -60,9 +61,9 @@ namespace Microsoft.Docs.Build
             var resolveGitHubUsers = GitHubUtility.TryParse(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) && document.Docset.Config.GitHub.ResolveUsers;
 
             // Resolve contributors from commits
-            if (commits != null)
+            if (contributionCommits != null)
             {
-                foreach (var commit in commits)
+                foreach (var commit in contributionCommits)
                 {
                     if (!emails.Add(commit.AuthorEmail))
                         continue;
@@ -111,9 +112,9 @@ namespace Microsoft.Docs.Build
                 else if (contributors.Count > 0)
                 {
                     // When author name is not specified, last contributor is author
-                    for (var i = commits.Count - 1; i >= 0; i--)
+                    for (var i = contributionCommits.Count - 1; i >= 0; i--)
                     {
-                        var user = await GetContributor(commits[i]);
+                        var user = await GetContributor(contributionCommits[i]);
                         if (user != null)
                         {
                             return user;
@@ -228,10 +229,10 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(docset.Config.Contribution.GitCommitsTime))
             {
-                var path = docset.RestoreMap.GetUrlRestorePath(docset.Config.Contribution.GitCommitsTime);
+                var path = docset.RestoreMap.GetFileRestorePath(docset.Config.Contribution.GitCommitsTime);
                 var content = await ProcessUtility.ReadFile(path);
 
-                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Item2.Commits)
+                foreach (var commit in JsonUtility.Deserialize<GitCommitsTime>(content).Commits)
                 {
                     _updateTimeByCommit.Add(commit.Sha, commit.BuiltAt);
                 }
@@ -258,10 +259,9 @@ namespace Microsoft.Docs.Build
                     var repo = group.Key;
                     var repoPath = repo.Path;
                     var contributionBranch = bilingual && repo.Branch.EndsWith("-sxs") ? repo.Branch.Substring(0, repo.Branch.Length - 4) : null;
-                    var commitCachePath = Path.Combine(AppData.CacheDir, "commits", HashUtility.GetMd5Hash(repo.Remote));
 
                     using (Progress.Start($"Loading commits for '{repoPath}'"))
-                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, commitCachePath))
+                    using (var commitsProvider = await GitCommitProvider.Create(repoPath, AppData.GetCommitCachePath(repo.Remote)))
                     {
                         ParallelUtility.ForEach(
                             group,

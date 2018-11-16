@@ -145,27 +145,65 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// De-serialize a string to an object
+        /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        public static (List<Error> errors, T model) Deserialize<T>(string json)
+        public static (List<Error> errors, T model) DeserializeWithSchemaValidation<T>(string json)
         {
             var (errors, token) = Deserialize(json);
-            var (mismatchingErrors, result) = ToObject<T>(token);
+            var (mismatchingErrors, result) = ToObjectWithSchemaValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
 
         /// <summary>
-        /// Creates an instance of the specified .NET type from the JToken
-        /// And validate mismatching field types
+        /// De-serialize a data string, which is not user input, to an object
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static (List<Error>, T) ToObject<T>(JToken token)
+        public static T Deserialize<T>(string json)
         {
-            var (errors, obj) = ToObject(token, typeof(T));
+            using (var stringReader = new StringReader(json))
+            using (var reader = new JsonTextReader(stringReader))
+            {
+                try
+                {
+                    return DefaultSerializer.Deserialize<T>(reader);
+                }
+                catch (JsonReaderException ex)
+                {
+                    var (range, message, path) = ParseException(ex);
+                    throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates an instance of the specified .NET type from the JToken with schema validation
+        /// </summary>
+        public static (List<Error>, T) ToObjectWithSchemaValidation<T>(JToken token)
+        {
+            var (errors, obj) = ToObjectWithSchemaValidation(token, typeof(T));
             return (errors, (T)obj);
         }
 
-        public static (List<Error>, object) ToObject(
+        /// <summary>
+        /// Creates an instance of the specified .NET type from the JToken
+        /// Schema validation errors will be ignored, type mismatch and syntax errors will be thrown
+        /// </summary>
+        public static T ToObject<T>(JToken token)
+        {
+            try
+            {
+                var obj = token.ToObject(typeof(T), JsonUtility.DefaultSerializer);
+                return (T)obj;
+            }
+            catch (JsonReaderException ex)
+            {
+                var (range, message, path) = ParseException(ex);
+                throw Errors.JsonSyntaxError(range, message, path).ToException(ex);
+            }
+        }
+
+        public static (List<Error>, object) ToObjectWithSchemaValidation(
             JToken token,
             Type type,
             Func<IEnumerable<DataTypeAttribute>, object, string, object> transform = null)

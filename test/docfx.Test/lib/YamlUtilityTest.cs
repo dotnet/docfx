@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithStringProperty(string input)
         {
             var yaml = $"C: \"{input}\"";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectWithMultiLinesStringProperty(string input, string expected)
         {
             var yaml = $"C: {input}";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
 - 9223372036854775807
 - 18446744073709551615
 ";
-            var (errors, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<object[]>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(4, value.Length);
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
 A: &anchor test
 B: *anchor
 ";
-            var (errors, value) = YamlUtility.Deserialize<Dictionary<string, string>>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<Dictionary<string, string>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value["A"]);
@@ -124,7 +124,7 @@ B: 1
 C: Good!
 D: true
 ";
-            var (errors, value) = YamlUtility.Deserialize<BasicClass>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<BasicClass>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -139,7 +139,7 @@ D: true
 - true
 - false
 ";
-            var (errors1, value) = YamlUtility.Deserialize<object[]>(yaml);
+            var (errors1, value) = YamlUtility.DeserializeWithSchemaValidation<object[]>(yaml);
             Assert.Empty(errors1);
             Assert.NotNull(value);
             Assert.Equal(2, value.Count());
@@ -201,7 +201,7 @@ D: true
   C: Good9!
   D: true
 ";
-            var (errors, values) = YamlUtility.Deserialize<List<BasicClass>>(yaml);
+            var (errors, values) = YamlUtility.DeserializeWithSchemaValidation<List<BasicClass>>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
@@ -217,7 +217,7 @@ D: true
         public void TestClassWithReadOnlyField()
         {
             var yaml = $"B: test";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithReadOnlyField>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithReadOnlyField>(yaml);
             Assert.Empty(errors);
             Assert.NotNull(value);
             Assert.Equal("test", value.B);
@@ -244,7 +244,7 @@ ValueBasic:
   D: false
 ValueRequired: a
 ";
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
@@ -266,7 +266,7 @@ ValueRequired: a
         public void TestStringEmpty()
         {
             var yaml = String.Empty;
-            var (errors, value) = YamlUtility.Deserialize<ClassWithMoreMembers>(yaml);
+            var (errors, value) = YamlUtility.DeserializeWithSchemaValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
             Assert.Null(value);
         }
@@ -297,6 +297,15 @@ items:
             var lineInfo = (value.Children().Any() ? value.Children().First().Children().First() : value) as IJsonLineInfo;
             Assert.Equal(expectedLine, lineInfo.LineNumber);
             Assert.Equal(expectedColumn, lineInfo.LinePosition);
+        }
+
+        [Theory]
+        [InlineData(@"b: not number")]
+        public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string yaml)
+        {
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Deserialize<BasicClass>(yaml));
+            Assert.Equal("json-syntax-error", exception.Error.Code);
+            Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
 
         public class BasicClass
