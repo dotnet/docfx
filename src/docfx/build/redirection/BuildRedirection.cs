@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Redirection);
             var errors = new List<Error>();
 
-            var (metaErrors, metadata) = JsonUtility.ToObject<FileMetadata>(file.Docset.Metadata.GetMetadata(file, null));
+            var (metaErrors, metadata) = JsonUtility.ToObjectWithSchemaValidation<FileMetadata>(file.Docset.Metadata.GetMetadata(file, null));
             errors.AddRange(metaErrors);
 
             var (error, monikers) = file.Docset.MonikersProvider.GetFileLevelMonikers(file, metadata.MonikerRange);
