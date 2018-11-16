@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the dependent docsets
         /// </summary>
-        public IReadOnlyDictionary<string, Docset> DependentDocset { get; }
+        public IReadOnlyDictionary<string, Docset> DependencyDocsets { get; }
 
         /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
@@ -56,11 +56,6 @@ namespace Microsoft.Docs.Build
         /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
         /// </summary>
         public Docset FallbackDocset { get; }
-
-        /// <summary>
-        /// Gets the restore path mappings
-        /// </summary>
-        public RestoreMap RestoreMap { get; }
 
         /// <summary>
         /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
@@ -104,19 +99,19 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<MonikersProvider> _monikersProvider;
 
         public Docset(Context context, string docsetPath, Config config, CommandLineOptions options, bool isDependency = false)
-            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null, null)
+            : this(context, docsetPath, config, !string.IsNullOrEmpty(options.Locale) ? options.Locale : config.Localization.DefaultLocale, options, null)
         {
             if (!isDependency && !string.Equals(Locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
-                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale, RestoreMap);
+                var localizationDocsetPath = LocalizationConvention.GetLocalizationDocsetPath(DocsetPath, Config, Locale);
 
                 // localization docset will share the same context, config, build locale and options with source docset
-                // source docset configuration will be overwrote by build locale overwrite configuration
-                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this, RestoreMap);
+                // source docset configuration will be overwritten by build locale overwrite configuration
+                LocalizationDocset = string.IsNullOrEmpty(localizationDocsetPath) ? null : new Docset(context, localizationDocsetPath, config, Locale, options, this);
             }
         }
 
-        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset, RestoreMap restoreMap)
+        private Docset(Context context, string docsetPath, Config config, string locale, CommandLineOptions options, Docset fallbackDocset)
         {
             _options = options;
             _context = context;
@@ -125,11 +120,10 @@ namespace Microsoft.Docs.Build
             Locale = locale.ToLowerInvariant();
             Culture = CreateCultureInfo(locale);
             ReversedRoutes = new Dictionary<string, string>(config.Routes.Reverse());
-            RestoreMap = restoreMap ?? new RestoreMap(DocsetPath);
             FallbackDocset = fallbackDocset;
 
             var configErrors = new List<Error>();
-            (configErrors, DependentDocset) = LoadDependencies(Config, RestoreMap);
+            (configErrors, DependencyDocsets) = LoadDependencies(Config);
 
             // pass on the command line options to its children
             _buildScope = new Lazy<HashSet<Document>>(() => CreateBuildScope(Redirections.Files));
@@ -159,13 +153,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config, RestoreMap restoreMap)
+        private (List<Error>, Dictionary<string, Docset>) LoadDependencies(Config config)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
-                var dir = restoreMap.GetGitRestorePath(url);
+                var dir = RestoreMap.GetGitRestorePath(url);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
@@ -241,7 +235,7 @@ namespace Microsoft.Docs.Build
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(Config.MonikerDefinition))
             {
-                var path = RestoreMap.GetFileRestorePath(Config.MonikerDefinition);
+                var path = this.GetFileRestorePath(Config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(File.ReadAllText(path));
             }
             return new MonikerRangeParser(monikerDefinition);

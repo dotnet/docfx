@@ -215,7 +215,7 @@ namespace Microsoft.Docs.Build
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, new RestoreMap(docsetPath));
+                (extendErrors, finalConfigObject) = ExtendConfigs(finalConfigObject, docsetPath);
                 errors.AddRange(extendErrors);
             }
 
@@ -250,7 +250,7 @@ namespace Microsoft.Docs.Build
             return (errors, ExpandAndNormalize(config ?? new JObject()));
         }
 
-        private static (List<Error>, JObject) ExtendConfigs(JObject config, RestoreMap restoreMap)
+        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
         {
             var result = new JObject();
             var errors = new List<Error>();
@@ -258,7 +258,7 @@ namespace Microsoft.Docs.Build
             var globalConfigPath = AppData.GlobalConfigPath;
             if (File.Exists(globalConfigPath))
             {
-                var filePath = restoreMap.GetFileRestorePath(globalConfigPath);
+                var filePath = RestoreMap.GetFileRestorePath(docsetPath, globalConfigPath);
                 (errors, result) = LoadConfigObject(filePath, filePath);
             }
 
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (extend is JValue value && value.Value is string str)
                     {
-                        var filePath = restoreMap.GetFileRestorePath(str);
+                        var filePath = RestoreMap.GetFileRestorePath(docsetPath, str);
                         var (extendErros, extendConfigObject) = LoadConfigObject(str, filePath);
                         errors.AddRange(extendErros);
                         result.Merge(extendConfigObject, JsonUtility.MergeSettings);

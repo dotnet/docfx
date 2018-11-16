@@ -49,20 +49,20 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var docsetPath = await Restore.RunImplict(docset, options, report);
-
                     switch (command)
                     {
                         case "restore":
-                            await Restore.Run(docsetPath, options, report);
+                            await Restore.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "build":
-                            await Build.Run(docsetPath, options, report);
+                            await Restore.Run(docset, options, report, @implicit: true);
+                            await Build.Run(docset, options, report);
                             Done(stopwatch.Elapsed, report);
                             break;
                         case "watch":
-                            await Watch.Run(docsetPath, options);
+                            await Restore.Run(docset, options, report, @implicit: true);
+                            await Watch.Run(docset, options);
                             break;
                         case "gc":
                             await GarbageCollector.Collect(options.RetentionDays);

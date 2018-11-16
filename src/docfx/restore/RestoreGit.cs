@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale)
+        public static Task Restore(string docsetPath, Config config, Func<string, Task> restoreChild, string locale, bool @implicit)
         {
             var gitDependencies =
                 from git in GetGitDependencies(docsetPath, config, locale)
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             async Task RestoreGitRepo(IGrouping<string, string> group)
             {
                 var remote = group.Key;
-                var branches = group.Distinct();
+                var branches = group.Distinct().ToArray();
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
@@ -34,7 +34,14 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            await GitUtility.CloneOrUpdateBare(repoPath, remote, branches, config);
+                            var branchesToFetch = @implicit
+                                ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
+                                : branches;
+
+                            if (branchesToFetch.Length > 0)
+                            {
+                                await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, config);
+                            }
                             await AddWorkTrees();
                         }
                         catch (Exception ex)

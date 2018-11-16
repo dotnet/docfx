@@ -1,7 +1,6 @@
 # restore loc repo with dependencies
 # [repository mapping] 
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/a#master1:
@@ -24,7 +23,6 @@ outputs:
 # restore loc repo, all loc files are in one repo
 # [repository + folder mapping]
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/b#master2:
@@ -40,7 +38,6 @@ outputs:
 ---
 # loc docset share the source docset's restore map
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/docascode/c#share-restore-map:
@@ -105,7 +102,6 @@ outputs:
 # loc config convention without source locale
 # [repository mapping] 
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/abc#loc-contribution1:
@@ -123,7 +119,6 @@ outputs:
 # loc config convention with source locale
 # [repository mapping] 
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/abc.en-us#loc-contribution2:
@@ -141,7 +136,6 @@ outputs:
 # loc config convention with source locale, all loc files are in one repo
 # [repository + folder mapping] 
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://docfx.com/abc.en-us#loc-contribution3:
@@ -161,7 +155,6 @@ outputs:
 # loc config convention with source locale, all loc files are in source repo under different locale folder
 # [folder mapping] 
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -177,7 +170,6 @@ outputs:
 # loc file contributor info 1
 # [repository mapping] 
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/docascode/abc#loc-contribution5:
@@ -195,7 +187,6 @@ outputs:
 # loc file contributor info 2
 # all loc files are in one repo
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos: 
   https://github.com/docascode/abc#loc-contribution6:
@@ -213,7 +204,6 @@ outputs:
 # loc file contributor info 3
 # all loc file are in source repo under different locale folder
 commands:
-  - restore
   - build --locale zh-cn
 repos:
   https://github.com/docascode/a#loc-contribution-folder:
@@ -228,7 +218,6 @@ outputs:
 ---
 # loc page link and content fallback
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#fallback1:
@@ -247,7 +236,6 @@ outputs:
 ---
 # loc page fallback, all loc files are in one repo
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#fallback2:
@@ -268,7 +256,6 @@ outputs:
 ---
 # loc resource fallback
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#fallback3:
@@ -285,7 +272,6 @@ outputs:
 ---
 # loc token fallback, all loc files are in source repo under different locale folder
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -303,7 +289,6 @@ outputs:
 ---
 # loc build with TOC map, loc TOC has higher priority
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#toc1:
@@ -330,7 +315,6 @@ outputs:
 ---
 # loc build with mixed toc map
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#toc2:
@@ -352,7 +336,6 @@ outputs:
 ---
 # loc build with mixed toc map, all loc files are in source repo under different locale folder
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -372,7 +355,6 @@ outputs:
 ---
 # loc build with xref map, loc file has higher priority
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#xref1:
@@ -398,7 +380,6 @@ outputs:
 ---
 # loc build with xref map, all locale files are in source repo under different locale folder, loc file has higher priority
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -421,7 +402,6 @@ outputs:
 ---
 # loc build with mixed xref map
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#xref2:
@@ -449,7 +429,6 @@ outputs:
 ---
 # loc folder should be excluded from source docset during loc docset build
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -477,7 +456,6 @@ outputs:
 ---
 # built metadata for loc files
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#metadata1:
@@ -493,7 +471,6 @@ outputs:
 ---
 # built metadata for loc files, all loc files are in same repo
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://docs.com/test#metadata2:
@@ -511,7 +488,6 @@ outputs:
 ---
 # built metadata for loc files, all loc files are in source repo under different locale folder
 commands:
-  - restore
   - build --locale zh-cn
 inputs:
   docfx.yml: |
@@ -535,7 +511,6 @@ outputs:
 #     [link to a](a.md)
 #   docs/a.md: a
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies
 inputs:
@@ -561,7 +536,6 @@ outputs:
 #     [link to a](a.md)
 #   docs/a.md: a
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies
 inputs:
@@ -584,7 +558,6 @@ outputs:
 #     zh-cn/docs/a.md(modified by B and C)
 # for above case, the a.md's contributors are A and B
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#loc-bilingual
 inputs:
@@ -634,7 +607,6 @@ outputs:
 ---
 # bilingual page's `gitcommit` url follows sxs content's commit history
 commands:
-  - restore --locale zh-cn
   - build --locale zh-cn
 repos:
   https://github.com/bilingual/a:
