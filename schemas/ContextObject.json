@@ -29,6 +29,9 @@
     "uhfheaderId": {
       "description": "The UHFHeaderID to use for the content. Overrides the default docset value. Example: MSDocsHeader-Dynamics365",
       "type": "string"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }
