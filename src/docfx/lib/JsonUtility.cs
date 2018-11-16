@@ -379,7 +379,7 @@ namespace Microsoft.Docs.Build
                     var prop = item as JProperty;
 
                     // skip the special property
-                    if (prop.Name.StartsWith('$'))
+                    if (prop.Name == "$schema")
                         continue;
 
                     var nestedType = GetNestedTypeAndCheckForUnknownField(type, prop, errors);

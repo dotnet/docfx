@@ -250,6 +250,9 @@
     },
     "monikerDefinitionUrl": {
       "type": "string"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }
