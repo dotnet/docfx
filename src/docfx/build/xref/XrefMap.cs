@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
                             return spec;
                         }
                     }
-                    return null;
+                    return LoadXrefSpec(GetLatestInternalXrefmap(), _context);
                 }
 
                 // For uid with moniker range, take the latest moniker if no moniker defined while resolving
                 if (internalSpecs.Count > 1)
                 {
-                    return LoadXrefSpec(internalSpecs.OrderBy(item => item.Value.Item2.Monikers, new MonikersDescendingComparer()).FirstOrDefault(), _context);
+                    return LoadXrefSpec(GetLatestInternalXrefmap(), _context);
                 }
                 else
                 {
@@ -53,6 +53,9 @@ namespace Microsoft.Docs.Build
                 return externalSpec;
             }
             return null;
+
+            Lazy<(List<Error>, XrefSpec)> GetLatestInternalXrefmap()
+                => internalSpecs.OrderBy(item => item.Value.Item2.Monikers, new MonikersDescendingComparer()).FirstOrDefault();
         }
 
         public static XrefMap Create(Context context, Docset docset)
