@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                result.Append('-');
+                result.Append('+');
             }
 
             result.Append(hash);
