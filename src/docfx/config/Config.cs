@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly string MonikerDefinitionUrl = string.Empty;
+        public readonly string MonikerDefinition = string.Empty;
 
         /// <summary>
         /// Gets the config file name.
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
 
             yield return Contribution.GitCommitsTime;
             yield return GitHub.UserCache;
-            yield return MonikerDefinitionUrl;
+            yield return MonikerDefinition;
         }
 
         /// <summary>

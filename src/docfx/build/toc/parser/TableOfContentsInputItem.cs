@@ -41,8 +41,8 @@ namespace Microsoft.Docs.Build
 
             return new TableOfContentsItem
             {
-                TocTitle = inputModel.DisplayName ?? inputModel.Name,
-
+                TocTitle = inputModel.Name,
+                DisplayName = inputModel.DisplayName,
                 Href = inputModel.Href,
                 TocHref = inputModel.TocHref, // only breadcrumb toc will set the toc href
                 MaintainContext = inputModel.MaintainContext,
