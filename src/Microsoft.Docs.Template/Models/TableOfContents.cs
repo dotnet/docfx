@@ -21,6 +21,9 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "toc_title")]
         public string TocTitle { get; set; }
 
+        [JsonProperty(PropertyName = "displayName")]
+        public string DisplayName { get; set; }
+
         [JsonProperty(PropertyName = "href")]
         public string Href { get; set; }
 
