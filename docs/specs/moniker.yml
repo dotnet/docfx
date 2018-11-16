@@ -215,6 +215,32 @@ outputs:
   build.log: |
     ["warning","empty-monikers","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0,netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
 ---
+# No intersection of file level monikers and zone monikers
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**/*.md': '<= netcore-1.1'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+    ::: moniker range="netcore-1.2"
+    Moniker: netcore-1.2
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "name": "netcore-1.0", "product": ".NET Core" },
+        { "name": "netcore-1.1", "product": ".NET Core" },
+        { "name": "netcore-1.2", "product": ".NET Core" },
+      ]
+    }
+outputs:
+  9d4e15fd/docs/a.json:
+  build.log: |
+    ["warning","empty-monikers","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0,netcore-1.1'.","docs/v1/a.md"]
+---
 # Define uid with moniker range, reference to it with moniker in the same docset
 inputs:
   docfx.yml: |
@@ -274,7 +300,8 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
 ---
-# Define uid with moniker range, reference to it without moniker in the same docset
+# Define same uid with multiple moniker ranges, 
+# reference to it without moniker in the same docset, shoule take the latest one
 inputs:
   docfx.yml: |
     monikerRange:
@@ -374,29 +401,3 @@ outputs:
     ["error","moniker-overlapping","Two or more documents have defined overlapping moniker range ('netcore-2.0', 'netcore-2.1') ('netcore-1.1', 'netcore-2.0')"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
----
-# No intersection of file level monikers and zone monikers
-inputs:
-  docfx.yml: |
-    monikerRange:
-      'docs/v1/**/*.md': '<= netcore-1.1'
-    routes:
-      docs/v1/: docs/
-    monikerDefinition: monikerDefinition.json
-  docs/v1/a.md: |
-    Moniker: netcore-1.0, netcore-1.1
-    ::: moniker range="netcore-1.2"
-    Moniker: netcore-1.2
-    ::: moniker-end
-  monikerDefinition.json: |
-    {
-      "monikers": [
-        { "name": "netcore-1.0", "product": ".NET Core" },
-        { "name": "netcore-1.1", "product": ".NET Core" },
-        { "name": "netcore-1.2", "product": ".NET Core" },
-      ]
-    }
-outputs:
-  9d4e15fd/docs/a.json:
-  build.log: |
-    ["warning","empty-monikers","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0,netcore-1.1'.","docs/v1/a.md"]

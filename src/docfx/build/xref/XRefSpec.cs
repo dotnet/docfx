@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; }
 
+        [JsonIgnore]
         public SortedSet<string> Monikers { get; } = new SortedSet<string>();
 
         public string Href { get; set; }

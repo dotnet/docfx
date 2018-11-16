@@ -37,17 +37,15 @@ namespace Microsoft.Docs.Build
                     }
                     return null;
                 }
+
+                // For uid with moniker range, take the latest moniker if no moniker defined while resolving
+                if (internalSpecs.Count > 1)
+                {
+                    return LoadXrefSpec(internalSpecs.OrderBy(item => item.Value.Item2.Monikers, new MonikersDescendingComparer()).FirstOrDefault(), _context);
+                }
                 else
                 {
-                    // For uid with moniker range, take the latest moniker if no moniker defined while resolving
-                    if (internalSpecs.Count > 1)
-                    {
-                        return LoadXrefSpec(internalSpecs.OrderBy(item => item.Value.Item2.Monikers, new MonikersDescendingComparer()).FirstOrDefault(), _context);
-                    }
-                    else
-                    {
-                        return LoadXrefSpec(internalSpecs.Single(), _context);
-                    }
+                    return LoadXrefSpec(internalSpecs.Single(), _context);
                 }
             }
             if (_externalXrefMap.TryGetValue(uid, out var externalSpec))
