@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -21,6 +22,8 @@ namespace Microsoft.Docs.Build
         public static readonly StringComparer PathComparer = IsCaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
         /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
@@ -126,6 +129,49 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(directoryPath))
                 return;
             Directory.CreateDirectory(directoryPath);
+        }
+
+        /// <summary>
+        /// Converts an URL to a human readable short directory name
+        /// </summary>
+        public static string UrlToFolderName(string url)
+        {
+            var hash = url.GetMd5HashShort();
+
+            // Trim https://
+            var index = url.IndexOf(':');
+            if (index > 0)
+            {
+                url = url.Substring(index);
+            }
+
+            url = url.TrimStart('/', '\\', '.', ':').Trim();
+
+            var result = new StringBuilder();
+
+            // Take the first 5 segments and the surrounding 5 chars in each segment, then remove invalid path chars.
+            foreach (var segment in url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries).Take(5))
+            {
+                for (var i = 0; i < segment.Length; i++)
+                {
+                    var ch = segment[i];
+                    if (i == 5 && segment.Length > 10)
+                    {
+                        result.Append("..");
+                        i += segment.Length - 11;
+                        continue;
+                    }
+                    if (!s_invalidPathChars.Contains(ch))
+                    {
+                        result.Append(ch);
+                    }
+                }
+
+                result.Append('-');
+            }
+
+            result.Append(hash);
+            return result.ToString();
         }
 
         private static string Normalize(string path)
