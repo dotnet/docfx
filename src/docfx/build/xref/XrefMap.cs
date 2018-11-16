@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var (schemaErrors, content) = JsonUtility.ToObject(obj, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
+            var (schemaErrors, content) = JsonUtility.ToObjectWithSchemaValidation(obj, schema.Type, transform: AttributeTransformer.Transform(errors, file, null, extensionData));
             errors.AddRange(schemaErrors);
             var xref = new XrefSpec
             {
