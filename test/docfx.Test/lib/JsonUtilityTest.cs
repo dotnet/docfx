@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
         internal void TestUnknownFieldType(string json, int expectedLine, int expectedColumn, ErrorLevel expectedErrorLevel, string expectedErrorCode, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
-            var (errors, result) = JsonUtility.ToObject(token, type);
+            var (errors, result) = JsonUtility.ToObjectWithSchemaValidation(token, type);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
@@ -355,7 +355,7 @@ namespace Microsoft.Docs.Build
         public void TestObjectTypeWithNotSealedType(string json, Type type)
         {
             var (_, token) = JsonUtility.Deserialize(json);
-            var (errors, value) = JsonUtility.ToObject(token, type);
+            var (errors, value) = JsonUtility.ToObjectWithSchemaValidation(token, type);
             Assert.Empty(errors);
         }
 
@@ -535,7 +535,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(@"{'b: 1 }")]
         [InlineData(@"{'b': 'not number'}")]
-        public void SyntaxErrorShouldBeThrown(string json)
+        public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string json)
         {
             var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"')));
             Assert.Equal("json-syntax-error", exception.Error.Code);
