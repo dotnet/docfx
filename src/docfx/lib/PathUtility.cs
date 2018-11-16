@@ -149,16 +149,16 @@ namespace Microsoft.Docs.Build
 
             var result = new StringBuilder();
 
-            // Take the first 5 segments and the surrounding 5 chars in each segment, then remove invalid path chars.
+            // Take the first 5 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
             foreach (var segment in url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries).Take(5))
             {
                 for (var i = 0; i < segment.Length; i++)
                 {
                     var ch = segment[i];
-                    if (i == 5 && segment.Length > 10)
+                    if (i == 8 && segment.Length > 16)
                     {
                         result.Append("..");
-                        i += segment.Length - 11;
+                        i += segment.Length - 17;
                         continue;
                     }
                     if (!s_invalidPathChars.Contains(ch))

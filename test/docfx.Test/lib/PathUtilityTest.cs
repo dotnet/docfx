@@ -86,8 +86,7 @@ namespace Microsoft.Docs.Build
         [InlineData("", "d41d8cd9")]
         [InlineData("https://github.com/dotnet/docfx", "github.com-dotnet-docfx-fb64b9d2")]
         [InlineData("https://github.com/a/b/c/d/e/f/g", "github.com-a-b-c-d-0d55f61f")]
-        [InlineData("https://github.com/1234567890", "github.com-1234567890-3534acb1")]
-        [InlineData("https://github.com/crazy-crazy-long-repo.zh-cn", "github.com-crazy..zh-cn-42c84b79")]
+        [InlineData("https://github.com/crazy-crazy-crazy-crazy-long-repo.zh-cn", "github.com-crazy-cr..po.zh-cn-791b3f68")]
         [InlineData("https://a.com?b=c#d", "a.com-b=c-d-2183540f")]
         public static void UrlToFolderName(string url, string folderName)
         {
