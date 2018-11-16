@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
                     context.Report(Errors.MonikerOverlapping(monikers));
                 }
 
-                // define same uid with non-overlapping moniers, add them all
+                // define same uid with non-overlapping monikers, add them all
                 else
                 {
                     if (result.TryGetValue(uid, out var specs))
