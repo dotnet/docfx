@@ -177,26 +177,27 @@ namespace Microsoft.Docs.Build
                     var orderedConflict = conflict.OrderBy(item => LoadXrefSpec(item, context)?.Href);
                     context.Report(Errors.UidConflict(uid, orderedConflict.Select(v => v.Value.Item2)));
                     result[uid] = new List<Lazy<(List<Error>, XrefSpec)>> { orderedConflict.First() };
+                    continue;
                 }
+
+                // uid conflicts with overlapping monikers, drop the uid and log an error
+                if (CheckOverlappingMonikers())
+                {
+                    var monikers = conflict.Select(x => LoadXrefSpec(x, context).Monikers).ToList();
+                    monikers.Sort(new MonikersDescendingComparer());
+                    context.Report(Errors.MonikerOverlapping(monikers));
+                }
+
+                // define same uid with non-overlapping moniers, add them all
                 else
                 {
-                    // uid conflicts with overlapping monikers, drop the uid and log an error
-                    if (CheckOverlappingMonikers())
+                    if (result.TryGetValue(uid, out var specs))
                     {
-                        var monikers = conflict.Select(x => LoadXrefSpec(x, context).Monikers).ToList();
-                        monikers.Sort(new MonikersDescendingComparer());
-                        context.Report(Errors.MonikerOverlapping(monikers));
+                        specs.AddRange(conflict);
                     }
                     else
                     {
-                        if (result.TryGetValue(uid, out var specs))
-                        {
-                            specs.AddRange(conflict);
-                        }
-                        else
-                        {
-                            result[uid] = conflict.ToList();
-                        }
+                        result[uid] = conflict.ToList();
                     }
                 }
 
