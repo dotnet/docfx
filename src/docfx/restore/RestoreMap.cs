@@ -32,6 +32,10 @@ namespace Microsoft.Docs.Build
         public static bool TryGetGitRestorePath(string remote, string branch, out string result)
         {
             result = s_gitPath.GetOrAdd((remote, branch), new Lazy<string>(FindLastModifiedGitRepository)).Value;
+
+            // GetOrAdd and TryRemove together are not atomic operation,
+            // but because we only call TryGetGitRestorePath in implicit restore,
+            // it is very unlikely to cause a problem.
             if (result == null)
             {
                 s_gitPath.TryRemove((remote, branch), out _);
