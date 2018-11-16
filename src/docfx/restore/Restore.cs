@@ -11,6 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
+        public static async Task<string> RunImplict(string docset, CommandLineOptions options, Report report)
+        {
+            return null;
+        }
+
         public static async Task Run(string docsetPath, CommandLineOptions options, Report report)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
