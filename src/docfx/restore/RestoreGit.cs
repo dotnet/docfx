@@ -25,6 +25,10 @@ namespace Microsoft.Docs.Build
             {
                 var remote = group.Key;
                 var branches = group.Distinct().ToArray();
+                var branchesToFetch = @implicit
+                    ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
+                    : branches;
+
                 var repoPath = Path.GetFullPath(Path.Combine(AppData.GetGitDir(remote), ".git"));
                 var childRepos = new List<string>();
 
@@ -34,15 +38,11 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            var branchesToFetch = @implicit
-                                ? branches.Where(branch => !RestoreMap.TryGetGitRestorePath(remote, branch, out _)).ToArray()
-                                : branches;
-
                             if (branchesToFetch.Length > 0)
                             {
                                 await GitUtility.CloneOrUpdateBare(repoPath, remote, branchesToFetch, config);
+                                await AddWorkTrees();
                             }
-                            await AddWorkTrees();
                         }
                         catch (Exception ex)
                         {
@@ -50,16 +50,16 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                foreach (var child in childRepos)
+                foreach (var branch in branches)
                 {
-                    await restoreChild(child);
+                    await restoreChild(RestoreMap.GetGitRestorePath(remote, branch));
                 }
 
                 async Task AddWorkTrees()
                 {
                     var existingWorkTreePath = new ConcurrentHashSet<string>(await GitUtility.ListWorkTree(repoPath));
 
-                    await ParallelUtility.ForEach(branches, async branch =>
+                    await ParallelUtility.ForEach(branchesToFetch, async branch =>
                     {
                         // use branch name instead of commit hash
                         // https://git-scm.com/docs/git-worktree#_commands
@@ -70,8 +70,6 @@ namespace Microsoft.Docs.Build
                         {
                             await GitUtility.AddWorkTree(repoPath, branch, workTreePath);
                         }
-
-                        childRepos.Add(workTreePath);
 
                         // update the last write time
                         Directory.SetLastWriteTimeUtc(workTreePath, DateTime.UtcNow);

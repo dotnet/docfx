@@ -16,17 +16,17 @@ namespace Microsoft.Docs.Build
 
         public static string GetGitRestorePath(string url)
         {
-            if (!TryGetGitRestorePath(url, out var result))
-            {
-                throw Errors.NeedRestore(url).ToException();
-            }
-            return result;
+            var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
+            return GetGitRestorePath(remote, branch);
         }
 
-        public static bool TryGetGitRestorePath(string url, out string result)
+        public static string GetGitRestorePath(string remote, string branch)
         {
-            var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
-            return TryGetGitRestorePath(remote, branch, out result);
+            if (!TryGetGitRestorePath(remote, branch, out var result))
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
+            return result;
         }
 
         public static bool TryGetGitRestorePath(string remote, string branch, out string result)
