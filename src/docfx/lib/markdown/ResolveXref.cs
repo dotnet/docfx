@@ -47,7 +47,8 @@ namespace Microsoft.Docs.Build
                          var name = xrefSpec.GetXrefPropertyValue("name");
                          var displayPropertyValue = xrefSpec.GetXrefPropertyValue(queries?["displayProperty"]);
                          string display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-                         return new LinkInline(xrefSpec.Href, null).AppendChild(new LiteralInline(display));
+                         var href = !string.IsNullOrEmpty(moniker) ? $"{xrefSpec.Href}?view={moniker}" : xrefSpec.Href;
+                         return new LinkInline(href, null).AppendChild(new LiteralInline(display));
                      }
                      return node;
                  });

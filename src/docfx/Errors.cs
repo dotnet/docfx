@@ -171,6 +171,9 @@ namespace Microsoft.Docs.Build
         public static Error EmptyMonikers(string message)
             => new Error(ErrorLevel.Warning, "empty-monikers", message);
 
+        public static Error InvalidUidMoniker(string moniker, string uid)
+            => new Error(ErrorLevel.Warning, "invalid-uid-moniker", $"Moniker '{moniker}' is not defined with uid '{uid}'");
+
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
             => string.Join(", ", source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'").Take(5));
 
