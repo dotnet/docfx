@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error>, T) DeserializeWithSchemaValidation<T>(string input, bool nullValidation = true)
         {
             var (errors, token) = Deserialize(input, nullValidation);
-            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
+            var (mismatchingErrors, result) = JsonUtility.ToObjectWithSchemaValidation<T>(token);
             errors.AddRange(mismatchingErrors);
             return (errors, result);
         }
@@ -77,8 +77,7 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(string input, bool nullValidation = true)
         {
             var (_, token) = Deserialize(input, nullValidation);
-            var obj = token.ToObject(typeof(T), JsonUtility.DefaultSerializer);
-            return (T)obj;
+            return JsonUtility.ToObject<T>(token);
         }
 
         /// <summary>
