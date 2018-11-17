@@ -183,6 +183,9 @@
     },
     "documentType": {
       "type": "string"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }

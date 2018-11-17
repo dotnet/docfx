@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Docs.Build;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 using Newtonsoft.Json.Serialization;
 
@@ -72,6 +73,8 @@ class Program
         var schema = generator.Generate(type, rootSchemaNullable: false);
 
         VerifyContract(generator.ContractResolver, type);
+
+        schema.Properties.Add("$schema", new JSchema { Type = JSchemaType.String });
 
         File.WriteAllText(Path.Combine("schemas", name + ".json"), schema.ToString());
     }
