@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
             finalConfigObject = OverwriteConfig(finalConfigObject, options.Locale, GetBranch());
 
             var deserializeErrors = new List<Error>();
-            (deserializeErrors, config) = JsonUtility.ToObject<Config>(finalConfigObject);
+            (deserializeErrors, config) = JsonUtility.ToObjectWithSchemaValidation<Config>(finalConfigObject);
             errors.AddRange(deserializeErrors);
 
             return (errors, config);

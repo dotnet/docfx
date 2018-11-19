@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsInputItem>>(tocArray);
+                var (errors, items) = JsonUtility.ToObjectWithSchemaValidation<List<TableOfContentsInputItem>>(tocArray);
                 return (errors, new TableOfContentsInputModel
                 {
                     Items = items,
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 // toc root model
                 if (tocToken is JObject tocObject)
                 {
-                    return JsonUtility.ToObject<TableOfContentsInputModel>(tocToken);
+                    return JsonUtility.ToObjectWithSchemaValidation<TableOfContentsInputModel>(tocToken);
                 }
             }
             return (new List<Error>(), new TableOfContentsInputModel());

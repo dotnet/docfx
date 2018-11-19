@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             string FindLastModifiedGitRepository()
             {
                 var (remote, branch) = GitUtility.GetGitRemoteInfo(url);
-                var restoreDir = AppData.GetGitDir(url);
+                var restoreDir = AppData.GetGitDir(remote);
 
                 if (!Directory.Exists(restoreDir))
                 {

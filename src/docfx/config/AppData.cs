@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -22,34 +23,20 @@ namespace Microsoft.Docs.Build
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
-        public static string GetGitDir(string url)
+        public static string GetGitDir(string remote)
         {
-            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, UrlToPath(url)));
+            Debug.Assert(!remote.Contains('#'));
+            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, PathUtility.UrlToFolderName(remote)));
         }
 
         public static string GetFileDownloadDir(string url)
         {
-            // URL to a resource is case sensitive, query string matters, so hash the download path
-            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, UrlToPath(url) + "-" + url.Trim().GetMd5HashShort()));
+            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, PathUtility.UrlToFolderName(url)));
         }
 
         public static string GetCommitCachePath(string remote)
         {
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
-        }
-
-        private static string UrlToPath(string url)
-        {
-            (url, _, _) = HrefUtility.SplitHref(url);
-
-            // Trim https://
-            var i = url.IndexOf(':');
-            if (i > 0)
-            {
-                url = url.Substring(i);
-            }
-
-            return HrefUtility.EscapeUrl(url.TrimStart('/', '\\', '.', ':').Trim());
         }
 
         /// <summary>
