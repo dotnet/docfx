@@ -251,3 +251,48 @@ All links with bookmark which are resolved from fallback(source content) can't b
 ```
 
 For above case, the zh-cn's a.md's link to b.md can be resolved successfully, but the bookmark of this link can't be verified because the en-us b.md will not be built.
+
+## Open Issues
+
+### Different `folder` or `branch`
+
+When combine different locales into one repo, we meet a choice, put the different locale content in different `folder` or `branch`:
+
+Different `folder` example:
+```txt
+localization(repo):
+    live(branch):
+        |- zh-cn/
+        |   |- readmd.md
+        |- de-de/
+        |   | - readme.md
+    master(branch):
+        |- zh-cn/
+        |   |- readmd.md
+        |- de-de/
+        |   | - readme.md
+```
+Different `branch` example:
+```txt
+localization(repo):
+    zh-cn-live:
+        |- readme.md
+    zh-cn-master:
+        |- readme.md
+    de-de-live:
+        |- readme.md
+    de-de-master:
+        | - readme.md
+```
+
+For different `folder` option, it's easy to manage all localization contents, the branch model is also friendly to ops backend service(build/dhs), but we need a way to identify which locale need to be built once a changes comes and also may have a little bigger impact to OL workflow(HB writing behavior).
+
+For different `branch` options, I believe it has less impact to OL workflow, and we can easily identify which locale to build once a new changes comes, but the problems is that it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. And also, it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
+
+I recommend the different `folder` option, :)
+
+### Combine all localization content in one repo or multiple repos?
+
+@Curt made a comment that maybe there is a requirement to combine all localization content into multiple repos instead of always one, for example, combine `zh-cn` and `de-de` into localiztaion-1 repo and `ja-jp` and `hu-hu` to localization-2 repo.
+
+I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure. And also if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, so I would like to choice the simple and easy way, either one locale one repo, or all locales one repo, :)
