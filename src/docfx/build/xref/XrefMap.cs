@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                     map[spec.Uid] = spec;
                 }
             }
-            return new XrefMap(map, CreateInternalXrefMap(context, docset.MonikerRangeParser, docset.ScanScope), context, docset.MonikerRangeParser);
+            return new XrefMap(map, CreateInternalXrefMap(context, docset.ScanScope), context, docset.MonikerRangeParser);
         }
 
         public void OutputXrefMap(Context context)
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             return isOverlapping;
         }
 
-        private static IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec)>>> CreateInternalXrefMap(Context context, MonikerRangeParser parser, IEnumerable<Document> files)
+        private static IReadOnlyDictionary<string, List<Lazy<(List<Error>, XrefSpec)>>> CreateInternalXrefMap(Context context, IEnumerable<Document> files)
         {
             var xrefsByUid = new ConcurrentDictionary<string, ConcurrentBag<Lazy<(List<Error>, XrefSpec)>>>();
             Debug.Assert(files != null);
@@ -326,11 +326,11 @@ namespace Microsoft.Docs.Build
 
             public int Compare(string x, string y)
             {
-                if (x is null)
+                if (x is null || !_parser.TryGetMonikerOrderFromDefinition(x, out var orderX))
                     return 1;
-                if (y is null)
+                if (y is null || !_parser.TryGetMonikerOrderFromDefinition(y, out var orderY))
                     return -1;
-                return _parser.GetMonikerOrderFromDefinition(y).CompareTo(_parser.GetMonikerOrderFromDefinition(x));
+                return orderX.CompareTo(orderY);
             }
         }
     }

@@ -41,7 +41,8 @@ namespace Microsoft.Docs.Build
                     return monikerNames;
                 })).Value;
 
-        public int GetMonikerOrderFromDefinition(string moniker) => _monikerOrder[moniker];
+        public bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
+            => _monikerOrder.TryGetValue(moniker, out order);
 
         private Dictionary<string, int> GetMoninkerOrder(List<Moniker> monikers)
         {
