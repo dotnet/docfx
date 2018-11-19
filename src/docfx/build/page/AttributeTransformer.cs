@@ -66,8 +66,8 @@ namespace Microsoft.Docs.Build
                 string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo)
                     => Resolve.GetLink(path, relativeTo, resultRelativeTo, errors, callback?.BuildChild, callback?.DependencyMapBuilder, callback?.BookmarkValidator);
 
-                XrefSpec ResolveXrefDelegate(string uid)
-                    => Resolve.ResolveXref(uid, callback?.XrefMap);
+                XrefSpec ResolveXrefDelegate(string uid, string moniker)
+                    => Resolve.ResolveXref(uid, callback?.XrefMap, moniker);
             }
         }
     }

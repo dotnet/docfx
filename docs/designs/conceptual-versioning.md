@@ -503,9 +503,9 @@ To handle this, when we are generating the xref map for internal using, we have 
 
 If in one round of build, different files with the same **Uid** are included:
 
-1. When the files do not have `monikerRange` option set, an error throws.
+1. When the files do not have `monikerRange` option set, order them by output site url, take the first uid, log a warning.
 2. When the files have `monikerRange` option set, but have different **SitePath**, an error throws.
-3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed.
+3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed. And when refer to this uid without moniker, the latest one will be picked, i.e: prefer (netcore-2.0, netcore-2.1) to (netcore-1.0, netcore-1.1)
 
 #### 5.3 Toc
 

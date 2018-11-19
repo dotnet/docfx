@@ -12,10 +12,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentDictionary<string, Lazy<List<string>>> _cache = new ConcurrentDictionary<string, Lazy<List<string>>>();
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
+        private readonly Dictionary<string, int> _monikerOrder;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            _monikerOrder = GetMoninkerOrder(monikerDefinition.Monikers);
         }
 
         public List<string> Parse(string rangeString)
@@ -38,5 +40,18 @@ namespace Microsoft.Docs.Build
 
                     return monikerNames;
                 })).Value;
+
+        public bool TryGetMonikerOrderFromDefinition(string moniker, out int order)
+            => _monikerOrder.TryGetValue(moniker, out order);
+
+        private Dictionary<string, int> GetMoninkerOrder(List<Moniker> monikers)
+        {
+            var result = new Dictionary<string, int>();
+            for (int i = 0; i < monikers.Count; i++)
+            {
+                result[monikers[i].Name] = i;
+            }
+            return result;
+        }
     }
 }
