@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
                     return 1;
                 if (y is null || !_parser.TryGetMonikerOrderFromDefinition(y, out var orderY))
                     return -1;
-                return orderX.CompareTo(orderY);
+                return orderY.CompareTo(orderX);
             }
         }
     }
