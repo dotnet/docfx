@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,5 +13,7 @@ namespace Microsoft.Docs.Build
         public string Locale { get; set; }
 
         public string RedirectUrl { get; set; }
+
+        public List<string> Monikers { get; set; }
     }
 }

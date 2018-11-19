@@ -439,34 +439,16 @@ routing:
 monikerDefinition: "https://api.docs.com/monikers/"
 redirections:
     articles/v1.0/old/a: /articles/a
+redirectionsWithoutId:
     articles/v2.0/old/a: /articles/a
 ```
 
-For now, the redirection URL returned by hosting doesn't contains original moniker query `?view={moniker}`. So if user access the URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` or `{host}/{docset-base-path}/articles/old/a?view=netcore-2.0`, they will both be redirected to `{host}/{docset-base-path}/articles/a`, and DHS will fallback to the latest version since it has no moniker query.
+The query `view={moniker}` will be appended to the `redirect_url` returned from hosting.
 
-So if the content writer want redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` and `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`, there is a workaround:
+To make every version of redirection file redirect to corresponding target file version, content writer have to add multiple redirection rules which redirect to the same target URL, like `articles/v1.0/old/a: /articles/a`(redirections) and `articles/v2.0/old/a: /articles/a`(redirectionsWithoutId), and there is at most one rule set as *withDocumentId*.
 
-```yml
-name: dotnet
-content: "articles/**/*.md"
-monikerRange:
-    "articles/v1.0/**/*.md": "netcore-1.0 || netcore-1.1"
-    "articles/v2.0/**/*.md": "netcore-2.0"
-routing:
-    "articles/v1.0/": "articles/"
-    "articles/v2.0/": "articles/"
-monikerDefinition: "https://api.docs.com/monikers/"
-redirections:
-    articles/v1.0/old/a: /articles/a?view=netcore-1.0
-    articles/v2.0/old/a: /articles/a?view=netcore-2.0
-```
-
-But there is a limitation, if the content writer want:
-
-1. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.0` to `{host}/{docset-base-path}/articles/a?view=netcore-1.0`
-2. redirect URL `{host}/{docset-base-path}/articles/old/a?view=netcore-1.1` to `{host}/{docset-base-path}/articles/a?view=netcore-1.1`
-
-it cannot be achieved.
+> [!NOTE]
+> For redirection file with versioning, BI team should consider to use `document_version_independent_id` instead of `document_id`.
 
 #### 4.2 Blank page
 
@@ -521,7 +503,7 @@ To handle this, when we are generating the xref map for internal using, we have 
 
 If in one round of build, different files with the same **Uid** are included:
 
-1. When the files do not have `monikerRange` option set, order them by href, take the first uid, log a warning.
+1. When the files do not have `monikerRange` option set, order them by output site url, take the first uid, log a warning.
 2. When the files have `monikerRange` option set, but have different **SitePath**, an error throws.
 3. When the files have `monikerRange` option set, and have the same **SitePath**, these file are considered as different version of the same **Uid**, this is allowed. And when refer to this uid without moniker, the latest one will be picked, i.e: prefer (netcore-2.0, netcore-2.1) to (netcore-1.0, netcore-1.1)
 
