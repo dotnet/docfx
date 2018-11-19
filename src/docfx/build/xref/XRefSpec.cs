@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public string Uid { get; set; }
 
         [JsonIgnore]
-        public SortedSet<string> Monikers { get; } = new SortedSet<string>(new StringDescendingComparer());
+        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
         public string Href { get; set; }
 
@@ -23,11 +23,5 @@ namespace Microsoft.Docs.Build
 
         public string GetXrefPropertyValue(string property)
             => ExtensionData.TryGetValue<JValue>(property, out var v) && v.Value is string str ? str : null;
-
-        private class StringDescendingComparer : IComparer<string>
-        {
-            public int Compare(string x, string y)
-                => y.CompareTo(x);
-        }
     }
 }

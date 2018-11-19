@@ -99,7 +99,7 @@ outputs:
     {"references":[{"uid":"a","href":"/docs/a.json"}]}
 ---
 # Define duplicate uid in conceptual and SDP 
-# should output warning and resolve it with the first one ordered by href
+# should output error and uid cannot be resolved
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -115,11 +115,12 @@ outputs:
   docs/a.json:
   docs/b.json: 
   docs/c.json: |
-    {"content":"<p>Link to <a href=\"/docs/a.json\">a</a></p>\n"}
+    {"content":"<p>Link to @a</p>\n"}
   build.log: |
-    ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a.json,/docs/b.json"]
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a.json,/docs/b.json"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a.json"}]}
+    {"references":[]}
 ---
 # Resolve xref in SDP
 inputs:

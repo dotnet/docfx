@@ -401,7 +401,7 @@ outputs:
   docs/c.json: |
     {"content":"<p>Link to @a</p>"}
   build.log: |
-    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker range ('netcore-2.0', 'netcore-2.1') ('netcore-1.1', 'netcore-2.0')"]
+    ["error","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]
     ["warning","publish-url-conflict","Two or more documents of the same version publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
   xrefmap.json: | 
@@ -580,7 +580,7 @@ outputs:
   docs/b.json:
   docs/c.json: |
     {
-      "content": "<p>Link to <a href=\"/docs/a\">no version</a></p>",
+      "content": "<p>Link to @a</p>",
       "monikers": []
     }
   docs/a.json: |
@@ -599,6 +599,7 @@ outputs:
       "monikers": ["netcore-2.0"]
     }
   xrefmap.json: | 
-    {"references":[{"uid":"a","href":"/docs/a","name":"netcore-2.0"}]}
+    {"references":[]}
   build.log: |
-    ["warning","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a,/docs/b"]
+    ["error","uid-conflict","Two or more documents have defined the same Uid 'a': /docs/a,/docs/b"]
+    ["info","at-uid-not-found","Cannot find uid 'a' using xref '@a'","docs/c.md"]

@@ -145,19 +145,11 @@ namespace Microsoft.Docs.Build
         public static Error UidConflict(string uid, IEnumerable<XrefSpec> conflicts)
         {
             var hint = conflicts.Count() > 5 ? "(Only 5 duplicates displayed)" : "";
-            return new Error(ErrorLevel.Warning, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
+            return new Error(ErrorLevel.Error, "uid-conflict", $"Two or more documents have defined the same Uid '{uid}': {string.Join(',', conflicts.Select(spec => spec.Href).Take(5))}{hint}");
         }
 
-        public static Error MonikerOverlapping(IEnumerable<SortedSet<string>> items)
-        {
-            var display = items.Count() > 5 ? "(only displaying 5 if more)" : "";
-            var message = new StringBuilder($"Two or more documents have defined overlapping moniker range{display}");
-            foreach (var monikers in items.Take(5))
-            {
-                message.Append($" ({Join(monikers)})");
-            }
-            return new Error(ErrorLevel.Error, "moniker-overlapping", message.ToString());
-        }
+        public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
+            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         public static Error MonikerNameConflict(string monikerName)
             => new Error(ErrorLevel.Error, "moniker-name-conflict", $"Two or more moniker definitions have the same monikerName `{monikerName}`");
