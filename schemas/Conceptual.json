@@ -13,6 +13,9 @@
     },
     "wordCount": {
       "type": "integer"
+    },
+    "$schema": {
+      "type": "string"
     }
   }
 }
