@@ -655,7 +655,7 @@ outputs:
   docs/a.json: |
     {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/b1990a2c68f76bcf400e766c38480834a40e80fc/docs/a.md"}
 ---
-# conflicted toc files, localized toc will has higher priority to be included
+# conflicted toc files(source and loc) will be removed from toc map
 commands:
   - restore --locale zh-cn
   - build --locale zh-cn
